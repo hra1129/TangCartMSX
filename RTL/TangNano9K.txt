@@ -1,0 +1,6 @@
+Series: GW1NR
+Package: QFN88P
+Device: GW1NR-9
+Speed: C6/15
+Device Version: C
+Part Number: GW1NR-LV9QN88PC6/15

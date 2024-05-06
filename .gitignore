@@ -1,0 +1,10 @@
+*.o
+*.obj
+*.tlog
+*.pdb
+*.idb
+*.ipdb
+*.iobj
+.vs
+work
+*.wlf

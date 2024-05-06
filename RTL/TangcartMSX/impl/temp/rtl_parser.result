@@ -1,0 +1,20 @@
+[
+ {
+  "InstFile" : "D:/github/HRA_product/TangCartMSX/RTL/TangcartMSX/src/tangcart_msx.v",
+  "InstLine" : 27,
+  "InstName" : "tangcart_msx",
+  "ModuleFile" : "D:/github/HRA_product/TangCartMSX/RTL/TangcartMSX/src/tangcart_msx.v",
+  "ModuleLine" : 27,
+  "ModuleName" : "tangcart_msx",
+  "SubInsts" : [
+   {
+    "InstFile" : "D:/github/HRA_product/TangCartMSX/RTL/TangcartMSX/src/tangcart_msx.v",
+    "InstLine" : 112,
+    "InstName" : "u_uart",
+    "ModuleFile" : "D:/github/HRA_product/TangCartMSX/RTL/TangcartMSX/src/uart/ip_uart.v",
+    "ModuleLine" : 27,
+    "ModuleName" : "ip_uart"
+   }
+  ]
+ }
+]

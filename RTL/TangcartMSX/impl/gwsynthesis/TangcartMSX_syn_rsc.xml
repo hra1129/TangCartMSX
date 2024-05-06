@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Module name="tangcart_msx" Register="33" Alu="20" Lut="15">
+    <SubModule name="u_uart" Register="24" Lut="32"/>
+</Module>
