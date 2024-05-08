@@ -1,0 +1,2 @@
+# OpenFile D:/github/HRA_product/TangCartMSX/RTL/TangcartMSX/src/psram/model/test_002/vsim.wlf
+add wave -position end vsim:/tb/oddr/*

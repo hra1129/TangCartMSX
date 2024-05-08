@@ -44,14 +44,27 @@ module tangcart_msx (
 	output			toe,
 	input			n_tsltsl,
 	output	[5:0]	n_led,
+	// PSRAM ports
+	output	[1:0]	O_psram_ck,
+	output	[1:0]	O_psram_ck_n,
+	inout	[1:0]	IO_psram_rwds,
+	inout	[15:0]	IO_psram_dq,
+	output	[1:0]	O_psram_reset_n,
+	output	[1:0]	O_psram_cs_n,
+	// UART
 	output			uart_tx
 );
+	wire			clk,
+	wire			n_clk,
 	wire			w_n_reset;
 	reg		[7:0]	ff_send_data;
 	reg				ff_send_req;
 	wire			w_send_busy;
 	reg		[20:0]	ff_cnt;
 
+	// --------------------------------------------------------------------
+	//	OUTPUT Assignment
+	// --------------------------------------------------------------------
 	assign w_n_reset	= n_reset;	// & n_treset;
 	assign tf_cs		= 1'b0;
 	assign tf_mosi		= 1'b0;
@@ -63,6 +76,49 @@ module tangcart_msx (
 	assign td			= 8'dZ;
 	assign n_led		= { ff_cnt[20], ff_state };	//6'b101010;
 
+	// --------------------------------------------------------------------
+	//	PLL 27MHz --> 81MHz
+	// --------------------------------------------------------------------
+	Gowin_rPLL your_instance_name(
+		.clkout			( clk				),	// output	clkout
+		.clkoutp		( n_clk				),	// output	clkoutp
+		.clkin			( sys_clk			)	// input	clkin
+	);
+
+	// --------------------------------------------------------------------
+	//	MSX 50BUS
+	// --------------------------------------------------------------------
+	ip_msxbus u_msxbus (
+		.n_reset		( n_reset			),
+		.clk			( clk				),
+		.adr			( adr				),
+		.i_data			( i_data			),
+		.o_data			( o_data			),
+		.is_output		( is_output			),
+		.n_sltsl		( n_sltsl			),
+		.n_rd			( n_rd				),
+		.n_wr			( n_wr				),
+		.n_ioreq		( n_ioreq			),
+		.n_mereq		( n_mereq			),
+		.bus_address	( bus_address		),
+		.bus_io_cs		( bus_io_cs			),
+		.bus_memory_cs	( bus_memory_cs		),
+		.bus_read_ready	( bus_read_ready	),
+		.bus_read_data	( bus_read_data		),
+		.bus_write_data	( bus_write_data	),
+		.bus_read		( bus_read			),
+		.bus_write		( bus_write			),
+		.bus_io			( bus_io			),
+		.bus_memory		( bus_memory		)
+	);
+
+	// --------------------------------------------------------------------
+	//	PSRAM
+	// --------------------------------------------------------------------
+
+	// --------------------------------------------------------------------
+	//	UART
+	// --------------------------------------------------------------------
 	always @( negedge w_n_reset or posedge sys_clk ) begin
 		if( !w_n_reset ) begin
 			ff_cnt <= 21'd0;
@@ -107,14 +163,14 @@ module tangcart_msx (
 	end
 
 	ip_uart #(
-		.clk_freq		( 27000000		),
-		.uart_freq		( 115200		)
+		.clk_freq		( 27000000			),
+		.uart_freq		( 115200			)
 	) u_uart (
-		.n_reset		( w_n_reset		),
-		.clk			( sys_clk		),
-		.send_data		( ff_send_data	),
-		.send_req		( ff_send_req	),
-		.send_busy		( w_send_busy	),
-		.uart_tx		( uart_tx		)
+		.n_reset		( w_n_reset			),
+		.clk			( sys_clk			),
+		.send_data		( ff_send_data		),
+		.send_req		( ff_send_req		),
+		.send_busy		( w_send_busy		),
+		.uart_tx		( uart_tx			)
 	);
 endmodule

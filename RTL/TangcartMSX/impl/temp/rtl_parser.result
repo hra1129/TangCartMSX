@@ -9,7 +9,15 @@
   "SubInsts" : [
    {
     "InstFile" : "D:/github/HRA_product/TangCartMSX/RTL/TangcartMSX/src/tangcart_msx.v",
-    "InstLine" : 112,
+    "InstLine" : 64,
+    "InstName" : "your_instance_name",
+    "ModuleFile" : "D:/github/HRA_product/TangCartMSX/RTL/TangcartMSX/src/gowin_rpll/gowin_rpll.v",
+    "ModuleLine" : 10,
+    "ModuleName" : "Gowin_rPLL"
+   },
+   {
+    "InstFile" : "D:/github/HRA_product/TangCartMSX/RTL/TangcartMSX/src/tangcart_msx.v",
+    "InstLine" : 130,
     "InstName" : "u_uart",
     "ModuleFile" : "D:/github/HRA_product/TangCartMSX/RTL/TangcartMSX/src/uart/ip_uart.v",
     "ModuleLine" : 27,

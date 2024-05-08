@@ -1,5 +1,5 @@
 // -----------------------------------------------------------------------------
-//	ip_psram.v
+//	iddr.v
 //	Copyright (C)2024 Takayuki Hara (HRA!)
 //	
 //	 Permission is hereby granted, free of charge, to any person obtaining a 
@@ -21,34 +21,30 @@
 //	in the Software.
 // -----------------------------------------------------------------------------
 //	Description:
-//		PSRAM Controller
+//		IDDR model for TangNano9K
 // -----------------------------------------------------------------------------
 
-module ip_psram (
-	//	Internal I/F
-	input			n_reset,
-	input			clk,
-
-	//	PSRAM I/F
-	input			O_psram_ck,
-	input			O_psram_ck_n,
-	inout			IO_psram_rwds,
-	inout	[15:0]	IO_psram_dq,
-	output			O_psram_reset_n,
-	output			O_psram_cs_n
+module IDDR (
+	input			CLK,
+	input			D,
+	output			Q0,
+	output			Q1
 );
-	wire			w_reset;
-	reg				ff_ram_cs_n;
-	reg				ff_ram_cs_n_out;
+	reg			ff_q0_0;
+	reg			ff_q1_0;
+	reg			ff_q0_1;
+	reg			ff_q1_1;
 
-	assign w_reset	= ~n_reset;
+	always @( posedge CLK ) begin
+		ff_q0_0 <= D;
+		ff_q0_1 <= ff_q0_0;
+		ff_q1_1 <= ff_q1_0;
+	end
 
-	ODDR oddr_cs_n (
-		.CLK		( clk			),
-		.CLEAR		( w_reset		),
-		.D0			( ram_cs_n		),
-		.D1			( ram_cs_n		),
-		.Q0			( cs_n_tbuf		)
-	);
-	assign O_psram_cs_n	= ff_ram_cs_n_out;
+	always @( negedge CLK ) begin
+		ff_q1_0 <= D;
+	end
+
+	assign Q0	= ff_q0_1;
+	assign Q1	= ff_q1_1;
 endmodule

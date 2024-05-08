@@ -1,5 +1,5 @@
 // -----------------------------------------------------------------------------
-//	ip_psram.v
+//	oddr.v
 //	Copyright (C)2024 Takayuki Hara (HRA!)
 //	
 //	 Permission is hereby granted, free of charge, to any person obtaining a 
@@ -21,34 +21,46 @@
 //	in the Software.
 // -----------------------------------------------------------------------------
 //	Description:
-//		PSRAM Controller
+//		ODDR model for TangNano9K
 // -----------------------------------------------------------------------------
 
-module ip_psram (
-	//	Internal I/F
-	input			n_reset,
-	input			clk,
-
-	//	PSRAM I/F
-	input			O_psram_ck,
-	input			O_psram_ck_n,
-	inout			IO_psram_rwds,
-	inout	[15:0]	IO_psram_dq,
-	output			O_psram_reset_n,
-	output			O_psram_cs_n
+module ODDR #(
+	parameter		TX_POL = 1
+) (
+	input			CLK,
+	input			D0,
+	input			D1,
+	input			TX,
+	output			Q0,
+	output			Q1
 );
-	wire			w_reset;
-	reg				ff_ram_cs_n;
-	reg				ff_ram_cs_n_out;
+	reg			ff_q0_0;
+	reg			ff_q1_0;
+	reg			ff_q0_1;
+	reg			ff_q1_1;
+	reg			ff_q0_2;
+	reg			ff_q1_2;
+	reg			ff_tx_0;
+	reg			ff_tx_1;
+	reg			ff_tx_2;
+	reg			ff_tx_3;
 
-	assign w_reset	= ~n_reset;
+	always @( posedge CLK ) begin
+		ff_q0_0 <= D0;
+		ff_q1_0 <= D1;
+		ff_q0_1 <= ff_q0_0;
+		ff_q1_1 <= ff_q1_0;
+		ff_q1_2 <= ff_q1_1;
+		ff_tx_0 <= TX;
+		ff_tx_1 <= ff_tx_0;
+		ff_tx_3 <= ff_tx_2;
+	end
 
-	ODDR oddr_cs_n (
-		.CLK		( clk			),
-		.CLEAR		( w_reset		),
-		.D0			( ram_cs_n		),
-		.D1			( ram_cs_n		),
-		.Q0			( cs_n_tbuf		)
-	);
-	assign O_psram_cs_n	= ff_ram_cs_n_out;
+	always @( negedge CLK ) begin
+		ff_q0_2 <= ff_q0_1;
+		ff_tx_2 <= ff_tx_1;
+	end
+
+	assign Q0	= CLK    ? ff_q0_2 : ff_q1_2;
+	assign Q1	= TX_POL ? ff_tx_3 : ff_tx_2;
 endmodule
