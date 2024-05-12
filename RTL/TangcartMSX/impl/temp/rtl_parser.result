@@ -9,15 +9,59 @@
   "SubInsts" : [
    {
     "InstFile" : "D:/github/HRA_product/TangCartMSX/RTL/TangcartMSX/src/tangcart_msx.v",
-    "InstLine" : 64,
-    "InstName" : "your_instance_name",
-    "ModuleFile" : "D:/github/HRA_product/TangCartMSX/RTL/TangcartMSX/src/gowin_rpll/gowin_rpll.v",
+    "InstLine" : 97,
+    "InstName" : "u_pll",
+    "ModuleFile" : "D:/github/HRA_product/TangCartMSX/RTL/TangcartMSX/src/gowin_pll/gowin_pll.v",
     "ModuleLine" : 10,
-    "ModuleName" : "Gowin_rPLL"
+    "ModuleName" : "Gowin_PLL"
    },
    {
     "InstFile" : "D:/github/HRA_product/TangCartMSX/RTL/TangcartMSX/src/tangcart_msx.v",
-    "InstLine" : 130,
+    "InstLine" : 272,
+    "InstName" : "u_psram",
+    "ModuleFile" : "D:/github/HRA_product/TangCartMSX/RTL/TangcartMSX/src/psram/ip_psram.v",
+    "ModuleLine" : 27,
+    "ModuleName" : "ip_psram",
+    "SubInsts" : [
+     {
+      "InstFile" : "D:/github/HRA_product/TangCartMSX/RTL/TangcartMSX/src/psram/ip_psram.v",
+      "InstLine" : 76,
+      "InstName" : "u_gowin_psram_if_2ch",
+      "ModuleFile" : "D:/github/HRA_product/TangCartMSX/RTL/TangcartMSX/src/psram_memory_interface_2ch/psram_memory_interface_2ch.v",
+      "ModuleLine" : 6400,
+      "ModuleName" : "PSRAM_Memory_Interface_2CH_Top",
+      "SubInsts" : [
+       {
+        "InstFile" : "D:/github/HRA_product/TangCartMSX/RTL/TangcartMSX/src/psram_memory_interface_2ch/psram_memory_interface_2ch.v",
+        "InstLine" : 6511,
+        "InstName" : "u_psram_sync",
+        "ModuleFile" : "D:/github/HRA_product/TangCartMSX/RTL/TangcartMSX/src/psram_memory_interface_2ch/psram_memory_interface_2ch.v",
+        "ModuleLine" : 1,
+        "ModuleName" : "~psram_sync.PSRAM_Memory_Interface_2CH_Top"
+       },
+       {
+        "InstFile" : "D:/github/HRA_product/TangCartMSX/RTL/TangcartMSX/src/psram_memory_interface_2ch/psram_memory_interface_2ch.v",
+        "InstLine" : 6523,
+        "InstName" : "u_psram_top0",
+        "ModuleFile" : "D:/github/HRA_product/TangCartMSX/RTL/TangcartMSX/src/psram_memory_interface_2ch/psram_memory_interface_2ch.v",
+        "ModuleLine" : 1,
+        "ModuleName" : "~psram_memory_interface.PSRAM_Memory_Interface_2CH_Top"
+       },
+       {
+        "InstFile" : "D:/github/HRA_product/TangCartMSX/RTL/TangcartMSX/src/psram_memory_interface_2ch/psram_memory_interface_2ch.v",
+        "InstLine" : 6546,
+        "InstName" : "u_psram_top1",
+        "ModuleFile" : "D:/github/HRA_product/TangCartMSX/RTL/TangcartMSX/src/psram_memory_interface_2ch/psram_memory_interface_2ch.v",
+        "ModuleLine" : 1,
+        "ModuleName" : "~psram_memory_interface.PSRAM_Memory_Interface_2CH_Top_0"
+       }
+      ]
+     }
+    ]
+   },
+   {
+    "InstFile" : "D:/github/HRA_product/TangCartMSX/RTL/TangcartMSX/src/tangcart_msx.v",
+    "InstLine" : 348,
     "InstName" : "u_uart",
     "ModuleFile" : "D:/github/HRA_product/TangCartMSX/RTL/TangcartMSX/src/uart/ip_uart.v",
     "ModuleLine" : 27,

@@ -1,10 +1,43 @@
 GowinSynthesis start
 Running parser ...
+Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\TangcartMSX\src\gowin_pll\gowin_pll.v'
+Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\TangcartMSX\src\psram\ip_psram.v'
+Undeclared symbol 'wr_data0_i', assumed default net type 'wire'("D:\github\HRA_product\TangCartMSX\RTL\TangcartMSX\src\psram\ip_psram.v":94)
+Undeclared symbol 'wr_data1_i', assumed default net type 'wire'("D:\github\HRA_product\TangCartMSX\RTL\TangcartMSX\src\psram\ip_psram.v":95)
+Undeclared symbol 'w_rd_data0', assumed default net type 'wire'("D:\github\HRA_product\TangCartMSX\RTL\TangcartMSX\src\psram\ip_psram.v":96)
+Undeclared symbol 'w_rd_data1', assumed default net type 'wire'("D:\github\HRA_product\TangCartMSX\RTL\TangcartMSX\src\psram\ip_psram.v":97)
+Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\TangcartMSX\src\psram_memory_interface_2ch\psram_memory_interface_2ch.v'
 Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\TangcartMSX\src\tangcart_msx.v'
+Undeclared symbol 'mem_clk', assumed default net type 'wire'("D:\github\HRA_product\TangCartMSX\RTL\TangcartMSX\src\tangcart_msx.v":98)
+Undeclared symbol 'mem_clk_lock', assumed default net type 'wire'("D:\github\HRA_product\TangCartMSX\RTL\TangcartMSX\src\tangcart_msx.v":99)
 Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\TangcartMSX\src\uart\ip_uart.v'
 Compiling module 'tangcart_msx'("D:\github\HRA_product\TangCartMSX\RTL\TangcartMSX\src\tangcart_msx.v":27)
-Compiling module 'ip_uart(clk_freq=27000000)'("D:\github\HRA_product\TangCartMSX\RTL\TangcartMSX\src\uart\ip_uart.v":27)
-WARN  (EX3791) : Expression size 32 truncated to fit in target size 10("D:\github\HRA_product\TangCartMSX\RTL\TangcartMSX\src\uart\ip_uart.v":68)
+Compiling module 'Gowin_PLL'("D:\github\HRA_product\TangCartMSX\RTL\TangcartMSX\src\gowin_pll\gowin_pll.v":10)
+WARN  (EX3791) : Expression size 25 truncated to fit in target size 24("D:\github\HRA_product\TangCartMSX\RTL\TangcartMSX\src\tangcart_msx.v":203)
+WARN  (EX3791) : Expression size 25 truncated to fit in target size 24("D:\github\HRA_product\TangCartMSX\RTL\TangcartMSX\src\tangcart_msx.v":222)
+Compiling module 'ip_psram'("D:\github\HRA_product\TangCartMSX\RTL\TangcartMSX\src\psram\ip_psram.v":27)
+Compiling module 'PSRAM_Memory_Interface_2CH_Top'("D:\github\HRA_product\TangCartMSX\RTL\TangcartMSX\src\psram_memory_interface_2ch\psram_memory_interface_2ch.v":6400)
+Compiling module '**'("D:\github\HRA_product\TangCartMSX\RTL\TangcartMSX\src\psram_memory_interface_2ch\psram_memory_interface_2ch.v":0)
+Compiling module '**'("D:\github\HRA_product\TangCartMSX\RTL\TangcartMSX\src\psram_memory_interface_2ch\psram_memory_interface_2ch.v":0)
+Compiling module '**'("D:\github\HRA_product\TangCartMSX\RTL\TangcartMSX\src\psram_memory_interface_2ch\psram_memory_interface_2ch.v":0)
+Compiling module '**'("D:\github\HRA_product\TangCartMSX\RTL\TangcartMSX\src\psram_memory_interface_2ch\psram_memory_interface_2ch.v":0)
+Compiling module '**'("D:\github\HRA_product\TangCartMSX\RTL\TangcartMSX\src\psram_memory_interface_2ch\psram_memory_interface_2ch.v":0)
+Compiling module '**'("D:\github\HRA_product\TangCartMSX\RTL\TangcartMSX\src\psram_memory_interface_2ch\psram_memory_interface_2ch.v":0)
+Compiling module '**'("D:\github\HRA_product\TangCartMSX\RTL\TangcartMSX\src\psram_memory_interface_2ch\psram_memory_interface_2ch.v":0)
+Compiling module '**'("D:\github\HRA_product\TangCartMSX\RTL\TangcartMSX\src\psram_memory_interface_2ch\psram_memory_interface_2ch.v":0)
+Compiling module '**'("D:\github\HRA_product\TangCartMSX\RTL\TangcartMSX\src\psram_memory_interface_2ch\psram_memory_interface_2ch.v":0)
+Compiling module '**'("D:\github\HRA_product\TangCartMSX\RTL\TangcartMSX\src\psram_memory_interface_2ch\psram_memory_interface_2ch.v":0)
+Compiling module '**'("D:\github\HRA_product\TangCartMSX\RTL\TangcartMSX\src\psram_memory_interface_2ch\psram_memory_interface_2ch.v":0)
+WARN  (EX3670) : Actual bit length 1 differs from formal bit length 32 for port 'wr_data0'("D:\github\HRA_product\TangCartMSX\RTL\TangcartMSX\src\psram\ip_psram.v":94)
+WARN  (EX3670) : Actual bit length 1 differs from formal bit length 32 for port 'wr_data1'("D:\github\HRA_product\TangCartMSX\RTL\TangcartMSX\src\psram\ip_psram.v":95)
+WARN  (EX3670) : Actual bit length 1 differs from formal bit length 32 for port 'rd_data0'("D:\github\HRA_product\TangCartMSX\RTL\TangcartMSX\src\psram\ip_psram.v":96)
+WARN  (EX3670) : Actual bit length 1 differs from formal bit length 32 for port 'rd_data1'("D:\github\HRA_product\TangCartMSX\RTL\TangcartMSX\src\psram\ip_psram.v":97)
+WARN  (EX1998) : Net 'wr_data0_i' does not have a driver("D:\github\HRA_product\TangCartMSX\RTL\TangcartMSX\src\psram\ip_psram.v":94)
+WARN  (EX1998) : Net 'wr_data1_i' does not have a driver("D:\github\HRA_product\TangCartMSX\RTL\TangcartMSX\src\psram\ip_psram.v":95)
+WARN  (EX3670) : Actual bit length 24 differs from formal bit length 22 for port 'address0'("D:\github\HRA_product\TangCartMSX\RTL\TangcartMSX\src\tangcart_msx.v":280)
+WARN  (EX3670) : Actual bit length 24 differs from formal bit length 22 for port 'address1'("D:\github\HRA_product\TangCartMSX\RTL\TangcartMSX\src\tangcart_msx.v":287)
+Compiling module 'ip_uart(clk_freq=54000000)'("D:\github\HRA_product\TangCartMSX\RTL\TangcartMSX\src\uart\ip_uart.v":27)
+WARN  (EX3791) : Expression size 32 truncated to fit in target size 11("D:\github\HRA_product\TangCartMSX\RTL\TangcartMSX\src\uart\ip_uart.v":68)
 NOTE  (EX0101) : Current top module is "tangcart_msx"
 [5%] Running netlist conversion ...
 WARN  (CV0016) : Input tf_miso is unused("D:\github\HRA_product\TangCartMSX\RTL\TangcartMSX\src\tangcart_msx.v":33)
