@@ -1,3 +1,0 @@
-# OpenFile D:/github/HRA_product/TangCartMSX/RTL/TangcartMSX/src/extslot/test_001/vsim.wlf
-add wave -position end vsim:/tb/u_extslot/func_page_sel/*
-add wave -position end vsim:/tb/u_extslot/*

@@ -1,10 +1,15 @@
 # vsim -c -t 1ps -do "run.do" tb 
-# Start time: 23:29:32 on May 13,2024
+# Start time: 06:49:28 on May 14,2024
 # Loading sv_std.std
 # Loading work.tb
 # Loading work.ip_extslot
 # do run.do
-# ** Note: $finish    : tb.sv(99)
-#    Time: 535440 ps  Iteration: 1  Instance: /tb
-# End time: 23:29:33 on May 13,2024, Elapsed time: 0:00:01
+# Check CS port
+# Check write accecss (1)
+# Check write accecss (2)
+# Check write accecss (3)
+# Check read accecss
+# ** Note: $finish    : tb.sv(513)
+#    Time: 19112880 ps  Iteration: 1  Instance: /tb
+# End time: 06:49:28 on May 14,2024, Elapsed time: 0:00:00
 # Errors: 0, Warnings: 0
