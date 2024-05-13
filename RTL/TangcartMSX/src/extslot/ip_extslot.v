@@ -21,7 +21,7 @@
 //	in the Software.
 // -----------------------------------------------------------------------------
 //	Description:
-//		EXPANSION SLOT
+//		EXTENDED SLOT
 // -----------------------------------------------------------------------------
 
 module ip_extslot (
@@ -40,12 +40,13 @@ module ip_extslot (
 	input			bus_io,
 	input			bus_memory,
 	//	OUTPUT
-	output			extslot_sltsl0,
-	output			extslot_sltsl1,
-	output			extslot_sltsl2,
-	output			extslot_sltsl3
+	output			extslot_memory0,
+	output			extslot_memory1,
+	output			extslot_memory2,
+	output			extslot_memory3
 );
 	wire			w_extslot_dec;
+	wire	[1:0]	w_extslot_reg;
 	reg		[7:0]	ff_extslot_reg;
 	reg				ff_read_ready;
 
@@ -106,10 +107,12 @@ module ip_extslot (
 		2'd2:		func_page_sel = ff_extslot_reg[5:4];
 		2'd3:		func_page_sel = ff_extslot_reg[7:6];
 		default:	func_page_sel = ff_extslot_reg[1:0];
+		endcase
 	endfunction
 
-	assign extslot_sltsl0	= bus_memory & ~w_extslot_dec & (w_extslot_reg == 2'd0);
-	assign extslot_sltsl1	= bus_memory & ~w_extslot_dec & (w_extslot_reg == 2'd1);
-	assign extslot_sltsl2	= bus_memory & ~w_extslot_dec & (w_extslot_reg == 2'd2);
-	assign extslot_sltsl3	= bus_memory & ~w_extslot_dec & (w_extslot_reg == 2'd3);
+	assign w_extslot_reg	= func_page_sel( bus_address[15:14], ff_extslot_reg );
+	assign extslot_memory0	= bus_memory & ~w_extslot_dec & (w_extslot_reg == 2'd0);
+	assign extslot_memory1	= bus_memory & ~w_extslot_dec & (w_extslot_reg == 2'd1);
+	assign extslot_memory2	= bus_memory & ~w_extslot_dec & (w_extslot_reg == 2'd2);
+	assign extslot_memory3	= bus_memory & ~w_extslot_dec & (w_extslot_reg == 2'd3);
 endmodule
