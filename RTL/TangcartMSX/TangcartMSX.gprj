@@ -6,10 +6,13 @@
     <Device name="GW1NR-9C" pn="GW1NR-LV9QN88PC6/I5">gw1nr9c-004</Device>
     <FileList>
         <File path="src/gowin_pll/gowin_pll.v" type="file.verilog" enable="1"/>
-        <File path="src/psram/ip_psram.v" type="file.verilog" enable="1"/>
-        <File path="src/psram_memory_interface_2ch/psram_memory_interface_2ch.v" type="file.verilog" enable="1"/>
+        <File path="src/gpio/ip_gpio.v" type="file.verilog" enable="1"/>
+        <File path="src/msxbus/ip_msxbus.v" type="file.verilog" enable="1"/>
+        <File path="src/psram/ip_psram.v" type="file.verilog" enable="0"/>
+        <File path="src/psram_memory_interface_2ch/psram_memory_interface_2ch.v" type="file.verilog" enable="0"/>
+        <File path="src/pwm/ip_pwm.v" type="file.verilog" enable="1"/>
         <File path="src/tangcart_msx.v" type="file.verilog" enable="1"/>
-        <File path="src/uart/ip_uart.v" type="file.verilog" enable="1"/>
+        <File path="src/uart/ip_uart.v" type="file.verilog" enable="0"/>
         <File path="src/TangcartMSX.cst" type="file.cst" enable="1"/>
     </FileList>
 </Project>

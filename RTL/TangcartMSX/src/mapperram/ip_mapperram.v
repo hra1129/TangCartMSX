@@ -1,5 +1,5 @@
 // -----------------------------------------------------------------------------
-//	ip_gpio.v
+//	ip_mapperram.v
 //	Copyright (C)2024 Takayuki Hara (HRA!)
 //	
 //	 Permission is hereby granted, free of charge, to any person obtaining a 
@@ -21,12 +21,10 @@
 //	in the Software.
 // -----------------------------------------------------------------------------
 //	Description:
-//		1byte GPIO
+//		MapperRAM
 // -----------------------------------------------------------------------------
 
-module ip_gpio #(
-	parameter		io_address = 8'h01
-) (
+module ip_mapperram (
 	//	Internal I/F
 	input			n_reset,
 	input			clk,
@@ -41,34 +39,69 @@ module ip_gpio #(
 	input			bus_write,
 	input			bus_io,
 	input			bus_memory,
-	//	OUTPUT
-	output	[7:0]	gpo,
-	input	[7:0]	gpi
+	//	RAM I/F
+	output			rd,
+	output			wr,
+	input			busy,
+	output	[21:0]	address,
+	output	[7:0]	wdata,
+	input	[7:0]	rdata,
+	input			rdata_en
 );
-	wire			w_gpio_dec;
-	reg		[7:0]	ff_gpo;
-	reg				ff_read_ready;
+	reg		[7:0]	ff_p0;
+	reg		[7:0]	ff_p1;
+	reg		[7:0]	ff_p2;
+	reg		[7:0]	ff_p3;
+	wire	[7:0]	w_address_h;
 
-	// --------------------------------------------------------------------
-	//	Active bus select
-	// --------------------------------------------------------------------
 	assign bus_io_cs		= 1'b1;
-	assign bus_memory_cs	= 1'b0;
+	assign bus_memory_cs	= 1'b1;
 
 	// --------------------------------------------------------------------
-	//	Address decode
-	// --------------------------------------------------------------------
-	assign w_gpio_dec		= (bus_address[7:0] == io_address);
-
-	// --------------------------------------------------------------------
-	//	Write register
+	//	Segment registers
 	// --------------------------------------------------------------------
 	always @( negedge n_reset or posedge clk ) begin
 		if( !n_reset ) begin
-			ff_gpo <= 8'h00;
+			ff_p0 <= 8'd0;
 		end
-		else if( bus_io && w_gpio_dec && bus_write ) begin
-			ff_gpo <= bus_write_data;
+		else if( bus_io && (bus_address[7:0] == 8'hFC) ) begin
+			ff_p0 <= bus_write_data;
+		end
+		else begin
+			//	hold
+		end
+	end
+
+	always @( negedge n_reset or posedge clk ) begin
+		if( !n_reset ) begin
+			ff_p1 <= 8'd0;
+		end
+		else if( bus_io && (bus_address[7:0] == 8'hFD) ) begin
+			ff_p1 <= bus_write_data;
+		end
+		else begin
+			//	hold
+		end
+	end
+
+	always @( negedge n_reset or posedge clk ) begin
+		if( !n_reset ) begin
+			ff_p2 <= 8'd0;
+		end
+		else if( bus_io && (bus_address[7:0] == 8'hFE) ) begin
+			ff_p2 <= bus_write_data;
+		end
+		else begin
+			//	hold
+		end
+	end
+
+	always @( negedge n_reset or posedge clk ) begin
+		if( !n_reset ) begin
+			ff_p3 <= 8'd0;
+		end
+		else if( bus_io && (bus_address[7:0] == 8'hFF) ) begin
+			ff_p3 <= bus_write_data;
 		end
 		else begin
 			//	hold
@@ -76,20 +109,30 @@ module ip_gpio #(
 	end
 
 	// --------------------------------------------------------------------
-	//	Read response
+	//	Page address decoder
 	// --------------------------------------------------------------------
-	always @( negedge n_reset or posedge clk ) begin
-		if( !n_reset ) begin
-			ff_read_ready <= 1'b0;
-		end
-		else if( bus_io && w_gpio_dec && bus_read ) begin
-			ff_read_ready <= 1'b1;
-		end
-		else begin
-			ff_read_ready <= 1'b0;
-		end
-	end
+	function [7:0] page_dec (
+		input	[1:0]	page,
+		input	[7:0]	ff_p0,
+		input	[7:0]	ff_p1,
+		input	[7:0]	ff_p2,
+		input	[7:0]	ff_p3
+	);
+		case( page )
+		2'd0:		page_dec = ff_p0;
+		2'd1:		page_dec = ff_p1;
+		2'd2:		page_dec = ff_p2;
+		2'd3:		page_dec = ff_p3;
+		default:	page_dec = ff_p0;
+		endcase
+	endfunction
 
-	assign bus_read_data	= ff_read_ready ? gpi : 8'h00;
-	assign bus_read_ready	= ff_read_ready;
+	assign w_address_h		= page_dec( bus_address[15:14], ff_p0, ff_p1, ff_p2, ff_p3 );
+	assign address			= { w_address_h, bus_address[13:0] };
+	assign rd				= bus_memory & bus_read;
+	assign wr				= bus_memory & bus_write;
+	assign wdata			= bus_write_data;
+
+	assign bus_read_ready	= rdata_en;
+	assign bus_read_data	= rdata;
 endmodule

@@ -1,10 +1,9 @@
-parameter Memory_Clock = 108;
+parameter Memory_Clock = 162;
 parameter PSRAM_WIDTH = 8;
 parameter DQ_WIDTH = 8;
 parameter ADDR_WIDTH = 21;
-parameter Burst_Length  = "16_Bytes";
-`define burst16
-parameter burst_num = 4;
+parameter Burst_Length  = "32_Bytes";
+parameter burst_num = 8;
 parameter Fixed_Latency_Enable = "Fixed";
 parameter Initial_Latency = 6;
 parameter Drive_Strength = 50;
