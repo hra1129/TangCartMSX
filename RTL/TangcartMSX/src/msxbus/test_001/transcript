@@ -1,2 +1,2 @@
-# OpenFile D:/github/HRA_product/TangCartMSX/RTL/msxbus/test_001/vsim.wlf
-do D:/github/HRA_product/TangCartMSX/RTL/msxbus/test_001/wave.do
+# OpenFile D:/github/HRA_product/TangCartMSX/RTL/TangcartMSX/src/msxbus/test_001/vsim.wlf
+add wave -position end vsim:/tb/u_msxbus/*
