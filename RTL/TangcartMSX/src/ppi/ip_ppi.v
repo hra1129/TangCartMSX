@@ -56,6 +56,8 @@ module ip_ppi (
 	reg				ff_caps_led_off;
 	reg				ff_click_sound;
 	wire	[7:0]	w_read;
+	reg		[1:0]	ff_address;
+	reg				ff_read_ready;
 
 	// --------------------------------------------------------------------
 	//	Active bus select
@@ -82,10 +84,10 @@ module ip_ppi (
 		end
 		else if( bus_io && w_ppi_dec && bus_write ) begin
 			case( bus_address[1:0] )
-			2'b0: begin
-				ff_primary_slot <= bus_write_data;
+			2'd0: begin
+				ff_primary_slot		<= bus_write_data;
 			end
-			2'b2: begin
+			2'd2: begin
 				ff_key_matrix_row	<= bus_write_data[3:0];
 				ff_motor_off		<= bus_write_data[4];
 				ff_cas_write		<= bus_write_data[5];
@@ -114,17 +116,21 @@ module ip_ppi (
 	always @( negedge n_reset or posedge clk ) begin
 		if( !n_reset ) begin
 			ff_read_ready <= 1'b0;
+			ff_address <= 2'd0;
 		end
-		else if( bus_io && w_ppi_dec && bus_read && !bus_address[0] ) begin
+		else if( bus_io && w_ppi_dec && bus_read ) begin
 			ff_read_ready <= 1'b1;
+			ff_address <= bus_address[1:0];
 		end
 		else begin
 			ff_read_ready <= 1'b0;
+			ff_address <= 2'd0;
 		end
 	end
 
-	assign w_read			= (bus_address[0] == 1'b0) ? ff_primary_slot :
-							  { ff_click_sound, ff_caps_led_off, ff_cas_write, ff_motor_off, ff_key_matrix_row };
+	assign w_read			= (ff_address[1:0] == 2'd0) ? ff_primary_slot :
+	             			  (ff_address[1:0] == 2'd1) ? key_matrix_column :
+	             			  (ff_address[1:0] == 2'd2) ? { ff_click_sound, ff_caps_led_off, ff_cas_write, ff_motor_off, ff_key_matrix_row } : 'hFF;
 	assign bus_read_data	= ff_read_ready ? w_read : 8'h00;
 	assign bus_read_ready	= ff_read_ready;
 endmodule
