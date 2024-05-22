@@ -1,5 +1,5 @@
 # vsim -c -t 1ps -do "run.do" tb 
-# Start time: 21:24:13 on May 22,2024
+# Start time: 21:36:54 on May 22,2024
 # Loading sv_std.std
 # Loading work.tb
 # Loading work.ip_gpio
@@ -13,5 +13,5 @@
 # Check read accecss (3)
 # ** Note: $finish    : tb.sv(369)
 #    Time: 11896080 ps  Iteration: 1  Instance: /tb
-# End time: 21:24:14 on May 22,2024, Elapsed time: 0:00:01
+# End time: 21:36:55 on May 22,2024, Elapsed time: 0:00:01
 # Errors: 0, Warnings: 0
