@@ -74,6 +74,7 @@ module ip_gpio #(
 			//	hold
 		end
 	end
+	assign gpo		= ff_gpo;
 
 	// --------------------------------------------------------------------
 	//	Read response
