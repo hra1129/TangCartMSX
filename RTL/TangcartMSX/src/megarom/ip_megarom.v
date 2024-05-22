@@ -261,6 +261,7 @@ module ip_megarom #(
 				ff_bank2 <= 8'd2;
 				ff_bank3 <= 8'd3;
 			end
+			endcase
 		end
 		else begin
 			//	hold
