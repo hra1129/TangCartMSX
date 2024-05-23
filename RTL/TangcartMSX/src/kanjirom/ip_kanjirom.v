@@ -25,7 +25,7 @@
 // -----------------------------------------------------------------------------
 
 module ip_kanjirom #(
-	parameter		address_h	= 5'b11000		//	[21:18] 5bits
+	parameter		address_h	= 4'b1100		//	[21:19] 5bits
 ) (
 	//	Internal I/F
 	input			n_reset,
@@ -62,22 +62,23 @@ module ip_kanjirom #(
 	// --------------------------------------------------------------------
 	//	Address registers
 	// --------------------------------------------------------------------
-	assign w_jis1_dec	= ({ address[7:1], 1'b0 } == 8'hD8);
+	assign w_jis1_dec	= ({ bus_address[7:1], 1'b0 } == 8'hD8);
 	always @( negedge n_reset or posedge clk ) begin
 		if( !n_reset ) begin
 			ff_jis1_ptr <= 17'd0;
 		end
 		else if( bus_io && bus_write && w_jis1_dec ) begin
-			if( address[0] == 1'b0 ) begin
-				ff_jis1_ptr[10: 5] <= wdata[5:0];
+			if( bus_address[0] == 1'b0 ) begin
+				ff_jis1_ptr[10: 5] <= bus_write_data[5:0];
 				ff_jis1_ptr[ 4: 0] <= 5'd0;
 			end
 			else begin
-				ff_jis1_ptr[16:11] <= wdata[5:0];
+				ff_jis1_ptr[16:11] <= bus_write_data[5:0];
 				ff_jis1_ptr[ 4: 0] <= 5'd0;
 			end
-		else if( bus_io && bus_read  && w_jis1_dec && enable_jis1 ) begin
-			if( address[0] == 1'b1 ) begin
+		end
+		else if( bus_io && bus_read && w_jis1_dec && enable_jis1 ) begin
+			if( bus_address[0] == 1'b1 ) begin
 				ff_jis1_ptr[ 4: 0] <= ff_jis1_ptr[ 4: 0] + 5'd1;
 			end
 		end
@@ -86,22 +87,23 @@ module ip_kanjirom #(
 		end
 	end
 
-	assign w_jis2_dec	= ({ address[7:1], 1'b0 } == 8'hDA);
+	assign w_jis2_dec	= ({ bus_address[7:1], 1'b0 } == 8'hDA);
 	always @( negedge n_reset or posedge clk ) begin
 		if( !n_reset ) begin
 			ff_jis2_ptr <= 17'd0;
 		end
 		else if( bus_io && bus_write && w_jis2_dec ) begin
-			if( address[0] == 1'b0 ) begin
-				ff_jis2_ptr[10: 5] <= wdata[5:0];
+			if( bus_address[0] == 1'b0 ) begin
+				ff_jis2_ptr[10: 5] <= bus_write_data[5:0];
 				ff_jis2_ptr[ 4: 0] <= 5'd0;
 			end
 			else begin
-				ff_jis2_ptr[16:11] <= wdata[5:0];
+				ff_jis2_ptr[16:11] <= bus_write_data[5:0];
 				ff_jis2_ptr[ 4: 0] <= 5'd0;
 			end
-		else if( bus_io && bus_read  && w_jis2_dec && enable_jis2 ) begin
-			if( address[0] == 1'b1 ) begin
+		end
+		else if( bus_io && bus_read && w_jis2_dec && enable_jis2 ) begin
+			if( bus_address[0] == 1'b1 ) begin
 				ff_jis2_ptr[ 4: 0] <= ff_jis2_ptr[ 4: 0] + 5'd1;
 			end
 		end
@@ -113,8 +115,8 @@ module ip_kanjirom #(
 	// --------------------------------------------------------------------
 	//	ROM Reader
 	// --------------------------------------------------------------------
-	assign w_address_l		= ( address[2] == 1'b0 ) ? { 1'b0, ff_jis1_ptr } : { 1'b1, ff_jis2_ptr };
-	assign address			= { address_h, w_address_l };
+	assign w_address_l		= ( bus_address[1] == 1'b0 ) ? { 1'b0, ff_jis1_ptr } : { 1'b1, ff_jis2_ptr };
+	assign address			= ( bus_io && bus_read ) ? { address_h, w_address_l } : 22'd0;
 	assign rd				= bus_io & bus_read & ((w_jis1_dec & enable_jis1) | (w_jis2_dec & enable_jis2));
 
 	assign bus_read_ready	= rdata_en;
