@@ -1,0 +1,15 @@
+# vsim -c -t 1ps -do "run.do" tb 
+# Start time: 06:54:36 on May 24,2024
+# Loading sv_std.std
+# Loading work.tb
+# Loading work.ip_mapperram
+# do run.do
+# Check CS port
+# Check segment registers(1)
+# Check segment registers(2)
+# Check memory write
+# Check memory read
+# ** Note: $finish    : tb.sv(630)
+#    Time: 12315120 ps  Iteration: 1  Instance: /tb
+# End time: 06:54:37 on May 24,2024, Elapsed time: 0:00:01
+# Errors: 0, Warnings: 0
