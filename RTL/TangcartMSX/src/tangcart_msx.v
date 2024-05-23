@@ -118,13 +118,13 @@ module tangcart_msx (
 	assign td			= w_is_output ? 8'hZZ : w_o_data;
 
 	// --------------------------------------------------------------------
-	//	PLL 27MHz --> 81MHz
+	//	PLL 3.579545MHz --> 64.43181MHz
 	// --------------------------------------------------------------------
 	Gowin_PLL u_pll (
-		.clkout			( mem_clk			),		//output	162MHz
+		.clkout			( mem_clk			),		//output	128.86362MHz
 		.lock			( mem_clk_lock		),		//output	lock
-		.clkoutd		( clk				),		//output	81MHz
-		.clkin			( sys_clk			)		//input		27MHz
+		.clkoutd		( clk				),		//output	64.43181MHz
+		.clkin			( tclock			)		//input		3.579545MHz
 	);
 
 	// --------------------------------------------------------------------
@@ -162,7 +162,7 @@ module tangcart_msx (
 			ff_1mhz_count <= 7'd0;
 		end
 		else if( w_1mhz ) begin
-			ff_1mhz_count <= 7'd80;
+			ff_1mhz_count <= 7'd63;
 		end
 		else begin
 			ff_1mhz_count <= ff_1mhz_count - 7'd1;
