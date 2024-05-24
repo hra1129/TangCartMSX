@@ -1,11 +1,20 @@
 # vsim -c -t 1ps -do "run.do" tb 
-# Start time: 08:47:49 on May 25,2024
+# Start time: 08:53:05 on May 25,2024
 # Loading sv_std.std
 # Loading work.tb
 # Loading work.ip_megarom
 # do run.do
 # Check CS port
 # Check ASC8 mode
+# -- Read bank and check read address
+# ---- bank2 mirror
+# ---- bank3 mirror
+# ---- bank0 (always 0)
+# ---- bank1
+# ---- bank2
+# ---- bank3
+# ---- bank0 mirror
+# ---- bank1 mirror
 # -- Write bank registers
 # -- Read bank and check read address
 # ---- bank2 mirror
@@ -69,11 +78,40 @@
 # ---- bank0 mirror
 # ---- bank1 mirror
 # Check Kon4 mode
+# -- Read bank and check read address
+# ---- bank2 mirror
+# ---- bank3 mirror
+# ---- bank0 (always 0)
+# ---- bank1
+# ---- bank2
+# ---- bank3
+# ---- bank0 mirror
+# ---- bank1 mirror
+# -- Write bank registers
+# -- Read bank and check read address
+# ---- bank2 mirror
+# ---- bank3 mirror
+# ---- bank0 (always 0)
+# ---- bank1
+# ---- bank2
+# ---- bank3
+# ---- bank0 mirror
+# ---- bank1 mirror
+# -- Write bank registers
+# -- Read bank and check read address
+# ---- bank2 mirror
+# ---- bank3 mirror
+# ---- bank0 (always 0)
+# ---- bank1
+# ---- bank2
+# ---- bank3
+# ---- bank0 mirror
+# ---- bank1 mirror
 # Check SCC mode
 # Check SCC+ mode
 # Check Generic8 mode
 # Check Generic16 mode
-# ** Note: $finish    : tb.sv(489)
-#    Time: 103750043760 ps  Iteration: 1  Instance: /tb
-# End time: 08:48:11 on May 25,2024, Elapsed time: 0:00:22
+# ** Note: $finish    : tb.sv(539)
+#    Time: 164778656880 ps  Iteration: 1  Instance: /tb
+# End time: 08:53:39 on May 25,2024, Elapsed time: 0:00:34
 # Errors: 0, Warnings: 0
