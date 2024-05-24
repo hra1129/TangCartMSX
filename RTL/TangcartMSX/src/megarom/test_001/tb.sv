@@ -52,6 +52,7 @@ module tb ();
 	integer			test_no;
 	reg		[21:0]	ff_address;
 	reg		[7:0]	ff_data;
+	integer			i;
 
 	// --------------------------------------------------------------------
 	//	DUT
@@ -410,6 +411,20 @@ module tb ();
 		@( posedge clk );
 		n_reset			= 1;
 		@( posedge clk );
+
+		$display( "-- Write invalid registers" );
+		for( i = 0; i < 65536; i = i + 1 ) begin
+			write_memory( i, ( i & 127 ) + 13 );
+		end
+		$display( "-- Read bank and check read address" );
+		check_bank( 16'h0000, 16'h1FFF, 8'h02, "bank2 mirror" );
+		check_bank( 16'h2000, 16'h3FFF, 8'h03, "bank3 mirror" );
+		check_bank( 16'h4000, 16'h5FFF, 8'h00, "bank0" );
+		check_bank( 16'h6000, 16'h7FFF, 8'h01, "bank1" );
+		check_bank( 16'h8000, 16'h9FFF, 8'h02, "bank2" );
+		check_bank( 16'hA000, 16'hBFFF, 8'h03, "bank3" );
+		check_bank( 16'hC000, 16'hDFFF, 8'h00, "bank0 mirror" );
+		check_bank( 16'hE000, 16'hFFFF, 8'h01, "bank1 mirror" );
 
 		// --------------------------------------------------------------------
 		//	check MODE3:Kon4
