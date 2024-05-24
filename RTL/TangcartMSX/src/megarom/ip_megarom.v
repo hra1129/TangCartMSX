@@ -99,18 +99,18 @@ module ip_megarom #(
 	// --------------------------------------------------------------------
 	//	ASC8 Mapper
 	// --------------------------------------------------------------------
-	assign w_asc8_b0	= (bus_address[14:11] == 4'b110_0);		// 16'b0110_0XXX_XXXX_XXXX : 6000h-67FFh
-	assign w_asc8_b1	= (bus_address[14:11] == 4'b110_1);		// 16'b0110_1XXX_XXXX_XXXX : 6800h-6FFFh
-	assign w_asc8_b2	= (bus_address[14:11] == 4'b111_0);		// 16'b0111_0XXX_XXXX_XXXX : 7000h-77FFh
-	assign w_asc8_b3	= (bus_address[14:11] == 4'b111_1);		// 16'b0111_1XXX_XXXX_XXXX : 7800h-7FFFh
+	assign w_asc8_b0	= (bus_address[15:11] == 5'b0110_0);		// 16'b0110_0XXX_XXXX_XXXX : 6000h-67FFh
+	assign w_asc8_b1	= (bus_address[15:11] == 5'b0110_1);		// 16'b0110_1XXX_XXXX_XXXX : 6800h-6FFFh
+	assign w_asc8_b2	= (bus_address[15:11] == 5'b0111_0);		// 16'b0111_0XXX_XXXX_XXXX : 7000h-77FFh
+	assign w_asc8_b3	= (bus_address[15:11] == 5'b0111_1);		// 16'b0111_1XXX_XXXX_XXXX : 7800h-7FFFh
 
 	// --------------------------------------------------------------------
 	//	ASC16 Mapper
 	// --------------------------------------------------------------------
-	assign w_asc16_b0	= (bus_address[14:12] == 3'b110);		// 16'b0110_0XXX_XXXX_XXXX : 6000h-67FFh
-	assign w_asc16_b1	= (bus_address[14:12] == 3'b110);		// 16'b0110_0XXX_XXXX_XXXX : 6000h-67FFh
-	assign w_asc16_b2	= (bus_address[14:12] == 3'b111);		// 16'b0111_0XXX_XXXX_XXXX : 7000h-77FFh
-	assign w_asc16_b3	= (bus_address[14:12] == 3'b111);		// 16'b0111_0XXX_XXXX_XXXX : 7000h-77FFh
+	assign w_asc16_b0	= (bus_address[15:11] == 5'b0110_0);		// 16'b0110_0XXX_XXXX_XXXX : 6000h-67FFh
+	assign w_asc16_b1	= (bus_address[15:11] == 5'b0110_0);		// 16'b0110_0XXX_XXXX_XXXX : 6000h-67FFh
+	assign w_asc16_b2	= (bus_address[15:11] == 5'b0111_0);		// 16'b0111_0XXX_XXXX_XXXX : 7000h-77FFh
+	assign w_asc16_b3	= (bus_address[15:11] == 5'b0111_0);		// 16'b0111_0XXX_XXXX_XXXX : 7000h-77FFh
 
 	// --------------------------------------------------------------------
 	//	Generic8 Mapper
@@ -142,8 +142,8 @@ module ip_megarom #(
 	assign w_scc_b1		= (bus_address[15:11] == 5'b01110);		// 16'b011X_0XXX_XXXX_XXXX : 7000h-77FFh
 	assign w_scc_b2		= (bus_address[15:11] == 5'b10010);		// 16'b100X_0XXX_XXXX_XXXX : 9000h-97FFh
 	assign w_scc_b3		= (bus_address[15:11] == 5'b10110);		// 16'b101X_0XXX_XXXX_XXXX : B000h-B7FFh
-	assign w_scc		= (bus_address[15:14] == 2'b10) && (ff_bank2 == 8'h3e);
-	assign w_sccp		= (bus_address[15:14] == 2'b11) && ff_bank3[7];
+	assign w_scc		= (bus_address[15:14] == 2'b10) && (ff_bank2 == 8'h3e) && ((mode == c_mode_scc) || (mode == c_mode_sccp));
+	assign w_sccp		= (bus_address[15:14] == 2'b11) && ff_bank3[7] && (mode == c_mode_sccp);
 	assign w_sccp_mode	= (bus_address[15:1] == 16'b1011_1111_1111_111) && (mode == c_mode_sccp) && bus_write;
 
 	// --------------------------------------------------------------------
@@ -273,10 +273,10 @@ module ip_megarom #(
 	// --------------------------------------------------------------------
 	//	ROM Reader
 	// --------------------------------------------------------------------
-	assign w_address_m		= (address[14:13] == 2'b10) ? ff_bank0 :
-	                  		  (address[14:13] == 2'b11) ? ff_bank1 :
-	                  		  (address[14:13] == 2'b00) ? ff_bank2 : ff_bank3;
-	assign address			= { address_h, w_address_m, address[12:0] };
+	assign w_address_m		= (bus_address[14:13] == 2'b10) ? ff_bank0 :
+	                  		  (bus_address[14:13] == 2'b11) ? ff_bank1 :
+	                  		  (bus_address[14:13] == 2'b00) ? ff_bank2 : ff_bank3;
+	assign address			= { address_h, w_address_m, bus_address[12:0] };
 	assign rd				= bus_memory & bus_read & ~(w_scc | w_sccp);
 	assign wr				= bus_memory & bus_write & ff_sccp_ram_en & ~(w_scc | w_sccp | w_sccp_mode);
 	assign wdata			= bus_write_data;

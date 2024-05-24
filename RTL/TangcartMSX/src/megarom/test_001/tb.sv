@@ -51,6 +51,7 @@ module tb ();
 	reg				rdata_en;
 	integer			test_no;
 	reg		[21:0]	ff_address;
+	reg		[7:0]	ff_data;
 
 	// --------------------------------------------------------------------
 	//	DUT
@@ -130,6 +131,8 @@ module tb ();
 		input	[15:0]	address,
 		input	[7:0]	data
 	);
+		integer count;
+	
 		bus_address		<= address;
 		bus_read		<= 1'b1;
 		bus_memory		<= 1'b1;
@@ -140,10 +143,13 @@ module tb ();
 		bus_memory		<= 1'b0;
 		@( posedge clk );
 
-		while( !bus_read_ready ) begin
+		count = 0;
+		while( !bus_read_ready && count < 100 ) begin
 			@( posedge clk );
+			count = count + 1;
 		end
 
+		assert( count < 100 );
 		assert( bus_read_data == data );
 		@( posedge clk );
 		@( posedge clk );
@@ -154,6 +160,8 @@ module tb ();
 		input	[15:0]	address,
 		input	[7:0]	data
 	);
+		integer count;
+	
 		bus_address		<= address;
 		bus_read		<= 1'b1;
 		bus_io			<= 1'b1;
@@ -164,10 +172,13 @@ module tb ();
 		bus_io			<= 1'b0;
 		@( posedge clk );
 
-		while( !bus_read_ready ) begin
+		count = 0;
+		while( !bus_read_ready && count < 100 ) begin
 			@( posedge clk );
+			count = count + 1;
 		end
 
+		assert( count < 100 );
 		assert( bus_read_data == data );
 		@( posedge clk );
 		@( posedge clk );
@@ -232,16 +243,39 @@ module tb ();
 		forever begin
 			if( rd ) begin
 				ff_address <= address;
+				rdata <= ff_data;
+				rdata_en <= 1'b1;
+			end
+			else begin
+				rdata <= 8'd0;
+				rdata_en <= 1'b0;
 			end
 			@( posedge clk );
 		end
 	endtask: address_latch
 
+	task check_bank(
+		input	[15:0]	start_address,
+		input	[15:0]	end_address,
+		input	[7:0]	ref_bank,
+		string			s_message
+	);
+		integer i;
+
+		$display( "---- %s", s_message );
+		for( i = start_address; i <= end_address; i = i + 1 ) begin
+			ff_data = (i & 255) ^ 255;
+			read_memory( i, ff_data );
+			assert( ff_address[20:13] == ref_bank );
+			assert( ff_address[12: 0] == (i & 8191) );
+		end
+	endtask: check_bank
+
 	// --------------------------------------------------------------------
 	//	Test bench
 	// --------------------------------------------------------------------
 	initial begin
-		test_no			= 0;
+		test_no			= 900;
 		n_reset			= 0;
 		clk				= 0;
 		bus_address		= 0;
@@ -250,6 +284,8 @@ module tb ();
 		bus_write		= 0;
 		bus_io			= 0;
 		bus_memory		= 0;
+		mode			= 0;
+		busy			= 0;
 
 		@( negedge clk );
 		@( negedge clk );
@@ -264,18 +300,176 @@ module tb ();
 		// --------------------------------------------------------------------
 		//	check CS port
 		// --------------------------------------------------------------------
-		test_no			= 1;
+		test_no			= 901;
 		$display( "Check CS port" );
 		assert( bus_io_cs == 1'b0 );
 		assert( bus_memory_cs == 1'b1 );
 		@( posedge clk );
 
 		// --------------------------------------------------------------------
-		//	check ASC8
+		//	check MODE0:ASC8
 		// --------------------------------------------------------------------
-		test_no			= 2;
+		test_no			= 0;
 		$display( "Check ASC8 mode" );
 		ff_address		= 'd0;
+		mode			= 0;
+		n_reset			= 0;
+		@( posedge clk );
+		n_reset			= 1;
+		@( posedge clk );
+
+		$display( "-- Write bank registers" );
+		write_memory( 16'h6000, 8'h12 );
+		write_memory( 16'h6800, 8'h34 );
+		write_memory( 16'h7000, 8'h56 );
+		write_memory( 16'h7800, 8'h78 );
+		$display( "-- Read bank and check read address" );
+		check_bank( 16'h0000, 16'h1FFF, 8'h56, "bank2 mirror" );
+		check_bank( 16'h2000, 16'h3FFF, 8'h78, "bank3 mirror" );
+		check_bank( 16'h4000, 16'h5FFF, 8'h12, "bank0" );
+		check_bank( 16'h6000, 16'h7FFF, 8'h34, "bank1" );
+		check_bank( 16'h8000, 16'h9FFF, 8'h56, "bank2" );
+		check_bank( 16'hA000, 16'hBFFF, 8'h78, "bank3" );
+		check_bank( 16'hC000, 16'hDFFF, 8'h12, "bank0 mirror" );
+		check_bank( 16'hE000, 16'hFFFF, 8'h34, "bank1 mirror" );
+
+		$display( "-- Write bank registers" );
+		write_memory( 16'h67FF, 8'h9A );
+		write_memory( 16'h6FFF, 8'hBC );
+		write_memory( 16'h77FF, 8'hDE );
+		write_memory( 16'h7FFF, 8'hF0 );
+		$display( "-- Read bank and check read address" );
+		check_bank( 16'h0000, 16'h1FFF, 8'hDE, "bank2 mirror" );
+		check_bank( 16'h2000, 16'h3FFF, 8'hF0, "bank3 mirror" );
+		check_bank( 16'h4000, 16'h5FFF, 8'h9A, "bank0" );
+		check_bank( 16'h6000, 16'h7FFF, 8'hBC, "bank1" );
+		check_bank( 16'h8000, 16'h9FFF, 8'hDE, "bank2" );
+		check_bank( 16'hA000, 16'hBFFF, 8'hF0, "bank3" );
+		check_bank( 16'hC000, 16'hDFFF, 8'h9A, "bank0 mirror" );
+		check_bank( 16'hE000, 16'hFFFF, 8'hBC, "bank1 mirror" );
+
+		// --------------------------------------------------------------------
+		//	check MODE1:ASC16
+		// --------------------------------------------------------------------
+		test_no			= 100;
+		$display( "Check ASC16 mode" );
+		ff_address		= 'd0;
+		mode			= 1;
+		n_reset			= 0;
+		@( posedge clk );
+		n_reset			= 1;
+		@( posedge clk );
+
+		$display( "-- Write bank registers" );
+		write_memory( 16'h6000, 8'h12 );
+		write_memory( 16'h7000, 8'h34 );
+		$display( "-- Read bank and check read address" );
+		check_bank( 16'h0000, 16'h1FFF, { 7'h34, 1'b0 }, "bank1 mirror" );
+		check_bank( 16'h2000, 16'h3FFF, { 7'h34, 1'b1 }, "bank1 mirror" );
+		check_bank( 16'h4000, 16'h5FFF, { 7'h12, 1'b0 }, "bank0" );
+		check_bank( 16'h6000, 16'h7FFF, { 7'h12, 1'b1 }, "bank0" );
+		check_bank( 16'h8000, 16'h9FFF, { 7'h34, 1'b0 }, "bank1" );
+		check_bank( 16'hA000, 16'hBFFF, { 7'h34, 1'b1 }, "bank1" );
+		check_bank( 16'hC000, 16'hDFFF, { 7'h12, 1'b0 }, "bank0 mirror" );
+		check_bank( 16'hE000, 16'hFFFF, { 7'h12, 1'b1 }, "bank0 mirror" );
+
+		$display( "-- Write bank registers" );
+		write_memory( 16'h67FF, 8'h56 );
+		write_memory( 16'h77FF, 8'h78 );
+		$display( "-- Read bank and check read address" );
+		check_bank( 16'h0000, 16'h1FFF, { 7'h78, 1'b0 }, "bank1 mirror" );
+		check_bank( 16'h2000, 16'h3FFF, { 7'h78, 1'b1 }, "bank1 mirror" );
+		check_bank( 16'h4000, 16'h5FFF, { 7'h56, 1'b0 }, "bank0" );
+		check_bank( 16'h6000, 16'h7FFF, { 7'h56, 1'b1 }, "bank0" );
+		check_bank( 16'h8000, 16'h9FFF, { 7'h78, 1'b0 }, "bank1" );
+		check_bank( 16'hA000, 16'hBFFF, { 7'h78, 1'b1 }, "bank1" );
+		check_bank( 16'hC000, 16'hDFFF, { 7'h56, 1'b0 }, "bank0 mirror" );
+		check_bank( 16'hE000, 16'hFFFF, { 7'h56, 1'b1 }, "bank0 mirror" );
+
+		$display( "-- Write invalid registers" );
+		write_memory( 16'h6FFF, 8'h44 );
+		write_memory( 16'h7FFF, 8'h55 );
+		$display( "-- Read bank and check read address" );
+		check_bank( 16'h0000, 16'h1FFF, { 7'h78, 1'b0 }, "bank1 mirror" );
+		check_bank( 16'h2000, 16'h3FFF, { 7'h78, 1'b1 }, "bank1 mirror" );
+		check_bank( 16'h4000, 16'h5FFF, { 7'h56, 1'b0 }, "bank0" );
+		check_bank( 16'h6000, 16'h7FFF, { 7'h56, 1'b1 }, "bank0" );
+		check_bank( 16'h8000, 16'h9FFF, { 7'h78, 1'b0 }, "bank1" );
+		check_bank( 16'hA000, 16'hBFFF, { 7'h78, 1'b1 }, "bank1" );
+		check_bank( 16'hC000, 16'hDFFF, { 7'h56, 1'b0 }, "bank0 mirror" );
+		check_bank( 16'hE000, 16'hFFFF, { 7'h56, 1'b1 }, "bank0 mirror" );
+
+		// --------------------------------------------------------------------
+		//	check MODE2:Normal
+		// --------------------------------------------------------------------
+		test_no			= 200;
+		$display( "Check Normal mode" );
+		ff_address		= 'd0;
+		mode			= 2;
+		n_reset			= 0;
+		@( posedge clk );
+		n_reset			= 1;
+		@( posedge clk );
+
+		// --------------------------------------------------------------------
+		//	check MODE3:Kon4
+		// --------------------------------------------------------------------
+		test_no			= 300;
+		$display( "Check Kon4 mode" );
+		ff_address		= 'd0;
+		mode			= 3;
+		n_reset			= 0;
+		@( posedge clk );
+		n_reset			= 1;
+		@( posedge clk );
+
+		// --------------------------------------------------------------------
+		//	check MODE4:SCC
+		// --------------------------------------------------------------------
+		test_no			= 400;
+		$display( "Check SCC mode" );
+		ff_address		= 'd0;
+		mode			= 4;
+		n_reset			= 0;
+		@( posedge clk );
+		n_reset			= 1;
+		@( posedge clk );
+
+		// --------------------------------------------------------------------
+		//	check MODE5:SCC+
+		// --------------------------------------------------------------------
+		test_no			= 500;
+		$display( "Check SCC+ mode" );
+		ff_address		= 'd0;
+		mode			= 5;
+		n_reset			= 0;
+		@( posedge clk );
+		n_reset			= 1;
+		@( posedge clk );
+
+		// --------------------------------------------------------------------
+		//	check MODE6:Generic8
+		// --------------------------------------------------------------------
+		test_no			= 600;
+		$display( "Check Generic8 mode" );
+		ff_address		= 'd0;
+		mode			= 6;
+		n_reset			= 0;
+		@( posedge clk );
+		n_reset			= 1;
+		@( posedge clk );
+
+		// --------------------------------------------------------------------
+		//	check MODE7:Generic16
+		// --------------------------------------------------------------------
+		test_no			= 700;
+		$display( "Check Generic16 mode" );
+		ff_address		= 'd0;
+		mode			= 7;
+		n_reset			= 0;
+		@( posedge clk );
+		n_reset			= 1;
+		@( posedge clk );
 
 		$finish;
 	end
