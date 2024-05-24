@@ -1,0 +1,12 @@
+# vsim -c -t 1ps -do "run.do" tb 
+# Start time: 19:00:58 on May 24,2024
+# Loading sv_std.std
+# Loading work.tb
+# Loading work.ip_megarom
+# do run.do
+# Check CS port
+# Check ASC8 mode
+# ** Note: $finish    : tb.sv(280)
+#    Time: 582 ns  Iteration: 1  Instance: /tb
+# End time: 19:00:59 on May 24,2024, Elapsed time: 0:00:01
+# Errors: 0, Warnings: 0

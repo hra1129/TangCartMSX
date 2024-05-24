@@ -30,7 +30,7 @@ module ip_megarom #(
 	//	Internal I/F
 	input			n_reset,
 	input			clk,
-	input	[2:0]	mode,				//	0: ASC8, 1: ASC16, 2: Normal, 3: Kon4, 4: SCC, 5: SCC-I, 6: Generic8, 7: Generic16
+	input	[2:0]	mode,				//	0: ASC8, 1: ASC16, 2: Normal, 3: Kon4, 4: SCC, 5: SCC+, 6: Generic8, 7: Generic16
 	//	MSX-50BUS
 	input	[15:0]	bus_address,
 	output			bus_io_cs,
@@ -56,7 +56,7 @@ module ip_megarom #(
 	localparam c_mode_normal	= 3'd2;
 	localparam c_mode_kon4		= 3'd3;
 	localparam c_mode_scc		= 3'd4;
-	localparam c_mode_scci		= 3'd5;
+	localparam c_mode_sccp		= 3'd5;
 	localparam c_mode_gen8		= 3'd6;
 	localparam c_mode_gen16		= 3'd7;
 
@@ -88,10 +88,13 @@ module ip_megarom #(
 	wire			w_scc_b2;
 	wire			w_scc_b3;
 	wire			w_scc;
-	wire			w_scci;
-	reg				ff_scci_en;
-	reg				ff_scci_ram_en;
+	wire			w_sccp;
+	reg				ff_sccp_en;
+	reg				ff_sccp_ram_en;
 	wire	[7:0]	w_address_m;
+
+	assign bus_io_cs		= 1'b0;
+	assign bus_memory_cs	= 1'b1;
 
 	// --------------------------------------------------------------------
 	//	ASC8 Mapper
@@ -104,10 +107,10 @@ module ip_megarom #(
 	// --------------------------------------------------------------------
 	//	ASC16 Mapper
 	// --------------------------------------------------------------------
-	assign w_asc16_b0	= (bus_address[14:12] == 3'd110);		// 16'b0110_0XXX_XXXX_XXXX : 6000h-67FFh
-	assign w_asc16_b1	= (bus_address[14:12] == 3'd110);		// 16'b0110_0XXX_XXXX_XXXX : 6000h-67FFh
-	assign w_asc16_b2	= (bus_address[14:12] == 3'd111);		// 16'b0111_0XXX_XXXX_XXXX : 7000h-77FFh
-	assign w_asc16_b3	= (bus_address[14:12] == 3'd111);		// 16'b0111_0XXX_XXXX_XXXX : 7000h-77FFh
+	assign w_asc16_b0	= (bus_address[14:12] == 3'b110);		// 16'b0110_0XXX_XXXX_XXXX : 6000h-67FFh
+	assign w_asc16_b1	= (bus_address[14:12] == 3'b110);		// 16'b0110_0XXX_XXXX_XXXX : 6000h-67FFh
+	assign w_asc16_b2	= (bus_address[14:12] == 3'b111);		// 16'b0111_0XXX_XXXX_XXXX : 7000h-77FFh
+	assign w_asc16_b3	= (bus_address[14:12] == 3'b111);		// 16'b0111_0XXX_XXXX_XXXX : 7000h-77FFh
 
 	// --------------------------------------------------------------------
 	//	Generic8 Mapper
@@ -140,25 +143,24 @@ module ip_megarom #(
 	assign w_scc_b2		= (bus_address[15:11] == 5'b10010);		// 16'b100X_0XXX_XXXX_XXXX : 9000h-97FFh
 	assign w_scc_b3		= (bus_address[15:11] == 5'b10110);		// 16'b101X_0XXX_XXXX_XXXX : B000h-B7FFh
 	assign w_scc		= (bus_address[15:14] == 2'b10) && (ff_bank2 == 8'h3e);
-	assign w_scci		= (bus_address[15:14] == 2'b11) && ff_bank3[7];
-	assign w_scci_mode	= (bus_address[15:1] == 16'b1011_1111_1111_111) && (mode == c_mode_scci) && bus_write;
+	assign w_sccp		= (bus_address[15:14] == 2'b11) && ff_bank3[7];
+	assign w_sccp_mode	= (bus_address[15:1] == 16'b1011_1111_1111_111) && (mode == c_mode_sccp) && bus_write;
 
 	// --------------------------------------------------------------------
 	//	SCC-I Mode Register
 	// --------------------------------------------------------------------
 	always @( negedge n_reset or posedge clk ) begin
 		if( !n_reset ) begin
-			ff_scci_en		<= 1'b0;
-			ff_scci_ram_en	<= 1'b0;
+			ff_sccp_en		<= 1'b0;
+			ff_sccp_ram_en	<= 1'b0;
 		end
-		else if( bus_memory && w_scci_mode ) begin
-				ff_scci_en		<= bus_write_data[5];
-				ff_scci_ram_en	<= bus_write_data[4];
-			end
+		else if( bus_memory && w_sccp_mode ) begin
+			ff_sccp_en		<= bus_write_data[5];
+			ff_sccp_ram_en	<= bus_write_data[4];
 		end
 		else begin
-			ff_scci_en		<= 1'b0;
-			ff_scci_ram_en	<= 1'b0;
+			ff_sccp_en		<= 1'b0;
+			ff_sccp_ram_en	<= 1'b0;
 		end
 	end
 
@@ -213,7 +215,7 @@ module ip_megarom #(
 					ff_bank3 <= bus_write_data;
 				end
 			end
-			c_mode_scc, c_mode_scci: begin
+			c_mode_scc, c_mode_sccp: begin
 				if( w_scc_b0 ) begin
 					ff_bank0 <= bus_write_data;
 				end
@@ -275,8 +277,8 @@ module ip_megarom #(
 	                  		  (address[14:13] == 2'b11) ? ff_bank1 :
 	                  		  (address[14:13] == 2'b00) ? ff_bank2 : ff_bank3;
 	assign address			= { address_h, w_address_m, address[12:0] };
-	assign rd				= bus_memory & bus_read & ~(w_scc | w_scci);
-	assign wr				= bus_memory & bus_write & ff_scci_ram_en & ~(w_scc | w_scci | w_scci_mode);
+	assign rd				= bus_memory & bus_read & ~(w_scc | w_sccp);
+	assign wr				= bus_memory & bus_write & ff_sccp_ram_en & ~(w_scc | w_sccp | w_sccp_mode);
 	assign wdata			= bus_write_data;
 	assign bus_read_ready	= rdata_en;
 	assign bus_read_data	= rdata;
