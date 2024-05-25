@@ -24,6 +24,7 @@
 module ip_scc (
 	input			n_reset,
 	input			clk,
+	input			enable,
 	//	MSX-50BUS
 	input	[15:0]	bus_address,
 	output			bus_read_ready,
@@ -37,13 +38,6 @@ module ip_scc (
 	input			sccp_bank_en,
 	input			sccp_en,
 	output	[10:0]	sound_out		//	digital sound output (11 bits)
-
-	input			wr,
-	input			rd,
-	input	[14:0]	a,
-	input	[7:0]	d,
-	output	[7:0]	q,
-	output	[10:0]	left_out
 );
 	wire	[2:0]	active;
 
@@ -69,6 +63,7 @@ module ip_scc (
 	scc_channel_mixer u_scc_channel_mixer (
 		.nreset					( n_reset					),
 		.clk					( clk						),
+		.enable					( enable					),
 		.sram_id				( sram_id					),
 		.sram_a					( sram_a					),
 		.sram_d					( sram_d					),
@@ -93,13 +88,14 @@ module ip_scc (
 	scc_register u_scc_register (
 		.nreset					( n_reset					),
 		.clk					( clk						),
+		.enable					( enable					),
 		.wr						( bus_write					),
 		.rd						( bus_read					),
-		.address				( bus_address				),
+		.address				( bus_address[12:0]			),
 		.wrdata					( bus_write_data			),
 		.rddata					( bus_read_data				),
-		.scc_bank_en			( scc_bank_en				),
-		.sccp_bank_en			( sccp_bank_en				),
+		.scc_en					( scc_bank_en				),
+		.scci_en				( sccp_bank_en				),
 		.active					( active					),
 		.sram_id				( sram_id					),
 		.sram_a					( sram_a					),
@@ -108,6 +104,7 @@ module ip_scc (
 		.sram_we				( sram_we					),
 		.sram_q					( sram_q					),
 		.sram_q_en				( sram_q_en					),
+		.reg_scci_enable		( sccp_en					),
 		.reg_frequency_count0	( reg_frequency_count0		),
 		.reg_volume0			( reg_volume0				),
 		.reg_enable0			( reg_enable0				),

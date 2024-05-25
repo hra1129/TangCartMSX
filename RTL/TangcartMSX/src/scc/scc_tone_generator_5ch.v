@@ -24,6 +24,7 @@
 module scc_tone_generator_5ch (
 	input			nreset,					//	negative logic
 	input			clk,
+	input			enable,
 	input	[2:0]	active,
 	output	[4:0]	wave_address,
 	output			wave_update,
@@ -99,6 +100,9 @@ module scc_tone_generator_5ch (
 			ff_wave_address_a		<= 'd0;
 			ff_frequency_count_a	<= 'd0;
 		end
+		else if( !enable ) begin
+			//	hold
+		end
 		else if( clear_counter_a ) begin
 			if( reg_wave_reset ) begin
 				ff_wave_address_a		<= 'd0;
@@ -116,6 +120,9 @@ module scc_tone_generator_5ch (
 			ff_wave_address_b		<= 'd0;
 			ff_frequency_count_b	<= 'd0;
 		end
+		else if( !enable ) begin
+			//	hold
+		end
 		else if( clear_counter_b ) begin
 			if( reg_wave_reset ) begin
 				ff_wave_address_b		<= 'd0;
@@ -132,6 +139,9 @@ module scc_tone_generator_5ch (
 		if( !nreset ) begin
 			ff_wave_address_c		<= 'd0;
 			ff_frequency_count_c	<= 'd0;
+		end
+		else if( !enable ) begin
+			//	hold
 		end
 		else if( clear_counter_c ) begin
 			if( reg_wave_reset ) begin
@@ -151,6 +161,9 @@ module scc_tone_generator_5ch (
 			ff_frequency_count_d	<= 'd0;
 			ff_error_count_d		<= 'd0;
 		end
+		else if( !enable ) begin
+			//	hold
+		end
 		else if( clear_counter_d ) begin
 			if( reg_wave_reset ) begin
 				ff_wave_address_d		<= 'd0;
@@ -169,6 +182,9 @@ module scc_tone_generator_5ch (
 			ff_wave_address_e		<= 'd0;
 			ff_frequency_count_e	<= 'd0;
 			ff_error_count_e		<= 'd0;
+		end
+		else if( !enable ) begin
+			//	hold
 		end
 		else if( clear_counter_e ) begin
 			if( reg_wave_reset ) begin

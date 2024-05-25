@@ -24,6 +24,7 @@
 module scc_channel_mixer (
 	input			nreset,
 	input			clk,
+	input			enable,
 
 	input	[2:0]	sram_id,				//	A...E
 	input	[4:0]	sram_a,
@@ -79,6 +80,9 @@ module scc_channel_mixer (
 		if( !nreset ) begin
 			ff_sram_q_en <= 1'b0;
 		end
+		else if( !enable ) begin
+			//	hold
+		end
 		else if( sram_oe || sram_we ) begin
 			ff_sram_q_en <= sram_oe;
 		end
@@ -96,6 +100,9 @@ module scc_channel_mixer (
 			ff_active		<= 3'd0;
 			ff_active_delay	<= 1'b0;
 		end
+		else if( !enable ) begin
+			//	hold
+		end
 		else begin
 			if( ff_active == 3'd5 ) begin
 				ff_active		<= 3'd0;
@@ -105,8 +112,8 @@ module scc_channel_mixer (
 				ff_active_delay	<= 1'b1;
 			end
 			else if( ff_active_delay && ff_active == 3'd4 ) begin
-					ff_active		<= 3'd0;
-					ff_active_delay	<= 1'b0;
+				ff_active		<= 3'd0;
+				ff_active_delay	<= 1'b0;
 			end
 			else begin
 				ff_active		<= ff_active + 3'd1;
@@ -116,9 +123,10 @@ module scc_channel_mixer (
 
 	assign active			= ff_active;
 
-	scc_tone_generator_5ch u_tone_generator_5ch_0 (
+	scc_tone_generator_5ch u_tone_generator_5ch (
 		.nreset						( nreset						),
 		.clk						( clk							),
+		.enable						( enable						),
 		.active						( ff_active						),
 		.wave_address				( w_wave_address0				),
 		.wave_update				( w_wave_update0				),
@@ -134,10 +142,15 @@ module scc_channel_mixer (
 
 	assign w_sram_a0	= ( sram_oe || sram_we ) ? { sram_id, sram_a } : 
 		(( ff_active[2] && (reg_scci_enable == 1'b0)) ? { 3'b011, w_wave_address0 } : { ff_active, w_wave_address0 });
-	assign w_sram_we0	= ( sram_oe || sram_we ) ? sram_we : 1'b0;
+	assign w_sram_we0	= ( sram_oe || sram_we ) ? (sram_we & enable) : 1'b0;
 
 	always @( posedge clk ) begin
-		ff_wave_update0 <= w_wave_update0;
+		if( !enable ) begin
+			//	hold
+		end
+		else begin
+			ff_wave_update0 <= w_wave_update0;
+		end
 	end
 
 	always @( negedge nreset or posedge clk ) begin
@@ -147,6 +160,9 @@ module scc_channel_mixer (
 			ff_wave_c0	<= 8'd0;
 			ff_wave_d0	<= 8'd0;
 			ff_wave_e0	<= 8'd0;
+		end
+		else if( !enable ) begin
+			//	hold
 		end
 		else if( ff_wave_update0 ) begin
 			case( ff_active )
@@ -178,6 +194,7 @@ module scc_channel_mixer (
 
 	scc_channel_volume u_channel_volume0 (
 		.clk			( clk				),
+		.enable			( enable			),
 		.sram_q			( w_wave_q0			),		//	delay 1 clock
 		.channel		( w_channel0		),		//	delay 2 clock
 		.reg_volume		( reg_volume0		)		//	delay 1 clock
@@ -189,6 +206,9 @@ module scc_channel_mixer (
 	always @( negedge nreset or posedge clk ) begin
 		if( !nreset ) begin
 			ff_left_integ		<= 11'd0;
+		end
+		else if( !enable ) begin
+			//	hold
 		end
 		else if( (sram_oe | sram_we) == 1'b1 ) begin
 			//	hold
@@ -205,6 +225,9 @@ module scc_channel_mixer (
 	always @( negedge nreset or posedge clk ) begin
 		if( !nreset ) begin
 			ff_left_out			<= 11'd0;
+		end
+		else if( !enable ) begin
+			//	hold
 		end
 		else if( ff_active == 3'd1 ) begin
 			ff_left_out			<= ff_left_integ;

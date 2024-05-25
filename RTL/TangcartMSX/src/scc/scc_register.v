@@ -27,7 +27,7 @@ module scc_register (
 	input				enable,					//	21.47727MHz
 	input				wr,
 	input				rd,
-	input		[14:0]	address,
+	input		[12:0]	address,
 	input		[7:0]	wrdata,
 	output		[7:0]	rddata,
 	input				scc_en,
@@ -43,7 +43,7 @@ module scc_register (
 	input		[7:0]	sram_q,
 	input				sram_q_en,
 
-	output reg			reg_scci_enable,
+	input				reg_scci_enable,
 	output		[11:0]	reg_frequency_count0,
 	output		[3:0]	reg_volume0,
 	output				reg_enable0,
@@ -62,22 +62,27 @@ module scc_register (
 	reg		[11:0]	ff_reg_frequency_count_a0;
 	reg		[3:0]	ff_reg_volume_a0;
 	reg				ff_reg_enable_a0;
+	reg				ff_clear_counter_a0;
 
 	reg		[11:0]	ff_reg_frequency_count_b0;
 	reg		[3:0]	ff_reg_volume_b0;
 	reg				ff_reg_enable_b0;
+	reg				ff_clear_counter_b0;
 
 	reg		[11:0]	ff_reg_frequency_count_c0;
 	reg		[3:0]	ff_reg_volume_c0;
 	reg				ff_reg_enable_c0;
+	reg				ff_clear_counter_c0;
 
 	reg		[11:0]	ff_reg_frequency_count_d0;
 	reg		[3:0]	ff_reg_volume_d0;
 	reg				ff_reg_enable_d0;
+	reg				ff_clear_counter_d0;
 
 	reg		[11:0]	ff_reg_frequency_count_e0;
 	reg		[3:0]	ff_reg_volume_e0;
 	reg				ff_reg_enable_e0;
+	reg				ff_clear_counter_e0;
 
 	reg		[7:0]	ff_rddata;
 	reg				ff_wave_reset;
@@ -91,7 +96,7 @@ module scc_register (
 			sram_oe	<= 1'b0;
 			sram_we	<= 1'b0;
 		end
-		else if( w_scc_en && (address[12:7] == 6'b1_1000_0) ) begin
+		else if( scc_en && (address[12:7] == 6'b1_1000_0) ) begin
 			//	9800-987Fh : {100} 1 1000 0XXX XXXX
 			sram_id		<= { 1'b0, address[6:5] };	//	Channel A, B, C or D
 			sram_a		<= address[4:0];
@@ -99,7 +104,7 @@ module scc_register (
 			sram_we		<= wr;
 			sram_d		<= wrdata;
 		end
-		else if( w_scc_en && (address[12:5] == 8'b1_1000_101) ) begin
+		else if( scc_en && (address[12:5] == 8'b1_1000_101) ) begin
 			//	98A0-98BFh : {100} 1 1000 101X XXXX ReadOnly
 			if( reg_scci_enable ) begin
 				sram_id		<= 3'd4;					//	Channel E
@@ -112,7 +117,7 @@ module scc_register (
 			sram_we		<= 1'b0;
 			sram_d		<= wrdata;
 		end
-		else if( w_scci_en && (address[10:8] == 3'b000) && ((address[7:5] == 3'b100) || !address[7]) ) begin
+		else if( scci_en && (address[10:8] == 3'b000) && ((address[7:5] == 3'b100) || !address[7]) ) begin
 			//	B800-B87Fh : {101} 1 1000 0XXX XXXX
 			//	B880-B89Fh : {101} 1 1000 100X XXXX
 			sram_id		<= address[7:5];
@@ -128,16 +133,46 @@ module scc_register (
 	end
 
 	// Frequency reset --------------------------------------------------------
-	assign clear_counter_a0 = (wr && scc_en  && (address[7:1] == 7'b1000_000)) ? 1'b1 :
-	                          (wr && scci_en && (address[7:1] == 7'b1010_000)) ? 1'b1 : 1'b0;
-	assign clear_counter_b0 = (wr && scc_en  && (address[7:1] == 7'b1000_001)) ? 1'b1 :
-	                          (wr && scci_en && (address[7:1] == 7'b1010_001)) ? 1'b1 : 1'b0;
-	assign clear_counter_c0 = (wr && scc_en  && (address[7:1] == 7'b1000_010)) ? 1'b1 :
-	                          (wr && scci_en && (address[7:1] == 7'b1010_010)) ? 1'b1 : 1'b0;
-	assign clear_counter_d0 = (wr && scc_en  && (address[7:1] == 7'b1000_011)) ? 1'b1 :
-	                          (wr && scci_en && (address[7:1] == 7'b1010_011)) ? 1'b1 : 1'b0;
-	assign clear_counter_e0 = (wr && scc_en  && (address[7:1] == 7'b1000_100)) ? 1'b1 :
-	                          (wr && scci_en && (address[7:1] == 7'b1010_100)) ? 1'b1 : 1'b0;
+	assign w_clear_counter_a0 = (wr && scc_en  && (address[7:1] == 7'b1000_000)) ? 1'b1 :
+	                            (wr && scci_en && (address[7:1] == 7'b1010_000)) ? 1'b1 : 1'b0;
+	assign w_clear_counter_b0 = (wr && scc_en  && (address[7:1] == 7'b1000_001)) ? 1'b1 :
+	                            (wr && scci_en && (address[7:1] == 7'b1010_001)) ? 1'b1 : 1'b0;
+	assign w_clear_counter_c0 = (wr && scc_en  && (address[7:1] == 7'b1000_010)) ? 1'b1 :
+	                            (wr && scci_en && (address[7:1] == 7'b1010_010)) ? 1'b1 : 1'b0;
+	assign w_clear_counter_d0 = (wr && scc_en  && (address[7:1] == 7'b1000_011)) ? 1'b1 :
+	                            (wr && scci_en && (address[7:1] == 7'b1010_011)) ? 1'b1 : 1'b0;
+	assign w_clear_counter_e0 = (wr && scc_en  && (address[7:1] == 7'b1000_100)) ? 1'b1 :
+	                            (wr && scci_en && (address[7:1] == 7'b1010_100)) ? 1'b1 : 1'b0;
+
+	always @( negedge nreset or posedge clk ) begin
+		if( !nreset ) begin
+			ff_clear_counter_a0 <= 1'b0;
+			ff_clear_counter_b0 <= 1'b0;
+			ff_clear_counter_c0 <= 1'b0;
+			ff_clear_counter_d0 <= 1'b0;
+			ff_clear_counter_e0 <= 1'b0;
+		end
+		else if( enable ) begin
+			ff_clear_counter_a0 <= w_clear_counter_a0;
+			ff_clear_counter_b0 <= w_clear_counter_b0;
+			ff_clear_counter_c0 <= w_clear_counter_c0;
+			ff_clear_counter_d0 <= w_clear_counter_d0;
+			ff_clear_counter_e0 <= w_clear_counter_e0;
+		end
+		else begin
+			ff_clear_counter_a0 <= ff_clear_counter_a0 | w_clear_counter_a0;
+			ff_clear_counter_b0 <= ff_clear_counter_b0 | w_clear_counter_b0;
+			ff_clear_counter_c0 <= ff_clear_counter_c0 | w_clear_counter_c0;
+			ff_clear_counter_d0 <= ff_clear_counter_d0 | w_clear_counter_d0;
+			ff_clear_counter_e0 <= ff_clear_counter_e0 | w_clear_counter_e0;
+		end
+	end
+
+	assign clear_counter_a0 = ff_clear_counter_a0;
+	assign clear_counter_b0 = ff_clear_counter_b0;
+	assign clear_counter_c0 = ff_clear_counter_c0;
+	assign clear_counter_d0 = ff_clear_counter_d0;
+	assign clear_counter_e0 = ff_clear_counter_e0;
 
 	// Control registers ------------------------------------------------------
 	always @( negedge nreset or posedge clk ) begin
@@ -165,7 +200,7 @@ module scc_register (
 			ff_wave_reset			<= 1'b0;
 		end
 		else if( wr ) begin
-			if( w_scc_en && (address[7:4] == 4'h8) ) begin
+			if( scc_en && (address[7:4] == 4'h8) ) begin
 				case( address[3:0] )
 				4'h0:		ff_reg_frequency_count_a0[ 7:0]	<= wrdata;
 				4'h1:		ff_reg_frequency_count_a0[11:8]	<= wrdata[3:0];
@@ -192,10 +227,10 @@ module scc_register (
 					end
 				endcase
 			end
-			else if( w_scc_en && (address[7:5] == 3'b111) ) begin
+			else if( scc_en && (address[7:5] == 3'b111) ) begin
 				ff_wave_reset	<= wrdata[5];
 			end
-			else if( w_scci_en && (address[7:4] == 4'hA) ) begin
+			else if( scci_en && (address[7:4] == 4'hA) ) begin
 				case( address[3:0] )
 				4'h0:		ff_reg_frequency_count_a0[ 7:0]	<= wrdata;
 				4'h1:		ff_reg_frequency_count_a0[11:8]	<= wrdata[3:0];
@@ -222,7 +257,7 @@ module scc_register (
 					end
 				endcase
 			end
-			else if( w_scc_en && (address[7:5] == 3'b110) ) begin
+			else if( scc_en && (address[7:5] == 3'b110) ) begin
 				ff_wave_reset	<= wrdata[5];
 			end
 		end

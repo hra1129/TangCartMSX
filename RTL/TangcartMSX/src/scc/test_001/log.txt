@@ -1,0 +1,16 @@
+# vsim -c -t 1ps -do "run.do" tb 
+# Start time: 07:27:31 on May 26,2024
+# Loading sv_std.std
+# Loading work.tb
+# Loading work.ip_scc
+# Loading work.scc_channel_mixer
+# Loading work.scc_tone_generator_5ch
+# Loading work.scc_selector
+# Loading work.scc_ram
+# Loading work.scc_channel_volume
+# Loading work.scc_register
+# do run.do
+# ** Note: $finish    : tb.sv(109)
+#    Time: 194 ns  Iteration: 1  Instance: /tb
+# End time: 07:27:32 on May 26,2024, Elapsed time: 0:00:01
+# Errors: 0, Warnings: 0

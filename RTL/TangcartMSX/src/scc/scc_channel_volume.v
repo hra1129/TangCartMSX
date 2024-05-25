@@ -23,6 +23,7 @@
 
 module scc_channel_volume (
 	input			clk,
+	input			enable,
 	input	[7:0]	sram_q,					//	signed
 	output	[7:0]	channel,				//	signed
 	input	[3:0]	reg_volume
@@ -33,7 +34,9 @@ module scc_channel_volume (
 	assign w_channel_mul	= $signed( sram_q ) * $signed( { 1'b0, reg_volume } );
 
 	always @( posedge clk ) begin
-		ff_channel		<= w_channel_mul[11:4];
+		if( enable ) begin
+			ff_channel		<= w_channel_mul[11:4];
+		end
 	end
 
 	assign channel			= ff_channel;
