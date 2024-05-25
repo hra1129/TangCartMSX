@@ -1,5 +1,5 @@
 # vsim -c -t 1ps -do "run.do" tb 
-# Start time: 08:53:05 on May 25,2024
+# Start time: 09:05:48 on May 25,2024
 # Loading sv_std.std
 # Loading work.tb
 # Loading work.ip_megarom
@@ -9,7 +9,7 @@
 # -- Read bank and check read address
 # ---- bank2 mirror
 # ---- bank3 mirror
-# ---- bank0 (always 0)
+# ---- bank0
 # ---- bank1
 # ---- bank2
 # ---- bank3
@@ -36,6 +36,15 @@
 # ---- bank0 mirror
 # ---- bank1 mirror
 # Check ASC16 mode
+# -- Read bank and check read address
+# ---- bank1 mirror
+# ---- bank1 mirror
+# ---- bank0
+# ---- bank0
+# ---- bank1
+# ---- bank1
+# ---- bank0 mirror
+# ---- bank0 mirror
 # -- Write bank registers
 # -- Read bank and check read address
 # ---- bank1 mirror
@@ -110,8 +119,97 @@
 # Check SCC mode
 # Check SCC+ mode
 # Check Generic8 mode
+# -- Read bank and check read address
+# ---- bank2 mirror
+# ---- bank3 mirror
+# ---- bank0
+# ---- bank1
+# ---- bank2
+# ---- bank3
+# ---- bank0 mirror
+# ---- bank1 mirror
+# -- Write bank registers
+# -- Read bank and check read address
+# ---- bank2 mirror
+# ---- bank3 mirror
+# ---- bank0
+# ---- bank1
+# ---- bank2
+# ---- bank3
+# ---- bank0 mirror
+# ---- bank1 mirror
+# -- Write bank registers
+# -- Read bank and check read address
+# ---- bank2 mirror
+# ---- bank3 mirror
+# ---- bank0
+# ---- bank1
+# ---- bank2
+# ---- bank3
+# ---- bank0 mirror
+# ---- bank1 mirror
+# -- Write bank registers
+# -- Read bank and check read address
+# ---- bank2 mirror
+# ---- bank3 mirror
+# ---- bank0
+# ---- bank1
+# ---- bank2
+# ---- bank3
+# ---- bank0 mirror
+# ---- bank1 mirror
+# -- Write bank registers
+# -- Read bank and check read address
+# ---- bank2 mirror
+# ---- bank3 mirror
+# ---- bank0
+# ---- bank1
+# ---- bank2
+# ---- bank3
+# ---- bank0 mirror
+# ---- bank1 mirror
+# -- Write invalid registers
+# -- Read bank and check read address
+# ---- bank2 mirror
+# ---- bank3 mirror
+# ---- bank0
+# ---- bank1
+# ---- bank2
+# ---- bank3
+# ---- bank0 mirror
+# ---- bank1 mirror
+# -- Write invalid registers
+# -- Read bank and check read address
+# ---- bank2 mirror
+# ---- bank3 mirror
+# ---- bank0
+# ---- bank1
+# ---- bank2
+# ---- bank3
+# ---- bank0 mirror
+# ---- bank1 mirror
+# -- Write invalid registers
+# -- Read bank and check read address
+# ---- bank2 mirror
+# ---- bank3 mirror
+# ---- bank0
+# ---- bank1
+# ---- bank2
+# ---- bank3
+# ---- bank0 mirror
+# ---- bank1 mirror
+# -- Write invalid registers
+# -- Read bank and check read address
+# ---- bank2 mirror
+# ---- bank3 mirror
+# ---- bank0
+# ---- bank1
+# ---- bank2
+# ---- bank3
+# ---- bank0 mirror
+# ---- bank1 mirror
 # Check Generic16 mode
-# ** Note: $finish    : tb.sv(539)
-#    Time: 164778656880 ps  Iteration: 1  Instance: /tb
-# End time: 08:53:39 on May 25,2024, Elapsed time: 0:00:34
+# ** Note: $finish    : tb.sv(679)
+#    Time: 317352424560 ps  Iteration: 1  Instance: /tb
+# End time: 09:06:55 on May 25,2024, Elapsed time: 0:01:07
 # Errors: 0, Warnings: 0
