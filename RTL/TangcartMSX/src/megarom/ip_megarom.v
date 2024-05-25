@@ -49,7 +49,9 @@ module ip_megarom #(
 	output	[21:0]	address,
 	output	[7:0]	wdata,
 	input	[7:0]	rdata,
-	input			rdata_en
+	input			rdata_en,
+	output			scc_bank_en,
+	output			sccp_bank_en
 );
 	localparam c_mode_asc8		= 3'd0;
 	localparam c_mode_asc16		= 3'd1;
@@ -142,8 +144,8 @@ module ip_megarom #(
 	assign w_scc_b1		= (bus_address[15:11] == 5'b01110);		// 16'b011X_0XXX_XXXX_XXXX : 7000h-77FFh
 	assign w_scc_b2		= (bus_address[15:11] == 5'b10010);		// 16'b100X_0XXX_XXXX_XXXX : 9000h-97FFh
 	assign w_scc_b3		= (bus_address[15:11] == 5'b10110);		// 16'b101X_0XXX_XXXX_XXXX : B000h-B7FFh
-	assign w_scc		= (bus_address[15:14] == 2'b10) && (ff_bank2 == 8'h3e) && ((mode == c_mode_scc) || (mode == c_mode_sccp));
-	assign w_sccp		= (bus_address[15:14] == 2'b11) && ff_bank3[7] && (mode == c_mode_sccp);
+	assign w_scc		= (bus_address[15:13] == 3'b100) && (ff_bank2 == 8'h3f) && ((mode == c_mode_sccp) || (mode == c_mode_scc));
+	assign w_sccp		= (bus_address[15:13] == 3'b101) && (ff_bank3 == 8'h3f) &&  (mode == c_mode_sccp) && ff_sccp_en;
 	assign w_sccp_mode	= (bus_address[15:1] == 16'b1011_1111_1111_111) && (mode == c_mode_sccp) && bus_write;
 
 	// --------------------------------------------------------------------
@@ -282,4 +284,6 @@ module ip_megarom #(
 	assign wdata			= bus_write_data;
 	assign bus_read_ready	= rdata_en;
 	assign bus_read_data	= rdata;
+	assign scc_bank_en		= w_scc;
+	assign sccp_bank_en		= w_sccp;
 endmodule
