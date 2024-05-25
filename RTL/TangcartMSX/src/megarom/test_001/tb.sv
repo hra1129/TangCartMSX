@@ -324,7 +324,7 @@ module tb ();
 		//	check MODE0:ASC8
 		// --------------------------------------------------------------------
 		test_no			= 0;
-		$display( "Check ASC8 mode" );
+		$display( "000: Check ASC8 mode" );
 		ff_address		= 'd0;
 		mode			= 0;
 		n_reset			= 0;
@@ -332,7 +332,8 @@ module tb ();
 		n_reset			= 1;
 		@( posedge clk );
 
-		$display( "-- Read bank and check read address" );
+		test_no			= 1;
+		$display( "-- 001: Read bank and check read address" );
 		check_bank( 16'h0000, 16'h1FFF, 8'h02, "bank2 mirror" );
 		check_bank( 16'h2000, 16'h3FFF, 8'h03, "bank3 mirror" );
 		check_bank( 16'h4000, 16'h5FFF, 8'h00, "bank0" );
@@ -342,12 +343,13 @@ module tb ();
 		check_bank( 16'hC000, 16'hDFFF, 8'h00, "bank0 mirror" );
 		check_bank( 16'hE000, 16'hFFFF, 8'h01, "bank1 mirror" );
 
-		$display( "-- Write bank registers" );
+		test_no			= 2;
+		$display( "-- 002: Write bank registers" );
 		write_memory( 16'h6000, 8'h12 );
 		write_memory( 16'h6800, 8'h34 );
 		write_memory( 16'h7000, 8'h56 );
 		write_memory( 16'h7800, 8'h78 );
-		$display( "-- Read bank and check read address" );
+		$display( "-- 002: Read bank and check read address" );
 		check_bank( 16'h0000, 16'h1FFF, 8'h56, "bank2 mirror" );
 		check_bank( 16'h2000, 16'h3FFF, 8'h78, "bank3 mirror" );
 		check_bank( 16'h4000, 16'h5FFF, 8'h12, "bank0" );
@@ -357,12 +359,13 @@ module tb ();
 		check_bank( 16'hC000, 16'hDFFF, 8'h12, "bank0 mirror" );
 		check_bank( 16'hE000, 16'hFFFF, 8'h34, "bank1 mirror" );
 
-		$display( "-- Write bank registers" );
+		test_no			= 3;
+		$display( "-- 003: Write bank registers" );
 		write_memory( 16'h67FF, 8'h9A );
 		write_memory( 16'h6FFF, 8'hBC );
 		write_memory( 16'h77FF, 8'hDE );
 		write_memory( 16'h7FFF, 8'hF0 );
-		$display( "-- Read bank and check read address" );
+		$display( "-- 003: Read bank and check read address" );
 		check_bank( 16'h0000, 16'h1FFF, 8'hDE, "bank2 mirror" );
 		check_bank( 16'h2000, 16'h3FFF, 8'hF0, "bank3 mirror" );
 		check_bank( 16'h4000, 16'h5FFF, 8'h9A, "bank0" );
@@ -384,7 +387,8 @@ module tb ();
 		n_reset			= 1;
 		@( posedge clk );
 
-		$display( "-- Read bank and check read address" );
+		test_no			= 101;
+		$display( "-- 101: Read bank and check read address" );
 		check_bank( 16'h0000, 16'h1FFF, { 7'h01, 1'b0 }, "bank1 mirror" );
 		check_bank( 16'h2000, 16'h3FFF, { 7'h01, 1'b1 }, "bank1 mirror" );
 		check_bank( 16'h4000, 16'h5FFF, { 7'h00, 1'b0 }, "bank0" );
@@ -394,10 +398,11 @@ module tb ();
 		check_bank( 16'hC000, 16'hDFFF, { 7'h00, 1'b0 }, "bank0 mirror" );
 		check_bank( 16'hE000, 16'hFFFF, { 7'h00, 1'b1 }, "bank0 mirror" );
 
-		$display( "-- Write bank registers" );
+		test_no			= 102;
+		$display( "-- 102: Write bank registers" );
 		write_memory( 16'h6000, 8'h12 );
 		write_memory( 16'h7000, 8'h34 );
-		$display( "-- Read bank and check read address" );
+		$display( "-- 102: Read bank and check read address" );
 		check_bank( 16'h0000, 16'h1FFF, { 7'h34, 1'b0 }, "bank1 mirror" );
 		check_bank( 16'h2000, 16'h3FFF, { 7'h34, 1'b1 }, "bank1 mirror" );
 		check_bank( 16'h4000, 16'h5FFF, { 7'h12, 1'b0 }, "bank0" );
@@ -407,10 +412,11 @@ module tb ();
 		check_bank( 16'hC000, 16'hDFFF, { 7'h12, 1'b0 }, "bank0 mirror" );
 		check_bank( 16'hE000, 16'hFFFF, { 7'h12, 1'b1 }, "bank0 mirror" );
 
-		$display( "-- Write bank registers" );
+		test_no			= 103;
+		$display( "-- 103: Write bank registers" );
 		write_memory( 16'h67FF, 8'h56 );
 		write_memory( 16'h77FF, 8'h78 );
-		$display( "-- Read bank and check read address" );
+		$display( "-- 103: Read bank and check read address" );
 		check_bank( 16'h0000, 16'h1FFF, { 7'h78, 1'b0 }, "bank1 mirror" );
 		check_bank( 16'h2000, 16'h3FFF, { 7'h78, 1'b1 }, "bank1 mirror" );
 		check_bank( 16'h4000, 16'h5FFF, { 7'h56, 1'b0 }, "bank0" );
@@ -420,10 +426,11 @@ module tb ();
 		check_bank( 16'hC000, 16'hDFFF, { 7'h56, 1'b0 }, "bank0 mirror" );
 		check_bank( 16'hE000, 16'hFFFF, { 7'h56, 1'b1 }, "bank0 mirror" );
 
-		$display( "-- Write invalid registers" );
+		test_no			= 104;
+		$display( "-- 104: Write invalid registers" );
 		write_memory( 16'h6FFF, 8'h44 );
 		write_memory( 16'h7FFF, 8'h55 );
-		$display( "-- Read bank and check read address" );
+		$display( "-- 104: Read bank and check read address" );
 		check_bank( 16'h0000, 16'h1FFF, { 7'h78, 1'b0 }, "bank1 mirror" );
 		check_bank( 16'h2000, 16'h3FFF, { 7'h78, 1'b1 }, "bank1 mirror" );
 		check_bank( 16'h4000, 16'h5FFF, { 7'h56, 1'b0 }, "bank0" );
@@ -437,7 +444,7 @@ module tb ();
 		//	check MODE2:Normal
 		// --------------------------------------------------------------------
 		test_no			= 200;
-		$display( "Check Normal mode" );
+		$display( "200: Check Normal mode" );
 		ff_address		= 'd0;
 		mode			= 2;
 		n_reset			= 0;
@@ -445,11 +452,12 @@ module tb ();
 		n_reset			= 1;
 		@( posedge clk );
 
-		$display( "-- Write invalid registers" );
+		test_no			= 201;
+		$display( "-- 201: Write invalid registers" );
 		for( i = 0; i < 65536; i = i + 1 ) begin
 			write_memory( i, ( i & 127 ) + 13 );
 		end
-		$display( "-- Read bank and check read address" );
+		$display( "-- 201: Read bank and check read address" );
 		check_bank( 16'h0000, 16'h1FFF, 8'h02, "bank2 mirror" );
 		check_bank( 16'h2000, 16'h3FFF, 8'h03, "bank3 mirror" );
 		check_bank( 16'h4000, 16'h5FFF, 8'h00, "bank0" );
@@ -463,7 +471,7 @@ module tb ();
 		//	check MODE3:Kon4
 		// --------------------------------------------------------------------
 		test_no			= 300;
-		$display( "Check Kon4 mode" );
+		$display( "300: Check Kon4 mode" );
 		ff_address		= 'd0;
 		mode			= 3;
 		n_reset			= 0;
@@ -471,7 +479,8 @@ module tb ();
 		n_reset			= 1;
 		@( posedge clk );
 
-		$display( "-- Read bank and check read address" );
+		test_no			= 301;
+		$display( "-- 301: Read bank and check read address" );
 		check_bank( 16'h0000, 16'h1FFF, 8'h02, "bank2 mirror" );
 		check_bank( 16'h2000, 16'h3FFF, 8'h03, "bank3 mirror" );
 		check_bank( 16'h4000, 16'h5FFF, 8'h00, "bank0 (always 0)" );
@@ -481,12 +490,13 @@ module tb ();
 		check_bank( 16'hC000, 16'hDFFF, 8'h00, "bank0 mirror" );
 		check_bank( 16'hE000, 16'hFFFF, 8'h01, "bank1 mirror" );
 
-		$display( "-- Write bank registers" );
+		test_no			= 302;
+		$display( "-- 302: Write bank registers" );
 		write_memory( 16'h4000, 8'h12 );	//	invalid
 		write_memory( 16'h6000, 8'h34 );
 		write_memory( 16'h8000, 8'h56 );
 		write_memory( 16'hA000, 8'h78 );
-		$display( "-- Read bank and check read address" );
+		$display( "-- 302: Read bank and check read address" );
 		check_bank( 16'h0000, 16'h1FFF, 8'h56, "bank2 mirror" );
 		check_bank( 16'h2000, 16'h3FFF, 8'h78, "bank3 mirror" );
 		check_bank( 16'h4000, 16'h5FFF, 8'h00, "bank0 (always 0)" );
@@ -496,12 +506,13 @@ module tb ();
 		check_bank( 16'hC000, 16'hDFFF, 8'h00, "bank0 mirror" );
 		check_bank( 16'hE000, 16'hFFFF, 8'h34, "bank1 mirror" );
 
-		$display( "-- Write bank registers" );
+		test_no			= 303;
+		$display( "-- 303: Write bank registers" );
 		write_memory( 16'h5FFF, 8'h9A );	//	invalid
 		write_memory( 16'h7FFF, 8'hBC );
 		write_memory( 16'h9FFF, 8'hDE );
 		write_memory( 16'hBFFF, 8'hF0 );
-		$display( "-- Read bank and check read address" );
+		$display( "-- 303: Read bank and check read address" );
 		check_bank( 16'h0000, 16'h1FFF, 8'hDE, "bank2 mirror" );
 		check_bank( 16'h2000, 16'h3FFF, 8'hF0, "bank3 mirror" );
 		check_bank( 16'h4000, 16'h5FFF, 8'h00, "bank0 (always 0)" );
@@ -649,7 +660,55 @@ module tb ();
 		$display( "-- 409: Read/Write SCC bank" );
 		ff_address = 16'h0000;
 		ff_wdata = 8'h00;
-		write_memory( 16'h9800, 8'h12 );
+		write_memory( 16'h8000, 8'h12 );
+		assert( ff_address == 16'h0000 );
+		assert( ff_wdata == 8'h00 );
+
+		ff_address = 16'h0000;
+		ff_wdata = 8'h00;
+		write_memory( 16'h8123, 8'h88 );
+		assert( ff_address == 16'h0000 );
+		assert( ff_wdata == 8'h00 );
+
+		ff_address = 16'h0000;
+		ff_wdata = 8'h00;
+		write_memory( 16'h8800, 8'h87 );
+		assert( ff_address == 16'h0000 );
+		assert( ff_wdata == 8'h00 );
+
+		ff_address = 16'h0000;
+		ff_wdata = 8'h00;
+		write_memory( 16'h8ABC, 8'h47 );
+		assert( ff_address == 16'h0000 );
+		assert( ff_wdata == 8'h00 );
+
+		ff_address = 16'h0000;
+		ff_wdata = 8'h00;
+		write_memory( 16'h9000, 8'h56 );
+		assert( ff_address == 16'h0000 );
+		assert( ff_wdata == 8'h00 );
+
+		ff_address = 16'h0000;
+		ff_wdata = 8'h00;
+		write_memory( 16'h9123, 8'hF0 );
+		assert( ff_address == 16'h0000 );
+		assert( ff_wdata == 8'h00 );
+
+		ff_address = 16'h0000;
+		ff_wdata = 8'h00;
+		write_memory( 16'h9800, 8'hCD );
+		assert( ff_address == 16'h0000 );
+		assert( ff_wdata == 8'h00 );
+
+		ff_address = 16'h0000;
+		ff_wdata = 8'h00;
+		write_memory( 16'h9ABC, 8'hAB );
+		assert( ff_address == 16'h0000 );
+		assert( ff_wdata == 8'h00 );
+
+		ff_address = 16'h0000;
+		ff_wdata = 8'h00;
+		write_memory( 16'h9FFF, 8'h23 );
 		assert( ff_address == 16'h0000 );
 		assert( ff_wdata == 8'h00 );
 
@@ -665,6 +724,184 @@ module tb ();
 		n_reset			= 1;
 		@( posedge clk );
 
+		test_no			= 501;
+		$display( "-- 501: Read bank and check read address" );
+		check_bank( 16'h0000, 16'h1FFF, 8'h02, "bank2 mirror" );
+		check_bank( 16'h2000, 16'h3FFF, 8'h03, "bank3 mirror" );
+		check_bank( 16'h4000, 16'h5FFF, 8'h00, "bank0" );
+		check_bank( 16'h6000, 16'h7FFF, 8'h01, "bank1" );
+		check_bank( 16'h8000, 16'h9FFF, 8'h02, "bank2" );
+		check_bank( 16'hA000, 16'hBFFF, 8'h03, "bank3" );
+		check_bank( 16'hC000, 16'hDFFF, 8'h00, "bank0 mirror" );
+		check_bank( 16'hE000, 16'hFFFF, 8'h01, "bank1 mirror" );
+
+		test_no			= 502;
+		$display( "-- 502: Write bank registers" );
+		write_memory( 16'h5000, 8'h12 );
+		write_memory( 16'h7000, 8'h34 );
+		write_memory( 16'h9000, 8'h56 );
+		write_memory( 16'hB000, 8'h78 );
+		$display( "-- 502: Read bank and check read address" );
+		check_bank( 16'h0000, 16'h1FFF, 8'h56, "bank2 mirror" );
+		check_bank( 16'h2000, 16'h3FFF, 8'h78, "bank3 mirror" );
+		check_bank( 16'h4000, 16'h5FFF, 8'h12, "bank0" );
+		check_bank( 16'h6000, 16'h7FFF, 8'h34, "bank1" );
+		check_bank( 16'h8000, 16'h9FFF, 8'h56, "bank2" );
+		check_bank( 16'hA000, 16'hBFFF, 8'h78, "bank3" );
+		check_bank( 16'hC000, 16'hDFFF, 8'h12, "bank0 mirror" );
+		check_bank( 16'hE000, 16'hFFFF, 8'h34, "bank1 mirror" );
+
+		test_no			= 503;
+		$display( "-- 503: Write bank registers" );
+		write_memory( 16'h57FF, 8'h9A );
+		write_memory( 16'h77FF, 8'hBC );
+		write_memory( 16'h97FF, 8'hDE );
+		write_memory( 16'hB7FF, 8'hF0 );
+		$display( "-- 503: Read bank and check read address" );
+		check_bank( 16'h0000, 16'h1FFF, 8'hDE, "bank2 mirror" );
+		check_bank( 16'h2000, 16'h3FFF, 8'hF0, "bank3 mirror" );
+		check_bank( 16'h4000, 16'h5FFF, 8'h9A, "bank0" );
+		check_bank( 16'h6000, 16'h7FFF, 8'hBC, "bank1" );
+		check_bank( 16'h8000, 16'h9FFF, 8'hDE, "bank2" );
+		check_bank( 16'hA000, 16'hBFFF, 8'hF0, "bank3" );
+		check_bank( 16'hC000, 16'hDFFF, 8'h9A, "bank0 mirror" );
+		check_bank( 16'hE000, 16'hFFFF, 8'hBC, "bank1 mirror" );
+
+		test_no			= 504;
+		$display( "-- 504: Write invalid registers" );
+		write_memory( 16'h4000, 8'h12 );
+		write_memory( 16'h6000, 8'h34 );
+		write_memory( 16'h8000, 8'h56 );
+		write_memory( 16'hA000, 8'h78 );
+		$display( "-- 504: Read bank and check read address" );
+		check_bank( 16'h0000, 16'h1FFF, 8'hDE, "bank2 mirror" );
+		check_bank( 16'h2000, 16'h3FFF, 8'hF0, "bank3 mirror" );
+		check_bank( 16'h4000, 16'h5FFF, 8'h9A, "bank0" );
+		check_bank( 16'h6000, 16'h7FFF, 8'hBC, "bank1" );
+		check_bank( 16'h8000, 16'h9FFF, 8'hDE, "bank2" );
+		check_bank( 16'hA000, 16'hBFFF, 8'hF0, "bank3" );
+		check_bank( 16'hC000, 16'hDFFF, 8'h9A, "bank0 mirror" );
+		check_bank( 16'hE000, 16'hFFFF, 8'hBC, "bank1 mirror" );
+
+		test_no			= 505;
+		$display( "-- 505: Write invalid registers" );
+		write_memory( 16'h4FFF, 8'h12 );
+		write_memory( 16'h6FFF, 8'h34 );
+		write_memory( 16'h8FFF, 8'h56 );
+		write_memory( 16'hAFFF, 8'h78 );
+		$display( "-- 505: Read bank and check read address" );
+		check_bank( 16'h0000, 16'h1FFF, 8'hDE, "bank2 mirror" );
+		check_bank( 16'h2000, 16'h3FFF, 8'hF0, "bank3 mirror" );
+		check_bank( 16'h4000, 16'h5FFF, 8'h9A, "bank0" );
+		check_bank( 16'h6000, 16'h7FFF, 8'hBC, "bank1" );
+		check_bank( 16'h8000, 16'h9FFF, 8'hDE, "bank2" );
+		check_bank( 16'hA000, 16'hBFFF, 8'hF0, "bank3" );
+		check_bank( 16'hC000, 16'hDFFF, 8'h9A, "bank0 mirror" );
+		check_bank( 16'hE000, 16'hFFFF, 8'hBC, "bank1 mirror" );
+
+		test_no			= 506;
+		$display( "-- 506: Write invalid registers" );
+		write_memory( 16'h5800, 8'h12 );
+		write_memory( 16'h7800, 8'h34 );
+		write_memory( 16'h9800, 8'h56 );
+		write_memory( 16'hB800, 8'h78 );
+		$display( "-- 506: Read bank and check read address" );
+		check_bank( 16'h0000, 16'h1FFF, 8'hDE, "bank2 mirror" );
+		check_bank( 16'h2000, 16'h3FFF, 8'hF0, "bank3 mirror" );
+		check_bank( 16'h4000, 16'h5FFF, 8'h9A, "bank0" );
+		check_bank( 16'h6000, 16'h7FFF, 8'hBC, "bank1" );
+		check_bank( 16'h8000, 16'h9FFF, 8'hDE, "bank2" );
+		check_bank( 16'hA000, 16'hBFFF, 8'hF0, "bank3" );
+		check_bank( 16'hC000, 16'hDFFF, 8'h9A, "bank0 mirror" );
+		check_bank( 16'hE000, 16'hFFFF, 8'hBC, "bank1 mirror" );
+
+		test_no			= 507;
+		$display( "-- 507: Write invalid registers" );
+		write_memory( 16'h5FFF, 8'h12 );
+		write_memory( 16'h7FFF, 8'h34 );
+		write_memory( 16'h9FFF, 8'h56 );
+		write_memory( 16'hBFFF, 8'h78 );
+		$display( "-- 507: Read bank and check read address" );
+		check_bank( 16'h0000, 16'h1FFF, 8'hDE, "bank2 mirror" );
+		check_bank( 16'h2000, 16'h3FFF, 8'hF0, "bank3 mirror" );
+		check_bank( 16'h4000, 16'h5FFF, 8'h9A, "bank0" );
+		check_bank( 16'h6000, 16'h7FFF, 8'hBC, "bank1" );
+		check_bank( 16'h8000, 16'h9FFF, 8'hDE, "bank2" );
+		check_bank( 16'hA000, 16'hBFFF, 8'hF0, "bank3" );
+		check_bank( 16'hC000, 16'hDFFF, 8'h9A, "bank0 mirror" );
+		check_bank( 16'hE000, 16'hFFFF, 8'hBC, "bank1 mirror" );
+
+		test_no			= 508;
+		$display( "-- 508: Write bank registers" );
+		write_memory( 16'h5000, 8'h3f );
+		write_memory( 16'h7000, 8'h3f );
+		write_memory( 16'h9000, 8'h3f );
+		write_memory( 16'hB000, 8'h3f );
+		$display( "-- 508: Read bank and check read address" );
+		check_bank( 16'h0000, 16'h1FFF, 8'h3F, "bank2 mirror" );
+		check_bank( 16'h2000, 16'h3FFF, 8'h3F, "bank3 mirror" );
+		check_bank( 16'h4000, 16'h5FFF, 8'h3F, "bank0" );
+		check_bank( 16'h6000, 16'h7FFF, 8'h3F, "bank1" );
+		check_bank( 16'hA000, 16'hBFFF, 8'h3F, "bank3" );
+		check_bank( 16'hC000, 16'hDFFF, 8'h3F, "bank0 mirror" );
+		check_bank( 16'hE000, 16'hFFFF, 8'h3F, "bank1 mirror" );
+
+		test_no			= 509;
+		$display( "-- 509: Read/Write SCC bank" );
+		ff_address = 16'h0000;
+		ff_wdata = 8'h00;
+		write_memory( 16'h8000, 8'h12 );
+		assert( ff_address == 16'h0000 );
+		assert( ff_wdata == 8'h00 );
+
+		ff_address = 16'h0000;
+		ff_wdata = 8'h00;
+		write_memory( 16'h8123, 8'h88 );
+		assert( ff_address == 16'h0000 );
+		assert( ff_wdata == 8'h00 );
+
+		ff_address = 16'h0000;
+		ff_wdata = 8'h00;
+		write_memory( 16'h8800, 8'h87 );
+		assert( ff_address == 16'h0000 );
+		assert( ff_wdata == 8'h00 );
+
+		ff_address = 16'h0000;
+		ff_wdata = 8'h00;
+		write_memory( 16'h8ABC, 8'h47 );
+		assert( ff_address == 16'h0000 );
+		assert( ff_wdata == 8'h00 );
+
+		ff_address = 16'h0000;
+		ff_wdata = 8'h00;
+		write_memory( 16'h9000, 8'h56 );
+		assert( ff_address == 16'h0000 );
+		assert( ff_wdata == 8'h00 );
+
+		ff_address = 16'h0000;
+		ff_wdata = 8'h00;
+		write_memory( 16'h9123, 8'hF0 );
+		assert( ff_address == 16'h0000 );
+		assert( ff_wdata == 8'h00 );
+
+		ff_address = 16'h0000;
+		ff_wdata = 8'h00;
+		write_memory( 16'h9800, 8'hCD );
+		assert( ff_address == 16'h0000 );
+		assert( ff_wdata == 8'h00 );
+
+		ff_address = 16'h0000;
+		ff_wdata = 8'h00;
+		write_memory( 16'h9ABC, 8'hAB );
+		assert( ff_address == 16'h0000 );
+		assert( ff_wdata == 8'h00 );
+
+		ff_address = 16'h0000;
+		ff_wdata = 8'h00;
+		write_memory( 16'h9FFF, 8'h23 );
+		assert( ff_address == 16'h0000 );
+		assert( ff_wdata == 8'h00 );
+
 		// --------------------------------------------------------------------
 		//	check MODE6:Generic8
 		// --------------------------------------------------------------------
@@ -677,7 +914,8 @@ module tb ();
 		n_reset			= 1;
 		@( posedge clk );
 
-		$display( "-- Read bank and check read address" );
+		test_no			= 601;
+		$display( "-- 601: Read bank and check read address" );
 		check_bank( 16'h0000, 16'h1FFF, 8'h02, "bank2 mirror" );
 		check_bank( 16'h2000, 16'h3FFF, 8'h03, "bank3 mirror" );
 		check_bank( 16'h4000, 16'h5FFF, 8'h00, "bank0" );
@@ -687,12 +925,13 @@ module tb ();
 		check_bank( 16'hC000, 16'hDFFF, 8'h00, "bank0 mirror" );
 		check_bank( 16'hE000, 16'hFFFF, 8'h01, "bank1 mirror" );
 
-		$display( "-- Write bank registers" );
+		test_no			= 602;
+		$display( "-- 602: Write bank registers" );
 		write_memory( 16'h4000, 8'h12 );
 		write_memory( 16'h6000, 8'h34 );
 		write_memory( 16'h8000, 8'h56 );
 		write_memory( 16'hA000, 8'h78 );
-		$display( "-- Read bank and check read address" );
+		$display( "-- 602: Read bank and check read address" );
 		check_bank( 16'h0000, 16'h1FFF, 8'h56, "bank2 mirror" );
 		check_bank( 16'h2000, 16'h3FFF, 8'h78, "bank3 mirror" );
 		check_bank( 16'h4000, 16'h5FFF, 8'h12, "bank0" );
@@ -702,12 +941,13 @@ module tb ();
 		check_bank( 16'hC000, 16'hDFFF, 8'h12, "bank0 mirror" );
 		check_bank( 16'hE000, 16'hFFFF, 8'h34, "bank1 mirror" );
 
-		$display( "-- Write bank registers" );
+		test_no			= 603;
+		$display( "-- 603: Write bank registers" );
 		write_memory( 16'h47FF, 8'h9A );
 		write_memory( 16'h67FF, 8'hBC );
 		write_memory( 16'h87FF, 8'hDE );
 		write_memory( 16'hA7FF, 8'hF0 );
-		$display( "-- Read bank and check read address" );
+		$display( "-- 603: Read bank and check read address" );
 		check_bank( 16'h0000, 16'h1FFF, 8'hDE, "bank2 mirror" );
 		check_bank( 16'h2000, 16'h3FFF, 8'hF0, "bank3 mirror" );
 		check_bank( 16'h4000, 16'h5FFF, 8'h9A, "bank0" );
@@ -717,12 +957,13 @@ module tb ();
 		check_bank( 16'hC000, 16'hDFFF, 8'h9A, "bank0 mirror" );
 		check_bank( 16'hE000, 16'hFFFF, 8'hBC, "bank1 mirror" );
 
-		$display( "-- Write bank registers" );
+		test_no			= 604;
+		$display( "-- 604: Write bank registers" );
 		write_memory( 16'h5000, 8'hA9 );
 		write_memory( 16'h7000, 8'hCB );
 		write_memory( 16'h9000, 8'hED );
 		write_memory( 16'hB000, 8'h0F );
-		$display( "-- Read bank and check read address" );
+		$display( "-- 604: Read bank and check read address" );
 		check_bank( 16'h0000, 16'h1FFF, 8'hED, "bank2 mirror" );
 		check_bank( 16'h2000, 16'h3FFF, 8'h0F, "bank3 mirror" );
 		check_bank( 16'h4000, 16'h5FFF, 8'hA9, "bank0" );
@@ -732,12 +973,13 @@ module tb ();
 		check_bank( 16'hC000, 16'hDFFF, 8'hA9, "bank0 mirror" );
 		check_bank( 16'hE000, 16'hFFFF, 8'hCB, "bank1 mirror" );
 
-		$display( "-- Write bank registers" );
+		test_no			= 605;
+		$display( "-- 605: Write bank registers" );
 		write_memory( 16'h57FF, 8'hED );
 		write_memory( 16'h77FF, 8'h0F );
 		write_memory( 16'h97FF, 8'hA9 );
 		write_memory( 16'hB7FF, 8'hCB );
-		$display( "-- Read bank and check read address" );
+		$display( "-- 605: Read bank and check read address" );
 		check_bank( 16'h0000, 16'h1FFF, 8'hA9, "bank2 mirror" );
 		check_bank( 16'h2000, 16'h3FFF, 8'hCB, "bank3 mirror" );
 		check_bank( 16'h4000, 16'h5FFF, 8'hED, "bank0" );
@@ -747,12 +989,13 @@ module tb ();
 		check_bank( 16'hC000, 16'hDFFF, 8'hED, "bank0 mirror" );
 		check_bank( 16'hE000, 16'hFFFF, 8'h0F, "bank1 mirror" );
 
-		$display( "-- Write invalid registers" );
+		test_no			= 606;
+		$display( "-- 606: Write invalid registers" );
 		write_memory( 16'h4800, 8'h12 );
 		write_memory( 16'h6800, 8'h34 );
 		write_memory( 16'h8800, 8'h56 );
 		write_memory( 16'hA800, 8'h78 );
-		$display( "-- Read bank and check read address" );
+		$display( "-- 606: Read bank and check read address" );
 		check_bank( 16'h0000, 16'h1FFF, 8'hA9, "bank2 mirror" );
 		check_bank( 16'h2000, 16'h3FFF, 8'hCB, "bank3 mirror" );
 		check_bank( 16'h4000, 16'h5FFF, 8'hED, "bank0" );
@@ -762,12 +1005,13 @@ module tb ();
 		check_bank( 16'hC000, 16'hDFFF, 8'hED, "bank0 mirror" );
 		check_bank( 16'hE000, 16'hFFFF, 8'h0F, "bank1 mirror" );
 
-		$display( "-- Write invalid registers" );
+		test_no			= 607;
+		$display( "-- 607: Write invalid registers" );
 		write_memory( 16'h4FFF, 8'h9A );
 		write_memory( 16'h6FFF, 8'hBC );
 		write_memory( 16'h8FFF, 8'hDE );
 		write_memory( 16'hAFFF, 8'hF0 );
-		$display( "-- Read bank and check read address" );
+		$display( "-- 607: Read bank and check read address" );
 		check_bank( 16'h0000, 16'h1FFF, 8'hA9, "bank2 mirror" );
 		check_bank( 16'h2000, 16'h3FFF, 8'hCB, "bank3 mirror" );
 		check_bank( 16'h4000, 16'h5FFF, 8'hED, "bank0" );
@@ -777,12 +1021,13 @@ module tb ();
 		check_bank( 16'hC000, 16'hDFFF, 8'hED, "bank0 mirror" );
 		check_bank( 16'hE000, 16'hFFFF, 8'h0F, "bank1 mirror" );
 
-		$display( "-- Write invalid registers" );
+		test_no			= 608;
+		$display( "-- 608: Write invalid registers" );
 		write_memory( 16'h5800, 8'hA9 );
 		write_memory( 16'h7800, 8'hCB );
 		write_memory( 16'h9800, 8'hED );
 		write_memory( 16'hB800, 8'h0F );
-		$display( "-- Read bank and check read address" );
+		$display( "-- 608: Read bank and check read address" );
 		check_bank( 16'h0000, 16'h1FFF, 8'hA9, "bank2 mirror" );
 		check_bank( 16'h2000, 16'h3FFF, 8'hCB, "bank3 mirror" );
 		check_bank( 16'h4000, 16'h5FFF, 8'hED, "bank0" );
@@ -792,12 +1037,13 @@ module tb ();
 		check_bank( 16'hC000, 16'hDFFF, 8'hED, "bank0 mirror" );
 		check_bank( 16'hE000, 16'hFFFF, 8'h0F, "bank1 mirror" );
 
-		$display( "-- Write invalid registers" );
+		test_no			= 609;
+		$display( "-- 609: Write invalid registers" );
 		write_memory( 16'h5FFF, 8'h11 );
 		write_memory( 16'h7FFF, 8'h22 );
 		write_memory( 16'h9FFF, 8'h33 );
 		write_memory( 16'hBFFF, 8'h44 );
-		$display( "-- Read bank and check read address" );
+		$display( "-- 609: Read bank and check read address" );
 		check_bank( 16'h0000, 16'h1FFF, 8'hA9, "bank2 mirror" );
 		check_bank( 16'h2000, 16'h3FFF, 8'hCB, "bank3 mirror" );
 		check_bank( 16'h4000, 16'h5FFF, 8'hED, "bank0" );
