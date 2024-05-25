@@ -140,12 +140,12 @@ module ip_megarom #(
 	// --------------------------------------------------------------------
 	//	SCC/SCC-I Mapper
 	// --------------------------------------------------------------------
-	assign w_scc_b0		= (bus_address[15:11] == 5'b01010);		// 16'b010X_0XXX_XXXX_XXXX : 5000h-57FFh
-	assign w_scc_b1		= (bus_address[15:11] == 5'b01110);		// 16'b011X_0XXX_XXXX_XXXX : 7000h-77FFh
-	assign w_scc_b2		= (bus_address[15:11] == 5'b10010);		// 16'b100X_0XXX_XXXX_XXXX : 9000h-97FFh
-	assign w_scc_b3		= (bus_address[15:11] == 5'b10110);		// 16'b101X_0XXX_XXXX_XXXX : B000h-B7FFh
-	assign w_scc		= (bus_address[15:13] == 3'b100) && (ff_bank2 == 8'h3f) && ((mode == c_mode_sccp) || (mode == c_mode_scc));
-	assign w_sccp		= (bus_address[15:13] == 3'b101) && (ff_bank3 == 8'h3f) &&  (mode == c_mode_sccp) && ff_sccp_en;
+	assign w_scc_b0		= (bus_address[15:11] == 5'b01010) && !ff_sccp_ram_en;		// 16'b010X_0XXX_XXXX_XXXX : 5000h-57FFh
+	assign w_scc_b1		= (bus_address[15:11] == 5'b01110) && !ff_sccp_ram_en;		// 16'b011X_0XXX_XXXX_XXXX : 7000h-77FFh
+	assign w_scc_b2		= (bus_address[15:11] == 5'b10010) && !ff_sccp_ram_en;		// 16'b100X_0XXX_XXXX_XXXX : 9000h-97FFh
+	assign w_scc_b3		= (bus_address[15:11] == 5'b10110) && !ff_sccp_ram_en;		// 16'b101X_0XXX_XXXX_XXXX : B000h-B7FFh
+	assign w_scc		= (bus_address[15:13] == 3'b100) && (ff_bank2 == 8'h3f) && ~ff_sccp_en && ((mode == c_mode_sccp) || (mode == c_mode_scc));
+	assign w_sccp		= (bus_address[15:13] == 3'b101) &&  ff_bank3[7]        &&  ff_sccp_en;
 	assign w_sccp_mode	= (bus_address[15:1] == 16'b1011_1111_1111_111) && (mode == c_mode_sccp) && bus_write;
 
 	// --------------------------------------------------------------------
@@ -160,9 +160,12 @@ module ip_megarom #(
 			ff_sccp_en		<= bus_write_data[5];
 			ff_sccp_ram_en	<= bus_write_data[4];
 		end
-		else begin
+		else if( mode != c_mode_sccp ) begin
 			ff_sccp_en		<= 1'b0;
 			ff_sccp_ram_en	<= 1'b0;
+		end
+		else begin
+			//	hold
 		end
 	end
 
@@ -280,7 +283,7 @@ module ip_megarom #(
 	                  		  (bus_address[14:13] == 2'b00) ? ff_bank2 : ff_bank3;
 	assign address			= { address_h, w_address_m, bus_address[12:0] };
 	assign rd				= bus_memory & bus_read & ~(w_scc | w_sccp);
-	assign wr				= bus_memory & bus_write & ff_sccp_ram_en & ~(w_scc | w_sccp | w_sccp_mode);
+	assign wr				= bus_memory & bus_write & ff_sccp_ram_en & ~w_sccp_mode;
 	assign wdata			= bus_write_data;
 	assign bus_read_ready	= rdata_en;
 	assign bus_read_data	= rdata;

@@ -1,5 +1,5 @@
 # vsim -c -t 1ps -do "run.do" tb 
-# Start time: 12:25:41 on May 25,2024
+# Start time: 20:44:57 on May 25,2024
 # Loading sv_std.std
 # Loading work.tb
 # Loading work.ip_megarom
@@ -266,7 +266,7 @@
 # ---- bank3
 # ---- bank0 mirror
 # ---- bank1 mirror
-# -- 508: Write bank registers
+# -- 508: Write bank#3Fh with SCC Compatible Mode
 # -- 508: Read bank and check read address
 # ---- bank2 mirror
 # ---- bank3 mirror
@@ -276,6 +276,54 @@
 # ---- bank0 mirror
 # ---- bank1 mirror
 # -- 509: Read/Write SCC bank
+# -- 510: Write bank#80h with SCC Compatible Mode
+# -- 510: Read bank and check read address
+# ---- bank2 mirror
+# ---- bank3 mirror
+# ---- bank0
+# ---- bank1
+# ---- bank2
+# ---- bank3
+# ---- bank0 mirror
+# ---- bank1 mirror
+# -- 511: Write bank#3Fh with SCC+ Mode
+# -- 511: Read bank and check read address
+# ---- bank2 mirror
+# ---- bank3 mirror
+# ---- bank0
+# ---- bank1
+# ---- bank2
+# ---- bank3
+# ---- bank0 mirror
+# ---- bank1 mirror
+# -- 512: Write bank#80h with SCC+ Mode
+# -- 510: Read bank and check read address
+# ---- bank2 mirror
+# ---- bank3 mirror
+# ---- bank0
+# ---- bank1
+# ---- bank2
+# ---- bank0 mirror
+# ---- bank1 mirror
+# -- 513: Read/Write SCC bank
+# -- 513: DRAM Mode
+# ---- Bank2 Mirror
+# ---- Bank3 Mirror
+# ---- Bank0
+# ---- Bank1
+# ---- Bank2
+# ---- Bank3
+# ---- Bank0 Mirror
+# ---- Bank1 Mirror
+# -- 514: DRAM Mode
+# ---- Bank2 Mirror
+# ---- Bank3 Mirror
+# ---- Bank0
+# ---- Bank1
+# ---- Bank2
+# ---- Bank3
+# ---- Bank0 Mirror
+# ---- Bank1 Mirror
 # 600: Check Generic8 mode
 # -- 601: Read bank and check read address
 # ---- bank2 mirror
@@ -456,7 +504,7 @@
 # ---- bank3
 # ---- bank0 mirror
 # ---- bank1 mirror
-# ** Note: $finish    : tb.sv(1199)
-#    Time: 694976000880 ps  Iteration: 1  Instance: /tb
-# End time: 12:28:18 on May 25,2024, Elapsed time: 0:02:37
+# ** Note: $finish    : tb.sv(1360)
+#    Time: 793763656560 ps  Iteration: 1  Instance: /tb
+# End time: 20:47:51 on May 25,2024, Elapsed time: 0:02:54
 # Errors: 0, Warnings: 0
