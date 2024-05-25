@@ -51,7 +51,8 @@ module ip_megarom #(
 	input	[7:0]	rdata,
 	input			rdata_en,
 	output			scc_bank_en,
-	output			sccp_bank_en
+	output			sccp_bank_en,
+	output			sccp_en
 );
 	localparam c_mode_asc8		= 3'd0;
 	localparam c_mode_asc16		= 3'd1;
@@ -289,4 +290,5 @@ module ip_megarom #(
 	assign bus_read_data	= rdata;
 	assign scc_bank_en		= w_scc;
 	assign sccp_bank_en		= w_sccp;
+	assign sccp_en			= ff_sccp_en;
 endmodule

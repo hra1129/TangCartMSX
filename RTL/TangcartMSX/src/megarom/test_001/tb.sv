@@ -51,6 +51,7 @@ module tb ();
 	reg				rdata_en;
 	wire			scc_bank_en;
 	wire			sccp_bank_en;
+	wire			sccp_en,
 	integer			test_no;
 	reg		[21:0]	ff_address;
 	reg		[7:0]	ff_wdata;
@@ -84,7 +85,8 @@ module tb ();
 		.rdata				( rdata				),
 		.rdata_en			( rdata_en			),
 		.scc_bank_en		( scc_bank_en		),
-		.sccp_bank_en		( sccp_bank_en		)
+		.sccp_bank_en		( sccp_bank_en		),
+		.sccp_en			( sccp_en			)
 	);
 
 	// --------------------------------------------------------------------
