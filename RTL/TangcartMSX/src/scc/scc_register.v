@@ -27,6 +27,7 @@ module scc_register (
 	input				enable,					//	21.47727MHz
 	input				wr,
 	input				rd,
+	output				ready,
 	input		[12:0]	address,
 	input		[7:0]	wrdata,
 	output		[7:0]	rddata,
@@ -85,6 +86,7 @@ module scc_register (
 	reg				ff_clear_counter_e0;
 
 	reg		[7:0]	ff_rddata;
+	reg				ff_ready;
 	reg				ff_wave_reset;
 
 	// Wave memory ------------------------------------------------------------
@@ -197,7 +199,7 @@ module scc_register (
 			ff_reg_enable_e0			<= 'd0;
 			ff_reg_frequency_count_e0	<= 'd0;
 
-			ff_wave_reset			<= 1'b0;
+			ff_wave_reset				<= 1'b0;
 		end
 		else if( wr ) begin
 			if( scc_en && (address[7:4] == 4'h8) ) begin
@@ -276,7 +278,17 @@ module scc_register (
 		end
 	end
 
-	assign rddata = ff_rddata;
+	always @( negedge nreset or posedge clk ) begin
+		if( !nreset ) begin
+			ff_ready <= 1'b0;
+		end
+		else begin
+			ff_ready <= sram_q_en;
+		end
+	end
+
+	assign rddata	= ff_ready ? ff_rddata : 8'd0;
+	assign ready	= ff_ready;
 
 	// Tone Parameters --------------------------------------------------------
 	scc_selector #( 12 ) u_wave_frequency_count_selector0 (

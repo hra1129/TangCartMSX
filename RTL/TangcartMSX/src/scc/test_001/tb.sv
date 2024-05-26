@@ -41,7 +41,7 @@ module tb ();
 	reg				sccp_en;
 	wire	[10:0]	sound_out;		//	digital sound wire (11 bits)
 	reg		[1:0]	ff_enable;
-	integer			i;
+	integer			test_no;
 
 	// --------------------------------------------------------------------
 	//	DUT
@@ -85,6 +85,84 @@ module tb ();
 	assign enable = ( ff_enable == 2'd2 );
 
 	// --------------------------------------------------------------------
+	//	Tasks
+	// --------------------------------------------------------------------
+	task write_memory(
+		input	[15:0]	address,
+		input	[7:0]	data
+	);
+		bus_address		<= address;
+		bus_write_data	<= data;
+		bus_write		<= 1'b1;
+		bus_memory		<= 1'b1;
+		@( posedge clk );
+
+		bus_address		<= 'd0;
+		bus_write_data	<= 'd0;
+		bus_write		<= 1'b0;
+		bus_memory		<= 1'b0;
+		@( posedge clk );
+		@( posedge clk );
+		@( posedge clk );
+	endtask: write_memory
+
+	task read_memory(
+		input	[15:0]	address,
+		input	[7:0]	data
+	);
+		integer count;
+	
+		bus_address		<= address;
+		bus_read		<= 1'b1;
+		bus_memory		<= 1'b1;
+		@( posedge clk );
+
+		bus_address		<= 'd0;
+		bus_read		<= 1'b0;
+		bus_memory		<= 1'b0;
+		@( posedge clk );
+
+		count = 0;
+		while( !bus_read_ready && count < 100 ) begin
+			@( posedge clk );
+			count = count + 1;
+		end
+
+		assert( count < 100 );
+		assert( bus_read_data == data );
+		@( posedge clk );
+		@( posedge clk );
+		@( posedge clk );
+	endtask: read_memory
+
+	task read_memory_timeout(
+		input	[15:0]	address
+	);
+		int counter;
+
+		bus_address		<= address;
+		bus_read		<= 1'b1;
+		bus_memory		<= 1'b1;
+		@( posedge clk );
+
+		bus_address		<= 'd0;
+		bus_read		<= 1'b0;
+		bus_memory		<= 1'b0;
+		@( posedge clk );
+
+		counter = 0;
+		while( !bus_read_ready && counter < 10 ) begin
+			@( posedge clk );
+			counter = counter + 1;
+		end
+
+		assert( bus_read_ready == 1'b0 );
+		@( posedge clk );
+		@( posedge clk );
+		@( posedge clk );
+	endtask: read_memory_timeout
+
+	// --------------------------------------------------------------------
 	//	Test bench
 	// --------------------------------------------------------------------
 	initial begin
@@ -105,6 +183,22 @@ module tb ();
 
 		n_reset			= 1;
 		repeat( 10 ) @( posedge clk );
+
+		// --------------------------------------------------------------------
+		//	Check for inaccessibility when the enable signal is low.
+		// --------------------------------------------------------------------
+		test_no			= 0;
+		$display( "000: Check for inaccessibility when the enable signal is low." );
+		scc_bank_en = 0;
+		sccp_bank_en = 0;
+		sccp_en = 0;
+
+		read_memory_timeout( 'h9800 );
+		read_memory_timeout( 'h9F00 );
+		read_memory_timeout( 'h9FFF );
+		read_memory_timeout( 'hB800 );
+		read_memory_timeout( 'hBF00 );
+		read_memory_timeout( 'hBFFD );
 
 		$finish;
 	end
