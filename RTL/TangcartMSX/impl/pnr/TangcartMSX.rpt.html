@@ -83,7 +83,7 @@ table.detail_table th.label {  min-width: 8%; width: 8%; }
 </tr>
 <tr>
 <td class="label">Created Time</td>
-<td>Mon May 20 06:52:30 2024
+<td>Mon May 27 21:10:47 2024
 </td>
 </tr>
 <tr>
@@ -97,28 +97,24 @@ table.detail_table th.label {  min-width: 8%; width: 8%; }
 <tr>
 <td class="label">Place & Route Process</td>
 <td>Running placement:
-   Placement Phase 0: CPU time = 0h 0m 0s, Elapsed time = 0h 0m 0s
-   Placement Phase 1: CPU time = 0h 0m 0s, Elapsed time = 0h 0m 0s
-   Placement Phase 2: CPU time = 0h 0m 0s, Elapsed time = 0h 0m 0s
-   Placement Phase 3: CPU time = 0h 0m 0s, Elapsed time = 0h 0m 0s
-   ERROR  (PR2028) : The constrained location is useless in current package
-   ERROR  (PR2017) : 'srom_sclk' cannot be placed according to constraint, for the location is a dedicated pin (MSPI)
-   ERROR  (PR2028) : The constrained location is useless in current package
-   ERROR  (PR2017) : 'srom_mosi' cannot be placed according to constraint, for the location is a dedicated pin (MSPI)
-   ERROR  (PR2028) : The constrained location is useless in current package
-   ERROR  (PR2017) : 'srom_cs' cannot be placed according to constraint, for the location is a dedicated pin (MSPI)
-   ERROR  (PR2028) : The constrained location is useless in current package
-   ERROR  (PR2017) : 'srom_miso' cannot be placed according to constraint, for the location is a dedicated pin (MSPI)
-   Total Placement: CPU time = 0h 0m 0s, Elapsed time = 0h 0m 0s
+   Placement Phase 0: CPU time = 0h 0m 0.026s, Elapsed time = 0h 0m 0.026s
+   Placement Phase 1: CPU time = 0h 0m 0.089s, Elapsed time = 0h 0m 0.089s
+   Placement Phase 2: CPU time = 0h 0m 0.009s, Elapsed time = 0h 0m 0.01s
+   Placement Phase 3: CPU time = 0h 0m 1s, Elapsed time = 0h 0m 1s
+   Total Placement: CPU time = 0h 0m 1s, Elapsed time = 0h 0m 1s
 Running routing:
-   ---
+   Routing Phase 0: CPU time = 0h 0m 0s, Elapsed time = 0h 0m 0s
+   Routing Phase 1: CPU time = 0h 0m 0.201s, Elapsed time = 0h 0m 0.201s
+   Routing Phase 2: CPU time = 0h 0m 0.096s, Elapsed time = 0h 0m 0.097s
+   Routing Phase 3: CPU time = 0h 0m 0s, Elapsed time = 0h 0m 0s
+   Total Routing: CPU time = 0h 0m 0.297s, Elapsed time = 0h 0m 0.298s
 Generate output files:
-   CPU time = 0h 0m 0s, Elapsed time = 0h 0m 0s
+   CPU time = 0h 0m 0.817s, Elapsed time = 0h 0m 0.817s
 </td>
 </tr>
 <tr>
 <td class="label">Total Time and Memory Usage</td>
-<td>CPU time = 0h 0m 0s, Elapsed time = 0h 0m 0s, Peak memory usage = 337MB</td>
+<td>CPU time = 0h 0m 2s, Elapsed time = 0h 0m 2s, Peak memory usage = 371MB</td>
 </tr>
 </table>
 <br/>
@@ -133,12 +129,12 @@ Generate output files:
 </tr>
 <tr>
 <td class="label">Logic</td>
-<td>122/8640</td>
+<td>124/8640</td>
 <td>2%</td>
 </tr>
 <tr>
 <td class="label">&nbsp &nbsp --LUT,ALU,ROM16</td>
-<td>122(114 LUT, 8 ALU, 0 ROM16)</td>
+<td>124(114 LUT, 10 ALU, 0 ROM16)</td>
 <td>-</td>
 </tr>
 <tr>
@@ -158,7 +154,7 @@ Generate output files:
 </tr>
 <tr>
 <td class="label">&nbsp &nbsp --Logic Register as FF</td>
-<td>93/6480</td>
+<td>84/6480</td>
 <td>2%</td>
 </tr>
 <tr>
@@ -168,13 +164,13 @@ Generate output files:
 </tr>
 <tr>
 <td class="label">&nbsp &nbsp --I/O Register as FF</td>
-<td>0/213</td>
-<td>0%</td>
+<td>9/213</td>
+<td>5%</td>
 </tr>
 <tr>
 <td class="label">CLS</td>
-<td>0/4320</td>
-<td>0%</td>
+<td>73/4320</td>
+<td>2%</td>
 </tr>
 <tr>
 <td class="label">I/O Port</td>
@@ -183,12 +179,12 @@ Generate output files:
 </tr>
 <tr>
 <td class="label">I/O Buf</td>
-<td>34</td>
+<td>38</td>
 <td>-</td>
 </tr>
 <tr>
 <td class="label"> &nbsp &nbsp --Input Buf</td>
-<td>12</td>
+<td>16</td>
 <td>-</td>
 </tr>
 <tr>
@@ -269,15 +265,71 @@ Generate output files:
 </tr>
 <tr>
 <td class="label">bank 1</td>
-<td>0/25(0%)</td>
+<td>24/25(96%)</td>
 </tr>
 <tr>
 <td class="label">bank 2</td>
-<td>0/23(0%)</td>
+<td>18/23(78%)</td>
 </tr>
 <tr>
 <td class="label">bank 3</td>
-<td>0/23(0%)</td>
+<td>16/23(69%)</td>
+</tr>
+</table>
+<br/>
+<h2><a name="Global_Clock_Usage_Summary">Global Clock Usage Summary:</a></h2>
+<table class="summary_table">
+<tr>
+<td class="label"><b>Global Clock</b></td>
+<td><b>Usage</b></td>
+</tr>
+<tr>
+<td class="label">PRIMARY</td>
+<td>1/8(13%)</td>
+</tr>
+<tr>
+<td class="label">LW</td>
+<td>1/8(13%)</td>
+</tr>
+<tr>
+<td class="label">GCLK_PIN</td>
+<td>3/3(100%)</td>
+</tr>
+<tr>
+<td class="label">PLL</td>
+<td>1/2(50%)</td>
+</tr>
+<tr>
+<td class="label">CLKDIV</td>
+<td>0/8(0%)</td>
+</tr>
+<tr>
+<td class="label">DLLDLY</td>
+<td>0/8(0%)</td>
+</tr>
+</table>
+<br/>
+<h2><a name="Global_Clock_Signals">Global Clock Signals:</a></h2>
+<table class="summary_table">
+<tr>
+<td class="label"><b>Signal</b></td>
+<td><b>Global Clock</b></td>
+<td><b>Location</b></td>
+</tr>
+<tr>
+<td class="label">clk</td>
+<td>PRIMARY</td>
+<td> PTR0 PTR1</td>
+</tr>
+<tr>
+<td class="label">n_treset_d</td>
+<td>LW</td>
+<td> -</td>
+</tr>
+<tr>
+<td class="label">sys_clk_d</td>
+<td>HCLK</td>
+<td>BOTTOM[0]</td>
 </tr>
 </table>
 <br/>
@@ -334,6 +386,24 @@ Generate output files:
 <td>NA</td>
 <td>INTERNAL</td>
 <td>NA</td>
+<td>NA</td>
+<td>3.3</td>
+</tr>
+<tr>
+<td class="label">srom_miso</td>
+<td></td>
+<td>62/1</td>
+<td>Y</td>
+<td>in</td>
+<td>IOR11[A]</td>
+<td>SSTL33_II</td>
+<td>NA</td>
+<td>UP</td>
+<td>ON</td>
+<td>NA</td>
+<td>NA</td>
+<td>INTERNAL</td>
+<td>OFF</td>
 <td>NA</td>
 <td>3.3</td>
 </tr>
@@ -982,6 +1052,60 @@ Generate output files:
 <td>NA</td>
 <td>NA</td>
 <td>NA</td>
+<td>NA</td>
+<td>3.3</td>
+</tr>
+<tr>
+<td class="label">srom_cs</td>
+<td></td>
+<td>60/1</td>
+<td>Y</td>
+<td>out</td>
+<td>IOR12[A]</td>
+<td>SSTL33_II</td>
+<td>8</td>
+<td>NONE</td>
+<td>NA</td>
+<td>NA</td>
+<td>NA</td>
+<td>NA</td>
+<td>OFF</td>
+<td>NA</td>
+<td>3.3</td>
+</tr>
+<tr>
+<td class="label">srom_mosi</td>
+<td></td>
+<td>61/1</td>
+<td>Y</td>
+<td>out</td>
+<td>IOR11[B]</td>
+<td>SSTL33_II</td>
+<td>8</td>
+<td>NONE</td>
+<td>NA</td>
+<td>NA</td>
+<td>NA</td>
+<td>NA</td>
+<td>OFF</td>
+<td>NA</td>
+<td>3.3</td>
+</tr>
+<tr>
+<td class="label">srom_sclk</td>
+<td></td>
+<td>59/1</td>
+<td>Y</td>
+<td>out</td>
+<td>IOR12[B]</td>
+<td>SSTL33_II</td>
+<td>8</td>
+<td>NONE</td>
+<td>NA</td>
+<td>NA</td>
+<td>NA</td>
+<td>NA</td>
+<td>OFF</td>
 <td>NA</td>
 <td>3.3</td>
 </tr>
@@ -2207,65 +2331,65 @@ Generate output files:
 </tr>
 <tr>
 <td class="label">62/1</td>
-<td>-</td>
+<td>srom_miso</td>
 <td>in</td>
 <td>IOR11[A]</td>
-<td>LVCMOS18</td>
+<td>SSTL33_II</td>
 <td>NA</td>
 <td>UP</td>
 <td>ON</td>
-<td>NONE</td>
 <td>NA</td>
 <td>NA</td>
-<td>NA</td>
+<td>INTERNAL</td>
+<td>OFF</td>
 <td>NA</td>
 <td>3.3</td>
 </tr>
 <tr>
 <td class="label">61/1</td>
-<td>-</td>
-<td>in</td>
+<td>srom_mosi</td>
+<td>out</td>
 <td>IOR11[B]</td>
-<td>LVCMOS18</td>
-<td>NA</td>
-<td>UP</td>
-<td>ON</td>
+<td>SSTL33_II</td>
+<td>8</td>
 <td>NONE</td>
 <td>NA</td>
 <td>NA</td>
 <td>NA</td>
+<td>NA</td>
+<td>OFF</td>
 <td>NA</td>
 <td>3.3</td>
 </tr>
 <tr>
 <td class="label">60/1</td>
-<td>-</td>
-<td>in</td>
+<td>srom_cs</td>
+<td>out</td>
 <td>IOR12[A]</td>
-<td>LVCMOS18</td>
-<td>NA</td>
-<td>UP</td>
-<td>ON</td>
+<td>SSTL33_II</td>
+<td>8</td>
 <td>NONE</td>
 <td>NA</td>
 <td>NA</td>
 <td>NA</td>
+<td>NA</td>
+<td>OFF</td>
 <td>NA</td>
 <td>3.3</td>
 </tr>
 <tr>
 <td class="label">59/1</td>
-<td>-</td>
-<td>in</td>
+<td>srom_sclk</td>
+<td>out</td>
 <td>IOR12[B]</td>
-<td>LVCMOS18</td>
-<td>NA</td>
-<td>UP</td>
-<td>ON</td>
+<td>SSTL33_II</td>
+<td>8</td>
 <td>NONE</td>
 <td>NA</td>
 <td>NA</td>
 <td>NA</td>
+<td>NA</td>
+<td>OFF</td>
 <td>NA</td>
 <td>3.3</td>
 </tr>

@@ -9,7 +9,7 @@
   "SubInsts" : [
    {
     "InstFile" : "D:/github/HRA_product/TangCartMSX/RTL/TangcartMSX/src/tangcart_msx.v",
-    "InstLine" : 123,
+    "InstLine" : 131,
     "InstName" : "u_pll",
     "ModuleFile" : "D:/github/HRA_product/TangCartMSX/RTL/TangcartMSX/src/gowin_pll/gowin_pll.v",
     "ModuleLine" : 10,
@@ -17,7 +17,7 @@
    },
    {
     "InstFile" : "D:/github/HRA_product/TangCartMSX/RTL/TangcartMSX/src/tangcart_msx.v",
-    "InstLine" : 133,
+    "InstLine" : 141,
     "InstName" : "u_msxbus",
     "ModuleFile" : "D:/github/HRA_product/TangCartMSX/RTL/TangcartMSX/src/msxbus/ip_msxbus.v",
     "ModuleLine" : 28,
@@ -25,7 +25,7 @@
    },
    {
     "InstFile" : "D:/github/HRA_product/TangCartMSX/RTL/TangcartMSX/src/tangcart_msx.v",
-    "InstLine" : 266,
+    "InstLine" : 274,
     "InstName" : "u_pwm",
     "ModuleFile" : "D:/github/HRA_product/TangCartMSX/RTL/TangcartMSX/src/pwm/ip_pwm.v",
     "ModuleLine" : 27,
@@ -33,7 +33,7 @@
    },
    {
     "InstFile" : "D:/github/HRA_product/TangCartMSX/RTL/TangcartMSX/src/tangcart_msx.v",
-    "InstLine" : 279,
+    "InstLine" : 287,
     "InstName" : "u_gpio",
     "ModuleFile" : "D:/github/HRA_product/TangCartMSX/RTL/TangcartMSX/src/gpio/ip_gpio.v",
     "ModuleLine" : 27,

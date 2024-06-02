@@ -12,31 +12,27 @@
   <Part Number>: GW1NR-LV9QN88PC6/I5
   <Device>: GW1NR-9
   <Device Version>: C
-  <Created Time>:Mon May 20 06:52:30 2024
+  <Created Time>:Mon May 27 21:10:47 2024
 
 
 2. PnR Details
 
   Running placement:
-    Placement Phase 0: CPU time = 0h 0m 0s, Elapsed time = 0h 0m 0s
-    Placement Phase 1: CPU time = 0h 0m 0s, Elapsed time = 0h 0m 0s
-    Placement Phase 2: CPU time = 0h 0m 0s, Elapsed time = 0h 0m 0s
-    Placement Phase 3: CPU time = 0h 0m 0s, Elapsed time = 0h 0m 0s
-    ERROR  (PR2028) : The constrained location is useless in current package
-    ERROR  (PR2017) : 'srom_sclk' cannot be placed according to constraint, for the location is a dedicated pin (MSPI)
-    ERROR  (PR2028) : The constrained location is useless in current package
-    ERROR  (PR2017) : 'srom_mosi' cannot be placed according to constraint, for the location is a dedicated pin (MSPI)
-    ERROR  (PR2028) : The constrained location is useless in current package
-    ERROR  (PR2017) : 'srom_cs' cannot be placed according to constraint, for the location is a dedicated pin (MSPI)
-    ERROR  (PR2028) : The constrained location is useless in current package
-    ERROR  (PR2017) : 'srom_miso' cannot be placed according to constraint, for the location is a dedicated pin (MSPI)
-    Total Placement: CPU time = 0h 0m 0s, Elapsed time = 0h 0m 0s
+    Placement Phase 0: CPU time = 0h 0m 0.026s, Elapsed time = 0h 0m 0.026s
+    Placement Phase 1: CPU time = 0h 0m 0.089s, Elapsed time = 0h 0m 0.089s
+    Placement Phase 2: CPU time = 0h 0m 0.009s, Elapsed time = 0h 0m 0.01s
+    Placement Phase 3: CPU time = 0h 0m 1s, Elapsed time = 0h 0m 1s
+    Total Placement: CPU time = 0h 0m 1s, Elapsed time = 0h 0m 1s
  Running routing:
-    ---
+    Routing Phase 0: CPU time = 0h 0m 0s, Elapsed time = 0h 0m 0s
+    Routing Phase 1: CPU time = 0h 0m 0.201s, Elapsed time = 0h 0m 0.201s
+    Routing Phase 2: CPU time = 0h 0m 0.096s, Elapsed time = 0h 0m 0.097s
+    Routing Phase 3: CPU time = 0h 0m 0s, Elapsed time = 0h 0m 0s
+    Total Routing: CPU time = 0h 0m 0.297s, Elapsed time = 0h 0m 0.298s
  Generate output files:
-    CPU time = 0h 0m 0s, Elapsed time = 0h 0m 0s
+    CPU time = 0h 0m 0.817s, Elapsed time = 0h 0m 0.817s
 
- Total Time and Memory Usage: CPU time = 0h 0m 0s, Elapsed time = 0h 0m 0s, Peak memory usage = 337MB
+ Total Time and Memory Usage: CPU time = 0h 0m 2s, Elapsed time = 0h 0m 2s, Peak memory usage = 371MB
 
 
 3. Resource Usage Summary
@@ -44,18 +40,18 @@
   ----------------------------------------------------------
   Resources                   | Usage
   ----------------------------------------------------------
-  Logic                       | 122/8640  2%
-    --LUT,ALU,ROM16           | 122(114 LUT, 8 ALU, 0 ROM16)
+  Logic                       | 124/8640  2%
+    --LUT,ALU,ROM16           | 124(114 LUT, 10 ALU, 0 ROM16)
     --SSRAM(RAM16)            | 0
   Register                    | 93/6693  2%
     --Logic Register as Latch | 0/6480  0%
-    --Logic Register as FF    | 93/6480  2%
+    --Logic Register as FF    | 84/6480  2%
     --I/O Register as Latch   | 0/213  0%
-    --I/O Register as FF      | 0/213  0%
-  CLS                         | 0/4320  0%
+    --I/O Register as FF      | 9/213  5%
+  CLS                         | 73/4320  2%
   I/O Port                    | 58
-  I/O Buf                     | 34
-    --Input Buf               | 12
+  I/O Buf                     | 38
+    --Input Buf               | 16
     --Output Buf              | 22
     --Inout Buf               | 0
   IOLOGIC                     | 0%
@@ -79,23 +75,45 @@
   -----------------------
   I/O Bank  | Usage       
   -----------------------
-  bank 1   | 0/25(0%)    
-  bank 2   | 0/23(0%)    
-  bank 3   | 0/23(0%)    
+  bank 1   | 24/25(96%)  
+  bank 2   | 18/23(78%)  
+  bank 3   | 16/23(69%)  
   =======================
 
 
 5. Global Clock Usage Summary
 
+  -------------------------------
+  Global Clock  | Usage       
+  -------------------------------
+  PRIMARY       | 1/8(13%)
+  LW            | 1/8(13%)
+  GCLK_PIN      | 3/3(100%)
+  PLL           | 1/2(50%)
+  CLKDIV        | 0/8(0%)
+  DLLDLY        | 0/8(0%)
+  ===============================
 
 
-6. Pinout by Port Name
+6. Global Clock Signals
+
+  -------------------------------------------
+  Signal         | Global Clock   | Location
+  -------------------------------------------
+  clk            | PRIMARY        |  PTR0 PTR1
+  n_treset_d     | LW             |  -
+  sys_clk_d      | HCLK           | BOTTOM[0]
+  ===========================================
+
+
+7. Pinout by Port Name
 
 ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 Port Name  | Diff Pair | Loc./Bank     | Constraint | Dir.  | Site     | IO Type    | Drive | Pull Mode | PCI Clamp | Hysteresis | Open Drain | Vref       | Single Resistor | Diff Resistor | BankVccio 
 ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 sys_clk    |           | 52/1          | Y          | in    | IOR17[A] | SSTL33_II  | NA    | UP        | ON        | NA         | NA         | INTERNAL   | OFF             | NA            | 3.3       
 tf_miso    |           | 39/2          | Y          | in    | IOB33[A] | SSTL33_II  | NA    | UP        | ON        | NA         | NA         | INTERNAL   | NA              | NA            | 3.3       
+srom_miso  |           | 62/1          | Y          | in    | IOR11[A] | SSTL33_II  | NA    | UP        | ON        | NA         | NA         | INTERNAL   | OFF             | NA            | 3.3       
 n_treset   |           | 30/2          | Y          | in    | IOB13[B] | SSTL33_II  | NA    | UP        | ON        | NA         | NA         | INTERNAL   | NA              | NA            | 3.3       
 tclock     |           | 51/1          | Y          | in    | IOR17[B] | SSTL33_II  | NA    | UP        | ON        | NA         | NA         | INTERNAL   | OFF             | NA            | 3.3       
 n_tsltsl   |           | 63/1          | Y          | in    | IOR5[A]  | SSTL33_II  | NA    | UP        | ON        | NA         | NA         | INTERNAL   | OFF             | NA            | 3.3       
@@ -132,6 +150,9 @@ dip_sw[7]  |           | 86/3          | Y          | in    | IOT8[A]  | LVCMOS1
 tf_cs      |           | 38/2          | Y          | out   | IOB31[B] | SSTL33_II  | 8     | NONE      | NA        | NA         | NA         | NA         | NA              | NA            | 3.3       
 tf_mosi    |           | 37/2          | Y          | out   | IOB31[A] | SSTL33_II  | 8     | NONE      | NA        | NA         | NA         | NA         | NA              | NA            | 3.3       
 tf_sclk    |           | 36/2          | Y          | out   | IOB29[B] | SSTL33_II  | 8     | NONE      | NA        | NA         | NA         | NA         | NA              | NA            | 3.3       
+srom_cs    |           | 60/1          | Y          | out   | IOR12[A] | SSTL33_II  | 8     | NONE      | NA        | NA         | NA         | NA         | OFF             | NA            | 3.3       
+srom_mosi  |           | 61/1          | Y          | out   | IOR11[B] | SSTL33_II  | 8     | NONE      | NA        | NA         | NA         | NA         | OFF             | NA            | 3.3       
+srom_sclk  |           | 59/1          | Y          | out   | IOR12[B] | SSTL33_II  | 8     | NONE      | NA        | NA         | NA         | NA         | OFF             | NA            | 3.3       
 tdir       |           | 25/2          | Y          | out   | IOB8[A]  | SSTL33_II  | 8     | NONE      | NA        | NA         | NA         | NA         | NA              | NA            | 3.3       
 tsnd       |           | 57/1          | Y          | out   | IOR13[A] | SSTL33_II  | 8     | NONE      | NA        | NA         | NA         | NA         | OFF             | NA            | 3.3       
 n_led[0]   |           | 10/3          | Y          | out   | IOL15[A] | LVCMOS18   | 8     | UP        | NA        | NA         | OFF        | NA         | OFF             | NA            | 1.8       
@@ -153,7 +174,7 @@ td[7]      |           | 56/1          | Y          | io    | IOR14[A] | SSTL33_
 
 
 
-7. All Package Pins
+8. All Package Pins
 
 ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 Loc./Bank| Signal     | Dir.  | Site     | IO Type  | Drive | Pull Mode | PCI Clamp | Hysteresis | Open Drain | Vref       | Single Resistor | Diff Resistor | Bank Vccio
@@ -218,10 +239,10 @@ Loc./Bank| Signal     | Dir.  | Site     | IO Type  | Drive | Pull Mode | PCI Cl
 16/3     | n_led[5]   | out   | IOL26[B] | LVCMOS18 | 8     | UP        | NA        | NA         | OFF        | NA         | OFF             | NA            | 1.8  
 ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 63/1     | n_tsltsl   | in    | IOR5[A]  | SSTL33_II | NA    | UP        | ON        | NA         | NA         | INTERNAL   | OFF             | NA            | 3.3  
-62/1     | -          | in    | IOR11[A] | LVCMOS18 | NA    | UP        | ON        | NONE       | NA         | NA         | NA              | NA            | 3.3  
-61/1     | -          | in    | IOR11[B] | LVCMOS18 | NA    | UP        | ON        | NONE       | NA         | NA         | NA              | NA            | 3.3  
-60/1     | -          | in    | IOR12[A] | LVCMOS18 | NA    | UP        | ON        | NONE       | NA         | NA         | NA              | NA            | 3.3  
-59/1     | -          | in    | IOR12[B] | LVCMOS18 | NA    | UP        | ON        | NONE       | NA         | NA         | NA              | NA            | 3.3  
+62/1     | srom_miso  | in    | IOR11[A] | SSTL33_II | NA    | UP        | ON        | NA         | NA         | INTERNAL   | OFF             | NA            | 3.3  
+61/1     | srom_mosi  | out   | IOR11[B] | SSTL33_II | 8     | NONE      | NA        | NA         | NA         | NA         | OFF             | NA            | 3.3  
+60/1     | srom_cs    | out   | IOR12[A] | SSTL33_II | 8     | NONE      | NA        | NA         | NA         | NA         | OFF             | NA            | 3.3  
+59/1     | srom_sclk  | out   | IOR12[B] | SSTL33_II | 8     | NONE      | NA        | NA         | NA         | NA         | OFF             | NA            | 3.3  
 57/1     | tsnd       | out   | IOR13[A] | SSTL33_II | 8     | NONE      | NA        | NA         | NA         | NA         | OFF             | NA            | 3.3  
 56/1     | td[7]      | out   | IOR14[A] | SSTL33_II | 8     | NONE      | NA        | NA         | NA         | NA         | OFF             | NA            | 3.3  
 55/1     | td[6]      | out   | IOR14[B] | SSTL33_II | 8     | NONE      | NA        | NA         | NA         | NA         | OFF             | NA            | 3.3  

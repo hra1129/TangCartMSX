@@ -32,7 +32,7 @@ module ip_msxbus (
 	input	[15:0]	adr,
 	input	[7:0]	i_data,
 	output	[7:0]	o_data,
-	output			is_output,
+	output			is_input,
 	input			n_sltsl,
 	input			n_rd,
 	input			n_wr,
@@ -56,6 +56,7 @@ module ip_msxbus (
 	reg		[2:0]	ff_n_wr;
 	reg		[2:0]	ff_n_ioreq;
 	reg		[2:0]	ff_n_mereq;
+	reg				ff_dir;
 	wire			w_n_sltsl;
 	wire			w_n_rd;
 	wire			w_n_wr;
@@ -198,5 +199,5 @@ module ip_msxbus (
 	//	MSX BUS response
 	// --------------------------------------------------------------------
 	assign o_data			= ff_bus_read_data;
-	assign is_output		= ff_buf_read_data_en;
+	assign is_input			= ~ff_buf_read_data_en;
 endmodule

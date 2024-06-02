@@ -104,6 +104,7 @@ module tangcart_msx (
 	reg		[15:0]	ff_div_freq;
 	reg		[16:0]	ff_state_count;
 	wire			w_state_change;
+	wire			w_is_input;
 
 	// --------------------------------------------------------------------
 	//	OUTPUT Assignment
@@ -113,18 +114,25 @@ module tangcart_msx (
 	assign tf_mosi		= 1'b0;
 	assign tf_sclk		= 1'b0;
 	assign td			= 8'dZ;
-	assign n_led		= { w_gpo[5:2], button };
-	assign td			= w_is_output ? 8'hZZ : w_o_data;
-	assign td			= w_is_output ? 8'hZZ : w_o_data;
+//	assign n_led		= { w_gpo[5:2], button };
+	assign n_led		= dip_sw[5:0];
+	assign td			= w_is_input ? 8'hZZ : w_o_data;
+	assign tdir			= w_is_input;
 
-	// --------------------------------------------------------------------
-	//	PLL 3.579545MHz --> 64.43181MHz
-	// --------------------------------------------------------------------
+//	// --------------------------------------------------------------------
+//	//	PLL 3.579545MHz --> 64.43181MHz
+//	// --------------------------------------------------------------------
+//	Gowin_PLL u_pll (
+//		.clkout			( mem_clk			),		//output	128.86362MHz
+//		.lock			( mem_clk_lock		),		//output	lock
+//		.clkoutd		( clk				),		//output	64.43181MHz
+//		.clkin			( tclock			)		//input		3.579545MHz
+//	);
 	Gowin_PLL u_pll (
-		.clkout			( mem_clk			),		//output	128.86362MHz
+		.clkout			( mem_clk			),		//output	162.0MHz
 		.lock			( mem_clk_lock		),		//output	lock
-		.clkoutd		( clk				),		//output	64.43181MHz
-		.clkin			( tclock			)		//input		3.579545MHz
+		.clkoutd		( clk				),		//output	81.0MHz
+		.clkin			( sys_clk			)		//input		27.0MHz
 	);
 
 	// --------------------------------------------------------------------
@@ -136,7 +144,7 @@ module tangcart_msx (
 		.adr			( ta				),
 		.i_data			( w_i_data			),
 		.o_data			( w_o_data			),
-		.is_output		( w_is_output		),
+		.is_input		( w_is_input		),
 		.n_sltsl		( n_sltsl			),
 		.n_rd			( n_rd				),
 		.n_wr			( n_wr				),

@@ -4,16 +4,26 @@ Processing netlist completed
 Reading constraint file: "D:\github\HRA_product\TangCartMSX\RTL\TangcartMSX\src\TangcartMSX.cst"
 Physical Constraint parsed completed
 Running placement......
-ERROR  (PR2028) : The constrained location is useless in current package
-ERROR  (PR2017) : 'srom_sclk' cannot be placed according to constraint, for the location is a dedicated pin (MSPI)
-ERROR  (PR2028) : The constrained location is useless in current package
-ERROR  (PR2017) : 'srom_mosi' cannot be placed according to constraint, for the location is a dedicated pin (MSPI)
-ERROR  (PR2028) : The constrained location is useless in current package
-ERROR  (PR2017) : 'srom_cs' cannot be placed according to constraint, for the location is a dedicated pin (MSPI)
-ERROR  (PR2028) : The constrained location is useless in current package
-ERROR  (PR2017) : 'srom_miso' cannot be placed according to constraint, for the location is a dedicated pin (MSPI)
+[10%] Placement Phase 0 completed
+[20%] Placement Phase 1 completed
+[30%] Placement Phase 2 completed
+[50%] Placement Phase 3 completed
+Running routing......
+[60%] Routing Phase 0 completed
+[70%] Routing Phase 1 completed
+[80%] Routing Phase 2 completed
+[90%] Routing Phase 3 completed
+Running timing analysis......
+[95%] Timing analysis completed
+Placement and routing completed
+Bitstream generation in progress......
+Bitstream generation completed
+Running power analysis......
+[100%] Power analysis completed
+Generate file "D:\github\HRA_product\TangCartMSX\RTL\TangcartMSX\impl\pnr\TangcartMSX.power.html" completed
 Generate file "D:\github\HRA_product\TangCartMSX\RTL\TangcartMSX\impl\pnr\TangcartMSX.pin.html" completed
 Generate file "D:\github\HRA_product\TangCartMSX\RTL\TangcartMSX\impl\pnr\TangcartMSX.rpt.html" completed
 Generate file "D:\github\HRA_product\TangCartMSX\RTL\TangcartMSX\impl\pnr\TangcartMSX.rpt.txt" completed
-Mon May 20 06:52:30 2024
+Generate file "D:\github\HRA_product\TangCartMSX\RTL\TangcartMSX\impl\pnr\TangcartMSX.tr.html" completed
+Mon May 27 21:10:48 2024
 
