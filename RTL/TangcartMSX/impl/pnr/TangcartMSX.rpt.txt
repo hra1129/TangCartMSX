@@ -12,27 +12,27 @@
   <Part Number>: GW1NR-LV9QN88PC6/I5
   <Device>: GW1NR-9
   <Device Version>: C
-  <Created Time>:Mon May 27 21:10:47 2024
+  <Created Time>:Sat Jun  8 10:21:10 2024
 
 
 2. PnR Details
 
   Running placement:
-    Placement Phase 0: CPU time = 0h 0m 0.026s, Elapsed time = 0h 0m 0.026s
-    Placement Phase 1: CPU time = 0h 0m 0.089s, Elapsed time = 0h 0m 0.089s
-    Placement Phase 2: CPU time = 0h 0m 0.009s, Elapsed time = 0h 0m 0.01s
+    Placement Phase 0: CPU time = 0h 0m 0.025s, Elapsed time = 0h 0m 0.026s
+    Placement Phase 1: CPU time = 0h 0m 0.086s, Elapsed time = 0h 0m 0.085s
+    Placement Phase 2: CPU time = 0h 0m 0.012s, Elapsed time = 0h 0m 0.013s
     Placement Phase 3: CPU time = 0h 0m 1s, Elapsed time = 0h 0m 1s
     Total Placement: CPU time = 0h 0m 1s, Elapsed time = 0h 0m 1s
  Running routing:
     Routing Phase 0: CPU time = 0h 0m 0s, Elapsed time = 0h 0m 0s
     Routing Phase 1: CPU time = 0h 0m 0.201s, Elapsed time = 0h 0m 0.201s
-    Routing Phase 2: CPU time = 0h 0m 0.096s, Elapsed time = 0h 0m 0.097s
+    Routing Phase 2: CPU time = 0h 0m 0.129s, Elapsed time = 0h 0m 0.129s
     Routing Phase 3: CPU time = 0h 0m 0s, Elapsed time = 0h 0m 0s
-    Total Routing: CPU time = 0h 0m 0.297s, Elapsed time = 0h 0m 0.298s
+    Total Routing: CPU time = 0h 0m 0.33s, Elapsed time = 0h 0m 0.33s
  Generate output files:
-    CPU time = 0h 0m 0.817s, Elapsed time = 0h 0m 0.817s
+    CPU time = 0h 0m 0.812s, Elapsed time = 0h 0m 0.813s
 
- Total Time and Memory Usage: CPU time = 0h 0m 2s, Elapsed time = 0h 0m 2s, Peak memory usage = 371MB
+ Total Time and Memory Usage: CPU time = 0h 0m 2s, Elapsed time = 0h 0m 2s, Peak memory usage = 397MB
 
 
 3. Resource Usage Summary
@@ -40,20 +40,20 @@
   ----------------------------------------------------------
   Resources                   | Usage
   ----------------------------------------------------------
-  Logic                       | 124/8640  2%
-    --LUT,ALU,ROM16           | 124(114 LUT, 10 ALU, 0 ROM16)
+  Logic                       | 141/8640  2%
+    --LUT,ALU,ROM16           | 141(131 LUT, 10 ALU, 0 ROM16)
     --SSRAM(RAM16)            | 0
-  Register                    | 93/6693  2%
+  Register                    | 121/6693  2%
     --Logic Register as Latch | 0/6480  0%
-    --Logic Register as FF    | 84/6480  2%
+    --Logic Register as FF    | 93/6480  2%
     --I/O Register as Latch   | 0/213  0%
-    --I/O Register as FF      | 9/213  5%
-  CLS                         | 73/4320  2%
+    --I/O Register as FF      | 28/213  14%
+  CLS                         | 92/4320  3%
   I/O Port                    | 58
-  I/O Buf                     | 38
-    --Input Buf               | 16
-    --Output Buf              | 22
-    --Inout Buf               | 0
+  I/O Buf                     | 45
+    --Input Buf               | 23
+    --Output Buf              | 16
+    --Inout Buf               | 6
   IOLOGIC                     | 0%
   BSRAM                       | 0%
   DSP                         | 0%
@@ -161,12 +161,12 @@ n_led[2]   |           | 13/3          | Y          | out   | IOL21[B] | LVCMOS1
 n_led[3]   |           | 14/3          | Y          | out   | IOL22[B] | LVCMOS18   | 8     | UP        | NA        | NA         | OFF        | NA         | OFF             | NA            | 1.8       
 n_led[4]   |           | 15/3          | Y          | out   | IOL25[B] | LVCMOS18   | 8     | UP        | NA        | NA         | OFF        | NA         | OFF             | NA            | 1.8       
 n_led[5]   |           | 16/3          | Y          | out   | IOL26[B] | LVCMOS18   | 8     | UP        | NA        | NA         | OFF        | NA         | OFF             | NA            | 1.8       
-td[0]      |           | 48/1          | Y          | io    | IOR24[B] | SSTL33_II  | 8     | NONE      | NA        | NA         | NA         | NA         | OFF             | NA            | 3.3       
-td[1]      |           | 49/1          | Y          | io    | IOR24[A] | SSTL33_II  | 8     | NONE      | NA        | NA         | NA         | NA         | OFF             | NA            | 3.3       
-td[2]      |           | 31/2          | Y          | io    | IOB15[A] | SSTL33_II  | 8     | NONE      | NA        | NA         | NA         | NA         | NA              | NA            | 3.3       
-td[3]      |           | 32/2          | Y          | io    | IOB15[B] | SSTL33_II  | 8     | NONE      | NA        | NA         | NA         | NA         | NA              | NA            | 3.3       
-td[4]      |           | 53/1          | Y          | io    | IOR15[B] | SSTL33_II  | 8     | NONE      | NA        | NA         | NA         | NA         | OFF             | NA            | 3.3       
-td[5]      |           | 54/1          | Y          | io    | IOR15[A] | SSTL33_II  | 8     | NONE      | NA        | NA         | NA         | NA         | OFF             | NA            | 3.3       
+td[0]      |           | 48/1          | Y          | io    | IOR24[B] | SSTL33_II  | 8     | NONE      | NA        | NA         | NA         | INTERNAL   | OFF             | NA            | 3.3       
+td[1]      |           | 49/1          | Y          | io    | IOR24[A] | SSTL33_II  | 8     | NONE      | NA        | NA         | NA         | INTERNAL   | OFF             | NA            | 3.3       
+td[2]      |           | 31/2          | Y          | io    | IOB15[A] | SSTL33_II  | 8     | NONE      | NA        | NA         | NA         | INTERNAL   | NA              | NA            | 3.3       
+td[3]      |           | 32/2          | Y          | io    | IOB15[B] | SSTL33_II  | 8     | NONE      | NA        | NA         | NA         | INTERNAL   | NA              | NA            | 3.3       
+td[4]      |           | 53/1          | Y          | io    | IOR15[B] | SSTL33_II  | 8     | NONE      | NA        | NA         | NA         | INTERNAL   | OFF             | NA            | 3.3       
+td[5]      |           | 54/1          | Y          | io    | IOR15[A] | SSTL33_II  | 8     | NONE      | NA        | NA         | NA         | INTERNAL   | OFF             | NA            | 3.3       
 td[6]      |           | 55/1          | Y          | io    | IOR14[B] | SSTL33_II  | 8     | NONE      | NA        | NA         | NA         | NA         | OFF             | NA            | 3.3       
 td[7]      |           | 56/1          | Y          | io    | IOR14[A] | SSTL33_II  | 8     | NONE      | NA        | NA         | NA         | NA         | OFF             | NA            | 3.3       
 ==================================================================================================================================================================================================================
@@ -211,8 +211,8 @@ Loc./Bank| Signal     | Dir.  | Site     | IO Type  | Drive | Pull Mode | PCI Cl
 28/2     | n_twr      | in    | IOB11[B] | SSTL33_II | NA    | UP        | ON        | NA         | NA         | INTERNAL   | NA              | NA            | 3.3  
 29/2     | n_trd      | in    | IOB13[A] | SSTL33_II | NA    | UP        | ON        | NA         | NA         | INTERNAL   | NA              | NA            | 3.3  
 30/2     | n_treset   | in    | IOB13[B] | SSTL33_II | NA    | UP        | ON        | NA         | NA         | INTERNAL   | NA              | NA            | 3.3  
-31/2     | td[2]      | out   | IOB15[A] | SSTL33_II | 8     | NONE      | NA        | NA         | NA         | NA         | NA              | NA            | 3.3  
-32/2     | td[3]      | out   | IOB15[B] | SSTL33_II | 8     | NONE      | NA        | NA         | NA         | NA         | NA              | NA            | 3.3  
+31/2     | td[2]      | io    | IOB15[A] | SSTL33_II | 8     | NONE      | NA        | NA         | NA         | INTERNAL   | NA              | NA            | 3.3  
+32/2     | td[3]      | io    | IOB15[B] | SSTL33_II | 8     | NONE      | NA        | NA         | NA         | INTERNAL   | NA              | NA            | 3.3  
 33/2     | ta[13]     | in    | IOB23[A] | SSTL33_II | NA    | UP        | ON        | NA         | NA         | INTERNAL   | NA              | NA            | 3.3  
 34/2     | ta[0]      | in    | IOB23[B] | SSTL33_II | NA    | UP        | ON        | NA         | NA         | INTERNAL   | NA              | NA            | 3.3  
 35/2     | ta[4]      | in    | IOB29[A] | SSTL33_II | NA    | UP        | ON        | NA         | NA         | INTERNAL   | NA              | NA            | 3.3  
@@ -246,13 +246,13 @@ Loc./Bank| Signal     | Dir.  | Site     | IO Type  | Drive | Pull Mode | PCI Cl
 57/1     | tsnd       | out   | IOR13[A] | SSTL33_II | 8     | NONE      | NA        | NA         | NA         | NA         | OFF             | NA            | 3.3  
 56/1     | td[7]      | out   | IOR14[A] | SSTL33_II | 8     | NONE      | NA        | NA         | NA         | NA         | OFF             | NA            | 3.3  
 55/1     | td[6]      | out   | IOR14[B] | SSTL33_II | 8     | NONE      | NA        | NA         | NA         | NA         | OFF             | NA            | 3.3  
-54/1     | td[5]      | out   | IOR15[A] | SSTL33_II | 8     | NONE      | NA        | NA         | NA         | NA         | OFF             | NA            | 3.3  
-53/1     | td[4]      | out   | IOR15[B] | SSTL33_II | 8     | NONE      | NA        | NA         | NA         | NA         | OFF             | NA            | 3.3  
+54/1     | td[5]      | io    | IOR15[A] | SSTL33_II | 8     | NONE      | NA        | NA         | NA         | INTERNAL   | OFF             | NA            | 3.3  
+53/1     | td[4]      | io    | IOR15[B] | SSTL33_II | 8     | NONE      | NA        | NA         | NA         | INTERNAL   | OFF             | NA            | 3.3  
 52/1     | sys_clk    | in    | IOR17[A] | SSTL33_II | NA    | UP        | ON        | NA         | NA         | INTERNAL   | OFF             | NA            | 3.3  
 51/1     | tclock     | in    | IOR17[B] | SSTL33_II | NA    | UP        | ON        | NA         | NA         | INTERNAL   | OFF             | NA            | 3.3  
 50/1     | -          | in    | IOR22[B] | LVCMOS18 | NA    | UP        | ON        | NONE       | NA         | NA         | NA              | NA            | 3.3  
-49/1     | td[1]      | out   | IOR24[A] | SSTL33_II | 8     | NONE      | NA        | NA         | NA         | NA         | OFF             | NA            | 3.3  
-48/1     | td[0]      | out   | IOR24[B] | SSTL33_II | 8     | NONE      | NA        | NA         | NA         | NA         | OFF             | NA            | 3.3  
+49/1     | td[1]      | io    | IOR24[A] | SSTL33_II | 8     | NONE      | NA        | NA         | NA         | INTERNAL   | OFF             | NA            | 3.3  
+48/1     | td[0]      | io    | IOR24[B] | SSTL33_II | 8     | NONE      | NA        | NA         | NA         | INTERNAL   | OFF             | NA            | 3.3  
 ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 =======================================================================================================================================================================================
 

@@ -1,5 +1,5 @@
 # vsim -c -t 1ps -do "run.do" tb 
-# Start time: 19:01:34 on May 05,2024
+# Start time: 09:49:16 on Jun 08,2024
 # Loading sv_std.std
 # Loading work.tb
 # Loading work.ip_msxbus
@@ -14,5 +14,5 @@
 # I/O Read Reject Test
 # ** Note: $finish    : tb.sv(809)
 #    Time: 82667280 ps  Iteration: 1  Instance: /tb
-# End time: 19:01:35 on May 05,2024, Elapsed time: 0:00:01
+# End time: 09:49:17 on Jun 08,2024, Elapsed time: 0:00:01
 # Errors: 0, Warnings: 0

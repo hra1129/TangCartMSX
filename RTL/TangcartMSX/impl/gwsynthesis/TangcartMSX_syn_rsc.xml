@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<Module name="tangcart_msx" Register="68" Lut="106">
+<Module name="tangcart_msx" Register="68" Lut="107">
     <SubModule name="u_pll"/>
-    <SubModule name="u_msxbus" Register="15" Lut="6"/>
+    <SubModule name="u_msxbus" Register="37" Lut="12"/>
     <SubModule name="u_pwm" Register="9" Alu="8"/>
-    <SubModule name="u_gpio" Register="1" Lut="3"/>
+    <SubModule name="u_gpio" Register="7" Lut="13"/>
 </Module>

@@ -65,6 +65,7 @@ module tangcart_msx (
 	wire			clk;
 	wire			n_clk;
 	wire			w_n_reset;
+	wire	[7:0]	w_o_data;
 //	reg		[7:0]	ff_send_data;
 //	reg				ff_send_req;
 //	wire			w_send_busy;
@@ -95,7 +96,6 @@ module tangcart_msx (
 	wire			w_bus_write;
 	wire			w_bus_io;
 	wire			w_bus_memory;
-	wire	[7:0]	w_i_data;
 	reg		[6:0]	ff_1mhz_count;
 	wire			w_1mhz;
 	reg		[7:0]	ff_sound;
@@ -104,7 +104,7 @@ module tangcart_msx (
 	reg		[15:0]	ff_div_freq;
 	reg		[16:0]	ff_state_count;
 	wire			w_state_change;
-	wire			w_is_input;
+	wire			w_is_output;
 
 	// --------------------------------------------------------------------
 	//	OUTPUT Assignment
@@ -113,11 +113,9 @@ module tangcart_msx (
 	assign tf_cs		= 1'b0;
 	assign tf_mosi		= 1'b0;
 	assign tf_sclk		= 1'b0;
-	assign td			= 8'dZ;
-//	assign n_led		= { w_gpo[5:2], button };
-	assign n_led		= dip_sw[5:0];
-	assign td			= w_is_input ? 8'hZZ : w_o_data;
-	assign tdir			= w_is_input;
+	assign n_led		= w_gpo[5:0];
+	assign td			= w_is_output ? w_o_data : 8'hZZ;
+	assign tdir			= w_is_output;
 
 //	// --------------------------------------------------------------------
 //	//	PLL 3.579545MHz --> 64.43181MHz
@@ -142,14 +140,14 @@ module tangcart_msx (
 		.n_reset		( w_n_reset			),
 		.clk			( clk				),
 		.adr			( ta				),
-		.i_data			( w_i_data			),
+		.i_data			( td				),
 		.o_data			( w_o_data			),
-		.is_input		( w_is_input		),
-		.n_sltsl		( n_sltsl			),
-		.n_rd			( n_rd				),
-		.n_wr			( n_wr				),
-		.n_ioreq		( n_ioreq			),
-		.n_mereq		( n_mereq			),
+		.is_output		( w_is_output		),
+		.n_sltsl		( n_tsltsl			),
+		.n_rd			( n_trd				),
+		.n_wr			( n_twr				),
+		.n_ioreq		( n_tiorq			),
+		.n_mereq		( n_tmerq			),
 		.bus_address	( w_bus_address		),
 		.bus_io_cs		( w_bus_io_cs		),
 		.bus_memory_cs	( w_bus_memory_cs	),
@@ -170,7 +168,7 @@ module tangcart_msx (
 			ff_1mhz_count <= 7'd0;
 		end
 		else if( w_1mhz ) begin
-			ff_1mhz_count <= 7'd63;
+			ff_1mhz_count <= 7'd80;
 		end
 		else begin
 			ff_1mhz_count <= ff_1mhz_count - 7'd1;
@@ -298,7 +296,7 @@ module tangcart_msx (
 		.bus_io			( w_bus_io			),
 		.bus_memory		( w_bus_memory		),
 		.gpo			( w_gpo				),
-		.gpi			( 8'hA5				)
+		.gpi			( dip_sw			)
 	);
 
 	// --------------------------------------------------------------------

@@ -32,7 +32,7 @@ module ip_msxbus (
 	input	[15:0]	adr,
 	input	[7:0]	i_data,
 	output	[7:0]	o_data,
-	output			is_input,
+	output			is_output,
 	input			n_sltsl,
 	input			n_rd,
 	input			n_wr,
@@ -51,11 +51,11 @@ module ip_msxbus (
 	output			bus_memory
 );
 	//	Flip-flops for asynchronous switching and low-pass
-	reg		[2:0]	ff_n_sltsl;
-	reg		[2:0]	ff_n_rd;
-	reg		[2:0]	ff_n_wr;
-	reg		[2:0]	ff_n_ioreq;
-	reg		[2:0]	ff_n_mereq;
+	reg		[3:0]	ff_n_sltsl;
+	reg		[3:0]	ff_n_rd;
+	reg		[3:0]	ff_n_wr;
+	reg		[3:0]	ff_n_ioreq;
+	reg		[3:0]	ff_n_mereq;
 	reg				ff_dir;
 	wire			w_n_sltsl;
 	wire			w_n_rd;
@@ -73,33 +73,33 @@ module ip_msxbus (
 	reg		[7:0]	ff_bus_write_data;
 	reg				ff_bus_read;
 	reg				ff_bus_write;
-	reg				ff_buf_read_data_en;
+	reg				ff_buf_read_data_en = 1'b0;
 
 	// --------------------------------------------------------------------
 	//	Asynchronous switching and low-pass
 	// --------------------------------------------------------------------
 	always @( negedge n_reset or posedge clk ) begin
 		if( !n_reset ) begin
-			ff_n_sltsl	<= 3'b111;
-			ff_n_rd		<= 3'b111;
-			ff_n_wr		<= 3'b111;
-			ff_n_ioreq	<= 3'b111;
-			ff_n_mereq	<= 3'b111;
+			ff_n_sltsl	<= 2'b11;
+			ff_n_rd		<= 2'b11;
+			ff_n_wr		<= 2'b11;
+			ff_n_ioreq	<= 2'b11;
+			ff_n_mereq	<= 2'b11;
 		end
 		else begin
-			ff_n_sltsl	<= { ff_n_sltsl[1:0], n_sltsl };
-			ff_n_rd		<= { ff_n_rd[1:0]   , n_rd };
-			ff_n_wr		<= { ff_n_wr[1:0]   , n_wr };
-			ff_n_ioreq	<= { ff_n_ioreq[1:0], n_ioreq };
-			ff_n_mereq	<= { ff_n_mereq[1:0], n_mereq };
+			ff_n_sltsl	<= { ff_n_sltsl[0], n_sltsl };
+			ff_n_rd		<= { ff_n_rd[0]   , n_rd };
+			ff_n_wr		<= { ff_n_wr[0]   , n_wr };
+			ff_n_ioreq	<= { ff_n_ioreq[0], n_ioreq };
+			ff_n_mereq	<= { ff_n_mereq[0], n_mereq };
 		end
 	end
 
-	assign w_n_sltsl	= ff_n_sltsl[2] | ff_n_sltsl[1];
-	assign w_n_rd		= ff_n_rd[2]    | ff_n_rd[1];
-	assign w_n_wr		= ff_n_wr[2]    | ff_n_wr[1];
-	assign w_n_ioreq	= ff_n_ioreq[2] | ff_n_ioreq[1];
-	assign w_n_mereq	= ff_n_mereq[2] | ff_n_mereq[1];
+	assign w_n_sltsl	= ff_n_sltsl[1] | ff_n_sltsl[0];
+	assign w_n_rd		= ff_n_rd[1]    | ff_n_rd[0];
+	assign w_n_wr		= ff_n_wr[1]    | ff_n_wr[0];
+	assign w_n_ioreq	= ff_n_ioreq[1] | ff_n_ioreq[0];
+	assign w_n_mereq	= ff_n_mereq[1] | ff_n_mereq[0];
 
 	// --------------------------------------------------------------------
 	//	Make up pulse
@@ -199,5 +199,5 @@ module ip_msxbus (
 	//	MSX BUS response
 	// --------------------------------------------------------------------
 	assign o_data			= ff_bus_read_data;
-	assign is_input			= ~ff_buf_read_data_en;
+	assign is_output		= ff_buf_read_data_en & ~n_rd;
 endmodule
