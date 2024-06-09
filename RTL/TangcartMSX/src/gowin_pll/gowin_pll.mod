@@ -14,14 +14,14 @@
 -dyn_idiv_sel false
 -idiv_sel 1
 -dyn_fbdiv_sel false
--fbdiv_sel 6
+-fbdiv_sel 36
 -dyn_odiv_sel false
 -odiv_sel 4
 -dyn_sdiv_sel 2
 -dyn_da_en true
 -rst_sig false
 -rst_sig_p false
--fclkin 27
+-fclkin 3.579
 -rst_sig_i false
 -clkfb_sel 0
 -en_lock true

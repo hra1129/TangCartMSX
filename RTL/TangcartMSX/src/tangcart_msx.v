@@ -62,6 +62,7 @@ module tangcart_msx (
 	// UART
 //	output			uart_tx
 );
+	reg		[2:0]	ff_reset = 3'd0;
 	wire			clk;
 	wire			n_clk;
 	wire			w_n_reset;
@@ -72,13 +73,13 @@ module tangcart_msx (
 //	reg		[25:0]	ff_cnt;
 //	reg		[23:0]	ff_address;
 //	reg		[7:0]	ff_wdata;
-	reg				ff_rd0;
-	reg				ff_wr0;
+//	reg				ff_rd0;
+//	reg				ff_wr0;
 	wire			w_busy0;
 	wire	[7:0]	w_rdata0;
 	wire			w_rdata0_en;
-	reg				ff_rd1;
-	reg				ff_wr1;
+//	reg				ff_rd1;
+//	reg				ff_wr1;
 	wire			w_busy1;
 	wire	[7:0]	w_rdata1;
 	wire			w_rdata1_en;
@@ -109,7 +110,7 @@ module tangcart_msx (
 	// --------------------------------------------------------------------
 	//	OUTPUT Assignment
 	// --------------------------------------------------------------------
-	assign w_n_reset	= n_treset;
+	assign w_n_reset	= ff_reset[1] & ff_reset[2];
 	assign tf_cs		= 1'b0;
 	assign tf_mosi		= 1'b0;
 	assign tf_sclk		= 1'b0;
@@ -117,21 +118,25 @@ module tangcart_msx (
 	assign td			= w_is_output ? w_o_data : 8'hZZ;
 	assign tdir			= w_is_output;
 
-//	// --------------------------------------------------------------------
-//	//	PLL 3.579545MHz --> 64.43181MHz
-//	// --------------------------------------------------------------------
-//	Gowin_PLL u_pll (
-//		.clkout			( mem_clk			),		//output	128.86362MHz
-//		.lock			( mem_clk_lock		),		//output	lock
-//		.clkoutd		( clk				),		//output	64.43181MHz
-//		.clkin			( tclock			)		//input		3.579545MHz
-//	);
+	always @( posedge clk ) begin
+		ff_reset <= { ff_reset[1:0], n_treset };
+	end
+
+	// --------------------------------------------------------------------
+	//	PLL 3.579545MHz --> 64.43181MHz
+	// --------------------------------------------------------------------
 	Gowin_PLL u_pll (
-		.clkout			( mem_clk			),		//output	162.0MHz
+		.clkout			( mem_clk			),		//output	128.86362MHz
 		.lock			( mem_clk_lock		),		//output	lock
-		.clkoutd		( clk				),		//output	81.0MHz
-		.clkin			( sys_clk			)		//input		27.0MHz
+		.clkoutd		( clk				),		//output	64.43181MHz
+		.clkin			( tclock			)		//input		3.579545MHz
 	);
+//	Gowin_PLL u_pll (
+//		.clkout			( mem_clk			),		//output	162.0MHz
+//		.lock			( mem_clk_lock		),		//output	lock
+//		.clkoutd		( clk				),		//output	81.0MHz
+//		.clkin			( sys_clk			)		//input		27.0MHz
+//	);
 
 	// --------------------------------------------------------------------
 	//	MSX 50BUS
@@ -163,12 +168,12 @@ module tangcart_msx (
 	// --------------------------------------------------------------------
 	//	Sound
 	// --------------------------------------------------------------------
-	always @( negedge w_n_reset or posedge clk ) begin
+	always @( posedge clk ) begin
 		if( !w_n_reset ) begin
 			ff_1mhz_count <= 7'd0;
 		end
 		else if( w_1mhz ) begin
-			ff_1mhz_count <= 7'd80;
+			ff_1mhz_count <= 7'd63;
 		end
 		else begin
 			ff_1mhz_count <= ff_1mhz_count - 7'd1;
@@ -176,7 +181,7 @@ module tangcart_msx (
 	end
 	assign w_1mhz	= (ff_1mhz_count == 7'd0);
 
-	always @( negedge w_n_reset or posedge clk ) begin
+	always @( posedge clk ) begin
 		if( !w_n_reset ) begin
 			ff_sound <= 8'h00;
 		end
@@ -195,7 +200,7 @@ module tangcart_msx (
 		end
 	end
 
-	always @( negedge w_n_reset or posedge clk ) begin
+	always @( posedge clk ) begin
 		if( !w_n_reset ) begin
 			ff_div_count <= 16'd0;
 		end
@@ -210,7 +215,7 @@ module tangcart_msx (
 	end
 	assign w_sound_flip		= (ff_div_count == 16'd0);
 
-	always @( negedge w_n_reset or posedge clk ) begin
+	always @( posedge clk ) begin
 		if( !w_n_reset ) begin
 			ff_state_count <= 17'd100000;
 		end
@@ -225,7 +230,7 @@ module tangcart_msx (
 	end
 	assign w_state_change	= (ff_state_count == 17'd0);
 
-	always @( negedge w_n_reset or posedge clk ) begin
+	always @( posedge clk ) begin
 		if( !w_n_reset ) begin
 			ff_state <= 3'd0;
 		end
@@ -234,7 +239,7 @@ module tangcart_msx (
 		end
 	end
 
-	always @( negedge w_n_reset or posedge clk ) begin
+	always @( posedge clk ) begin
 		if( !w_n_reset ) begin
 			ff_div_freq		<= 16'd0;
 			ff_sound_level	<= 8'hFF;
@@ -326,7 +331,7 @@ module tangcart_msx (
 //		endcase
 //	endfunction
 //
-//	always @( negedge n_reset or posedge clk ) begin
+//	always @( posedge clk ) begin
 //		if( !n_reset ) begin
 //			ff_ram_id	<= 1'b0;	//	0: u_psram0, 1: u_psram1
 //			ff_address	<= 24'd0;	//	2^22 = 4MB, [23:22] = 2'b00 is dummy data
@@ -470,7 +475,7 @@ module tangcart_msx (
 	// --------------------------------------------------------------------
 	//	UART
 	// --------------------------------------------------------------------
-//	always @( negedge w_n_reset or posedge clk ) begin
+//	always @( posedge clk ) begin
 //		if( !w_n_reset ) begin
 //			ff_cnt <= 26'd0;
 //		end
@@ -480,7 +485,7 @@ module tangcart_msx (
 //	end
 
 //	reg		[3:0]	ff_state;
-//	always @( negedge w_n_reset or posedge clk ) begin
+//	always @( posedge clk ) begin
 //		if( !w_n_reset ) begin
 //			ff_state <= 4'd0;
 //			ff_send_data <= 8'd32;

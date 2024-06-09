@@ -64,7 +64,7 @@ module ip_extslot (
 	// --------------------------------------------------------------------
 	//	Write register
 	// --------------------------------------------------------------------
-	always @( negedge n_reset or posedge clk ) begin
+	always @( posedge clk ) begin
 		if( !n_reset ) begin
 			ff_extslot_reg <= 8'h00;
 		end
@@ -79,7 +79,7 @@ module ip_extslot (
 	// --------------------------------------------------------------------
 	//	Read response
 	// --------------------------------------------------------------------
-	always @( negedge n_reset or posedge clk ) begin
+	always @( posedge clk ) begin
 		if( !n_reset ) begin
 			ff_read_ready <= 1'b0;
 		end

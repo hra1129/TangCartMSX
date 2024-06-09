@@ -76,7 +76,7 @@ module scc_channel_mixer (
 	// ------------------------------------------------------------------------
 	//	CPU SRAM ACCESS INTERFACE
 	// ------------------------------------------------------------------------
-	always @( negedge nreset or posedge clk ) begin
+	always @( posedge clk ) begin
 		if( !nreset ) begin
 			ff_sram_q_en <= 1'b0;
 		end
@@ -95,7 +95,7 @@ module scc_channel_mixer (
 	assign sram_q		= w_sram_q0;
 
 	// ------------------------------------------------------------------------
-	always @( negedge nreset or posedge clk ) begin
+	always @( posedge clk ) begin
 		if( !nreset ) begin
 			ff_active		<= 3'd0;
 			ff_active_delay	<= 1'b0;
@@ -153,7 +153,7 @@ module scc_channel_mixer (
 		end
 	end
 
-	always @( negedge nreset or posedge clk ) begin
+	always @( posedge clk ) begin
 		if( !nreset ) begin
 			ff_wave_a0	<= 8'd0;
 			ff_wave_b0	<= 8'd0;
@@ -203,7 +203,7 @@ module scc_channel_mixer (
 	//	delay 2 clock
 	assign w_left_channel0		= reg_enable0 ? w_channel0 : 8'd0;
 
-	always @( negedge nreset or posedge clk ) begin
+	always @( posedge clk ) begin
 		if( !nreset ) begin
 			ff_left_integ		<= 11'd0;
 		end
@@ -222,7 +222,7 @@ module scc_channel_mixer (
 	end
 
 	//	delay 5 clock
-	always @( negedge nreset or posedge clk ) begin
+	always @( posedge clk ) begin
 		if( !nreset ) begin
 			ff_left_out			<= 11'd0;
 		end

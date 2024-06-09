@@ -68,7 +68,7 @@ module ip_ppi_mirror (
 	// --------------------------------------------------------------------
 	//	Write register
 	// --------------------------------------------------------------------
-	always @( negedge n_reset or posedge clk ) begin
+	always @( posedge clk ) begin
 		if( !n_reset ) begin
 			ff_primary_slot		<= 8'h00;
 			ff_key_matrix_row	<= 4'hF;

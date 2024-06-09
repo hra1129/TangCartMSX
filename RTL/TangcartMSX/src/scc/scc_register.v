@@ -90,7 +90,7 @@ module scc_register (
 	reg				ff_wave_reset;
 
 	// Wave memory ------------------------------------------------------------
-	always @( negedge nreset or posedge clk ) begin
+	always @( posedge clk ) begin
 		if( !nreset ) begin
 			sram_id	<= 3'd0;
 			sram_a	<= 5'd0;
@@ -146,7 +146,7 @@ module scc_register (
 	assign w_clear_counter_e0 = (wr && scc_en  && (address[7:1] == 7'b1000_100)) ? 1'b1 :
 	                            (wr && scci_en && (address[7:1] == 7'b1010_100)) ? 1'b1 : 1'b0;
 
-	always @( negedge nreset or posedge clk ) begin
+	always @( posedge clk ) begin
 		if( !nreset ) begin
 			ff_clear_counter_a0 <= 1'b0;
 			ff_clear_counter_b0 <= 1'b0;
@@ -177,7 +177,7 @@ module scc_register (
 	assign clear_counter_e0 = ff_clear_counter_e0;
 
 	// Control registers ------------------------------------------------------
-	always @( negedge nreset or posedge clk ) begin
+	always @( posedge clk ) begin
 		if( !nreset ) begin
 			ff_reg_volume_a0			<= 'd0;
 			ff_reg_enable_a0			<= 'd0;
@@ -278,7 +278,7 @@ module scc_register (
 		end
 	end
 
-	always @( negedge nreset or posedge clk ) begin
+	always @( posedge clk ) begin
 		if( !nreset ) begin
 			ff_ready <= 1'b0;
 		end

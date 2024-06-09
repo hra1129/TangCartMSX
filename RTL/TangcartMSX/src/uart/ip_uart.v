@@ -57,7 +57,7 @@ module ip_uart #(
 	reg		[9:0]	ff_data;
 	reg				ff_busy;
 
-	always @( negedge n_reset or posedge clk ) begin
+	always @( posedge clk ) begin
 		if( !n_reset ) begin
 			ff_uart_count <= 'd0;
 		end
@@ -69,7 +69,7 @@ module ip_uart #(
 		end
 	end
 
-	always @( negedge n_reset or posedge clk ) begin
+	always @( posedge clk ) begin
 		if( !n_reset ) begin
 			ff_state	<= ST_IDLE;
 			ff_data		<= 10'b1111111111;

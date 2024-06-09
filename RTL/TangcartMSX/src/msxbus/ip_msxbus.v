@@ -51,34 +51,33 @@ module ip_msxbus (
 	output			bus_memory
 );
 	//	Flip-flops for asynchronous switching and low-pass
-	reg		[3:0]	ff_n_sltsl;
-	reg		[3:0]	ff_n_rd;
-	reg		[3:0]	ff_n_wr;
-	reg		[3:0]	ff_n_ioreq;
-	reg		[3:0]	ff_n_mereq;
-	reg				ff_dir;
+	reg		[1:0]	ff_n_sltsl = 2'b11;
+	reg		[1:0]	ff_n_rd = 2'b11;
+	reg		[1:0]	ff_n_wr = 2'b11;
+	reg		[1:0]	ff_n_ioreq = 2'b11;
+	reg		[1:0]	ff_n_mereq = 2'b11;
 	wire			w_n_sltsl;
 	wire			w_n_rd;
 	wire			w_n_wr;
 	wire			w_n_ioreq;
 	wire			w_n_mereq;
 	//	Make up pulse
-	reg				ff_n_rd_pulse;
-	reg				ff_n_wr_pulse;
+	reg				ff_n_rd_pulse = 1'b1;
+	reg				ff_n_wr_pulse = 1'b1;
 	wire			w_rd_pulse;
 	wire			w_wr_pulse;
 	//	Latch
 	reg		[15:0]	ff_bus_address;
 	reg		[7:0]	ff_bus_read_data;
 	reg		[7:0]	ff_bus_write_data;
-	reg				ff_bus_read;
-	reg				ff_bus_write;
+	reg				ff_bus_read = 1'b0;
+	reg				ff_bus_write = 1'b0;
 	reg				ff_buf_read_data_en = 1'b0;
 
 	// --------------------------------------------------------------------
 	//	Asynchronous switching and low-pass
 	// --------------------------------------------------------------------
-	always @( negedge n_reset or posedge clk ) begin
+	always @( posedge clk ) begin
 		if( !n_reset ) begin
 			ff_n_sltsl	<= 2'b11;
 			ff_n_rd		<= 2'b11;
@@ -104,7 +103,7 @@ module ip_msxbus (
 	// --------------------------------------------------------------------
 	//	Make up pulse
 	// --------------------------------------------------------------------
-	always @( negedge n_reset or posedge clk ) begin
+	always @( posedge clk ) begin
 		if( !n_reset ) begin
 			ff_n_rd_pulse <= 1'b1;
 			ff_n_wr_pulse <= 1'b1;
@@ -139,7 +138,7 @@ module ip_msxbus (
 		end
 	end
 
-	always @( negedge n_reset or posedge clk ) begin
+	always @( posedge clk ) begin
 		if( !n_reset ) begin
 			ff_bus_read_data	<= 8'd0;
 		end
@@ -151,7 +150,7 @@ module ip_msxbus (
 		end
 	end
 
-	always @( negedge n_reset or posedge clk ) begin
+	always @( posedge clk ) begin
 		if( !n_reset ) begin
 			ff_buf_read_data_en <= 1'b0;
 		end
@@ -174,7 +173,7 @@ module ip_msxbus (
 		end
 	end
 
-	always @( negedge n_reset or posedge clk ) begin
+	always @( posedge clk ) begin
 		if( !n_reset ) begin
 			ff_bus_read		<= 1'b0;
 			ff_bus_write	<= 1'b0;

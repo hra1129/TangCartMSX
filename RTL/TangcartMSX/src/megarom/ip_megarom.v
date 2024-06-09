@@ -152,7 +152,7 @@ module ip_megarom #(
 	// --------------------------------------------------------------------
 	//	SCC-I Mode Register
 	// --------------------------------------------------------------------
-	always @( negedge n_reset or posedge clk ) begin
+	always @( posedge clk ) begin
 		if( !n_reset ) begin
 			ff_sccp_en		<= 1'b0;
 			ff_sccp_ram_en	<= 1'b0;
@@ -173,7 +173,7 @@ module ip_megarom #(
 	// --------------------------------------------------------------------
 	//	Bank Register
 	// --------------------------------------------------------------------
-	always @( negedge n_reset or posedge clk ) begin
+	always @( posedge clk ) begin
 		if( !n_reset ) begin
 			ff_bank0 <= 8'd0;
 			ff_bank1 <= 8'd1;

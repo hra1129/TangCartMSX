@@ -63,7 +63,7 @@ module ip_kanjirom #(
 	//	Address registers
 	// --------------------------------------------------------------------
 	assign w_jis1_dec	= ({ bus_address[7:1], 1'b0 } == 8'hD8);
-	always @( negedge n_reset or posedge clk ) begin
+	always @( posedge clk ) begin
 		if( !n_reset ) begin
 			ff_jis1_ptr <= 17'd0;
 		end
@@ -88,7 +88,7 @@ module ip_kanjirom #(
 	end
 
 	assign w_jis2_dec	= ({ bus_address[7:1], 1'b0 } == 8'hDA);
-	always @( negedge n_reset or posedge clk ) begin
+	always @( posedge clk ) begin
 		if( !n_reset ) begin
 			ff_jis2_ptr <= 17'd0;
 		end

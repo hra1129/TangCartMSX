@@ -115,7 +115,7 @@ module ip_psram (
 	assign w_cmd0_en	= wr0 | rd0;
 	assign w_cmd1_en	= wr1 | rd1;
 
-	always @( negedge n_reset or posedge clk ) begin
+	always @( posedge clk ) begin
 		if( !n_reset ) begin
 			ff_wait_cnt0 <= 4'd0;
 		end
@@ -130,7 +130,7 @@ module ip_psram (
 		end
 	end
 
-	always @( negedge n_reset or posedge clk ) begin
+	always @( posedge clk ) begin
 		if( !n_reset ) begin
 			ff_wait_cnt1 <= 4'd0;
 		end
@@ -184,7 +184,7 @@ module ip_psram (
 		endcase
 	endfunction
 
-	always @( negedge n_reset or posedge clk ) begin
+	always @( posedge clk ) begin
 		if( !n_reset ) begin
 			ff_rd_data0_en	<= 1'b0;
 			ff_rd_data0		<= 8'd0;
@@ -202,7 +202,7 @@ module ip_psram (
 		end
 	end
 
-	always @( negedge n_reset or posedge clk ) begin
+	always @( posedge clk ) begin
 		if( !n_reset ) begin
 			ff_rd_data1_en	<= 1'b0;
 			ff_rd_data1		<= 8'd0;

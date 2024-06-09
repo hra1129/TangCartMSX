@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<Module name="tangcart_msx" Register="68" Lut="107">
+<Module name="tangcart_msx" Register="71" Lut="106">
     <SubModule name="u_pll"/>
     <SubModule name="u_msxbus" Register="37" Lut="12"/>
     <SubModule name="u_pwm" Register="9" Alu="8"/>

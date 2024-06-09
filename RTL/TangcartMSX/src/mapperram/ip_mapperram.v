@@ -60,7 +60,7 @@ module ip_mapperram (
 	// --------------------------------------------------------------------
 	//	Segment registers
 	// --------------------------------------------------------------------
-	always @( negedge n_reset or posedge clk ) begin
+	always @( posedge clk ) begin
 		if( !n_reset ) begin
 			ff_p0 <= 8'd0;
 		end
@@ -72,7 +72,7 @@ module ip_mapperram (
 		end
 	end
 
-	always @( negedge n_reset or posedge clk ) begin
+	always @( posedge clk ) begin
 		if( !n_reset ) begin
 			ff_p1 <= 8'd0;
 		end
@@ -84,7 +84,7 @@ module ip_mapperram (
 		end
 	end
 
-	always @( negedge n_reset or posedge clk ) begin
+	always @( posedge clk ) begin
 		if( !n_reset ) begin
 			ff_p2 <= 8'd0;
 		end
@@ -96,7 +96,7 @@ module ip_mapperram (
 		end
 	end
 
-	always @( negedge n_reset or posedge clk ) begin
+	always @( posedge clk ) begin
 		if( !n_reset ) begin
 			ff_p3 <= 8'd0;
 		end

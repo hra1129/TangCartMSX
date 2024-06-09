@@ -81,7 +81,7 @@ module ip_vdp9918_register (
 	reg		[4:0]	ff_fifth_s_num;
 	reg				ff_interrupt;
 
-	always @( negedge n_reset or posedge clk ) begin
+	always @( posedge clk ) begin
 		if( !n_reset ) begin
 			ff_state <= 1'b0;
 		end
@@ -118,7 +118,7 @@ module ip_vdp9918_register (
 		end
 	end
 
-	always @( negedge n_reset or posedge clk ) begin
+	always @( posedge clk ) begin
 		if( !n_reset ) begin
 			ff_bus_read_ready <= 1'b0;
 			ff_bus_read_data <= 8'd0;
@@ -138,7 +138,7 @@ module ip_vdp9918_register (
 		end
 	end
 
-	always @( negedge n_reset or posedge clk ) begin
+	always @( posedge clk ) begin
 		if( !n_reset ) begin
 			ff_vram_read <= 1'b0;
 		end
@@ -161,7 +161,7 @@ module ip_vdp9918_register (
 	assign vram_write			= ff_vram_write;
 	assign vram_write_data		= ff_vram_data;
 
-	always @( negedge n_reset or posedge clk ) begin
+	always @( posedge clk ) begin
 		if( !n_reset ) begin
 			ff_fifth_s <= 1'b0;
 			ff_fifth_s_num <= 5'd0;
@@ -179,7 +179,7 @@ module ip_vdp9918_register (
 		end
 	end
 
-	always @( negedge n_reset or posedge clk ) begin
+	always @( posedge clk ) begin
 		if( !n_reset ) begin
 			ff_coinc <= 1'b0;
 		end
@@ -194,7 +194,7 @@ module ip_vdp9918_register (
 		end
 	end
 
-	always @( negedge n_reset or posedge clk ) begin
+	always @( posedge clk ) begin
 		if( !n_reset ) begin
 			ff_interrupt <= 1'b0;
 		end

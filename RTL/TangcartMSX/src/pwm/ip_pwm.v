@@ -37,7 +37,7 @@ module ip_pwm (
 	// --------------------------------------------------------------------
 	//	Integral unit
 	// --------------------------------------------------------------------
-	always @( negedge n_reset or posedge clk ) begin
+	always @( posedge clk ) begin
 		if( !n_reset ) begin
 			ff_integ <= 17'd0;
 		end
