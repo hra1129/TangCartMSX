@@ -1,5 +1,5 @@
 // -----------------------------------------------------------------------------
-//	ip_gpio.v
+//	ip_gpio_mem.v
 //	Copyright (C)2024 Takayuki Hara (HRA!)
 //	
 //	 Permission is hereby granted, free of charge, to any person obtaining a 
@@ -24,8 +24,8 @@
 //		1byte GPIO
 // -----------------------------------------------------------------------------
 
-module ip_gpio #(
-	parameter		io_address = 8'h01
+module ip_gpio_mem #(
+	parameter		io_address = 16'h9000
 ) (
 	//	Internal I/F
 	input			n_reset,
@@ -52,13 +52,13 @@ module ip_gpio #(
 	// --------------------------------------------------------------------
 	//	Active bus select
 	// --------------------------------------------------------------------
-	assign bus_io_cs		= 1'b1;
-	assign bus_memory_cs	= 1'b0;
+	assign bus_io_cs		= 1'b0;
+	assign bus_memory_cs	= 1'b1;
 
 	// --------------------------------------------------------------------
 	//	Address decode
 	// --------------------------------------------------------------------
-	assign w_gpio_dec		= (bus_address[7:0] == io_address) ? 1'b1 : 1'b0;
+	assign w_gpio_dec		= (bus_address == io_address) ? 1'b1 : 1'b0;
 
 	// --------------------------------------------------------------------
 	//	Write register
@@ -67,7 +67,7 @@ module ip_gpio #(
 		if( !n_reset ) begin
 			ff_gpo <= 8'h00;
 		end
-		else if( bus_io && w_gpio_dec && bus_write ) begin
+		else if( bus_memory && w_gpio_dec && bus_write ) begin
 			ff_gpo <= bus_write_data;
 		end
 		else begin
@@ -83,7 +83,7 @@ module ip_gpio #(
 		if( !n_reset ) begin
 			ff_read_ready <= 1'b0;
 		end
-		else if( bus_io && w_gpio_dec && bus_read ) begin
+		else if( bus_memory && w_gpio_dec && bus_read ) begin
 			ff_read_ready <= 1'b1;
 		end
 		else begin

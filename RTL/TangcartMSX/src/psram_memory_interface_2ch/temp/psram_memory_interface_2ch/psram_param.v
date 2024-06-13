@@ -1,4 +1,4 @@
-parameter Memory_Clock = 162;
+parameter Memory_Clock = 128;
 parameter PSRAM_WIDTH = 8;
 parameter DQ_WIDTH = 8;
 parameter ADDR_WIDTH = 21;

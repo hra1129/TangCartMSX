@@ -33,6 +33,7 @@ module ip_msxbus (
 	input	[7:0]	i_data,
 	output	[7:0]	o_data,
 	output			is_output,
+	output			is_output_d,
 	input			n_sltsl,
 	input			n_rd,
 	input			n_wr,
@@ -51,11 +52,11 @@ module ip_msxbus (
 	output			bus_memory
 );
 	//	Flip-flops for asynchronous switching and low-pass
-	reg		[1:0]	ff_n_sltsl = 2'b11;
-	reg		[1:0]	ff_n_rd = 2'b11;
-	reg		[1:0]	ff_n_wr = 2'b11;
-	reg		[1:0]	ff_n_ioreq = 2'b11;
-	reg		[1:0]	ff_n_mereq = 2'b11;
+	reg		[3:0]	ff_n_sltsl = 4'b1111;
+	reg		[3:0]	ff_n_rd = 4'b1111;
+	reg		[3:0]	ff_n_wr = 4'b1111;
+	reg		[3:0]	ff_n_ioreq = 4'b1111;
+	reg		[3:0]	ff_n_mereq = 4'b1111;
 	wire			w_n_sltsl;
 	wire			w_n_rd;
 	wire			w_n_wr;
@@ -79,26 +80,26 @@ module ip_msxbus (
 	// --------------------------------------------------------------------
 	always @( posedge clk ) begin
 		if( !n_reset ) begin
-			ff_n_sltsl	<= 2'b11;
-			ff_n_rd		<= 2'b11;
-			ff_n_wr		<= 2'b11;
-			ff_n_ioreq	<= 2'b11;
-			ff_n_mereq	<= 2'b11;
+			ff_n_sltsl	<= 4'b1111;
+			ff_n_rd		<= 4'b1111;
+			ff_n_wr		<= 4'b1111;
+			ff_n_ioreq	<= 4'b1111;
+			ff_n_mereq	<= 4'b1111;
 		end
 		else begin
-			ff_n_sltsl	<= { ff_n_sltsl[0], n_sltsl };
-			ff_n_rd		<= { ff_n_rd[0]   , n_rd };
-			ff_n_wr		<= { ff_n_wr[0]   , n_wr };
-			ff_n_ioreq	<= { ff_n_ioreq[0], n_ioreq };
-			ff_n_mereq	<= { ff_n_mereq[0], n_mereq };
+			ff_n_sltsl	<= { ff_n_sltsl[2:0], n_sltsl };
+			ff_n_rd		<= { ff_n_rd[2:0]   , n_rd };
+			ff_n_wr		<= { ff_n_wr[2:0]   , n_wr };
+			ff_n_ioreq	<= { ff_n_ioreq[2:0], n_ioreq };
+			ff_n_mereq	<= { ff_n_mereq[2:0], n_mereq };
 		end
 	end
 
-	assign w_n_sltsl	= ff_n_sltsl[1] | ff_n_sltsl[0];
-	assign w_n_rd		= ff_n_rd[1]    | ff_n_rd[0];
-	assign w_n_wr		= ff_n_wr[1]    | ff_n_wr[0];
-	assign w_n_ioreq	= ff_n_ioreq[1] | ff_n_ioreq[0];
-	assign w_n_mereq	= ff_n_mereq[1] | ff_n_mereq[0];
+	assign w_n_sltsl	= ff_n_sltsl[3] | ff_n_sltsl[2] | ff_n_sltsl[1];
+	assign w_n_rd		= ff_n_rd[3]    | ff_n_rd[2]    | ff_n_rd[1];
+	assign w_n_wr		= ff_n_wr[3]    | ff_n_wr[2]    | ff_n_wr[1];
+	assign w_n_ioreq	= ff_n_ioreq[3] | ff_n_ioreq[2] | ff_n_ioreq[1];
+	assign w_n_mereq	= ff_n_mereq[3] | ff_n_mereq[2] | ff_n_mereq[1];
 
 	// --------------------------------------------------------------------
 	//	Make up pulse
@@ -121,7 +122,7 @@ module ip_msxbus (
 	//	Latch
 	// --------------------------------------------------------------------
 	always @( posedge clk ) begin
-		if( (w_rd_pulse || w_wr_pulse) && (((w_n_sltsl | w_n_mereq) == 1'b0) || (w_n_ioreq == 1'b0)) ) begin
+		if( w_wr_pulse || w_rd_pulse ) begin
 			ff_bus_address	<= adr;
 		end
 		else begin
@@ -130,7 +131,7 @@ module ip_msxbus (
 	end
 
 	always @( posedge clk ) begin
-		if( w_wr_pulse && (((w_n_sltsl | w_n_mereq) == 1'b0) || (w_n_ioreq == 1'b0)) ) begin
+		if( w_wr_pulse ) begin
 			ff_bus_write_data	<= i_data;
 		end
 		else begin
@@ -142,7 +143,7 @@ module ip_msxbus (
 		if( !n_reset ) begin
 			ff_bus_read_data	<= 8'd0;
 		end
-		else if( (w_n_rd == 1'b0) && bus_read_ready && (((w_n_sltsl | w_n_mereq) == 1'b0) || (w_n_ioreq == 1'b0)) ) begin
+		else if( bus_read_ready ) begin
 			ff_bus_read_data	<= bus_read_data;
 		end
 		else begin
@@ -154,16 +155,8 @@ module ip_msxbus (
 		if( !n_reset ) begin
 			ff_buf_read_data_en <= 1'b0;
 		end
-		else if( (w_n_rd == 1'b0) && bus_read_ready ) begin
-			if( (w_n_sltsl | w_n_mereq) == 1'b0 ) begin
-				ff_buf_read_data_en <= bus_memory_cs;
-			end
-			else if( w_n_ioreq == 1'b0 ) begin
-				ff_buf_read_data_en <= bus_io_cs;
-			end
-			else begin
-				//	hold
-			end
+		else if( bus_read_ready ) begin
+			ff_buf_read_data_en <= 1'b1;
 		end
 		else if( w_n_rd == 1'b1 ) begin
 			ff_buf_read_data_en <= 1'b0;
@@ -192,11 +185,12 @@ module ip_msxbus (
 	assign bus_read			= ff_bus_read;
 	assign bus_write		= ff_bus_write;
 	assign bus_io			= ~w_n_ioreq & bus_io_cs;
-	assign bus_memory		= ~(w_n_sltsl | w_n_mereq) & bus_memory_cs;
+	assign bus_memory		= ~w_n_sltsl & bus_memory_cs;
 
 	// --------------------------------------------------------------------
 	//	MSX BUS response
 	// --------------------------------------------------------------------
 	assign o_data			= ff_bus_read_data;
 	assign is_output		= ff_buf_read_data_en & ~n_rd;
+	assign is_output_d		= ff_buf_read_data_en;
 endmodule

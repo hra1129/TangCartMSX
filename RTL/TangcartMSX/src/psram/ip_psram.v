@@ -67,6 +67,8 @@ module ip_psram (
 	reg			[3:0]	ff_wait_cnt1;
 	reg			[7:0]	ff_rd_data0;
 	reg			[7:0]	ff_rd_data1;
+	wire		[31:0]	w_rd_data0;
+	wire		[31:0]	w_rd_data1;
 	wire				w_rdata0_en;
 	wire				w_rdata1_en;
 	reg					ff_rd_data0_en;
@@ -91,8 +93,8 @@ module ip_psram (
 		.cmd_en1			( w_cmd1_en				), //input cmd_en1
 		.addr0				( address0[21:1]		), //input [20:0] addr0
 		.addr1				( address1[21:1]		), //input [20:0] addr1
-		.wr_data0			( wr_data0_i			), //input [31:0] wr_data0
-		.wr_data1			( wr_data1_i			), //input [31:0] wr_data1
+		.wr_data0			( w_wr_data0			), //input [31:0] wr_data0
+		.wr_data1			( w_wr_data1			), //input [31:0] wr_data1
 		.rd_data0			( w_rd_data0			), //output [31:0] rd_data0
 		.rd_data1			( w_rd_data1			), //output [31:0] rd_data1
 		.rd_data_valid0		( w_rdata0_en			), //output rd_data_valid0
@@ -221,7 +223,7 @@ module ip_psram (
 	end
 
 	assign rdata0_en	= ff_rd_data0_en;
-	assign rdata0		= ff_rd_data0;
+	assign rdata0		= ff_rd_data0_en ? ff_rd_data0 : 8'd0;
 	assign rdata1_en	= ff_rd_data1_en;
-	assign rdata1		= ff_rd_data1;
+	assign rdata1		= ff_rd_data1_en ? ff_rd_data1 : 8'd0;
 endmodule

@@ -1,18 +1,37 @@
 GowinSynthesis start
 Running parser ...
+Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\TangcartMSX\src\extslot\ip_extslot.v'
 Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\TangcartMSX\src\gowin_pll\gowin_pll.v'
 Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\TangcartMSX\src\gpio\ip_gpio.v'
+Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\TangcartMSX\src\gpio_mem\ip_gpio_mem.v'
 Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\TangcartMSX\src\msxbus\ip_msxbus.v'
+Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\TangcartMSX\src\psram\ip_psram.v'
+Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\TangcartMSX\src\psram_memory_interface_2ch\psram_memory_interface_2ch.v'
 Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\TangcartMSX\src\pwm\ip_pwm.v'
 Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\TangcartMSX\src\tangcart_msx.v'
-Undeclared symbol 'mem_clk', assumed default net type 'wire'("D:\github\HRA_product\TangCartMSX\RTL\TangcartMSX\src\tangcart_msx.v":129)
-Undeclared symbol 'mem_clk_lock', assumed default net type 'wire'("D:\github\HRA_product\TangCartMSX\RTL\TangcartMSX\src\tangcart_msx.v":130)
-Undeclared symbol 'w_sound_flip', assumed default net type 'wire'("D:\github\HRA_product\TangCartMSX\RTL\TangcartMSX\src\tangcart_msx.v":216)
+Undeclared symbol 'w_sound_flip', assumed default net type 'wire'("D:\github\HRA_product\TangCartMSX\RTL\TangcartMSX\src\tangcart_msx.v":329)
+Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\TangcartMSX\src\mapperram\ip_mapperram.v'
 Compiling module 'tangcart_msx'("D:\github\HRA_product\TangCartMSX\RTL\TangcartMSX\src\tangcart_msx.v":27)
 Compiling module 'Gowin_PLL'("D:\github\HRA_product\TangCartMSX\RTL\TangcartMSX\src\gowin_pll\gowin_pll.v":10)
 Compiling module 'ip_msxbus'("D:\github\HRA_product\TangCartMSX\RTL\TangcartMSX\src\msxbus\ip_msxbus.v":28)
+Compiling module 'ip_extslot'("D:\github\HRA_product\TangCartMSX\RTL\TangcartMSX\src\extslot\ip_extslot.v":27)
+Compiling module 'ip_mapperram'("D:\github\HRA_product\TangCartMSX\RTL\TangcartMSX\src\mapperram\ip_mapperram.v":27)
+Compiling module 'ip_psram'("D:\github\HRA_product\TangCartMSX\RTL\TangcartMSX\src\psram\ip_psram.v":27)
+Compiling module 'PSRAM_Memory_Interface_2CH_Top'("D:\github\HRA_product\TangCartMSX\RTL\TangcartMSX\src\psram_memory_interface_2ch\psram_memory_interface_2ch.v":6512)
+Compiling module '**'("D:\github\HRA_product\TangCartMSX\RTL\TangcartMSX\src\psram_memory_interface_2ch\psram_memory_interface_2ch.v":0)
+Compiling module '**'("D:\github\HRA_product\TangCartMSX\RTL\TangcartMSX\src\psram_memory_interface_2ch\psram_memory_interface_2ch.v":0)
+Compiling module '**'("D:\github\HRA_product\TangCartMSX\RTL\TangcartMSX\src\psram_memory_interface_2ch\psram_memory_interface_2ch.v":0)
+Compiling module '**'("D:\github\HRA_product\TangCartMSX\RTL\TangcartMSX\src\psram_memory_interface_2ch\psram_memory_interface_2ch.v":0)
+Compiling module '**'("D:\github\HRA_product\TangCartMSX\RTL\TangcartMSX\src\psram_memory_interface_2ch\psram_memory_interface_2ch.v":0)
+Compiling module '**'("D:\github\HRA_product\TangCartMSX\RTL\TangcartMSX\src\psram_memory_interface_2ch\psram_memory_interface_2ch.v":0)
+Compiling module '**'("D:\github\HRA_product\TangCartMSX\RTL\TangcartMSX\src\psram_memory_interface_2ch\psram_memory_interface_2ch.v":0)
+Compiling module '**'("D:\github\HRA_product\TangCartMSX\RTL\TangcartMSX\src\psram_memory_interface_2ch\psram_memory_interface_2ch.v":0)
+Compiling module '**'("D:\github\HRA_product\TangCartMSX\RTL\TangcartMSX\src\psram_memory_interface_2ch\psram_memory_interface_2ch.v":0)
+Compiling module '**'("D:\github\HRA_product\TangCartMSX\RTL\TangcartMSX\src\psram_memory_interface_2ch\psram_memory_interface_2ch.v":0)
+Compiling module '**'("D:\github\HRA_product\TangCartMSX\RTL\TangcartMSX\src\psram_memory_interface_2ch\psram_memory_interface_2ch.v":0)
 Compiling module 'ip_pwm'("D:\github\HRA_product\TangCartMSX\RTL\TangcartMSX\src\pwm\ip_pwm.v":27)
 Compiling module 'ip_gpio'("D:\github\HRA_product\TangCartMSX\RTL\TangcartMSX\src\gpio\ip_gpio.v":27)
+Compiling module 'ip_gpio_mem(io_address=16'h8001)'("D:\github\HRA_product\TangCartMSX\RTL\TangcartMSX\src\gpio_mem\ip_gpio_mem.v":27)
 NOTE  (EX0101) : Current top module is "tangcart_msx"
 WARN  (EX0211) : The output port "srom_cs" of module "tangcart_msx" has no driver, assigning undriven bits to Z, simulation mismatch possible("D:\github\HRA_product\TangCartMSX\RTL\TangcartMSX\src\tangcart_msx.v":35)
 WARN  (EX0211) : The output port "srom_mosi" of module "tangcart_msx" has no driver, assigning undriven bits to Z, simulation mismatch possible("D:\github\HRA_product\TangCartMSX\RTL\TangcartMSX\src\tangcart_msx.v":36)
@@ -21,7 +40,7 @@ WARN  (EX0211) : The output port "srom_sclk" of module "tangcart_msx" has no dri
 WARN  (CV0016) : Input sys_clk is unused("D:\github\HRA_product\TangCartMSX\RTL\TangcartMSX\src\tangcart_msx.v":28)
 WARN  (CV0016) : Input tf_miso is unused("D:\github\HRA_product\TangCartMSX\RTL\TangcartMSX\src\tangcart_msx.v":33)
 WARN  (CV0016) : Input srom_miso is unused("D:\github\HRA_product\TangCartMSX\RTL\TangcartMSX\src\tangcart_msx.v":38)
-WARN  (CV0020) : Input ta[15:8] is unused("D:\github\HRA_product\TangCartMSX\RTL\TangcartMSX\src\tangcart_msx.v":47)
+WARN  (CV0016) : Input n_tmerq is unused("D:\github\HRA_product\TangCartMSX\RTL\TangcartMSX\src\tangcart_msx.v":43)
 WARN  (CV0016) : Input button is unused("D:\github\HRA_product\TangCartMSX\RTL\TangcartMSX\src\tangcart_msx.v":52)
 Running device independent optimization ...
 [10%] Optimizing Phase 0 completed
