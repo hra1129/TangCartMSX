@@ -50,7 +50,8 @@ module tangcart_msx (
 	output			tsnd,
 	output	[5:0]	n_led,
 	input	[1:0]	button,
-	input	[7:0]	dip_sw,
+	input	[6:0]	dip_sw,
+	output			twait,
 	// PSRAM ports
 	output	[1:0]	O_psram_ck,
 	output	[1:0]	O_psram_ck_n,
@@ -144,9 +145,10 @@ module tangcart_msx (
 	assign tf_cs		= 1'b0;
 	assign tf_mosi		= 1'b0;
 	assign tf_sclk		= 1'b0;
-	assign n_led		= w_gpo_mem[5:0];
-	assign td			= (w_is_output   & dip_sw[7]) ? w_o_data : 8'hZZ;
-	assign tdir			= (w_is_output_d & dip_sw[7]);
+	assign n_led		= w_bus_read_data_mapram[5:0];
+	assign td			= (w_is_output   & dip_sw[6]) ? w_o_data : 8'hZZ;
+	assign tdir			= (w_is_output_d & dip_sw[6]);
+	assign twait		= 1'b0;
 
 	always @( posedge clk ) begin
 		ff_reset[5:0]	<= { ff_reset[4:0], n_treset };
@@ -196,10 +198,15 @@ module tangcart_msx (
 		.bus_io				( w_bus_io			),
 		.bus_memory			( w_bus_memory		)
 	);
-	assign w_bus_io_cs		= w_bus_io_cs_gpio_mem      | w_bus_io_cs_gpio      | w_bus_io_cs_mapram      | w_bus_io_cs_extslot;
-	assign w_bus_memory_cs	= w_bus_memory_cs_gpio_mem  | w_bus_memory_cs_gpio  | w_bus_memory_cs_mapram  | w_bus_memory_cs_extslot;
-	assign w_bus_read_ready	= w_bus_read_ready_gpio_mem | w_bus_read_ready_gpio | w_bus_read_ready_mapram | w_bus_read_ready_extslot;
-	assign w_bus_read_data	= w_bus_read_data_gpio_mem  | w_bus_read_data_gpio  | w_bus_read_data_mapram  | w_bus_read_data_extslot;
+//	assign w_bus_io_cs		= w_bus_io_cs_gpio_mem      | w_bus_io_cs_gpio      | w_bus_io_cs_mapram      | w_bus_io_cs_extslot;
+//	assign w_bus_memory_cs	= w_bus_memory_cs_gpio_mem  | w_bus_memory_cs_gpio  | w_bus_memory_cs_mapram  | w_bus_memory_cs_extslot;
+//	assign w_bus_read_ready	= w_bus_read_ready_gpio_mem | w_bus_read_ready_gpio | w_bus_read_ready_mapram | w_bus_read_ready_extslot;
+//	assign w_bus_read_data	= w_bus_read_data_gpio_mem  | w_bus_read_data_gpio  | w_bus_read_data_mapram  | w_bus_read_data_extslot;
+
+	assign w_bus_io_cs		= w_bus_io_cs_mapram      | w_bus_io_cs_extslot;
+	assign w_bus_memory_cs	= w_bus_memory_cs_mapram  | w_bus_memory_cs_extslot;
+	assign w_bus_read_ready	= w_bus_read_ready_mapram | w_bus_read_ready_extslot;
+	assign w_bus_read_data	= w_bus_read_data_mapram  | w_bus_read_data_extslot;
 
 	// --------------------------------------------------------------------
 	//	EXTSLOT
@@ -226,7 +233,29 @@ module tangcart_msx (
 	// --------------------------------------------------------------------
 	//	MapperRAM
 	// --------------------------------------------------------------------
-	ip_mapperram u_mapperram (
+//	ip_mapperram u_mapperram (
+//		.n_reset			( w_n_reset					),
+//		.clk				( clk						),
+//		.bus_address		( w_bus_address				),
+//		.bus_io_cs			( w_bus_io_cs_mapram		),
+//		.bus_memory_cs		( w_bus_memory_cs_mapram	),
+//		.bus_read_ready		( w_bus_read_ready_mapram	),
+//		.bus_read_data		( w_bus_read_data_mapram	),
+//		.bus_write_data		( w_bus_write_data			),
+//		.bus_read			( w_bus_read				),
+//		.bus_write			( w_bus_write				),
+//		.bus_io				( w_bus_io					),
+//		.bus_memory			( w_extslot_memory3			),
+//		.rd					( w_psram0_rd				),
+//		.wr					( w_psram0_wr				),
+//		.busy				( w_psram0_busy				),
+//		.address			( w_psram0_address			),
+//		.wdata				( w_psram0_wdata			),
+//		.rdata				( w_psram0_rdata			),
+//		.rdata_en			( w_psram0_rdata_en			)
+//	);
+
+	ip_ram u_ram (
 		.n_reset			( w_n_reset					),
 		.clk				( clk						),
 		.bus_address		( w_bus_address				),
@@ -238,45 +267,38 @@ module tangcart_msx (
 		.bus_read			( w_bus_read				),
 		.bus_write			( w_bus_write				),
 		.bus_io				( w_bus_io					),
-		.bus_memory			( w_extslot_memory3			),
-		.rd					( w_psram0_rd				),
-		.wr					( w_psram0_wr				),
-		.busy				( w_psram0_busy				),
-		.address			( w_psram0_address			),
-		.wdata				( w_psram0_wdata			),
-		.rdata				( w_psram0_rdata			),
-		.rdata_en			( w_psram0_rdata_en			)
+		.bus_memory			( w_extslot_memory3			)
 	);
 
 	// --------------------------------------------------------------------
 	//	PSRAM
 	// --------------------------------------------------------------------
-	ip_psram u_psram (
-		.n_reset				( w_n_reset				),
-		.clk					( clk					),
-		.mem_clk				( mem_clk				),
-		.lock					( mem_clk_lock			),
-		.rd0					( w_psram0_rd			),
-		.wr0					( w_psram0_wr			),
-		.busy0					( w_psram0_busy			),
-		.address0				( w_psram0_address		),
-		.wdata0					( w_psram0_wdata		),
-		.rdata0					( w_psram0_rdata		),
-		.rdata0_en				( w_psram0_rdata_en		),
-		.rd1					( 1'b0					),
-		.wr1					( 1'b0					),
-		.busy1					( 						),
-		.address1				( 22'd0					),
-		.wdata1					( 8'd0					),
-		.rdata1					( 						),
-		.rdata1_en				( 						),
-		.O_psram_ck				( O_psram_ck			),
-		.O_psram_ck_n			( O_psram_ck_n			),
-		.IO_psram_rwds			( IO_psram_rwds			),
-		.IO_psram_dq			( IO_psram_dq			),
-		.O_psram_reset_n		( O_psram_reset_n		),
-		.O_psram_cs_n			( O_psram_cs_n			)
-	);
+//	ip_psram u_psram (
+//		.n_reset				( w_n_reset				),
+//		.clk					( clk					),
+//		.mem_clk				( mem_clk				),
+//		.lock					( mem_clk_lock			),
+//		.rd0					( w_psram0_rd			),
+//		.wr0					( w_psram0_wr			),
+//		.busy0					( w_psram0_busy			),
+//		.address0				( w_psram0_address		),
+//		.wdata0					( w_psram0_wdata		),
+//		.rdata0					( w_psram0_rdata		),
+//		.rdata0_en				( w_psram0_rdata_en		),
+//		.rd1					( 1'b0					),
+//		.wr1					( 1'b0					),
+//		.busy1					( 						),
+//		.address1				( 22'd0					),
+//		.wdata1					( 8'd0					),
+//		.rdata1					( 						),
+//		.rdata1_en				( 						),
+//		.O_psram_ck				( O_psram_ck			),
+//		.O_psram_ck_n			( O_psram_ck_n			),
+//		.IO_psram_rwds			( IO_psram_rwds			),
+//		.IO_psram_dq			( IO_psram_dq			),
+//		.O_psram_reset_n		( O_psram_reset_n		),
+//		.O_psram_cs_n			( O_psram_cs_n			)
+//	);
 
 	// --------------------------------------------------------------------
 	//	Sound
@@ -414,30 +436,30 @@ module tangcart_msx (
 		.bus_io			( w_bus_io				),
 		.bus_memory		( w_bus_memory			),
 		.gpo			( w_gpo					),
-		.gpi			( dip_sw				)
+		.gpi			( { 1'b0, dip_sw }		)
 	);
 
 	// --------------------------------------------------------------------
 	//	GPIO_MEM
 	// --------------------------------------------------------------------
-	ip_gpio_mem #(
-		.io_address		( 16'h8001					)
-	) u_gpio_mem (
-		.n_reset		( w_n_reset					),
-		.clk			( clk						),
-		.bus_address	( w_bus_address				),
-		.bus_io_cs		( w_bus_io_cs_gpio_mem		),
-		.bus_memory_cs	( w_bus_memory_cs_gpio_mem	),
-		.bus_read_ready	( w_bus_read_ready_gpio_mem	),
-		.bus_read_data	( w_bus_read_data_gpio_mem	),
-		.bus_write_data	( w_bus_write_data			),
-		.bus_read		( w_bus_read				),
-		.bus_write		( w_bus_write				),
-		.bus_io			( w_bus_io					),
-		.bus_memory		( w_extslot_memory0			),
-		.gpo			( w_gpo_mem					),
-		.gpi			( dip_sw					)
-	);
+//	ip_gpio_mem #(
+//		.io_address		( 16'h8001					)
+//	) u_gpio_mem (
+//		.n_reset		( w_n_reset					),
+//		.clk			( clk						),
+//		.bus_address	( w_bus_address				),
+//		.bus_io_cs		( w_bus_io_cs_gpio_mem		),
+//		.bus_memory_cs	( w_bus_memory_cs_gpio_mem	),
+//		.bus_read_ready	( w_bus_read_ready_gpio_mem	),
+//		.bus_read_data	( w_bus_read_data_gpio_mem	),
+//		.bus_write_data	( w_bus_write_data			),
+//		.bus_read		( w_bus_read				),
+//		.bus_write		( w_bus_write				),
+//		.bus_io			( w_bus_io					),
+//		.bus_memory		( w_extslot_memory0			),
+//		.gpo			( w_gpo_mem					),
+//		.gpi			( { 1'b0, dip_sw }			)
+//	);
 
 //	function [7:0] func_hex2chr(
 //		input	[3:0]	hex

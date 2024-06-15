@@ -134,5 +134,5 @@ module ip_mapperram (
 	assign wdata			= bus_write_data;
 
 	assign bus_read_ready	= rdata_en;
-	assign bus_read_data	= rdata;
+	assign bus_read_data	= rdata_en ? rdata : 8'd0;
 endmodule
