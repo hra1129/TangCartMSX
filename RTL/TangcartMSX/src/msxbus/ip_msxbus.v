@@ -52,21 +52,20 @@ module ip_msxbus (
 	output			bus_memory
 );
 	//	Flip-flops for asynchronous switching and low-pass
-	reg		[3:0]	ff_n_sltsl = 4'b1111;
-	reg		[3:0]	ff_n_rd = 4'b1111;
-	reg		[3:0]	ff_n_wr = 4'b1111;
-	reg		[3:0]	ff_n_ioreq = 4'b1111;
-	reg		[3:0]	ff_n_mereq = 4'b1111;
+	reg		[1:0]	ff_n_sltsl = 2'b11;
+	reg		[1:0]	ff_n_rd = 2'b11;
+	reg		[1:0]	ff_n_wr = 2'b11;
+	reg		[1:0]	ff_n_ioreq = 2'b11;
+	reg		[1:0]	ff_n_mereq = 2'b11;
 	wire			w_n_sltsl;
 	wire			w_n_rd;
 	wire			w_n_wr;
 	wire			w_n_ioreq;
 	wire			w_n_mereq;
 	//	Make up pulse
-	reg				ff_n_rd_pulse = 1'b1;
-	reg				ff_n_wr_pulse = 1'b1;
-	wire			w_rd_pulse;
-	wire			w_wr_pulse;
+	wire			w_rd_fall;
+	wire			w_wr_fall;
+	wire			w_sltsl_fall;
 	//	Latch
 	reg		[15:0]	ff_bus_address;
 	reg		[7:0]	ff_bus_read_data;
@@ -80,58 +79,43 @@ module ip_msxbus (
 	// --------------------------------------------------------------------
 	always @( posedge clk ) begin
 		if( !n_reset ) begin
-			ff_n_sltsl	<= 4'b1111;
-			ff_n_rd		<= 4'b1111;
-			ff_n_wr		<= 4'b1111;
-			ff_n_ioreq	<= 4'b1111;
-			ff_n_mereq	<= 4'b1111;
+			ff_n_sltsl	<= 2'b11;
+			ff_n_rd		<= 2'b11;
+			ff_n_wr		<= 2'b11;
+			ff_n_ioreq	<= 2'b11;
+			ff_n_mereq	<= 2'b11;
 		end
 		else begin
-			ff_n_sltsl	<= { ff_n_sltsl[2:0], n_sltsl };
-			ff_n_rd		<= { ff_n_rd[2:0]   , n_rd };
-			ff_n_wr		<= { ff_n_wr[2:0]   , n_wr };
-			ff_n_ioreq	<= { ff_n_ioreq[2:0], n_ioreq };
-			ff_n_mereq	<= { ff_n_mereq[2:0], n_mereq };
+			ff_n_sltsl	<= { ff_n_sltsl[0], n_sltsl };
+			ff_n_rd		<= { ff_n_rd[0]   , n_rd };
+			ff_n_wr		<= { ff_n_wr[0]   , n_wr };
+			ff_n_ioreq	<= { ff_n_ioreq[0], n_ioreq };
+			ff_n_mereq	<= { ff_n_mereq[0], n_mereq };
 		end
 	end
 
-	assign w_n_sltsl	= ff_n_sltsl[3] | ff_n_sltsl[2] | ff_n_sltsl[1];
-	assign w_n_rd		= ff_n_rd[3]    | ff_n_rd[2]    | ff_n_rd[1];
-	assign w_n_wr		= ff_n_wr[3]    | ff_n_wr[2]    | ff_n_wr[1];
-	assign w_n_ioreq	= ff_n_ioreq[3] | ff_n_ioreq[2] | ff_n_ioreq[1];
-	assign w_n_mereq	= ff_n_mereq[3] | ff_n_mereq[2] | ff_n_mereq[1];
+	assign w_n_sltsl	= ff_n_sltsl[1] | ff_n_sltsl[0];
+	assign w_n_rd		= ff_n_rd[1]    | ff_n_rd[0];
+	assign w_n_wr		= ff_n_wr[1]    | ff_n_wr[0];
+	assign w_n_ioreq	= ff_n_ioreq[1] | ff_n_ioreq[0];
+	assign w_n_mereq	= ff_n_mereq[1] | ff_n_mereq[0];
 
 	// --------------------------------------------------------------------
 	//	Make up pulse
 	// --------------------------------------------------------------------
-	always @( posedge clk ) begin
-		if( !n_reset ) begin
-			ff_n_rd_pulse <= 1'b1;
-			ff_n_wr_pulse <= 1'b1;
-		end
-		else begin
-			ff_n_rd_pulse <= w_n_rd;
-			ff_n_wr_pulse <= w_n_wr;
-		end
-	end
-
-	assign w_rd_pulse = ff_n_rd_pulse & ~w_n_rd;
-	assign w_wr_pulse = ff_n_wr_pulse & ~w_n_wr;
+	assign w_rd_fall	= ~ff_n_rd[0]    &  ff_n_rd[1];
+	assign w_wr_fall	= ~ff_n_wr[0]    &  ff_n_wr[1];
+	assign w_sltsl_fall	= ~ff_n_sltsl[0] &  ff_n_sltsl[1];
 
 	// --------------------------------------------------------------------
 	//	Latch
 	// --------------------------------------------------------------------
 	always @( posedge clk ) begin
-		if( w_wr_pulse || w_rd_pulse ) begin
-			ff_bus_address	<= adr;
-		end
-		else begin
-			//	hold
-		end
+		ff_bus_address	<= adr;
 	end
 
 	always @( posedge clk ) begin
-		if( w_wr_pulse ) begin
+		if( w_wr_fall ) begin
 			ff_bus_write_data	<= i_data;
 		end
 		else begin
@@ -168,12 +152,27 @@ module ip_msxbus (
 
 	always @( posedge clk ) begin
 		if( !n_reset ) begin
-			ff_bus_read		<= 1'b0;
 			ff_bus_write	<= 1'b0;
 		end
 		else begin
-			ff_bus_read		<= w_rd_pulse;
-			ff_bus_write	<= w_wr_pulse;
+			ff_bus_write	<= w_wr_fall;
+		end
+	end
+
+	always @( posedge clk ) begin
+		if( !n_reset ) begin
+			ff_bus_read		<= 1'b0;
+		end
+		else begin
+			if( !w_n_ioreq ) begin
+				ff_bus_read		<= w_rd_fall;
+			end
+			else if( !w_n_mereq ) begin
+				ff_bus_read		<= w_sltsl_fall;
+			end
+			else begin
+				//	hold
+			end
 		end
 	end
 

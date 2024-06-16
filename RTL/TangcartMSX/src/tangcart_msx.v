@@ -63,6 +63,7 @@ module tangcart_msx (
 //	output			uart_tx
 );
 	reg		[6:0]	ff_reset = 7'd0;
+	reg		[4:0]	ff_wait = 5'b10000;
 	wire			clk;
 	wire			n_clk;
 	wire			mem_clk;
@@ -148,20 +149,30 @@ module tangcart_msx (
 	assign n_led		= w_bus_read_data_mapram[5:0];
 	assign td			= (w_is_output   & dip_sw[6]) ? w_o_data : 8'hZZ;
 	assign tdir			= (w_is_output_d & dip_sw[6]);
-	assign twait		= 1'b0;
+	assign twait		= ff_wait[4];
 
 	always @( posedge clk ) begin
 		ff_reset[5:0]	<= { ff_reset[4:0], n_treset };
 		ff_reset[6]		<= (ff_reset[5:0] == 6'b111111) ? 1'b1 : 1'b0;
 	end
 
+	always @( posedge clk ) begin
+		if( ff_wait[3:0] == 4'b1111 ) begin
+			ff_wait[4] <= 1'b0;
+		end
+		else begin
+			ff_wait[3:0] <= ff_wait[3:0] + 4'd1;
+			ff_wait[4] <= 1'b1;
+		end
+	end
+
 	// --------------------------------------------------------------------
 	//	PLL 3.579545MHz --> 64.43181MHz
 	// --------------------------------------------------------------------
 	Gowin_PLL u_pll (
-		.clkout			( mem_clk			),		//output	128.86362MHz
+		.clkout			( mem_clk			),		//output	150.34089MHz
 		.lock			( mem_clk_lock		),		//output	lock
-		.clkoutd		( clk				),		//output	64.43181MHz
+		.clkoutd		( clk				),		//output	75.170445MHz
 		.clkin			( tclock			)		//input		3.579545MHz
 	);
 //	Gowin_PLL u_pll (
@@ -203,32 +214,32 @@ module tangcart_msx (
 //	assign w_bus_read_ready	= w_bus_read_ready_gpio_mem | w_bus_read_ready_gpio | w_bus_read_ready_mapram | w_bus_read_ready_extslot;
 //	assign w_bus_read_data	= w_bus_read_data_gpio_mem  | w_bus_read_data_gpio  | w_bus_read_data_mapram  | w_bus_read_data_extslot;
 
-	assign w_bus_io_cs		= w_bus_io_cs_mapram      | w_bus_io_cs_extslot;
-	assign w_bus_memory_cs	= w_bus_memory_cs_mapram  | w_bus_memory_cs_extslot;
-	assign w_bus_read_ready	= w_bus_read_ready_mapram | w_bus_read_ready_extslot;
-	assign w_bus_read_data	= w_bus_read_data_mapram  | w_bus_read_data_extslot;
+	assign w_bus_io_cs		= w_bus_io_cs_mapram      ; //| w_bus_io_cs_extslot;
+	assign w_bus_memory_cs	= w_bus_memory_cs_mapram  ; //| w_bus_memory_cs_extslot;
+	assign w_bus_read_ready	= w_bus_read_ready_mapram ; //| w_bus_read_ready_extslot;
+	assign w_bus_read_data	= w_bus_read_data_mapram  ; //| w_bus_read_data_extslot;
 
 	// --------------------------------------------------------------------
 	//	EXTSLOT
 	// --------------------------------------------------------------------
-	ip_extslot u_extslot (
-		.n_reset			( w_n_reset					),
-		.clk				( clk						),
-		.bus_address		( w_bus_address				),
-		.bus_io_cs			( w_bus_io_cs_extslot		),
-		.bus_memory_cs		( w_bus_memory_cs_extslot	),
-		.bus_read_ready		( w_bus_read_ready_extslot	),
-		.bus_read_data		( w_bus_read_data_extslot	),
-		.bus_write_data		( w_bus_write_data			),
-		.bus_read			( w_bus_read				),
-		.bus_write			( w_bus_write				),
-		.bus_io				( w_bus_io					),
-		.bus_memory			( w_bus_memory				),
-		.extslot_memory0	( w_extslot_memory0			),
-		.extslot_memory1	( w_extslot_memory1			),
-		.extslot_memory2	( w_extslot_memory2			),
-		.extslot_memory3	( w_extslot_memory3			)
-	);
+//	ip_extslot u_extslot (
+//		.n_reset			( w_n_reset					),
+//		.clk				( clk						),
+//		.bus_address		( w_bus_address				),
+//		.bus_io_cs			( w_bus_io_cs_extslot		),
+//		.bus_memory_cs		( w_bus_memory_cs_extslot	),
+//		.bus_read_ready		( w_bus_read_ready_extslot	),
+//		.bus_read_data		( w_bus_read_data_extslot	),
+//		.bus_write_data		( w_bus_write_data			),
+//		.bus_read			( w_bus_read				),
+//		.bus_write			( w_bus_write				),
+//		.bus_io				( w_bus_io					),
+//		.bus_memory			( w_bus_memory				),
+//		.extslot_memory0	( w_extslot_memory0			),
+//		.extslot_memory1	( w_extslot_memory1			),
+//		.extslot_memory2	( w_extslot_memory2			),
+//		.extslot_memory3	( w_extslot_memory3			)
+//	);
 
 	// --------------------------------------------------------------------
 	//	MapperRAM
@@ -267,7 +278,8 @@ module tangcart_msx (
 		.bus_read			( w_bus_read				),
 		.bus_write			( w_bus_write				),
 		.bus_io				( w_bus_io					),
-		.bus_memory			( w_extslot_memory3			)
+//		.bus_memory			( w_extslot_memory3			)
+		.bus_memory			( w_bus_memory				)
 	);
 
 	// --------------------------------------------------------------------

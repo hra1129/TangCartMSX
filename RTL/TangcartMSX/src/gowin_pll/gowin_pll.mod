@@ -14,7 +14,7 @@
 -dyn_idiv_sel false
 -idiv_sel 1
 -dyn_fbdiv_sel false
--fbdiv_sel 36
+-fbdiv_sel 42
 -dyn_odiv_sel false
 -odiv_sel 4
 -dyn_sdiv_sel 2

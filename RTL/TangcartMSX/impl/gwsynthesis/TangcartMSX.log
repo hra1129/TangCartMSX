@@ -8,11 +8,10 @@ Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\TangcartMSX\src\ms
 Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\TangcartMSX\src\pwm\ip_pwm.v'
 Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\TangcartMSX\src\ram\ip_ram.v'
 Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\TangcartMSX\src\tangcart_msx.v'
-Undeclared symbol 'w_sound_flip', assumed default net type 'wire'("D:\github\HRA_product\TangCartMSX\RTL\TangcartMSX\src\tangcart_msx.v":351)
+Undeclared symbol 'w_sound_flip', assumed default net type 'wire'("D:\github\HRA_product\TangCartMSX\RTL\TangcartMSX\src\tangcart_msx.v":363)
 Compiling module 'tangcart_msx'("D:\github\HRA_product\TangCartMSX\RTL\TangcartMSX\src\tangcart_msx.v":27)
 Compiling module 'Gowin_PLL'("D:\github\HRA_product\TangCartMSX\RTL\TangcartMSX\src\gowin_pll\gowin_pll.v":10)
 Compiling module 'ip_msxbus'("D:\github\HRA_product\TangCartMSX\RTL\TangcartMSX\src\msxbus\ip_msxbus.v":28)
-Compiling module 'ip_extslot'("D:\github\HRA_product\TangCartMSX\RTL\TangcartMSX\src\extslot\ip_extslot.v":27)
 Compiling module 'ip_ram'("D:\github\HRA_product\TangCartMSX\RTL\TangcartMSX\src\ram\ip_ram.v":27)
 Extracting RAM for identifier 'ff_ram'("D:\github\HRA_product\TangCartMSX\RTL\TangcartMSX\src\ram\ip_ram.v":43)
 Compiling module 'ip_pwm'("D:\github\HRA_product\TangCartMSX\RTL\TangcartMSX\src\pwm\ip_pwm.v":27)
@@ -33,8 +32,6 @@ WARN  (EX0211) : The output port "O_psram_cs_n[0]" of module "tangcart_msx" has 
 WARN  (CV0016) : Input sys_clk is unused("D:\github\HRA_product\TangCartMSX\RTL\TangcartMSX\src\tangcart_msx.v":28)
 WARN  (CV0016) : Input tf_miso is unused("D:\github\HRA_product\TangCartMSX\RTL\TangcartMSX\src\tangcart_msx.v":33)
 WARN  (CV0016) : Input srom_miso is unused("D:\github\HRA_product\TangCartMSX\RTL\TangcartMSX\src\tangcart_msx.v":38)
-WARN  (CV0016) : Input n_tmerq is unused("D:\github\HRA_product\TangCartMSX\RTL\TangcartMSX\src\tangcart_msx.v":43)
-WARN  (CV0016) : Input n_tiorq is unused("D:\github\HRA_product\TangCartMSX\RTL\TangcartMSX\src\tangcart_msx.v":44)
 WARN  (CV0016) : Input button is unused("D:\github\HRA_product\TangCartMSX\RTL\TangcartMSX\src\tangcart_msx.v":52)
 WARN  (CV0020) : Input dip_sw[5:0] is unused("D:\github\HRA_product\TangCartMSX\RTL\TangcartMSX\src\tangcart_msx.v":53)
 WARN  (CV0017) : Inout IO_psram_rwds is unused("D:\github\HRA_product\TangCartMSX\RTL\TangcartMSX\src\tangcart_msx.v":58)
@@ -54,7 +51,7 @@ Running technical mapping ...
 [75%] Tech-Mapping Phase 2 completed
 [80%] Tech-Mapping Phase 3 completed
 [90%] Tech-Mapping Phase 4 completed
-WARN  (NL0002) : The module "ip_gpio" instantiated to "u_gpio" is swept in optimizing("D:\github\HRA_product\TangCartMSX\RTL\TangcartMSX\src\tangcart_msx.v":440)
+WARN  (NL0002) : The module "ip_gpio" instantiated to "u_gpio" is swept in optimizing("D:\github\HRA_product\TangCartMSX\RTL\TangcartMSX\src\tangcart_msx.v":452)
 [95%] Generate netlist file "D:\github\HRA_product\TangCartMSX\RTL\TangcartMSX\impl\gwsynthesis\TangcartMSX.vg" completed
 [100%] Generate report file "D:\github\HRA_product\TangCartMSX\RTL\TangcartMSX\impl\gwsynthesis\TangcartMSX_syn.rpt.html" completed
 GowinSynthesis finish
