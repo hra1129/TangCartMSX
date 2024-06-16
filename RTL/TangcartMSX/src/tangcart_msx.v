@@ -214,32 +214,32 @@ module tangcart_msx (
 //	assign w_bus_read_ready	= w_bus_read_ready_gpio_mem | w_bus_read_ready_gpio | w_bus_read_ready_mapram | w_bus_read_ready_extslot;
 //	assign w_bus_read_data	= w_bus_read_data_gpio_mem  | w_bus_read_data_gpio  | w_bus_read_data_mapram  | w_bus_read_data_extslot;
 
-	assign w_bus_io_cs		= w_bus_io_cs_mapram      ; //| w_bus_io_cs_extslot;
-	assign w_bus_memory_cs	= w_bus_memory_cs_mapram  ; //| w_bus_memory_cs_extslot;
-	assign w_bus_read_ready	= w_bus_read_ready_mapram ; //| w_bus_read_ready_extslot;
-	assign w_bus_read_data	= w_bus_read_data_mapram  ; //| w_bus_read_data_extslot;
+	assign w_bus_io_cs		= w_bus_io_cs_mapram      | w_bus_io_cs_extslot;
+	assign w_bus_memory_cs	= w_bus_memory_cs_mapram  | w_bus_memory_cs_extslot;
+	assign w_bus_read_ready	= w_bus_read_ready_mapram | w_bus_read_ready_extslot;
+	assign w_bus_read_data	= w_bus_read_data_mapram  | w_bus_read_data_extslot;
 
 	// --------------------------------------------------------------------
 	//	EXTSLOT
 	// --------------------------------------------------------------------
-//	ip_extslot u_extslot (
-//		.n_reset			( w_n_reset					),
-//		.clk				( clk						),
-//		.bus_address		( w_bus_address				),
-//		.bus_io_cs			( w_bus_io_cs_extslot		),
-//		.bus_memory_cs		( w_bus_memory_cs_extslot	),
-//		.bus_read_ready		( w_bus_read_ready_extslot	),
-//		.bus_read_data		( w_bus_read_data_extslot	),
-//		.bus_write_data		( w_bus_write_data			),
-//		.bus_read			( w_bus_read				),
-//		.bus_write			( w_bus_write				),
-//		.bus_io				( w_bus_io					),
-//		.bus_memory			( w_bus_memory				),
-//		.extslot_memory0	( w_extslot_memory0			),
-//		.extslot_memory1	( w_extslot_memory1			),
-//		.extslot_memory2	( w_extslot_memory2			),
-//		.extslot_memory3	( w_extslot_memory3			)
-//	);
+	ip_extslot u_extslot (
+		.n_reset			( w_n_reset					),
+		.clk				( clk						),
+		.bus_address		( w_bus_address				),
+		.bus_io_cs			( w_bus_io_cs_extslot		),
+		.bus_memory_cs		( w_bus_memory_cs_extslot	),
+		.bus_read_ready		( w_bus_read_ready_extslot	),
+		.bus_read_data		( w_bus_read_data_extslot	),
+		.bus_write_data		( w_bus_write_data			),
+		.bus_read			( w_bus_read				),
+		.bus_write			( w_bus_write				),
+		.bus_io				( w_bus_io					),
+		.bus_memory			( w_bus_memory				),
+		.extslot_memory0	( w_extslot_memory0			),
+		.extslot_memory1	( w_extslot_memory1			),
+		.extslot_memory2	( w_extslot_memory2			),
+		.extslot_memory3	( w_extslot_memory3			)
+	);
 
 	// --------------------------------------------------------------------
 	//	MapperRAM
@@ -278,8 +278,7 @@ module tangcart_msx (
 		.bus_read			( w_bus_read				),
 		.bus_write			( w_bus_write				),
 		.bus_io				( w_bus_io					),
-//		.bus_memory			( w_extslot_memory3			)
-		.bus_memory			( w_bus_memory				)
+		.bus_memory			( w_extslot_memory3			)
 	);
 
 	// --------------------------------------------------------------------

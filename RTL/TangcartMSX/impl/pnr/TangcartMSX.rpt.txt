@@ -12,23 +12,23 @@
   <Part Number>: GW1NR-LV9QN88PC6/I5
   <Device>: GW1NR-9
   <Device Version>: C
-  <Created Time>:Sun Jun 16 13:41:50 2024
+  <Created Time>:Sun Jun 16 14:00:17 2024
 
 
 2. PnR Details
 
   Running placement:
-    Placement Phase 0: CPU time = 0h 0m 0.045s, Elapsed time = 0h 0m 0.045s
-    Placement Phase 1: CPU time = 0h 0m 0.086s, Elapsed time = 0h 0m 0.086s
+    Placement Phase 0: CPU time = 0h 0m 0.049s, Elapsed time = 0h 0m 0.049s
+    Placement Phase 1: CPU time = 0h 0m 0.092s, Elapsed time = 0h 0m 0.092s
     Placement Phase 2: CPU time = 0h 0m 0.015s, Elapsed time = 0h 0m 0.015s
-    Placement Phase 3: CPU time = 0h 0m 0.955s, Elapsed time = 0h 0m 0.955s
+    Placement Phase 3: CPU time = 0h 0m 0.947s, Elapsed time = 0h 0m 0.948s
     Total Placement: CPU time = 0h 0m 1s, Elapsed time = 0h 0m 1s
  Running routing:
     Routing Phase 0: CPU time = 0h 0m 0s, Elapsed time = 0h 0m 0s
-    Routing Phase 1: CPU time = 0h 0m 0.14s, Elapsed time = 0h 0m 0.139s
-    Routing Phase 2: CPU time = 0h 0m 0.208s, Elapsed time = 0h 0m 0.209s
+    Routing Phase 1: CPU time = 0h 0m 0.145s, Elapsed time = 0h 0m 0.146s
+    Routing Phase 2: CPU time = 0h 0m 0.239s, Elapsed time = 0h 0m 0.238s
     Routing Phase 3: CPU time = 0h 0m 0s, Elapsed time = 0h 0m 0s
-    Total Routing: CPU time = 0h 0m 0.348s, Elapsed time = 0h 0m 0.348s
+    Total Routing: CPU time = 0h 0m 0.384s, Elapsed time = 0h 0m 0.384s
  Generate output files:
     CPU time = 0h 0m 1s, Elapsed time = 0h 0m 1s
 
@@ -40,15 +40,15 @@
   ----------------------------------------------------------
   Resources                   | Usage
   ----------------------------------------------------------
-  Logic                       | 140/8640  2%
-    --LUT,ALU,ROM16           | 140(130 LUT, 10 ALU, 0 ROM16)
+  Logic                       | 162/8640  2%
+    --LUT,ALU,ROM16           | 162(152 LUT, 10 ALU, 0 ROM16)
     --SSRAM(RAM16)            | 0
-  Register                    | 135/6771  2%
+  Register                    | 144/6771  3%
     --Logic Register as Latch | 0/6480  0%
-    --Logic Register as FF    | 103/6480  2%
+    --Logic Register as FF    | 112/6480  2%
     --I/O Register as Latch   | 0/291  0%
     --I/O Register as FF      | 32/291  11%
-  CLS                         | 98/4320  3%
+  CLS                         | 110/4320  3%
   I/O Port                    | 58
   I/O Buf                     | 47
     --Input Buf               | 24
