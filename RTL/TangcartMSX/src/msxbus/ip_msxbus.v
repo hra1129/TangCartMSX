@@ -52,20 +52,23 @@ module ip_msxbus (
 	output			bus_memory
 );
 	//	Flip-flops for asynchronous switching and low-pass
-	reg		[1:0]	ff_n_sltsl = 2'b11;
-	reg		[1:0]	ff_n_rd = 2'b11;
-	reg		[1:0]	ff_n_wr = 2'b11;
-	reg		[1:0]	ff_n_ioreq = 2'b11;
-	reg		[1:0]	ff_n_mereq = 2'b11;
-	wire			w_n_sltsl;
-	wire			w_n_rd;
-	wire			w_n_wr;
-	wire			w_n_ioreq;
-	wire			w_n_mereq;
+	reg				ff_n_sltsl;
+	reg				ff_n_rd;
+	reg				ff_n_wr;
+	reg				ff_n_ioreq;
+	wire			w_mem_rd;
+	wire			w_mem_wr;
+	wire			w_io_rd;
+	wire			w_io_wr;
+	reg				ff_mem_rd;
+	reg				ff_mem_wr;
+	reg				ff_io_rd;
+	reg				ff_io_wr;
 	//	Make up pulse
-	wire			w_rd_fall;
-	wire			w_wr_fall;
-	wire			w_sltsl_fall;
+	wire			w_mem_rd_pulse;
+	wire			w_mem_wr_pulse;
+	wire			w_io_rd_pulse;
+	wire			w_io_wr_pulse;
 	//	Latch
 	reg		[15:0]	ff_bus_address;
 	reg		[7:0]	ff_bus_read_data;
@@ -79,33 +82,46 @@ module ip_msxbus (
 	// --------------------------------------------------------------------
 	always @( posedge clk ) begin
 		if( !n_reset ) begin
-			ff_n_sltsl	<= 2'b11;
-			ff_n_rd		<= 2'b11;
-			ff_n_wr		<= 2'b11;
-			ff_n_ioreq	<= 2'b11;
-			ff_n_mereq	<= 2'b11;
+			ff_n_sltsl	<= 1'b1;
+			ff_n_rd		<= 1'b1;
+			ff_n_wr		<= 1'b1;
+			ff_n_ioreq	<= 1'b1;
 		end
 		else begin
-			ff_n_sltsl	<= { ff_n_sltsl[0], n_sltsl };
-			ff_n_rd		<= { ff_n_rd[0]   , n_rd };
-			ff_n_wr		<= { ff_n_wr[0]   , n_wr };
-			ff_n_ioreq	<= { ff_n_ioreq[0], n_ioreq };
-			ff_n_mereq	<= { ff_n_mereq[0], n_mereq };
+			ff_n_sltsl	<= n_sltsl;
+			ff_n_rd		<= n_rd;
+			ff_n_wr		<= n_wr;
+			ff_n_ioreq	<= n_ioreq;
 		end
 	end
 
-	assign w_n_sltsl	= ff_n_sltsl[1] | ff_n_sltsl[0];
-	assign w_n_rd		= ff_n_rd[1]    | ff_n_rd[0];
-	assign w_n_wr		= ff_n_wr[1]    | ff_n_wr[0];
-	assign w_n_ioreq	= ff_n_ioreq[1] | ff_n_ioreq[0];
-	assign w_n_mereq	= ff_n_mereq[1] | ff_n_mereq[0];
+	assign w_mem_rd		= ~ff_n_sltsl & ~ff_n_rd;
+	assign w_mem_wr		= ~ff_n_sltsl & ~ff_n_wr;
+	assign w_io_rd		= ~ff_n_ioreq & ~ff_n_rd;
+	assign w_io_wr		= ~ff_n_ioreq & ~ff_n_wr;
 
 	// --------------------------------------------------------------------
 	//	Make up pulse
 	// --------------------------------------------------------------------
-	assign w_rd_fall	= ~ff_n_rd[0]    &  ff_n_rd[1];
-	assign w_wr_fall	= ~ff_n_wr[0]    &  ff_n_wr[1];
-	assign w_sltsl_fall	= ~ff_n_sltsl[0] &  ff_n_sltsl[1];
+	always @( posedge clk ) begin
+		if( !n_reset ) begin
+			ff_mem_rd <= 1'b0;
+			ff_mem_wr <= 1'b0;
+			ff_io_rd  <= 1'b0;
+			ff_io_wr  <= 1'b0;
+		end
+		else begin
+			ff_mem_rd <= w_mem_rd;
+			ff_mem_wr <= w_mem_wr;
+			ff_io_rd  <= w_io_rd;
+			ff_io_wr  <= w_io_wr;
+		end
+	end
+
+	assign w_mem_rd_pulse	= ~ff_mem_rd & w_mem_rd;
+	assign w_mem_wr_pulse	= ~ff_mem_wr & w_mem_wr;
+	assign w_io_rd_pulse	= ~ff_io_rd  & w_io_rd;
+	assign w_io_wr_pulse	= ~ff_io_wr  & w_io_wr;
 
 	// --------------------------------------------------------------------
 	//	Latch
@@ -115,7 +131,7 @@ module ip_msxbus (
 	end
 
 	always @( posedge clk ) begin
-		if( w_wr_fall ) begin
+		if( w_mem_wr_pulse || w_io_wr_pulse ) begin
 			ff_bus_write_data	<= i_data;
 		end
 		else begin
@@ -142,7 +158,7 @@ module ip_msxbus (
 		else if( bus_read_ready ) begin
 			ff_buf_read_data_en <= 1'b1;
 		end
-		else if( w_n_rd == 1'b1 ) begin
+		else if( ff_n_rd == 1'b1 ) begin
 			ff_buf_read_data_en <= 1'b0;
 		end
 		else begin
@@ -155,7 +171,7 @@ module ip_msxbus (
 			ff_bus_write	<= 1'b0;
 		end
 		else begin
-			ff_bus_write	<= w_wr_fall;
+			ff_bus_write	<= w_mem_wr_pulse | w_io_wr_pulse;
 		end
 	end
 
@@ -164,15 +180,7 @@ module ip_msxbus (
 			ff_bus_read		<= 1'b0;
 		end
 		else begin
-			if( !w_n_ioreq ) begin
-				ff_bus_read		<= w_rd_fall;
-			end
-			else if( !w_n_mereq ) begin
-				ff_bus_read		<= w_sltsl_fall;
-			end
-			else begin
-				//	hold
-			end
+			ff_bus_read		<= w_mem_rd_pulse | w_io_rd_pulse;
 		end
 	end
 
@@ -183,8 +191,8 @@ module ip_msxbus (
 	assign bus_write_data	= ff_bus_write_data;
 	assign bus_read			= ff_bus_read;
 	assign bus_write		= ff_bus_write;
-	assign bus_io			= ~w_n_ioreq & bus_io_cs;
-	assign bus_memory		= ~w_n_sltsl & bus_memory_cs;
+	assign bus_io			= (ff_io_rd  | ff_io_wr ) & bus_io_cs;
+	assign bus_memory		= (ff_mem_rd | ff_mem_wr) & bus_memory_cs;
 
 	// --------------------------------------------------------------------
 	//	MSX BUS response

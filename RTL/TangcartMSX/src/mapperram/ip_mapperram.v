@@ -42,7 +42,6 @@ module ip_mapperram (
 	//	RAM I/F
 	output			rd,
 	output			wr,
-	input			busy,
 	output	[21:0]	address,
 	output	[7:0]	wdata,
 	input	[7:0]	rdata,
@@ -53,6 +52,7 @@ module ip_mapperram (
 	reg		[7:0]	ff_p2;
 	reg		[7:0]	ff_p3;
 	wire	[7:0]	w_address_h;
+	reg				ff_rdata_en;
 
 	assign bus_io_cs		= 1'b1;
 	assign bus_memory_cs	= 1'b1;
@@ -64,7 +64,7 @@ module ip_mapperram (
 		if( !n_reset ) begin
 			ff_p0 <= 8'd0;
 		end
-		else if( bus_io && (bus_address[7:0] == 8'hFC) ) begin
+		else if( bus_io && bus_write && (bus_address[7:0] == 8'hFC) ) begin
 			ff_p0 <= bus_write_data;
 		end
 		else begin
@@ -76,7 +76,7 @@ module ip_mapperram (
 		if( !n_reset ) begin
 			ff_p1 <= 8'd0;
 		end
-		else if( bus_io && (bus_address[7:0] == 8'hFD) ) begin
+		else if( bus_io && bus_write && (bus_address[7:0] == 8'hFD) ) begin
 			ff_p1 <= bus_write_data;
 		end
 		else begin
@@ -88,7 +88,7 @@ module ip_mapperram (
 		if( !n_reset ) begin
 			ff_p2 <= 8'd0;
 		end
-		else if( bus_io && (bus_address[7:0] == 8'hFE) ) begin
+		else if( bus_io && bus_write && (bus_address[7:0] == 8'hFE) ) begin
 			ff_p2 <= bus_write_data;
 		end
 		else begin
@@ -100,7 +100,7 @@ module ip_mapperram (
 		if( !n_reset ) begin
 			ff_p3 <= 8'd0;
 		end
-		else if( bus_io && (bus_address[7:0] == 8'hFF) ) begin
+		else if( bus_io && bus_write && (bus_address[7:0] == 8'hFF) ) begin
 			ff_p3 <= bus_write_data;
 		end
 		else begin

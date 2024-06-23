@@ -1,0 +1,10 @@
+# vsim -c -t 1ps -do "run.do" tb 
+# Start time: 23:12:10 on May 08,2024
+# Loading sv_std.std
+# Loading work.tb
+# Loading work.ODDR
+# do run.do
+# ** Note: $finish    : tb.sv(108)
+#    Time: 2910 ns  Iteration: 1  Instance: /tb
+# End time: 23:12:11 on May 08,2024, Elapsed time: 0:00:01
+# Errors: 0, Warnings: 0

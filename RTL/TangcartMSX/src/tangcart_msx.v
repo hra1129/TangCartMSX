@@ -59,8 +59,6 @@ module tangcart_msx (
 	inout	[15:0]	IO_psram_dq,
 	output	[1:0]	O_psram_reset_n,
 	output	[1:0]	O_psram_cs_n
-	// UART
-//	output			uart_tx
 );
 	reg		[6:0]	ff_reset = 7'd0;
 	reg		[4:0]	ff_wait = 5'b10000;
@@ -122,6 +120,13 @@ module tangcart_msx (
 	wire	[7:0]	w_psram0_wdata;
 	wire	[7:0]	w_psram0_rdata;
 	wire			w_psram0_rdata_en;
+	wire			w_psram1_rd;
+	wire			w_psram1_wr;
+	wire			w_psram1_busy;
+	wire	[21:0]	w_psram1_address;
+	wire	[7:0]	w_psram1_wdata;
+	wire	[7:0]	w_psram1_rdata;
+	wire			w_psram1_rdata_en;
 	wire			w_bus_io_cs_extslot;
 	wire			w_bus_memory_cs_extslot;
 	wire			w_bus_read_ready_extslot;
@@ -139,6 +144,40 @@ module tangcart_msx (
 	wire			w_bus_read_ready_mapram;
 	wire	[7:0]	w_bus_read_data_mapram;
 
+	reg		[31:0]	ff_counter;
+	reg				ff_wr;
+	reg				ff_rd;
+	reg				ff_ready;
+
+	always @( posedge clk ) begin
+		if( !w_n_reset ) begin
+			ff_counter <= 'd0;
+			ff_wr <= 1'b1;
+			ff_rd <= 1'b1;
+			ff_ready <= 1'b1;
+		end
+		else if( w_psram0_rd ) begin
+			ff_rd <= 1'b0;
+			ff_counter <= 'd75000000;
+		end
+		else if( w_psram0_wr ) begin
+			ff_wr <= 1'b0;
+			ff_counter <= 'd75000000;
+		end
+		else if( w_psram0_rdata_en ) begin
+			ff_ready <= 1'b0;
+			ff_counter <= 'd75000000;
+		end
+		else if( ff_counter != 'd0 ) begin
+			ff_counter <= ff_counter - 'd1;
+		end
+		else begin
+			ff_wr <= 1'b1;
+			ff_rd <= 1'b1;
+			ff_ready <= 1'b1;
+		end
+	end
+
 	// --------------------------------------------------------------------
 	//	OUTPUT Assignment
 	// --------------------------------------------------------------------
@@ -146,10 +185,10 @@ module tangcart_msx (
 	assign tf_cs		= 1'b0;
 	assign tf_mosi		= 1'b0;
 	assign tf_sclk		= 1'b0;
-	assign n_led		= w_bus_read_data_mapram[5:0];
-	assign td			= (w_is_output   & dip_sw[6]) ? w_o_data : 8'hZZ;
-	assign tdir			= (w_is_output_d & dip_sw[6]);
-	assign twait		= ff_wait[4];
+	assign n_led		= { 1'b1, 1'b1, 1'b1, ff_ready, ff_rd, ff_wr };
+	assign td			= w_is_output   ? w_o_data : 8'hZZ;
+	assign tdir			= w_is_output_d;
+	assign twait		= ff_wait[4] | w_psram0_busy | w_psram1_busy;
 
 	always @( posedge clk ) begin
 		ff_reset[5:0]	<= { ff_reset[4:0], n_treset };
@@ -170,17 +209,11 @@ module tangcart_msx (
 	//	PLL 3.579545MHz --> 64.43181MHz
 	// --------------------------------------------------------------------
 	Gowin_PLL u_pll (
-		.clkout			( mem_clk			),		//output	150.34089MHz
+		.clkout			( mem_clk			),		//output	164.65907MHz
 		.lock			( mem_clk_lock		),		//output	lock
-		.clkoutd		( clk				),		//output	75.170445MHz
+		.clkoutd		( clk				),		//output	82.329535MHz
 		.clkin			( tclock			)		//input		3.579545MHz
 	);
-//	Gowin_PLL u_pll (
-//		.clkout			( mem_clk			),		//output	162.0MHz
-//		.lock			( mem_clk_lock		),		//output	lock
-//		.clkoutd		( clk				),		//output	81.0MHz
-//		.clkin			( sys_clk			)		//input		27.0MHz
-//	);
 
 	// --------------------------------------------------------------------
 	//	MSX 50BUS
@@ -214,59 +247,37 @@ module tangcart_msx (
 //	assign w_bus_read_ready	= w_bus_read_ready_gpio_mem | w_bus_read_ready_gpio | w_bus_read_ready_mapram | w_bus_read_ready_extslot;
 //	assign w_bus_read_data	= w_bus_read_data_gpio_mem  | w_bus_read_data_gpio  | w_bus_read_data_mapram  | w_bus_read_data_extslot;
 
-	assign w_bus_io_cs		= w_bus_io_cs_mapram      | w_bus_io_cs_extslot;
-	assign w_bus_memory_cs	= w_bus_memory_cs_mapram  | w_bus_memory_cs_extslot;
-	assign w_bus_read_ready	= w_bus_read_ready_mapram | w_bus_read_ready_extslot;
-	assign w_bus_read_data	= w_bus_read_data_mapram  | w_bus_read_data_extslot;
+	assign w_bus_io_cs		= w_bus_io_cs_mapram      ;	//| w_bus_io_cs_extslot;
+	assign w_bus_memory_cs	= w_bus_memory_cs_mapram  ;	//| w_bus_memory_cs_extslot;
+	assign w_bus_read_ready	= w_bus_read_ready_mapram ;	//| w_bus_read_ready_extslot;
+	assign w_bus_read_data	= w_bus_read_data_mapram  ;	//| w_bus_read_data_extslot;
 
 	// --------------------------------------------------------------------
 	//	EXTSLOT
 	// --------------------------------------------------------------------
-	ip_extslot u_extslot (
-		.n_reset			( w_n_reset					),
-		.clk				( clk						),
-		.bus_address		( w_bus_address				),
-		.bus_io_cs			( w_bus_io_cs_extslot		),
-		.bus_memory_cs		( w_bus_memory_cs_extslot	),
-		.bus_read_ready		( w_bus_read_ready_extslot	),
-		.bus_read_data		( w_bus_read_data_extslot	),
-		.bus_write_data		( w_bus_write_data			),
-		.bus_read			( w_bus_read				),
-		.bus_write			( w_bus_write				),
-		.bus_io				( w_bus_io					),
-		.bus_memory			( w_bus_memory				),
-		.extslot_memory0	( w_extslot_memory0			),
-		.extslot_memory1	( w_extslot_memory1			),
-		.extslot_memory2	( w_extslot_memory2			),
-		.extslot_memory3	( w_extslot_memory3			)
-	);
-
-	// --------------------------------------------------------------------
-	//	MapperRAM
-	// --------------------------------------------------------------------
-//	ip_mapperram u_mapperram (
+//	ip_extslot u_extslot (
 //		.n_reset			( w_n_reset					),
 //		.clk				( clk						),
 //		.bus_address		( w_bus_address				),
-//		.bus_io_cs			( w_bus_io_cs_mapram		),
-//		.bus_memory_cs		( w_bus_memory_cs_mapram	),
-//		.bus_read_ready		( w_bus_read_ready_mapram	),
-//		.bus_read_data		( w_bus_read_data_mapram	),
+//		.bus_io_cs			( w_bus_io_cs_extslot		),
+//		.bus_memory_cs		( w_bus_memory_cs_extslot	),
+//		.bus_read_ready		( w_bus_read_ready_extslot	),
+//		.bus_read_data		( w_bus_read_data_extslot	),
 //		.bus_write_data		( w_bus_write_data			),
 //		.bus_read			( w_bus_read				),
 //		.bus_write			( w_bus_write				),
 //		.bus_io				( w_bus_io					),
-//		.bus_memory			( w_extslot_memory3			),
-//		.rd					( w_psram0_rd				),
-//		.wr					( w_psram0_wr				),
-//		.busy				( w_psram0_busy				),
-//		.address			( w_psram0_address			),
-//		.wdata				( w_psram0_wdata			),
-//		.rdata				( w_psram0_rdata			),
-//		.rdata_en			( w_psram0_rdata_en			)
+//		.bus_memory			( w_bus_memory				),
+//		.extslot_memory0	( w_extslot_memory0			),
+//		.extslot_memory1	( w_extslot_memory1			),
+//		.extslot_memory2	( w_extslot_memory2			),
+//		.extslot_memory3	( w_extslot_memory3			)
 //	);
 
-	ip_ram u_ram (
+	// --------------------------------------------------------------------
+	//	MapperRAM
+	// --------------------------------------------------------------------
+	ip_mapperram u_mapperram (
 		.n_reset			( w_n_reset					),
 		.clk				( clk						),
 		.bus_address		( w_bus_address				),
@@ -278,38 +289,59 @@ module tangcart_msx (
 		.bus_read			( w_bus_read				),
 		.bus_write			( w_bus_write				),
 		.bus_io				( w_bus_io					),
-		.bus_memory			( w_extslot_memory3			)
+		.bus_memory			( w_bus_memory				),
+		.rd					( w_psram0_rd				),
+		.wr					( w_psram0_wr				),
+		.address			( w_psram0_address			),
+		.wdata				( w_psram0_wdata			),
+		.rdata				( w_psram0_rdata			),
+		.rdata_en			( w_psram0_rdata_en			)
 	);
+
+//	ip_ram u_ram (
+//		.n_reset			( w_n_reset					),
+//		.clk				( clk						),
+//		.bus_address		( w_bus_address				),
+//		.bus_io_cs			( w_bus_io_cs_mapram		),
+//		.bus_memory_cs		( w_bus_memory_cs_mapram	),
+//		.bus_read_ready		( w_bus_read_ready_mapram	),
+//		.bus_read_data		( w_bus_read_data_mapram	),
+//		.bus_write_data		( w_bus_write_data			),
+//		.bus_read			( w_bus_read				),
+//		.bus_write			( w_bus_write				),
+//		.bus_io				( w_bus_io					),
+//		.bus_memory			( w_extslot_memory3			)
+//	);
 
 	// --------------------------------------------------------------------
 	//	PSRAM
 	// --------------------------------------------------------------------
-//	ip_psram u_psram (
-//		.n_reset				( w_n_reset				),
-//		.clk					( clk					),
-//		.mem_clk				( mem_clk				),
-//		.lock					( mem_clk_lock			),
-//		.rd0					( w_psram0_rd			),
-//		.wr0					( w_psram0_wr			),
-//		.busy0					( w_psram0_busy			),
-//		.address0				( w_psram0_address		),
-//		.wdata0					( w_psram0_wdata		),
-//		.rdata0					( w_psram0_rdata		),
-//		.rdata0_en				( w_psram0_rdata_en		),
-//		.rd1					( 1'b0					),
-//		.wr1					( 1'b0					),
-//		.busy1					( 						),
-//		.address1				( 22'd0					),
-//		.wdata1					( 8'd0					),
-//		.rdata1					( 						),
-//		.rdata1_en				( 						),
-//		.O_psram_ck				( O_psram_ck			),
-//		.O_psram_ck_n			( O_psram_ck_n			),
-//		.IO_psram_rwds			( IO_psram_rwds			),
-//		.IO_psram_dq			( IO_psram_dq			),
-//		.O_psram_reset_n		( O_psram_reset_n		),
-//		.O_psram_cs_n			( O_psram_cs_n			)
-//	);
+	ip_psram u_psram (
+		.n_reset				( w_n_reset				),
+		.clk					( clk					),
+		.mem_clk				( mem_clk				),
+		.lock					( mem_clk_lock			),
+		.rd0					( w_psram0_rd			),
+		.wr0					( w_psram0_wr			),
+		.busy0					( w_psram0_busy			),
+		.address0				( w_psram0_address		),
+		.wdata0					( w_psram0_wdata		),
+		.rdata0					( w_psram0_rdata		),
+		.rdata0_en				( w_psram0_rdata_en		),
+		.rd1					( 1'b0					),
+		.wr1					( 1'b0					),
+		.busy1					( w_psram1_busy			),
+		.address1				( 22'd0					),
+		.wdata1					( 8'd0					),
+		.rdata1					( 						),
+		.rdata1_en				( 						),
+		.O_psram_ck				( O_psram_ck			),
+		.O_psram_ck_n			( O_psram_ck_n			),
+		.IO_psram_rwds			( IO_psram_rwds			),
+		.IO_psram_dq			( IO_psram_dq			),
+		.O_psram_reset_n		( O_psram_reset_n		),
+		.O_psram_cs_n			( O_psram_cs_n			)
+	);
 
 	// --------------------------------------------------------------------
 	//	Sound
@@ -319,7 +351,7 @@ module tangcart_msx (
 			ff_1mhz_count <= 7'd0;
 		end
 		else if( w_1mhz ) begin
-			ff_1mhz_count <= 7'd63;
+			ff_1mhz_count <= 7'd75;
 		end
 		else begin
 			ff_1mhz_count <= ff_1mhz_count - 7'd1;
@@ -470,201 +502,5 @@ module tangcart_msx (
 //		.bus_memory		( w_extslot_memory0			),
 //		.gpo			( w_gpo_mem					),
 //		.gpi			( { 1'b0, dip_sw }			)
-//	);
-
-//	function [7:0] func_hex2chr(
-//		input	[3:0]	hex
-//	);
-//		case( hex )
-//		4'd0:		func_hex2chr = 8'h30;
-//		4'd1:		func_hex2chr = 8'h31;
-//		4'd2:		func_hex2chr = 8'h32;
-//		4'd3:		func_hex2chr = 8'h33;
-//		4'd4:		func_hex2chr = 8'h34;
-//		4'd5:		func_hex2chr = 8'h35;
-//		4'd6:		func_hex2chr = 8'h36;
-//		4'd7:		func_hex2chr = 8'h37;
-//		4'd8:		func_hex2chr = 8'h38;
-//		4'd9:		func_hex2chr = 8'h39;
-//		4'd10:		func_hex2chr = 8'h41;
-//		4'd11:		func_hex2chr = 8'h42;
-//		4'd12:		func_hex2chr = 8'h43;
-//		4'd13:		func_hex2chr = 8'h44;
-//		4'd14:		func_hex2chr = 8'h45;
-//		4'd15:		func_hex2chr = 8'h46;
-//		default:	func_hex2chr = 8'h30;
-//		endcase
-//	endfunction
-//
-//	always @( posedge clk ) begin
-//		if( !n_reset ) begin
-//			ff_ram_id	<= 1'b0;	//	0: u_psram0, 1: u_psram1
-//			ff_address	<= 24'd0;	//	2^22 = 4MB, [23:22] = 2'b00 is dummy data
-//			ff_state	<= 4'd0;
-//			ff_wr0		<= 1'b0;
-//			ff_rd0		<= 1'b0;
-//			ff_wr1		<= 1'b0;
-//			ff_rd1		<= 1'b0;
-//			ff_failed	<= 1'b0;
-//		end
-//		else if( w_busy0 || w_busy1 || w_send_busy || ff_send_req || ff_wr0 || ff_wr1 || ff_rd0 || ff_rd1 ) begin
-//			//	hold
-//			ff_send_req		<= 1'b0;
-//			ff_wr0			<= 1'b0;
-//			ff_rd0			<= 1'b0;
-//			ff_wr1			<= 1'b0;
-//			ff_rd1			<= 1'b0;
-//		end
-//		else begin
-//			if( ff_state == 4'd0 ) begin
-//				ff_send_data	<= 8'h57;		//	'W'
-//				ff_send_req		<= 1'b1;
-//				ff_state		<= 4'd1;
-//			end
-//			//       [23:20]             [19:16]             [15:12]             [11:8]              [7:4]               [3:0]
-//			else if( ff_state == 4'd1 || ff_state == 4'd2 || ff_state == 4'd3 || ff_state == 4'd4 || ff_state == 4'd5 || ff_state == 4'd6 ) begin
-//				ff_send_data	<= func_hex2chr( ff_address[23:20] );
-//				ff_send_req		<= 1'b1;
-//				ff_state		<= ff_state + 4'd1;
-//				ff_address		<= { ff_address[19:0], ff_address[23:20] };
-//			end
-//			else if( ff_state == 4'd7 ) begin
-//				ff_send_data	<= 8'h3A;		//	':'
-//				ff_send_req		<= 1'b1;
-//				ff_state		<= ff_state + 4'd1;
-//			end
-//			else if( ff_state == 4'd8 ) begin
-//				ff_wdata		<= ~ff_address[7:0];
-//				ff_ram_id		<= ~ff_ram_id;
-//				if( ff_ram_id == 1'b0 ) begin
-//					ff_wr0		<= 1'b1;
-//				end
-//				else begin
-//					ff_wr1		<= 1'b1;
-//					ff_address	<= ff_address + 'd1;
-//					if( ff_address[7:0] == 8'hFF ) begin
-//						ff_state <= ff_state + 4'd1;
-//					end
-//				end
-//			end
-//			else if( ff_state == 4'd9 ) begin
-//				ff_send_data	<= 8'h52;		//	'R'
-//				ff_send_req		<= 1'b1;
-//				ff_state		<= ff_state + 4'd1;
-//			end
-//			else if( ff_state == 4'd10 ) begin
-//				ff_wdata		<= ~ff_address[7:0];
-//				ff_state		<= ff_state + 4'd1;
-//				if( ff_ram_id == 1'b0 ) begin
-//					ff_rd0		<= 1'b1;
-//				end
-//				else begin
-//					ff_rd1		<= 1'b1;
-//					ff_address	<= ff_address + 'd1;
-//				end
-//			end
-//			else if( ff_state == 4'd11 ) begin
-//				if(      w_rdata0_en && (w_rdata0 != ff_wdata) ) begin
-//					ff_failed	<= 1'b1;	//	Failed
-//				end
-//				else if( w_rdata1_en && (w_rdata1 != ff_wdata) ) begin
-//					ff_failed	<= 1'b1;	//	Failed
-//				end
-//				if( w_rdata0_en || w_rdata1_en ) begin
-//					if( ff_address[7:0] == 8'd0 ) begin
-//						ff_state <= 4'd12;
-//					end
-//					else begin
-//						ff_state <= 4'd10;
-//					end
-//				end
-//			end
-//			else if( ff_state == 4'd12 ) begin
-//				if( ff_failed ) begin
-//					ff_send_data	<= 8'h53;		//	'S'
-//				end
-//				else begin
-//					ff_send_data	<= 8'h46;		//	'F'
-//				end
-//				ff_send_req		<= 1'b1;
-//				ff_state		<= ff_state + 4'd1;
-//			end
-//			else if( ff_state == 4'd13 ) begin
-//				ff_send_data	<= 8'h0D;		//	CR
-//				ff_send_req		<= 1'b1;
-//				ff_state		<= ff_state + 4'd1;
-//			end
-//			else if( ff_state == 4'd14 ) begin
-//				ff_send_data	<= 8'h0A;		//	LF
-//				ff_send_req		<= 1'b1;
-//				if( ff_address[21:8] == 'b11_1111_1111 ) begin
-//					ff_state		<= ff_state + 4'd1;
-//				end
-//				else begin
-//					ff_state		<= 4'd0;
-//				end
-//			end
-//			else begin
-//				//	hold
-//			end
-//		end
-//	end
-
-	// --------------------------------------------------------------------
-	//	UART
-	// --------------------------------------------------------------------
-//	always @( posedge clk ) begin
-//		if( !w_n_reset ) begin
-//			ff_cnt <= 26'd0;
-//		end
-//		else begin
-//			ff_cnt <= ff_cnt + 26'd1;
-//		end
-//	end
-
-//	reg		[3:0]	ff_state;
-//	always @( posedge clk ) begin
-//		if( !w_n_reset ) begin
-//			ff_state <= 4'd0;
-//			ff_send_data <= 8'd32;
-//			ff_send_req <= 1'b0;
-//		end
-//		else if( w_send_busy == 1'b0 ) begin
-//			ff_send_req <= 1'b1;
-//			if( ff_state == 4'd12 ) begin
-//				ff_state <= 4'd0;
-//			end
-//			else begin
-//				ff_state <= ff_state + 4'd1;
-//			end
-//			//	HELLO! WORLD
-//			case( ff_state )
-//			4'd0:	ff_send_data <= 8'h48;
-//			4'd1:	ff_send_data <= 8'h45;
-//			4'd2:	ff_send_data <= 8'h4C;
-//			4'd3:	ff_send_data <= 8'h4C;
-//			4'd4:	ff_send_data <= 8'h4F;
-//			4'd5:	ff_send_data <= 8'h21;
-//			4'd6:	ff_send_data <= 8'h20;
-//			4'd7:	ff_send_data <= 8'h57;
-//			4'd8:	ff_send_data <= 8'h4F;
-//			4'd9:	ff_send_data <= 8'h52;
-//			4'd10:	ff_send_data <= 8'h4C;
-//			4'd11:	ff_send_data <= 8'h44;
-//			4'd12:	ff_send_data <= 8'h20;
-//			endcase
-//		end
-//	end
-
-//	ip_uart #(
-//		.clk_freq		( 54000000			),
-//		.uart_freq		( 115200			)
-//	) u_uart (
-//		.n_reset		( w_n_reset			),
-//		.clk			( clk				),
-//		.send_data		( ff_send_data		),
-//		.send_req		( ff_send_req		),
-//		.send_busy		( w_send_busy		),
-//		.uart_tx		( uart_tx			)
 //	);
 endmodule

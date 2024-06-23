@@ -1,0 +1,37 @@
+{
+ "Device" : "GW1NR-9C",
+ "Files" : [
+  {
+   "Path" : "D:/github/HRA_product/TangCartMSX/RTL/PSRAM_Test/src/gowin_pll/gowin_pll.v",
+   "Type" : "verilog"
+  },
+  {
+   "Path" : "D:/github/HRA_product/TangCartMSX/RTL/PSRAM_Test/src/psram/ip_psram.v",
+   "Type" : "verilog"
+  },
+  {
+   "Path" : "D:/github/HRA_product/TangCartMSX/RTL/PSRAM_Test/src/psram_memory_interface_2ch/psram_memory_interface_2ch.v",
+   "Type" : "verilog"
+  },
+  {
+   "Path" : "D:/github/HRA_product/TangCartMSX/RTL/PSRAM_Test/src/psram_tester/ip_psram_tester.v",
+   "Type" : "verilog"
+  },
+  {
+   "Path" : "D:/github/HRA_product/TangCartMSX/RTL/PSRAM_Test/src/tangcart_msx.v",
+   "Type" : "verilog"
+  },
+  {
+   "Path" : "D:/github/HRA_product/TangCartMSX/RTL/PSRAM_Test/src/uart/ip_uart.v",
+   "Type" : "verilog"
+  }
+ ],
+ "IncludePath" : [
+
+ ],
+ "LoopLimit" : 2000,
+ "ResultFile" : "D:/github/HRA_product/TangCartMSX/RTL/PSRAM_Test/impl/temp/rtl_parser.result",
+ "Top" : "",
+ "VerilogStd" : "verilog_2001",
+ "VhdlStd" : "vhdl_93"
+}
