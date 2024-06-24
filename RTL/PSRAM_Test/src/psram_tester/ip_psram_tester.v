@@ -91,6 +91,9 @@ module ip_psram_tester (
 	localparam c_y = 8'h59;
 	localparam c_z = 8'h5A;
 
+	localparam c_wr_wait = 'd13;
+	localparam c_rd_wait = 'd3;
+
 	reg				ff_fail;
 	reg		[7:0]	ff_pc;
 	reg		[7:0]	ff_ret;
@@ -333,7 +336,7 @@ module ip_psram_tester (
 				begin
 					ff_wdata0 <= ff_address0[7:0] ^ 8'b1001_1100;
 					ff_wr0 <= 1'b1;
-					ff_wait <= 'd13;
+					ff_wait <= c_wr_wait;
 				end
 			'd26:
 				begin
@@ -348,7 +351,7 @@ module ip_psram_tester (
 				end
 			'd27:
 				begin
-					ff_wait <= 'd2;
+					ff_wait <= c_rd_wait;
 				end
 			'd28:
 				begin
@@ -393,7 +396,7 @@ module ip_psram_tester (
 				begin
 					ff_wdata0 <= ff_address0[7:0] ^ 8'b1001_1100;
 					ff_wr0 <= 1'b1;
-					ff_wait <= 'd13;
+					ff_wait <= c_wr_wait;
 				end
 			'd32:
 				begin
@@ -408,7 +411,7 @@ module ip_psram_tester (
 				end
 			'd33:
 				begin
-					ff_wait <= 'd2;
+					ff_wait <= c_rd_wait;
 				end
 			'd34:
 				begin
