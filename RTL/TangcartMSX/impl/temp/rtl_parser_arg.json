@@ -2,6 +2,10 @@
  "Device" : "GW1NR-9C",
  "Files" : [
   {
+   "Path" : "D:/github/HRA_product/TangCartMSX/RTL/TangcartMSX/src/extslot/ip_extslot.v",
+   "Type" : "verilog"
+  },
+  {
    "Path" : "D:/github/HRA_product/TangCartMSX/RTL/TangcartMSX/src/gowin_pll/gowin_pll.v",
    "Type" : "verilog"
   },

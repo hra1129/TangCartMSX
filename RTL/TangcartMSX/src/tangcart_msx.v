@@ -68,25 +68,6 @@ module tangcart_msx (
 	wire			mem_clk_lock;
 	wire			w_n_reset;
 	wire	[7:0]	w_o_data;
-//	reg		[7:0]	ff_send_data;
-//	reg				ff_send_req;
-//	wire			w_send_busy;
-//	reg		[25:0]	ff_cnt;
-//	reg		[23:0]	ff_address;
-//	reg		[7:0]	ff_wdata;
-//	reg				ff_rd0;
-//	reg				ff_wr0;
-	wire			w_busy0;
-	wire	[7:0]	w_rdata0;
-	wire			w_rdata0_en;
-//	reg				ff_rd1;
-//	reg				ff_wr1;
-	wire			w_busy1;
-	wire	[7:0]	w_rdata1;
-	wire			w_rdata1_en;
-	reg				ff_ram_id;
-	reg		[2:0]	ff_state;
-	reg				ff_failed;
 	wire	[7:0]	w_gpo;
 	wire	[7:0]	w_gpo_mem;
 	wire	[15:0]	w_bus_address;
@@ -99,14 +80,6 @@ module tangcart_msx (
 	wire			w_bus_write;
 	wire			w_bus_io;
 	wire			w_bus_memory;
-	reg		[6:0]	ff_1mhz_count;
-	wire			w_1mhz;
-	reg		[7:0]	ff_sound;
-	reg		[7:0]	ff_sound_level;
-	reg		[15:0]	ff_div_count;
-	reg		[15:0]	ff_div_freq;
-	reg		[16:0]	ff_state_count;
-	wire			w_state_change;
 	wire			w_is_output;
 	wire			w_is_output_d;
 	wire			w_extslot_memory0;
@@ -143,7 +116,17 @@ module tangcart_msx (
 	wire			w_bus_memory_cs_mapram;
 	wire			w_bus_read_ready_mapram;
 	wire	[7:0]	w_bus_read_data_mapram;
-
+	//	sound generator
+	reg		[2:0]	ff_state;
+	reg		[16:0]	ff_state_count;
+	wire			w_state_change;
+	reg		[6:0]	ff_1mhz_count;
+	wire			w_1mhz;
+	reg		[7:0]	ff_sound;
+	reg		[7:0]	ff_sound_level;
+	reg		[15:0]	ff_div_count;
+	reg		[15:0]	ff_div_freq;
+	//	LED control
 	reg		[31:0]	ff_counter;
 	reg				ff_wr;
 	reg				ff_rd;
@@ -158,15 +141,15 @@ module tangcart_msx (
 		end
 		else if( w_psram0_rd ) begin
 			ff_rd <= 1'b0;
-			ff_counter <= 'd82329535;
+			ff_counter <= 'd53693175;
 		end
 		else if( w_psram0_wr ) begin
 			ff_wr <= 1'b0;
-			ff_counter <= 'd82329535;
+			ff_counter <= 'd53693175;
 		end
 		else if( w_psram0_rdata_en ) begin
 			ff_ready <= 1'b0;
-			ff_counter <= 'd82329535;
+			ff_counter <= 'd53693175;
 		end
 		else if( ff_counter != 'd0 ) begin
 			ff_counter <= ff_counter - 'd1;
@@ -247,32 +230,32 @@ module tangcart_msx (
 //	assign w_bus_read_ready	= w_bus_read_ready_gpio_mem | w_bus_read_ready_gpio | w_bus_read_ready_mapram | w_bus_read_ready_extslot;
 //	assign w_bus_read_data	= w_bus_read_data_gpio_mem  | w_bus_read_data_gpio  | w_bus_read_data_mapram  | w_bus_read_data_extslot;
 
-	assign w_bus_io_cs		= w_bus_io_cs_gpio      | w_bus_io_cs_mapram      ;	//| w_bus_io_cs_extslot;
-	assign w_bus_memory_cs	= w_bus_memory_cs_gpio  | w_bus_memory_cs_mapram  ;	//| w_bus_memory_cs_extslot;
-	assign w_bus_read_ready	= w_bus_read_ready_gpio | w_bus_read_ready_mapram ;	//| w_bus_read_ready_extslot;
-	assign w_bus_read_data	= w_bus_read_data_gpio  | w_bus_read_data_mapram  ;	//| w_bus_read_data_extslot;
+	assign w_bus_io_cs		= w_bus_io_cs_gpio      | w_bus_io_cs_mapram      | w_bus_io_cs_extslot;
+	assign w_bus_memory_cs	= w_bus_memory_cs_gpio  | w_bus_memory_cs_mapram  | w_bus_memory_cs_extslot;
+	assign w_bus_read_ready	= w_bus_read_ready_gpio | w_bus_read_ready_mapram | w_bus_read_ready_extslot;
+	assign w_bus_read_data	= w_bus_read_data_gpio  | w_bus_read_data_mapram  | w_bus_read_data_extslot;
 
 	// --------------------------------------------------------------------
 	//	EXTSLOT
 	// --------------------------------------------------------------------
-//	ip_extslot u_extslot (
-//		.n_reset			( w_n_reset					),
-//		.clk				( clk						),
-//		.bus_address		( w_bus_address				),
-//		.bus_io_cs			( w_bus_io_cs_extslot		),
-//		.bus_memory_cs		( w_bus_memory_cs_extslot	),
-//		.bus_read_ready		( w_bus_read_ready_extslot	),
-//		.bus_read_data		( w_bus_read_data_extslot	),
-//		.bus_write_data		( w_bus_write_data			),
-//		.bus_read			( w_bus_read				),
-//		.bus_write			( w_bus_write				),
-//		.bus_io				( w_bus_io					),
-//		.bus_memory			( w_bus_memory				),
-//		.extslot_memory0	( w_extslot_memory0			),
-//		.extslot_memory1	( w_extslot_memory1			),
-//		.extslot_memory2	( w_extslot_memory2			),
-//		.extslot_memory3	( w_extslot_memory3			)
-//	);
+	ip_extslot u_extslot (
+		.n_reset			( w_n_reset					),
+		.clk				( clk						),
+		.bus_address		( w_bus_address				),
+		.bus_io_cs			( w_bus_io_cs_extslot		),
+		.bus_memory_cs		( w_bus_memory_cs_extslot	),
+		.bus_read_ready		( w_bus_read_ready_extslot	),
+		.bus_read_data		( w_bus_read_data_extslot	),
+		.bus_write_data		( w_bus_write_data			),
+		.bus_read			( w_bus_read				),
+		.bus_write			( w_bus_write				),
+		.bus_io				( w_bus_io					),
+		.bus_memory			( w_bus_memory				),
+		.extslot_memory0	( w_extslot_memory0			),
+		.extslot_memory1	( w_extslot_memory1			),
+		.extslot_memory2	( w_extslot_memory2			),
+		.extslot_memory3	( w_extslot_memory3			)
+	);
 
 	// --------------------------------------------------------------------
 	//	MapperRAM
@@ -289,7 +272,7 @@ module tangcart_msx (
 		.bus_read			( w_bus_read				),
 		.bus_write			( w_bus_write				),
 		.bus_io				( w_bus_io					),
-		.bus_memory			( w_bus_memory				),
+		.bus_memory			( w_extslot_memory0			),
 		.rd					( w_psram0_rd				),
 		.wr					( w_psram0_wr				),
 		.address			( w_psram0_address			),
@@ -372,7 +355,7 @@ module tangcart_msx (
 			ff_1mhz_count <= 7'd0;
 		end
 		else if( w_1mhz ) begin
-			ff_1mhz_count <= 7'd82;
+			ff_1mhz_count <= 7'd54;
 		end
 		else begin
 			ff_1mhz_count <= ff_1mhz_count - 7'd1;
