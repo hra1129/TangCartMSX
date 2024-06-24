@@ -277,43 +277,7 @@ module tangcart_msx (
 	// --------------------------------------------------------------------
 	//	MapperRAM
 	// --------------------------------------------------------------------
-//	ip_mapperram u_mapperram (
-//		.n_reset			( w_n_reset					),
-//		.clk				( clk						),
-//		.bus_address		( w_bus_address				),
-//		.bus_io_cs			( w_bus_io_cs_mapram		),
-//		.bus_memory_cs		( w_bus_memory_cs_mapram	),
-//		.bus_read_ready		( w_bus_read_ready_mapram	),
-//		.bus_read_data		( w_bus_read_data_mapram	),
-//		.bus_write_data		( w_bus_write_data			),
-//		.bus_read			( w_bus_read				),
-//		.bus_write			( w_bus_write				),
-//		.bus_io				( w_bus_io					),
-//		.bus_memory			( w_bus_memory				),
-//		.rd					( w_psram0_rd				),
-//		.wr					( w_psram0_wr				),
-//		.address			( w_psram0_address			),
-//		.wdata				( w_psram0_wdata			),
-//		.rdata				( w_psram0_rdata			),
-//		.rdata_en			( w_psram0_rdata_en			)
-//	);
-
-//	ip_ram u_ram (
-//		.n_reset			( w_n_reset					),
-//		.clk				( clk						),
-//		.bus_address		( w_bus_address				),
-//		.bus_io_cs			( w_bus_io_cs_mapram		),
-//		.bus_memory_cs		( w_bus_memory_cs_mapram	),
-//		.bus_read_ready		( w_bus_read_ready_mapram	),
-//		.bus_read_data		( w_bus_read_data_mapram	),
-//		.bus_write_data		( w_bus_write_data			),
-//		.bus_read			( w_bus_read				),
-//		.bus_write			( w_bus_write				),
-//		.bus_io				( w_bus_io					),
-//		.bus_memory			( w_extslot_memory3			)
-//	);
-
-	ip_ram2 u_ram (
+	ip_mapperram u_mapperram (
 		.n_reset			( w_n_reset					),
 		.clk				( clk						),
 		.bus_address		( w_bus_address				),
@@ -333,6 +297,42 @@ module tangcart_msx (
 		.rdata				( w_psram0_rdata			),
 		.rdata_en			( w_psram0_rdata_en			)
 	);
+
+//	ip_ram u_ram (
+//		.n_reset			( w_n_reset					),
+//		.clk				( clk						),
+//		.bus_address		( w_bus_address				),
+//		.bus_io_cs			( w_bus_io_cs_mapram		),
+//		.bus_memory_cs		( w_bus_memory_cs_mapram	),
+//		.bus_read_ready		( w_bus_read_ready_mapram	),
+//		.bus_read_data		( w_bus_read_data_mapram	),
+//		.bus_write_data		( w_bus_write_data			),
+//		.bus_read			( w_bus_read				),
+//		.bus_write			( w_bus_write				),
+//		.bus_io				( w_bus_io					),
+//		.bus_memory			( w_extslot_memory3			)
+//	);
+
+//	ip_ram2 u_ram (
+//		.n_reset			( w_n_reset					),
+//		.clk				( clk						),
+//		.bus_address		( w_bus_address				),
+//		.bus_io_cs			( w_bus_io_cs_mapram		),
+//		.bus_memory_cs		( w_bus_memory_cs_mapram	),
+//		.bus_read_ready		( w_bus_read_ready_mapram	),
+//		.bus_read_data		( w_bus_read_data_mapram	),
+//		.bus_write_data		( w_bus_write_data			),
+//		.bus_read			( w_bus_read				),
+//		.bus_write			( w_bus_write				),
+//		.bus_io				( w_bus_io					),
+//		.bus_memory			( w_bus_memory				),
+//		.rd					( w_psram0_rd				),
+//		.wr					( w_psram0_wr				),
+//		.address			( w_psram0_address			),
+//		.wdata				( w_psram0_wdata			),
+//		.rdata				( w_psram0_rdata			),
+//		.rdata_en			( w_psram0_rdata_en			)
+//	);
 
 	// --------------------------------------------------------------------
 	//	PSRAM

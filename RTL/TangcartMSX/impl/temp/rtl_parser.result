@@ -25,11 +25,11 @@
    },
    {
     "InstFile" : "D:/github/HRA_product/TangCartMSX/RTL/TangcartMSX/src/tangcart_msx.v",
-    "InstLine" : 316,
-    "InstName" : "u_ram",
-    "ModuleFile" : "D:/github/HRA_product/TangCartMSX/RTL/TangcartMSX/src/ram/ip_ram2.v",
+    "InstLine" : 280,
+    "InstName" : "u_mapperram",
+    "ModuleFile" : "D:/github/HRA_product/TangCartMSX/RTL/TangcartMSX/src/mapperram/ip_mapperram.v",
     "ModuleLine" : 27,
-    "ModuleName" : "ip_ram2"
+    "ModuleName" : "ip_mapperram"
    },
    {
     "InstFile" : "D:/github/HRA_product/TangCartMSX/RTL/TangcartMSX/src/tangcart_msx.v",

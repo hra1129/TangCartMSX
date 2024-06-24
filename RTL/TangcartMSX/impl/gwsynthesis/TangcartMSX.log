@@ -2,17 +2,17 @@ GowinSynthesis start
 Running parser ...
 Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\TangcartMSX\src\gowin_pll\gowin_pll.v'
 Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\TangcartMSX\src\gpio\ip_gpio.v'
+Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\TangcartMSX\src\mapperram\ip_mapperram.v'
 Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\TangcartMSX\src\msxbus\ip_msxbus.v'
 Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\TangcartMSX\src\psram\ip_psram.v'
 Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\TangcartMSX\src\psram_memory_interface_2ch\psram_memory_interface_2ch.v'
 Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\TangcartMSX\src\pwm\ip_pwm.v'
-Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\TangcartMSX\src\ram\ip_ram2.v'
 Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\TangcartMSX\src\tangcart_msx.v'
 Undeclared symbol 'w_sound_flip', assumed default net type 'wire'("D:\github\HRA_product\TangCartMSX\RTL\TangcartMSX\src\tangcart_msx.v":415)
 Compiling module 'tangcart_msx'("D:\github\HRA_product\TangCartMSX\RTL\TangcartMSX\src\tangcart_msx.v":27)
 Compiling module 'Gowin_PLL'("D:\github\HRA_product\TangCartMSX\RTL\TangcartMSX\src\gowin_pll\gowin_pll.v":10)
 Compiling module 'ip_msxbus'("D:\github\HRA_product\TangCartMSX\RTL\TangcartMSX\src\msxbus\ip_msxbus.v":28)
-Compiling module 'ip_ram2'("D:\github\HRA_product\TangCartMSX\RTL\TangcartMSX\src\ram\ip_ram2.v":27)
+Compiling module 'ip_mapperram'("D:\github\HRA_product\TangCartMSX\RTL\TangcartMSX\src\mapperram\ip_mapperram.v":27)
 Compiling module 'ip_psram'("D:\github\HRA_product\TangCartMSX\RTL\TangcartMSX\src\psram\ip_psram.v":27)
 Compiling module 'PSRAM_Memory_Interface_2CH_Top'("D:\github\HRA_product\TangCartMSX\RTL\TangcartMSX\src\psram_memory_interface_2ch\psram_memory_interface_2ch.v":6400)
 Compiling module '**'("D:\github\HRA_product\TangCartMSX\RTL\TangcartMSX\src\psram_memory_interface_2ch\psram_memory_interface_2ch.v":0)
