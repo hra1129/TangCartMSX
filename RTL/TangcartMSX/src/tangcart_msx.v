@@ -158,15 +158,15 @@ module tangcart_msx (
 		end
 		else if( w_psram0_rd ) begin
 			ff_rd <= 1'b0;
-			ff_counter <= 'd75000000;
+			ff_counter <= 'd82329535;
 		end
 		else if( w_psram0_wr ) begin
 			ff_wr <= 1'b0;
-			ff_counter <= 'd75000000;
+			ff_counter <= 'd82329535;
 		end
 		else if( w_psram0_rdata_en ) begin
 			ff_ready <= 1'b0;
-			ff_counter <= 'd75000000;
+			ff_counter <= 'd82329535;
 		end
 		else if( ff_counter != 'd0 ) begin
 			ff_counter <= ff_counter - 'd1;
@@ -247,10 +247,10 @@ module tangcart_msx (
 //	assign w_bus_read_ready	= w_bus_read_ready_gpio_mem | w_bus_read_ready_gpio | w_bus_read_ready_mapram | w_bus_read_ready_extslot;
 //	assign w_bus_read_data	= w_bus_read_data_gpio_mem  | w_bus_read_data_gpio  | w_bus_read_data_mapram  | w_bus_read_data_extslot;
 
-	assign w_bus_io_cs		= w_bus_io_cs_mapram      ;	//| w_bus_io_cs_extslot;
-	assign w_bus_memory_cs	= w_bus_memory_cs_mapram  ;	//| w_bus_memory_cs_extslot;
-	assign w_bus_read_ready	= w_bus_read_ready_mapram ;	//| w_bus_read_ready_extslot;
-	assign w_bus_read_data	= w_bus_read_data_mapram  ;	//| w_bus_read_data_extslot;
+	assign w_bus_io_cs		= w_bus_io_cs_gpio      | w_bus_io_cs_mapram      ;	//| w_bus_io_cs_extslot;
+	assign w_bus_memory_cs	= w_bus_memory_cs_gpio  | w_bus_memory_cs_mapram  ;	//| w_bus_memory_cs_extslot;
+	assign w_bus_read_ready	= w_bus_read_ready_gpio | w_bus_read_ready_mapram ;	//| w_bus_read_ready_extslot;
+	assign w_bus_read_data	= w_bus_read_data_gpio  | w_bus_read_data_mapram  ;	//| w_bus_read_data_extslot;
 
 	// --------------------------------------------------------------------
 	//	EXTSLOT
@@ -277,7 +277,43 @@ module tangcart_msx (
 	// --------------------------------------------------------------------
 	//	MapperRAM
 	// --------------------------------------------------------------------
-	ip_mapperram u_mapperram (
+//	ip_mapperram u_mapperram (
+//		.n_reset			( w_n_reset					),
+//		.clk				( clk						),
+//		.bus_address		( w_bus_address				),
+//		.bus_io_cs			( w_bus_io_cs_mapram		),
+//		.bus_memory_cs		( w_bus_memory_cs_mapram	),
+//		.bus_read_ready		( w_bus_read_ready_mapram	),
+//		.bus_read_data		( w_bus_read_data_mapram	),
+//		.bus_write_data		( w_bus_write_data			),
+//		.bus_read			( w_bus_read				),
+//		.bus_write			( w_bus_write				),
+//		.bus_io				( w_bus_io					),
+//		.bus_memory			( w_bus_memory				),
+//		.rd					( w_psram0_rd				),
+//		.wr					( w_psram0_wr				),
+//		.address			( w_psram0_address			),
+//		.wdata				( w_psram0_wdata			),
+//		.rdata				( w_psram0_rdata			),
+//		.rdata_en			( w_psram0_rdata_en			)
+//	);
+
+//	ip_ram u_ram (
+//		.n_reset			( w_n_reset					),
+//		.clk				( clk						),
+//		.bus_address		( w_bus_address				),
+//		.bus_io_cs			( w_bus_io_cs_mapram		),
+//		.bus_memory_cs		( w_bus_memory_cs_mapram	),
+//		.bus_read_ready		( w_bus_read_ready_mapram	),
+//		.bus_read_data		( w_bus_read_data_mapram	),
+//		.bus_write_data		( w_bus_write_data			),
+//		.bus_read			( w_bus_read				),
+//		.bus_write			( w_bus_write				),
+//		.bus_io				( w_bus_io					),
+//		.bus_memory			( w_extslot_memory3			)
+//	);
+
+	ip_ram2 u_ram (
 		.n_reset			( w_n_reset					),
 		.clk				( clk						),
 		.bus_address		( w_bus_address				),
@@ -297,21 +333,6 @@ module tangcart_msx (
 		.rdata				( w_psram0_rdata			),
 		.rdata_en			( w_psram0_rdata_en			)
 	);
-
-//	ip_ram u_ram (
-//		.n_reset			( w_n_reset					),
-//		.clk				( clk						),
-//		.bus_address		( w_bus_address				),
-//		.bus_io_cs			( w_bus_io_cs_mapram		),
-//		.bus_memory_cs		( w_bus_memory_cs_mapram	),
-//		.bus_read_ready		( w_bus_read_ready_mapram	),
-//		.bus_read_data		( w_bus_read_data_mapram	),
-//		.bus_write_data		( w_bus_write_data			),
-//		.bus_read			( w_bus_read				),
-//		.bus_write			( w_bus_write				),
-//		.bus_io				( w_bus_io					),
-//		.bus_memory			( w_extslot_memory3			)
-//	);
 
 	// --------------------------------------------------------------------
 	//	PSRAM
@@ -351,7 +372,7 @@ module tangcart_msx (
 			ff_1mhz_count <= 7'd0;
 		end
 		else if( w_1mhz ) begin
-			ff_1mhz_count <= 7'd75;
+			ff_1mhz_count <= 7'd82;
 		end
 		else begin
 			ff_1mhz_count <= ff_1mhz_count - 7'd1;

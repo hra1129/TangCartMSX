@@ -1,5 +1,5 @@
 // -----------------------------------------------------------------------------
-//	iddr.v
+//	ip_ram.v
 //	Copyright (C)2024 Takayuki Hara (HRA!)
 //	
 //	 Permission is hereby granted, free of charge, to any person obtaining a 
@@ -21,30 +21,57 @@
 //	in the Software.
 // -----------------------------------------------------------------------------
 //	Description:
-//		IDDR model for TangNano9K
+//		SimpleRAM (PSRAM version)
 // -----------------------------------------------------------------------------
 
-module IDDR (
-	input			CLK,
-	input			D,
-	output			Q0,
-	output			Q1
+module ip_ram2 (
+	//	Internal I/F
+	input			n_reset,
+	input			clk,
+	//	MSX-50BUS
+	input	[15:0]	bus_address,
+	output			bus_io_cs,
+	output			bus_memory_cs,
+	output			bus_read_ready,
+	output	[7:0]	bus_read_data,
+	input	[7:0]	bus_write_data,
+	input			bus_read,
+	input			bus_write,
+	input			bus_io,
+	input			bus_memory,
+	output			rd,
+	output			wr,
+	output	[21:0]	address,
+	output	[7:0]	wdata,
+	input	[7:0]	rdata,
+	input			rdata_en
 );
-	reg			ff_q0_0;
-	reg			ff_q1_0;
-	reg			ff_q0_1;
-	reg			ff_q1_1;
+	reg		[7:0]	ff_read;
+	reg				ff_read_ready;
+	wire			w_dec;
 
-	always @( posedge CLK ) begin
-		ff_q0_0 <= D;
-		ff_q0_1 <= ff_q0_0;
-		ff_q1_1 <= ff_q1_0;
+	assign bus_io_cs		= 1'b0;
+	assign bus_memory_cs	= 1'b1;
+	assign address			= { 8'd0, bus_address[13:0] };
+	assign wdata			= bus_write_data;
+	assign w_dec			= bus_memory && (bus_address[15:14] == 2'd2);
+	assign rd				= w_dec && bus_read;
+	assign wr				= w_dec && bus_write;
+
+	always @( posedge clk ) begin
+		if( !n_reset ) begin
+			ff_read_ready <= 1'b0;
+			ff_read <= 8'd0;
+		end
+		else if( w_dec && rdata_en ) begin
+			ff_read_ready <= 1'b1;
+			ff_read <= rdata;
+		end
+		else begin
+			ff_read_ready <= 1'b0;
+		end
 	end
 
-	always @( negedge CLK ) begin
-		ff_q1_0 <= D;
-	end
-
-	assign Q0	= ff_q0_1;
-	assign Q1	= ff_q1_1;
+	assign bus_read_data	= ff_read_ready ? ff_read : 8'd0;
+	assign bus_read_ready	= ff_read_ready;
 endmodule

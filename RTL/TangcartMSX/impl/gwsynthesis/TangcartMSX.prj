@@ -6,12 +6,12 @@
     <FileList>
         <File path="D:\github\HRA_product\TangCartMSX\RTL\TangcartMSX\src\gowin_pll\gowin_pll.v" type="verilog"/>
         <File path="D:\github\HRA_product\TangCartMSX\RTL\TangcartMSX\src\gpio\ip_gpio.v" type="verilog"/>
-        <File path="D:\github\HRA_product\TangCartMSX\RTL\TangcartMSX\src\mapperram\ip_mapperram.v" type="verilog"/>
         <File path="D:\github\HRA_product\TangCartMSX\RTL\TangcartMSX\src\msxbus\ip_msxbus.v" type="verilog"/>
         <File path="D:\github\HRA_product\TangCartMSX\RTL\TangcartMSX\src\psram\ip_psram.v" type="verilog"/>
         <File path="D:\github\HRA_product\TangCartMSX\RTL\TangcartMSX\src\psram_memory_interface_2ch\psram_memory_interface_2ch.v" type="verilog"/>
         <File path="D:\github\HRA_product\TangCartMSX\RTL\TangcartMSX\src\pwm\ip_pwm.v" type="verilog"/>
         <File path="D:\github\HRA_product\TangCartMSX\RTL\TangcartMSX\src\tangcart_msx.v" type="verilog"/>
+        <File path="D:\github\HRA_product\TangCartMSX\RTL\TangcartMSX\src\ram\ip_ram2.v" type="verilog"/>
     </FileList>
     <OptionList>
         <Option type="disable_insert_pad" value="0"/>

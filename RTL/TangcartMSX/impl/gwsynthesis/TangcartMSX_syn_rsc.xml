@@ -1,10 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<Module name="tangcart_msx" Register="115" Lut="173">
+<Module name="tangcart_msx" Register="115" Lut="184">
     <SubModule name="u_pll"/>
     <SubModule name="u_msxbus" Register="43" Lut="7"/>
-    <SubModule name="u_mapperram" Register="32" Lut="24"/>
-    <SubModule name="u_psram" Register="11" Lut="45">
+    <SubModule name="u_ram" Register="9" Lut="4"/>
+    <SubModule name="u_psram" Register="11" Lut="53">
         <SubModule name="u_gowin_psram_if_2ch" Register="745" Alu="62" Lut="1108" Ssram="18"/>
     </SubModule>
     <SubModule name="u_pwm" Register="9" Alu="8"/>
+    <SubModule name="u_gpio" Register="1" Lut="4"/>
 </Module>

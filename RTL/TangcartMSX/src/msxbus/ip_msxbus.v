@@ -143,6 +143,9 @@ module ip_msxbus (
 		if( !n_reset ) begin
 			ff_bus_read_data	<= 8'd0;
 		end
+		else if( w_mem_rd_pulse || w_io_rd_pulse ) begin
+			ff_bus_read_data	<= 8'd0;
+		end
 		else if( bus_read_ready ) begin
 			ff_bus_read_data	<= bus_read_data;
 		end

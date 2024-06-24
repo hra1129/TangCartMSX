@@ -75,7 +75,6 @@ module ip_psram (
 	reg					ff_rd_address1;
 	reg					ff_rd_data0_dump;
 	reg					ff_rd_data1_dump;
-	localparam	[3:0]	WAIT_CNT		= 14;
 
 	PSRAM_Memory_Interface_2CH_Top u_gowin_psram_if_2ch (
 		.clk				( clk					), //input clk

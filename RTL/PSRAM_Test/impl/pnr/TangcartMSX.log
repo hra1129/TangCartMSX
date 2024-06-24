@@ -1,5 +1,6 @@
 Reading netlist file: "D:\github\HRA_product\TangCartMSX\RTL\PSRAM_Test\impl\gwsynthesis\TangcartMSX.vg"
 Parsing netlist file "D:\github\HRA_product\TangCartMSX\RTL\PSRAM_Test\impl\gwsynthesis\TangcartMSX.vg" completed
+WARN  (PA1009) : Parameter setting 'CLKFB_SEL=external' with 'u_pll/pll_inst'(PLL) doesn't match the connection signal in pin 'CLKFB'
 Processing netlist completed
 Reading constraint file: "D:\github\HRA_product\TangCartMSX\RTL\PSRAM_Test\src\TangcartMSX.cst"
 Physical Constraint parsed completed
@@ -25,5 +26,5 @@ Generate file "D:\github\HRA_product\TangCartMSX\RTL\PSRAM_Test\impl\pnr\Tangcar
 Generate file "D:\github\HRA_product\TangCartMSX\RTL\PSRAM_Test\impl\pnr\TangcartMSX.rpt.html" completed
 Generate file "D:\github\HRA_product\TangCartMSX\RTL\PSRAM_Test\impl\pnr\TangcartMSX.rpt.txt" completed
 Generate file "D:\github\HRA_product\TangCartMSX\RTL\PSRAM_Test\impl\pnr\TangcartMSX.tr.html" completed
-Sun Jun 23 15:37:13 2024
+Mon Jun 24 21:45:30 2024
 

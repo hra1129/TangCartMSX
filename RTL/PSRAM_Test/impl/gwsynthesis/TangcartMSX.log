@@ -5,6 +5,8 @@ Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\PSRAM_Test\src\psr
 Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\PSRAM_Test\src\psram_memory_interface_2ch\psram_memory_interface_2ch.v'
 Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\PSRAM_Test\src\psram_tester\ip_psram_tester.v'
 Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\PSRAM_Test\src\tangcart_msx.v'
+Undeclared symbol 'mem_clk', assumed default net type 'wire'("D:\github\HRA_product\TangCartMSX\RTL\PSRAM_Test\src\tangcart_msx.v":82)
+Undeclared symbol 'mem_clk_lock', assumed default net type 'wire'("D:\github\HRA_product\TangCartMSX\RTL\PSRAM_Test\src\tangcart_msx.v":83)
 Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\PSRAM_Test\src\uart\ip_uart.v'
 Compiling module 'tangcart_msx'("D:\github\HRA_product\TangCartMSX\RTL\PSRAM_Test\src\tangcart_msx.v":27)
 Compiling module 'Gowin_PLL'("D:\github\HRA_product\TangCartMSX\RTL\PSRAM_Test\src\gowin_pll\gowin_pll.v":10)
@@ -19,6 +21,9 @@ WARN  (EX3791) : Expression size 9 truncated to fit in target size 8("D:\github\
 WARN  (EX3791) : Expression size 9 truncated to fit in target size 8("D:\github\HRA_product\TangCartMSX\RTL\PSRAM_Test\src\psram_tester\ip_psram_tester.v":345)
 WARN  (EX3791) : Expression size 9 truncated to fit in target size 8("D:\github\HRA_product\TangCartMSX\RTL\PSRAM_Test\src\psram_tester\ip_psram_tester.v":370)
 WARN  (EX3791) : Expression size 15 truncated to fit in target size 14("D:\github\HRA_product\TangCartMSX\RTL\PSRAM_Test\src\psram_tester\ip_psram_tester.v":385)
+WARN  (EX3791) : Expression size 32 truncated to fit in target size 8("D:\github\HRA_product\TangCartMSX\RTL\PSRAM_Test\src\psram_tester\ip_psram_tester.v":405)
+WARN  (EX3791) : Expression size 32 truncated to fit in target size 8("D:\github\HRA_product\TangCartMSX\RTL\PSRAM_Test\src\psram_tester\ip_psram_tester.v":430)
+WARN  (EX3791) : Expression size 15 truncated to fit in target size 14("D:\github\HRA_product\TangCartMSX\RTL\PSRAM_Test\src\psram_tester\ip_psram_tester.v":445)
 Compiling module 'ip_psram'("D:\github\HRA_product\TangCartMSX\RTL\PSRAM_Test\src\psram\ip_psram.v":27)
 Compiling module 'PSRAM_Memory_Interface_2CH_Top'("D:\github\HRA_product\TangCartMSX\RTL\PSRAM_Test\src\psram_memory_interface_2ch\psram_memory_interface_2ch.v":6400)
 Compiling module '**'("D:\github\HRA_product\TangCartMSX\RTL\PSRAM_Test\src\psram_memory_interface_2ch\psram_memory_interface_2ch.v":0)
@@ -32,8 +37,9 @@ Compiling module '**'("D:\github\HRA_product\TangCartMSX\RTL\PSRAM_Test\src\psra
 Compiling module '**'("D:\github\HRA_product\TangCartMSX\RTL\PSRAM_Test\src\psram_memory_interface_2ch\psram_memory_interface_2ch.v":0)
 Compiling module '**'("D:\github\HRA_product\TangCartMSX\RTL\PSRAM_Test\src\psram_memory_interface_2ch\psram_memory_interface_2ch.v":0)
 Compiling module '**'("D:\github\HRA_product\TangCartMSX\RTL\PSRAM_Test\src\psram_memory_interface_2ch\psram_memory_interface_2ch.v":0)
-Compiling module 'ip_uart(clk_freq=75000000)'("D:\github\HRA_product\TangCartMSX\RTL\PSRAM_Test\src\uart\ip_uart.v":27)
-WARN  (EX3791) : Expression size 32 truncated to fit in target size 12("D:\github\HRA_product\TangCartMSX\RTL\PSRAM_Test\src\uart\ip_uart.v":68)
+Compiling module 'ip_uart(clk_freq=54000000)'("D:\github\HRA_product\TangCartMSX\RTL\PSRAM_Test\src\uart\ip_uart.v":27)
+WARN  (EX3791) : Expression size 32 truncated to fit in target size 11("D:\github\HRA_product\TangCartMSX\RTL\PSRAM_Test\src\uart\ip_uart.v":68)
+WARN  (EX2565) : Input 'clkfb' on this instance is undriven. Assigning to 0, simulation mismatch possible. Please assign the input or remove the declaration("D:\github\HRA_product\TangCartMSX\RTL\PSRAM_Test\src\tangcart_msx.v":86)
 NOTE  (EX0101) : Current top module is "tangcart_msx"
 [5%] Running netlist conversion ...
 WARN  (CV0018) : Input button[1] is unused("D:\github\HRA_product\TangCartMSX\RTL\PSRAM_Test\src\tangcart_msx.v":30)

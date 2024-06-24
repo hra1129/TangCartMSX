@@ -333,7 +333,7 @@ module ip_psram_tester (
 				begin
 					ff_wdata0 <= ff_address0[7:0] ^ 8'b1001_1100;
 					ff_wr0 <= 1'b1;
-					ff_wait <= 'd28;
+					ff_wait <= 'd13;
 				end
 			'd26:
 				begin
@@ -348,7 +348,7 @@ module ip_psram_tester (
 				end
 			'd27:
 				begin
-					ff_wait <= 'd5;
+					ff_wait <= 'd2;
 				end
 			'd28:
 				begin
@@ -384,6 +384,66 @@ module ip_psram_tester (
 					else begin
 						ff_address0[21:8] <= ff_address0[21:8] + 'd1;
 						ff_pc <= 'd25;
+					end
+				end
+
+			// --------------------------------------------------------------------
+			// loop
+			'd31:
+				begin
+					ff_wdata0 <= ff_address0[7:0] ^ 8'b1001_1100;
+					ff_wr0 <= 1'b1;
+					ff_wait <= 'd13;
+				end
+			'd32:
+				begin
+					if( ff_address0[7:0] == 8'h00 ) begin
+						ff_address0[7:0] <= 'hFF;
+						ff_pc <= 'd33;
+					end
+					else begin
+						ff_address0[7:0] <= ff_address0[7:0] - 'd1;
+						ff_pc <= 'd31;
+					end
+				end
+			'd33:
+				begin
+					ff_wait <= 'd2;
+				end
+			'd34:
+				begin
+					ff_rd_state <= 1'b1;
+					ff_rd0 <= 1'b1;
+				end
+			'd35:
+				begin
+					if( ff_rdata0 != (ff_address0[7:0] ^ 8'b1001_1100) ) begin
+						ff_fail <= 1'b1;
+						ff_pc <= 'd36;
+					end
+					else begin
+						if( ff_address0[7:0] == 8'hFF ) begin
+							ff_address0[7:0] <= 'd0;
+							ff_pc <= 'd36;
+						end
+						else begin
+							ff_address0[7:0] <= ff_address0[7:0] - 'd1;
+							ff_pc <= 'd33;
+						end
+					end
+				end
+			'd36:
+				begin
+					ff_ret <= 'd37;
+					if( ff_fail ) begin
+						ff_pc <= 'd237;
+					end
+					else if( ff_address0[21:8] == 'b11_1111_1111_1111 ) begin
+						ff_pc <= 'd251;
+					end
+					else begin
+						ff_address0[21:8] <= ff_address0[21:8] + 'd1;
+						ff_pc <= 'd31;
 					end
 				end
 

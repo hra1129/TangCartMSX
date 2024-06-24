@@ -9,7 +9,7 @@
   "SubInsts" : [
    {
     "InstFile" : "D:/github/HRA_product/TangCartMSX/RTL/PSRAM_Test/src/tangcart_msx.v",
-    "InstLine" : 79,
+    "InstLine" : 81,
     "InstName" : "u_pll",
     "ModuleFile" : "D:/github/HRA_product/TangCartMSX/RTL/PSRAM_Test/src/gowin_pll/gowin_pll.v",
     "ModuleLine" : 10,
@@ -17,7 +17,7 @@
    },
    {
     "InstFile" : "D:/github/HRA_product/TangCartMSX/RTL/PSRAM_Test/src/tangcart_msx.v",
-    "InstLine" : 89,
+    "InstLine" : 91,
     "InstName" : "u_psram_tester",
     "ModuleFile" : "D:/github/HRA_product/TangCartMSX/RTL/PSRAM_Test/src/psram_tester/ip_psram_tester.v",
     "ModuleLine" : 27,
@@ -25,7 +25,7 @@
    },
    {
     "InstFile" : "D:/github/HRA_product/TangCartMSX/RTL/PSRAM_Test/src/tangcart_msx.v",
-    "InstLine" : 115,
+    "InstLine" : 117,
     "InstName" : "u_psram",
     "ModuleFile" : "D:/github/HRA_product/TangCartMSX/RTL/PSRAM_Test/src/psram/ip_psram.v",
     "ModuleLine" : 27,
@@ -33,7 +33,7 @@
     "SubInsts" : [
      {
       "InstFile" : "D:/github/HRA_product/TangCartMSX/RTL/PSRAM_Test/src/psram/ip_psram.v",
-      "InstLine" : 80,
+      "InstLine" : 79,
       "InstName" : "u_gowin_psram_if_2ch",
       "ModuleFile" : "D:/github/HRA_product/TangCartMSX/RTL/PSRAM_Test/src/psram_memory_interface_2ch/psram_memory_interface_2ch.v",
       "ModuleLine" : 6400,
@@ -69,7 +69,7 @@
    },
    {
     "InstFile" : "D:/github/HRA_product/TangCartMSX/RTL/PSRAM_Test/src/tangcart_msx.v",
-    "InstLine" : 148,
+    "InstLine" : 150,
     "InstName" : "u_uart",
     "ModuleFile" : "D:/github/HRA_product/TangCartMSX/RTL/PSRAM_Test/src/uart/ip_uart.v",
     "ModuleLine" : 27,

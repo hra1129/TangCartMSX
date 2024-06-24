@@ -5,7 +5,7 @@
 //Part Number: GW1NR-LV9QN88PC6/I5
 //Device: GW1NR-9
 //Device Version: C
-//Created Time: Sun Jun 23 15:16:56 2024
+//Created Time: Mon Jun 24 21:15:50 2024
 
 //Change the instance name and port connections to the signal names
 //--------Copy here to design--------
@@ -14,7 +14,8 @@
         .clkout(clkout_o), //output clkout
         .lock(lock_o), //output lock
         .clkoutd(clkoutd_o), //output clkoutd
-        .clkin(clkin_i) //input clkin
+        .clkin(clkin_i), //input clkin
+        .clkfb(clkfb_i) //input clkfb
     );
 
 //--------Copy end-------------------

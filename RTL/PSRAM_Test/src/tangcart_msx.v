@@ -40,8 +40,9 @@ module tangcart_msx (
 );
 	reg		[6:0]	ff_reset = 7'd0;
 	wire			clk;
-	wire			mem_clk;
-	wire			mem_clk_lock;
+	wire			clk_n;
+//	wire			mem_clk;
+//	wire			mem_clk_lock;
 	wire			w_n_reset;
 	wire			w_psram0_rd;
 	wire			w_psram0_wr;
@@ -67,6 +68,7 @@ module tangcart_msx (
 	// --------------------------------------------------------------------
 	assign w_n_reset	= ff_reset[6];
 	assign n_led		= ~w_psram0_address[21:16];
+//	assign n_led		= ~w_pc[5:0];
 
 	always @( posedge clk ) begin
 		ff_reset[5:0]	<= { ff_reset[4:0], button[0] };
@@ -77,9 +79,9 @@ module tangcart_msx (
 	//	PLL
 	// --------------------------------------------------------------------
 	Gowin_PLL u_pll (
-		.clkout				( mem_clk					),		//output	159.0MHz
+		.clkout				( mem_clk					),		//output	108.0MHz
 		.lock				( mem_clk_lock				),		//output	lock
-		.clkoutd			( clk						),		//output	79.5MHz
+		.clkoutd			( clk						),		//output	54.0MHz
 		.clkin				( sys_clk					)		//input		27.0MHz
 	);
 
@@ -143,7 +145,7 @@ module tangcart_msx (
 	//	UART
 	// --------------------------------------------------------------------
 	ip_uart #(
-		.clk_freq				( 75000000				),
+		.clk_freq				( 54000000				),
 		.uart_freq				( 115200				)
 	) u_uart (
 		.n_reset				( w_n_reset				),

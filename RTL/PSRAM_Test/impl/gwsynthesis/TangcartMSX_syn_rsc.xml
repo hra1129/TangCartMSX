@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Module name="tangcart_msx" Register="7" Lut="8">
     <SubModule name="u_pll"/>
-    <SubModule name="u_psram_tester" Register="90" Lut="317"/>
+    <SubModule name="u_psram_tester" Register="92" Lut="344"/>
     <SubModule name="u_psram" Register="13" Lut="49">
         <SubModule name="u_gowin_psram_if_2ch" Register="745" Alu="62" Lut="1109" Ssram="18"/>
     </SubModule>
-    <SubModule name="u_uart" Register="27" Lut="35"/>
+    <SubModule name="u_uart" Register="26" Lut="33"/>
 </Module>
