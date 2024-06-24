@@ -209,10 +209,10 @@ module tangcart_msx (
 	//	PLL 3.579545MHz --> 64.43181MHz
 	// --------------------------------------------------------------------
 	Gowin_PLL u_pll (
-		.clkout			( mem_clk			),		//output	164.65907MHz
+		.clkout			( mem_clk			),		//output	107.370MHz
 		.lock			( mem_clk_lock		),		//output	lock
-		.clkoutd		( clk				),		//output	82.329535MHz
-		.clkin			( tclock			)		//input		3.579545MHz
+		.clkoutd		( clk				),		//output	53.685MHz
+		.clkin			( tclock			)		//input		3.579MHz
 	);
 
 	// --------------------------------------------------------------------

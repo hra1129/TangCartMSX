@@ -6,9 +6,9 @@ Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\TangcartMSX\src\ms
 Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\TangcartMSX\src\psram\ip_psram.v'
 Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\TangcartMSX\src\psram_memory_interface_2ch\psram_memory_interface_2ch.v'
 Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\TangcartMSX\src\pwm\ip_pwm.v'
+Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\TangcartMSX\src\ram\ip_ram2.v'
 Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\TangcartMSX\src\tangcart_msx.v'
 Undeclared symbol 'w_sound_flip', assumed default net type 'wire'("D:\github\HRA_product\TangCartMSX\RTL\TangcartMSX\src\tangcart_msx.v":415)
-Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\TangcartMSX\src\ram\ip_ram2.v'
 Compiling module 'tangcart_msx'("D:\github\HRA_product\TangCartMSX\RTL\TangcartMSX\src\tangcart_msx.v":27)
 Compiling module 'Gowin_PLL'("D:\github\HRA_product\TangCartMSX\RTL\TangcartMSX\src\gowin_pll\gowin_pll.v":10)
 Compiling module 'ip_msxbus'("D:\github\HRA_product\TangCartMSX\RTL\TangcartMSX\src\msxbus\ip_msxbus.v":28)
