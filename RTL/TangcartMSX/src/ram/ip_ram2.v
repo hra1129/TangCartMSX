@@ -41,6 +41,7 @@ module ip_ram2 (
 	input			bus_memory,
 	output			rd,
 	output			wr,
+	input			busy,
 	output	[21:0]	address,
 	output	[7:0]	wdata,
 	input	[7:0]	rdata,
@@ -48,30 +49,93 @@ module ip_ram2 (
 );
 	reg		[7:0]	ff_read;
 	reg				ff_read_ready;
+	reg				ff_rd;
+	reg				ff_rd_active;
+	reg				ff_wr;
+	reg		[7:0]	ff_wdata;
+	reg		[13:0]	ff_address;
 	wire			w_dec;
 
 	assign bus_io_cs		= 1'b0;
 	assign bus_memory_cs	= 1'b1;
-	assign address			= { 8'd0, bus_address[13:0] };
-	assign wdata			= bus_write_data;
+
 	assign w_dec			= bus_memory && (bus_address[15:14] == 2'd2);
-	assign rd				= w_dec && bus_read;
-	assign wr				= w_dec && bus_write;
 
 	always @( posedge clk ) begin
 		if( !n_reset ) begin
 			ff_read_ready <= 1'b0;
 			ff_read <= 8'd0;
 		end
-		else if( w_dec && rdata_en ) begin
-			ff_read_ready <= 1'b1;
-			ff_read <= rdata;
+		else if( bus_memory && (bus_address[15:14] == 2'd2) ) begin
+			if( ff_rd_active && rdata_en ) begin
+				ff_read_ready <= 1'b1;
+				ff_read <= rdata;
+			end
+			else begin
+				ff_read_ready <= 1'b0;
+				ff_read <= 8'd0;
+			end
 		end
 		else begin
 			ff_read_ready <= 1'b0;
+			ff_read <= 8'd0;
 		end
 	end
 
-	assign bus_read_data	= ff_read_ready ? ff_read : 8'd0;
+	always @( posedge clk ) begin
+		if( !n_reset ) begin
+			ff_rd_active <= 1'b0;
+		end
+		else if( bus_memory && (bus_address[15:14] == 2'd2) ) begin
+			if( ff_rd && !busy ) begin
+				ff_rd_active <= 1'b1;
+			end
+			else if( ff_read_ready ) begin
+				ff_rd_active <= 1'b0;
+			end
+			else begin
+				//	hold
+			end
+		end
+	end
+
+	always @( posedge clk ) begin
+		if( !n_reset ) begin
+			ff_rd <= 1'b0;
+			ff_wr <= 1'b0;
+			ff_wdata <= 8'd0;
+			ff_address <= 14'd0;
+		end
+		else if( bus_memory && (bus_address[15:14] == 2'd2) ) begin
+			if( bus_read ) begin
+				ff_rd <= 1'b1;
+				ff_address <= address[13:0];
+			end
+			else if( bus_write ) begin
+				ff_wr <= 1'b1;
+				ff_address <= address[13:0];
+				ff_wdata <= bus_write_data;
+			end
+			else if( !busy ) begin
+				ff_rd <= 1'b0;
+				ff_wr <= 1'b0;
+				ff_address <= 'd0;
+				ff_wdata <= 8'd0;
+			end
+		end
+		else begin
+			ff_rd <= 1'b0;
+			ff_wr <= 1'b0;
+			ff_address <= 'd0;
+			ff_wdata <= 8'd0;
+		end
+	end
+
+	assign bus_read_data	= ff_read;
 	assign bus_read_ready	= ff_read_ready;
+
+	assign rd				= ff_rd;
+	assign wr				= ff_wr;
+	assign address			= ff_address;
+	assign wdata			= ff_wdata;
 endmodule

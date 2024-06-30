@@ -41,9 +41,10 @@ module tangcart_msx (
 	reg		[6:0]	ff_reset = 7'd0;
 	wire			clk;
 	wire			clk_n;
-//	wire			mem_clk;
-//	wire			mem_clk_lock;
+	wire			mem_clk;
+	wire			mem_clk_lock;
 	wire			w_n_reset;
+	wire			w_psram_initial_busy;
 	wire			w_psram0_rd;
 	wire			w_psram0_wr;
 	wire			w_psram0_busy;
@@ -69,6 +70,8 @@ module tangcart_msx (
 	assign w_n_reset	= ff_reset[6];
 	assign n_led		= ~w_psram0_address[21:16];
 //	assign n_led		= ~w_pc[5:0];
+//	assign n_led		= { w_psram_initial_busy, ~w_pc[4:0] };
+//	assign n_led		= { 1'b1, 1'b1, ~w_psram0_busy, ~w_psram0_wr, ~w_psram0_rd, ~w_psram0_rdata_en };
 
 	always @( posedge clk ) begin
 		ff_reset[5:0]	<= { ff_reset[4:0], button[0] };
@@ -79,9 +82,9 @@ module tangcart_msx (
 	//	PLL
 	// --------------------------------------------------------------------
 	Gowin_PLL u_pll (
-		.clkout				( mem_clk					),		//output	108.0MHz
+		.clkout				( mem_clk					),		//output	144.0MHz
 		.lock				( mem_clk_lock				),		//output	lock
-		.clkoutd			( clk						),		//output	54.0MHz
+		.clkoutd			( clk						),		//output	72.0MHz
 		.clkin				( sys_clk					)		//input		27.0MHz
 	);
 
@@ -91,20 +94,21 @@ module tangcart_msx (
 	ip_psram_tester u_psram_tester (
 		.n_reset			( w_n_reset					),
 		.clk				( clk						),
+		.initial_busy		( w_psram_initial_busy		),
 		.rd0				( w_psram0_rd				),
 		.wr0				( w_psram0_wr				),
+		.busy0				( w_psram0_busy				),
 		.address0			( w_psram0_address			),
 		.wdata0				( w_psram0_wdata			),
 		.rdata0				( w_psram0_rdata			),
 		.rdata_en0			( w_psram0_rdata_en			),
-		.busy0				( w_psram0_busy				),
 		.rd1				( w_psram1_rd				),
 		.wr1				( w_psram1_wr				),
+		.busy1				( w_psram1_busy				),
 		.address1			( w_psram1_address			),
 		.wdata1				( w_psram1_wdata			),
 		.rdata1				( w_psram1_rdata			),
 		.rdata_en1			( w_psram1_rdata_en			),
-		.busy1				( w_psram1_busy				),
 		.send_data			( w_send_data				),
 		.send_req			( w_send_req				),
 		.send_busy			( w_send_busy				),
@@ -115,37 +119,38 @@ module tangcart_msx (
 	//	PSRAM
 	// --------------------------------------------------------------------
 	ip_psram u_psram (
-		.n_reset				( w_n_reset				),
-		.clk					( clk					),
-		.mem_clk				( mem_clk				),
-		.lock					( mem_clk_lock			),
-		.rd0					( w_psram0_rd			),
-		.wr0					( w_psram0_wr			),
-		.busy0					( w_psram0_busy			),
-		.address0				( w_psram0_address		),
-		.wdata0					( w_psram0_wdata		),
-		.rdata0					( w_psram0_rdata		),
-		.rdata0_en				( w_psram0_rdata_en		),
-		.rd1					( w_psram1_rd			),
-		.wr1					( w_psram1_wr			),
-		.busy1					( w_psram1_busy			),
-		.address1				( w_psram1_address		),
-		.wdata1					( w_psram1_wdata		),
-		.rdata1					( w_psram1_rdata		),
-		.rdata1_en				( w_psram1_rdata_en		),
-		.O_psram_ck				( O_psram_ck			),
-		.O_psram_ck_n			( O_psram_ck_n			),
-		.IO_psram_rwds			( IO_psram_rwds			),
-		.IO_psram_dq			( IO_psram_dq			),
-		.O_psram_reset_n		( O_psram_reset_n		),
-		.O_psram_cs_n			( O_psram_cs_n			)
+		.n_reset			( w_n_reset					),
+		.clk				( clk						),
+		.mem_clk			( mem_clk					),
+		.lock				( mem_clk_lock				),
+		.initial_busy		( w_psram_initial_busy		),
+		.rd0				( w_psram0_rd				),
+		.wr0				( w_psram0_wr				),
+		.busy0				( w_psram0_busy				),
+		.address0			( w_psram0_address			),
+		.wdata0				( w_psram0_wdata			),
+		.rdata0				( w_psram0_rdata			),
+		.rdata0_en			( w_psram0_rdata_en			),
+		.rd1				( w_psram1_rd				),
+		.wr1				( w_psram1_wr				),
+		.busy1				( w_psram1_busy				),
+		.address1			( w_psram1_address			),
+		.wdata1				( w_psram1_wdata			),
+		.rdata1				( w_psram1_rdata			),
+		.rdata1_en			( w_psram1_rdata_en			),
+		.O_psram_ck			( O_psram_ck				),
+		.O_psram_ck_n		( O_psram_ck_n				),
+		.IO_psram_rwds		( IO_psram_rwds				),
+		.IO_psram_dq		( IO_psram_dq				),
+		.O_psram_reset_n	( O_psram_reset_n			),
+		.O_psram_cs_n		( O_psram_cs_n				)
 	);
 
 	// --------------------------------------------------------------------
 	//	UART
 	// --------------------------------------------------------------------
 	ip_uart #(
-		.clk_freq				( 54000000				),
+		.clk_freq				( 64500000				),
 		.uart_freq				( 115200				)
 	) u_uart (
 		.n_reset				( w_n_reset				),

@@ -22,7 +22,7 @@
 // ------------------------------------------------------------------------------------------------
 
 module scc_selector #(
-	parameter		bits
+	parameter		bits = 12
 ) (
 	input	[2:0]		active,
 	output	[bits-1:0]	result,

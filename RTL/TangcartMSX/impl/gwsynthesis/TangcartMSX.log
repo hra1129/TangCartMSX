@@ -2,18 +2,18 @@ GowinSynthesis start
 Running parser ...
 Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\TangcartMSX\src\extslot\ip_extslot.v'
 Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\TangcartMSX\src\gowin_pll\gowin_pll.v'
-Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\TangcartMSX\src\gpio\ip_gpio.v'
 Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\TangcartMSX\src\mapperram\ip_mapperram.v'
 Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\TangcartMSX\src\msxbus\ip_msxbus.v'
 Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\TangcartMSX\src\psram\ip_psram.v'
 Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\TangcartMSX\src\psram_memory_interface_2ch\psram_memory_interface_2ch.v'
+Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\TangcartMSX\src\psram_tester\ip_psram_tester.v'
 Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\TangcartMSX\src\pwm\ip_pwm.v'
 Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\TangcartMSX\src\tangcart_msx.v'
-Undeclared symbol 'w_sound_flip', assumed default net type 'wire'("D:\github\HRA_product\TangCartMSX\RTL\TangcartMSX\src\tangcart_msx.v":415)
+Undeclared symbol 'w_1mhz', assumed default net type 'wire'("D:\github\HRA_product\TangCartMSX\RTL\TangcartMSX\src\tangcart_msx.v":541)
 Compiling module 'tangcart_msx'("D:\github\HRA_product\TangCartMSX\RTL\TangcartMSX\src\tangcart_msx.v":27)
+WARN  (EX3791) : Expression size 7 truncated to fit in target size 6("D:\github\HRA_product\TangCartMSX\RTL\TangcartMSX\src\tangcart_msx.v":172)
 Compiling module 'Gowin_PLL'("D:\github\HRA_product\TangCartMSX\RTL\TangcartMSX\src\gowin_pll\gowin_pll.v":10)
 Compiling module 'ip_msxbus'("D:\github\HRA_product\TangCartMSX\RTL\TangcartMSX\src\msxbus\ip_msxbus.v":28)
-Compiling module 'ip_extslot'("D:\github\HRA_product\TangCartMSX\RTL\TangcartMSX\src\extslot\ip_extslot.v":27)
 Compiling module 'ip_mapperram'("D:\github\HRA_product\TangCartMSX\RTL\TangcartMSX\src\mapperram\ip_mapperram.v":27)
 Compiling module 'ip_psram'("D:\github\HRA_product\TangCartMSX\RTL\TangcartMSX\src\psram\ip_psram.v":27)
 Compiling module 'PSRAM_Memory_Interface_2CH_Top'("D:\github\HRA_product\TangCartMSX\RTL\TangcartMSX\src\psram_memory_interface_2ch\psram_memory_interface_2ch.v":6400)
@@ -28,18 +28,32 @@ Compiling module '**'("D:\github\HRA_product\TangCartMSX\RTL\TangcartMSX\src\psr
 Compiling module '**'("D:\github\HRA_product\TangCartMSX\RTL\TangcartMSX\src\psram_memory_interface_2ch\psram_memory_interface_2ch.v":0)
 Compiling module '**'("D:\github\HRA_product\TangCartMSX\RTL\TangcartMSX\src\psram_memory_interface_2ch\psram_memory_interface_2ch.v":0)
 Compiling module '**'("D:\github\HRA_product\TangCartMSX\RTL\TangcartMSX\src\psram_memory_interface_2ch\psram_memory_interface_2ch.v":0)
+Compiling module 'ip_psram_tester'("D:\github\HRA_product\TangCartMSX\RTL\TangcartMSX\src\psram_tester\ip_psram_tester.v":27)
+WARN  (EX3791) : Expression size 9 truncated to fit in target size 8("D:\github\HRA_product\TangCartMSX\RTL\TangcartMSX\src\psram_tester\ip_psram_tester.v":162)
+WARN  (EX3791) : Expression size 9 truncated to fit in target size 8("D:\github\HRA_product\TangCartMSX\RTL\TangcartMSX\src\psram_tester\ip_psram_tester.v":167)
+WARN  (EX3791) : Expression size 9 truncated to fit in target size 8("D:\github\HRA_product\TangCartMSX\RTL\TangcartMSX\src\psram_tester\ip_psram_tester.v":177)
+WARN  (EX3791) : Expression size 9 truncated to fit in target size 8("D:\github\HRA_product\TangCartMSX\RTL\TangcartMSX\src\psram_tester\ip_psram_tester.v":190)
+WARN  (EX3791) : Expression size 9 truncated to fit in target size 8("D:\github\HRA_product\TangCartMSX\RTL\TangcartMSX\src\psram_tester\ip_psram_tester.v":197)
+WARN  (EX3791) : Expression size 9 truncated to fit in target size 8("D:\github\HRA_product\TangCartMSX\RTL\TangcartMSX\src\psram_tester\ip_psram_tester.v":273)
+WARN  (EX3791) : Expression size 9 truncated to fit in target size 8("D:\github\HRA_product\TangCartMSX\RTL\TangcartMSX\src\psram_tester\ip_psram_tester.v":339)
+WARN  (EX3791) : Expression size 9 truncated to fit in target size 8("D:\github\HRA_product\TangCartMSX\RTL\TangcartMSX\src\psram_tester\ip_psram_tester.v":357)
+WARN  (EX3791) : Expression size 9 truncated to fit in target size 8("D:\github\HRA_product\TangCartMSX\RTL\TangcartMSX\src\psram_tester\ip_psram_tester.v":378)
+WARN  (EX3791) : Expression size 15 truncated to fit in target size 14("D:\github\HRA_product\TangCartMSX\RTL\TangcartMSX\src\psram_tester\ip_psram_tester.v":393)
+WARN  (EX3791) : Expression size 32 truncated to fit in target size 8("D:\github\HRA_product\TangCartMSX\RTL\TangcartMSX\src\psram_tester\ip_psram_tester.v":413)
+WARN  (EX3791) : Expression size 32 truncated to fit in target size 8("D:\github\HRA_product\TangCartMSX\RTL\TangcartMSX\src\psram_tester\ip_psram_tester.v":438)
+WARN  (EX3791) : Expression size 15 truncated to fit in target size 14("D:\github\HRA_product\TangCartMSX\RTL\TangcartMSX\src\psram_tester\ip_psram_tester.v":453)
 Compiling module 'ip_pwm'("D:\github\HRA_product\TangCartMSX\RTL\TangcartMSX\src\pwm\ip_pwm.v":27)
-Compiling module 'ip_gpio'("D:\github\HRA_product\TangCartMSX\RTL\TangcartMSX\src\gpio\ip_gpio.v":27)
+WARN  (EX3670) : Actual bit length 19 differs from formal bit length 16 for port 'signal_level'("D:\github\HRA_product\TangCartMSX\RTL\TangcartMSX\src\tangcart_msx.v":542)
+WARN  (EX1998) : Net 'w_srom_busy' does not have a driver("D:\github\HRA_product\TangCartMSX\RTL\TangcartMSX\src\tangcart_msx.v":127)
+WARN  (EX1998) : Net 'w_1mhz' does not have a driver("D:\github\HRA_product\TangCartMSX\RTL\TangcartMSX\src\tangcart_msx.v":541)
 NOTE  (EX0101) : Current top module is "tangcart_msx"
-WARN  (EX0211) : The output port "srom_cs" of module "tangcart_msx" has no driver, assigning undriven bits to Z, simulation mismatch possible("D:\github\HRA_product\TangCartMSX\RTL\TangcartMSX\src\tangcart_msx.v":35)
-WARN  (EX0211) : The output port "srom_mosi" of module "tangcart_msx" has no driver, assigning undriven bits to Z, simulation mismatch possible("D:\github\HRA_product\TangCartMSX\RTL\TangcartMSX\src\tangcart_msx.v":36)
-WARN  (EX0211) : The output port "srom_sclk" of module "tangcart_msx" has no driver, assigning undriven bits to Z, simulation mismatch possible("D:\github\HRA_product\TangCartMSX\RTL\TangcartMSX\src\tangcart_msx.v":37)
 [5%] Running netlist conversion ...
 WARN  (CV0016) : Input sys_clk is unused("D:\github\HRA_product\TangCartMSX\RTL\TangcartMSX\src\tangcart_msx.v":28)
 WARN  (CV0016) : Input tf_miso is unused("D:\github\HRA_product\TangCartMSX\RTL\TangcartMSX\src\tangcart_msx.v":33)
 WARN  (CV0016) : Input srom_miso is unused("D:\github\HRA_product\TangCartMSX\RTL\TangcartMSX\src\tangcart_msx.v":38)
 WARN  (CV0016) : Input n_tmerq is unused("D:\github\HRA_product\TangCartMSX\RTL\TangcartMSX\src\tangcart_msx.v":43)
 WARN  (CV0016) : Input button is unused("D:\github\HRA_product\TangCartMSX\RTL\TangcartMSX\src\tangcart_msx.v":52)
+WARN  (CV0016) : Input dip_sw is unused("D:\github\HRA_product\TangCartMSX\RTL\TangcartMSX\src\tangcart_msx.v":53)
 Running device independent optimization ...
 [10%] Optimizing Phase 0 completed
 [15%] Optimizing Phase 1 completed
@@ -55,6 +69,7 @@ Running technical mapping ...
 [75%] Tech-Mapping Phase 2 completed
 [80%] Tech-Mapping Phase 3 completed
 [90%] Tech-Mapping Phase 4 completed
+WARN  (NL0002) : The module "ip_pwm" instantiated to "u_pwm" is swept in optimizing("D:\github\HRA_product\TangCartMSX\RTL\TangcartMSX\src\tangcart_msx.v":544)
 [95%] Generate netlist file "D:\github\HRA_product\TangCartMSX\RTL\TangcartMSX\impl\gwsynthesis\TangcartMSX.vg" completed
 [100%] Generate report file "D:\github\HRA_product\TangCartMSX\RTL\TangcartMSX\impl\gwsynthesis\TangcartMSX_syn.rpt.html" completed
 GowinSynthesis finish

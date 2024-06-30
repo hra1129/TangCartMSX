@@ -58,7 +58,7 @@ module ip_gpio #(
 	// --------------------------------------------------------------------
 	//	Address decode
 	// --------------------------------------------------------------------
-	assign w_gpio_dec		= (bus_address[7:0] == io_address) ? 1'b1 : 1'b0;
+	assign w_gpio_dec		= (bus_address[7:0] == io_address) ? bus_io : 1'b0;
 
 	// --------------------------------------------------------------------
 	//	Write register
@@ -67,7 +67,7 @@ module ip_gpio #(
 		if( !n_reset ) begin
 			ff_gpo <= 8'h00;
 		end
-		else if( bus_io && w_gpio_dec && bus_write ) begin
+		else if( w_gpio_dec && bus_write ) begin
 			ff_gpo <= bus_write_data;
 		end
 		else begin
@@ -83,7 +83,7 @@ module ip_gpio #(
 		if( !n_reset ) begin
 			ff_read_ready <= 1'b0;
 		end
-		else if( bus_io && w_gpio_dec && bus_read ) begin
+		else if( w_gpio_dec && bus_read ) begin
 			ff_read_ready <= 1'b1;
 		end
 		else begin
@@ -91,6 +91,6 @@ module ip_gpio #(
 		end
 	end
 
-	assign bus_read_data	= ff_read_ready ? gpi : 8'h00;
+	assign bus_read_data	= ff_read_ready ? 8'h00 : 8'h00;
 	assign bus_read_ready	= ff_read_ready;
 endmodule

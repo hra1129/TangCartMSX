@@ -30,6 +30,7 @@ module ip_megarom #(
 	//	Internal I/F
 	input			n_reset,
 	input			clk,
+	input			enable,					//	0: disable, 1: enable
 	input	[2:0]	mode,				//	0: ASC8, 1: ASC16, 2: Normal, 3: Kon4, 4: SCC, 5: SCC+, 6: Generic8, 7: Generic16
 	//	MSX-50BUS
 	input	[15:0]	bus_address,
@@ -67,6 +68,9 @@ module ip_megarom #(
 	reg		[7:0]	ff_bank1;
 	reg		[7:0]	ff_bank2;
 	reg		[7:0]	ff_bank3;
+	reg				ff_rd;
+	reg				ff_wr;
+	wire			w_rd;
 	wire			w_asc8_b0;
 	wire			w_asc8_b1;
 	wire			w_asc8_b2;
@@ -277,17 +281,41 @@ module ip_megarom #(
 	end
 
 	// --------------------------------------------------------------------
+	//	Read/Write request
+	// --------------------------------------------------------------------
+	always @( posedge clk ) begin
+		if( !n_reset ) begin
+			ff_rd <= 1'b0;
+			ff_wr <= 1'b0;
+		end
+		else if( (bus_memory & bus_read & ~(w_scc | w_sccp)) == 1'b1 ) begin
+			ff_rd <= enable;
+		end
+		else if( (bus_memory & bus_write & ff_sccp_ram_en & ~w_sccp_mode) == 1'b1 ) begin
+			ff_wr <= 1'b1;
+		end
+		else if( !busy ) begin
+			ff_rd <= 1'b0;
+			ff_wr <= 1'b0;
+		end
+		else begin
+			//	hold
+		end
+	end
+
+	// --------------------------------------------------------------------
 	//	ROM Reader
 	// --------------------------------------------------------------------
 	assign w_address_m		= (bus_address[14:13] == 2'b10) ? ff_bank0 :
 	                  		  (bus_address[14:13] == 2'b11) ? ff_bank1 :
 	                  		  (bus_address[14:13] == 2'b00) ? ff_bank2 : ff_bank3;
 	assign address			= { address_h, w_address_m, bus_address[12:0] };
-	assign rd				= bus_memory & bus_read & ~(w_scc | w_sccp);
-	assign wr				= bus_memory & bus_write & ff_sccp_ram_en & ~w_sccp_mode;
+	assign w_rd				= bus_memory & bus_read & ~(w_scc | w_sccp);
+	assign rd				= ff_rd;
+	assign wr				= ff_wr;
 	assign wdata			= bus_write_data;
-	assign bus_read_ready	= rdata_en;
-	assign bus_read_data	= rdata;
+	assign bus_read_ready	= ff_rd & rdata_en;
+	assign bus_read_data	= (ff_rd & rdata_en) ? rdata : 8'd0;
 	assign scc_bank_en		= w_scc;
 	assign sccp_bank_en		= w_sccp;
 	assign sccp_en			= ff_sccp_en;

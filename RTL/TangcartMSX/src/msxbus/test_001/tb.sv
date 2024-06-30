@@ -34,6 +34,7 @@ module tb ();
 	reg		[7:0]	i_data;
 	wire	[7:0]	o_data;
 	wire			is_output;
+	wire			is_output_d;
 	reg				n_sltsl;
 	reg				n_rd;
 	reg				n_wr;
@@ -69,6 +70,7 @@ module tb ();
 		.i_data				( i_data			),
 		.o_data				( o_data			),
 		.is_output			( is_output			),
+		.is_output_d		( is_output_d		),
 		.n_sltsl			( n_sltsl			),
 		.n_rd				( n_rd				),
 		.n_wr				( n_wr				),

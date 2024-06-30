@@ -12,9 +12,9 @@
 -file_type vlg
 -dev_type GW1NR-9C
 -dyn_idiv_sel false
--idiv_sel 1
+-idiv_sel 3
 -dyn_fbdiv_sel false
--fbdiv_sel 4
+-fbdiv_sel 16
 -dyn_odiv_sel false
 -odiv_sel 4
 -dyn_sdiv_sel 2
@@ -23,7 +23,7 @@
 -rst_sig_p false
 -fclkin 27
 -rst_sig_i false
--clkfb_sel 1
+-clkfb_sel 0
 -en_lock true
 -clkout_bypass false
 -clkout_ft_dir 1

@@ -5,15 +5,14 @@
 //Part Number: GW1NR-LV9QN88PC6/I5
 //Device: GW1NR-9
 //Device Version: C
-//Created Time: Mon Jun 24 21:15:50 2024
+//Created Time: Sun Jun 30 13:52:07 2024
 
-module Gowin_PLL (clkout, lock, clkoutd, clkin, clkfb);
+module Gowin_PLL (clkout, lock, clkoutd, clkin);
 
 output clkout;
 output lock;
 output clkoutd;
 input clkin;
-input clkfb;
 
 wire clkoutp_o;
 wire clkoutd3_o;
@@ -32,7 +31,7 @@ PLL pll_inst (
     .RESET_I(gw_gnd),
     .RESET_S(gw_gnd),
     .CLKIN(clkin),
-    .CLKFB(clkfb),
+    .CLKFB(gw_gnd),
     .FBDSEL({gw_gnd,gw_gnd,gw_gnd,gw_gnd,gw_gnd,gw_gnd}),
     .IDSEL({gw_gnd,gw_gnd,gw_gnd,gw_gnd,gw_gnd,gw_gnd}),
     .ODSEL({gw_gnd,gw_gnd,gw_gnd,gw_gnd,gw_gnd,gw_gnd}),
@@ -43,9 +42,9 @@ PLL pll_inst (
 
 defparam pll_inst.FCLKIN = "27";
 defparam pll_inst.DYN_IDIV_SEL = "false";
-defparam pll_inst.IDIV_SEL = 0;
+defparam pll_inst.IDIV_SEL = 2;
 defparam pll_inst.DYN_FBDIV_SEL = "false";
-defparam pll_inst.FBDIV_SEL = 3;
+defparam pll_inst.FBDIV_SEL = 15;
 defparam pll_inst.DYN_ODIV_SEL = "false";
 defparam pll_inst.ODIV_SEL = 4;
 defparam pll_inst.PSDA_SEL = "0000";
@@ -55,7 +54,7 @@ defparam pll_inst.CLKOUT_FT_DIR = 1'b1;
 defparam pll_inst.CLKOUTP_FT_DIR = 1'b1;
 defparam pll_inst.CLKOUT_DLY_STEP = 0;
 defparam pll_inst.CLKOUTP_DLY_STEP = 0;
-defparam pll_inst.CLKFB_SEL = "external";
+defparam pll_inst.CLKFB_SEL = "internal";
 defparam pll_inst.CLKOUT_BYPASS = "false";
 defparam pll_inst.CLKOUTP_BYPASS = "false";
 defparam pll_inst.CLKOUTD_BYPASS = "false";

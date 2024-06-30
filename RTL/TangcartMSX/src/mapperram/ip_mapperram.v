@@ -42,6 +42,7 @@ module ip_mapperram (
 	//	RAM I/F
 	output			rd,
 	output			wr,
+	input			busy,
 	output	[21:0]	address,
 	output	[7:0]	wdata,
 	input	[7:0]	rdata,
@@ -52,6 +53,8 @@ module ip_mapperram (
 	reg		[7:0]	ff_p2;
 	reg		[7:0]	ff_p3;
 	reg				ff_read;
+	reg				ff_rd;
+	reg				ff_wr;
 	wire	[7:0]	w_address_h;
 	reg				ff_rdata_en;
 
@@ -128,6 +131,29 @@ module ip_mapperram (
 	end
 
 	// --------------------------------------------------------------------
+	//	Read/Write request
+	// --------------------------------------------------------------------
+	always @( posedge clk ) begin
+		if( !n_reset ) begin
+			ff_rd <= 1'b0;
+			ff_wr <= 1'b0;
+		end
+		else if( (bus_memory & bus_read) == 1'b1 ) begin
+			ff_rd <= 1'b1;
+		end
+		else if( (bus_memory & bus_write) == 1'b1 ) begin
+			ff_wr <= 1'b1;
+		end
+		else if( !busy ) begin
+			ff_rd <= 1'b0;
+			ff_wr <= 1'b0;
+		end
+		else begin
+			//	hold
+		end
+	end
+
+	// --------------------------------------------------------------------
 	//	Page address decoder
 	// --------------------------------------------------------------------
 	function [7:0] page_dec (
@@ -148,8 +174,8 @@ module ip_mapperram (
 
 	assign w_address_h		= page_dec( bus_address[15:14], ff_p0, ff_p1, ff_p2, ff_p3 );
 	assign address			= { w_address_h, bus_address[13:0] };
-	assign rd				= bus_memory & bus_read;
-	assign wr				= bus_memory & bus_write;
+	assign rd				= ff_rd;
+	assign wr				= ff_wr;
 	assign wdata			= bus_write_data;
 
 	assign bus_read_ready	= rdata_en & ff_read;

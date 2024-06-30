@@ -10,10 +10,6 @@
    "Type" : "verilog"
   },
   {
-   "Path" : "D:/github/HRA_product/TangCartMSX/RTL/TangcartMSX/src/gpio/ip_gpio.v",
-   "Type" : "verilog"
-  },
-  {
    "Path" : "D:/github/HRA_product/TangCartMSX/RTL/TangcartMSX/src/mapperram/ip_mapperram.v",
    "Type" : "verilog"
   },
@@ -27,6 +23,10 @@
   },
   {
    "Path" : "D:/github/HRA_product/TangCartMSX/RTL/TangcartMSX/src/psram_memory_interface_2ch/psram_memory_interface_2ch.v",
+   "Type" : "verilog"
+  },
+  {
+   "Path" : "D:/github/HRA_product/TangCartMSX/RTL/TangcartMSX/src/psram_tester/ip_psram_tester.v",
    "Type" : "verilog"
   },
   {
