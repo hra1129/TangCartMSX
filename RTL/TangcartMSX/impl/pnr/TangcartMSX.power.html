@@ -87,7 +87,7 @@ table.detail_table th.label {  min-width: 8%; width: 8%; }
 </tr>
 <tr>
 <td class="label">Created Time</td>
-<td>Fri Jul  5 23:36:40 2024
+<td>Sat Jul  6 07:15:42 2024
 </td>
 </tr>
 <tr>
@@ -100,15 +100,15 @@ table.detail_table th.label {  min-width: 8%; width: 8%; }
 <table class="summary_table">
 <tr>
 <td class="label">Total Power (mW)</td>
-<td>22.089</td>
+<td>33.268</td>
 </tr>
 <tr>
 <td class="label">Quiescent Power (mW)</td>
-<td>18.429</td>
+<td>18.200</td>
 </tr>
 <tr>
 <td class="label">Dynamic Power (mW)</td>
-<td>3.661</td>
+<td>15.068</td>
 </tr>
 <tr>
 <td class="label">Psram Power (mW)</td>
@@ -119,7 +119,7 @@ table.detail_table th.label {  min-width: 8%; width: 8%; }
 <table class="summary_table">
 <tr>
 <td class="label">Junction Temperature</td>
-<td>25.451</td>
+<td>25.691</td>
 </tr>
 <tr>
 <td class="label">Theta JA</td>
@@ -127,7 +127,7 @@ table.detail_table th.label {  min-width: 8%; width: 8%; }
 </tr>
 <tr>
 <td class="label">Max Allowed Ambient Temperature</td>
-<td>84.549</td>
+<td>84.309</td>
 </tr>
 </table>
 <h2><a name="Configure_Info">Configure Information:</a></h2>
@@ -196,30 +196,30 @@ table.detail_table th.label {  min-width: 8%; width: 8%; }
 <tr>
 <td>VCC</td>
 <td>1.200</td>
-<td>3.009</td>
-<td>3.079</td>
-<td>7.305</td>
+<td>10.486</td>
+<td>3.078</td>
+<td>16.277</td>
 </tr>
 <tr>
 <td>VCCX</td>
 <td>2.500</td>
-<td>0.011</td>
+<td>0.534</td>
 <td>3.788</td>
-<td>9.497</td>
+<td>10.805</td>
 </tr>
 <tr>
 <td>VCCIO18</td>
 <td>1.800</td>
-<td>0.008</td>
-<td>0.926</td>
-<td>1.681</td>
+<td>0.406</td>
+<td>0.996</td>
+<td>2.524</td>
 </tr>
 <tr>
 <td>VCCIO33</td>
 <td>3.300</td>
-<td>0.003</td>
-<td>1.090</td>
-<td>3.606</td>
+<td>0.126</td>
+<td>0.983</td>
+<td>3.662</td>
 </tr>
 </table>
 <h1><a name="Detail">Power Details</a></h1>
@@ -233,19 +233,25 @@ table.detail_table th.label {  min-width: 8%; width: 8%; }
 </tr>
 <tr>
 <td>Logic</td>
-<td>0.001</td>
+<td>0.368</td>
 <td>NA</td>
-<td>8.053</td>
+<td>7.711</td>
 </tr>
 <tr>
 <td>IO</td>
-<td>6.429
-<td>6.366
-<td>0.291
+<td>9.899
+<td>6.726
+<td>9.784
 </tr>
 <tr>
 <td>PLL</td>
 <td>3.594
+<td>NA</td>
+<td>NA</td>
+</tr>
+<tr>
+<td>DLL</td>
+<td>7.916
 <td>NA</td>
 <td>NA</td>
 </tr>
@@ -259,12 +265,80 @@ table.detail_table th.label {  min-width: 8%; width: 8%; }
 </tr>
 <tr>
 <td>tangcart_msx</td>
-<td>3.595</td>
-<td>3.595(3.594)</td>
+<td>11.878</td>
+<td>11.878(11.875)</td>
+<tr>
+<td>tangcart_msx/u_debugger/</td>
+<td>0.016</td>
+<td>0.016(0.000)</td>
+<tr>
+<td>tangcart_msx/u_gpio/</td>
+<td>0.000</td>
+<td>0.000(0.000)</td>
+<tr>
+<td>tangcart_msx/u_msxbus/</td>
+<td>0.003</td>
+<td>0.003(0.000)</td>
 <tr>
 <td>tangcart_msx/u_pll/</td>
 <td>3.594</td>
 <td>3.594(0.000)</td>
+<tr>
+<td>tangcart_msx/u_psram/</td>
+<td>8.258</td>
+<td>8.258(8.253)</td>
+<tr>
+<td>tangcart_msx/u_psram/u_gowin_psram_if_2ch/</td>
+<td>8.253</td>
+<td>8.253(0.337)</td>
+<tr>
+<td>tangcart_msx/u_psram/u_gowin_psram_if_2ch/u_psram_sync/</td>
+<td>0.011</td>
+<td>0.011(0.000)</td>
+<tr>
+<td>tangcart_msx/u_psram/u_gowin_psram_if_2ch/u_psram_top0/</td>
+<td>0.164</td>
+<td>0.164(0.164)</td>
+<tr>
+<td>tangcart_msx/u_psram/u_gowin_psram_if_2ch/u_psram_top0/u_psram_top/</td>
+<td>0.164</td>
+<td>0.164(0.144)</td>
+<tr>
+<td>tangcart_msx/u_psram/u_gowin_psram_if_2ch/u_psram_top0/u_psram_top/u_psram_init/</td>
+<td>0.079</td>
+<td>0.079(0.000)</td>
+<tr>
+<td>tangcart_msx/u_psram/u_gowin_psram_if_2ch/u_psram_top0/u_psram_top/u_psram_wd/</td>
+<td>0.065</td>
+<td>0.065(0.048)</td>
+<tr>
+<td>tangcart_msx/u_psram/u_gowin_psram_if_2ch/u_psram_top0/u_psram_top/u_psram_wd/data_lane_gen[0].u_psram_lane/</td>
+<td>0.048</td>
+<td>0.048(0.000)</td>
+<tr>
+<td>tangcart_msx/u_psram/u_gowin_psram_if_2ch/u_psram_top1/</td>
+<td>0.162</td>
+<td>0.162(0.162)</td>
+<tr>
+<td>tangcart_msx/u_psram/u_gowin_psram_if_2ch/u_psram_top1/u_psram_top/</td>
+<td>0.162</td>
+<td>0.162(0.144)</td>
+<tr>
+<td>tangcart_msx/u_psram/u_gowin_psram_if_2ch/u_psram_top1/u_psram_top/u_psram_init/</td>
+<td>0.078</td>
+<td>0.078(0.000)</td>
+<tr>
+<td>tangcart_msx/u_psram/u_gowin_psram_if_2ch/u_psram_top1/u_psram_top/u_psram_wd/</td>
+<td>0.065</td>
+<td>0.065(0.048)</td>
+<tr>
+<td>tangcart_msx/u_psram/u_gowin_psram_if_2ch/u_psram_top1/u_psram_top/u_psram_wd/data_lane_gen[0].u_psram_lane/</td>
+<td>0.048</td>
+<td>0.048(0.000)</td>
+<tr>
+<td>tangcart_msx/u_ram/</td>
+<td>0.003</td>
+<td>0.003(0.000)</td>
 </table>
 <h2><a name="By_Clock_Domain">Power By Clock Domain:</a></h2>
 <table class="detail_table">
@@ -274,9 +348,29 @@ table.detail_table th.label {  min-width: 8%; width: 8%; }
 <th class="label">Total Dynamic Power(mW)</th>
 </tr>
 <tr>
+<td>u_psram/u_gowin_psram_if_2ch/clkdiv/CLKOUT.default_gen_clk</td>
+<td>64.422</td>
+<td>0.326</td>
+</tr>
+<tr>
+<td>u_pll/pll_inst/CLKOUTD3.default_gen_clk</td>
+<td>42.948</td>
+<td>0.030</td>
+</tr>
+<tr>
 <td>u_pll/pll_inst/CLKOUTD.default_gen_clk</td>
 <td>64.422</td>
-<td>0.004</td>
+<td>0.021</td>
+</tr>
+<tr>
+<td>NO CLOCK DOMAIN</td>
+<td>0.000</td>
+<td>0.000</td>
+</tr>
+<tr>
+<td>u_pll/pll_inst/CLKOUT.default_gen_clk</td>
+<td>128.844</td>
+<td>7.924</td>
 </tr>
 <tr>
 <td>tclock</td>
