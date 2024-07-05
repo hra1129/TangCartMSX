@@ -53,7 +53,11 @@ module ip_megarom #(
 	input			rdata_en,
 	output			scc_bank_en,
 	output			sccp_bank_en,
-	output			sccp_en
+	output			sccp_en,
+	output	[7:0]	bank0,
+	output	[7:0]	bank1,
+	output	[7:0]	bank2,
+	output	[7:0]	bank3
 );
 	localparam c_mode_asc8		= 3'd0;
 	localparam c_mode_asc16		= 3'd1;
@@ -70,6 +74,9 @@ module ip_megarom #(
 	reg		[7:0]	ff_bank3;
 	reg				ff_rd;
 	reg				ff_wr;
+	reg				ff_rd_wait;
+	reg		[7:0]	ff_rdata;
+	reg				ff_rdata_en;
 	wire			w_rd;
 	wire			w_asc8_b0;
 	wire			w_asc8_b1;
@@ -102,6 +109,11 @@ module ip_megarom #(
 
 	assign bus_io_cs		= 1'b0;
 	assign bus_memory_cs	= 1'b1;
+
+	assign bank0			= ff_bank0;
+	assign bank1			= ff_bank1;
+	assign bank2			= ff_bank2;
+	assign bank3			= ff_bank3;
 
 	// --------------------------------------------------------------------
 	//	ASC8 Mapper
@@ -184,7 +196,7 @@ module ip_megarom #(
 			ff_bank2 <= 8'd2;
 			ff_bank3 <= 8'd3;
 		end
-		else if( bus_write ) begin
+		else if( bus_memory && bus_write ) begin
 			case( mode )
 			c_mode_asc8: begin
 				if( w_asc8_b0 ) begin
@@ -303,6 +315,38 @@ module ip_megarom #(
 		end
 	end
 
+	always @( posedge clk ) begin
+		if( !n_reset ) begin
+			ff_rd_wait <= 1'b0;
+		end
+		else if( ff_rd ) begin
+			ff_rd_wait <= 1'b1;
+		end
+		else if( rdata_en ) begin
+			ff_rd_wait <= 1'b0;
+		end
+	end
+
+	always @( posedge clk ) begin
+		if( !n_reset ) begin
+			ff_rdata		<= 8'd0;
+			ff_rdata_en		<= 1'b0;
+		end
+		else if( ff_rd ) begin
+			ff_rdata		<= 8'd0;
+			ff_rdata_en		<= 1'b0;
+		end
+		else if( ff_rd_wait ) begin
+			ff_rdata		<= rdata;
+			ff_rdata		<= rdata_en;
+		end
+		else begin
+			ff_rdata		<= 8'd0;
+			ff_rdata_en		<= 1'b0;
+		end
+	end
+
+
 	// --------------------------------------------------------------------
 	//	ROM Reader
 	// --------------------------------------------------------------------
@@ -314,8 +358,8 @@ module ip_megarom #(
 	assign rd				= ff_rd;
 	assign wr				= ff_wr;
 	assign wdata			= bus_write_data;
-	assign bus_read_ready	= ff_rd & rdata_en;
-	assign bus_read_data	= (ff_rd & rdata_en) ? rdata : 8'd0;
+	assign bus_read_ready	= ff_rdata_en;
+	assign bus_read_data	= ff_rdata_en ? ff_rdata : 8'd0;
 	assign scc_bank_en		= w_scc;
 	assign sccp_bank_en		= w_sccp;
 	assign sccp_en			= ff_sccp_en;

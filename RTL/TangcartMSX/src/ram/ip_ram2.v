@@ -30,15 +30,11 @@ module ip_ram2 (
 	input			clk,
 	//	MSX-50BUS
 	input	[15:0]	bus_address,
-	output			bus_io_cs,
-	output			bus_memory_cs,
 	output			bus_read_ready,
 	output	[7:0]	bus_read_data,
 	input	[7:0]	bus_write_data,
-	input			bus_read,
-	input			bus_write,
-	input			bus_io,
-	input			bus_memory,
+	input			bus_memory_read,
+	input			bus_memory_write,
 	output			rd,
 	output			wr,
 	input			busy,
@@ -47,6 +43,10 @@ module ip_ram2 (
 	input	[7:0]	rdata,
 	input			rdata_en
 );
+	reg				ff_memory_read;
+	reg				ff_memory_write;
+	wire			w_memory_read_rising_edge;
+	wire			w_memory_write_rising_edge;
 	reg		[7:0]	ff_read;
 	reg				ff_read_ready;
 	reg				ff_rd;
@@ -56,17 +56,37 @@ module ip_ram2 (
 	reg		[13:0]	ff_address;
 	wire			w_dec;
 
-	assign bus_io_cs		= 1'b0;
-	assign bus_memory_cs	= 1'b1;
+	// --------------------------------------------------------------------
+	//	Pulse conversion
+	// --------------------------------------------------------------------
+	always @( posedge clk ) begin
+		if( !n_reset ) begin
+			ff_memory_read		<= 1'b0;
+			ff_memory_write		<= 1'b0;
+		end
+		else begin
+			ff_memory_read		<= bus_memory_read;
+			ff_memory_write		<= bus_memory_write;
+		end
+	end
 
-	assign w_dec			= bus_memory && (bus_address[15:14] == 2'd2);
+	assign w_memory_read_rising_edge	= ~ff_memory_read & bus_memory_read;
+	assign w_memory_write_rising_edge	= ~ff_memory_write & bus_memory_write;
 
+	// --------------------------------------------------------------------
+	//	Address decode
+	// --------------------------------------------------------------------
+	assign w_dec			= (bus_address[15:14] == 2'd2);
+
+	// --------------------------------------------------------------------
+	//	Read response
+	// --------------------------------------------------------------------
 	always @( posedge clk ) begin
 		if( !n_reset ) begin
 			ff_read_ready <= 1'b0;
 			ff_read <= 8'd0;
 		end
-		else if( bus_memory && (bus_address[15:14] == 2'd2) ) begin
+		else if( bus_memory_read && w_dec ) begin
 			if( ff_rd_active && rdata_en ) begin
 				ff_read_ready <= 1'b1;
 				ff_read <= rdata;
@@ -86,7 +106,7 @@ module ip_ram2 (
 		if( !n_reset ) begin
 			ff_rd_active <= 1'b0;
 		end
-		else if( bus_memory && (bus_address[15:14] == 2'd2) ) begin
+		else if( bus_memory_read && w_dec ) begin
 			if( ff_rd && !busy ) begin
 				ff_rd_active <= 1'b1;
 			end
@@ -106,12 +126,12 @@ module ip_ram2 (
 			ff_wdata <= 8'd0;
 			ff_address <= 14'd0;
 		end
-		else if( bus_memory && (bus_address[15:14] == 2'd2) ) begin
-			if( bus_read ) begin
+		else if( w_dec ) begin
+			if( w_memory_read_rising_edge ) begin
 				ff_rd <= 1'b1;
 				ff_address <= address[13:0];
 			end
-			else if( bus_write ) begin
+			else if( w_memory_write_rising_edge ) begin
 				ff_wr <= 1'b1;
 				ff_address <= address[13:0];
 				ff_wdata <= bus_write_data;

@@ -1,13 +1,5 @@
 [
  {
-  "InstFile" : "D:/github/HRA_product/TangCartMSX/RTL/TangcartMSX/src/extslot/ip_extslot.v",
-  "InstLine" : 27,
-  "InstName" : "ip_extslot",
-  "ModuleFile" : "D:/github/HRA_product/TangCartMSX/RTL/TangcartMSX/src/extslot/ip_extslot.v",
-  "ModuleLine" : 27,
-  "ModuleName" : "ip_extslot"
- },
- {
   "InstFile" : "D:/github/HRA_product/TangCartMSX/RTL/TangcartMSX/src/tangcart_msx.v",
   "InstLine" : 27,
   "InstName" : "tangcart_msx",
@@ -25,7 +17,7 @@
    },
    {
     "InstFile" : "D:/github/HRA_product/TangCartMSX/RTL/TangcartMSX/src/tangcart_msx.v",
-    "InstLine" : 272,
+    "InstLine" : 287,
     "InstName" : "u_msxbus",
     "ModuleFile" : "D:/github/HRA_product/TangCartMSX/RTL/TangcartMSX/src/msxbus/ip_msxbus.v",
     "ModuleLine" : 28,
@@ -33,67 +25,23 @@
    },
    {
     "InstFile" : "D:/github/HRA_product/TangCartMSX/RTL/TangcartMSX/src/tangcart_msx.v",
-    "InstLine" : 331,
-    "InstName" : "u_mapperram",
-    "ModuleFile" : "D:/github/HRA_product/TangCartMSX/RTL/TangcartMSX/src/mapperram/ip_mapperram.v",
+    "InstLine" : 318,
+    "InstName" : "u_gpio",
+    "ModuleFile" : "D:/github/HRA_product/TangCartMSX/RTL/TangcartMSX/src/gpio/ip_gpio.v",
     "ModuleLine" : 27,
-    "ModuleName" : "ip_mapperram"
+    "ModuleName" : "ip_gpio"
    },
    {
     "InstFile" : "D:/github/HRA_product/TangCartMSX/RTL/TangcartMSX/src/tangcart_msx.v",
-    "InstLine" : 445,
-    "InstName" : "u_psram",
-    "ModuleFile" : "D:/github/HRA_product/TangCartMSX/RTL/TangcartMSX/src/psram/ip_psram.v",
+    "InstLine" : 376,
+    "InstName" : "u_ram",
+    "ModuleFile" : "D:/github/HRA_product/TangCartMSX/RTL/TangcartMSX/src/ram/ip_ram.v",
     "ModuleLine" : 27,
-    "ModuleName" : "ip_psram",
-    "SubInsts" : [
-     {
-      "InstFile" : "D:/github/HRA_product/TangCartMSX/RTL/TangcartMSX/src/psram/ip_psram.v",
-      "InstLine" : 103,
-      "InstName" : "u_gowin_psram_if_2ch",
-      "ModuleFile" : "D:/github/HRA_product/TangCartMSX/RTL/TangcartMSX/src/psram_memory_interface_2ch/psram_memory_interface_2ch.v",
-      "ModuleLine" : 6400,
-      "ModuleName" : "PSRAM_Memory_Interface_2CH_Top",
-      "SubInsts" : [
-       {
-        "InstFile" : "D:/github/HRA_product/TangCartMSX/RTL/TangcartMSX/src/psram_memory_interface_2ch/psram_memory_interface_2ch.v",
-        "InstLine" : 6511,
-        "InstName" : "u_psram_sync",
-        "ModuleFile" : "D:/github/HRA_product/TangCartMSX/RTL/TangcartMSX/src/psram_memory_interface_2ch/psram_memory_interface_2ch.v",
-        "ModuleLine" : 1,
-        "ModuleName" : "~psram_sync.PSRAM_Memory_Interface_2CH_Top"
-       },
-       {
-        "InstFile" : "D:/github/HRA_product/TangCartMSX/RTL/TangcartMSX/src/psram_memory_interface_2ch/psram_memory_interface_2ch.v",
-        "InstLine" : 6523,
-        "InstName" : "u_psram_top0",
-        "ModuleFile" : "D:/github/HRA_product/TangCartMSX/RTL/TangcartMSX/src/psram_memory_interface_2ch/psram_memory_interface_2ch.v",
-        "ModuleLine" : 1,
-        "ModuleName" : "~psram_memory_interface.PSRAM_Memory_Interface_2CH_Top"
-       },
-       {
-        "InstFile" : "D:/github/HRA_product/TangCartMSX/RTL/TangcartMSX/src/psram_memory_interface_2ch/psram_memory_interface_2ch.v",
-        "InstLine" : 6546,
-        "InstName" : "u_psram_top1",
-        "ModuleFile" : "D:/github/HRA_product/TangCartMSX/RTL/TangcartMSX/src/psram_memory_interface_2ch/psram_memory_interface_2ch.v",
-        "ModuleLine" : 1,
-        "ModuleName" : "~psram_memory_interface.PSRAM_Memory_Interface_2CH_Top_0"
-       }
-      ]
-     }
-    ]
+    "ModuleName" : "ip_ram"
    },
    {
     "InstFile" : "D:/github/HRA_product/TangCartMSX/RTL/TangcartMSX/src/tangcart_msx.v",
-    "InstLine" : 476,
-    "InstName" : "u_psram_tester",
-    "ModuleFile" : "D:/github/HRA_product/TangCartMSX/RTL/TangcartMSX/src/psram_tester/ip_psram_tester.v",
-    "ModuleLine" : 27,
-    "ModuleName" : "ip_psram_tester"
-   },
-   {
-    "InstFile" : "D:/github/HRA_product/TangCartMSX/RTL/TangcartMSX/src/tangcart_msx.v",
-    "InstLine" : 538,
+    "InstLine" : 558,
     "InstName" : "u_pwm",
     "ModuleFile" : "D:/github/HRA_product/TangCartMSX/RTL/TangcartMSX/src/pwm/ip_pwm.v",
     "ModuleLine" : 27,

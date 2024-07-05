@@ -1,0 +1,17 @@
+# vsim -c -t 1ps -do "run.do" tb 
+# Start time: 21:54:27 on Jul 05,2024
+# Loading sv_std.std
+# Loading work.tb
+# Loading work.ip_psram
+# Loading work.PSRAM_Memory_Interface_2CH_Top
+# do run.do
+# Enter CMD_EN0
+# Enter CMD_EN0
+# Enter CMD_EN0
+# Enter CMD_EN0
+# Enter CMD_EN0
+# Enter CMD_EN0
+# ** Note: $finish    : tb.sv(232)
+#    Time: 5685026 ps  Iteration: 1  Instance: /tb
+# End time: 21:54:28 on Jul 05,2024, Elapsed time: 0:00:01
+# Errors: 0, Warnings: 0

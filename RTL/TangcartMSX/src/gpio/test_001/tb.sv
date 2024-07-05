@@ -31,15 +31,11 @@ module tb ();
 	reg				clk;
 	//	MSX-50BUS
 	reg		[15:0]	bus_address;
-	wire			bus_io_cs;
-	wire			bus_memory_cs;
 	wire			bus_read_ready;
 	wire	[7:0]	bus_read_data;
 	reg		[7:0]	bus_write_data;
-	reg				bus_read;
-	reg				bus_write;
-	reg				bus_io;
-	reg				bus_memory;
+	reg				bus_io_read;
+	reg				bus_io_write;
 	wire	[7:0]	gpo;
 	reg		[7:0]	gpi;
 	integer			test_no;
@@ -51,15 +47,11 @@ module tb ();
 		.n_reset			( n_reset			),
 		.clk				( clk				),
 		.bus_address		( bus_address		),
-		.bus_io_cs			( bus_io_cs			),
-		.bus_memory_cs		( bus_memory_cs		),
 		.bus_read_ready		( bus_read_ready	),
 		.bus_read_data		( bus_read_data		),
 		.bus_write_data		( bus_write_data	),
-		.bus_read			( bus_read			),
-		.bus_write			( bus_write			),
-		.bus_io				( bus_io			),
-		.bus_memory			( bus_memory		),
+		.bus_io_read		( bus_io_read		),
+		.bus_io_write		( bus_io_write		),
 		.gpo				( gpo				),
 		.gpi				( gpi				)
 	);
@@ -74,80 +66,33 @@ module tb ();
 	// --------------------------------------------------------------------
 	//	Tasks
 	// --------------------------------------------------------------------
-	task write_memory(
-		input	[15:0]	address,
-		input	[7:0]	data
-	);
-		bus_address		<= address;
-		bus_write_data	<= data;
-		bus_write		<= 1'b1;
-		bus_memory		<= 1'b1;
-		@( posedge clk );
-
-		bus_address		<= 'd0;
-		bus_write_data	<= 'd0;
-		bus_write		<= 1'b0;
-		bus_memory		<= 1'b0;
-		@( posedge clk );
-		@( posedge clk );
-		@( posedge clk );
-	endtask: write_memory
-
 	task write_io(
 		input	[15:0]	address,
 		input	[7:0]	data
 	);
 		bus_address		<= address;
 		bus_write_data	<= data;
-		bus_write		<= 1'b1;
-		bus_io			<= 1'b1;
+		bus_io_write	<= 1'b1;
 		@( posedge clk );
 
 		bus_address		<= 'd0;
 		bus_write_data	<= 'd0;
-		bus_write		<= 1'b0;
-		bus_io			<= 1'b0;
+		bus_io_write	<= 1'b0;
 		@( posedge clk );
 		@( posedge clk );
 		@( posedge clk );
 	endtask: write_io
-
-	task read_memory(
-		input	[15:0]	address,
-		input	[7:0]	data
-	);
-		bus_address		<= address;
-		bus_read		<= 1'b1;
-		bus_memory		<= 1'b1;
-		@( posedge clk );
-
-		bus_address		<= 'd0;
-		bus_read		<= 1'b0;
-		bus_memory		<= 1'b0;
-		@( posedge clk );
-
-		while( !bus_read_ready ) begin
-			@( posedge clk );
-		end
-
-		assert( bus_read_data == data );
-		@( posedge clk );
-		@( posedge clk );
-		@( posedge clk );
-	endtask: read_memory
 
 	task read_io(
 		input	[15:0]	address,
 		input	[7:0]	data
 	);
 		bus_address		<= address;
-		bus_read		<= 1'b1;
-		bus_io			<= 1'b1;
+		bus_io_read		<= 1'b1;
 		@( posedge clk );
 
 		bus_address		<= 'd0;
-		bus_read		<= 1'b0;
-		bus_io			<= 1'b0;
+		bus_io_read		<= 1'b0;
 		@( posedge clk );
 
 		while( !bus_read_ready ) begin
@@ -160,46 +105,17 @@ module tb ();
 		@( posedge clk );
 	endtask: read_io
 
-	task read_memory_timeout(
-		input	[15:0]	address
-	);
-		int counter;
-
-		bus_address		<= address;
-		bus_read		<= 1'b1;
-		bus_memory		<= 1'b1;
-		@( posedge clk );
-
-		bus_address		<= 'd0;
-		bus_read		<= 1'b0;
-		bus_memory		<= 1'b0;
-		@( posedge clk );
-
-		counter = 0;
-		while( !bus_read_ready && counter < 10 ) begin
-			@( posedge clk );
-			counter = counter + 1;
-		end
-
-		assert( bus_read_ready == 1'b0 );
-		@( posedge clk );
-		@( posedge clk );
-		@( posedge clk );
-	endtask: read_memory_timeout
-
 	task read_io_timeout(
 		input	[15:0]	address
 	);
 		int counter;
 
 		bus_address		<= address;
-		bus_read		<= 1'b1;
-		bus_io			<= 1'b1;
+		bus_io_read		<= 1'b1;
 		@( posedge clk );
 
 		bus_address		<= 'd0;
-		bus_read		<= 1'b0;
-		bus_io			<= 1'b0;
+		bus_io_read		<= 1'b0;
 		@( posedge clk );
 
 		counter = 0;
@@ -223,10 +139,8 @@ module tb ();
 		clk				= 0;
 		bus_address		= 0;
 		bus_write_data	= 0;
-		bus_read		= 0;
-		bus_write		= 0;
-		bus_io			= 0;
-		bus_memory		= 0;
+		bus_io_read		= 0;
+		bus_io_write	= 0;
 		gpi				= 8'h83;
 
 		@( negedge clk );
@@ -234,15 +148,6 @@ module tb ();
 
 		n_reset			= 1;
 		repeat( 10 ) @( posedge clk );
-
-		// --------------------------------------------------------------------
-		//	check CS port
-		// --------------------------------------------------------------------
-		test_no			= 1;
-		$display( "Check CS port" );
-		assert( bus_io_cs == 1'b1 );
-		assert( bus_memory_cs == 1'b0 );
-		@( posedge clk );
 
 		// --------------------------------------------------------------------
 		//	check write access1
@@ -263,27 +168,6 @@ module tb ();
 
 		write_io( 'hAB01, 8'h0F );
 		assert( gpo == 8'h0F );
-
-		// --------------------------------------------------------------------
-		//	check write access2
-		// --------------------------------------------------------------------
-		test_no			= 3;
-		$display( "Check write accecss (2)" );
-		write_io( 'h0001, 8'hDA );
-		write_memory( 'h0001, 8'h12 );
-		assert( gpo == 8'hDA );
-
-		write_memory( 'hCD01, 8'hAB );
-		assert( gpo == 8'hDA );
-
-		write_memory( 'h0501, 8'h55 );
-		assert( gpo == 8'hDA );
-
-		write_memory( 'h4301, 8'h93 );
-		assert( gpo == 8'hDA );
-
-		write_memory( 'hAB01, 8'h0F );
-		assert( gpo == 8'hDA );
 
 		// --------------------------------------------------------------------
 		//	check write access3
@@ -325,26 +209,6 @@ module tb ();
 
 		gpi <= 8'h0F;
 		read_io( 'hAB01, 8'h0F );
-
-		// --------------------------------------------------------------------
-		//	check read access2
-		// --------------------------------------------------------------------
-		test_no			= 6;
-		$display( "Check read accecss (2)" );
-		gpi <= 8'h12;
-		read_memory_timeout( 'h0001 );
-
-		gpi <= 8'hAB;
-		read_memory_timeout( 'hCD01 );
-
-		gpi <= 8'h55;
-		read_memory_timeout( 'h0501 );
-
-		gpi <= 8'h93;
-		read_memory_timeout( 'h4301 );
-
-		gpi <= 8'h0F;
-		read_memory_timeout( 'hAB01 );
 
 		// --------------------------------------------------------------------
 		//	check read access2

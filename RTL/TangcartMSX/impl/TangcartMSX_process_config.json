@@ -34,7 +34,7 @@
  "Generate_Post_Place_File" : false,
  "Generate_SDF_File" : false,
  "Generate_VHDL_Post_PNR_Simulation_Model_File" : false,
- "GwSyn_Loop_Limit" : 2000,
+ "GwSyn_Loop_Limit" : 8000,
  "HOTBOOT" : false,
  "I2C" : false,
  "I2C_SLAVE_ADDR" : "00",

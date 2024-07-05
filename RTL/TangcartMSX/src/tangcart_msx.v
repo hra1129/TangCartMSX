@@ -25,8 +25,6 @@
 // -----------------------------------------------------------------------------
 
 module tangcart_msx (
-	input			sys_clk,
-
 	output			tf_cs,
 	output			tf_mosi,
 	output			tf_sclk,
@@ -63,31 +61,33 @@ module tangcart_msx (
 	reg		[6:0]	ff_reset = 7'd0;
 	reg		[4:0]	ff_wait = 5'b10000;
 	wire			clk;
-	wire			n_clk;
+	wire			clk42;
 	wire			mem_clk;
 	wire			mem_clk_lock;
 	reg				ff_21mhz;
-	wire			w_21mhz;
+	reg		[4:0]	ff_1mhz;
+	wire			w_1mhz;
 	wire			w_n_reset;
 	wire	[7:0]	w_o_data;
 	wire	[7:0]	w_gpo;
 	wire	[7:0]	w_gpo_mem;
 	wire	[15:0]	w_bus_address;
-	wire			w_bus_io_cs;
-	wire			w_bus_memory_cs;
 	wire			w_bus_read_ready;
 	wire	[7:0]	w_bus_read_data;
 	wire	[7:0]	w_bus_write_data;
-	wire			w_bus_read;
-	wire			w_bus_write;
-	wire			w_bus_io;
-	wire			w_bus_memory;
+	wire			w_bus_io_read;
+	wire			w_bus_io_write;
+	wire			w_bus_memory_read;
+	wire			w_bus_memory_write;
 	wire			w_is_output;
-	wire			w_is_output_d;
-	wire			w_extslot_memory0;
-	wire			w_extslot_memory1;
-	wire			w_extslot_memory2;
-	wire			w_extslot_memory3;
+	wire			w_bus_memory_read0;
+	wire			w_bus_memory_write0;
+	wire			w_bus_memory_read1;
+	wire			w_bus_memory_write1;
+	wire			w_bus_memory_read2;
+	wire			w_bus_memory_write2;
+	wire			w_bus_memory_read3;
+	wire			w_bus_memory_write3;
 	wire			w_psram_initial_busy;
 	wire			w_psram0_rd;
 	wire			w_psram0_wr;
@@ -110,16 +110,12 @@ module tangcart_msx (
 	wire			w_psram1_srom_wr;
 	wire	[21:0]	w_psram1_srom_address;
 	wire	[7:0]	w_psram1_srom_wdata;
-	wire			w_bus_io_cs_extslot;
-	wire			w_bus_memory_cs_extslot;
+	wire			w_bus_read_ready_gpio;
+	wire	[7:0]	w_bus_read_data_gpio;
 	wire			w_bus_read_ready_extslot;
 	wire	[7:0]	w_bus_read_data_extslot;
-	wire			w_bus_io_cs_mapram;
-	wire			w_bus_memory_cs_mapram;
 	wire			w_bus_read_ready_mapram;
 	wire	[7:0]	w_bus_read_data_mapram;
-	wire			w_bus_io_cs_megarom;
-	wire			w_bus_memory_cs_megarom;
 	wire			w_bus_read_ready_megarom;
 	wire	[7:0]	w_bus_read_data_megarom;
 	wire			w_bus_read_ready_scc;
@@ -146,34 +142,16 @@ module tangcart_msx (
 	reg				ff_ready;
 	reg				ff_psram0_busy;
 	reg				ff_psram1_busy;
-	reg		[5:0]	ff_ram_count;
-	reg				ff_ram_count_en;
+	reg				ff_bus_memory_read0;
+	reg				ff_bus_memory_write0;
+	reg				ff_bus_ready;
+	wire	[7:0]	w_bank0;
+	wire	[7:0]	w_bank1;
+	wire	[7:0]	w_bank2;
+	wire	[7:0]	w_bank3;
+	wire	[7:0]	w_pc;
 
-	always @( posedge clk ) begin
-		if( !w_n_reset ) begin
-			ff_ram_count_en <= 1'b0;
-		end
-		else if( w_psram1_rd ) begin
-			ff_ram_count_en <= 1'b1;
-		end
-		else if( w_psram1_rdata_en ) begin
-			ff_ram_count_en <= 1'b0;
-		end
-	end
-
-	always @( posedge clk ) begin
-		if( !w_n_reset ) begin
-			ff_ram_count <= 'd0;
-		end
-		else if( w_psram1_rd ) begin
-			ff_ram_count <= 'd0;
-		end
-		else if( ff_ram_count_en ) begin
-			ff_ram_count <= ff_ram_count + 'd1;
-		end
-	end
-
-	always @( posedge clk ) begin
+	always @( posedge clk42 ) begin
 		if( !w_n_reset ) begin
 			ff_counter <= 'd0;
 			ff_wr <= 1'b1;
@@ -181,31 +159,49 @@ module tangcart_msx (
 			ff_ready <= 1'b1;
 			ff_psram0_busy <= 1'b1;
 			ff_psram1_busy <= 1'b1;
+			ff_bus_memory_read0 <= 1'b1;
+			ff_bus_memory_write0 <= 1'b1;
+			ff_bus_ready <= 1'b1;
+		end
+		else if( w_bus_read_ready ) begin
+			ff_bus_ready <= 1'b0;
+			ff_counter <= 'd42000000;
+		end
+		else if( w_bus_memory_read0 ) begin
+			ff_bus_memory_read0 <= 1'b0;
+			ff_counter <= 'd42000000;
+		end
+		else if( w_bus_memory_write0 ) begin
+			ff_bus_memory_write0 <= 1'b0;
+			ff_counter <= 'd42000000;
 		end
 		else if( w_psram0_busy ) begin
 			ff_psram0_busy <= 1'b0;
-			ff_counter <= 'd53693175;
+			ff_counter <= 'd42000000;
 		end
 		else if( w_psram0_busy ) begin
 			ff_psram1_busy <= 1'b0;
-			ff_counter <= 'd53693175;
+			ff_counter <= 'd42000000;
 		end
 		else if( w_psram0_rd && !w_psram0_busy ) begin
 			ff_rd <= 1'b0;
-			ff_counter <= 'd53693175;
+			ff_counter <= 'd42000000;
 		end
 		else if( w_psram0_wr && !w_psram0_busy ) begin
 			ff_wr <= 1'b0;
-			ff_counter <= 'd53693175;
+			ff_counter <= 'd42000000;
 		end
 		else if( w_psram0_rdata_en ) begin
 			ff_ready <= 1'b0;
-			ff_counter <= 'd53693175;
+			ff_counter <= 'd42000000;
 		end
 		else if( ff_counter != 'd0 ) begin
 			ff_counter <= ff_counter - 'd1;
 		end
 		else begin
+			ff_bus_ready <= 1'b1;
+			ff_bus_memory_read0 <= 1'b1;
+			ff_bus_memory_write0 <= 1'b1;
 			ff_psram0_busy <= 1'b1;
 			ff_psram1_busy <= 1'b1;
 			ff_wr <= 1'b1;
@@ -218,18 +214,17 @@ module tangcart_msx (
 	//	OUTPUT Assignment
 	// --------------------------------------------------------------------
 	assign w_n_reset	= ff_reset[6];
-	assign srom_cs		= 1'b1;
-	assign srom_mosi	= 1'b0;
-	assign srom_sclk	= 1'b0;
 	assign tf_cs		= 1'b1;
 	assign tf_mosi		= 1'b0;
 	assign tf_sclk		= 1'b0;
-//	assign n_led		= { ff_psram0_busy, ff_psram1_busy, ff_1mhz_count[6], ff_ready, ff_rd, ff_wr };
-//	assign n_led		= ~w_gpo[5:0];
+//	assign n_led		= { ff_psram0_busy, ff_bus_ready, ff_bus_memory_read0, ff_bus_memory_write0, ff_rd, ff_wr };
+	assign n_led		= ~w_gpo[5:0];
 //	assign n_led		= ~w_psram0_address[21:16];
-	assign n_led		= ~ff_ram_count;
+//	assign n_led		= { ~w_scc_bank_en, 5'd1 };
+//	assign n_led		= ~w_bank2[5:0];
+//	assign n_led		= ~w_pc[5:0];
 	assign td			= w_is_output   ? w_o_data : 8'hZZ;
-	assign tdir			= w_is_output_d;
+	assign tdir			= w_is_output;
 	assign twait		= ff_wait[4] | w_psram_initial_busy | w_srom_busy;
 
 	always @( posedge clk ) begin
@@ -247,144 +242,164 @@ module tangcart_msx (
 		end
 	end
 
+	assign w_psram1_rd				= 1'b0;	//	w_psram1_megarom_rd;
+	assign w_psram1_wr				= 1'b0;	//	w_psram1_megarom_wr       | w_psram1_srom_wr;
+	assign w_psram1_address			= 'd0;	//	w_psram1_megarom_address  | w_psram1_srom_address;
+	assign w_psram1_wdata			= 'd0;	//	w_psram1_megarom_wdata    | w_psram1_srom_wdata;
+
 	// --------------------------------------------------------------------
 	//	PLL 3.579545MHz --> 64.43181MHz
 	// --------------------------------------------------------------------
 	Gowin_PLL u_pll (
-		.clkout				( mem_clk					),		//output	143.16MHz	(x24)
-		.lock				( mem_clk_lock				),		//output	lock
-		.clkoutd			( clk						),		//output	71.58MHz	(x12)
-		.clkin				( tclock					)		//input		3.579MHz
+		.clkout				( mem_clk					),		// output	128.86362MHz (x36)
+		.lock				( mem_clk_lock				),		// output	lock
+		.clkoutd			( clk						),		// output	64.43181MHz (x18)
+		.clkoutd3			( clk42						),		// output	42.95454MHz (x12)
+		.clkin				( tclock					)		// input	3.579545MHz
 	);
 
-	always @( posedge clk ) begin
+	always @( posedge clk42 ) begin
 		if( !w_n_reset ) begin
-			ff_21mhz <= 2'd0;
+			ff_21mhz <= 1'd0;
 		end
-		else begin
+		else  begin
 			ff_21mhz <= ~ff_21mhz;
 		end
 	end
+
+	always @( posedge clk42 ) begin
+		if( !w_n_reset ) begin
+			ff_1mhz <= 5'd26;
+		end
+		else if( ff_1mhz == 5'd0 ) begin
+			ff_1mhz <= 5'd26;
+		end
+		else begin
+			ff_1mhz <= ff_1mhz - 5'd1;
+		end
+	end
+
+	assign w_1mhz	= (ff_1mhz == 5'd0);
 
 	// --------------------------------------------------------------------
 	//	MSX 50BUS
 	// --------------------------------------------------------------------
 	ip_msxbus u_msxbus (
 		.n_reset			( w_n_reset					),
-		.clk				( clk						),
+		.clk				( clk42						),		//	42.95454MHz
 		.adr				( ta						),
 		.i_data				( td						),
 		.o_data				( w_o_data					),
 		.is_output			( w_is_output				),
-		.is_output_d		( w_is_output_d				),
 		.n_sltsl			( n_tsltsl					),
 		.n_rd				( n_trd						),
 		.n_wr				( n_twr						),
 		.n_ioreq			( n_tiorq					),
 		.n_mereq			( n_tmerq					),
 		.bus_address		( w_bus_address				),
-		.bus_io_cs			( w_bus_io_cs				),
-		.bus_memory_cs		( w_bus_memory_cs			),
 		.bus_read_ready		( w_bus_read_ready			),
 		.bus_read_data		( w_bus_read_data			),
 		.bus_write_data		( w_bus_write_data			),
-		.bus_read			( w_bus_read				),
-		.bus_write			( w_bus_write				),
-		.bus_io				( w_bus_io					),
-		.bus_memory			( w_bus_memory				)
+		.bus_io_read		( w_bus_io_read				),
+		.bus_io_write		( w_bus_io_write			),
+		.bus_memory_read	( w_bus_memory_read			),
+		.bus_memory_write	( w_bus_memory_write		)
 	);
-//	assign w_bus_io_cs		= w_bus_io_cs_gpio      | w_bus_io_cs_mapram      | w_bus_io_cs_extslot;
-//	assign w_bus_memory_cs	= w_bus_memory_cs_gpio  | w_bus_memory_cs_mapram  | w_bus_memory_cs_extslot;
-//	assign w_bus_read_ready	= w_bus_read_ready_gpio | w_bus_read_ready_mapram | w_bus_read_ready_extslot;
-//	assign w_bus_read_data	= w_bus_read_data_gpio  | w_bus_read_data_mapram  | w_bus_read_data_extslot;
 
-	assign w_bus_io_cs		= w_bus_io_cs_mapram      ;		//| w_bus_io_cs_extslot      ;
-	assign w_bus_memory_cs	= w_bus_memory_cs_mapram  ;		//| w_bus_memory_cs_extslot  ;
-	assign w_bus_read_ready	= w_bus_read_ready_mapram ;		//| w_bus_read_ready_extslot ;
-	assign w_bus_read_data	= w_bus_read_data_mapram  ;		//| w_bus_read_data_extslot  ;
+//	assign w_bus_read_ready	= w_bus_read_ready_mapram | w_bus_read_ready_megarom | w_bus_read_ready_extslot | w_bus_read_ready_scc;
+//	assign w_bus_read_data	= w_bus_read_data_mapram  | w_bus_read_data_megarom  | w_bus_read_data_extslot  | w_bus_read_data_scc;
+
+	assign w_bus_read_ready	= w_bus_read_ready_mapram | w_bus_read_ready_gpio;
+	assign w_bus_read_data	= w_bus_read_data_mapram  | w_bus_read_data_gpio;
+
+	// --------------------------------------------------------------------
+	//	GPIO
+	// --------------------------------------------------------------------
+	ip_gpio u_gpio (
+		.n_reset			( n_reset					),
+		.clk				( clk42						),		//	42.95454MHz
+		.bus_address		( w_bus_address				),
+		.bus_read_ready		( w_bus_read_ready_gpio		),
+		.bus_read_data		( w_bus_read_data_gpio		),
+		.bus_write_data		( w_bus_write_data			),
+		.bus_io_read		( w_bus_io_read				),
+		.bus_io_write		( w_bus_io_write			),
+		.gpo				( w_gpo						),
+		.gpi				( 8'hDA						)
+	);
 
 	// --------------------------------------------------------------------
 	//	EXTSLOT
 	// --------------------------------------------------------------------
 //	ip_extslot u_extslot (
 //		.n_reset			( w_n_reset					),
-//		.clk				( clk						),
+//		.clk				( clk42						),		//	42.95454MHz
 //		.bus_address		( w_bus_address				),
-//		.bus_io_cs			( w_bus_io_cs_extslot		),
-//		.bus_memory_cs		( w_bus_memory_cs_extslot	),
 //		.bus_read_ready		( w_bus_read_ready_extslot	),
 //		.bus_read_data		( w_bus_read_data_extslot	),
 //		.bus_write_data		( w_bus_write_data			),
-//		.bus_read			( w_bus_read				),
-//		.bus_write			( w_bus_write				),
-//		.bus_io				( w_bus_io					),
-//		.bus_memory			( w_bus_memory				),
-//		.extslot_memory0	( w_extslot_memory0			),
-//		.extslot_memory1	( w_extslot_memory1			),
-//		.extslot_memory2	( w_extslot_memory2			),
-//		.extslot_memory3	( w_extslot_memory3			)
+//		.bus_memory_read	( w_bus_memory_read			),
+//		.bus_memory_write	( w_bus_memory_write		),
+//		.bus_memory_read0	( w_bus_memory_read0		),
+//		.bus_memory_write0	( w_bus_memory_write0		),
+//		.bus_memory_read1	( w_bus_memory_read1		),
+//		.bus_memory_write1	( w_bus_memory_write1		),
+//		.bus_memory_read2	( w_bus_memory_read2		),
+//		.bus_memory_write2	( w_bus_memory_write2		),
+//		.bus_memory_read3	( w_bus_memory_read3		),
+//		.bus_memory_write3	( w_bus_memory_write3		)
 //	);
 
 	// --------------------------------------------------------------------
 	//	MapperRAM
 	// --------------------------------------------------------------------
-	ip_mapperram u_mapperram (
-		.n_reset			( w_n_reset					),
-		.clk				( clk						),
+//	ip_mapperram u_mapperram (
+//		.n_reset			( w_n_reset					),
+//		.clk				( clk42						),		//	42.95454MHz
+//		.bus_address		( w_bus_address				),
+//		.bus_read_ready		( w_bus_read_ready_mapram	),
+//		.bus_read_data		( w_bus_read_data_mapram	),
+//		.bus_write_data		( w_bus_write_data			),
+//		.bus_io_read		( w_bus_io_read				),
+//		.bus_io_write		( w_bus_io_write			),
+//		.bus_memory_read	( w_bus_memory_read0		),
+//		.bus_memory_write	( w_bus_memory_write0		),
+//		.rd					( w_psram0_rd				),
+//		.wr					( w_psram0_wr				),
+//		.busy				( w_psram0_busy				),
+//		.address			( w_psram0_address			),
+//		.wdata				( w_psram0_wdata			),
+//		.rdata				( w_psram0_rdata			),
+//		.rdata_en			( w_psram0_rdata_en			)
+//	);
+
+	ip_ram u_ram (
+		.n_reset			( n_reset					),
+		.clk				( clk42						),		//	42.95454MHz
 		.bus_address		( w_bus_address				),
-		.bus_io_cs			( w_bus_io_cs_mapram		),
-		.bus_memory_cs		( w_bus_memory_cs_mapram	),
 		.bus_read_ready		( w_bus_read_ready_mapram	),
 		.bus_read_data		( w_bus_read_data_mapram	),
 		.bus_write_data		( w_bus_write_data			),
-		.bus_read			( w_bus_read				),
-		.bus_write			( w_bus_write				),
-		.bus_io				( w_bus_io					),
-		.bus_memory			( w_bus_memory				),
-		.rd					( w_psram1_rd				),
-		.wr					( w_psram1_wr				),
-		.busy				( w_psram1_busy				),
-		.address			( w_psram1_address			),
-		.wdata				( w_psram1_wdata			),
-		.rdata				( w_psram1_rdata			),
-		.rdata_en			( w_psram1_rdata_en			)
+		.bus_memory_read	( w_bus_memory_read			),
+		.bus_memory_write	( w_bus_memory_write		)
 	);
 
-//	ip_ram u_ram (
-//		.n_reset			( w_n_reset					),
-//		.clk				( clk						),
-//		.bus_address		( w_bus_address				),
-//		.bus_io_cs			( w_bus_io_cs_mapram		),
-//		.bus_memory_cs		( w_bus_memory_cs_mapram	),
-//		.bus_read_ready		( w_bus_read_ready_mapram	),
-//		.bus_read_data		( w_bus_read_data_mapram	),
-//		.bus_write_data		( w_bus_write_data			),
-//		.bus_read			( w_bus_read				),
-//		.bus_write			( w_bus_write				),
-//		.bus_io				( w_bus_io					),
-//		.bus_memory			( w_bus_memory				)
-//	);
-
 //	ip_ram2 u_ram (
-//		.n_reset			( w_n_reset					),
-//		.clk				( clk						),
+//		.n_reset			( n_reset					),
+//		.clk				( clk42						),		//	42.95454MHz
 //		.bus_address		( w_bus_address				),
-//		.bus_io_cs			( w_bus_io_cs_mapram		),
-//		.bus_memory_cs		( w_bus_memory_cs_mapram	),
 //		.bus_read_ready		( w_bus_read_ready_mapram	),
 //		.bus_read_data		( w_bus_read_data_mapram	),
 //		.bus_write_data		( w_bus_write_data			),
-//		.bus_read			( w_bus_read				),
-//		.bus_write			( w_bus_write				),
-//		.bus_io				( w_bus_io					),
-//		.bus_memory			( w_bus_memory				),
-//		.rd					( w_psram1_rd				),
-//		.wr					( w_psram1_wr				),
-//		.busy				( w_psram1_busy				),
-//		.address			( w_psram1_address			),
-//		.wdata				( w_psram1_wdata			),
-//		.rdata				( w_psram1_rdata			),
-//		.rdata_en			( w_psram1_rdata_en			)
+//		.bus_memory_read	( w_bus_memory_read0		),
+//		.bus_memory_write	( w_bus_memory_write0		),
+//		.rd					( w_psram0_rd				),
+//		.wr					( w_psram0_wr				),
+//		.busy				( w_psram0_busy				),
+//		.address			( w_psram0_address			),
+//		.wdata				( w_psram0_wdata			),
+//		.rdata				( w_psram0_rdata			),
+//		.rdata_en			( w_psram0_rdata_en			)
 //	);
 
 	// --------------------------------------------------------------------
@@ -394,9 +409,9 @@ module tangcart_msx (
 //		.address_h			( 1'b0						)
 //	) u_megarom (
 //		.n_reset			( w_n_reset					),
-//		.clk				( clk						),
-//		.enable				( dip_sw[0]					),
-//		.mode				( dip_sw[3:1]				),
+//		.clk				( clk42						),		//	42.95454MHz
+//		.enable				( 1'b1						),
+//		.mode				( 3'd5						),
 //		.bus_address		( w_bus_address				),
 //		.bus_io_cs			( w_bus_io_cs_megarom		),
 //		.bus_memory_cs		( w_bus_memory_cs_megarom	),
@@ -409,14 +424,18 @@ module tangcart_msx (
 //		.bus_memory			( w_extslot_memory3			),
 //		.rd					( w_psram1_megarom_rd		),
 //		.wr					( w_psram1_megarom_wr		),
-//		.busy				( 1'b0						),
+//		.busy				( w_psram1_busy				),
 //		.address			( w_psram1_megarom_address	),
 //		.wdata				( w_psram1_megarom_wdata	),
 //		.rdata				( w_psram1_rdata			),
 //		.rdata_en			( w_psram1_rdata_en			),
 //		.scc_bank_en		( w_scc_bank_en				),
 //		.sccp_bank_en		( w_sccp_bank_en			),
-//		.sccp_en			( w_sccp_en					)
+//		.sccp_en			( w_sccp_en					),
+//		.bank0				( w_bank0					),
+//		.bank1				( w_bank1					),
+//		.bank2				( w_bank2					),
+//		.bank3				( w_bank3					)
 //	);
 
 	// --------------------------------------------------------------------
@@ -424,7 +443,7 @@ module tangcart_msx (
 	// --------------------------------------------------------------------
 //	ip_scc u_scc (
 //		.n_reset			( w_n_reset					),
-//		.clk				( clk						),
+//		.clk				( clk42						),		//	42.95454MHz
 //		.enable				( ff_21mhz					),
 //		.bus_address		( w_bus_address				),
 //		.bus_read_ready		( w_bus_read_ready_scc		),
@@ -442,60 +461,61 @@ module tangcart_msx (
 	// --------------------------------------------------------------------
 	//	PSRAM
 	// --------------------------------------------------------------------
-	ip_psram u_psram (
-		.n_reset			( w_n_reset					),
-		.clk				( clk						),
-		.mem_clk			( mem_clk					),
-		.lock				( mem_clk_lock				),
-		.initial_busy		( w_psram_initial_busy		),
-		.rd0				( w_psram0_rd				),
-		.wr0				( w_psram0_wr				),
-		.busy0				( w_psram0_busy				),
-		.address0			( w_psram0_address			),
-		.wdata0				( w_psram0_wdata			),
-		.rdata0				( w_psram0_rdata			),
-		.rdata0_en			( w_psram0_rdata_en			),
-		.rd1				( w_psram1_rd				),
-		.wr1				( w_psram1_wr				),
-		.busy1				( w_psram1_busy				),
-		.address1			( w_psram1_address			),
-		.wdata1				( w_psram1_wdata			),
-		.rdata1				( w_psram1_rdata			),
-		.rdata1_en			( w_psram1_rdata_en			),
-		.O_psram_ck			( O_psram_ck				),
-		.O_psram_ck_n		( O_psram_ck_n				),
-		.IO_psram_rwds		( IO_psram_rwds				),
-		.IO_psram_dq		( IO_psram_dq				),
-		.O_psram_reset_n	( O_psram_reset_n			),
-		.O_psram_cs_n		( O_psram_cs_n				)
-	);
+//	ip_psram u_psram (
+//		.n_reset			( w_n_reset					),
+//		.sys_clk			( clk42						),			//	42.95454MHz
+//		.clk				( clk						),
+//		.mem_clk			( mem_clk					),
+//		.lock				( mem_clk_lock				),
+//		.initial_busy		( w_psram_initial_busy		),
+//		.rd0				( w_psram0_rd				),
+//		.wr0				( w_psram0_wr				),
+//		.busy0				( w_psram0_busy				),
+//		.address0			( w_psram0_address			),
+//		.wdata0				( w_psram0_wdata			),
+//		.rdata0				( w_psram0_rdata			),
+//		.rdata0_en			( w_psram0_rdata_en			),
+//		.rd1				( w_psram1_rd				),
+//		.wr1				( w_psram1_wr				),
+//		.busy1				( w_psram1_busy				),
+//		.address1			( w_psram1_address			),
+//		.wdata1				( w_psram1_wdata			),
+//		.rdata1				( w_psram1_rdata			),
+//		.rdata1_en			( w_psram1_rdata_en			),
+//		.O_psram_ck			( O_psram_ck				),
+//		.O_psram_ck_n		( O_psram_ck_n				),
+//		.IO_psram_rwds		( IO_psram_rwds				),
+//		.IO_psram_dq		( IO_psram_dq				),
+//		.O_psram_reset_n	( O_psram_reset_n			),
+//		.O_psram_cs_n		( O_psram_cs_n				)
+//	);
 
 	// --------------------------------------------------------------------
 	//	PSRAM Test Module
 	// --------------------------------------------------------------------
-	ip_psram_tester u_psram_tester (
-		.n_reset			( w_n_reset					),
-		.clk				( clk						),
-		.initial_busy		( w_psram_initial_busy		),
-		.rd0				( w_psram0_rd				),
-		.wr0				( w_psram0_wr				),
-		.busy0				( w_psram0_busy				),
-		.address0			( w_psram0_address			),
-		.wdata0				( w_psram0_wdata			),
-		.rdata0				( w_psram0_rdata			),
-		.rdata_en0			( w_psram0_rdata_en			),
-		.rd1				( 							),
-		.wr1				( 							),
-		.busy1				( 1'b0						),
-		.address1			( 							),
-		.wdata1				( 							),
-		.rdata1				( 'd0						),
-		.rdata_en1			( 1'b0						),
-		.send_data			( 							),
-		.send_req			( 							),
-		.send_busy			( 1'b0						),
-		.pc					( 							)
-	);
+//	ip_psram_tester u_psram_tester (
+//		.n_reset			( w_n_reset					),
+//		.clk				( clk42						),		//	42.95454MHz
+//		.initial_busy		( w_psram_initial_busy		),
+//		.rd0				( w_psram0_rd				),
+//		.wr0				( w_psram0_wr				),
+//		.busy0				( w_psram0_busy				),
+//		.address0			( w_psram0_address			),
+//		.wdata0				( w_psram0_wdata			),
+//		.rdata0				( w_psram0_rdata			),
+//		.rdata_en0			( w_psram0_rdata_en			),
+//		.rd1				( 							),
+//		.wr1				( 							),
+//		.busy1				( 1'b0						),
+//		.address1			( 							),
+//		.wdata1				( 							),
+//		.rdata1				( 'd0						),
+//		.rdata_en1			( 1'b0						),
+//		.send_data			( 							),
+//		.send_req			( 							),
+//		.send_busy			( 1'b0						),
+//		.pc					( w_pc						)
+//	);
 
 	// --------------------------------------------------------------------
 	//	SerialROM
@@ -504,7 +524,7 @@ module tangcart_msx (
 //		.END_ADDRESS		( 'h2F_FFFF				)
 //	) u_srom (
 //		.n_reset			( w_n_reset				),
-//		.clk				( clk					),
+//		.clk				( clk42					),		//	42.95454MHz
 //		.srom_cs			( srom_cs				),
 //		.srom_mosi			( srom_mosi				),
 //		.srom_sclk			( srom_sclk				),
@@ -517,7 +537,7 @@ module tangcart_msx (
 //		.rdata				( w_srom_rdata			),
 //		.rdata_en			( w_srom_rdata_en		),
 //		.psram1_wr			( w_psram1_srom_wr		),
-//		.psram1_busy		( 1'b0					),
+//		.psram1_busy		( w_psram1_busy			),
 //		.psram1_address		( w_psram1_srom_address	),
 //		.psram1_wdata		( w_psram1_srom_wdata	),
 //		.initial_busy		( w_srom_busy			)
@@ -526,18 +546,18 @@ module tangcart_msx (
 	// --------------------------------------------------------------------
 	//	Sound
 	// --------------------------------------------------------------------
-	always @( posedge clk ) begin
+	always @( posedge clk42 ) begin
 		if( !w_n_reset ) begin
 			ff_sound <= 11'h00;
 		end
-//		else begin
-//			ff_sound <= w_scc_out;
-//		end
+		else begin
+			ff_sound <= w_scc_out;
+		end
 	end
 
 	ip_pwm u_pwm (
 		.n_reset		( w_n_reset				),
-		.clk			( clk					),
+		.clk			( clk42					),		//	42.95454MHz
 		.enable			( w_1mhz				),
 		.signal_level	( { ff_sound, 8'd0 }	),
 		.pwm_wave		( tsnd					)

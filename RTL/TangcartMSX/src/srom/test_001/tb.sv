@@ -1,5 +1,5 @@
 // -----------------------------------------------------------------------------
-//	Test of ip_ram.v
+//	Test of ip_srom.v
 //	Copyright (C)2024 Takayuki Hara (HRA!)
 //	
 //	 Permission is hereby granted, free of charge, to any person obtaining a 
@@ -21,36 +21,56 @@
 //	in the Software.
 // -----------------------------------------------------------------------------
 //	Description:
-//		Extended slot
+//		SerialROM
 // -----------------------------------------------------------------------------
 
 module tb ();
-	localparam		clk_base	= 1000000000/21477;
-	//	Internal I/F
+	localparam		clk_base	= 1000000000/53693;
+	integer			test_num;
 	reg				n_reset;
 	reg				clk;
-	//	MSX-50BUS
-	reg		[15:0]	bus_address;
-	wire			bus_read_ready;
-	wire	[7:0]	bus_read_data;
-	reg		[7:0]	bus_write_data;
-	reg				bus_memory_read;
-	reg				bus_memory_write;
-	integer			test_no;
-	int				i;
+	wire			srom_cs;
+	wire			srom_mosi;
+	wire			srom_sclk;
+	reg				srom_miso;
+	reg				n_cs;
+	reg				rd;
+	reg				wr;
+	wire			busy;
+	reg		[7:0]	wdata;
+	wire	[7:0]	rdata;
+	wire			rdata_en;
+	wire			psram1_wr;
+	reg				psram1_busy;
+	wire	[21:0]	psram1_address;
+	wire	[7:0]	psram1_wdata;
+	wire			initial_busy;
+	reg		[7:0]	data;
 
 	// --------------------------------------------------------------------
 	//	DUT
 	// --------------------------------------------------------------------
-	ip_ram u_ram (
-		.n_reset			( n_reset			),
-		.clk				( clk				),
-		.bus_address		( bus_address		),
-		.bus_read_ready		( bus_read_ready	),
-		.bus_read_data		( bus_read_data		),
-		.bus_write_data		( bus_write_data	),
-		.bus_memory_read	( bus_memory_read	),
-		.bus_memory_write	( bus_memory_write	)
+	ip_srom #(
+		.END_ADDRESS	( 'h1FF				)
+	) u_srom (
+		.n_reset		( n_reset			),
+		.clk			( clk				),
+		.srom_cs		( srom_cs			),
+		.srom_mosi		( srom_mosi			),
+		.srom_sclk		( srom_sclk			),
+		.srom_miso		( srom_miso			),
+		.n_cs			( n_cs				),
+		.rd				( rd				),
+		.wr				( wr				),
+		.busy			( busy				),
+		.wdata			( wdata				),
+		.rdata			( rdata				),
+		.rdata_en		( rdata_en			),
+		.psram1_wr		( psram1_wr			),
+		.psram1_busy	( psram1_busy		),
+		.psram1_address	( psram1_address	),
+		.psram1_wdata	( psram1_wdata		),
+		.initial_busy	( initial_busy		)
 	);
 
 	// --------------------------------------------------------------------
@@ -61,125 +81,124 @@ module tb ();
 	end
 
 	// --------------------------------------------------------------------
-	//	Tasks
+	//	Write task
 	// --------------------------------------------------------------------
-	task write_memory(
-		input	[15:0]	address,
-		input	[7:0]	data
+	task write_data(
+		input	[7:0]	wd
 	);
-		bus_address		<= address;
-		bus_write_data	<= data;
-		bus_memory_write<= 1'b1;
+		wr		<= 1;
+		wdata	<= wd;
 		@( posedge clk );
-		@( posedge clk );
-		@( posedge clk );
-		@( posedge clk );
-		@( posedge clk );
-		@( posedge clk );
-		@( posedge clk );
-
-		bus_address		<= 0;
-		bus_write_data	<= 0;
-		bus_memory_write<= 1'b0;
-		@( posedge clk );
-	endtask: write_memory
-
-	task read_memory(
-		input	[15:0]	address,
-		input	[7:0]	data
-	);
-		bus_address		<= address;
-		bus_memory_read	<= 1'b1;
-		@( posedge clk );
-		@( posedge clk );
-
-		while( !bus_read_ready ) begin
+		while( busy ) begin
 			@( posedge clk );
 		end
-
-		assert( bus_read_data == data );
+		wr		<= 0;
+		wdata	<= 0;
 		@( posedge clk );
-		@( posedge clk );
+	endtask: write_data
 
-		bus_address		<= 'd0;
-		bus_memory_read	<= 1'b0;
-		@( posedge clk );
-	endtask: read_memory
-
-	task read_memory_timeout(
-		input	[15:0]	address
+	// --------------------------------------------------------------------
+	//	Write task
+	// --------------------------------------------------------------------
+	task read_data(
+		output	[7:0]	data
 	);
-		int counter;
-
-		bus_address		<= address;
-		bus_memory_read	<= 1'b1;
+		rd		<= 1;
 		@( posedge clk );
-
-		bus_address		<= 'd0;
-		bus_memory_read	<= 1'b0;
-		@( posedge clk );
-
-		counter = 0;
-		while( !bus_read_ready && counter < 10 ) begin
+		while( busy ) begin
 			@( posedge clk );
-			counter = counter + 1;
 		end
-
-		assert( bus_read_ready == 1'b0 );
+		rd		<= 0;
 		@( posedge clk );
+		while( rdata_en == 1'b0 ) begin
+			@( posedge clk );
+		end
+		data	<= rdata;
 		@( posedge clk );
-		@( posedge clk );
-	endtask: read_memory_timeout
+	endtask: read_data
 
 	// --------------------------------------------------------------------
 	//	Test bench
 	// --------------------------------------------------------------------
 	initial begin
-		test_no				= 0;
-		n_reset				= 0;
-		clk					= 0;
-		bus_address			= 0;
-		bus_write_data		= 0;
-		bus_memory_read		= 0;
-		bus_memory_write	= 0;
+		test_num		= 0;
+		n_reset			= 0;
+		clk				= 0;
+		srom_miso		= 1;
+		n_cs			= 1;
+		rd				= 0;
+		wr				= 0;
+		wdata			= 0;
+		psram1_busy		= 0;
 
 		@( negedge clk );
 		@( negedge clk );
+		@( posedge clk );
 
 		n_reset			= 1;
-		repeat( 10 ) @( posedge clk );
+		repeat( 50 ) @( posedge clk );
+
+		srom_miso		= 0;
+		@( posedge clk );
+
+		// --------------------------------------------------------------------
+		//	wait initial state
+		// --------------------------------------------------------------------
+		test_num = 1;
+		while( initial_busy ) begin
+			n_cs <= ~n_cs;					//	Confirm that this control has no effect
+			@( posedge clk );
+		end
 
 		@( posedge clk );
 
 		// --------------------------------------------------------------------
-		//	Invalid Write Test
+		//	Verify that the CS signal can now be controlled
 		// --------------------------------------------------------------------
-		test_no				= 1;
-
-		for( i = 0; i < 'h8000; i++ ) begin
-			write_memory( i, i & 255 );
+		test_num = 2;
+		repeat( 10 ) begin
+			n_cs <= ~n_cs;
+			@( posedge clk );
 		end
-		repeat( 10 ) @( posedge clk );
+
+		n_cs <= 1;
+		@( posedge clk );
 
 		// --------------------------------------------------------------------
-		//	Valid Write Test
+		//	Check write access
 		// --------------------------------------------------------------------
-		test_no				= 2;
+		test_num = 3;
+		@( posedge clk );
 
-		for( i = 'h8000; i < 'hC000; i++ ) begin
-			write_memory( i, i & 255 );
-		end
-		repeat( 10 ) @( posedge clk );
+		n_cs <= 0;
+		@( posedge clk );
+
+		write_data( 'h12 );
+		write_data( 'h23 );
+		write_data( 'hAB );
+		write_data( 'hCD );
+
+		n_cs <= 1;
+		repeat( 20 ) @( posedge clk );
 
 		// --------------------------------------------------------------------
-		//	Invalid Write Test
+		//	Check read access
 		// --------------------------------------------------------------------
-		test_no				= 3;
+		test_num = 4;
 
-		for( i = 'hC000; i <= 'hFFFF; i++ ) begin
-			write_memory( i, i & 255 );
-		end
-		repeat( 10 ) @( posedge clk );
+		n_cs <= 0;
+		@( posedge clk );
+
+		read_data( data );
+		read_data( data );
+		read_data( data );
+		read_data( data );
+
+		n_cs <= 1;
+		@( posedge clk );
+
+		repeat( 100 ) @( posedge clk );
+
 		$finish;
 	end
 endmodule

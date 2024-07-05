@@ -32,5 +32,6 @@
 -en_clkoutd true
 -clkoutd_bypass false
 -clkoutd_src CLKOUT
--en_clkoutd3 false
+-en_clkoutd3 true
+-clkoutd3_src CLKOUT
 -rst_sig_s false

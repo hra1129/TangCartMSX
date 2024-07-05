@@ -7,32 +7,32 @@
   <Report Title>: PnR Report
   <Design File>: D:\github\HRA_product\TangCartMSX\RTL\TangcartMSX\impl\gwsynthesis\TangcartMSX.vg
   <Physical Constraints File>: D:\github\HRA_product\TangCartMSX\RTL\TangcartMSX\src\TangcartMSX.cst
-  <Timing Constraints File>: ---
+  <Timing Constraints File>: D:\github\HRA_product\TangCartMSX\RTL\TangcartMSX\src\TangcartMSX.sdc
   <Tool Version>: V1.9.9 (64-bit)
   <Part Number>: GW1NR-LV9QN88PC6/I5
   <Device>: GW1NR-9
   <Device Version>: C
-  <Created Time>:Sun Jun 30 14:50:20 2024
+  <Created Time>:Fri Jul  5 23:36:40 2024
 
 
 2. PnR Details
 
   Running placement:
-    Placement Phase 0: CPU time = 0h 0m 0.68s, Elapsed time = 0h 0m 0.68s
-    Placement Phase 1: CPU time = 0h 0m 0.044s, Elapsed time = 0h 0m 0.044s
-    Placement Phase 2: CPU time = 0h 0m 0.637s, Elapsed time = 0h 0m 0.638s
-    Placement Phase 3: CPU time = 0h 0m 1s, Elapsed time = 0h 0m 1s
-    Total Placement: CPU time = 0h 0m 3s, Elapsed time = 0h 0m 3s
+    Placement Phase 0: CPU time = 0h 0m 0.007s, Elapsed time = 0h 0m 0.008s
+    Placement Phase 1: CPU time = 0h 0m 0.087s, Elapsed time = 0h 0m 0.087s
+    Placement Phase 2: CPU time = 0h 0m 0s, Elapsed time = 0h 0m 0s
+    Placement Phase 3: CPU time = 0h 0m 0.959s, Elapsed time = 0h 0m 0.959s
+    Total Placement: CPU time = 0h 0m 1s, Elapsed time = 0h 0m 1s
  Running routing:
-    Routing Phase 0: CPU time = 0h 0m 0.001s, Elapsed time = 0h 0m 0.001s
-    Routing Phase 1: CPU time = 0h 0m 0.596s, Elapsed time = 0h 0m 0.596s
-    Routing Phase 2: CPU time = 0h 0m 0.826s, Elapsed time = 0h 0m 0.826s
+    Routing Phase 0: CPU time = 0h 0m 0s, Elapsed time = 0h 0m 0s
+    Routing Phase 1: CPU time = 0h 0m 0.138s, Elapsed time = 0h 0m 0.138s
+    Routing Phase 2: CPU time = 0h 0m 0.055s, Elapsed time = 0h 0m 0.055s
     Routing Phase 3: CPU time = 0h 0m 0s, Elapsed time = 0h 0m 0s
-    Total Routing: CPU time = 0h 0m 1s, Elapsed time = 0h 0m 1s
+    Total Routing: CPU time = 0h 0m 0.193s, Elapsed time = 0h 0m 0.193s
  Generate output files:
-    CPU time = 0h 0m 0.908s, Elapsed time = 0h 0m 0.908s
+    CPU time = 0h 0m 0.781s, Elapsed time = 0h 0m 0.781s
 
- Total Time and Memory Usage: CPU time = 0h 0m 5s, Elapsed time = 0h 0m 5s, Peak memory usage = 485MB
+ Total Time and Memory Usage: CPU time = 0h 0m 2s, Elapsed time = 0h 0m 2s, Peak memory usage = 464MB
 
 
 3. Resource Usage Summary
@@ -40,24 +40,21 @@
   ----------------------------------------------------------
   Resources                   | Usage
   ----------------------------------------------------------
-  Logic                       | 1683/8640  20%
-    --LUT,ALU,ROM16           | 1575(1495 LUT, 80 ALU, 0 ROM16)
-    --SSRAM(RAM16)            | 18
-  Register                    | 1062/6771  16%
+  Logic                       | 5/8640  <1%
+    --LUT,ALU,ROM16           | 5(5 LUT, 0 ALU, 0 ROM16)
+    --SSRAM(RAM16)            | 0
+  Register                    | 5/6771  <1%
     --Logic Register as Latch | 0/6480  0%
-    --Logic Register as FF    | 1033/6480  16%
+    --Logic Register as FF    | 4/6480  <1%
     --I/O Register as Latch   | 0/291  0%
-    --I/O Register as FF      | 29/291  10%
-  CLS                         | 1112/4320  26%
-  I/O Port                    | 58
-  I/O Buf                     | 45
-    --Input Buf               | 22
+    --I/O Register as FF      | 1/291  <1%
+  CLS                         | 3/4320  <1%
+  I/O Port                    | 57
+  I/O Buf                     | 24
+    --Input Buf               | 1
     --Output Buf              | 15
     --Inout Buf               | 8
-  IOLOGIC                     | 41%
-    --IDES4                   | 16
-    --OSER4                   | 23
-    --IODELAY                 | 19
+  IOLOGIC                     | 0%
   BSRAM                       | 0%
   DSP                         | 0%
   PLL                         | 1/2  50%
@@ -65,9 +62,9 @@
   DQCE                        | 0/24  0%
   OSC                         | 0/1  0%
   User Flash                  | 0/1  0%
-  CLKDIV                      | 1/8  13%
+  CLKDIV                      | 0/8  0%
   DLLDLY                      | 0/8  0%
-  DHCEN                       | 1/8  13%
+  DHCEN                       | 0/8  0%
   DHCENC                      | 0/4  0%
   ==========================================================
 
@@ -78,9 +75,9 @@
   -----------------------
   I/O Bank  | Usage       
   -----------------------
-  bank 1   | 24/25(96%)  
+  bank 1   | 23/25(92%)  
   bank 2   | 18/23(78%)  
-  bank 3   | 16/23(69%)  
+  bank 3   | 34/23(147%) 
   =======================
 
 
@@ -89,11 +86,11 @@
   -------------------------------
   Global Clock  | Usage       
   -------------------------------
-  PRIMARY       | 3/8(38%)
-  LW            | 2/8(25%)
-  GCLK_PIN      | 4/3(134%)
+  PRIMARY       | 2/8(25%)
+  LW            | 0/8(0%)
+  GCLK_PIN      | 3/3(100%)
   PLL           | 1/2(50%)
-  CLKDIV        | 1/8(13%)
+  CLKDIV        | 0/8(0%)
   DLLDLY        | 0/8(0%)
   ===============================
 
@@ -104,11 +101,7 @@
   Signal         | Global Clock   | Location
   -------------------------------------------
   tclock_d       | PRIMARY        |  PTR1
-  clk            | PRIMARY        |  PTR0 PTR1
-  u_psram/u_gowin_psram_if_2ch/clk_out| PRIMARY        |  PTR0
-  ff_reset[6]    | LW             |  -
-  u_psram/u_gowin_psram_if_2ch/ddr_rsti| LW             |  -
-  mem_clk        | HCLK           | LEFT[0]
+  clk            | PRIMARY        |  PTR0
   ===========================================
 
 
@@ -117,7 +110,6 @@
 ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 Port Name           | Diff Pair | Loc./Bank     | Constraint | Dir.  | Site     | IO Type    | Drive | Pull Mode | PCI Clamp | Hysteresis | Open Drain | Vref       | Single Resistor | Diff Resistor | BankVccio 
 ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-sys_clk             |           | 52/1          | Y          | in    | IOR17[A] | LVCMOS33   | NA    | UP        | ON        | NONE       | NA         | NA         | OFF             | NA            | 3.3       
 tf_miso             |           | 39/2          | Y          | in    | IOB33[A] | LVCMOS33   | NA    | UP        | ON        | NONE       | NA         | NA         | NA              | NA            | 3.3       
 srom_miso           |           | 62/1          | Y          | in    | IOR11[A] | LVCMOS33   | NA    | UP        | ON        | NONE       | NA         | NA         | OFF             | NA            | 3.3       
 n_treset            |           | 30/2          | Y          | in    | IOB13[B] | LVCMOS33   | NA    | UP        | ON        | NONE       | NA         | NA         | NA              | NA            | 3.3       
@@ -254,7 +246,7 @@ Loc./Bank| Signal              | Dir.  | Site     | IO Type  | Drive | Pull Mode
 55/1     | td[6]               | io    | IOR14[B] | LVCMOS33 | 8     | UP        | NA        | NONE       | OFF        | NA         | OFF             | NA            | 3.3  
 54/1     | td[5]               | io    | IOR15[A] | LVCMOS33 | 8     | UP        | NA        | NONE       | OFF        | NA         | OFF             | NA            | 3.3  
 53/1     | td[4]               | io    | IOR15[B] | LVCMOS33 | 8     | UP        | NA        | NONE       | OFF        | NA         | OFF             | NA            | 3.3  
-52/1     | sys_clk             | in    | IOR17[A] | LVCMOS33 | NA    | UP        | ON        | NONE       | NA         | NA         | OFF             | NA            | 3.3  
+52/1     | -                   | in    | IOR17[A] | LVCMOS18 | NA    | UP        | ON        | NONE       | NA         | NA         | NA              | NA            | 3.3  
 51/1     | tclock              | in    | IOR17[B] | LVCMOS33 | NA    | UP        | ON        | NONE       | NA         | NA         | OFF             | NA            | 3.3  
 50/1     | -                   | in    | IOR22[B] | LVCMOS18 | NA    | UP        | ON        | NONE       | NA         | NA         | NA              | NA            | 3.3  
 49/1     | td[1]               | io    | IOR24[A] | LVCMOS33 | 8     | UP        | NA        | NONE       | OFF        | NA         | OFF             | NA            | 3.3  

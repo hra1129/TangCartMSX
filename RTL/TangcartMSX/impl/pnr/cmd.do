@@ -3,6 +3,7 @@
 -pn GW1NR-LV9QN88PC6/I5
 -cst D:\github\HRA_product\TangCartMSX\RTL\TangcartMSX\src\TangcartMSX.cst
 -cfg D:\github\HRA_product\TangCartMSX\RTL\TangcartMSX\impl\pnr\device.cfg
+-sdc D:\github\HRA_product\TangCartMSX\RTL\TangcartMSX\src\TangcartMSX.sdc
 -bit
 -tr
 -ph

@@ -30,34 +30,51 @@ module ip_ram (
 	input			clk,
 	//	MSX-50BUS
 	input	[15:0]	bus_address,
-	output			bus_io_cs,
-	output			bus_memory_cs,
 	output			bus_read_ready,
 	output	[7:0]	bus_read_data,
 	input	[7:0]	bus_write_data,
-	input			bus_read,
-	input			bus_write,
-	input			bus_io,
-	input			bus_memory
+	input			bus_memory_read,
+	input			bus_memory_write
 );
+	reg				ff_memory_read;
+	reg				ff_memory_write;
+	wire			w_memory_read_rising_edge;
+	wire			w_memory_write_rising_edge;
 	reg		[7:0]	ff_ram[0:16383];
 	reg		[7:0]	ff_read;
 	reg				ff_read_ready;
 
-	assign bus_io_cs		= 1'b0;
-	assign bus_memory_cs	= 1'b1;
+	// --------------------------------------------------------------------
+	//	Pulse conversion
+	// --------------------------------------------------------------------
+	always @( posedge clk ) begin
+		if( !n_reset ) begin
+			ff_memory_read		<= 1'b0;
+			ff_memory_write		<= 1'b0;
+		end
+		else begin
+			ff_memory_read		<= bus_memory_read;
+			ff_memory_write		<= bus_memory_write;
+		end
+	end
 
+	assign w_memory_read_rising_edge	= ~ff_memory_read & bus_memory_read;
+	assign w_memory_write_rising_edge	= ~ff_memory_write & bus_memory_write;
+
+	// --------------------------------------------------------------------
+	//	Block ram access
+	// --------------------------------------------------------------------
 	always @( posedge clk ) begin
 		if( !n_reset ) begin
 			ff_read_ready <= 1'b0;
 			ff_read <= 8'd0;
 		end
-		else if( bus_memory && (bus_address[15:14] == 2'd2) ) begin
-			if( bus_read ) begin
+		else if( bus_address[15:14] == 2'd2 ) begin
+			if( w_memory_read_rising_edge ) begin
 				ff_read_ready <= 1'b1;
 				ff_read <= ff_ram[ bus_address[13:0] ];
 			end
-			else if( bus_write ) begin
+			else if( w_memory_write_rising_edge ) begin
 				ff_read_ready <= 1'b0;
 				ff_ram[ bus_address[13:0] ] <= bus_write_data;
 			end

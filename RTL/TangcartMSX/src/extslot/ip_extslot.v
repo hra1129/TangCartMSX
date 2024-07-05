@@ -30,31 +30,54 @@ module ip_extslot (
 	input			clk,
 	//	MSX-50BUS
 	input	[15:0]	bus_address,
-	output			bus_io_cs,
-	output			bus_memory_cs,
 	output			bus_read_ready,
 	output	[7:0]	bus_read_data,
 	input	[7:0]	bus_write_data,
-	input			bus_read,
-	input			bus_write,
-	input			bus_io,
-	input			bus_memory,
+	input			bus_memory_read,
+	input			bus_memory_write,
 	//	OUTPUT
-	output			extslot_memory0,
-	output			extslot_memory1,
-	output			extslot_memory2,
-	output			extslot_memory3
+	output			bus_memory_read0,
+	output			bus_memory_write0,
+	output			bus_memory_read1,
+	output			bus_memory_write1,
+	output			bus_memory_read2,
+	output			bus_memory_write2,
+	output			bus_memory_read3,
+	output			bus_memory_write3
 );
+	reg				ff_memory_read;
+	reg				ff_memory_write;
+	wire			w_memory_read_rising_edge;
+	wire			w_memory_write_rising_edge;
 	wire			w_extslot_dec;
 	wire	[1:0]	w_extslot_reg;
 	reg		[7:0]	ff_extslot_reg;
 	reg				ff_read_ready;
+	reg				ff_memory_read0;
+	reg				ff_memory_write0;
+	reg				ff_memory_read1;
+	reg				ff_memory_write1;
+	reg				ff_memory_read2;
+	reg				ff_memory_write2;
+	reg				ff_memory_read3;
+	reg				ff_memory_write3;
 
 	// --------------------------------------------------------------------
-	//	Active bus select
+	//	Pulse conversion
 	// --------------------------------------------------------------------
-	assign bus_io_cs		= 1'b0;
-	assign bus_memory_cs	= 1'b1;
+	always @( posedge clk ) begin
+		if( !n_reset ) begin
+			ff_memory_read		<= 1'b0;
+			ff_memory_write		<= 1'b0;
+		end
+		else begin
+			ff_memory_read		<= bus_memory_read;
+			ff_memory_write		<= bus_memory_write;
+		end
+	end
+
+	assign w_memory_read_rising_edge	= ~ff_memory_read & bus_memory_read;
+	assign w_memory_write_rising_edge	= ~ff_memory_write & bus_memory_write;
 
 	// --------------------------------------------------------------------
 	//	Address decode
@@ -68,7 +91,7 @@ module ip_extslot (
 		if( !n_reset ) begin
 			ff_extslot_reg <= 8'h00;
 		end
-		else if( bus_memory && w_extslot_dec && bus_write ) begin
+		else if( w_memory_write_rising_edge && w_extslot_dec ) begin
 			ff_extslot_reg <= bus_write_data;
 		end
 		else begin
@@ -83,7 +106,7 @@ module ip_extslot (
 		if( !n_reset ) begin
 			ff_read_ready <= 1'b0;
 		end
-		else if( bus_memory && w_extslot_dec && bus_read ) begin
+		else if( w_memory_read_rising_edge && w_extslot_dec ) begin
 			ff_read_ready <= 1'b1;
 		end
 		else begin
@@ -111,8 +134,36 @@ module ip_extslot (
 	endfunction
 
 	assign w_extslot_reg	= func_page_sel( bus_address[15:14], ff_extslot_reg );
-	assign extslot_memory0	= bus_memory & ~w_extslot_dec & (w_extslot_reg == 2'd0);
-	assign extslot_memory1	= bus_memory & ~w_extslot_dec & (w_extslot_reg == 2'd1);
-	assign extslot_memory2	= bus_memory & ~w_extslot_dec & (w_extslot_reg == 2'd2);
-	assign extslot_memory3	= bus_memory & ~w_extslot_dec & (w_extslot_reg == 2'd3);
+
+	always @( posedge clk ) begin
+		if( !n_reset ) begin
+			ff_memory_read0		<= 1'b0;
+			ff_memory_write0	<= 1'b0;
+			ff_memory_read1		<= 1'b0;
+			ff_memory_write1	<= 1'b0;
+			ff_memory_read2		<= 1'b0;
+			ff_memory_write2	<= 1'b0;
+			ff_memory_read3		<= 1'b0;
+			ff_memory_write3	<= 1'b0;
+		end
+		else begin
+			ff_memory_read0		<= bus_memory_read  & ~w_extslot_dec & (w_extslot_reg == 2'd0);
+			ff_memory_write0	<= bus_memory_write & ~w_extslot_dec & (w_extslot_reg == 2'd0);
+			ff_memory_read1		<= bus_memory_read  & ~w_extslot_dec & (w_extslot_reg == 2'd1);
+			ff_memory_write1	<= bus_memory_write & ~w_extslot_dec & (w_extslot_reg == 2'd1);
+			ff_memory_read2		<= bus_memory_read  & ~w_extslot_dec & (w_extslot_reg == 2'd2);
+			ff_memory_write2	<= bus_memory_write & ~w_extslot_dec & (w_extslot_reg == 2'd2);
+			ff_memory_read3		<= bus_memory_read  & ~w_extslot_dec & (w_extslot_reg == 2'd3);
+			ff_memory_write3	<= bus_memory_write & ~w_extslot_dec & (w_extslot_reg == 2'd3);
+		end
+	end
+
+	assign bus_memory_read0		= ff_memory_read0;
+	assign bus_memory_write0	= ff_memory_write0;
+	assign bus_memory_read1		= ff_memory_read1;
+	assign bus_memory_write1	= ff_memory_write1;
+	assign bus_memory_read2		= ff_memory_read2;
+	assign bus_memory_write2	= ff_memory_write2;
+	assign bus_memory_read3		= ff_memory_read3;
+	assign bus_memory_write3	= ff_memory_write3;
 endmodule

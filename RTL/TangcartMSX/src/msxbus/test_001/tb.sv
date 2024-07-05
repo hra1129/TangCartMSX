@@ -26,7 +26,7 @@
 // -----------------------------------------------------------------------------
 
 module tb ();
-	localparam		clk_base	= 1000000000/21477;
+	localparam		clk_base	= 1000000000/27000;
 	//	cartridge slot signals
 	reg				n_reset;
 	reg				clk;
@@ -42,22 +42,22 @@ module tb ();
 	reg				n_mereq;
 	//	internal signals
 	wire	[15:0]	bus_address;
-	reg				bus_io_cs;
-	reg				bus_memory_cs;
 	reg				bus_read_ready;
 	reg		[7:0]	bus_read_data;
 	wire	[7:0]	bus_write_data;
-	wire			bus_read;
-	wire			bus_write;
-	wire			bus_io;
-	wire			bus_memory;
+	wire			bus_io_read;
+	wire			bus_io_write;
+	wire			bus_memory_read;
+	wire			bus_memory_write;
 	integer			count;
 	logic	[15:0]	last_address;
 	logic	[7:0]	last_write_data;
 	logic	[7:0]	last_read_data;
 	integer			test_no;
-	logic			last_io;
-	logic			last_memory;
+	logic			last_io_read;
+	logic			last_io_write;
+	logic			last_memory_read;
+	logic			last_memory_write;
 	logic	[7:0]	save_read_data;
 
 	// --------------------------------------------------------------------
@@ -77,15 +77,13 @@ module tb ();
 		.n_ioreq			( n_ioreq			),
 		.n_mereq			( n_mereq			),
 		.bus_address		( bus_address		),
-		.bus_io_cs			( bus_io_cs			),
-		.bus_memory_cs		( bus_memory_cs		),
 		.bus_read_ready		( bus_read_ready	),
 		.bus_read_data		( bus_read_data		),
 		.bus_write_data		( bus_write_data	),
-		.bus_read			( bus_read			),
-		.bus_write			( bus_write			),
-		.bus_io				( bus_io			),
-		.bus_memory			( bus_memory		)
+		.bus_io_read		( bus_io_read		),
+		.bus_io_write		( bus_io_write		),
+		.bus_memory_read	( bus_memory_read	),
+		.bus_memory_write	( bus_memory_write	)
 	);
 
 	// --------------------------------------------------------------------
@@ -250,30 +248,39 @@ module tb ();
 		last_address <= 16'hAAAA;
 		forever begin
 			@( posedge clk );
-			if( bus_io || bus_memory ) begin
-				if( bus_write ) begin
-					count <= count + 1;
-					last_write_data <= bus_write_data;
-					last_address <= bus_address;
-					last_io <= bus_io;
-					last_memory <= bus_memory;
-				end
-				else if( bus_read ) begin
-					count <= count + 1;
-					last_address <= bus_address;
-					last_io <= bus_io;
-					last_memory <= bus_memory;
-					@( posedge clk );
-					@( posedge clk );
-					@( posedge clk );
-					@( posedge clk );
-					bus_read_data <= save_read_data;
-					bus_read_ready <= 1'b1;
-					@( posedge clk );
-					bus_read_data <= 8'd0;
-					bus_read_ready <= 1'b0;
+			if( bus_io_write || bus_memory_write ) begin
+				count <= count + 1;
+				last_write_data <= bus_write_data;
+				last_address <= bus_address;
+				last_io_read <= bus_io_read;
+				last_memory_read <= bus_memory_read;
+				last_io_write <= bus_io_write;
+				last_memory_write <= bus_memory_write;
+				while( bus_io_write || bus_memory_write ) begin
 					@( posedge clk );
 				end
+				@( posedge clk );
+			end
+			else if( bus_io_read || bus_memory_read ) begin
+				count <= count + 1;
+				last_address <= bus_address;
+				last_io_read <= bus_io_read;
+				last_memory_read <= bus_memory_read;
+				last_io_write <= bus_io_write;
+				last_memory_write <= bus_memory_write;
+				@( posedge clk );
+				@( posedge clk );
+				@( posedge clk );
+				@( posedge clk );
+				bus_read_data <= save_read_data;
+				bus_read_ready <= 1'b1;
+				@( posedge clk );
+				bus_read_data <= 8'd0;
+				bus_read_ready <= 1'b0;
+				while( bus_io_read || bus_memory_read ) begin
+					@( posedge clk );
+				end
+				@( posedge clk );
 			end
 		end
 	endtask: access_check
@@ -310,16 +317,16 @@ module tb ();
 		// --------------------------------------------------------------------
 		test_no			= 1;
 		$display( "Memory Write Test" );
-		bus_io_cs		= 0;
-		bus_memory_cs	= 1;
 		@( posedge clk );
 		#19ns
 		memory_write( 16'h1234, 8'h12 );
 		assert( count == 1 );
 		assert( last_write_data == 8'h12 );
 		assert( last_address == 16'h1234 );
-		assert( last_io == 1'b0 );
-		assert( last_memory == 1'b1 );
+		assert( last_io_read == 1'b0 );
+		assert( last_io_write == 1'b0 );
+		assert( last_memory_read == 1'b0 );
+		assert( last_memory_write == 1'b1 );
 
 		@( posedge clk );
 		#38ns
@@ -327,8 +334,10 @@ module tb ();
 		assert( count == 1 );
 		assert( last_write_data == 8'h23 );
 		assert( last_address == 16'h2345 );
-		assert( last_io == 1'b0 );
-		assert( last_memory == 1'b1 );
+		assert( last_io_read == 1'b0 );
+		assert( last_io_write == 1'b0 );
+		assert( last_memory_read == 1'b0 );
+		assert( last_memory_write == 1'b1 );
 
 		@( posedge clk );
 		#57ns
@@ -336,8 +345,10 @@ module tb ();
 		assert( count == 1 );
 		assert( last_write_data == 8'h34 );
 		assert( last_address == 16'h3456 );
-		assert( last_io == 1'b0 );
-		assert( last_memory == 1'b1 );
+		assert( last_io_read == 1'b0 );
+		assert( last_io_write == 1'b0 );
+		assert( last_memory_read == 1'b0 );
+		assert( last_memory_write == 1'b1 );
 
 		@( posedge clk );
 		#76ns
@@ -345,8 +356,10 @@ module tb ();
 		assert( count == 1 );
 		assert( last_write_data == 8'h45 );
 		assert( last_address == 16'h4567 );
-		assert( last_io == 1'b0 );
-		assert( last_memory == 1'b1 );
+		assert( last_io_read == 1'b0 );
+		assert( last_io_write == 1'b0 );
+		assert( last_memory_read == 1'b0 );
+		assert( last_memory_write == 1'b1 );
 
 		@( posedge clk );
 		#95ns
@@ -354,8 +367,10 @@ module tb ();
 		assert( count == 1 );
 		assert( last_write_data == 8'h65 );
 		assert( last_address == 16'h5678 );
-		assert( last_io == 1'b0 );
-		assert( last_memory == 1'b1 );
+		assert( last_io_read == 1'b0 );
+		assert( last_io_write == 1'b0 );
+		assert( last_memory_read == 1'b0 );
+		assert( last_memory_write == 1'b1 );
 
 		@( posedge clk );
 		#114ns
@@ -363,8 +378,10 @@ module tb ();
 		assert( count == 1 );
 		assert( last_write_data == 8'hAB );
 		assert( last_address == 16'h6789 );
-		assert( last_io == 1'b0 );
-		assert( last_memory == 1'b1 );
+		assert( last_io_read == 1'b0 );
+		assert( last_io_write == 1'b0 );
+		assert( last_memory_read == 1'b0 );
+		assert( last_memory_write == 1'b1 );
 
 		@( posedge clk );
 		#133ns
@@ -372,8 +389,10 @@ module tb ();
 		assert( count == 1 );
 		assert( last_write_data == 8'hCD );
 		assert( last_address == 16'h789A );
-		assert( last_io == 1'b0 );
-		assert( last_memory == 1'b1 );
+		assert( last_io_read == 1'b0 );
+		assert( last_io_write == 1'b0 );
+		assert( last_memory_read == 1'b0 );
+		assert( last_memory_write == 1'b1 );
 
 		@( posedge clk );
 		#152ns
@@ -381,24 +400,26 @@ module tb ();
 		assert( count == 1 );
 		assert( last_write_data == 8'hEF );
 		assert( last_address == 16'h89AB );
-		assert( last_io == 1'b0 );
-		assert( last_memory == 1'b1 );
+		assert( last_io_read == 1'b0 );
+		assert( last_io_write == 1'b0 );
+		assert( last_memory_read == 1'b0 );
+		assert( last_memory_write == 1'b1 );
 
 		// --------------------------------------------------------------------
 		//	I/O write test
 		// --------------------------------------------------------------------
 		test_no			= 2;
 		$display( "I/O Write Test" );
-		bus_io_cs		= 1;
-		bus_memory_cs	= 0;
 		@( posedge clk );
 		#19ns
 		io_write( 16'h1234, 8'h12 );
 		assert( count == 1 );
 		assert( last_write_data == 8'h12 );
 		assert( last_address == 16'h1234 );
-		assert( last_io == 1'b1 );
-		assert( last_memory == 1'b0 );
+		assert( last_io_read == 1'b0 );
+		assert( last_io_write == 1'b1 );
+		assert( last_memory_read == 1'b0 );
+		assert( last_memory_write == 1'b0 );
 
 		@( posedge clk );
 		#38ns
@@ -406,8 +427,10 @@ module tb ();
 		assert( count == 1 );
 		assert( last_write_data == 8'h23 );
 		assert( last_address == 16'h2345 );
-		assert( last_io == 1'b1 );
-		assert( last_memory == 1'b0 );
+		assert( last_io_read == 1'b0 );
+		assert( last_io_write == 1'b1 );
+		assert( last_memory_read == 1'b0 );
+		assert( last_memory_write == 1'b0 );
 
 		@( posedge clk );
 		#57ns
@@ -415,8 +438,10 @@ module tb ();
 		assert( count == 1 );
 		assert( last_write_data == 8'h34 );
 		assert( last_address == 16'h3456 );
-		assert( last_io == 1'b1 );
-		assert( last_memory == 1'b0 );
+		assert( last_io_read == 1'b0 );
+		assert( last_io_write == 1'b1 );
+		assert( last_memory_read == 1'b0 );
+		assert( last_memory_write == 1'b0 );
 
 		@( posedge clk );
 		#76ns
@@ -424,8 +449,10 @@ module tb ();
 		assert( count == 1 );
 		assert( last_write_data == 8'h45 );
 		assert( last_address == 16'h4567 );
-		assert( last_io == 1'b1 );
-		assert( last_memory == 1'b0 );
+		assert( last_io_read == 1'b0 );
+		assert( last_io_write == 1'b1 );
+		assert( last_memory_read == 1'b0 );
+		assert( last_memory_write == 1'b0 );
 
 		@( posedge clk );
 		#95ns
@@ -433,8 +460,10 @@ module tb ();
 		assert( count == 1 );
 		assert( last_write_data == 8'h65 );
 		assert( last_address == 16'h5678 );
-		assert( last_io == 1'b1 );
-		assert( last_memory == 1'b0 );
+		assert( last_io_read == 1'b0 );
+		assert( last_io_write == 1'b1 );
+		assert( last_memory_read == 1'b0 );
+		assert( last_memory_write == 1'b0 );
 
 		@( posedge clk );
 		#114ns
@@ -442,8 +471,10 @@ module tb ();
 		assert( count == 1 );
 		assert( last_write_data == 8'hAB );
 		assert( last_address == 16'h6789 );
-		assert( last_io == 1'b1 );
-		assert( last_memory == 1'b0 );
+		assert( last_io_read == 1'b0 );
+		assert( last_io_write == 1'b1 );
+		assert( last_memory_read == 1'b0 );
+		assert( last_memory_write == 1'b0 );
 
 		@( posedge clk );
 		#133ns
@@ -451,8 +482,10 @@ module tb ();
 		assert( count == 1 );
 		assert( last_write_data == 8'hCD );
 		assert( last_address == 16'h789A );
-		assert( last_io == 1'b1 );
-		assert( last_memory == 1'b0 );
+		assert( last_io_read == 1'b0 );
+		assert( last_io_write == 1'b1 );
+		assert( last_memory_read == 1'b0 );
+		assert( last_memory_write == 1'b0 );
 
 		@( posedge clk );
 		#152ns
@@ -460,24 +493,26 @@ module tb ();
 		assert( count == 1 );
 		assert( last_write_data == 8'hEF );
 		assert( last_address == 16'h89AB );
-		assert( last_io == 1'b1 );
-		assert( last_memory == 1'b0 );
+		assert( last_io_read == 1'b0 );
+		assert( last_io_write == 1'b1 );
+		assert( last_memory_read == 1'b0 );
+		assert( last_memory_write == 1'b0 );
 
 		// --------------------------------------------------------------------
 		//	memory read test
 		// --------------------------------------------------------------------
 		test_no			= 3;
 		$display( "Memory Read Test" );
-		bus_io_cs		= 0;
-		bus_memory_cs	= 1;
 		@( posedge clk );
 		#19ns
 		memory_read( 16'h1234, 8'h12 );
 		assert( count == 1 );
 		assert( last_read_data == 8'h12 );
 		assert( last_address == 16'h1234 );
-		assert( last_io == 1'b0 );
-		assert( last_memory == 1'b1 );
+		assert( last_io_read == 1'b0 );
+		assert( last_io_write == 1'b0 );
+		assert( last_memory_read == 1'b1 );
+		assert( last_memory_write == 1'b0 );
 
 		@( posedge clk );
 		#38ns
@@ -485,8 +520,10 @@ module tb ();
 		assert( count == 1 );
 		assert( last_read_data == 8'h23 );
 		assert( last_address == 16'h2345 );
-		assert( last_io == 1'b0 );
-		assert( last_memory == 1'b1 );
+		assert( last_io_read == 1'b0 );
+		assert( last_io_write == 1'b0 );
+		assert( last_memory_read == 1'b1 );
+		assert( last_memory_write == 1'b0 );
 
 		@( posedge clk );
 		#57ns
@@ -494,8 +531,10 @@ module tb ();
 		assert( count == 1 );
 		assert( last_read_data == 8'h34 );
 		assert( last_address == 16'h3456 );
-		assert( last_io == 1'b0 );
-		assert( last_memory == 1'b1 );
+		assert( last_io_read == 1'b0 );
+		assert( last_io_write == 1'b0 );
+		assert( last_memory_read == 1'b1 );
+		assert( last_memory_write == 1'b0 );
 
 		@( posedge clk );
 		#76ns
@@ -503,8 +542,10 @@ module tb ();
 		assert( count == 1 );
 		assert( last_read_data == 8'h45 );
 		assert( last_address == 16'h4567 );
-		assert( last_io == 1'b0 );
-		assert( last_memory == 1'b1 );
+		assert( last_io_read == 1'b0 );
+		assert( last_io_write == 1'b0 );
+		assert( last_memory_read == 1'b1 );
+		assert( last_memory_write == 1'b0 );
 
 		@( posedge clk );
 		#95ns
@@ -512,8 +553,10 @@ module tb ();
 		assert( count == 1 );
 		assert( last_read_data == 8'h65 );
 		assert( last_address == 16'h5678 );
-		assert( last_io == 1'b0 );
-		assert( last_memory == 1'b1 );
+		assert( last_io_read == 1'b0 );
+		assert( last_io_write == 1'b0 );
+		assert( last_memory_read == 1'b1 );
+		assert( last_memory_write == 1'b0 );
 
 		@( posedge clk );
 		#114ns
@@ -521,8 +564,10 @@ module tb ();
 		assert( count == 1 );
 		assert( last_read_data == 8'hAB );
 		assert( last_address == 16'h6789 );
-		assert( last_io == 1'b0 );
-		assert( last_memory == 1'b1 );
+		assert( last_io_read == 1'b0 );
+		assert( last_io_write == 1'b0 );
+		assert( last_memory_read == 1'b1 );
+		assert( last_memory_write == 1'b0 );
 
 		@( posedge clk );
 		#133ns
@@ -530,8 +575,10 @@ module tb ();
 		assert( count == 1 );
 		assert( last_read_data == 8'hCD );
 		assert( last_address == 16'h789A );
-		assert( last_io == 1'b0 );
-		assert( last_memory == 1'b1 );
+		assert( last_io_read == 1'b0 );
+		assert( last_io_write == 1'b0 );
+		assert( last_memory_read == 1'b1 );
+		assert( last_memory_write == 1'b0 );
 
 		@( posedge clk );
 		#152ns
@@ -539,24 +586,26 @@ module tb ();
 		assert( count == 1 );
 		assert( last_read_data == 8'hEF );
 		assert( last_address == 16'h89AB );
-		assert( last_io == 1'b0 );
-		assert( last_memory == 1'b1 );
+		assert( last_io_read == 1'b0 );
+		assert( last_io_write == 1'b0 );
+		assert( last_memory_read == 1'b1 );
+		assert( last_memory_write == 1'b0 );
 
 		// --------------------------------------------------------------------
 		//	I/O read test
 		// --------------------------------------------------------------------
 		test_no			= 4;
 		$display( "I/O Read Test" );
-		bus_io_cs		= 1;
-		bus_memory_cs	= 0;
 		@( posedge clk );
 		#19ns
 		io_read( 16'h1234, 8'h12 );
 		assert( count == 1 );
 		assert( last_read_data == 8'h12 );
 		assert( last_address == 16'h1234 );
-		assert( last_io == 1'b1 );
-		assert( last_memory == 1'b0 );
+		assert( last_io_read == 1'b1 );
+		assert( last_io_write == 1'b0 );
+		assert( last_memory_read == 1'b0 );
+		assert( last_memory_write == 1'b0 );
 
 		@( posedge clk );
 		#38ns
@@ -564,8 +613,10 @@ module tb ();
 		assert( count == 1 );
 		assert( last_read_data == 8'h23 );
 		assert( last_address == 16'h2345 );
-		assert( last_io == 1'b1 );
-		assert( last_memory == 1'b0 );
+		assert( last_io_read == 1'b1 );
+		assert( last_io_write == 1'b0 );
+		assert( last_memory_read == 1'b0 );
+		assert( last_memory_write == 1'b0 );
 
 		@( posedge clk );
 		#57ns
@@ -573,8 +624,10 @@ module tb ();
 		assert( count == 1 );
 		assert( last_read_data == 8'h34 );
 		assert( last_address == 16'h3456 );
-		assert( last_io == 1'b1 );
-		assert( last_memory == 1'b0 );
+		assert( last_io_read == 1'b1 );
+		assert( last_io_write == 1'b0 );
+		assert( last_memory_read == 1'b0 );
+		assert( last_memory_write == 1'b0 );
 
 		@( posedge clk );
 		#76ns
@@ -582,8 +635,10 @@ module tb ();
 		assert( count == 1 );
 		assert( last_read_data == 8'h45 );
 		assert( last_address == 16'h4567 );
-		assert( last_io == 1'b1 );
-		assert( last_memory == 1'b0 );
+		assert( last_io_read == 1'b1 );
+		assert( last_io_write == 1'b0 );
+		assert( last_memory_read == 1'b0 );
+		assert( last_memory_write == 1'b0 );
 
 		@( posedge clk );
 		#95ns
@@ -591,8 +646,10 @@ module tb ();
 		assert( count == 1 );
 		assert( last_read_data == 8'h65 );
 		assert( last_address == 16'h5678 );
-		assert( last_io == 1'b1 );
-		assert( last_memory == 1'b0 );
+		assert( last_io_read == 1'b1 );
+		assert( last_io_write == 1'b0 );
+		assert( last_memory_read == 1'b0 );
+		assert( last_memory_write == 1'b0 );
 
 		@( posedge clk );
 		#114ns
@@ -600,8 +657,10 @@ module tb ();
 		assert( count == 1 );
 		assert( last_read_data == 8'hAB );
 		assert( last_address == 16'h6789 );
-		assert( last_io == 1'b1 );
-		assert( last_memory == 1'b0 );
+		assert( last_io_read == 1'b1 );
+		assert( last_io_write == 1'b0 );
+		assert( last_memory_read == 1'b0 );
+		assert( last_memory_write == 1'b0 );
 
 		@( posedge clk );
 		#133ns
@@ -609,8 +668,10 @@ module tb ();
 		assert( count == 1 );
 		assert( last_read_data == 8'hCD );
 		assert( last_address == 16'h789A );
-		assert( last_io == 1'b1 );
-		assert( last_memory == 1'b0 );
+		assert( last_io_read == 1'b1 );
+		assert( last_io_write == 1'b0 );
+		assert( last_memory_read == 1'b0 );
+		assert( last_memory_write == 1'b0 );
 
 		@( posedge clk );
 		#152ns
@@ -618,196 +679,11 @@ module tb ();
 		assert( count == 1 );
 		assert( last_read_data == 8'hEF );
 		assert( last_address == 16'h89AB );
-		assert( last_io == 1'b1 );
-		assert( last_memory == 1'b0 );
+		assert( last_io_read == 1'b1 );
+		assert( last_io_write == 1'b0 );
+		assert( last_memory_read == 1'b0 );
+		assert( last_memory_write == 1'b0 );
 
-		// --------------------------------------------------------------------
-		//	memory write reject test
-		// --------------------------------------------------------------------
-		test_no			= 5;
-		$display( "Memory Write Reject Test" );
-		bus_io_cs		= 0;
-		bus_memory_cs	= 0;
-		@( posedge clk );
-		#19ns
-		memory_write( 16'h1234, 8'h12 );
-		assert( count == 0 );
-
-		@( posedge clk );
-		#38ns
-		memory_write( 16'h2345, 8'h23 );
-		assert( count == 0 );
-
-		@( posedge clk );
-		#57ns
-		memory_write( 16'h3456, 8'h34 );
-		assert( count == 0 );
-
-		@( posedge clk );
-		#76ns
-		memory_write( 16'h4567, 8'h45 );
-		assert( count == 0 );
-
-		@( posedge clk );
-		#95ns
-		memory_write( 16'h5678, 8'h65 );
-		assert( count == 0 );
-
-		@( posedge clk );
-		#114ns
-		memory_write( 16'h6789, 8'hAB );
-		assert( count == 0 );
-
-		@( posedge clk );
-		#133ns
-		memory_write( 16'h789A, 8'hCD );
-		assert( count == 0 );
-
-		@( posedge clk );
-		#152ns
-		memory_write( 16'h89AB, 8'hEF );
-		assert( count == 0 );
-
-		// --------------------------------------------------------------------
-		//	I/O write test
-		// --------------------------------------------------------------------
-		test_no			= 6;
-		$display( "I/O Write Reject Test" );
-		bus_io_cs		= 0;
-		bus_memory_cs	= 0;
-		@( posedge clk );
-		#19ns
-		io_write( 16'h1234, 8'h12 );
-		assert( count == 0 );
-
-		@( posedge clk );
-		#38ns
-		io_write( 16'h2345, 8'h23 );
-		assert( count == 0 );
-
-		@( posedge clk );
-		#57ns
-		io_write( 16'h3456, 8'h34 );
-		assert( count == 0 );
-
-		@( posedge clk );
-		#76ns
-		io_write( 16'h4567, 8'h45 );
-		assert( count == 0 );
-
-		@( posedge clk );
-		#95ns
-		io_write( 16'h5678, 8'h65 );
-		assert( count == 0 );
-
-		@( posedge clk );
-		#114ns
-		io_write( 16'h6789, 8'hAB );
-		assert( count == 0 );
-
-		@( posedge clk );
-		#133ns
-		io_write( 16'h789A, 8'hCD );
-		assert( count == 0 );
-
-		@( posedge clk );
-		#152ns
-		io_write( 16'h89AB, 8'hEF );
-		assert( count == 0 );
-
-		// --------------------------------------------------------------------
-		//	memory read test
-		// --------------------------------------------------------------------
-		test_no			= 7;
-		$display( "Memory Read Reject Test" );
-		bus_io_cs		= 0;
-		bus_memory_cs	= 0;
-		@( posedge clk );
-		#19ns
-		memory_read( 16'h1234, 8'h12 );
-		assert( count == 0 );
-
-		@( posedge clk );
-		#38ns
-		memory_read( 16'h2345, 8'h23 );
-		assert( count == 0 );
-
-		@( posedge clk );
-		#57ns
-		memory_read( 16'h3456, 8'h34 );
-		assert( count == 0 );
-
-		@( posedge clk );
-		#76ns
-		memory_read( 16'h4567, 8'h45 );
-		assert( count == 0 );
-
-		@( posedge clk );
-		#95ns
-		memory_read( 16'h5678, 8'h65 );
-		assert( count == 0 );
-
-		@( posedge clk );
-		#114ns
-		memory_read( 16'h6789, 8'hAB );
-		assert( count == 0 );
-
-		@( posedge clk );
-		#133ns
-		memory_read( 16'h789A, 8'hCD );
-		assert( count == 0 );
-
-		@( posedge clk );
-		#152ns
-		memory_read( 16'h89AB, 8'hEF );
-		assert( count == 0 );
-
-		// --------------------------------------------------------------------
-		//	I/O read test
-		// --------------------------------------------------------------------
-		test_no			= 8;
-		$display( "I/O Read Reject Test" );
-		bus_io_cs		= 0;
-		bus_memory_cs	= 0;
-		@( posedge clk );
-		#19ns
-		io_read( 16'h1234, 8'h12 );
-		assert( count == 0 );
-
-		@( posedge clk );
-		#38ns
-		io_read( 16'h2345, 8'h23 );
-		assert( count == 0 );
-
-		@( posedge clk );
-		#57ns
-		io_read( 16'h3456, 8'h34 );
-		assert( count == 0 );
-
-		@( posedge clk );
-		#76ns
-		io_read( 16'h4567, 8'h45 );
-		assert( count == 0 );
-
-		@( posedge clk );
-		#95ns
-		io_read( 16'h5678, 8'h65 );
-		assert( count == 0 );
-
-		@( posedge clk );
-		#114ns
-		io_read( 16'h6789, 8'hAB );
-		assert( count == 0 );
-
-		@( posedge clk );
-		#133ns
-		io_read( 16'h789A, 8'hCD );
-		assert( count == 0 );
-
-		@( posedge clk );
-		#152ns
-		io_read( 16'h89AB, 8'hEF );
-		assert( count == 0 );
 		$finish;
 	end
 endmodule

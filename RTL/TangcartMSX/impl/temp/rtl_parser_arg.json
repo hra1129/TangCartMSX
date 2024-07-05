@@ -2,15 +2,11 @@
  "Device" : "GW1NR-9C",
  "Files" : [
   {
-   "Path" : "D:/github/HRA_product/TangCartMSX/RTL/TangcartMSX/src/extslot/ip_extslot.v",
-   "Type" : "verilog"
-  },
-  {
    "Path" : "D:/github/HRA_product/TangCartMSX/RTL/TangcartMSX/src/gowin_pll/gowin_pll.v",
    "Type" : "verilog"
   },
   {
-   "Path" : "D:/github/HRA_product/TangCartMSX/RTL/TangcartMSX/src/mapperram/ip_mapperram.v",
+   "Path" : "D:/github/HRA_product/TangCartMSX/RTL/TangcartMSX/src/gpio/ip_gpio.v",
    "Type" : "verilog"
   },
   {
@@ -18,19 +14,11 @@
    "Type" : "verilog"
   },
   {
-   "Path" : "D:/github/HRA_product/TangCartMSX/RTL/TangcartMSX/src/psram/ip_psram.v",
-   "Type" : "verilog"
-  },
-  {
-   "Path" : "D:/github/HRA_product/TangCartMSX/RTL/TangcartMSX/src/psram_memory_interface_2ch/psram_memory_interface_2ch.v",
-   "Type" : "verilog"
-  },
-  {
-   "Path" : "D:/github/HRA_product/TangCartMSX/RTL/TangcartMSX/src/psram_tester/ip_psram_tester.v",
-   "Type" : "verilog"
-  },
-  {
    "Path" : "D:/github/HRA_product/TangCartMSX/RTL/TangcartMSX/src/pwm/ip_pwm.v",
+   "Type" : "verilog"
+  },
+  {
+   "Path" : "D:/github/HRA_product/TangCartMSX/RTL/TangcartMSX/src/ram/ip_ram.v",
    "Type" : "verilog"
   },
   {
@@ -41,7 +29,7 @@
  "IncludePath" : [
 
  ],
- "LoopLimit" : 2000,
+ "LoopLimit" : 8000,
  "ResultFile" : "D:/github/HRA_product/TangCartMSX/RTL/TangcartMSX/impl/temp/rtl_parser.result",
  "Top" : "",
  "VerilogStd" : "verilog_2001",

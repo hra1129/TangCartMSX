@@ -30,15 +30,13 @@ module ip_mapperram (
 	input			clk,
 	//	MSX-50BUS
 	input	[15:0]	bus_address,
-	output			bus_io_cs,
-	output			bus_memory_cs,
 	output			bus_read_ready,
 	output	[7:0]	bus_read_data,
 	input	[7:0]	bus_write_data,
-	input			bus_read,
-	input			bus_write,
-	input			bus_io,
-	input			bus_memory,
+	input			bus_io_read,
+	input			bus_io_write,
+	input			bus_memory_read,
+	input			bus_memory_write,
 	//	RAM I/F
 	output			rd,
 	output			wr,
@@ -48,18 +46,33 @@ module ip_mapperram (
 	input	[7:0]	rdata,
 	input			rdata_en
 );
+	reg				ff_memory_read;
+	reg				ff_memory_write;
+	wire			w_memory_read_rising_edge;
+	wire			w_memory_write_rising_edge;
 	reg		[7:0]	ff_p0;
 	reg		[7:0]	ff_p1;
 	reg		[7:0]	ff_p2;
 	reg		[7:0]	ff_p3;
 	reg				ff_read;
-	reg				ff_rd;
-	reg				ff_wr;
 	wire	[7:0]	w_address_h;
-	reg				ff_rdata_en;
 
-	assign bus_io_cs		= 1'b1;
-	assign bus_memory_cs	= 1'b1;
+	// --------------------------------------------------------------------
+	//	Pulse conversion
+	// --------------------------------------------------------------------
+	always @( posedge clk ) begin
+		if( !n_reset ) begin
+			ff_memory_read		<= 1'b0;
+			ff_memory_write		<= 1'b0;
+		end
+		else begin
+			ff_memory_read		<= bus_memory_read;
+			ff_memory_write		<= bus_memory_write;
+		end
+	end
+
+	assign w_memory_read_rising_edge	= ~ff_memory_read & bus_memory_read;
+	assign w_memory_write_rising_edge	= ~ff_memory_write & bus_memory_write;
 
 	// --------------------------------------------------------------------
 	//	Segment registers
@@ -68,7 +81,7 @@ module ip_mapperram (
 		if( !n_reset ) begin
 			ff_p0 <= 8'd0;
 		end
-		else if( bus_io && bus_write && (bus_address[7:0] == 8'hFC) ) begin
+		else if( bus_io_write && (bus_address[7:0] == 8'hFC) ) begin
 			ff_p0 <= bus_write_data;
 		end
 		else begin
@@ -80,7 +93,7 @@ module ip_mapperram (
 		if( !n_reset ) begin
 			ff_p1 <= 8'd0;
 		end
-		else if( bus_io && bus_write && (bus_address[7:0] == 8'hFD) ) begin
+		else if( bus_io_write && (bus_address[7:0] == 8'hFD) ) begin
 			ff_p1 <= bus_write_data;
 		end
 		else begin
@@ -92,7 +105,7 @@ module ip_mapperram (
 		if( !n_reset ) begin
 			ff_p2 <= 8'd0;
 		end
-		else if( bus_io && bus_write && (bus_address[7:0] == 8'hFE) ) begin
+		else if( bus_io_write && (bus_address[7:0] == 8'hFE) ) begin
 			ff_p2 <= bus_write_data;
 		end
 		else begin
@@ -104,7 +117,7 @@ module ip_mapperram (
 		if( !n_reset ) begin
 			ff_p3 <= 8'd0;
 		end
-		else if( bus_io && bus_write && (bus_address[7:0] == 8'hFF) ) begin
+		else if( bus_io_write && (bus_address[7:0] == 8'hFF) ) begin
 			ff_p3 <= bus_write_data;
 		end
 		else begin
@@ -119,34 +132,11 @@ module ip_mapperram (
 		if( !n_reset ) begin
 			ff_read <= 1'b0;
 		end
-		else if( bus_memory & bus_read ) begin
+		else if( w_memory_read_rising_edge ) begin
 			ff_read <= 1'b1;
 		end
 		else if( rdata_en ) begin
 			ff_read <= 1'b0;
-		end
-		else begin
-			//	hold
-		end
-	end
-
-	// --------------------------------------------------------------------
-	//	Read/Write request
-	// --------------------------------------------------------------------
-	always @( posedge clk ) begin
-		if( !n_reset ) begin
-			ff_rd <= 1'b0;
-			ff_wr <= 1'b0;
-		end
-		else if( (bus_memory & bus_read) == 1'b1 ) begin
-			ff_rd <= 1'b1;
-		end
-		else if( (bus_memory & bus_write) == 1'b1 ) begin
-			ff_wr <= 1'b1;
-		end
-		else if( !busy ) begin
-			ff_rd <= 1'b0;
-			ff_wr <= 1'b0;
 		end
 		else begin
 			//	hold
@@ -174,8 +164,8 @@ module ip_mapperram (
 
 	assign w_address_h		= page_dec( bus_address[15:14], ff_p0, ff_p1, ff_p2, ff_p3 );
 	assign address			= { w_address_h, bus_address[13:0] };
-	assign rd				= ff_rd;
-	assign wr				= ff_wr;
+	assign rd				= w_memory_read_rising_edge;
+	assign wr				= w_memory_write_rising_edge;
 	assign wdata			= bus_write_data;
 
 	assign bus_read_ready	= rdata_en & ff_read;

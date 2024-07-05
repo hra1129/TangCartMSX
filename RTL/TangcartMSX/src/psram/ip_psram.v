@@ -27,6 +27,7 @@
 module ip_psram (
 	//	Internal I/F
 	input			n_reset,
+	input			sys_clk,
 	input			clk,
 	input			mem_clk,
 	input			lock,
@@ -56,8 +57,8 @@ module ip_psram (
 	output	[1:0]	O_psram_reset_n,
 	output	[1:0]	O_psram_cs_n
 );
-	localparam C_WRITE_WAIT = 4'd13;
-	localparam C_READ_WAIT = 4'd3;
+	localparam C_WRITE_WAIT = 4'd3;
+	localparam C_READ_WAIT = 4'd1;
 
 	reg					ff_wr0;
 	reg					ff_wr1;
@@ -67,6 +68,10 @@ module ip_psram (
 	reg			[7:0]	ff_wr_data1;
 	reg			[1:0]	ff_wr_mask0;
 	reg			[1:0]	ff_wr_mask1;
+	reg					ff_cmd0_en_p;
+	reg					ff_cmd1_en_p;
+	reg					ff_cmd0_en_p2;
+	reg					ff_cmd1_en_p2;
 	reg			[20:0]	ff_address0;
 	reg			[20:0]	ff_address1;
 	wire				w_init_complete0;
@@ -93,6 +98,8 @@ module ip_psram (
 	reg					ff_rd_data1_en;
 	reg					ff_rd_data0_out_en;
 	reg					ff_rd_data1_out_en;
+	reg					ff_rd_data0_out_en_p;
+	reg					ff_rd_data1_out_en_p;
 	reg			[7:0]	ff_rd_data0_out;
 	reg			[7:0]	ff_rd_data1_out;
 	reg					ff_rd_address0;
@@ -114,8 +121,8 @@ module ip_psram (
 		.clk_out			( 						), //output clk_out
 		.cmd0				( ff_wr0				), //input cmd0
 		.cmd1				( ff_wr1				), //input cmd1
-		.cmd_en0			( ff_cmd0_en			), //input cmd_en0
-		.cmd_en1			( ff_cmd1_en			), //input cmd_en1
+		.cmd_en0			( w_cmd0_en				), //input cmd_en0
+		.cmd_en1			( w_cmd1_en				), //input cmd_en1
 		.addr0				( ff_address0			), //input [20:0] addr0
 		.addr1				( ff_address1			), //input [20:0] addr1
 		.wr_data0			( w_wr_data0			), //input [31:0] wr_data0
@@ -133,7 +140,7 @@ module ip_psram (
 	// --------------------------------------------------------------------
 	//	Busy signal
 	// --------------------------------------------------------------------
-	always @( posedge clk ) begin
+	always @( posedge sys_clk ) begin
 		if( !n_reset ) begin
 			ff_init_complete0 <= 1'b0;
 			ff_init_complete1 <= 1'b0;
@@ -148,7 +155,7 @@ module ip_psram (
 	assign busy0		= ff_busy0;
 	assign busy1		= ff_busy1;
 
-	always @( posedge clk ) begin
+	always @( posedge sys_clk ) begin
 		if( !n_reset ) begin
 			ff_busy0 <= 1'b1;
 			ff_busy_wait0 <= 4'd0;
@@ -171,7 +178,7 @@ module ip_psram (
 		end
 	end
 
-	always @( posedge clk ) begin
+	always @( posedge sys_clk ) begin
 		if( !n_reset ) begin
 			ff_busy1 <= 1'b1;
 			ff_busy_wait1 <= 4'd0;
@@ -197,7 +204,7 @@ module ip_psram (
 	// --------------------------------------------------------------------
 	//	Command
 	// --------------------------------------------------------------------
-	always @( posedge clk ) begin
+	always @( posedge sys_clk ) begin
 		if( !n_reset ) begin
 			ff_cmd0_en	<= 1'b0;
 			ff_cmd1_en	<= 1'b0;
@@ -208,12 +215,37 @@ module ip_psram (
 		end
 	end
 
-	always @( posedge clk ) begin
+	always @( posedge sys_clk ) begin
 		ff_wr0		<= wr0;
 		ff_wr1		<= wr1;
 		ff_address0	<= address0[21:1];
 		ff_address1	<= address1[21:1];
 	end
+
+	always @( posedge clk ) begin
+		if( !n_reset ) begin
+			ff_cmd0_en_p	<= 1'b0;
+			ff_cmd1_en_p	<= 1'b0;
+		end
+		else begin
+			ff_cmd0_en_p	<= ff_cmd0_en;
+			ff_cmd1_en_p	<= ff_cmd1_en;
+		end
+	end
+
+	always @( posedge clk ) begin
+		if( !n_reset ) begin
+			ff_cmd0_en_p2	<= 1'b0;
+			ff_cmd1_en_p2	<= 1'b0;
+		end
+		else begin
+			ff_cmd0_en_p2	<= ff_cmd0_en_p;
+			ff_cmd1_en_p2	<= ff_cmd1_en_p;
+		end
+	end
+
+	assign w_cmd0_en	= ~ff_cmd0_en_p2 & ff_cmd0_en_p;
+	assign w_cmd1_en	= ~ff_cmd1_en_p2 & ff_cmd1_en_p;
 
 	// --------------------------------------------------------------------
 	//	Write data signal
@@ -221,7 +253,7 @@ module ip_psram (
 	assign w_wr_data0	= { ff_wr_data0, ff_wr_data0, 8'd0, 8'd0 };
 	assign w_wr_data1	= { ff_wr_data1, ff_wr_data1, 8'd0, 8'd0 };
 
-	always @( posedge clk ) begin
+	always @( posedge sys_clk ) begin
 		ff_wr_data0		<= wdata0;
 		ff_wr_data1		<= wdata1;
 	end
@@ -243,7 +275,7 @@ module ip_psram (
 		end
 	endfunction
 
-	always @( posedge clk ) begin
+	always @( posedge sys_clk ) begin
 		ff_wr_mask0 <= func_mask_decode( address0[0], wr0 );
 		ff_wr_mask1 <= func_mask_decode( address1[0], wr1 );
 	end
@@ -276,9 +308,8 @@ module ip_psram (
 			ff_rd_data0_dump	<= 1'b1;
 			ff_rd_data0_out		<= ff_rd_address0 ? ff_rd_data0[7:0] : ff_rd_data0[15:8];
 		end
-		else begin
+		else if( ff_rd_data0_out_en_p ) begin
 			ff_rd_data0_out_en	<= 1'b0;
-			ff_rd_data0_out		<= 8'd0;
 		end
 	end
 
@@ -297,14 +328,31 @@ module ip_psram (
 			ff_rd_data1_dump	<= 1'b1;
 			ff_rd_data1_out		<= ff_rd_address1 ? ff_rd_data1[7:0] : ff_rd_data1[15:8];
 		end
-		else begin
+		else if( ff_rd_data0_out_en_p ) begin
 			ff_rd_data1_out_en	<= 1'b0;
-			ff_rd_data1_out		<= 8'd0;
 		end
 	end
 
-	assign rdata0_en	= ff_rd_data0_out_en;
+	always @( posedge sys_clk ) begin
+		if( ff_rd_data0_out_en ) begin
+			ff_rd_data0_out_en_p <= 1'b1;
+		end
+		else begin
+			ff_rd_data0_out_en_p <= 1'b0;
+		end
+	end
+
+	always @( posedge sys_clk ) begin
+		if( ff_rd_data1_out_en ) begin
+			ff_rd_data1_out_en_p <= 1'b1;
+		end
+		else begin
+			ff_rd_data1_out_en_p <= 1'b0;
+		end
+	end
+
+	assign rdata0_en	= ff_rd_data0_out_en_p;
 	assign rdata0		= ff_rd_data0_out;
-	assign rdata1_en	= ff_rd_data1_out_en;
+	assign rdata1_en	= ff_rd_data1_out_en_p;
 	assign rdata1		= ff_rd_data1_out;
 endmodule

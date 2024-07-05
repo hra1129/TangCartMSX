@@ -91,6 +91,7 @@ module ip_scc (
 		.enable					( enable					),
 		.wr						( bus_write					),
 		.rd						( bus_read					),
+		.memory					( bus_memory				),
 		.ready					( bus_read_ready			),
 		.address				( bus_address[12:0]			),
 		.wrdata					( bus_write_data			),
