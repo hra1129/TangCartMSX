@@ -1,0 +1,45 @@
+# vsim -c -t 1ps -do "run.do" tb 
+# Start time: 22:20:37 on May 23,2024
+# Loading sv_std.std
+# Loading work.tb
+# Loading work.ip_kanjirom
+# do run.do
+# Check CS port
+# Check JIS1
+#   address: 0x315a40
+#   address: 0x315a41
+#   address: 0x315a42
+#   address: 0x315a43
+#   address: 0x315a44
+#   address: 0x315a45
+#   address: 0x315a46
+#   address: 0x315a47
+#   address: 0x315a48
+#   address: 0x315a49
+#   address: 0x315a4a
+#   address: 0x315a4b
+#   address: 0x315a4c
+#   address: 0x315a4d
+#   address: 0x315a4e
+#   address: 0x315a4f
+# Check JIS2
+#   address: 0x335a40
+#   address: 0x335a41
+#   address: 0x335a42
+#   address: 0x335a43
+#   address: 0x335a44
+#   address: 0x335a45
+#   address: 0x335a46
+#   address: 0x335a47
+#   address: 0x335a48
+#   address: 0x335a49
+#   address: 0x335a4a
+#   address: 0x335a4b
+#   address: 0x335a4c
+#   address: 0x335a4d
+#   address: 0x335a4e
+#   address: 0x335a4f
+# ** Note: $finish    : tb.sv(455)
+#    Time: 8776560 ps  Iteration: 1  Instance: /tb
+# End time: 22:20:38 on May 23,2024, Elapsed time: 0:00:01
+# Errors: 0, Warnings: 0

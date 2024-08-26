@@ -5,17 +5,17 @@
 //Part Number: GW1NR-LV9QN88PC6/I5
 //Device: GW1NR-9
 //Device Version: C
-//Created Time: Fri Jul  5 23:16:03 2024
+//Created Time: Sun Jul  7 11:01:33 2024
 
-module Gowin_PLL (clkout, lock, clkoutd, clkoutd3, clkin);
+module Gowin_PLL (clkout, lock, clkoutd, clkin);
 
 output clkout;
 output lock;
 output clkoutd;
-output clkoutd3;
 input clkin;
 
 wire clkoutp_o;
+wire clkoutd3_o;
 wire gw_gnd;
 
 assign gw_gnd = 1'b0;
@@ -25,7 +25,7 @@ PLL pll_inst (
     .LOCK(lock),
     .CLKOUTP(clkoutp_o),
     .CLKOUTD(clkoutd),
-    .CLKOUTD3(clkoutd3),
+    .CLKOUTD3(clkoutd3_o),
     .RESET(gw_gnd),
     .RESET_P(gw_gnd),
     .RESET_I(gw_gnd),

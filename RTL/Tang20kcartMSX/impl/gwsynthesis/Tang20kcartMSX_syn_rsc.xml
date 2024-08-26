@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Module name="tang20cart_msx" Register="40" Alu="25" Lut="22">
+    <SubModule name="u_pll"/>
+    <SubModule name="u_address_latch" Register="26" Lut="5"/>
+    <SubModule name="u_uart" Register="25" Lut="34"/>
+    <SubModule name="u_debugger" Register="13" Lut="63"/>
+</Module>

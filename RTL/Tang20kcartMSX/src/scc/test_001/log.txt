@@ -1,0 +1,17 @@
+# vsim -c -t 1ps -do "run.do" tb 
+# Start time: 18:59:55 on May 26,2024
+# Loading sv_std.std
+# Loading work.tb
+# Loading work.ip_scc
+# Loading work.scc_channel_mixer
+# Loading work.scc_tone_generator_5ch
+# Loading work.scc_selector
+# Loading work.scc_ram
+# Loading work.scc_channel_volume
+# Loading work.scc_register
+# do run.do
+# 000: Check for inaccessibility when the enable signal is low.
+# ** Note: $finish    : tb.sv(203)
+#    Time: 1590800 ps  Iteration: 1  Instance: /tb
+# End time: 18:59:55 on May 26,2024, Elapsed time: 0:00:00
+# Errors: 0, Warnings: 0

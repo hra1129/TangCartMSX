@@ -30,6 +30,9 @@ module ip_debugger (
 	input			clk,			//	42MHz
 	input	[1:0]	button,
 	output	[5:0]	n_led,
+	//	to GPIO
+	input	[7:0]	gpo,
+	output	[7:0]	gpi,
 	//	Signals
 	input			bus_io_read,
 	input			bus_io_write,
@@ -38,10 +41,13 @@ module ip_debugger (
 	input			psram0_rd,
 	input			psram0_wr,
 	input			psram0_rdata_en,
-	input	[21:0]	psram0_address
+	input	[21:0]	psram0_address,
+	input			bus_read_ready,
+	input	[7:0]	read_cycle
 );
 	reg		[23:0]	ff_timer;
 	wire			w_01sec;
+	reg		[21:0]	ff_psram0_address;
 	reg				ff_1shot_bus_io_read;
 	reg				ff_1shot_bus_io_write;
 	reg				ff_1shot_bus_memory_read;
@@ -49,6 +55,7 @@ module ip_debugger (
 	reg				ff_1shot_psram0_rd;
 	reg				ff_1shot_psram0_wr;
 	reg				ff_1shot_psram0_rdata_en;
+	reg				ff_1shot_bus_read_ready;
 	reg		[3:0]	ff_counter_bus_io_read;
 	reg		[3:0]	ff_counter_bus_io_write;
 	reg		[3:0]	ff_counter_bus_memory_read;
@@ -56,10 +63,13 @@ module ip_debugger (
 	reg		[3:0]	ff_counter_psram0_rd;
 	reg		[3:0]	ff_counter_psram0_wr;
 	reg		[3:0]	ff_counter_psram0_rdata_en;
+	reg		[3:0]	ff_counter_bus_read_ready;
 	wire	[5:0]	w_led0;
 	wire	[5:0]	w_led1;
 	wire	[5:0]	w_led2;
-	reg		[1:0]	ff_state;
+	wire	[5:0]	w_led3;
+	wire	[5:0]	w_led4;
+	reg		[2:0]	ff_state;
 	reg		[1:0]	ff_button0;
 	reg		[1:0]	ff_button1;
 
@@ -81,32 +91,45 @@ module ip_debugger (
 	assign w_01sec		= ( ff_timer == 'd0 );
 
 	// --------------------------------------------------------------------
+	//	GPIO selector
+	// --------------------------------------------------------------------
+	assign gpi		= (gpo == 8'd0  ) ? read_cycle :
+					  (gpo == 8'd1  ) ? ff_psram0_address[ 7: 0] :
+					  (gpo == 8'd2  ) ? ff_psram0_address[15: 8] :
+					  (gpo == 8'd3  ) ? { 2'd0, ff_psram0_address[21:16] } :
+					  8'hFF;
+
+	// --------------------------------------------------------------------
 	//	state machine
 	// --------------------------------------------------------------------
 	assign w_led0	= { 2'b11, ~ff_1shot_bus_memory_write, ~ff_1shot_bus_memory_read, ~ff_1shot_bus_io_write, ~ff_1shot_bus_io_read };
-	assign w_led1	= { 2'b10, 1'b1, ~ff_1shot_psram0_rdata_en, ~ff_1shot_psram0_wr, ~ff_1shot_psram0_rd };
-	assign w_led2	= { ~psram0_address[21:16] };
-	assign n_led	= ( ff_state == 2'd0 ) ? w_led0 : 
-	                  ( ff_state == 2'd1 ) ? w_led1 : w_led2;
+	assign w_led1	= { 2'b10, ~ff_1shot_bus_read_ready, ~ff_1shot_psram0_rdata_en, ~ff_1shot_psram0_wr, ~ff_1shot_psram0_rd };
+	assign w_led2	= { ~ff_psram0_address[5:0] };
+	assign w_led3	= { ~psram0_address[21:16] };
+	assign w_led4	= { ~read_cycle[5:0] };
+	assign n_led	= ( ff_state == 3'd0 ) ? w_led0 : 
+	                  ( ff_state == 3'd1 ) ? w_led1 : 
+	                  ( ff_state == 3'd2 ) ? w_led2 : 
+	                  ( ff_state == 3'd3 ) ? w_led3 : w_led4;
 
 	always @( posedge clk ) begin
 		if( !n_reset ) begin
-			ff_state <= 1'b0;
+			ff_state <= 3'b0;
 		end
 		else if( !ff_button0[0] && ff_button1[0] ) begin
-			if( ff_state == 2'd2 ) begin
-				ff_state <= 2'd0;
+			if( ff_state == 3'd4 ) begin
+				ff_state <= 3'd0;
 			end
 			else begin
-				ff_state <= ff_state + 2'd1;
+				ff_state <= ff_state + 3'd1;
 			end
 		end
 		else if( !ff_button0[1] && ff_button1[1] ) begin
-			if( ff_state == 2'd0 ) begin
-				ff_state <= 2'd2;
+			if( ff_state == 3'd0 ) begin
+				ff_state <= 3'd4;
 			end
 			else begin
-				ff_state <= ff_state - 2'd1;
+				ff_state <= ff_state - 3'd1;
 			end
 		end
 		else begin
@@ -289,4 +312,41 @@ module ip_debugger (
 		end
 	end
 
+	// --------------------------------------------------------------------
+	//	sig7 : bus_read_ready
+	// --------------------------------------------------------------------
+	always @( posedge clk ) begin
+		if( !n_reset ) begin
+			ff_1shot_bus_read_ready <= 1'b0;
+			ff_counter_bus_read_ready <= 4'd0;
+		end
+		else if( bus_read_ready ) begin
+			ff_1shot_bus_read_ready <= 1'b1;
+			ff_counter_bus_read_ready <= 4'd15;
+		end
+		else if( ff_counter_bus_read_ready != 4'd0 ) begin
+			if( w_01sec ) begin
+				ff_counter_bus_read_ready <= ff_counter_bus_read_ready - 4'd1;
+			end
+		end
+		else begin
+			ff_1shot_bus_read_ready <= 1'b0;
+			ff_counter_bus_read_ready <= 4'd0;
+		end
+	end
+
+	// --------------------------------------------------------------------
+	//	PSRAM0_ADDRESS
+	// --------------------------------------------------------------------
+	always @( posedge clk ) begin
+		if( !n_reset ) begin
+			ff_psram0_address <= 'd0;
+		end
+		else if( psram0_rd || psram0_wr ) begin
+			ff_psram0_address <= psram0_address;
+		end
+		else begin
+			//	hold
+		end
+	end
 endmodule

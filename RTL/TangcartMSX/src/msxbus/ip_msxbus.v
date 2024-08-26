@@ -124,7 +124,15 @@ module ip_msxbus (
 	//	Latch
 	// --------------------------------------------------------------------
 	always @( posedge clk ) begin
-		ff_bus_address	<= adr;
+		if( !n_reset ) begin
+			ff_bus_address		<= 'd0;
+		end
+		else if( w_memory_write_pulse || w_io_write_pulse || w_memory_read_pulse || w_io_read_pulse ) begin
+			ff_bus_address		<= adr;
+		end
+		else begin
+			//	hold
+		end
 	end
 
 	always @( posedge clk ) begin
@@ -139,15 +147,15 @@ module ip_msxbus (
 	always @( posedge clk ) begin
 		if( !n_reset ) begin
 			ff_bus_read_data	<= 8'd0;
-			ff_buf_read_data_en <= 1'b0;
+			ff_buf_read_data_en	<= 1'b0;
 		end
 		else if( ff_n_rd == 1'b1 ) begin
 			ff_bus_read_data	<= 8'd0;
-			ff_buf_read_data_en <= 1'b0;
+			ff_buf_read_data_en	<= 1'b0;
 		end
-		else if( bus_read_ready ) begin
+		else if( !ff_buf_read_data_en && bus_read_ready ) begin
 			ff_bus_read_data	<= bus_read_data;
-			ff_buf_read_data_en <= 1'b1;
+			ff_buf_read_data_en	<= 1'b1;
 		end
 		else begin
 			//	hold

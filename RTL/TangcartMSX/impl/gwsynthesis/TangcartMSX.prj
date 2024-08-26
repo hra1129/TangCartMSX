@@ -4,6 +4,7 @@
     <Version>beta</Version>
     <Device id="GW1NR-9C" package="QFN88P" speed="6" partNumber="GW1NR-LV9QN88PC6/I5"/>
     <FileList>
+        <File path="D:\github\HRA_product\TangCartMSX\RTL\TangcartMSX\src\debugger\ip_debugger.v" type="verilog"/>
         <File path="D:\github\HRA_product\TangCartMSX\RTL\TangcartMSX\src\gowin_pll\gowin_pll.v" type="verilog"/>
         <File path="D:\github\HRA_product\TangCartMSX\RTL\TangcartMSX\src\gpio\ip_gpio.v" type="verilog"/>
         <File path="D:\github\HRA_product\TangCartMSX\RTL\TangcartMSX\src\msxbus\ip_msxbus.v" type="verilog"/>
@@ -12,7 +13,6 @@
         <File path="D:\github\HRA_product\TangCartMSX\RTL\TangcartMSX\src\pwm\ip_pwm.v" type="verilog"/>
         <File path="D:\github\HRA_product\TangCartMSX\RTL\TangcartMSX\src\ram\ip_ram2.v" type="verilog"/>
         <File path="D:\github\HRA_product\TangCartMSX\RTL\TangcartMSX\src\tangcart_msx.v" type="verilog"/>
-        <File path="D:\github\HRA_product\TangCartMSX\RTL\TangcartMSX\src\debugger\ip_debugger.v" type="verilog"/>
     </FileList>
     <OptionList>
         <Option type="disable_insert_pad" value="0"/>

@@ -1,0 +1,240 @@
+//Copyright (C)2014-2023 Gowin Semiconductor Corporation.
+//All rights reserved.
+
+
+1. PnR Messages
+
+  <Report Title>: PnR Report
+  <Design File>: D:\github\HRA_product\TangCartMSX\RTL\Tang20kcartMSX\impl\gwsynthesis\Tang20kcartMSX.vg
+  <Physical Constraints File>: D:\github\HRA_product\TangCartMSX\RTL\Tang20kcartMSX\src\Tang20kcartMSX.cst
+  <Timing Constraints File>: ---
+  <Tool Version>: V1.9.9 (64-bit)
+  <Part Number>: GW2AR-LV18QN88C8/I7
+  <Device>: GW2AR-18
+  <Created Time>:Mon Aug 26 21:35:06 2024
+
+
+2. PnR Details
+
+  Running placement:
+    Placement Phase 0: CPU time = 0h 0m 0.025s, Elapsed time = 0h 0m 0.025s
+    Placement Phase 1: CPU time = 0h 0m 0.306s, Elapsed time = 0h 0m 0.306s
+    Placement Phase 2: CPU time = 0h 0m 0.007s, Elapsed time = 0h 0m 0.007s
+    Placement Phase 3: CPU time = 0h 0m 1s, Elapsed time = 0h 0m 1s
+    Total Placement: CPU time = 0h 0m 1s, Elapsed time = 0h 0m 1s
+ Running routing:
+    Routing Phase 0: CPU time = 0h 0m 0s, Elapsed time = 0h 0m 0s
+    Routing Phase 1: CPU time = 0h 0m 0.168s, Elapsed time = 0h 0m 0.168s
+    Routing Phase 2: CPU time = 0h 0m 0.167s, Elapsed time = 0h 0m 0.166s
+    Routing Phase 3: CPU time = 0h 0m 0s, Elapsed time = 0h 0m 0s
+    Total Routing: CPU time = 0h 0m 0.335s, Elapsed time = 0h 0m 0.334s
+ Generate output files:
+    CPU time = 0h 0m 2s, Elapsed time = 0h 0m 2s
+
+ Total Time and Memory Usage: CPU time = 0h 0m 4s, Elapsed time = 0h 0m 4s, Peak memory usage = 559MB
+
+
+3. Resource Usage Summary
+
+  ----------------------------------------------------------
+  Resources                   | Usage
+  ----------------------------------------------------------
+  Logic                       | 148/20736  <1%
+    --LUT,ALU,ROM16           | 148(122 LUT, 26 ALU, 0 ROM16)
+    --SSRAM(RAM16)            | 0
+  Register                    | 104/15750  <1%
+    --Logic Register as Latch | 0/15552  0%
+    --Logic Register as FF    | 101/15552  <1%
+    --I/O Register as Latch   | 0/198  0%
+    --I/O Register as FF      | 3/198  2%
+  CLS                         | 103/10368  <1%
+  I/O Port                    | 42
+  I/O Buf                     | 28
+    --Input Buf               | 10
+    --Output Buf              | 18
+    --Inout Buf               | 0
+  IOLOGIC                     | 0%
+  BSRAM                       | 0%
+  DSP                         | 0%
+  PLL                         | 1/2  50%
+  DCS                         | 0/8  0%
+  DQCE                        | 0/24  0%
+  OSC                         | 0/1  0%
+  CLKDIV                      | 0/8  0%
+  DLLDLY                      | 0/8  0%
+  DQS                         | 0/1  0%
+  DHCEN                       | 0/16  0%
+  ==========================================================
+
+
+
+4. I/O Bank Usage Summary
+
+  -----------------------
+  I/O Bank  | Usage       
+  -----------------------
+  bank 0   | 4/8(50%)    
+  bank 1   | 8/9(88%)    
+  bank 2   | 0/4(0%)     
+  bank 3   | 14/17(82%)  
+  bank 4   | 2/8(25%)    
+  bank 5   | 7/10(70%)   
+  bank 6   | 6/9(66%)    
+  bank 7   | 1/1(100%)   
+  =======================
+
+
+5. Global Clock Usage Summary
+
+  -------------------------------
+  Global Clock  | Usage       
+  -------------------------------
+  PRIMARY       | 2/8(25%)
+  LW            | 0/8(0%)
+  GCLK_PIN      | 2/5(40%)
+  PLL           | 1/2(50%)
+  CLKDIV        | 0/8(0%)
+  DLLDLY        | 0/8(0%)
+  ===============================
+
+
+6. Global Clock Signals
+
+  -------------------------------------------
+  Signal         | Global Clock   | Location
+  -------------------------------------------
+  clk27m_d       | PRIMARY        |  PTR0
+  clk            | PRIMARY        |  PTR0 PTR1
+  ===========================================
+
+
+7. Pinout by Port Name
+
+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+Port Name  | Diff Pair | Loc./Bank     | Constraint | Dir.  | Site     | IO Type    | Drive | Pull Mode | PCI Clamp | Hysteresis | Open Drain | Vref       | Single Resistor | Diff Resistor | BankVccio 
+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+clk27m     |           | 4/7           | Y          | in    | IOL7[A]  | LVTTL33    | NA    | UP        | OFF       | NONE       | NA         | NA         | OFF             | NA            | 3.3       
+n_treset   |           | 19/6          | Y          | in    | IOL51[A] | LVTTL33    | NA    | UP        | OFF       | NONE       | NA         | NA         | OFF             | NA            | 3.3       
+tclock     |           | 76/1          | Y          | in    | IOT30[B] | LVTTL33    | NA    | UP        | OFF       | NONE       | NA         | NA         | NA              | NA            | 3.3       
+n_tsltsl   |           | 48/3          | Y          | in    | IOR49[B] | LVTTL33    | NA    | UP        | OFF       | NONE       | NA         | NA         | OFF             | NA            | 3.3       
+n_tiorq    |           | 31/5          | Y          | in    | IOB18[A] | LVTTL33    | NA    | UP        | OFF       | NONE       | NA         | NA         | NA              | NA            | 3.3       
+n_twr      |           | 17/6          | Y          | in    | IOL49[A] | LVTTL33    | NA    | UP        | OFF       | NONE       | NA         | NA         | OFF             | NA            | 3.3       
+n_trd      |           | 20/6          | Y          | in    | IOL51[B] | LVTTL33    | NA    | UP        | OFF       | NONE       | NA         | NA         | OFF             | NA            | 3.3       
+ta[0]      |           | 15/6          | Y          | in    | IOL47[A] | LVTTL33    | NA    | UP        | OFF       | NONE       | NA         | NA         | OFF             | NA            | 3.3       
+ta[1]      |           | 28/5          | Y          | in    | IOB8[B]  | LVTTL33    | NA    | UP        | OFF       | NONE       | NA         | NA         | NA              | NA            | 3.3       
+ta[2]      |           | 27/5          | Y          | in    | IOB8[A]  | LVTTL33    | NA    | UP        | OFF       | NONE       | NA         | NA         | NA              | NA            | 3.3       
+ta[3]      |           | 16/6          | Y          | in    | IOL47[B] | LVTTL33    | NA    | UP        | OFF       | NONE       | NA         | NA         | OFF             | NA            | 3.3       
+ta[4]      |           | 42/4          | Y          | in    | IOB42[B] | LVTTL33    | NA    | UP        | OFF       | NONE       | NA         | NA         | NA              | NA            | 3.3       
+ta[5]      |           | 18/6          | Y          | in    | IOL49[B] | LVTTL33    | NA    | UP        | OFF       | NONE       | NA         | NA         | OFF             | NA            | 3.3       
+ta[6]      |           | 49/3          | Y          | in    | IOR49[A] | LVTTL33    | NA    | UP        | OFF       | NONE       | NA         | NA         | OFF             | NA            | 3.3       
+ta[7]      |           | 25/5          | Y          | in    | IOB6[A]  | LVTTL33    | NA    | UP        | OFF       | NONE       | NA         | NA         | NA              | NA            | 3.3       
+dip_sw[0]  |           | 30/5          | Y          | in    | IOB14[B] | LVTTL33    | NA    | UP        | OFF       | NONE       | NA         | NA         | NA              | NA            | 3.3       
+dip_sw[1]  |           | 55/3          | Y          | in    | IOR36[B] | LVTTL33    | NA    | UP        | OFF       | NONE       | NA         | NA         | OFF             | NA            | 3.3       
+dip_sw[2]  |           | 51/3          | Y          | in    | IOR45[A] | LVTTL33    | NA    | UP        | OFF       | NONE       | NA         | NA         | OFF             | NA            | 3.3       
+dip_sw[3]  |           | 54/3          | Y          | in    | IOR38[A] | LVTTL33    | NA    | UP        | OFF       | NONE       | NA         | NA         | OFF             | NA            | 3.3       
+dip_sw[4]  |           | 56/3          | Y          | in    | IOR36[A] | LVTTL33    | NA    | UP        | OFF       | NONE       | NA         | NA         | OFF             | NA            | 3.3       
+keys[0]    |           | 88/3          | Y          | in    | IOR30[A] | LVTTL33    | NA    | UP        | ON        | NONE       | NA         | NA         | OFF             | NA            | 3.3       
+keys[1]    |           | 87/3          | Y          | in    | IOR30[B] | LVTTL33    | NA    | UP        | ON        | NONE       | NA         | NA         | OFF             | NA            | 3.3       
+toe[0]     |           | 29/5          | Y          | out   | IOB14[A] | LVTTL33    | 8     | UP        | NA        | NA         | OFF        | NA         | NA              | NA            | 3.3       
+toe[1]     |           | 26/5          | Y          | out   | IOB6[B]  | LVTTL33    | 8     | UP        | NA        | NA         | OFF        | NA         | NA              | NA            | 3.3       
+tdir       |           | 41/4          | Y          | out   | IOB43[A] | LVTTL33    | 8     | UP        | NA        | NA         | OFF        | NA         | NA              | NA            | 3.3       
+tsnd       |           | 53/3          | Y          | out   | IOR38[B] | LVTTL33    | 8     | UP        | NA        | NA         | OFF        | NA         | OFF             | NA            | 3.3       
+twait      |           | 52/3          | Y          | out   | IOR39[A] | LVTTL33    | 8     | UP        | NA        | NA         | OFF        | NA         | OFF             | NA            | 3.3       
+mspi_cs    |           | 60/3          | Y          | out   | IOR34[A] | LVTTL33    | 8     | UP        | NA        | NA         | OFF        | NA         | OFF             | NA            | 3.3       
+mspi_sclk  |           | 59/3          | Y          | out   | IOR34[B] | LVTTL33    | 8     | UP        | NA        | NA         | OFF        | NA         | OFF             | NA            | 3.3       
+uart_tx    |           | 69/1          | Y          | out   | IOT50[A] | LVTTL33    | 8     | UP        | NA        | NA         | OFF        | NA         | NA              | NA            | 3.3       
+sd_dat2    |           | 85/0          | Y          | out   | IOT4[B]  | LVTTL33    | 8     | UP        | NA        | NA         | OFF        | NA         | NA              | NA            | 3.3       
+sd_dat3    |           | 80/0          | Y          | out   | IOT27[A] | LVTTL33    | 8     | UP        | NA        | NA         | OFF        | NA         | NA              | NA            | 3.3       
+td[0]      |           | 86/0          | Y          | io    | IOT4[A]  | LVTTL33    | 8     | UP        | NA        | NA         | OFF        | NA         | NA              | NA            | 3.3       
+td[1]      |           | 79/0          | Y          | io    | IOT27[B] | LVTTL33    | 8     | UP        | NA        | NA         | OFF        | NA         | NA              | NA            | 3.3       
+td[2]      |           | 75/1          | Y          | io    | IOT34[A] | LVTTL33    | 8     | UP        | NA        | NA         | OFF        | NA         | NA              | NA            | 3.3       
+td[3]      |           | 77/1          | Y          | io    | IOT30[A] | LVTTL33    | 8     | UP        | NA        | NA         | OFF        | NA         | NA              | NA            | 3.3       
+td[4]      |           | 73/1          | Y          | io    | IOT40[A] | LVTTL33    | 8     | UP        | NA        | NA         | OFF        | NA         | NA              | NA            | 3.3       
+td[5]      |           | 74/1          | Y          | io    | IOT34[B] | LVTTL33    | 8     | UP        | NA        | NA         | OFF        | NA         | NA              | NA            | 3.3       
+td[6]      |           | 72/1          | Y          | io    | IOT40[B] | LVTTL33    | 8     | UP        | NA        | NA         | OFF        | NA         | NA              | NA            | 3.3       
+td[7]      |           | 71/1          | Y          | io    | IOT44[A] | LVTTL33    | 8     | UP        | NA        | NA         | OFF        | NA         | NA              | NA            | 3.3       
+mspi_mosi  |           | 62/3          | Y          | io    | IOR33[A] | LVTTL33    | 8     | UP        | NA        | NONE       | OFF        | NA         | OFF             | NA            | 3.3       
+mspi_miso  |           | 61/3          | Y          | io    | IOR33[B] | LVTTL33    | 8     | UP        | NA        | NONE       | OFF        | NA         | OFF             | NA            | 3.3       
+==================================================================================================================================================================================================================
+
+
+
+
+8. All Package Pins
+
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+Loc./Bank| Signal     | Dir.  | Site     | IO Type  | Drive | Pull Mode | PCI Clamp | Hysteresis | Open Drain | Vref       | Single Resistor | Diff Resistor | Bank Vccio
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+86/0     | td[0]      | out   | IOT4[A]  | LVTTL33  | 8     | UP        | NA        | NA         | OFF        | NA         | NA              | NA            | 3.3  
+85/0     | sd_dat2    | out   | IOT4[B]  | LVTTL33  | 8     | UP        | NA        | NA         | OFF        | NA         | NA              | NA            | 3.3  
+84/0     | -          | in    | IOT6[A]  | LVCMOS18 | NA    | UP        | ON        | NONE       | NA         | NA         | NA              | NA            | 3.3  
+83/0     | -          | in    | IOT6[B]  | LVCMOS18 | NA    | UP        | ON        | NONE       | NA         | NA         | NA              | NA            | 3.3  
+82/0     | -          | in    | IOT17[A] | LVCMOS18 | NA    | UP        | ON        | NONE       | NA         | NA         | NA              | NA            | 3.3  
+81/0     | -          | in    | IOT17[B] | LVCMOS18 | NA    | UP        | ON        | NONE       | NA         | NA         | NA              | NA            | 3.3  
+80/0     | sd_dat3    | out   | IOT27[A] | LVTTL33  | 8     | UP        | NA        | NA         | OFF        | NA         | NA              | NA            | 3.3  
+79/0     | td[1]      | out   | IOT27[B] | LVTTL33  | 8     | UP        | NA        | NA         | OFF        | NA         | NA              | NA            | 3.3  
+77/1     | td[3]      | out   | IOT30[A] | LVTTL33  | 8     | UP        | NA        | NA         | OFF        | NA         | NA              | NA            | 3.3  
+76/1     | tclock     | in    | IOT30[B] | LVTTL33  | NA    | UP        | OFF       | NONE       | NA         | NA         | NA              | NA            | 3.3  
+75/1     | td[2]      | out   | IOT34[A] | LVTTL33  | 8     | UP        | NA        | NA         | OFF        | NA         | NA              | NA            | 3.3  
+74/1     | td[5]      | out   | IOT34[B] | LVTTL33  | 8     | UP        | NA        | NA         | OFF        | NA         | NA              | NA            | 3.3  
+73/1     | td[4]      | out   | IOT40[A] | LVTTL33  | 8     | UP        | NA        | NA         | OFF        | NA         | NA              | NA            | 3.3  
+72/1     | td[6]      | out   | IOT40[B] | LVTTL33  | 8     | UP        | NA        | NA         | OFF        | NA         | NA              | NA            | 3.3  
+71/1     | td[7]      | out   | IOT44[A] | LVTTL33  | 8     | UP        | NA        | NA         | OFF        | NA         | NA              | NA            | 3.3  
+70/1     | -          | in    | IOT44[B] | LVCMOS18 | NA    | UP        | ON        | NONE       | NA         | NA         | NA              | NA            | 3.3  
+69/1     | uart_tx    | out   | IOT50[A] | LVTTL33  | 8     | UP        | NA        | NA         | OFF        | NA         | NA              | NA            | 3.3  
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+25/5     | ta[7]      | in    | IOB6[A]  | LVTTL33  | NA    | UP        | OFF       | NONE       | NA         | NA         | NA              | NA            | 3.3  
+26/5     | toe[1]     | out   | IOB6[B]  | LVTTL33  | 8     | UP        | NA        | NA         | OFF        | NA         | NA              | NA            | 3.3  
+27/5     | ta[2]      | in    | IOB8[A]  | LVTTL33  | NA    | UP        | OFF       | NONE       | NA         | NA         | NA              | NA            | 3.3  
+28/5     | ta[1]      | in    | IOB8[B]  | LVTTL33  | NA    | UP        | OFF       | NONE       | NA         | NA         | NA              | NA            | 3.3  
+29/5     | toe[0]     | out   | IOB14[A] | LVTTL33  | 8     | UP        | NA        | NA         | OFF        | NA         | NA              | NA            | 3.3  
+30/5     | dip_sw[0]  | in    | IOB14[B] | LVTTL33  | NA    | UP        | OFF       | NONE       | NA         | NA         | NA              | NA            | 3.3  
+31/5     | n_tiorq    | in    | IOB18[A] | LVTTL33  | NA    | UP        | OFF       | NONE       | NA         | NA         | NA              | NA            | 3.3  
+32/5     | -          | in    | IOB18[B] | LVCMOS18 | NA    | UP        | ON        | NONE       | NA         | NA         | NA              | NA            | 3.3  
+33/5     | -          | in    | IOB24[A] | LVCMOS18 | NA    | UP        | ON        | NONE       | NA         | NA         | NA              | NA            | 3.3  
+34/5     | -          | in    | IOB24[B] | LVCMOS18 | NA    | UP        | ON        | NONE       | NA         | NA         | NA              | NA            | 3.3  
+35/4     | -          | in    | IOB30[A] | LVCMOS18 | NA    | UP        | ON        | NONE       | NA         | NA         | NA              | NA            | 3.3  
+36/4     | -          | in    | IOB30[B] | LVCMOS18 | NA    | UP        | ON        | NONE       | NA         | NA         | NA              | NA            | 3.3  
+37/4     | -          | in    | IOB34[A] | LVCMOS18 | NA    | UP        | ON        | NONE       | NA         | NA         | NA              | NA            | 3.3  
+38/4     | -          | in    | IOB34[B] | LVCMOS18 | NA    | UP        | ON        | NONE       | NA         | NA         | NA              | NA            | 3.3  
+39/4     | -          | in    | IOB40[A] | LVCMOS18 | NA    | UP        | ON        | NONE       | NA         | NA         | NA              | NA            | 3.3  
+40/4     | -          | in    | IOB40[B] | LVCMOS18 | NA    | UP        | ON        | NONE       | NA         | NA         | NA              | NA            | 3.3  
+42/4     | ta[4]      | in    | IOB42[B] | LVTTL33  | NA    | UP        | OFF       | NONE       | NA         | NA         | NA              | NA            | 3.3  
+41/4     | tdir       | out   | IOB43[A] | LVTTL33  | 8     | UP        | NA        | NA         | OFF        | NA         | NA              | NA            | 3.3  
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+4/7      | clk27m     | in    | IOL7[A]  | LVTTL33  | NA    | UP        | OFF       | NONE       | NA         | NA         | OFF             | NA            | 3.3  
+10/6     | -          | in    | IOL29[A] | LVCMOS18 | NA    | UP        | ON        | NONE       | NA         | NA         | NA              | NA            | 3.3  
+11/6     | -          | in    | IOL29[B] | LVCMOS18 | NA    | UP        | ON        | NONE       | NA         | NA         | NA              | NA            | 3.3  
+13/6     | -          | in    | IOL45[A] | LVCMOS18 | NA    | UP        | ON        | NONE       | NA         | NA         | NA              | NA            | 3.3  
+15/6     | ta[0]      | in    | IOL47[A] | LVTTL33  | NA    | UP        | OFF       | NONE       | NA         | NA         | OFF             | NA            | 3.3  
+16/6     | ta[3]      | in    | IOL47[B] | LVTTL33  | NA    | UP        | OFF       | NONE       | NA         | NA         | OFF             | NA            | 3.3  
+17/6     | n_twr      | in    | IOL49[A] | LVTTL33  | NA    | UP        | OFF       | NONE       | NA         | NA         | OFF             | NA            | 3.3  
+18/6     | ta[5]      | in    | IOL49[B] | LVTTL33  | NA    | UP        | OFF       | NONE       | NA         | NA         | OFF             | NA            | 3.3  
+19/6     | n_treset   | in    | IOL51[A] | LVTTL33  | NA    | UP        | OFF       | NONE       | NA         | NA         | OFF             | NA            | 3.3  
+20/6     | n_trd      | in    | IOL51[B] | LVTTL33  | NA    | UP        | OFF       | NONE       | NA         | NA         | OFF             | NA            | 3.3  
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+8/2      | -          | out   | IOR25[A] | LVCMOS18 | 8     | UP        | NA        | NA         | OFF        | NA         | NA              | NA            | 3.3  
+5/2      | -          | in    | IOR25[B] | LVCMOS18 | NA    | UP        | ON        | NONE       | NA         | NA         | NA              | NA            | 3.3  
+6/2      | -          | in    | IOR26[A] | LVCMOS18 | NA    | UP        | ON        | NONE       | NA         | NA         | NA              | NA            | 3.3  
+7/2      | -          | in    | IOR26[B] | LVCMOS18 | NA    | UP        | ON        | NONE       | NA         | NA         | NA              | NA            | 3.3  
+63/3     | -          | in    | IOR29[A] | LVCMOS18 | NA    | UP        | ON        | NONE       | NA         | NA         | NA              | NA            | 3.3  
+88/3     | keys[0]    | in    | IOR30[A] | LVTTL33  | NA    | UP        | ON        | NONE       | NA         | NA         | OFF             | NA            | 3.3  
+87/3     | keys[1]    | in    | IOR30[B] | LVTTL33  | NA    | UP        | ON        | NONE       | NA         | NA         | OFF             | NA            | 3.3  
+9/3      | -          | in    | IOR31[B] | LVCMOS18 | NA    | UP        | ON        | NONE       | NA         | NA         | NA              | NA            | 3.3  
+62/3     | mspi_mosi  | io    | IOR33[A] | LVTTL33  | 8     | UP        | NA        | NONE       | OFF        | NA         | OFF             | NA            | 3.3  
+61/3     | mspi_miso  | io    | IOR33[B] | LVTTL33  | 8     | UP        | NA        | NONE       | OFF        | NA         | OFF             | NA            | 3.3  
+60/3     | mspi_cs    | out   | IOR34[A] | LVTTL33  | 8     | UP        | NA        | NA         | OFF        | NA         | OFF             | NA            | 3.3  
+59/3     | mspi_sclk  | out   | IOR34[B] | LVTTL33  | 8     | UP        | NA        | NA         | OFF        | NA         | OFF             | NA            | 3.3  
+57/3     | -          | in    | IOR35[A] | LVCMOS18 | NA    | UP        | ON        | NONE       | NA         | NA         | NA              | NA            | 3.3  
+56/3     | dip_sw[4]  | in    | IOR36[A] | LVTTL33  | NA    | UP        | OFF       | NONE       | NA         | NA         | OFF             | NA            | 3.3  
+55/3     | dip_sw[1]  | in    | IOR36[B] | LVTTL33  | NA    | UP        | OFF       | NONE       | NA         | NA         | OFF             | NA            | 3.3  
+54/3     | dip_sw[3]  | in    | IOR38[A] | LVTTL33  | NA    | UP        | OFF       | NONE       | NA         | NA         | OFF             | NA            | 3.3  
+53/3     | tsnd       | out   | IOR38[B] | LVTTL33  | 8     | UP        | NA        | NA         | OFF        | NA         | OFF             | NA            | 3.3  
+52/3     | twait      | out   | IOR39[A] | LVTTL33  | 8     | UP        | NA        | NA         | OFF        | NA         | OFF             | NA            | 3.3  
+51/3     | dip_sw[2]  | in    | IOR45[A] | LVTTL33  | NA    | UP        | OFF       | NONE       | NA         | NA         | OFF             | NA            | 3.3  
+49/3     | ta[6]      | in    | IOR49[A] | LVTTL33  | NA    | UP        | OFF       | NONE       | NA         | NA         | OFF             | NA            | 3.3  
+48/3     | n_tsltsl   | in    | IOR49[B] | LVTTL33  | NA    | UP        | OFF       | NONE       | NA         | NA         | OFF             | NA            | 3.3  
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+=======================================================================================================================================================================================
+
+
