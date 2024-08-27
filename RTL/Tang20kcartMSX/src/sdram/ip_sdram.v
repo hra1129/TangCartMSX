@@ -21,14 +21,13 @@
 //	in the Software.
 // -----------------------------------------------------------------------------
 //	Description:
-//		PSRAM Controller wapper
+//		SDRAM Controller
 // -----------------------------------------------------------------------------
 
 module ip_sdram (
 	//	Internal I/F
 	input			n_reset,
-	input			clk,				// 21.47727MHz
-	input			mem_clk,			// 85.90908MHz
+	input			clk,				// 54MHz
 	output			initial_busy,
 	//	CPU I/F
 	input			rd,					// Set to 1 to read
@@ -39,7 +38,6 @@ module ip_sdram (
 	output	[7:0]	rdata,
 	output			rdata_en,
 	//	PSRAM I/F
-	output			O_sdram_clk,
 	output			O_sdram_cke,
 	output			O_sdram_cs_n,		// chip select
 	output			O_sdram_cas_n,		// columns address select
@@ -98,17 +96,13 @@ module ip_sdram (
 	reg				ff_sub_state_drive			= 1'b0;
 	reg		[ 2:0]	ff_sub_state;
 	reg				ff_do_refresh;
-	wire			w_vdp_phase;
 
 	reg		[ 3:0]	ff_sdram_command			= 4'b0000;
 	reg		[14:0]	ff_sdr_address				= 15'd0;
-	reg		[15:0]	ff_sdr_data					= 16'd0;
-	reg				ff_sdr_upper_dq_mask		= 1'b1;
-	reg				ff_sdr_lower_dq_mask		= 1'b1;
-	reg		[15:0]	ff_mem_vdp_read_data;
-	reg		[ 7:0]	ff_mem_cpu_read_data;
-	reg		[ 7:0]	ff_vram_page				= 8'd0;
-	reg				ff_mem_ack;
+	reg		[31:0]	ff_sdr_data					= 32'd0;
+	reg		[ 3:0]	ff_sdr_dq_mask				= 4'b1111;
+	reg		[ 7:0]	ff_rdata;
+	reg				ff_rdata_en;
 	reg				ff_skip_clear				= 1'b0;
 
 	// --------------------------------------------------------------------
@@ -253,93 +247,83 @@ module ip_sdram (
 	assign w_end_of_main_timer	= (ff_main_timer == 16'd0) ? 1'b1 : 1'b0;
 
 	// --------------------------------------------------------------------
+	//	Data mask
+	// --------------------------------------------------------------------
+	function [3:0] func_mask(
+		input	[1:0]	address
+	);
+		case( address )
+			2'd0:		func_mask = 4'b1110;
+			2'd1:		func_mask = 4'b1101;
+			2'd2:		func_mask = 4'b1011;
+			2'd3:		func_mask = 4'b0111;
+			default:	func_mask = 4'b1111;
+		endcase
+	endfunction
+
+	// --------------------------------------------------------------------
 	//	SDRAM Command Signal
 	// --------------------------------------------------------------------
-	assign w_vdp_phase	= mem_vdp_dl_clk;
-
 	always @( posedge mem_clk ) begin
 		case( ff_main_state )
 		c_main_state_send_precharge_all:
 			begin
-				ff_sdram_command		<= c_sdr_command_precharge_all;
-				ff_sdr_upper_dq_mask	<= 1'b1;
-				ff_sdr_lower_dq_mask	<= 1'b1;
+				ff_sdram_command	<= c_sdr_command_precharge_all;
+				ff_sdr_dq_mask		<= 4'b1111;			//	all disable
 			end
 		c_main_state_send_refresh_all1, c_main_state_send_refresh_all2:
 			begin
-				ff_sdram_command <= c_sdr_command_refresh;
-				ff_sdr_upper_dq_mask	<= 1'b0;
-				ff_sdr_lower_dq_mask	<= 1'b0;
+				ff_sdram_command	<= c_sdr_command_refresh;
+				ff_sdr_dq_mask		<= 4'b0000;			//	all enable
 			end
 		c_main_state_send_mode_register_set:
 			begin
-				ff_sdram_command <= c_sdr_command_mode_register_set;
-				ff_sdr_upper_dq_mask	<= 1'b1;
-				ff_sdr_lower_dq_mask	<= 1'b1;
+				ff_sdram_command	<= c_sdr_command_mode_register_set;
+				ff_sdr_dq_mask		<= 4'b1111;			//	all disable
 			end
 		default:
 			if( ff_sub_state_drive ) begin
 				case( ff_sub_state )
 				c_sub_state_activate:
 					if( ff_do_refresh ) begin
-						ff_sdram_command		<= c_sdr_command_refresh;
-						ff_sdr_upper_dq_mask	<= 1'b0;
-						ff_sdr_lower_dq_mask	<= 1'b0;
+						ff_sdram_command	<= c_sdr_command_refresh;
+						ff_sdr_dq_mask		<= 4'b0000;		//	all enable
 					end
 					else begin
-						ff_sdram_command		<= c_sdr_command_activate;
-						ff_sdr_upper_dq_mask	<= 1'b1;
-						ff_sdr_lower_dq_mask	<= 1'b1;
+						ff_sdram_command	<= c_sdr_command_activate;
+						ff_sdr_dq_mask		<= 4'b1111;		//	all disable
 					end
 				c_sub_state_read_or_write:
 					if( ff_do_refresh ) begin
-						ff_sdram_command		<= c_sdr_command_no_operation;
-						ff_sdr_upper_dq_mask	<= 1'b1;
-						ff_sdr_lower_dq_mask	<= 1'b1;
+						ff_sdram_command	<= c_sdr_command_no_operation;
+						ff_sdr_dq_mask		<= 4'b1111;		//	all disable
 					end
 					else begin
 						if( ff_main_state > c_main_state_wait_mode_register_set && ff_main_state != c_main_state_ready ) begin
-							ff_sdram_command		<= c_sdr_command_write;
-							ff_sdr_upper_dq_mask	<= ~mem_cpu_address[0];
-							ff_sdr_lower_dq_mask	<=  mem_cpu_address[0];
-						end
-						else if( w_vdp_phase ) begin
-							if( mem_vdp_write ) begin
-								ff_sdram_command		<= c_sdr_command_write;
-								ff_sdr_upper_dq_mask	<= ~mem_vdp_address[16];
-								ff_sdr_lower_dq_mask	<=  mem_vdp_address[16];
-							end
-							else begin
-								ff_sdram_command		<= c_sdr_command_read;
-								ff_sdr_upper_dq_mask	<= 1'b0;
-								ff_sdr_lower_dq_mask	<= 1'b0;
-							end
+							ff_sdram_command	<= c_sdr_command_write;
+							ff_sdr_dq_mask		<= func_mask( address[1:0] );
 						end
 						else begin
-							if( mem_cpu_write && mem_req ) begin
-								ff_sdram_command		<= c_sdr_command_write;
-								ff_sdr_upper_dq_mask	<= ~mem_cpu_address[0];
-								ff_sdr_lower_dq_mask	<=  mem_cpu_address[0];
+							if( wr && mem_req ) begin
+								ff_sdram_command	<= c_sdr_command_write;
+								ff_sdr_dq_mask		<= ~address[0];
 							end
 							else begin
-								ff_sdram_command		<= c_sdr_command_read;
-								ff_sdr_upper_dq_mask	<= 1'b0;
-								ff_sdr_lower_dq_mask	<= 1'b0;
+								ff_sdram_command	<= c_sdr_command_read;
+								ff_sdr_dq_mask		<= func_mask( address[1:0] );
 							end
 						end
 					end
 				default:
 					begin
-						ff_sdram_command		<= c_sdr_command_no_operation;
-						ff_sdr_upper_dq_mask	<= 1'b1;
-						ff_sdr_lower_dq_mask	<= 1'b1;
+						ff_sdram_command	<= c_sdr_command_no_operation;
+						ff_sdr_dq_mask		<= 4'b1111;
 					end
 				endcase
 			end
 			else begin
-				ff_sdram_command		<= c_sdr_command_no_operation;
-				ff_sdr_upper_dq_mask	<= 1'b1;
-				ff_sdr_lower_dq_mask	<= 1'b1;
+				ff_sdram_command	<= c_sdr_command_no_operation;
+				ff_sdr_dq_mask		<= 4'b1111;
 			end
 		endcase
 	end
@@ -358,12 +342,7 @@ module ip_sdram (
 			case( ff_sub_state )
 			c_sub_state_activate:
 				if( ff_main_state == c_main_state_ready ) begin
-					if( w_vdp_phase ) begin
-						ff_sdr_address <= { mem_vdp_address[24:23], mem_vdp_address[12:0] };		// vdp read/write
-					end
-					else begin
-						ff_sdr_address <= { mem_cpu_address[24:23], mem_cpu_address[13:1] };		// cpu read/write
-					end
+					ff_sdr_address <= { address[24:23], address[13:1] };		// cpu read/write
 				end
 				else begin
 					ff_sdr_address[14:13]	<= 2'd0;
@@ -373,20 +352,8 @@ module ip_sdram (
 				begin
 					ff_sdr_address[12:9] <= 4'b0010;													// A10 = 1 => enable auto precharge
 					if( ff_main_state == c_main_state_ready ) begin
-						if( w_vdp_phase ) begin
-							if( mem_vdp_address[15] == 1'b0 ) begin
-								ff_sdr_address[14:13]	<= mem_vdp_address[24:23];
-								ff_sdr_address[ 8: 0]	<= { mem_vdp_address[22:20], ff_vram_page[3:0], mem_vdp_address[14:13] };
-							end
-							else begin
-								ff_sdr_address[14:13]	<= mem_vdp_address[24:23];
-								ff_sdr_address[ 8: 0]	<= { mem_vdp_address[22:20], ff_vram_page[7:4], mem_vdp_address[14:13] };
-							end
-						end
-						else begin
-							ff_sdr_address[14:13]	<= mem_cpu_address[24:23];
-							ff_sdr_address[ 8: 0]	<= mem_cpu_address[22:14];
-						end
+						ff_sdr_address[14:13]	<= address[24:23];
+						ff_sdr_address[ 8: 0]	<= address[22:14];
 					end
 					else begin
 						ff_sdr_address[14:13]	<= 2'd0;
@@ -413,77 +380,53 @@ module ip_sdram (
 	always @( posedge mem_clk ) begin
 		if( ff_sub_state_drive && ff_sub_state == c_sub_state_read_or_write ) begin
 			if( ff_main_state == c_main_state_ready ) begin
-				if( w_vdp_phase ) begin
-					ff_sdr_data <= { mem_vdp_write_data, mem_vdp_write_data };
-				end
-				else begin
-					ff_sdr_data <= { mem_cpu_write_data, mem_cpu_write_data };
-				end
+				ff_sdr_data <= { wdata, wdata, wdata, wdata };
 			end
 			else begin
-				ff_sdr_data <= 16'd0;
+				ff_sdr_data <= 32'd0;
 			end
 		end
 		else begin
-			ff_sdr_data <= 16'dz;
+			ff_sdr_data <= 32'dz;
 		end
 	end
 
 	always @( posedge mem_clk ) begin
 		if( ff_sub_state_drive && ff_sub_state == c_sub_state_data_fetch ) begin
-			if( !w_vdp_phase ) begin
-				if( mem_cpu_address[0] == 1'b0 ) begin
-					ff_mem_cpu_read_data <= pMemDat[ 7:0];
-				end
-				else begin
-					ff_mem_cpu_read_data <= pMemDat[15:8];
-				end
+			if( address[0] == 1'b0 ) begin
+				ff_rdata <= pMemDat[ 7:0];
 			end
-		end
-	end
-
-	always @( posedge mem_clk ) begin
-		if( ff_sub_state_drive && ff_sub_state == c_sub_state_data_fetch ) begin
-			if( w_vdp_phase ) begin
-				ff_mem_vdp_read_data <= pMemDat;
+			else begin
+				ff_rdata <= pMemDat[15:8];
 			end
 		end
 	end
 
 	always @( posedge reset or posedge clk21m ) begin
 		if( reset ) begin
-			ff_mem_ack <= 1'b0;
+			ff_rdata_en <= 1'b0;
 		end
 		else if( mem_req == 1'b0 ) begin
-			ff_mem_ack <= 1'b0;
+			ff_rdata_en <= 1'b0;
 		end
 		else if( mem_vdp_dl_clk == 1'b0 && mem_vdp_dh_clk == 1'b1 ) begin
-			ff_mem_ack <= 1'b1;
+			ff_rdata_en <= 1'b1;
 		end
 	end
 
-	always @( posedge clk21m ) begin
-		if( mem_vdp_dl_clk == 1'b0 ) begin
-			ff_vram_page <= vram_slot_ids;
-		end
-	end
+	assign O_sdram_cke			= 1'b1;
+	assign O_sdram_cs_n			= ff_sdram_command[3];
+	assign O_sdram_ras_n		= ff_sdram_command[2];
+	assign O_sdram_cas_n		= ff_sdram_command[1];
+	assign O_sdram_wen_n		= ff_sdram_command[0];
 
-	assign pMemCke				= 1'b1;
-	assign pMemCs_n				= ff_sdram_command[3];
-	assign pMemRas_n			= ff_sdram_command[2];
-	assign pMemCas_n			= ff_sdram_command[1];
-	assign pMemWe_n				= ff_sdram_command[0];
+	assign O_sdram_dqm			= ff_sdr_dq_mask;
+	assign O_sdram_ba[1]		= ff_sdr_address[14];
+	assign O_sdram_ba[0]		= ff_sdr_address[13];
 
-	assign pMemUdq				= ff_sdr_upper_dq_mask;
-	assign pMemLdq				= ff_sdr_lower_dq_mask;
-	assign pMemBa1				= ff_sdr_address[14];
-	assign pMemBa0				= ff_sdr_address[13];
+	assign O_sdram_addr			= ff_sdr_address[12:0];
+	assign IO_sdram_dq			= ff_sdr_data;
 
-	assign pMemAdr				= ff_sdr_address[12:0];
-	assign pMemDat				= ff_sdr_data;
-
-	assign mem_cpu_read_data	= ff_mem_cpu_read_data;
-	assign mem_vdp_read_data	= ff_mem_vdp_read_data;
-
-	assign mem_ack				= ff_mem_ack;
+	assign rdata				= ff_rdata;
+	assign rdata_en				= ff_rdata_en;
 endmodule
