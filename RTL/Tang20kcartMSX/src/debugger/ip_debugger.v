@@ -35,13 +35,21 @@ module ip_debugger (
 	//	Key input
 	input	[1:0]	keys,
 	//	Target signal for observation
-	input	[15:0]	address
+	input	[15:0]	address,
+	input			n_twr,
+	input			n_trd,
+	input			n_tsltsl,
+	input			n_tiorq
 );
 	reg		[1:0]	ff_keys;
 	wire	[1:0]	w_keys;
 	reg		[3:0]	ff_state;
 	reg		[7:0]	ff_send_data;
 	reg				ff_send_req;
+	reg				ff_n_twr;
+	reg				ff_n_trd;
+	reg				ff_n_tsltsl;
+	reg				ff_n_tiorq;
 
 	function [7:0] func_conv(
 		input	[3:0]	d
@@ -73,9 +81,25 @@ module ip_debugger (
 	always @( posedge clk ) begin
 		if( !n_reset ) begin
 			ff_keys <= 2'd0;
+			ff_n_twr <= 1'b1;
+			ff_n_trd <= 1'b1;
+			ff_n_tsltsl <= 1'b1;
+			ff_n_tiorq <= 1'b1;
 		end
 		else begin
 			ff_keys <= keys;
+			if( w_keys[1] ) begin
+				ff_n_twr <= 1'b1;
+				ff_n_trd <= 1'b1;
+				ff_n_tsltsl <= 1'b1;
+				ff_n_tiorq <= 1'b1;
+			end
+			else begin
+				ff_n_twr <= ff_n_twr & n_twr;
+				ff_n_trd <= ff_n_trd & n_trd;
+				ff_n_tsltsl <= ff_n_tsltsl & n_tsltsl;
+				ff_n_tiorq <= ff_n_tiorq & n_tiorq;
+			end
 		end
 	end
 
@@ -96,7 +120,7 @@ module ip_debugger (
 		else begin
 			if( ff_state != 'd0 ) begin
 				//	Change to next state
-				if( ff_state >= 'd10 ) begin
+				if( ff_state >= 'd12 ) begin
 					ff_state = 'd0;
 					ff_send_req <= 1'b0;
 				end
@@ -151,9 +175,17 @@ module ip_debugger (
 				end
 			'd9:
 				begin
-					ff_send_data <= 'h0D;
+					ff_send_data <= 'h3A;		//	':'
 				end
 			'd10:
+				begin
+					ff_send_data <= func_conv( { ff_n_tiorq, ff_n_tiorq, ff_n_tiorq, ff_n_tiorq } );
+				end
+			'd11:
+				begin
+					ff_send_data <= 'h0D;
+				end
+			'd12:
 				begin
 					ff_send_data <= 'h0A;
 				end

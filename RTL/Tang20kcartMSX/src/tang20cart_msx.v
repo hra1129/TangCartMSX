@@ -56,19 +56,19 @@ module tang20cart_msx (
 //	inout			sd_dat0,
 //	output			sd_dat1,
 	output			sd_dat2,
-	output			sd_dat3
+	output			sd_dat3,
 
 	//	SDRAM
-//	output			O_sdram_clk,
-//	output			O_sdram_cke,
-//	output			O_sdram_cs_n,
-//	output			O_sdram_cas_n,
-//	output			O_sdram_ras_n,
-//	output			O_sdram_wen_n,
-//	inout	[31:0]	IO_sdram_dq,
-//	output	[10:0]	O_sdram_addr,
-//	output	[1:0]	O_sdram_ba,
-//	output	[3:0]	O_sdram_dqm
+	output			O_sdram_clk,
+	output			O_sdram_cke,
+	output			O_sdram_cs_n,
+	output			O_sdram_cas_n,
+	output			O_sdram_ras_n,
+	output			O_sdram_wen_n,
+	inout	[31:0]	IO_sdram_dq,
+	output	[10:0]	O_sdram_addr,
+	output	[1:0]	O_sdram_ba,
+	output	[3:0]	O_sdram_dqm
 );
 
 `default_nettype none
@@ -121,6 +121,15 @@ module tang20cart_msx (
 	wire	[7:0]	w_srom_wdata;
 	wire	[7:0]	w_srom_rdata;
 	wire			w_srom_rdata_en;
+	//	SDRAM
+	wire			w_sdram_initial_busy;
+	wire			w_sdram_rd;
+	wire			w_sdram_wr;
+	wire			w_sdram_busy;
+	wire	[22:0]	w_sdram_address;
+	wire	[7:0]	w_sdram_wdata;
+	wire	[7:0]	w_sdram_rdata;
+	wire			w_sdram_rdata_en;
 	//	SCC
 	wire			w_scc_bank_en;
 	wire			w_sccp_bank_en;
@@ -143,15 +152,18 @@ module tang20cart_msx (
 //	assign sd_cmd		= 1'b0;
 //	assign sd_dat0		= 1'b0;
 //	assign sd_dat1		= 1'b0;
-	assign sd_dat2		= ~ff_led[0];
-	assign sd_dat3		= ~ff_led[1];
+	assign sd_dat2		= w_gpo[0];	//~ff_led[0];
+	assign sd_dat3		= w_gpo[1];	//~ff_led[1];
 
-	assign w_is_output	= 1'd0;			// *************************
-	assign w_o_data		= 8'd0;			// *************************
+//	assign w_is_output	= 1'd0;			// *************************
+//	assign w_o_data		= 8'd0;			// *************************
 
 	assign td			= w_is_output   ? w_o_data : 8'hZZ;
 	assign tdir			= w_is_output;
-	assign twait		= ff_wait[4];	// | w_srom_busy;
+	assign twait		= ff_wait[4] | w_sdram_initial_busy;	// | w_srom_busy;
+
+	assign w_sdram_rd	= 1'b0;
+	assign w_sdram_wr	= 1'b0;
 
 	always @( posedge clk ) begin
 		ff_reset[5:0]	<= { ff_reset[4:0], 1'b1 };	//n_treset };
@@ -232,48 +244,48 @@ module tang20cart_msx (
 		.address			( taddress					)
 	);
 
-//	ip_msxbus u_msxbus (
-//		.n_reset			( w_n_reset					),
-//		.clk				( clk						),
-//		.adr				( taddress					),
-//		.i_data				( td						),
-//		.o_data				( w_o_data					),
-//		.is_output			( w_is_output				),
-//		.n_sltsl			( n_tsltsl					),
-//		.n_rd				( n_trd						),
-//		.n_wr				( n_twr						),
-//		.n_ioreq			( n_tiorq					),
-//		.bus_address		( w_bus_address				),
-//		.bus_read_ready		( w_bus_read_ready			),
-//		.bus_read_data		( w_bus_read_data			),
-//		.bus_write_data		( w_bus_write_data			),
-//		.bus_io_read		( w_bus_io_read				),
-//		.bus_io_write		( w_bus_io_write			),
-//		.bus_memory_read	( w_bus_memory_read			),
-//		.bus_memory_write	( w_bus_memory_write		)
-//	);
+	ip_msxbus u_msxbus (
+		.n_reset			( w_n_reset					),
+		.clk				( clk						),
+		.adr				( taddress					),
+		.i_data				( td						),
+		.o_data				( w_o_data					),
+		.is_output			( w_is_output				),
+		.n_sltsl			( n_tsltsl					),
+		.n_rd				( n_trd						),
+		.n_wr				( n_twr						),
+		.n_ioreq			( n_tiorq					),
+		.bus_address		( w_bus_address				),
+		.bus_read_ready		( w_bus_read_ready			),
+		.bus_read_data		( w_bus_read_data			),
+		.bus_write_data		( w_bus_write_data			),
+		.bus_io_read		( w_bus_io_read				),
+		.bus_io_write		( w_bus_io_write			),
+		.bus_memory_read	( w_bus_memory_read			),
+		.bus_memory_write	( w_bus_memory_write		)
+	);
 
 //	assign w_bus_read_ready	= w_bus_read_ready_mapram | w_bus_read_ready_megarom | w_bus_read_ready_extslot | w_bus_read_ready_scc;
 //	assign w_bus_read_data	= w_bus_read_data_mapram  | w_bus_read_data_megarom  | w_bus_read_data_extslot  | w_bus_read_data_scc;
 
-//	assign w_bus_read_ready	= w_bus_read_ready_gpio;
-//	assign w_bus_read_data	= w_bus_read_data_gpio;
+	assign w_bus_read_ready	= w_bus_read_ready_gpio;
+	assign w_bus_read_data	= w_bus_read_data_gpio;
 
 	// --------------------------------------------------------------------
 	//	GPIO
 	// --------------------------------------------------------------------
-//	ip_gpio u_gpio (
-//		.n_reset			( w_n_reset					),
-//		.clk				( clk						),
-//		.bus_address		( w_bus_address				),
-//		.bus_read_ready		( w_bus_read_ready_gpio		),
-//		.bus_read_data		( w_bus_read_data_gpio		),
-//		.bus_write_data		( w_bus_write_data			),
-//		.bus_io_read		( w_bus_io_read				),
-//		.bus_io_write		( w_bus_io_write			),
-//		.gpo				( w_gpo						),
-//		.gpi				( w_gpi						)
-//	);
+	ip_gpio u_gpio (
+		.n_reset			( w_n_reset					),
+		.clk				( clk						),
+		.bus_address		( w_bus_address				),
+		.bus_read_ready		( w_bus_read_ready_gpio		),
+		.bus_read_data		( w_bus_read_data_gpio		),
+		.bus_write_data		( w_bus_write_data			),
+		.bus_io_read		( w_bus_io_read				),
+		.bus_io_write		( w_bus_io_write			),
+		.gpo				( w_gpo						),
+		.gpi				( w_gpi						)
+	);
 
 	// --------------------------------------------------------------------
 	//	EXTSLOT
@@ -387,6 +399,32 @@ module tang20cart_msx (
 //	);
 
 	// --------------------------------------------------------------------
+	//	SDRAM
+	// --------------------------------------------------------------------
+	ip_sdram u_sdram (
+		.n_reset			( w_n_reset					),
+		.clk				( clk						),
+		.initial_busy		( w_sdram_initial_busy		),
+		.rd					( w_sdram_rd				),
+		.wr					( w_sdram_wr				),
+		.busy				( w_sdram_busy				),
+		.address			( w_sdram_address			),
+		.wdata				( w_sdram_wdata				),
+		.rdata				( w_sdram_rdata				),
+		.rdata_en			( w_sdram_rdata_en			),
+		.O_sdram_clk		( O_sdram_clk				),
+		.O_sdram_cke		( O_sdram_cke				),
+		.O_sdram_cs_n		( O_sdram_cs_n				),
+		.O_sdram_cas_n		( O_sdram_cas_n				),
+		.O_sdram_ras_n		( O_sdram_ras_n				),
+		.O_sdram_wen_n		( O_sdram_wen_n				),
+		.IO_sdram_dq		( IO_sdram_dq				),
+		.O_sdram_addr		( O_sdram_addr				),
+		.O_sdram_ba			( O_sdram_ba				),
+		.O_sdram_dqm		( O_sdram_dqm				)
+	);
+
+	// --------------------------------------------------------------------
 	//	SCC
 	// --------------------------------------------------------------------
 //	ip_scc u_scc (
@@ -472,7 +510,11 @@ module tang20cart_msx (
 		.send_req			( w_send_req				),
 		.send_busy			( w_send_busy				),
 		.keys				( keys						),
-		.address			( taddress					)
+		.address			( taddress					),
+		.n_twr				( n_twr						),
+		.n_trd				( n_trd						),
+		.n_tsltsl			( n_tsltsl					),
+		.n_tiorq			( n_tiorq					)
 	);
 
 	// --------------------------------------------------------------------

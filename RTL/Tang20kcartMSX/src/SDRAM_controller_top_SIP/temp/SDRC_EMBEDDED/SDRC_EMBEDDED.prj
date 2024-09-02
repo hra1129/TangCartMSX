@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE gowin-synthesis-project>
+<Project>
+    <Version>beta</Version>
+    <Device id="GW2AR-18" package="QFN88" speed="8" partNumber="GW2AR-LV18QN88C8/I7"/>
+    <FileList>
+        <File path="D:/github/HRA_product/TangCartMSX/RTL/Tang20kcartMSX/src/SDRAM_controller_top_SIP/temp/SDRC_EMBEDDED/sdrc_defines.v" type="verilog"/>
+        <File path="C:/Gowin/Gowin_V1.9.9_x64/IDE/ipcore/SDRC_EMB/data/GENERAL/SDRAM_controller_top_SIP.v" type="verilog"/>
+        <File path="C:/Gowin/Gowin_V1.9.9_x64/IDE/ipcore/SDRC_EMB/data/GENERAL/sdrc_control_fsm.v" type="verilog"/>
+        <File path="C:/Gowin/Gowin_V1.9.9_x64/IDE/ipcore/SDRC_EMB/data/GENERAL/sdrc_user_interface.v" type="verilog"/>
+        <File path="C:/Gowin/Gowin_V1.9.9_x64/IDE/ipcore/SDRC_EMB/data/GENERAL/sdrc_autorefresh.v" type="verilog"/>
+        <File path="C:/Gowin/Gowin_V1.9.9_x64/IDE/ipcore/SDRC_EMB/data/GENERAL/sdrc_top.v" type="verilog"/>
+        <File path="C:/Gowin/Gowin_V1.9.9_x64/IDE/ipcore/SDRC_EMB/data/GENERAL/top_defines.v" type="verilog"/>
+    </FileList>
+    <OptionList>
+        <Option type="disable_insert_pad" value="1"/>
+        <Option type="output_file" value="SDRAM_controller_top_SIP.vg"/>
+        <Option type="output_template" value="SDRAM_controller_top_SIP_tmp.v"/>
+        <Option type="ram_balance" value="1"/>
+        <Option type="ram_rw_check" value="1"/>
+        <Option type="verilog_language" value="sysv-2017"/>
+    </OptionList>
+</Project>

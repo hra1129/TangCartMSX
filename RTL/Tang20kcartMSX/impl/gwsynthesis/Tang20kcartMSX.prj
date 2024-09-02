@@ -4,9 +4,13 @@
     <Version>beta</Version>
     <Device id="GW2AR-18" package="QFN88" speed="8" partNumber="GW2AR-LV18QN88C8/I7"/>
     <FileList>
+        <File path="D:\github\HRA_product\TangCartMSX\RTL\Tang20kcartMSX\src\SDRAM_controller_top_SIP\SDRAM_controller_top_SIP.v" type="verilog"/>
         <File path="D:\github\HRA_product\TangCartMSX\RTL\Tang20kcartMSX\src\debugger\ip_debugger.v" type="verilog"/>
         <File path="D:\github\HRA_product\TangCartMSX\RTL\Tang20kcartMSX\src\gowin_pll\gowin_pll.v" type="verilog"/>
+        <File path="D:\github\HRA_product\TangCartMSX\RTL\Tang20kcartMSX\src\gpio\ip_gpio.v" type="verilog"/>
+        <File path="D:\github\HRA_product\TangCartMSX\RTL\Tang20kcartMSX\src\msxbus\ip_msxbus.v" type="verilog"/>
         <File path="D:\github\HRA_product\TangCartMSX\RTL\Tang20kcartMSX\src\pwm\ip_pwm.v" type="verilog"/>
+        <File path="D:\github\HRA_product\TangCartMSX\RTL\Tang20kcartMSX\src\sdram\ip_sdram.v" type="verilog"/>
         <File path="D:\github\HRA_product\TangCartMSX\RTL\Tang20kcartMSX\src\tang20\tang20.v" type="verilog"/>
         <File path="D:\github\HRA_product\TangCartMSX\RTL\Tang20kcartMSX\src\tang20cart_msx.v" type="verilog"/>
         <File path="D:\github\HRA_product\TangCartMSX\RTL\Tang20kcartMSX\src\uart\ip_uart.v" type="verilog"/>

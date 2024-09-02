@@ -1,7 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<Module name="tang20cart_msx" Register="40" Alu="25" Lut="22">
+<Module name="tang20cart_msx" Register="12" Lut="9">
     <SubModule name="u_pll"/>
     <SubModule name="u_address_latch" Register="26" Lut="5"/>
+    <SubModule name="u_msxbus" Register="24" Lut="10"/>
+    <SubModule name="u_gpio" Register="5" Lut="10"/>
+    <SubModule name="u_sdram">
+        <SubModule name="u_sdram_controller" Register="289" Alu="50" Lut="386" Bsram="1" Ssram="9"/>
+    </SubModule>
     <SubModule name="u_uart" Register="25" Lut="34"/>
-    <SubModule name="u_debugger" Register="13" Lut="63"/>
+    <SubModule name="u_debugger" Register="15" Lut="67"/>
 </Module>
