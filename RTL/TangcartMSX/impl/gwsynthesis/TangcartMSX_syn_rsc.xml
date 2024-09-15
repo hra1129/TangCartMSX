@@ -1,11 +1,51 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<Module name="tangcart_msx" Register="12" Lut="36">
-    <SubModule name="u_debugger" Register="85" Lut="127"/>
+<Module name="tangcart_msx" Register="26" Lut="14" T_Register="503(26)" T_Alu="80(0)" T_Lut="656(14)" T_Ssram="16(0)">
     <SubModule name="u_pll"/>
-    <SubModule name="u_msxbus" Register="41" Lut="10"/>
-    <SubModule name="u_gpio" Register="11" Lut="4"/>
-    <SubModule name="u_ram" Register="44" Alu="7" Lut="34"/>
-    <SubModule name="u_psram" Register="60" Lut="21">
-        <SubModule name="u_gowin_psram_if_2ch" Register="745" Alu="62" Lut="1124" Ssram="18"/>
+    <SubModule name="i68" Register="23" Lut="52" T_Register="465(23)" T_Alu="69(0)" T_Lut="642(52)" T_Ssram="16(0)">
+        <SubModule name="u_ikascc" Register="2" Lut="6" T_Register="442(2)" T_Alu="69(0)" T_Lut="590(6)" T_Ssram="16(0)">
+            <SubModule name="IKASCC_SYNC_MODE.u_vrc_s_main" Register="17" Lut="3" T_Register="17(17)" T_Lut="3(3)"/>
+            <SubModule name="IKASCC_SYNC_MODE.u_player_main" Register="42" Alu="44" Lut="101" T_Register="423(42)" T_Alu="69(44)" T_Lut="581(101)" T_Ssram="16(0)">
+                <SubModule name="u_mem_ch1" Register="16" Lut="18" Ssram="4" T_Register="16(16)" T_Lut="18(18)" T_Ssram="4(4)"/>
+                <SubModule name="u_ctrl_ch1" Register="44" Alu="5" Lut="39" T_Register="65(44)" T_Alu="5(5)" T_Lut="91(39)">
+                    <SubModule name="u_cyccntr" Register="4" Lut="4" T_Register="4(4)" T_Lut="4(4)"/>
+                    <SubModule name="u_fraccntr_a" Register="4" Lut="13" T_Register="4(4)" T_Lut="13(13)"/>
+                    <SubModule name="u_fraccntr_b" Register="4" Lut="13" T_Register="4(4)" T_Lut="13(13)"/>
+                    <SubModule name="u_fraccntr_c" Register="4" Lut="14" T_Register="4(4)" T_Lut="14(14)"/>
+                    <SubModule name="u_intcntr" Register="5" Lut="8" T_Register="5(5)" T_Lut="8(8)"/>
+                </SubModule>
+                <SubModule name="u_mem_ch2" Register="16" Lut="17" Ssram="4" T_Register="16(16)" T_Lut="17(17)" T_Ssram="4(4)"/>
+                <SubModule name="u_ctrl_ch2" Register="42" Alu="5" Lut="28" T_Register="63(42)" T_Alu="5(5)" T_Lut="80(28)">
+                    <SubModule name="u_cyccntr" Register="4" Lut="4" T_Register="4(4)" T_Lut="4(4)"/>
+                    <SubModule name="u_fraccntr_a" Register="4" Lut="12" T_Register="4(4)" T_Lut="12(12)"/>
+                    <SubModule name="u_fraccntr_b" Register="4" Lut="13" T_Register="4(4)" T_Lut="13(13)"/>
+                    <SubModule name="u_fraccntr_c" Register="4" Lut="15" T_Register="4(4)" T_Lut="15(15)"/>
+                    <SubModule name="u_intcntr" Register="5" Lut="8" T_Register="5(5)" T_Lut="8(8)"/>
+                </SubModule>
+                <SubModule name="u_mem_ch3" Register="16" Lut="17" Ssram="4" T_Register="16(16)" T_Lut="17(17)" T_Ssram="4(4)"/>
+                <SubModule name="u_ctrl_ch3" Register="42" Alu="5" Lut="29" T_Register="63(42)" T_Alu="5(5)" T_Lut="80(29)">
+                    <SubModule name="u_cyccntr" Register="4" Lut="4" T_Register="4(4)" T_Lut="4(4)"/>
+                    <SubModule name="u_fraccntr_a" Register="4" Lut="12" T_Register="4(4)" T_Lut="12(12)"/>
+                    <SubModule name="u_fraccntr_b" Register="4" Lut="13" T_Register="4(4)" T_Lut="13(13)"/>
+                    <SubModule name="u_fraccntr_c" Register="4" Lut="14" T_Register="4(4)" T_Lut="14(14)"/>
+                    <SubModule name="u_intcntr" Register="5" Lut="8" T_Register="5(5)" T_Lut="8(8)"/>
+                </SubModule>
+                <SubModule name="u_mem_ch45" Register="16" Lut="17" Ssram="4" T_Register="16(16)" T_Lut="17(17)" T_Ssram="4(4)"/>
+                <SubModule name="u_ctrl_ch4" Register="42" Alu="5" Lut="28" T_Register="63(42)" T_Alu="5(5)" T_Lut="79(28)">
+                    <SubModule name="u_cyccntr" Register="4" Lut="4" T_Register="4(4)" T_Lut="4(4)"/>
+                    <SubModule name="u_fraccntr_a" Register="4" Lut="12" T_Register="4(4)" T_Lut="12(12)"/>
+                    <SubModule name="u_fraccntr_b" Register="4" Lut="13" T_Register="4(4)" T_Lut="13(13)"/>
+                    <SubModule name="u_fraccntr_c" Register="4" Lut="14" T_Register="4(4)" T_Lut="14(14)"/>
+                    <SubModule name="u_intcntr" Register="5" Lut="8" T_Register="5(5)" T_Lut="8(8)"/>
+                </SubModule>
+                <SubModule name="u_ctrl_ch5" Register="42" Alu="5" Lut="30" T_Register="63(42)" T_Alu="5(5)" T_Lut="81(30)">
+                    <SubModule name="u_cyccntr" Register="4" Lut="4" T_Register="4(4)" T_Lut="4(4)"/>
+                    <SubModule name="u_fraccntr_a" Register="4" Lut="11" T_Register="4(4)" T_Lut="11(11)"/>
+                    <SubModule name="u_fraccntr_b" Register="4" Lut="13" T_Register="4(4)" T_Lut="13(13)"/>
+                    <SubModule name="u_fraccntr_c" Register="4" Lut="15" T_Register="4(4)" T_Lut="15(15)"/>
+                    <SubModule name="u_intcntr" Register="5" Lut="8" T_Register="5(5)" T_Lut="8(8)"/>
+                </SubModule>
+            </SubModule>
+        </SubModule>
     </SubModule>
+    <SubModule name="u_pwm" Register="12" Alu="11" T_Register="12(12)" T_Alu="11(11)"/>
 </Module>

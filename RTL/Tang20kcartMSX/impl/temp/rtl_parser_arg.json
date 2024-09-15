@@ -2,15 +2,15 @@
  "Device" : "GW2AR-18",
  "Files" : [
   {
-   "Path" : "D:/github/HRA_product/TangCartMSX/RTL/Tang20kcartMSX/src/SDRAM_controller_top_SIP/SDRAM_controller_top_SIP.v",
-   "Type" : "verilog"
-  },
-  {
    "Path" : "D:/github/HRA_product/TangCartMSX/RTL/Tang20kcartMSX/src/debugger/ip_debugger.v",
    "Type" : "verilog"
   },
   {
    "Path" : "D:/github/HRA_product/TangCartMSX/RTL/Tang20kcartMSX/src/gowin_pll/gowin_pll.v",
+   "Type" : "verilog"
+  },
+  {
+   "Path" : "D:/github/HRA_product/TangCartMSX/RTL/Tang20kcartMSX/src/gowin_rpll/gowin_rpll.v",
    "Type" : "verilog"
   },
   {

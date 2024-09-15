@@ -1,5 +1,13 @@
 [
  {
+  "InstFile" : "D:/github/HRA_product/TangCartMSX/RTL/Tang20kcartMSX/src/gowin_pll/gowin_pll.v",
+  "InstLine" : 9,
+  "InstName" : "Gowin_PLL",
+  "ModuleFile" : "D:/github/HRA_product/TangCartMSX/RTL/Tang20kcartMSX/src/gowin_pll/gowin_pll.v",
+  "ModuleLine" : 9,
+  "ModuleName" : "Gowin_PLL"
+ },
+ {
   "InstFile" : "D:/github/HRA_product/TangCartMSX/RTL/Tang20kcartMSX/src/tang20cart_msx.v",
   "InstLine" : 26,
   "InstName" : "tang20cart_msx",
@@ -9,15 +17,15 @@
   "SubInsts" : [
    {
     "InstFile" : "D:/github/HRA_product/TangCartMSX/RTL/Tang20kcartMSX/src/tang20cart_msx.v",
-    "InstLine" : 186,
+    "InstLine" : 183,
     "InstName" : "u_pll",
-    "ModuleFile" : "D:/github/HRA_product/TangCartMSX/RTL/Tang20kcartMSX/src/gowin_pll/gowin_pll.v",
+    "ModuleFile" : "D:/github/HRA_product/TangCartMSX/RTL/Tang20kcartMSX/src/gowin_rpll/gowin_rpll.v",
     "ModuleLine" : 9,
-    "ModuleName" : "Gowin_PLL"
+    "ModuleName" : "Gowin_rPLL"
    },
    {
     "InstFile" : "D:/github/HRA_product/TangCartMSX/RTL/Tang20kcartMSX/src/tang20cart_msx.v",
-    "InstLine" : 239,
+    "InstLine" : 237,
     "InstName" : "u_address_latch",
     "ModuleFile" : "D:/github/HRA_product/TangCartMSX/RTL/Tang20kcartMSX/src/tang20/tang20.v",
     "ModuleLine" : 26,
@@ -25,7 +33,7 @@
    },
    {
     "InstFile" : "D:/github/HRA_product/TangCartMSX/RTL/Tang20kcartMSX/src/tang20cart_msx.v",
-    "InstLine" : 247,
+    "InstLine" : 245,
     "InstName" : "u_msxbus",
     "ModuleFile" : "D:/github/HRA_product/TangCartMSX/RTL/Tang20kcartMSX/src/msxbus/ip_msxbus.v",
     "ModuleLine" : 28,
@@ -33,7 +41,7 @@
    },
    {
     "InstFile" : "D:/github/HRA_product/TangCartMSX/RTL/Tang20kcartMSX/src/tang20cart_msx.v",
-    "InstLine" : 277,
+    "InstLine" : 275,
     "InstName" : "u_gpio",
     "ModuleFile" : "D:/github/HRA_product/TangCartMSX/RTL/Tang20kcartMSX/src/gpio/ip_gpio.v",
     "ModuleLine" : 27,
@@ -41,35 +49,15 @@
    },
    {
     "InstFile" : "D:/github/HRA_product/TangCartMSX/RTL/Tang20kcartMSX/src/tang20cart_msx.v",
-    "InstLine" : 404,
+    "InstLine" : 402,
     "InstName" : "u_sdram",
     "ModuleFile" : "D:/github/HRA_product/TangCartMSX/RTL/Tang20kcartMSX/src/sdram/ip_sdram.v",
     "ModuleLine" : 27,
-    "ModuleName" : "ip_sdram",
-    "SubInsts" : [
-     {
-      "InstFile" : "D:/github/HRA_product/TangCartMSX/RTL/Tang20kcartMSX/src/sdram/ip_sdram.v",
-      "InstLine" : 84,
-      "InstName" : "u_sdram_controller",
-      "ModuleFile" : "D:/github/HRA_product/TangCartMSX/RTL/Tang20kcartMSX/src/SDRAM_controller_top_SIP/SDRAM_controller_top_SIP.v",
-      "ModuleLine" : 2633,
-      "ModuleName" : "SDRAM_controller_top_SIP",
-      "SubInsts" : [
-       {
-        "InstFile" : "D:/github/HRA_product/TangCartMSX/RTL/Tang20kcartMSX/src/SDRAM_controller_top_SIP/SDRAM_controller_top_SIP.v",
-        "InstLine" : 2885,
-        "InstName" : "sdrc_top_inst",
-        "ModuleFile" : "D:/github/HRA_product/TangCartMSX/RTL/Tang20kcartMSX/src/SDRAM_controller_top_SIP/SDRAM_controller_top_SIP.v",
-        "ModuleLine" : 1,
-        "ModuleName" : "~top.SDRAM_controller_top_SIP"
-       }
-      ]
-     }
-    ]
+    "ModuleName" : "ip_sdram"
    },
    {
     "InstFile" : "D:/github/HRA_product/TangCartMSX/RTL/Tang20kcartMSX/src/tang20cart_msx.v",
-    "InstLine" : 497,
+    "InstLine" : 495,
     "InstName" : "u_uart",
     "ModuleFile" : "D:/github/HRA_product/TangCartMSX/RTL/Tang20kcartMSX/src/uart/ip_uart.v",
     "ModuleLine" : 27,
@@ -77,7 +65,7 @@
    },
    {
     "InstFile" : "D:/github/HRA_product/TangCartMSX/RTL/Tang20kcartMSX/src/tang20cart_msx.v",
-    "InstLine" : 506,
+    "InstLine" : 504,
     "InstName" : "u_debugger",
     "ModuleFile" : "D:/github/HRA_product/TangCartMSX/RTL/Tang20kcartMSX/src/debugger/ip_debugger.v",
     "ModuleLine" : 27,

@@ -1,0 +1,44 @@
+# vsim -c -t 1ps -do "run.do" tb 
+# Start time: 06:34:12 on Sep 11,2024
+# Loading sv_std.std
+# Loading work.tb
+# Loading work.ip_sdram
+# Loading work.mt48lc2m32b2
+# do run.do
+# tb.u_sdram : at time  123524.3 ns AREF : Auto Refresh
+# tb.u_sdram : at time  123598.4 ns AREF : Auto Refresh
+# tb.u_sdram : at time  123672.5 ns LMR  : Load Mode Register
+# tb.u_sdram :                             CAS Latency      = 2
+# tb.u_sdram :                             Burst Length     = 1
+# tb.u_sdram :                             Burst Type       = Sequential
+# tb.u_sdram :                             Write Burst Mode = Programmed Burst Length
+# tb.u_sdram : at time  123709.5 ns ACT  : Bank = 0 Row =    0
+# tb.u_sdram : at time  123839.1 ns WRITE: Bank = 0 Row =    0, Col =   0, Data = xxxxxx12
+# tb.u_sdram : at time  123950.2 ns AREF : Auto Refresh
+# tb.u_sdram : at time  124042.8 ns ACT  : Bank = 0 Row =    0
+# tb.u_sdram : at time  124098.4 ns WRITE: Bank = 0 Row =    0, Col =   0, Data = xxxx2312
+# tb.u_sdram : at time  124209.5 ns AREF : Auto Refresh
+# tb.u_sdram : at time  124302.1 ns ACT  : Bank = 0 Row = 1024
+# tb.u_sdram : at time  124357.6 ns WRITE: Bank = 0 Row = 1024, Col =   0, Data = xx34xxxx
+# tb.u_sdram : at time  124376.1 ns NOTE : Start Internal Auto Precharge for Bank 0
+# tb.u_sdram : at time  124468.7 ns AREF : Auto Refresh
+# tb.u_sdram : at time  124561.3 ns ACT  : Bank = 1 Row =    0
+# tb.u_sdram : at time  124616.9 ns WRITE: Bank = 1 Row =    0, Col =   0, Data = 45xxxxxx
+# tb.u_sdram : at time  124728.0 ns AREF : Auto Refresh
+# tb.u_sdram : at time  124820.6 ns ACT  : Bank = 0 Row =    0
+# tb.u_sdram : at time  124894.7 ns READ : Bank = 0 Row =    0, Col =   0, Data = xxxx2312
+# tb.u_sdram : at time  124987.2 ns AREF : Auto Refresh
+# tb.u_sdram : at time  125079.8 ns ACT  : Bank = 0 Row =    0
+# tb.u_sdram : at time  125153.9 ns READ : Bank = 0 Row =    0, Col =   0, Data = xxxx2312
+# tb.u_sdram : at time  125246.5 ns AREF : Auto Refresh
+# tb.u_sdram : at time  125339.1 ns ACT  : Bank = 0 Row = 1024
+# tb.u_sdram : at time  125413.2 ns NOTE : Start Internal Auto Precharge for Bank 0
+# tb.u_sdram : at time  125413.2 ns READ : Bank = 0 Row = 1024, Col =   0, Data = xx34xxxx
+# tb.u_sdram : at time  125505.7 ns AREF : Auto Refresh
+# tb.u_sdram : at time  125598.3 ns ACT  : Bank = 1 Row =    0
+# tb.u_sdram : at time  125672.4 ns READ : Bank = 1 Row =    0, Col =   0, Data = 45xxxxxx
+# tb.u_sdram : at time  125765.0 ns AREF : Auto Refresh
+# ** Note: $finish    : tb.sv(188)
+#    Time: 125839069 ps  Iteration: 1  Instance: /tb
+# End time: 06:34:13 on Sep 11,2024, Elapsed time: 0:00:01
+# Errors: 0, Warnings: 0

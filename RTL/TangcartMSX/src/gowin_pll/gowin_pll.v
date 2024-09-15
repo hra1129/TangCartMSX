@@ -1,20 +1,20 @@
-//Copyright (C)2014-2023 Gowin Semiconductor Corporation.
+//Copyright (C)2014-2024 Gowin Semiconductor Corporation.
 //All rights reserved.
 //File Title: IP file
-//Tool Version: V1.9.9 (64-bit)
+//Tool Version: V1.9.9.03 (64-bit)
 //Part Number: GW1NR-LV9QN88PC6/I5
 //Device: GW1NR-9
 //Device Version: C
-//Created Time: Sun Jul  7 11:01:33 2024
+//Created Time: Fri Sep 13 06:38:37 2024
 
-module Gowin_PLL (clkout, lock, clkoutd, clkin);
+module Gowin_PLL (clkout, clkin);
 
 output clkout;
-output lock;
-output clkoutd;
 input clkin;
 
+wire lock_o;
 wire clkoutp_o;
+wire clkoutd_o;
 wire clkoutd3_o;
 wire gw_gnd;
 
@@ -22,9 +22,9 @@ assign gw_gnd = 1'b0;
 
 PLL pll_inst (
     .CLKOUT(clkout),
-    .LOCK(lock),
+    .LOCK(lock_o),
     .CLKOUTP(clkoutp_o),
-    .CLKOUTD(clkoutd),
+    .CLKOUTD(clkoutd_o),
     .CLKOUTD3(clkoutd3_o),
     .RESET(gw_gnd),
     .RESET_P(gw_gnd),
@@ -44,9 +44,9 @@ defparam pll_inst.FCLKIN = "3.579";
 defparam pll_inst.DYN_IDIV_SEL = "false";
 defparam pll_inst.IDIV_SEL = 0;
 defparam pll_inst.DYN_FBDIV_SEL = "false";
-defparam pll_inst.FBDIV_SEL = 35;
+defparam pll_inst.FBDIV_SEL = 5;
 defparam pll_inst.DYN_ODIV_SEL = "false";
-defparam pll_inst.ODIV_SEL = 4;
+defparam pll_inst.ODIV_SEL = 32;
 defparam pll_inst.PSDA_SEL = "0000";
 defparam pll_inst.DYN_DA_EN = "true";
 defparam pll_inst.DUTYDA_SEL = "1000";

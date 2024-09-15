@@ -4,9 +4,9 @@
     <Version>beta</Version>
     <Device id="GW2AR-18" package="QFN88" speed="8" partNumber="GW2AR-LV18QN88C8/I7"/>
     <FileList>
-        <File path="D:\github\HRA_product\TangCartMSX\RTL\Tang20kcartMSX\src\SDRAM_controller_top_SIP\SDRAM_controller_top_SIP.v" type="verilog"/>
         <File path="D:\github\HRA_product\TangCartMSX\RTL\Tang20kcartMSX\src\debugger\ip_debugger.v" type="verilog"/>
         <File path="D:\github\HRA_product\TangCartMSX\RTL\Tang20kcartMSX\src\gowin_pll\gowin_pll.v" type="verilog"/>
+        <File path="D:\github\HRA_product\TangCartMSX\RTL\Tang20kcartMSX\src\gowin_rpll\gowin_rpll.v" type="verilog"/>
         <File path="D:\github\HRA_product\TangCartMSX\RTL\Tang20kcartMSX\src\gpio\ip_gpio.v" type="verilog"/>
         <File path="D:\github\HRA_product\TangCartMSX\RTL\Tang20kcartMSX\src\msxbus\ip_msxbus.v" type="verilog"/>
         <File path="D:\github\HRA_product\TangCartMSX\RTL\Tang20kcartMSX\src\pwm\ip_pwm.v" type="verilog"/>
@@ -17,6 +17,7 @@
     </FileList>
     <OptionList>
         <Option type="disable_insert_pad" value="0"/>
+        <Option type="global_freq" value="100.000"/>
         <Option type="looplimit" value="2000"/>
         <Option type="output_file" value="D:\github\HRA_product\TangCartMSX\RTL\Tang20kcartMSX\impl\gwsynthesis\Tang20kcartMSX.vg"/>
         <Option type="print_all_synthesis_warning" value="0"/>

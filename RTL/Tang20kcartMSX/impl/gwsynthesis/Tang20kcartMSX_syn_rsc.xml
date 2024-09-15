@@ -1,12 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<Module name="tang20cart_msx" Register="12" Lut="9">
+<Module name="tang20cart_msx" Register="12" Lut="8" T_Register="234(12)" T_Alu="31(0)" T_Lut="370(8)">
     <SubModule name="u_pll"/>
-    <SubModule name="u_address_latch" Register="26" Lut="5"/>
-    <SubModule name="u_msxbus" Register="24" Lut="10"/>
-    <SubModule name="u_gpio" Register="5" Lut="10"/>
-    <SubModule name="u_sdram">
-        <SubModule name="u_sdram_controller" Register="289" Alu="50" Lut="386" Bsram="1" Ssram="9"/>
-    </SubModule>
-    <SubModule name="u_uart" Register="25" Lut="34"/>
-    <SubModule name="u_debugger" Register="15" Lut="67"/>
+    <SubModule name="u_address_latch" Register="16" Lut="6" T_Register="16(16)" T_Lut="6(6)"/>
+    <SubModule name="u_msxbus" Register="24" Lut="10" T_Register="24(24)" T_Lut="10(10)"/>
+    <SubModule name="u_gpio" Register="5" Lut="10" T_Register="5(5)" T_Lut="10(10)"/>
+    <SubModule name="u_sdram" Register="96" Alu="23" Lut="157" T_Register="96(96)" T_Alu="23(23)" T_Lut="157(157)"/>
+    <SubModule name="u_uart" Register="25" Lut="33" T_Register="25(25)" T_Lut="33(33)"/>
+    <SubModule name="u_debugger" Register="56" Alu="8" Lut="146" T_Register="56(56)" T_Alu="8(8)" T_Lut="146(146)"/>
 </Module>

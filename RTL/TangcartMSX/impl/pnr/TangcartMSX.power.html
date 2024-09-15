@@ -31,12 +31,14 @@ table.detail_table th.label {  min-width: 8%; width: 8%; }
 <div id="catalog">
 <ul>
 <li><a href="#Message" style=" font-size: 16px;">Power Messages</a>
+<ul>
+<li><a href="#Configure_Info" style=" font-size: 14px;">Configure Information</a></li>
+</ul>
 </li>
 <li><a href="#Summary" style=" font-size: 16px;">Power Summary</a>
 <ul>
 <li><a href="#Power_Info" style=" font-size: 14px;">Power Information</a></li>
 <li><a href="#Thermal_Info" style=" font-size: 14px;">Thermal Information</a></li>
-<li><a href="#Configure_Info" style=" font-size: 14px;">Configure Information</a></li>
 <li><a href="#Supply_Summary" style=" font-size: 14px;">Supply Information</a></li>
 </ul>
 </li>
@@ -71,7 +73,7 @@ table.detail_table th.label {  min-width: 8%; width: 8%; }
 </tr>
 <tr>
 <td class="label">Tool Version</td>
-<td>V1.9.9 (64-bit)</td>
+<td>V1.9.9.03 (64-bit)</td>
 </tr>
 <tr>
 <td class="label">Part Number</td>
@@ -87,85 +89,39 @@ table.detail_table th.label {  min-width: 8%; width: 8%; }
 </tr>
 <tr>
 <td class="label">Created Time</td>
-<td>Sun Jul  7 11:06:43 2024
+<td>Sun Sep 15 10:50:45 2024
 </td>
 </tr>
 <tr>
 <td class="label">Legal Announcement</td>
-<td>Copyright (C)2014-2023 Gowin Semiconductor Corporation. All rights reserved.</td>
-</tr>
-</table>
-<h1><a name="Summary">Power Summary</a></h1>
-<h2><a name="Power_Info">Power Information:</a></h2>
-<table class="summary_table">
-<tr>
-<td class="label">Total Power (mW)</td>
-<td>34.231</td>
-</tr>
-<tr>
-<td class="label">Quiescent Power (mW)</td>
-<td>18.330</td>
-</tr>
-<tr>
-<td class="label">Dynamic Power (mW)</td>
-<td>15.900</td>
-</tr>
-<tr>
-<td class="label">Psram Power (mW)</td>
-<td>86.000</td>
-</tr>
-</table>
-<h2><a name="Thermal_Info">Thermal Information:</a></h2>
-<table class="summary_table">
-<tr>
-<td class="label">Junction Temperature</td>
-<td>25.711</td>
-</tr>
-<tr>
-<td class="label">Theta JA</td>
-<td>21.450</td>
-</tr>
-<tr>
-<td class="label">Max Allowed Ambient Temperature</td>
-<td>84.289</td>
+<td>Copyright (C)2014-2024 Gowin Semiconductor Corporation. All rights reserved.</td>
 </tr>
 </table>
 <h2><a name="Configure_Info">Configure Information:</a></h2>
 <table class="summary_table">
 <tr>
-<td class="label">Default IO Toggle Rate</td>
-<td>0.125</td>
-</tr>
-<td class="label">Default Remain Toggle Rate</td>
-<td>0.125</td>
+<td class="label">Grade</td>
+<td>Commercial</td>
 </tr>
 <tr>
-<td class="label">Use Vectorless Estimation</td>
-<td>false</td>
+<td class="label">Process</td>
+<td>Typical</td>
 </tr>
 <tr>
-<td class="label">Filter Glitches</td>
-<td>false</td>
-</tr>
-<tr>
-<td class="label">Related Vcd File</td>
-<td></td>
-</tr>
-<tr>
-<td class="label">Related Saif File</td>
-<td></td>
+<td class="label">Ambient Temperature</td>
+<td>25.000
 </tr>
 <tr>
 <td class="label">Use Custom Theta JA</td>
 <td>false</td>
 </tr>
 <tr>
-<td class="label">Air Flow</td>
-<td>LFM_0</td>
-</tr>
-<tr>
 <td class="label">Heat Sink</td>
 <td>None</td>
+</tr>
+<tr>
+<td class="label">Air Flow</td>
+<td>LFM_0</td>
 </tr>
 <tr>
 <td class="label">Use Custom Theta SA</td>
@@ -180,8 +136,59 @@ table.detail_table th.label {  min-width: 8%; width: 8%; }
 <td>false</td>
 </tr>
 <tr>
-<td class="label">Ambient Temperature</td>
-<td>25.000
+<td class="label">Related Vcd File</td>
+<td></td>
+</tr>
+<tr>
+<td class="label">Related Saif File</td>
+<td></td>
+</tr>
+<tr>
+<td class="label">Filter Glitches</td>
+<td>false</td>
+</tr>
+<tr>
+<td class="label">Default IO Toggle Rate</td>
+<td>0.125</td>
+</tr>
+<tr>
+<td class="label">Default Remain Toggle Rate</td>
+<td>0.125</td>
+</tr>
+</table>
+<h1><a name="Summary">Power Summary</a></h1>
+<h2><a name="Power_Info">Power Information:</a></h2>
+<table class="summary_table">
+<tr>
+<td class="label">Total Power (mW)</td>
+<td>28.113</td>
+</tr>
+<tr>
+<td class="label">Quiescent Power (mW)</td>
+<td>26.735</td>
+</tr>
+<tr>
+<td class="label">Dynamic Power (mW)</td>
+<td>1.378</td>
+</tr>
+<tr>
+<td class="label">Psram Power (mW)</td>
+<td>86.000</td>
+</tr>
+</table>
+<h2><a name="Thermal_Info">Thermal Information:</a></h2>
+<table class="summary_table">
+<tr>
+<td class="label">Junction Temperature</td>
+<td>25.569</td>
+</tr>
+<tr>
+<td class="label">Theta JA</td>
+<td>21.450</td>
+</tr>
+<tr>
+<td class="label">Max Allowed Ambient Temperature</td>
+<td>84.431</td>
 </tr>
 </table>
 <h2><a name="Supply_Summary">Supply Information:</a></h2>
@@ -196,30 +203,30 @@ table.detail_table th.label {  min-width: 8%; width: 8%; }
 <tr>
 <td>VCC</td>
 <td>1.200</td>
-<td>10.638</td>
-<td>3.078</td>
-<td>16.459</td>
+<td>0.666</td>
+<td>3.502</td>
+<td>5.002</td>
 </tr>
 <tr>
 <td>VCCX</td>
-<td>2.500</td>
-<td>0.653</td>
-<td>3.788</td>
-<td>11.103</td>
+<td>3.300</td>
+<td>0.091</td>
+<td>5.000</td>
+<td>16.802</td>
 </tr>
 <tr>
 <td>VCCIO18</td>
 <td>1.800</td>
-<td>0.432</td>
-<td>0.913</td>
-<td>2.421</td>
+<td>0.017</td>
+<td>0.395</td>
+<td>0.741</td>
 </tr>
 <tr>
 <td>VCCIO33</td>
 <td>3.300</td>
-<td>0.219</td>
-<td>1.068</td>
-<td>4.248</td>
+<td>0.075</td>
+<td>1.613</td>
+<td>5.569</td>
 </tr>
 </table>
 <h1><a name="Detail">Power Details</a></h1>
@@ -233,25 +240,19 @@ table.detail_table th.label {  min-width: 8%; width: 8%; }
 </tr>
 <tr>
 <td>Logic</td>
-<td>0.410</td>
+<td>0.089</td>
 <td>NA</td>
-<td>8.053</td>
+<td>2.643</td>
 </tr>
 <tr>
 <td>IO</td>
-<td>10.881
-<td>6.915
-<td>10.801
+<td>7.597
+<td>6.909
+<td>2.726
 </tr>
 <tr>
 <td>PLL</td>
-<td>3.594
-<td>NA</td>
-<td>NA</td>
-</tr>
-<tr>
-<td>DLL</td>
-<td>7.916
+<td>0.599
 <td>NA</td>
 <td>NA</td>
 </tr>
@@ -265,80 +266,168 @@ table.detail_table th.label {  min-width: 8%; width: 8%; }
 </tr>
 <tr>
 <td>tangcart_msx</td>
-<td>11.920</td>
-<td>11.920(11.913)</td>
+<td>0.688</td>
+<td>0.688(0.686)</td>
 <tr>
-<td>tangcart_msx/u_debugger/</td>
-<td>0.029</td>
-<td>0.029(0.000)</td>
+<td>tangcart_msx/i68/</td>
+<td>0.082</td>
+<td>0.082(0.078)</td>
 <tr>
-<td>tangcart_msx/u_gpio/</td>
+<td>tangcart_msx/i68/u_ikascc/</td>
+<td>0.078</td>
+<td>0.078(0.078)</td>
+<tr>
+<td>tangcart_msx/i68/u_ikascc/IKASCC_SYNC_MODE.u_player_main/</td>
+<td>0.077</td>
+<td>0.077(0.052)</td>
+<tr>
+<td>tangcart_msx/i68/u_ikascc/IKASCC_SYNC_MODE.u_player_main/u_ctrl_ch1/</td>
+<td>0.009</td>
+<td>0.009(0.004)</td>
+<tr>
+<td>tangcart_msx/i68/u_ikascc/IKASCC_SYNC_MODE.u_player_main/u_ctrl_ch1/u_cyccntr/</td>
+<td>0.000</td>
+<td>0.000(0.000)</td>
+<tr>
+<td>tangcart_msx/i68/u_ikascc/IKASCC_SYNC_MODE.u_player_main/u_ctrl_ch1/u_fraccntr_a/</td>
+<td>0.001</td>
+<td>0.001(0.000)</td>
+<tr>
+<td>tangcart_msx/i68/u_ikascc/IKASCC_SYNC_MODE.u_player_main/u_ctrl_ch1/u_fraccntr_b/</td>
+<td>0.001</td>
+<td>0.001(0.000)</td>
+<tr>
+<td>tangcart_msx/i68/u_ikascc/IKASCC_SYNC_MODE.u_player_main/u_ctrl_ch1/u_fraccntr_c/</td>
+<td>0.001</td>
+<td>0.001(0.000)</td>
+<tr>
+<td>tangcart_msx/i68/u_ikascc/IKASCC_SYNC_MODE.u_player_main/u_ctrl_ch1/u_intcntr/</td>
+<td>0.001</td>
+<td>0.001(0.000)</td>
+<tr>
+<td>tangcart_msx/i68/u_ikascc/IKASCC_SYNC_MODE.u_player_main/u_ctrl_ch2/</td>
+<td>0.008</td>
+<td>0.008(0.004)</td>
+<tr>
+<td>tangcart_msx/i68/u_ikascc/IKASCC_SYNC_MODE.u_player_main/u_ctrl_ch2/u_cyccntr/</td>
+<td>0.000</td>
+<td>0.000(0.000)</td>
+<tr>
+<td>tangcart_msx/i68/u_ikascc/IKASCC_SYNC_MODE.u_player_main/u_ctrl_ch2/u_fraccntr_a/</td>
+<td>0.001</td>
+<td>0.001(0.000)</td>
+<tr>
+<td>tangcart_msx/i68/u_ikascc/IKASCC_SYNC_MODE.u_player_main/u_ctrl_ch2/u_fraccntr_b/</td>
+<td>0.001</td>
+<td>0.001(0.000)</td>
+<tr>
+<td>tangcart_msx/i68/u_ikascc/IKASCC_SYNC_MODE.u_player_main/u_ctrl_ch2/u_fraccntr_c/</td>
+<td>0.001</td>
+<td>0.001(0.000)</td>
+<tr>
+<td>tangcart_msx/i68/u_ikascc/IKASCC_SYNC_MODE.u_player_main/u_ctrl_ch2/u_intcntr/</td>
+<td>0.001</td>
+<td>0.001(0.000)</td>
+<tr>
+<td>tangcart_msx/i68/u_ikascc/IKASCC_SYNC_MODE.u_player_main/u_ctrl_ch3/</td>
+<td>0.008</td>
+<td>0.008(0.004)</td>
+<tr>
+<td>tangcart_msx/i68/u_ikascc/IKASCC_SYNC_MODE.u_player_main/u_ctrl_ch3/u_cyccntr/</td>
+<td>0.000</td>
+<td>0.000(0.000)</td>
+<tr>
+<td>tangcart_msx/i68/u_ikascc/IKASCC_SYNC_MODE.u_player_main/u_ctrl_ch3/u_fraccntr_a/</td>
+<td>0.001</td>
+<td>0.001(0.000)</td>
+<tr>
+<td>tangcart_msx/i68/u_ikascc/IKASCC_SYNC_MODE.u_player_main/u_ctrl_ch3/u_fraccntr_b/</td>
+<td>0.001</td>
+<td>0.001(0.000)</td>
+<tr>
+<td>tangcart_msx/i68/u_ikascc/IKASCC_SYNC_MODE.u_player_main/u_ctrl_ch3/u_fraccntr_c/</td>
+<td>0.001</td>
+<td>0.001(0.000)</td>
+<tr>
+<td>tangcart_msx/i68/u_ikascc/IKASCC_SYNC_MODE.u_player_main/u_ctrl_ch3/u_intcntr/</td>
+<td>0.001</td>
+<td>0.001(0.000)</td>
+<tr>
+<td>tangcart_msx/i68/u_ikascc/IKASCC_SYNC_MODE.u_player_main/u_ctrl_ch4/</td>
+<td>0.008</td>
+<td>0.008(0.004)</td>
+<tr>
+<td>tangcart_msx/i68/u_ikascc/IKASCC_SYNC_MODE.u_player_main/u_ctrl_ch4/u_cyccntr/</td>
+<td>0.000</td>
+<td>0.000(0.000)</td>
+<tr>
+<td>tangcart_msx/i68/u_ikascc/IKASCC_SYNC_MODE.u_player_main/u_ctrl_ch4/u_fraccntr_a/</td>
+<td>0.001</td>
+<td>0.001(0.000)</td>
+<tr>
+<td>tangcart_msx/i68/u_ikascc/IKASCC_SYNC_MODE.u_player_main/u_ctrl_ch4/u_fraccntr_b/</td>
+<td>0.001</td>
+<td>0.001(0.000)</td>
+<tr>
+<td>tangcart_msx/i68/u_ikascc/IKASCC_SYNC_MODE.u_player_main/u_ctrl_ch4/u_fraccntr_c/</td>
+<td>0.001</td>
+<td>0.001(0.000)</td>
+<tr>
+<td>tangcart_msx/i68/u_ikascc/IKASCC_SYNC_MODE.u_player_main/u_ctrl_ch4/u_intcntr/</td>
+<td>0.001</td>
+<td>0.001(0.000)</td>
+<tr>
+<td>tangcart_msx/i68/u_ikascc/IKASCC_SYNC_MODE.u_player_main/u_ctrl_ch5/</td>
+<td>0.008</td>
+<td>0.008(0.004)</td>
+<tr>
+<td>tangcart_msx/i68/u_ikascc/IKASCC_SYNC_MODE.u_player_main/u_ctrl_ch5/u_cyccntr/</td>
+<td>0.000</td>
+<td>0.000(0.000)</td>
+<tr>
+<td>tangcart_msx/i68/u_ikascc/IKASCC_SYNC_MODE.u_player_main/u_ctrl_ch5/u_fraccntr_a/</td>
+<td>0.001</td>
+<td>0.001(0.000)</td>
+<tr>
+<td>tangcart_msx/i68/u_ikascc/IKASCC_SYNC_MODE.u_player_main/u_ctrl_ch5/u_fraccntr_b/</td>
+<td>0.001</td>
+<td>0.001(0.000)</td>
+<tr>
+<td>tangcart_msx/i68/u_ikascc/IKASCC_SYNC_MODE.u_player_main/u_ctrl_ch5/u_fraccntr_c/</td>
+<td>0.001</td>
+<td>0.001(0.000)</td>
+<tr>
+<td>tangcart_msx/i68/u_ikascc/IKASCC_SYNC_MODE.u_player_main/u_ctrl_ch5/u_intcntr/</td>
+<td>0.001</td>
+<td>0.001(0.000)</td>
+<tr>
+<td>tangcart_msx/i68/u_ikascc/IKASCC_SYNC_MODE.u_player_main/u_mem_ch1/</td>
 <td>0.002</td>
 <td>0.002(0.000)</td>
 <tr>
-<td>tangcart_msx/u_msxbus/</td>
-<td>0.005</td>
-<td>0.005(0.000)</td>
+<td>tangcart_msx/i68/u_ikascc/IKASCC_SYNC_MODE.u_player_main/u_mem_ch2/</td>
+<td>0.002</td>
+<td>0.002(0.000)</td>
+<tr>
+<td>tangcart_msx/i68/u_ikascc/IKASCC_SYNC_MODE.u_player_main/u_mem_ch3/</td>
+<td>0.002</td>
+<td>0.002(0.000)</td>
+<tr>
+<td>tangcart_msx/i68/u_ikascc/IKASCC_SYNC_MODE.u_player_main/u_mem_ch45/</td>
+<td>0.002</td>
+<td>0.002(0.000)</td>
+<tr>
+<td>tangcart_msx/i68/u_ikascc/IKASCC_SYNC_MODE.u_vrc_s_main/</td>
+<td>0.001</td>
+<td>0.001(0.000)</td>
 <tr>
 <td>tangcart_msx/u_pll/</td>
-<td>3.594</td>
-<td>3.594(0.000)</td>
+<td>0.599</td>
+<td>0.599(0.000)</td>
 <tr>
-<td>tangcart_msx/u_psram/</td>
-<td>8.264</td>
-<td>8.264(8.255)</td>
-<tr>
-<td>tangcart_msx/u_psram/u_gowin_psram_if_2ch/</td>
-<td>8.255</td>
-<td>8.255(0.339)</td>
-<tr>
-<td>tangcart_msx/u_psram/u_gowin_psram_if_2ch/u_psram_sync/</td>
-<td>0.011</td>
-<td>0.011(0.000)</td>
-<tr>
-<td>tangcart_msx/u_psram/u_gowin_psram_if_2ch/u_psram_top0/</td>
-<td>0.165</td>
-<td>0.165(0.165)</td>
-<tr>
-<td>tangcart_msx/u_psram/u_gowin_psram_if_2ch/u_psram_top0/u_psram_top/</td>
-<td>0.165</td>
-<td>0.165(0.144)</td>
-<tr>
-<td>tangcart_msx/u_psram/u_gowin_psram_if_2ch/u_psram_top0/u_psram_top/u_psram_init/</td>
-<td>0.079</td>
-<td>0.079(0.000)</td>
-<tr>
-<td>tangcart_msx/u_psram/u_gowin_psram_if_2ch/u_psram_top0/u_psram_top/u_psram_wd/</td>
-<td>0.066</td>
-<td>0.066(0.048)</td>
-<tr>
-<td>tangcart_msx/u_psram/u_gowin_psram_if_2ch/u_psram_top0/u_psram_top/u_psram_wd/data_lane_gen[0].u_psram_lane/</td>
-<td>0.048</td>
-<td>0.048(0.000)</td>
-<tr>
-<td>tangcart_msx/u_psram/u_gowin_psram_if_2ch/u_psram_top1/</td>
-<td>0.162</td>
-<td>0.162(0.162)</td>
-<tr>
-<td>tangcart_msx/u_psram/u_gowin_psram_if_2ch/u_psram_top1/u_psram_top/</td>
-<td>0.162</td>
-<td>0.162(0.144)</td>
-<tr>
-<td>tangcart_msx/u_psram/u_gowin_psram_if_2ch/u_psram_top1/u_psram_top/u_psram_init/</td>
-<td>0.078</td>
-<td>0.078(0.000)</td>
-<tr>
-<td>tangcart_msx/u_psram/u_gowin_psram_if_2ch/u_psram_top1/u_psram_top/u_psram_wd/</td>
-<td>0.065</td>
-<td>0.065(0.048)</td>
-<tr>
-<td>tangcart_msx/u_psram/u_gowin_psram_if_2ch/u_psram_top1/u_psram_top/u_psram_wd/data_lane_gen[0].u_psram_lane/</td>
-<td>0.048</td>
-<td>0.048(0.000)</td>
-<tr>
-<td>tangcart_msx/u_ram/</td>
-<td>0.019</td>
-<td>0.019(0.000)</td>
+<td>tangcart_msx/u_pwm/</td>
+<td>0.005</td>
+<td>0.005(0.000)</td>
 </table>
 <h2><a name="By_Clock_Domain">Power By Clock Domain:</a></h2>
 <table class="detail_table">
@@ -348,14 +437,9 @@ table.detail_table th.label {  min-width: 8%; width: 8%; }
 <th class="label">Total Dynamic Power(mW)</th>
 </tr>
 <tr>
-<td>u_psram/u_gowin_psram_if_2ch/clkdiv/CLKOUT.default_gen_clk</td>
-<td>64.422</td>
-<td>0.328</td>
-</tr>
-<tr>
-<td>u_pll/pll_inst/CLKOUTD.default_gen_clk</td>
-<td>64.422</td>
-<td>0.089</td>
+<td>u_pll/pll_inst/CLKOUT.default_gen_clk</td>
+<td>21.474</td>
+<td>0.090</td>
 </tr>
 <tr>
 <td>NO CLOCK DOMAIN</td>
@@ -363,14 +447,9 @@ table.detail_table th.label {  min-width: 8%; width: 8%; }
 <td>0.000</td>
 </tr>
 <tr>
-<td>u_pll/pll_inst/CLKOUT.default_gen_clk</td>
-<td>128.844</td>
-<td>7.924</td>
-</tr>
-<tr>
 <td>tclock</td>
 <td>3.579</td>
-<td>3.594</td>
+<td>0.599</td>
 </tr>
 </table>
 </div><!-- content -->

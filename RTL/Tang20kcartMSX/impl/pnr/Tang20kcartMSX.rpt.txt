@@ -1,4 +1,4 @@
-//Copyright (C)2014-2023 Gowin Semiconductor Corporation.
+//Copyright (C)2014-2024 Gowin Semiconductor Corporation.
 //All rights reserved.
 
 
@@ -8,30 +8,30 @@
   <Design File>: D:\github\HRA_product\TangCartMSX\RTL\Tang20kcartMSX\impl\gwsynthesis\Tang20kcartMSX.vg
   <Physical Constraints File>: D:\github\HRA_product\TangCartMSX\RTL\Tang20kcartMSX\src\Tang20kcartMSX.cst
   <Timing Constraints File>: ---
-  <Tool Version>: V1.9.9 (64-bit)
+  <Tool Version>: V1.9.9.03 (64-bit)
   <Part Number>: GW2AR-LV18QN88C8/I7
   <Device>: GW2AR-18
-  <Created Time>:Fri Aug 30 06:41:52 2024
+  <Created Time>:Thu Sep 12 07:07:21 2024
 
 
 2. PnR Details
 
   Running placement:
-    Placement Phase 0: CPU time = 0h 0m 0.157s, Elapsed time = 0h 0m 0.157s
-    Placement Phase 1: CPU time = 0h 0m 0.311s, Elapsed time = 0h 0m 0.311s
-    Placement Phase 2: CPU time = 0h 0m 0.096s, Elapsed time = 0h 0m 0.097s
+    Placement Phase 0: CPU time = 0h 0m 0.079s, Elapsed time = 0h 0m 0.079s
+    Placement Phase 1: CPU time = 0h 0m 0.31s, Elapsed time = 0h 0m 0.31s
+    Placement Phase 2: CPU time = 0h 0m 0.058s, Elapsed time = 0h 0m 0.058s
     Placement Phase 3: CPU time = 0h 0m 1s, Elapsed time = 0h 0m 1s
-    Total Placement: CPU time = 0h 0m 2s, Elapsed time = 0h 0m 2s
+    Total Placement: CPU time = 0h 0m 1s, Elapsed time = 0h 0m 1s
  Running routing:
-    Routing Phase 0: CPU time = 0h 0m 0.001s, Elapsed time = 0h 0m 0.001s
-    Routing Phase 1: CPU time = 0h 0m 0.177s, Elapsed time = 0h 0m 0.178s
-    Routing Phase 2: CPU time = 0h 0m 1s, Elapsed time = 0h 0m 1s
+    Routing Phase 0: CPU time = 0h 0m 0s, Elapsed time = 0h 0m 0s
+    Routing Phase 1: CPU time = 0h 0m 0.162s, Elapsed time = 0h 0m 0.162s
+    Routing Phase 2: CPU time = 0h 0m 0.446s, Elapsed time = 0h 0m 0.446s
     Routing Phase 3: CPU time = 0h 0m 0s, Elapsed time = 0h 0m 0s
-    Total Routing: CPU time = 0h 0m 1s, Elapsed time = 0h 0m 1s
+    Total Routing: CPU time = 0h 0m 0.608s, Elapsed time = 0h 0m 0.608s
  Generate output files:
-    CPU time = 0h 0m 3s, Elapsed time = 0h 0m 3s
+    CPU time = 0h 0m 2s, Elapsed time = 0h 0m 2s
 
- Total Time and Memory Usage: CPU time = 0h 0m 6s, Elapsed time = 0h 0m 6s, Peak memory usage = 538MB
+ Total Time and Memory Usage: CPU time = 0h 0m 4s, Elapsed time = 0h 0m 4s, Peak memory usage = 409MB
 
 
 3. Resource Usage Summary
@@ -39,23 +39,22 @@
   ----------------------------------------------------------
   Resources                   | Usage
   ----------------------------------------------------------
-  Logic                       | 673/20736  4%
-    --LUT,ALU,ROM16           | 619(559 LUT, 60 ALU, 0 ROM16)
-    --SSRAM(RAM16)            | 9
-  Register                    | 440/15915  3%
+  Logic                       | 404/20736  2%
+    --LUT,ALU,ROM16           | 404(368 LUT, 36 ALU, 0 ROM16)
+    --SSRAM(RAM16)            | 0
+  Register                    | 234/15915  2%
     --Logic Register as Latch | 0/15552  0%
-    --Logic Register as FF    | 380/15552  3%
+    --Logic Register as FF    | 215/15552  2%
     --I/O Register as Latch   | 0/363  0%
-    --I/O Register as FF      | 60/363  17%
-  CLS                         | 437/10368  5%
+    --I/O Register as FF      | 19/363  6%
+  CLS                         | 264/10368  3%
   I/O Port                    | 42
-  I/O Buf                     | 38
-    --Input Buf               | 20
+  I/O Buf                     | 35
+    --Input Buf               | 17
     --Output Buf              | 16
     --Inout Buf               | 2
   IOLOGIC                     | 0%
-  BSRAM                       | 3%
-    --SDPX9B                  | 1
+  BSRAM                       | 0%
   DSP                         | 0%
   PLL                         | 1/2  50%
   DCS                         | 0/8  0%
@@ -90,7 +89,7 @@
   -------------------------------
   Global Clock  | Usage       
   -------------------------------
-  PRIMARY       | 2/8(25%)
+  PRIMARY       | 3/8(38%)
   LW            | 1/8(13%)
   GCLK_PIN      | 2/5(40%)
   PLL           | 1/2(50%)
@@ -104,8 +103,9 @@
   -------------------------------------------
   Signal         | Global Clock   | Location
   -------------------------------------------
-  clk27m_d       | PRIMARY        |  PTR0
-  O_sdram_clk_d  | PRIMARY        |  PTR0 PTR1
+  clk27m_d       | PRIMARY        |  BL
+  O_sdram_clk_d  | PRIMARY        |  TR TL BR BL
+  clk_sdram      | PRIMARY        |  TR TL BR BL
   ff_reset[6]    | LW             |  -
   ===========================================
 

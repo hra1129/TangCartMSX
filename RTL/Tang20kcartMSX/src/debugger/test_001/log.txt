@@ -1,10 +1,20 @@
 # vsim -c -t 1ps -do "run.do" tb 
-# Start time: 21:18:37 on Aug 26,2024
+# Start time: 06:47:39 on Sep 11,2024
 # Loading sv_std.std
 # Loading work.tb
 # Loading work.ip_debugger
-# do run.do
-# ** Note: $finish    : tb.sv(149)
-#    Time: 900225 ps  Iteration: 1  Instance: /tb
-# End time: 21:18:37 on Aug 26,2024, Elapsed time: 0:00:00
-# Errors: 0, Warnings: 0
+# ** Warning: (vsim-2685) [TFMPC] - Too few port connections for 'u_debuffer'.  Expected 14, found 7.
+#    Time: 0 ps  Iteration: 0  Instance: /tb/u_debuffer File: tb.sv Line: 40
+# ** Error: (vsim-3063) Port 'address' not found in the connected module (7th connection).
+#    Time: 0 ps  Iteration: 0  Instance: /tb/u_debuffer File: tb.sv Line: 40
+# ** Warning: (vsim-3722) tb.sv(40): [TFMPC] - Missing connection for port 'sdram_initial_busy'.
+# ** Warning: (vsim-3722) tb.sv(40): [TFMPC] - Missing connection for port 'sdram_rd'.
+# ** Warning: (vsim-3722) tb.sv(40): [TFMPC] - Missing connection for port 'sdram_wr'.
+# ** Warning: (vsim-3722) tb.sv(40): [TFMPC] - Missing connection for port 'sdram_busy'.
+# ** Warning: (vsim-3722) tb.sv(40): [TFMPC] - Missing connection for port 'sdram_address'.
+# ** Warning: (vsim-3722) tb.sv(40): [TFMPC] - Missing connection for port 'sdram_wdata'.
+# ** Warning: (vsim-3722) tb.sv(40): [TFMPC] - Missing connection for port 'sdram_rdata'.
+# ** Warning: (vsim-3722) tb.sv(40): [TFMPC] - Missing connection for port 'sdram_rdata_en'.
+# Error loading design
+# End time: 06:47:40 on Sep 11,2024, Elapsed time: 0:00:01
+# Errors: 1, Warnings: 9

@@ -1,65 +1,38 @@
 GowinSynthesis start
 Running parser ...
-Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\Tang20kcartMSX\src\SDRAM_controller_top_SIP\SDRAM_controller_top_SIP.v'
 Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\Tang20kcartMSX\src\debugger\ip_debugger.v'
 Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\Tang20kcartMSX\src\gowin_pll\gowin_pll.v'
+Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\Tang20kcartMSX\src\gowin_rpll\gowin_rpll.v'
 Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\Tang20kcartMSX\src\gpio\ip_gpio.v'
 Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\Tang20kcartMSX\src\msxbus\ip_msxbus.v'
 Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\Tang20kcartMSX\src\pwm\ip_pwm.v'
 Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\Tang20kcartMSX\src\sdram\ip_sdram.v'
-WARN  (EX3628) : Redeclaration of ANSI port 'O_sdram_clk' is not allowed("D:\github\HRA_product\TangCartMSX\RTL\Tang20kcartMSX\src\sdram\ip_sdram.v":52)
-WARN  (EX3628) : Redeclaration of ANSI port 'O_sdram_cke' is not allowed("D:\github\HRA_product\TangCartMSX\RTL\Tang20kcartMSX\src\sdram\ip_sdram.v":53)
-WARN  (EX3628) : Redeclaration of ANSI port 'O_sdram_cs_n' is not allowed("D:\github\HRA_product\TangCartMSX\RTL\Tang20kcartMSX\src\sdram\ip_sdram.v":54)
-WARN  (EX3628) : Redeclaration of ANSI port 'O_sdram_cas_n' is not allowed("D:\github\HRA_product\TangCartMSX\RTL\Tang20kcartMSX\src\sdram\ip_sdram.v":55)
-WARN  (EX3628) : Redeclaration of ANSI port 'O_sdram_ras_n' is not allowed("D:\github\HRA_product\TangCartMSX\RTL\Tang20kcartMSX\src\sdram\ip_sdram.v":56)
-WARN  (EX3628) : Redeclaration of ANSI port 'O_sdram_wen_n' is not allowed("D:\github\HRA_product\TangCartMSX\RTL\Tang20kcartMSX\src\sdram\ip_sdram.v":57)
-WARN  (EX3628) : Redeclaration of ANSI port 'O_sdram_dqm' is not allowed("D:\github\HRA_product\TangCartMSX\RTL\Tang20kcartMSX\src\sdram\ip_sdram.v":58)
-WARN  (EX3628) : Redeclaration of ANSI port 'O_sdram_addr' is not allowed("D:\github\HRA_product\TangCartMSX\RTL\Tang20kcartMSX\src\sdram\ip_sdram.v":59)
-WARN  (EX3628) : Redeclaration of ANSI port 'O_sdram_ba' is not allowed("D:\github\HRA_product\TangCartMSX\RTL\Tang20kcartMSX\src\sdram\ip_sdram.v":60)
-WARN  (EX3628) : Redeclaration of ANSI port 'IO_sdram_dq' is not allowed("D:\github\HRA_product\TangCartMSX\RTL\Tang20kcartMSX\src\sdram\ip_sdram.v":61)
-Undeclared symbol 'I_sdrc_wr_n_i', assumed default net type 'wire'("D:\github\HRA_product\TangCartMSX\RTL\Tang20kcartMSX\src\sdram\ip_sdram.v":100)
-Undeclared symbol 'I_sdrc_rd_n_i', assumed default net type 'wire'("D:\github\HRA_product\TangCartMSX\RTL\Tang20kcartMSX\src\sdram\ip_sdram.v":101)
-Undeclared symbol 'I_sdrc_addr_i', assumed default net type 'wire'("D:\github\HRA_product\TangCartMSX\RTL\Tang20kcartMSX\src\sdram\ip_sdram.v":102)
-Undeclared symbol 'I_sdrc_data_len_i', assumed default net type 'wire'("D:\github\HRA_product\TangCartMSX\RTL\Tang20kcartMSX\src\sdram\ip_sdram.v":103)
-Undeclared symbol 'I_sdrc_dqm_i', assumed default net type 'wire'("D:\github\HRA_product\TangCartMSX\RTL\Tang20kcartMSX\src\sdram\ip_sdram.v":104)
-Undeclared symbol 'I_sdrc_data_i', assumed default net type 'wire'("D:\github\HRA_product\TangCartMSX\RTL\Tang20kcartMSX\src\sdram\ip_sdram.v":105)
 Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\Tang20kcartMSX\src\tang20\tang20.v'
 Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\Tang20kcartMSX\src\tang20cart_msx.v'
 Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\Tang20kcartMSX\src\uart\ip_uart.v'
 Compiling module 'tang20cart_msx'("D:\github\HRA_product\TangCartMSX\RTL\Tang20kcartMSX\src\tang20cart_msx.v":26)
-Compiling module 'Gowin_PLL'("D:\github\HRA_product\TangCartMSX\RTL\Tang20kcartMSX\src\gowin_pll\gowin_pll.v":9)
-WARN  (EX3791) : Expression size 27 truncated to fit in target size 26("D:\github\HRA_product\TangCartMSX\RTL\Tang20kcartMSX\src\tang20cart_msx.v":199)
-WARN  (EX3791) : Expression size 3 truncated to fit in target size 2("D:\github\HRA_product\TangCartMSX\RTL\Tang20kcartMSX\src\tang20cart_msx.v":208)
+Compiling module 'Gowin_rPLL'("D:\github\HRA_product\TangCartMSX\RTL\Tang20kcartMSX\src\gowin_rpll\gowin_rpll.v":9)
+WARN  (EX3791) : Expression size 27 truncated to fit in target size 26("D:\github\HRA_product\TangCartMSX\RTL\Tang20kcartMSX\src\tang20cart_msx.v":197)
+WARN  (EX3791) : Expression size 3 truncated to fit in target size 2("D:\github\HRA_product\TangCartMSX\RTL\Tang20kcartMSX\src\tang20cart_msx.v":206)
 Compiling module 'tang20'("D:\github\HRA_product\TangCartMSX\RTL\Tang20kcartMSX\src\tang20\tang20.v":26)
 Compiling module 'ip_msxbus'("D:\github\HRA_product\TangCartMSX\RTL\Tang20kcartMSX\src\msxbus\ip_msxbus.v":28)
 Compiling module 'ip_gpio'("D:\github\HRA_product\TangCartMSX\RTL\Tang20kcartMSX\src\gpio\ip_gpio.v":27)
 Compiling module 'ip_sdram'("D:\github\HRA_product\TangCartMSX\RTL\Tang20kcartMSX\src\sdram\ip_sdram.v":27)
-Compiling module 'SDRAM_controller_top_SIP'("D:\github\HRA_product\TangCartMSX\RTL\Tang20kcartMSX\src\SDRAM_controller_top_SIP\SDRAM_controller_top_SIP.v":2633)
-Compiling module '**'("D:\github\HRA_product\TangCartMSX\RTL\Tang20kcartMSX\src\SDRAM_controller_top_SIP\SDRAM_controller_top_SIP.v":0)
-Compiling module '**'("D:\github\HRA_product\TangCartMSX\RTL\Tang20kcartMSX\src\SDRAM_controller_top_SIP\SDRAM_controller_top_SIP.v":0)
-Compiling module '**'("D:\github\HRA_product\TangCartMSX\RTL\Tang20kcartMSX\src\SDRAM_controller_top_SIP\SDRAM_controller_top_SIP.v":0)
-Compiling module '**'("D:\github\HRA_product\TangCartMSX\RTL\Tang20kcartMSX\src\SDRAM_controller_top_SIP\SDRAM_controller_top_SIP.v":0)
-WARN  (EX3670) : Actual bit length 1 differs from formal bit length 21 for port 'I_sdrc_addr'("D:\github\HRA_product\TangCartMSX\RTL\Tang20kcartMSX\src\sdram\ip_sdram.v":102)
-WARN  (EX3670) : Actual bit length 1 differs from formal bit length 8 for port 'I_sdrc_data_len'("D:\github\HRA_product\TangCartMSX\RTL\Tang20kcartMSX\src\sdram\ip_sdram.v":103)
-WARN  (EX3670) : Actual bit length 1 differs from formal bit length 4 for port 'I_sdrc_dqm'("D:\github\HRA_product\TangCartMSX\RTL\Tang20kcartMSX\src\sdram\ip_sdram.v":104)
-WARN  (EX3670) : Actual bit length 1 differs from formal bit length 32 for port 'I_sdrc_data'("D:\github\HRA_product\TangCartMSX\RTL\Tang20kcartMSX\src\sdram\ip_sdram.v":105)
-WARN  (EX3791) : Expression size 21 truncated to fit in target size 1("D:\github\HRA_product\TangCartMSX\RTL\Tang20kcartMSX\src\sdram\ip_sdram.v":115)
-WARN  (EX3791) : Expression size 32 truncated to fit in target size 1("D:\github\HRA_product\TangCartMSX\RTL\Tang20kcartMSX\src\sdram\ip_sdram.v":117)
-WARN  (EX3791) : Expression size 4 truncated to fit in target size 1("D:\github\HRA_product\TangCartMSX\RTL\Tang20kcartMSX\src\sdram\ip_sdram.v":120)
-WARN  (EX3791) : Expression size 27 truncated to fit in target size 26("D:\github\HRA_product\TangCartMSX\RTL\Tang20kcartMSX\src\tang20cart_msx.v":459)
+WARN  (EX3791) : Expression size 14 truncated to fit in target size 13("D:\github\HRA_product\TangCartMSX\RTL\Tang20kcartMSX\src\sdram\ip_sdram.v":74)
+WARN  (EX3791) : Expression size 11 truncated to fit in target size 10("D:\github\HRA_product\TangCartMSX\RTL\Tang20kcartMSX\src\sdram\ip_sdram.v":233)
+WARN  (EX3791) : Expression size 27 truncated to fit in target size 26("D:\github\HRA_product\TangCartMSX\RTL\Tang20kcartMSX\src\tang20cart_msx.v":457)
 Compiling module 'ip_uart(clk_freq=54000000)'("D:\github\HRA_product\TangCartMSX\RTL\Tang20kcartMSX\src\uart\ip_uart.v":27)
 WARN  (EX3791) : Expression size 32 truncated to fit in target size 11("D:\github\HRA_product\TangCartMSX\RTL\Tang20kcartMSX\src\uart\ip_uart.v":68)
 Compiling module 'ip_debugger'("D:\github\HRA_product\TangCartMSX\RTL\Tang20kcartMSX\src\debugger\ip_debugger.v":27)
-WARN  (EX3791) : Expression size 5 truncated to fit in target size 4("D:\github\HRA_product\TangCartMSX\RTL\Tang20kcartMSX\src\debugger\ip_debugger.v":128)
 Compiling module 'ip_pwm'("D:\github\HRA_product\TangCartMSX\RTL\Tang20kcartMSX\src\pwm\ip_pwm.v":27)
-WARN  (EX1998) : Net 'w_sdram_address[22]' does not have a driver("D:\github\HRA_product\TangCartMSX\RTL\Tang20kcartMSX\src\tang20cart_msx.v":129)
-WARN  (EX1998) : Net 'w_sdram_wdata[7]' does not have a driver("D:\github\HRA_product\TangCartMSX\RTL\Tang20kcartMSX\src\tang20cart_msx.v":130)
 NOTE  (EX0101) : Current top module is "tang20cart_msx"
 WARN  (EX0211) : The output port "mspi_cs" of module "tang20cart_msx" has no driver, assigning undriven bits to Z, simulation mismatch possible("D:\github\HRA_product\TangCartMSX\RTL\Tang20kcartMSX\src\tang20cart_msx.v":45)
 WARN  (EX0211) : The output port "mspi_sclk" of module "tang20cart_msx" has no driver, assigning undriven bits to Z, simulation mismatch possible("D:\github\HRA_product\TangCartMSX\RTL\Tang20kcartMSX\src\tang20cart_msx.v":46)
 [5%] Running netlist conversion ...
 WARN  (CV0016) : Input n_treset is unused("D:\github\HRA_product\TangCartMSX\RTL\Tang20kcartMSX\src\tang20cart_msx.v":29)
 WARN  (CV0016) : Input tclock is unused("D:\github\HRA_product\TangCartMSX\RTL\Tang20kcartMSX\src\tang20cart_msx.v":30)
+WARN  (CV0020) : Input ta[7:6] is unused("D:\github\HRA_product\TangCartMSX\RTL\Tang20kcartMSX\src\tang20cart_msx.v":36)
+WARN  (CV0018) : Input keys[1] is unused("D:\github\HRA_product\TangCartMSX\RTL\Tang20kcartMSX\src\tang20cart_msx.v":41)
 WARN  (CV0017) : Inout mspi_mosi is unused("D:\github\HRA_product\TangCartMSX\RTL\Tang20kcartMSX\src\tang20cart_msx.v":47)
 WARN  (CV0017) : Inout mspi_miso is unused("D:\github\HRA_product\TangCartMSX\RTL\Tang20kcartMSX\src\tang20cart_msx.v":48)
 Running device independent optimization ...

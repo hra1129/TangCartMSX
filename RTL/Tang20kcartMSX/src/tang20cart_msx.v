@@ -79,6 +79,7 @@ module tang20cart_msx (
 	reg		[6:0]	ff_reset = 7'd0;
 	reg		[4:0]	ff_wait = 5'b10000;
 	wire			clk;
+	wire			clk_sdram;
 	reg				ff_21mhz = 1'b0;
 	reg		[5:0]	ff_1mhz = 6'd0;
 	wire			w_1mhz;
@@ -122,7 +123,6 @@ module tang20cart_msx (
 	wire	[7:0]	w_srom_rdata;
 	wire			w_srom_rdata_en;
 	//	SDRAM
-	wire			w_sdram_initial_busy;
 	wire			w_sdram_rd;
 	wire			w_sdram_wr;
 	wire			w_sdram_busy;
@@ -160,10 +160,7 @@ module tang20cart_msx (
 
 	assign td			= w_is_output   ? w_o_data : 8'hZZ;
 	assign tdir			= w_is_output;
-	assign twait		= ff_wait[4] | w_sdram_initial_busy;	// | w_srom_busy;
-
-	assign w_sdram_rd	= 1'b0;
-	assign w_sdram_wr	= 1'b0;
+	assign twait		= ff_wait[4];	// | w_srom_busy;
 
 	always @( posedge clk ) begin
 		ff_reset[5:0]	<= { ff_reset[4:0], 1'b1 };	//n_treset };
@@ -183,9 +180,10 @@ module tang20cart_msx (
 	// --------------------------------------------------------------------
 	//	PLL 3.579545MHz --> 42.95454MHz
 	// --------------------------------------------------------------------
-	Gowin_PLL u_pll (
-		.clkout				( clk						),		//output	54MHz (42.95454MHz)
-		.clkin				( clk27m					)		//input		27MHz (3.579545MHz)
+	Gowin_rPLL u_pll (
+		.clkout				( clk						),		// output		54MHz
+		.clkoutp			( clk_sdram					),		// output		54MHz with 180degree phase shifted.
+		.clkin				( clk27m					)		// input		27MHz
 	);
 
 	always @( posedge clk ) begin
@@ -404,7 +402,7 @@ module tang20cart_msx (
 	ip_sdram u_sdram (
 		.n_reset			( w_n_reset					),
 		.clk				( clk						),
-		.initial_busy		( w_sdram_initial_busy		),
+		.clk_sdram			( clk_sdram					),
 		.rd					( w_sdram_rd				),
 		.wr					( w_sdram_wr				),
 		.busy				( w_sdram_busy				),
@@ -510,11 +508,13 @@ module tang20cart_msx (
 		.send_req			( w_send_req				),
 		.send_busy			( w_send_busy				),
 		.keys				( keys						),
-		.address			( taddress					),
-		.n_twr				( n_twr						),
-		.n_trd				( n_trd						),
-		.n_tsltsl			( n_tsltsl					),
-		.n_tiorq			( n_tiorq					)
+		.sdram_rd			( w_sdram_rd				),
+		.sdram_wr			( w_sdram_wr				),
+		.sdram_busy			( w_sdram_busy				),
+		.sdram_address		( w_sdram_address			),
+		.sdram_wdata		( w_sdram_wdata				),
+		.sdram_rdata		( w_sdram_rdata				),
+		.sdram_rdata_en		( w_sdram_rdata_en			)
 	);
 
 	// --------------------------------------------------------------------
