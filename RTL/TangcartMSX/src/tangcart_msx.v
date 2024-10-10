@@ -56,8 +56,10 @@ module tangcart_msx (
 	wire	[7:0]	w_scc_data;
 	wire			w_scc_data_en;
 	wire	[10:0]	w_scc_out;
+	//	OPLL
+	wire	[15:0]	w_opll_out;
 	//	sound generator
-	reg		[10:0]	ff_sound;
+	reg		[16:0]	ff_sound;
 
 	// --------------------------------------------------------------------
 	//	OUTPUT Assignment
@@ -65,6 +67,7 @@ module tangcart_msx (
 	assign w_is_output	= w_scc_data_en;
 	assign td			= w_is_output   ? w_scc_data : 8'hZZ;
 	assign tdir			= w_is_output;
+	assign n_led		= 6'd0;
 
 	// --------------------------------------------------------------------
 	//	Reset and wait
@@ -95,6 +98,9 @@ module tangcart_msx (
 		.clkin				( tclock					)		// input	 3.579454MHz
 	);
 
+	// --------------------------------------------------------------------
+	//	w_mclk_pcen_n: 3.579545MHz timing pulse
+	// --------------------------------------------------------------------
 	always @( posedge clk ) begin
 		if( !w_n_reset ) begin
 			ff_4mhz <= 3'd0;
@@ -110,9 +116,9 @@ module tangcart_msx (
 	assign w_mclk_pcen_n	= (ff_4mhz == 3'd0) ? 1'b0: 1'b1;
 
 	// --------------------------------------------------------------------
-	//	SCC
+	//	SCC and MSX-MUSIC ROM
 	// --------------------------------------------------------------------
-	ip_ikascc_wrapper (
+	ip_ikascc_wrapper u_ikascc_wrapper (
 		.n_reset			( w_n_reset					),
 		.clk				( clk						),		//	21.47727MHz
 		.mclk_pcen_n		( w_mclk_pcen_n				),
@@ -123,8 +129,24 @@ module tangcart_msx (
 		.wdata				( td						),
 		.rdata				( w_scc_data				),
 		.rdata_en			( w_scc_data_en				),
-		.sound_out			( w_scc_out					),
-		.n_led				( n_led						)
+		.sound_out			( w_scc_out					)
+	);
+
+	// --------------------------------------------------------------------
+	//	OPLL
+	// --------------------------------------------------------------------
+	ip_ikaopll_wrapper #(
+		.BUILT_IN_MODE		( 1							)		// 0: Cartridge mode, 1: Built in mode
+	) u_ikaopll_wrapper (
+		.n_reset			( w_n_reset					),
+		.clk				( clk						),
+		.mclkpcen_n			( w_mclk_pcen_n				),
+		.n_ioreq			( n_tiorq					),
+		.n_sltsl			( n_tsltsl					),
+		.n_wr				( n_twr						),
+		.address			( ta						),
+		.wdata				( td						),
+		.sound_out			( w_opll_out				)
 	);
 
 	// --------------------------------------------------------------------
@@ -132,10 +154,10 @@ module tangcart_msx (
 	// --------------------------------------------------------------------
 	always @( posedge clk ) begin
 		if( !w_n_reset ) begin
-			ff_sound <= 11'h00;
+			ff_sound <= 17'd0;
 		end
 		else begin
-			ff_sound <= w_scc_out;
+			ff_sound <= { w_scc_out[10], w_scc_out, 5'd0 } + { w_opll_out[15], w_opll_out };
 		end
 	end
 
@@ -143,7 +165,7 @@ module tangcart_msx (
 		.n_reset			( w_n_reset									),
 		.clk				( clk										),		//	21.47727MHz
 		.enable				( 1'b1										),
-		.signal_level		( { ~ff_sound[10], ff_sound[9:0], 5'd0 }	),
+		.signal_level		( ff_sound									),
 		.pwm_wave			( tsnd										)
 	);
 endmodule

@@ -1,10 +1,21 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<Module name="tang20cart_msx" Register="12" Lut="8" T_Register="234(12)" T_Alu="31(0)" T_Lut="370(8)">
+<Module name="tang20cart_msx" Register="40" Alu="25" Lut="22" T_Register="380(40)" T_Alu="59(25)" T_Lut="636(22)" T_Bsram="2(0)">
     <SubModule name="u_pll"/>
-    <SubModule name="u_address_latch" Register="16" Lut="6" T_Register="16(16)" T_Lut="6(6)"/>
-    <SubModule name="u_msxbus" Register="24" Lut="10" T_Register="24(24)" T_Lut="10(10)"/>
-    <SubModule name="u_gpio" Register="5" Lut="10" T_Register="5(5)" T_Lut="10(10)"/>
-    <SubModule name="u_sdram" Register="96" Alu="23" Lut="157" T_Register="96(96)" T_Alu="23(23)" T_Lut="157(157)"/>
-    <SubModule name="u_uart" Register="25" Lut="33" T_Register="25(25)" T_Lut="33(33)"/>
-    <SubModule name="u_debugger" Register="56" Alu="8" Lut="146" T_Register="56(56)" T_Alu="8(8)" T_Lut="146(146)"/>
+    <SubModule name="u_sdram" Register="86" Alu="19" Lut="155" T_Register="86(86)" T_Alu="19(19)" T_Lut="155(155)"/>
+    <SubModule name="u_v9958" Register="47" Lut="111" T_Register="254(47)" T_Alu="15(0)" T_Lut="459(111)" T_Bsram="2(0)">
+        <SubModule name="U_VDP_VGA" Register="14" Lut="58" T_Register="34(14)" T_Lut="113(58)" T_Bsram="2(0)">
+            <SubModule name="DBUF" Lut="31" T_Register="20(0)" T_Lut="55(31)" T_Bsram="2(0)">
+                <SubModule name="U_BUF_RE" Register="10" Lut="11" T_Register="10(10)" T_Lut="11(11)"/>
+                <SubModule name="U_BUF_BE" Lut="1" Bsram="1" T_Lut="1(1)" T_Bsram="1(1)"/>
+                <SubModule name="U_BUF_RO" Register="10" Lut="11" T_Register="10(10)" T_Lut="11(11)"/>
+                <SubModule name="U_BUF_BO" Lut="1" Bsram="1" T_Lut="1(1)" T_Bsram="1(1)"/>
+            </SubModule>
+        </SubModule>
+        <SubModule name="U_SSG" Register="42" Lut="69" T_Register="75(42)" T_Lut="129(69)">
+            <SubModule name="U_HVCOUNTER" Register="33" Lut="60" T_Register="33(33)" T_Lut="60(60)"/>
+        </SubModule>
+        <SubModule name="U_VDP_GRAPHIC123M" Register="19" Lut="19" T_Register="19(19)" T_Lut="19(19)"/>
+        <SubModule name="U_SPRITE" Register="78" Alu="15" Lut="86" T_Register="78(78)" T_Alu="15(15)" T_Lut="86(86)"/>
+        <SubModule name="U_VDP_WAIT_CONTROL" Register="1" Lut="1" T_Register="1(1)" T_Lut="1(1)"/>
+    </SubModule>
 </Module>

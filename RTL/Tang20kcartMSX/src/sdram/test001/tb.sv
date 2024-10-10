@@ -25,16 +25,16 @@
 // -----------------------------------------------------------------------------
 
 module tb ();
-	localparam		clk_base	= 1_000_000_000/54_000;	//	ps
+	localparam		clk_base	= 1_000_000_000/108_000;	//	ps
 	reg				n_reset;
-	reg				clk;				// 54MHz
-	reg				clk_sdram;			// 54MHz with 180dgree delay
+	reg				clk;				// 108MHz
+	reg				clk_sdram;			// 108MHz with 180dgree delay
 	reg				rd;					// Set to 1 to read
 	reg				wr;					// Set to 1 to write
 	wire			busy;
 	reg		[22:0]	address;			// Byte address (8MBytes)
 	reg		[7:0]	wdata;
-	wire	[7:0]	rdata;
+	wire	[15:0]	rdata;
 	wire			rdata_en;
 	wire			O_sdram_clk;
 	wire			O_sdram_cke;
@@ -54,8 +54,8 @@ module tb ();
 		.n_reset			( n_reset			),
 		.clk				( clk				),
 		.clk_sdram			( clk_sdram			),
-		.rd					( rd				),
-		.wr					( wr				),
+		.rd_n				( !rd				),
+		.wr_n				( !wr				),
 		.busy				( busy				),
 		.address			( address			),
 		.wdata				( wdata				),
@@ -120,7 +120,7 @@ module tb ();
 	// --------------------------------------------------------------------
 	task read_data(
 		input	[22:0]	p_address,
-		input	[7:0]	p_data
+		input	[15:0]	p_data
 	);
 		int time_out;
 
@@ -171,12 +171,20 @@ module tb ();
 		write_data( 'h000000, 'h12 );
 		write_data( 'h000001, 'h23 );
 		write_data( 'h100002, 'h34 );
-		write_data( 'h200003, 'h45 );
+		write_data( 'h100003, 'h45 );
+		write_data( 'h200000, 'h56 );
+		write_data( 'h200001, 'h67 );
+		write_data( 'h300002, 'h78 );
+		write_data( 'h300003, 'h89 );
 
-		read_data(  'h000000, 'h12 );
-		read_data(  'h000001, 'h23 );
-		read_data(  'h100002, 'h34 );
-		read_data(  'h200003, 'h45 );
+		read_data(  'h000000, 'h2312 );
+		read_data(  'h000001, 'h2312 );
+		read_data(  'h100002, 'h4534 );
+		read_data(  'h100003, 'h4534 );
+		read_data(  'h200000, 'h6756 );
+		read_data(  'h200001, 'h6756 );
+		read_data(  'h300002, 'h8978 );
+		read_data(  'h300003, 'h8978 );
 
 		forever begin
 			if( !busy ) begin

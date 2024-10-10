@@ -5,6 +5,17 @@
     <Device id="GW1NR-9C" package="QFN88P" speed="6" partNumber="GW1NR-LV9QN88PC6/I5"/>
     <FileList>
         <File path="D:\github\HRA_product\TangCartMSX\RTL\TangcartMSX\src\gowin_pll\gowin_pll.v" type="verilog"/>
+        <File path="D:\github\HRA_product\TangCartMSX\RTL\TangcartMSX\src\ikaopll\IKAOPLL.v" type="verilog"/>
+        <File path="D:\github\HRA_product\TangCartMSX\RTL\TangcartMSX\src\ikaopll\IKAOPLL_modules\IKAOPLL_dac.v" type="verilog"/>
+        <File path="D:\github\HRA_product\TangCartMSX\RTL\TangcartMSX\src\ikaopll\IKAOPLL_modules\IKAOPLL_eg.v" type="verilog"/>
+        <File path="D:\github\HRA_product\TangCartMSX\RTL\TangcartMSX\src\ikaopll\IKAOPLL_modules\IKAOPLL_lfo.v" type="verilog"/>
+        <File path="D:\github\HRA_product\TangCartMSX\RTL\TangcartMSX\src\ikaopll\IKAOPLL_modules\IKAOPLL_op.v" type="verilog"/>
+        <File path="D:\github\HRA_product\TangCartMSX\RTL\TangcartMSX\src\ikaopll\IKAOPLL_modules\IKAOPLL_pg.v" type="verilog"/>
+        <File path="D:\github\HRA_product\TangCartMSX\RTL\TangcartMSX\src\ikaopll\IKAOPLL_modules\IKAOPLL_primitives.v" type="verilog"/>
+        <File path="D:\github\HRA_product\TangCartMSX\RTL\TangcartMSX\src\ikaopll\IKAOPLL_modules\IKAOPLL_reg.v" type="verilog"/>
+        <File path="D:\github\HRA_product\TangCartMSX\RTL\TangcartMSX\src\ikaopll\IKAOPLL_modules\IKAOPLL_timinggen.v" type="verilog"/>
+        <File path="D:\github\HRA_product\TangCartMSX\RTL\TangcartMSX\src\ikaopll_wrap\ikaopll_wrap.v" type="verilog"/>
+        <File path="D:\github\HRA_product\TangCartMSX\RTL\TangcartMSX\src\ikaopll_wrap\ip_msxmusic_rom.v" type="verilog"/>
         <File path="D:\github\HRA_product\TangCartMSX\RTL\TangcartMSX\src\ikascc\IKASCC.v" type="verilog"/>
         <File path="D:\github\HRA_product\TangCartMSX\RTL\TangcartMSX\src\ikascc\IKASCC_modules\IKASCC_player_a.v" type="verilog"/>
         <File path="D:\github\HRA_product\TangCartMSX\RTL\TangcartMSX\src\ikascc\IKASCC_modules\IKASCC_player_s.v" type="verilog"/>

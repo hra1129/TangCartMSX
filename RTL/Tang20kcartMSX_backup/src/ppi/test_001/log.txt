@@ -1,0 +1,32 @@
+# vsim -c -t 1ps -do "run.do" tb 
+# Start time: 06:36:00 on May 23,2024
+# Loading sv_std.std
+# Loading work.tb
+# Loading work.ip_ppi
+# do run.do
+# Check CS port
+# Check write primary slot register(1)
+# Check write primary slot register(2)
+# Check write key matrix register(1)
+# Check write key matrix register(2)
+# Check read back register
+#  io read A8
+#  io read A9
+#  io read AA
+#  io read AB
+#  io read A8
+#  io read A9
+#  io read AA
+#  io read AB
+#  memory read 00A8
+#  memory read 00A9
+#  memory read 00AA
+#  memory read 00AB
+#  io read A7
+#  io read AC
+#  io read 01
+#  io read 23
+# ** Note: $finish    : tb.sv(386)
+#    Time: 12873840 ps  Iteration: 1  Instance: /tb
+# End time: 06:36:01 on May 23,2024, Elapsed time: 0:00:01
+# Errors: 0, Warnings: 0

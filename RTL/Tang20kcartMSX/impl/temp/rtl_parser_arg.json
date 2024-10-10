@@ -10,27 +10,7 @@
    "Type" : "verilog"
   },
   {
-   "Path" : "D:/github/HRA_product/TangCartMSX/RTL/Tang20kcartMSX/src/gowin_rpll/gowin_rpll.v",
-   "Type" : "verilog"
-  },
-  {
-   "Path" : "D:/github/HRA_product/TangCartMSX/RTL/Tang20kcartMSX/src/gpio/ip_gpio.v",
-   "Type" : "verilog"
-  },
-  {
-   "Path" : "D:/github/HRA_product/TangCartMSX/RTL/Tang20kcartMSX/src/msxbus/ip_msxbus.v",
-   "Type" : "verilog"
-  },
-  {
-   "Path" : "D:/github/HRA_product/TangCartMSX/RTL/Tang20kcartMSX/src/pwm/ip_pwm.v",
-   "Type" : "verilog"
-  },
-  {
    "Path" : "D:/github/HRA_product/TangCartMSX/RTL/Tang20kcartMSX/src/sdram/ip_sdram.v",
-   "Type" : "verilog"
-  },
-  {
-   "Path" : "D:/github/HRA_product/TangCartMSX/RTL/Tang20kcartMSX/src/tang20/tang20.v",
    "Type" : "verilog"
   },
   {
@@ -38,8 +18,99 @@
    "Type" : "verilog"
   },
   {
-   "Path" : "D:/github/HRA_product/TangCartMSX/RTL/Tang20kcartMSX/src/uart/ip_uart.v",
-   "Type" : "verilog"
+   "Library" : "work",
+   "Path" : "D:/github/HRA_product/TangCartMSX/RTL/Tang20kcartMSX/src/v9958clone/ram.vhd",
+   "Type" : "vhdl"
+  },
+  {
+   "Library" : "work",
+   "Path" : "D:/github/HRA_product/TangCartMSX/RTL/Tang20kcartMSX/src/v9958clone/vdp.vhd",
+   "Type" : "vhdl"
+  },
+  {
+   "Library" : "work",
+   "Path" : "D:/github/HRA_product/TangCartMSX/RTL/Tang20kcartMSX/src/v9958clone/vdp_colordec.vhd",
+   "Type" : "vhdl"
+  },
+  {
+   "Library" : "work",
+   "Path" : "D:/github/HRA_product/TangCartMSX/RTL/Tang20kcartMSX/src/v9958clone/vdp_command.vhd",
+   "Type" : "vhdl"
+  },
+  {
+   "Library" : "work",
+   "Path" : "D:/github/HRA_product/TangCartMSX/RTL/Tang20kcartMSX/src/v9958clone/vdp_doublebuf.vhd",
+   "Type" : "vhdl"
+  },
+  {
+   "Library" : "work",
+   "Path" : "D:/github/HRA_product/TangCartMSX/RTL/Tang20kcartMSX/src/v9958clone/vdp_graphic123m.vhd",
+   "Type" : "vhdl"
+  },
+  {
+   "Library" : "work",
+   "Path" : "D:/github/HRA_product/TangCartMSX/RTL/Tang20kcartMSX/src/v9958clone/vdp_graphic4567.vhd",
+   "Type" : "vhdl"
+  },
+  {
+   "Library" : "work",
+   "Path" : "D:/github/HRA_product/TangCartMSX/RTL/Tang20kcartMSX/src/v9958clone/vdp_hvcounter.vhd",
+   "Type" : "vhdl"
+  },
+  {
+   "Library" : "work",
+   "Path" : "D:/github/HRA_product/TangCartMSX/RTL/Tang20kcartMSX/src/v9958clone/vdp_interrupt.vhd",
+   "Type" : "vhdl"
+  },
+  {
+   "Library" : "work",
+   "Path" : "D:/github/HRA_product/TangCartMSX/RTL/Tang20kcartMSX/src/v9958clone/vdp_linebuf.vhd",
+   "Type" : "vhdl"
+  },
+  {
+   "Library" : "work",
+   "Path" : "D:/github/HRA_product/TangCartMSX/RTL/Tang20kcartMSX/src/v9958clone/vdp_ntsc_pal.vhd",
+   "Type" : "vhdl"
+  },
+  {
+   "Library" : "work",
+   "Path" : "D:/github/HRA_product/TangCartMSX/RTL/Tang20kcartMSX/src/v9958clone/vdp_package.vhd",
+   "Type" : "vhdl"
+  },
+  {
+   "Library" : "work",
+   "Path" : "D:/github/HRA_product/TangCartMSX/RTL/Tang20kcartMSX/src/v9958clone/vdp_register.vhd",
+   "Type" : "vhdl"
+  },
+  {
+   "Library" : "work",
+   "Path" : "D:/github/HRA_product/TangCartMSX/RTL/Tang20kcartMSX/src/v9958clone/vdp_spinforam.vhd",
+   "Type" : "vhdl"
+  },
+  {
+   "Library" : "work",
+   "Path" : "D:/github/HRA_product/TangCartMSX/RTL/Tang20kcartMSX/src/v9958clone/vdp_sprite.vhd",
+   "Type" : "vhdl"
+  },
+  {
+   "Library" : "work",
+   "Path" : "D:/github/HRA_product/TangCartMSX/RTL/Tang20kcartMSX/src/v9958clone/vdp_ssg.vhd",
+   "Type" : "vhdl"
+  },
+  {
+   "Library" : "work",
+   "Path" : "D:/github/HRA_product/TangCartMSX/RTL/Tang20kcartMSX/src/v9958clone/vdp_text12.vhd",
+   "Type" : "vhdl"
+  },
+  {
+   "Library" : "work",
+   "Path" : "D:/github/HRA_product/TangCartMSX/RTL/Tang20kcartMSX/src/v9958clone/vdp_vga.vhd",
+   "Type" : "vhdl"
+  },
+  {
+   "Library" : "work",
+   "Path" : "D:/github/HRA_product/TangCartMSX/RTL/Tang20kcartMSX/src/v9958clone/vdp_wait_control.vhd",
+   "Type" : "vhdl"
   }
  ],
  "IncludePath" : [

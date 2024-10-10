@@ -25,53 +25,61 @@
 // -----------------------------------------------------------------------------
 module tang20cart_msx (
 	//	MSX Cartridge connector
-	input			clk27m,			//	27MHz
-	input			n_treset,
-	input			tclock,			//	3.579454MHz from MSX
-	input			n_tsltsl,
-	input			n_tiorq,
-	input			n_twr,
-	input			n_trd,
-	output	[1:0]	toe,
-	input	[7:0]	ta,
-	output			tdir,
-	inout	[7:0]	td,
-	output			tsnd,
-	input	[4:0]	dip_sw,
-	input	[1:0]	keys,
-	output			twait,
+	input			clk27m,			//	PIN04_SYS_CLK: 27MHz
+	input			n_treset,		//	PIN85_SDIO_D1
+//	input			tclock,			//	PIN80_SDIO_D2: 3.579454MHz from MSX ‚±‚±‚Å—Ç‚¢‚Ì‚©H
+	input			n_ce,			//	PIN55_I2S_LRCK
+	input			n_twr,			//	PIN56_I2S_BCLK
+	input			n_trd,			//	PIN54_I2S_DIN
+	input	[1:0]	ta,				//	PIN73_HSPI_DIN2: ta[0]
+									//	PIN74_HSPI_DIN3: ta[1]
+	output			tdir,			//	PIN75_HSPI_DIR
+	inout	[7:0]	td,				//	PIN17_SYS_LED2: td[0]
+									//	PIN20_SYS_LED5: td[1]
+									//	PIN19_SYS_LED4: td[2]
+									//	PIN18_SYS_LED3: td[3]
+									//	PIN72_HSPI_DIN1: td[4]
+									//	PIN71_HSPI_DIN0: td[5]
+									//	PIN53_EDIO_CLK: td[6]
+									//	PIN52_EDIO_DAT: td[7]
+	input	[1:0]	keys,			//	PIN88_MODE0_KEY1: keys[0]
+									//	PIN87_MODE1_KEY2: keys[1]
+	output			twait,			//	PIN76_HSPI_DAT:
 
-	//	FlashROM
-	output			mspi_cs,
-	output			mspi_sclk,
-	inout			mspi_mosi,
-	inout			mspi_miso,
+//	//	UART
+//	output			uart_tx,		//	PIN69_SYS_TX
 
-	//	UART
-	output			uart_tx,
+	//	LED
+	output			sd_dat2,		//	PIN80_SDIO_D2
+	output			sd_dat3,		//	PIN81_SDIO_D3
 
-	//	MicroSD Card
-//	output			sd_sclk,
-//	inout			sd_cmd,
-//	inout			sd_dat0,
-//	output			sd_dat1,
-	output			sd_dat2,
-	output			sd_dat3,
+	//	VGA Output
+	output			lcd_clk,		//	PIN77
+	output			lcd_de,			//	PIN48
+	output			lcd_hsync,		//	PIN25
+	output			lcd_vsync,		//	PIN26
+	output	[4:0]	lcd_red,		//	PIN38, PIN39, PIN40, PIN41, PIN42
+	output	[5:0]	lcd_green,		//	PIN32, PIN33, PIN34, PIN35, PIN36, PIN37
+	output	[4:0]	lcd_blue,		//	PIN27, PIN28, PIN29, PIN30, PIN31
+	output			lcd_bl,			//	PIN49
 
 	//	SDRAM
-	output			O_sdram_clk,
-	output			O_sdram_cke,
-	output			O_sdram_cs_n,
-	output			O_sdram_cas_n,
-	output			O_sdram_ras_n,
-	output			O_sdram_wen_n,
-	inout	[31:0]	IO_sdram_dq,
-	output	[10:0]	O_sdram_addr,
-	output	[1:0]	O_sdram_ba,
-	output	[3:0]	O_sdram_dqm
+	output			O_sdram_clk,	//	Internal
+	output			O_sdram_cke,	//	Internal
+	output			O_sdram_cs_n,	//	Internal
+	output			O_sdram_cas_n,	//	Internal
+	output			O_sdram_ras_n,	//	Internal
+	output			O_sdram_wen_n,	//	Internal
+	inout	[31:0]	IO_sdram_dq,	//	Internal
+	output	[10:0]	O_sdram_addr,	//	Internal
+	output	[1:0]	O_sdram_ba,		//	Internal
+	output	[3:0]	O_sdram_dqm		//	Internal
 );
 
 `default_nettype none
+//	localparam		c_vdpid			= 5'b00001;		// V9938
+	localparam		c_vdpid			= 5'b00010;		// V9958
+	localparam		c_offset_y		= 7'd19;
 
 	reg		[25:0]	ff_count = 26'd0;
 	reg		[1:0]	ff_led = 2'd0;
@@ -81,84 +89,53 @@ module tang20cart_msx (
 	wire			clk;
 	wire			clk_sdram;
 	reg				ff_21mhz = 1'b0;
-	reg		[5:0]	ff_1mhz = 6'd0;
-	wire			w_1mhz;
 	wire			w_n_reset;
 	wire	[7:0]	w_o_data;
-	wire	[7:0]	w_gpo;
-	wire	[7:0]	w_gpi;
 	wire	[15:0]	w_bus_address;
-	wire			w_bus_read_ready;
-	wire	[7:0]	w_bus_read_data;
 	wire	[7:0]	w_bus_write_data;
 	wire			w_bus_io_read;
 	wire			w_bus_io_write;
 	wire			w_bus_memory_read;
 	wire			w_bus_memory_write;
 	wire			w_is_output;
-	wire			w_bus_memory_read0;
-	wire			w_bus_memory_write0;
-	wire			w_bus_memory_read1;
-	wire			w_bus_memory_write1;
-	wire			w_bus_memory_read2;
-	wire			w_bus_memory_write2;
-	wire			w_bus_memory_read3;
-	wire			w_bus_memory_write3;
-	wire			w_bus_read_ready_gpio;
-	wire	[7:0]	w_bus_read_data_gpio;
-	wire			w_bus_read_ready_extslot;
-	wire	[7:0]	w_bus_read_data_extslot;
-	wire			w_bus_read_ready_mapram;
-	wire	[7:0]	w_bus_read_data_mapram;
-	wire			w_bus_read_ready_megarom;
-	wire	[7:0]	w_bus_read_data_megarom;
-	wire			w_bus_read_ready_scc;
-	wire	[7:0]	w_bus_read_data_scc;
-	wire			w_srom_busy;
-	//	SerialROM
-	wire			w_srom_n_cs;
-	wire			w_srom_rd;
-	wire			w_srom_wr;
-	wire	[7:0]	w_srom_wdata;
-	wire	[7:0]	w_srom_rdata;
-	wire			w_srom_rdata_en;
 	//	SDRAM
-	wire			w_sdram_rd;
-	wire			w_sdram_wr;
+	wire			w_sdram_read_n;
+	wire			w_sdram_write_n;
 	wire			w_sdram_busy;
 	wire	[22:0]	w_sdram_address;
 	wire	[7:0]	w_sdram_wdata;
-	wire	[7:0]	w_sdram_rdata;
+	wire	[15:0]	w_sdram_rdata;
 	wire			w_sdram_rdata_en;
-	//	SCC
-	wire			w_scc_bank_en;
-	wire			w_sccp_bank_en;
-	wire			w_sccp_en;
-	wire	[10:0]	w_scc_out;
-	//	sound generator
-	reg		[10:0]	ff_sound;
 
 	wire	[7:0]	w_read_cycle;
 	wire	[7:0]	w_send_data;
 	wire			w_send_req;
 	wire			w_send_busy;
 
+	wire			w_req;
+	wire			w_ack;
+	wire			w_wr;
+	wire	[1:0]	w_ta;
+	wire	[5:0]	w_lcd_red;
+	wire	[5:0]	w_lcd_green;
+	wire	[5:0]	w_lcd_blue;
+
+	assign w_req		= 1'b0;
+	assign w_wr			= 1'b0;
+
 	// --------------------------------------------------------------------
 	//	OUTPUT Assignment
 	// --------------------------------------------------------------------
 	assign w_n_reset	= ff_reset[6];
 
-//	assign sd_sclk		= 1'b0;
-//	assign sd_cmd		= 1'b0;
-//	assign sd_dat0		= 1'b0;
-//	assign sd_dat1		= 1'b0;
-	assign sd_dat2		= w_gpo[0];	//~ff_led[0];
-	assign sd_dat3		= w_gpo[1];	//~ff_led[1];
+	assign sd_dat2		= ~ff_led[0];
+	assign sd_dat3		= ~ff_led[1];
 
 //	assign w_is_output	= 1'd0;			// *************************
 //	assign w_o_data		= 8'd0;			// *************************
 
-	assign td			= w_is_output   ? w_o_data : 8'hZZ;
+//	assign td			= w_is_output   ? w_o_data : 8'hZZ;
+	assign td			= { 4'd0, ff_led, ff_led };
 	assign tdir			= w_is_output;
 	assign twait		= ff_wait[4];	// | w_srom_busy;
 
@@ -180,9 +157,9 @@ module tang20cart_msx (
 	// --------------------------------------------------------------------
 	//	PLL 3.579545MHz --> 42.95454MHz
 	// --------------------------------------------------------------------
-	Gowin_rPLL u_pll (
-		.clkout				( clk						),		// output		54MHz
-		.clkoutp			( clk_sdram					),		// output		54MHz with 180degree phase shifted.
+	Gowin_PLL u_pll (
+		.clkout				( clk						),		// output		108MHz
+		.clkoutp			( clk_sdram					),		// output		108MHz with 180degree phase shifted.
 		.clkin				( clk27m					)		// input		27MHz
 	);
 
@@ -207,195 +184,6 @@ module tang20cart_msx (
 		end
 	end
 
-	always @( posedge clk ) begin
-		if( !w_n_reset ) begin
-			ff_21mhz <= 1'd0;
-		end
-		else  begin
-			ff_21mhz <= ~ff_21mhz;
-		end
-	end
-
-	always @( posedge clk ) begin
-		if( !w_n_reset ) begin
-			ff_1mhz <= 6'd42;
-		end
-		else if( ff_1mhz == 6'd0 ) begin
-			ff_1mhz <= 6'd42;
-		end
-		else begin
-			ff_1mhz <= ff_1mhz - 6'd1;
-		end
-	end
-
-	assign w_1mhz	= (ff_1mhz == 6'd0);
-	assign w_gpi	= { 3'd0, dip_sw };
-
-	// --------------------------------------------------------------------
-	//	MSX 50BUS
-	// --------------------------------------------------------------------
-	tang20 u_address_latch (
-		.clk				( clk						),
-		.n_reset			( w_n_reset					),
-		.ta					( ta						),
-		.toe				( toe						),
-		.address			( taddress					)
-	);
-
-	ip_msxbus u_msxbus (
-		.n_reset			( w_n_reset					),
-		.clk				( clk						),
-		.adr				( taddress					),
-		.i_data				( td						),
-		.o_data				( w_o_data					),
-		.is_output			( w_is_output				),
-		.n_sltsl			( n_tsltsl					),
-		.n_rd				( n_trd						),
-		.n_wr				( n_twr						),
-		.n_ioreq			( n_tiorq					),
-		.bus_address		( w_bus_address				),
-		.bus_read_ready		( w_bus_read_ready			),
-		.bus_read_data		( w_bus_read_data			),
-		.bus_write_data		( w_bus_write_data			),
-		.bus_io_read		( w_bus_io_read				),
-		.bus_io_write		( w_bus_io_write			),
-		.bus_memory_read	( w_bus_memory_read			),
-		.bus_memory_write	( w_bus_memory_write		)
-	);
-
-//	assign w_bus_read_ready	= w_bus_read_ready_mapram | w_bus_read_ready_megarom | w_bus_read_ready_extslot | w_bus_read_ready_scc;
-//	assign w_bus_read_data	= w_bus_read_data_mapram  | w_bus_read_data_megarom  | w_bus_read_data_extslot  | w_bus_read_data_scc;
-
-	assign w_bus_read_ready	= w_bus_read_ready_gpio;
-	assign w_bus_read_data	= w_bus_read_data_gpio;
-
-	// --------------------------------------------------------------------
-	//	GPIO
-	// --------------------------------------------------------------------
-	ip_gpio u_gpio (
-		.n_reset			( w_n_reset					),
-		.clk				( clk						),
-		.bus_address		( w_bus_address				),
-		.bus_read_ready		( w_bus_read_ready_gpio		),
-		.bus_read_data		( w_bus_read_data_gpio		),
-		.bus_write_data		( w_bus_write_data			),
-		.bus_io_read		( w_bus_io_read				),
-		.bus_io_write		( w_bus_io_write			),
-		.gpo				( w_gpo						),
-		.gpi				( w_gpi						)
-	);
-
-	// --------------------------------------------------------------------
-	//	EXTSLOT
-	// --------------------------------------------------------------------
-//	ip_extslot u_extslot (
-//		.n_reset			( w_n_reset					),
-//		.clk				( clk						),
-//		.bus_address		( w_bus_address				),
-//		.bus_read_ready		( w_bus_read_ready_extslot	),
-//		.bus_read_data		( w_bus_read_data_extslot	),
-//		.bus_write_data		( w_bus_write_data			),
-//		.bus_memory_read	( w_bus_memory_read			),
-//		.bus_memory_write	( w_bus_memory_write		),
-//		.bus_memory_read0	( w_bus_memory_read0		),
-//		.bus_memory_write0	( w_bus_memory_write0		),
-//		.bus_memory_read1	( w_bus_memory_read1		),
-//		.bus_memory_write1	( w_bus_memory_write1		),
-//		.bus_memory_read2	( w_bus_memory_read2		),
-//		.bus_memory_write2	( w_bus_memory_write2		),
-//		.bus_memory_read3	( w_bus_memory_read3		),
-//		.bus_memory_write3	( w_bus_memory_write3		)
-//	);
-
-	// --------------------------------------------------------------------
-	//	MapperRAM
-	// --------------------------------------------------------------------
-//	ip_mapperram u_mapperram (
-//		.n_reset			( w_n_reset					),
-//		.clk				( clk						),
-//		.bus_address		( w_bus_address				),
-//		.bus_read_ready		( w_bus_read_ready_mapram	),
-//		.bus_read_data		( w_bus_read_data_mapram	),
-//		.bus_write_data		( w_bus_write_data			),
-//		.bus_io_read		( w_bus_io_read				),
-//		.bus_io_write		( w_bus_io_write			),
-//		.bus_memory_read	( w_bus_memory_read0		),
-//		.bus_memory_write	( w_bus_memory_write0		),
-//		.rd					( w_psram0_rd				),
-//		.wr					( w_psram0_wr				),
-//		.busy				( w_psram0_busy				),
-//		.address			( w_psram0_address			),
-//		.wdata				( w_psram0_wdata			),
-//		.rdata				( w_psram0_rdata			),
-//		.rdata_en			( w_psram0_rdata_en			)
-//	);
-
-//	ip_ram u_ram (
-//		.n_reset			( w_n_reset					),
-//		.clk				( clk						),
-//		.bus_address		( w_bus_address				),
-//		.bus_read_ready		( w_bus_read_ready_mapram	),
-//		.bus_read_data		( w_bus_read_data_mapram	),
-//		.bus_write_data		( w_bus_write_data			),
-//		.bus_memory_read	( w_bus_memory_read			),
-//		.bus_memory_write	( w_bus_memory_write		)
-//	);
-
-//	ip_ram2 u_ram (
-//		.n_reset			( w_n_reset					),
-//		.clk				( clk						),
-//		.bus_address		( w_bus_address				),
-//		.bus_read_ready		( w_bus_read_ready_mapram	),
-//		.bus_read_data		( w_bus_read_data_mapram	),
-//		.bus_write_data		( w_bus_write_data			),
-//		.bus_memory_read	( w_bus_memory_read			),
-//		.bus_memory_write	( w_bus_memory_write		),
-//		.rd					( w_psram0_rd				),
-//		.wr					( w_psram0_wr				),
-//		.busy				( w_psram0_busy				),
-//		.address			( w_psram0_address			),
-//		.wdata				( w_psram0_wdata			),
-//		.rdata				( w_psram0_rdata			),
-//		.rdata_en			( w_psram0_rdata_en			),
-//		.debug_count		( w_read_cycle				)
-//	);
-
-	// --------------------------------------------------------------------
-	//	MegaROM Emulator
-	// --------------------------------------------------------------------
-//	ip_megarom #(
-//		.address_h			( 1'b0						)
-//	) u_megarom (
-//		.n_reset			( w_n_reset					),
-//		.clk				( clk						),
-//		.enable				( 1'b1						),
-//		.mode				( 3'd5						),
-//		.bus_address		( w_bus_address				),
-//		.bus_io_cs			( w_bus_io_cs_megarom		),
-//		.bus_memory_cs		( w_bus_memory_cs_megarom	),
-//		.bus_read_ready		( w_bus_read_ready_megarom	),
-//		.bus_read_data		( w_bus_read_data_megarom	),
-//		.bus_write_data		( w_bus_write_data			),
-//		.bus_read			( w_bus_read				),
-//		.bus_write			( w_bus_write				),
-//		.bus_io				( w_bus_io					),
-//		.bus_memory			( w_extslot_memory3			),
-//		.rd					( w_psram1_megarom_rd		),
-//		.wr					( w_psram1_megarom_wr		),
-//		.busy				( w_psram1_busy				),
-//		.address			( w_psram1_megarom_address	),
-//		.wdata				( w_psram1_megarom_wdata	),
-//		.rdata				( w_psram1_rdata			),
-//		.rdata_en			( w_psram1_rdata_en			),
-//		.scc_bank_en		( w_scc_bank_en				),
-//		.sccp_bank_en		( w_sccp_bank_en			),
-//		.sccp_en			( w_sccp_en					),
-//		.bank0				( w_bank0					),
-//		.bank1				( w_bank1					),
-//		.bank2				( w_bank2					),
-//		.bank3				( w_bank3					)
-//	);
-
 	// --------------------------------------------------------------------
 	//	SDRAM
 	// --------------------------------------------------------------------
@@ -403,8 +191,8 @@ module tang20cart_msx (
 		.n_reset			( w_n_reset					),
 		.clk				( clk						),
 		.clk_sdram			( clk_sdram					),
-		.rd					( w_sdram_rd				),
-		.wr					( w_sdram_wr				),
+		.rd_n				( w_sdram_read_n			),
+		.wr_n				( w_sdram_write_n			),
 		.busy				( w_sdram_busy				),
 		.address			( w_sdram_address			),
 		.wdata				( w_sdram_wdata				),
@@ -423,119 +211,47 @@ module tang20cart_msx (
 	);
 
 	// --------------------------------------------------------------------
-	//	SCC
+	//	V9958 clone
 	// --------------------------------------------------------------------
-//	ip_scc u_scc (
-//		.n_reset			( w_n_reset					),
-//		.clk				( clk						),
-//		.enable				( ff_21mhz					),
-//		.bus_address		( w_bus_address				),
-//		.bus_read_ready		( w_bus_read_ready_scc		),
-//		.bus_read_data		( w_bus_read_data_scc		),
-//		.bus_write_data		( w_bus_write_data			),
-//		.bus_read			( w_bus_read				),
-//		.bus_write			( w_bus_write				),
-//		.bus_memory			( w_extslot_memory3			),
-//		.scc_bank_en		( w_scc_bank_en				),
-//		.sccp_bank_en		( w_sccp_bank_en			),
-//		.sccp_en			( w_sccp_en					),
-//		.sound_out			( w_scc_out					)
-//	);
-	reg		[25:0]		ff_sound_count;
-	reg					ff_sound_out;
+	VDP u_v9958 (
+		.CLK				( clk						),	// IN	STD_LOGIC;
+		.RESET				( !w_n_reset				),	// IN	STD_LOGIC;
+		.REQ				( w_req						),	// IN	STD_LOGIC;
+		.ACK				( w_ack						),	// OUT	STD_LOGIC;
+		.WRT				( w_wr						),	// IN	STD_LOGIC;
+		.ADR				( w_ta						),	// IN	STD_LOGIC_VECTOR(  1 DOWNTO 0 );
+		.DBI				( 							),	// OUT	STD_LOGIC_VECTOR(  7 DOWNTO 0 );
+		.DBO				( 8'd0						),	// IN	STD_LOGIC_VECTOR(  7 DOWNTO 0 );
+		.INT_N				( 							),	// OUT	STD_LOGIC;
+		.PRAMOE_N			( w_sdram_read_n			),	// OUT	STD_LOGIC;
+		.PRAMWE_N			( w_sdram_write_n			),	// OUT	STD_LOGIC;
+		.PRAMADR			( w_sdram_address			),	// OUT	STD_LOGIC_VECTOR( 16 DOWNTO 0 );
+		.PRAMDBI			( w_sdram_rdata				),	// IN	STD_LOGIC_VECTOR( 15 DOWNTO 0 );
+		.PRAMDBO			( w_sdram_wdata				),	// OUT	STD_LOGIC_VECTOR(  7 DOWNTO 0 );
+		.VDPSPEEDMODE		( 1'b0						),	// IN	STD_LOGIC;
+		.RATIOMODE			( 3'b000					),	// IN	STD_LOGIC_VECTOR(  2 DOWNTO 0 );
+		.CENTERYJK_R25_N	( 1'b1						),	// IN	STD_LOGIC;
+		.PVIDEOR			( w_lcd_red					),	// OUT	STD_LOGIC_VECTOR(  5 DOWNTO 0 );
+		.PVIDEOG			( w_lcd_green				),	// OUT	STD_LOGIC_VECTOR(  5 DOWNTO 0 );
+		.PVIDEOB			( w_lcd_blue				),	// OUT	STD_LOGIC_VECTOR(  5 DOWNTO 0 );
+		.PVIDEOHS_N			( lcd_hsync					),	// OUT	STD_LOGIC;
+		.PVIDEOVS_N			( lcd_vsync					),	// OUT	STD_LOGIC;
+		.PVIDEOCS_N			( 							),	// OUT	STD_LOGIC;
+		.PVIDEODHCLK		( 							),	// OUT	STD_LOGIC;
+		.PVIDEODLCLK		( 							),	// OUT	STD_LOGIC;
+		.BLANK_O			( 							),	// OUT	STD_LOGIC;
+		.DISPRESO			( 1'b1						),	// IN	STD_LOGIC;
+		.NTSC_PAL_TYPE		( 1'b1						),	// IN	STD_LOGIC;
+		.FORCED_V_MODE		( 1'b0						),	// IN	STD_LOGIC;
+		.LEGACY_VGA			( 1'b0						),	// IN	STD_LOGIC;
+		.VDP_ID				( c_vdpid					),	// IN	STD_LOGIC_VECTOR(  4 DOWNTO 0 );
+		.OFFSET_Y			( c_offset_y				)	// IN	STD_LOGIC_VECTOR(  6 DOWNTO 0 )
+    );
 
-	always @( posedge clk ) begin
-		if( !w_n_reset ) begin
-			ff_sound_count	<= 'd0;
-			ff_sound_out	<= 1'b0;
-		end
-		else if( ff_sound_count == 'd61364 ) begin		//	880Hz
-			ff_sound_count	<= 'd0;
-			ff_sound_out	<= ~ff_sound_out;			//	440Hz
-		end
-		else begin
-			ff_sound_count	<= ff_sound_count + 'd1;
-		end
-	end
-
-	assign w_scc_out	= { 11 {ff_sound_out} };
-
-	// --------------------------------------------------------------------
-	//	SerialROM
-	// --------------------------------------------------------------------
-//	ip_srom #(
-//		.END_ADDRESS		( 'h2F_FFFF					)
-//	) u_srom (
-//		.n_reset			( w_n_reset					),
-//		.clk				( clk						),
-//		.srom_cs			( srom_cs					),
-//		.srom_mosi			( srom_mosi					),
-//		.srom_sclk			( srom_sclk					),
-//		.srom_miso			( srom_miso					),
-//		.n_cs				( w_srom_n_cs				),
-//		.rd					( w_srom_rd					),
-//		.wr					( w_srom_wr					),
-//		.busy				( 							),
-//		.wdata				( w_srom_wdata				),
-//		.rdata				( w_srom_rdata				),
-//		.rdata_en			( w_srom_rdata_en			),
-//		.psram1_wr			( w_psram1_srom_wr			),
-//		.psram1_busy		( w_psram1_busy				),
-//		.psram1_address		( w_psram1_srom_address		),
-//		.psram1_wdata		( w_psram1_srom_wdata		),
-//		.initial_busy		( w_srom_busy				)
-//	);
-
-	// --------------------------------------------------------------------
-	//	Sound
-	// --------------------------------------------------------------------
-	ip_uart #(
-		.clk_freq			( 54000000					),
-		.uart_freq			( 115200					)
-	) u_uart (
-		.n_reset			( w_n_reset					),
-		.clk				( clk						),
-		.send_data			( w_send_data				),
-		.send_req			( w_send_req				),
-		.send_busy			( w_send_busy				),
-		.uart_tx			( uart_tx					)
-	);
-
-	ip_debugger u_debugger (
-		.n_reset			( w_n_reset					),
-		.clk				( clk						),
-		.send_data			( w_send_data				),
-		.send_req			( w_send_req				),
-		.send_busy			( w_send_busy				),
-		.keys				( keys						),
-		.sdram_rd			( w_sdram_rd				),
-		.sdram_wr			( w_sdram_wr				),
-		.sdram_busy			( w_sdram_busy				),
-		.sdram_address		( w_sdram_address			),
-		.sdram_wdata		( w_sdram_wdata				),
-		.sdram_rdata		( w_sdram_rdata				),
-		.sdram_rdata_en		( w_sdram_rdata_en			)
-	);
-
-	// --------------------------------------------------------------------
-	//	Sound
-	// --------------------------------------------------------------------
-	always @( posedge clk ) begin
-		if( !w_n_reset ) begin
-			ff_sound <= 11'h00;
-		end
-		else begin
-			ff_sound <= 11'd0;	//w_scc_out;
-		end
-	end
-
-	ip_pwm u_pwm (
-		.n_reset			( w_n_reset					),
-		.clk				( clk						),
-		.enable				( w_1mhz					),
-		.signal_level		( { ff_sound, 5'd0 }		),
-		.pwm_wave			( tsnd						)
-	);
+	assign lcd_red		= w_lcd_red[5:1];
+	assign lcd_green	= w_lcd_green;
+	assign lcd_blue		= w_lcd_blue[5:1];
+	assign lcd_bl		= 1'b1;
 endmodule
 
 `default_nettype wire

@@ -1,0 +1,5 @@
+参考資料
+https://pineight.com/mw/page/Dot_clock_rates.xhtml
+
+
+MSX の画素アスペクトは 8:7 とあるので、水平 8/7倍拡大にする。

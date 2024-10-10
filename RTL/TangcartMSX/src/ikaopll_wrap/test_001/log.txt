@@ -1,0 +1,26 @@
+# vsim -c -t 1ps -do "run.do" tb 
+# Start time: 06:28:23 on Sep 17,2024
+# Loading sv_std.std
+# Loading work.tb
+# Loading work.ip_ikaopll_wrapper
+# Loading work.IKAOPLL
+# Loading work.IKAOPLL_timinggen
+# Loading work.IKAOPLL_reg
+# Loading work.IKAOPLL_rw_synchronizer
+# Loading work.IKAOPLL_d9reg
+# Loading work.IKAOPLL_sr
+# Loading work.IKAOPLL_instrom
+# Loading work.IKAOPLL_lfo
+# Loading work.IKAOPLL_pg
+# Loading work.IKAOPLL_eg
+# Loading work.IKAOPLL_op
+# Loading work.IKAOPLL_logsinrom
+# Loading work.IKAOPLL_exprom
+# Loading work.IKAOPLL_dac
+# Loading work.IKAOPLL_srlatch
+# Loading work.IKAOPLL_dlatch
+# do run.do
+# ** Note: $finish    : tb.sv(165)
+#    Time: 46911132240 ps  Iteration: 1  Instance: /tb
+# End time: 06:28:56 on Sep 17,2024, Elapsed time: 0:00:33
+# Errors: 0, Warnings: 0

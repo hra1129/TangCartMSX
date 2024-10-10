@@ -12,27 +12,27 @@
   <Part Number>: GW1NR-LV9QN88PC6/I5
   <Device>: GW1NR-9
   <Device Version>: C
-  <Created Time>:Sun Sep 15 10:50:45 2024
+  <Created Time>:Thu Sep 19 06:28:35 2024
 
 
 2. PnR Details
 
   Running placement:
-    Placement Phase 0: CPU time = 0h 0m 0.127s, Elapsed time = 0h 0m 0.127s
-    Placement Phase 1: CPU time = 0h 0m 0.091s, Elapsed time = 0h 0m 0.091s
-    Placement Phase 2: CPU time = 0h 0m 0.162s, Elapsed time = 0h 0m 0.163s
-    Placement Phase 3: CPU time = 0h 0m 1s, Elapsed time = 0h 0m 1s
-    Total Placement: CPU time = 0h 0m 1s, Elapsed time = 0h 0m 1s
+    Placement Phase 0: CPU time = 0h 0m 0.601s, Elapsed time = 0h 0m 0.602s
+    Placement Phase 1: CPU time = 0h 0m 0.133s, Elapsed time = 0h 0m 0.133s
+    Placement Phase 2: CPU time = 0h 0m 0.753s, Elapsed time = 0h 0m 0.753s
+    Placement Phase 3: CPU time = 0h 0m 2s, Elapsed time = 0h 0m 2s
+    Total Placement: CPU time = 0h 0m 3s, Elapsed time = 0h 0m 3s
  Running routing:
-    Routing Phase 0: CPU time = 0h 0m 0s, Elapsed time = 0h 0m 0.001s
-    Routing Phase 1: CPU time = 0h 0m 0.242s, Elapsed time = 0h 0m 0.242s
-    Routing Phase 2: CPU time = 0h 0m 0.533s, Elapsed time = 0h 0m 0.533s
+    Routing Phase 0: CPU time = 0h 0m 0.001s, Elapsed time = 0h 0m 0.001s
+    Routing Phase 1: CPU time = 0h 0m 0.928s, Elapsed time = 0h 0m 0.928s
+    Routing Phase 2: CPU time = 0h 0m 1s, Elapsed time = 0h 0m 1s
     Routing Phase 3: CPU time = 0h 0m 0s, Elapsed time = 0h 0m 0s
-    Total Routing: CPU time = 0h 0m 0.775s, Elapsed time = 0h 0m 0.776s
+    Total Routing: CPU time = 0h 0m 2s, Elapsed time = 0h 0m 2s
  Generate output files:
-    CPU time = 0h 0m 0.814s, Elapsed time = 0h 0m 0.815s
+    CPU time = 0h 0m 1s, Elapsed time = 0h 0m 1s
 
- Total Time and Memory Usage: CPU time = 0h 0m 3s, Elapsed time = 0h 0m 3s, Peak memory usage = 273MB
+ Total Time and Memory Usage: CPU time = 0h 0m 7s, Elapsed time = 0h 0m 7s, Peak memory usage = 297MB
 
 
 3. Resource Usage Summary
@@ -40,23 +40,27 @@
   ----------------------------------------------------------
   Resources                   | Usage
   ----------------------------------------------------------
-  Logic                       | 840/8640  10%
-    --LUT,ALU,ROM16           | 744(653 LUT, 91 ALU, 0 ROM16)
-    --SSRAM(RAM16)            | 16
-  Register                    | 503/6693  8%
+  Logic                       | 2322/8640  27%
+    --LUT,ALU,ROM16           | 2016(1710 LUT, 306 ALU, 0 ROM16)
+    --SSRAM(RAM16)            | 51
+  Register                    | 1370/6693  21%
     --Logic Register as Latch | 0/6480  0%
-    --Logic Register as FF    | 495/6480  8%
+    --Logic Register as FF    | 1361/6480  22%
     --I/O Register as Latch   | 0/213  0%
-    --I/O Register as FF      | 8/213  4%
-  CLS                         | 621/4320  15%
+    --I/O Register as FF      | 9/213  5%
+  CLS                         | 1669/4320  39%
   I/O Port                    | 49
-  I/O Buf                     | 35
-    --Input Buf               | 18
+  I/O Buf                     | 39
+    --Input Buf               | 22
     --Output Buf              | 9
     --Inout Buf               | 8
   IOLOGIC                     | 0%
-  BSRAM                       | 0%
-  DSP                         | 0%
+  BSRAM                       | 35%
+    --SDPB                    | 1
+    --pROM                    | 8
+  DSP                         | 15%
+    --MULT18X18               | 1
+    --MULTADDALU18X18         | 1
   PLL                         | 1/2  50%
   DCS                         | 0/8  0%
   DQCE                        | 0/24  0%
@@ -87,7 +91,7 @@
   Global Clock  | Usage       
   -------------------------------
   PRIMARY       | 2/8(25%)
-  LW            | 2/8(25%)
+  LW            | 6/8(75%)
   GCLK_PIN      | 2/3(67%)
   PLL           | 1/2(50%)
   CLKDIV        | 0/8(0%)
@@ -102,8 +106,12 @@
   -------------------------------------------
   tclock_d       | PRIMARY        |  TR
   clk            | PRIMARY        |  TR TL BR BL
-  n74_10         | LW             |  -
+  n80_10         | LW             |  -
   ff_reset[6]    | LW             |  -
+  u_ikascc_wrapper/u_ikascc/IKASCC_SYNC_MODE.u_player_main/n25_7| LW             |  -
+  u_ikaopll_wrapper/u_ikaopll/n86_4| LW             |  -
+  u_ikaopll_wrapper/u_ikaopll/m_nc_sel_z_6| LW             |  -
+  u_ikaopll_wrapper/u_ikaopll/n672_5| LW             |  -
   ===========================================
 
 

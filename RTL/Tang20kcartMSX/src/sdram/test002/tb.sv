@@ -25,16 +25,16 @@
 // -----------------------------------------------------------------------------
 
 module tb ();
-	localparam		clk_base	= 1_000_000_000/54_000;	//	ps
+	localparam		clk_base	= 1_000_000_000/108_000;	//	ps
 	reg				n_reset;
-	reg				clk;				// 54MHz
-	reg				clk_sdram;			// 54MHz with 180dgree delay
+	reg				clk;				// 108MHz
+	reg				clk_sdram;			// 108MHz with 180dgree delay
 	wire			rd;					// Set to 1 to read
 	wire			wr;					// Set to 1 to write
 	wire			busy;
 	wire	[22:0]	address;			// Byte address (8MBytes)
 	wire	[7:0]	wdata;
-	wire	[7:0]	rdata;
+	wire	[15:0]	rdata;
 	wire			rdata_en;
 	wire			O_sdram_clk;
 	wire			O_sdram_cke;
@@ -56,7 +56,7 @@ module tb ();
 	//	DUT
 	// --------------------------------------------------------------------
 	ip_debugger #(
-		.TEST_ROWS			( 15'b000_0000_0000_1111)
+		.TEST_ROWS			( 15'b000_0000_1111_1111)
 	) u_debugger (
 		.n_reset			( n_reset				),
 		.clk				( clk					),
@@ -69,12 +69,12 @@ module tb ();
 		.sdram_busy			( busy					),
 		.sdram_address		( address				),
 		.sdram_wdata		( wdata					),
-		.sdram_rdata		( rdata					),
+		.sdram_rdata		( rdata[7:0]			),
 		.sdram_rdata_en		( rdata_en				)
 	);
 
 	ip_uart #(
-		.clk_freq			( 54000000				),
+		.clk_freq			( 108000000				),
 		.uart_freq			( 115200				)
 	) u_uart (
 		.n_reset			( n_reset				),
@@ -89,8 +89,8 @@ module tb ();
 		.n_reset			( n_reset				),
 		.clk				( clk					),
 		.clk_sdram			( clk_sdram				),
-		.rd					( rd					),
-		.wr					( wr					),
+		.rd_n				( !rd					),
+		.wr_n				( !wr					),
 		.busy				( busy					),
 		.address			( address				),
 		.wdata				( wdata					),
@@ -152,7 +152,7 @@ module tb ();
 		ff_keys <= 2'b00;
 		@( posedge clk );
 
-		repeat( 1000000 ) @( posedge clk );
+		repeat( 2500000 ) @( posedge clk );
 
 		$finish;
 	end

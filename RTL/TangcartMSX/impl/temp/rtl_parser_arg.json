@@ -6,6 +6,50 @@
    "Type" : "verilog"
   },
   {
+   "Path" : "D:/github/HRA_product/TangCartMSX/RTL/TangcartMSX/src/ikaopll/IKAOPLL.v",
+   "Type" : "verilog"
+  },
+  {
+   "Path" : "D:/github/HRA_product/TangCartMSX/RTL/TangcartMSX/src/ikaopll/IKAOPLL_modules/IKAOPLL_dac.v",
+   "Type" : "verilog"
+  },
+  {
+   "Path" : "D:/github/HRA_product/TangCartMSX/RTL/TangcartMSX/src/ikaopll/IKAOPLL_modules/IKAOPLL_eg.v",
+   "Type" : "verilog"
+  },
+  {
+   "Path" : "D:/github/HRA_product/TangCartMSX/RTL/TangcartMSX/src/ikaopll/IKAOPLL_modules/IKAOPLL_lfo.v",
+   "Type" : "verilog"
+  },
+  {
+   "Path" : "D:/github/HRA_product/TangCartMSX/RTL/TangcartMSX/src/ikaopll/IKAOPLL_modules/IKAOPLL_op.v",
+   "Type" : "verilog"
+  },
+  {
+   "Path" : "D:/github/HRA_product/TangCartMSX/RTL/TangcartMSX/src/ikaopll/IKAOPLL_modules/IKAOPLL_pg.v",
+   "Type" : "verilog"
+  },
+  {
+   "Path" : "D:/github/HRA_product/TangCartMSX/RTL/TangcartMSX/src/ikaopll/IKAOPLL_modules/IKAOPLL_primitives.v",
+   "Type" : "verilog"
+  },
+  {
+   "Path" : "D:/github/HRA_product/TangCartMSX/RTL/TangcartMSX/src/ikaopll/IKAOPLL_modules/IKAOPLL_reg.v",
+   "Type" : "verilog"
+  },
+  {
+   "Path" : "D:/github/HRA_product/TangCartMSX/RTL/TangcartMSX/src/ikaopll/IKAOPLL_modules/IKAOPLL_timinggen.v",
+   "Type" : "verilog"
+  },
+  {
+   "Path" : "D:/github/HRA_product/TangCartMSX/RTL/TangcartMSX/src/ikaopll_wrap/ikaopll_wrap.v",
+   "Type" : "verilog"
+  },
+  {
+   "Path" : "D:/github/HRA_product/TangCartMSX/RTL/TangcartMSX/src/ikaopll_wrap/ip_msxmusic_rom.v",
+   "Type" : "verilog"
+  },
+  {
    "Path" : "D:/github/HRA_product/TangCartMSX/RTL/TangcartMSX/src/ikascc/IKASCC.v",
    "Type" : "verilog"
   },

@@ -1,0 +1,39 @@
+<?xml version="1" encoding="UTF-8"?>
+<!DOCTYPE gowin-fpga-project>
+<Project>
+    <Template>FPGA</Template>
+    <Version>5</Version>
+    <Device name="GW2AR-18" pn="GW2AR-LV18QN88C8/I7">gw2ar18-000</Device>
+    <FileList>
+        <File path="src/debugger/ip_debugger.v" type="file.verilog" enable="0"/>
+        <File path="src/dvi_tx/dvi_tx.v" type="file.verilog" enable="0"/>
+        <File path="src/gowin_pll/gowin_pll.v" type="file.verilog" enable="1"/>
+        <File path="src/gpio/ip_gpio.v" type="file.verilog" enable="0"/>
+        <File path="src/lcd/ip_lcd.v" type="file.verilog" enable="0"/>
+        <File path="src/msxbus/ip_msxbus.v" type="file.verilog" enable="0"/>
+        <File path="src/sdram/ip_sdram.v" type="file.verilog" enable="1"/>
+        <File path="src/tang20/tang20.v" type="file.verilog" enable="0"/>
+        <File path="src/tang20cart_msx.v" type="file.verilog" enable="1"/>
+        <File path="src/uart/ip_uart.v" type="file.verilog" enable="0"/>
+        <File path="src/v9958clone/ram.vhd" type="file.vhdl" enable="1"/>
+        <File path="src/v9958clone/vdp.vhd" type="file.vhdl" enable="1"/>
+        <File path="src/v9958clone/vdp_colordec.vhd" type="file.vhdl" enable="1"/>
+        <File path="src/v9958clone/vdp_command.vhd" type="file.vhdl" enable="1"/>
+        <File path="src/v9958clone/vdp_doublebuf.vhd" type="file.vhdl" enable="1"/>
+        <File path="src/v9958clone/vdp_graphic123m.vhd" type="file.vhdl" enable="1"/>
+        <File path="src/v9958clone/vdp_graphic4567.vhd" type="file.vhdl" enable="1"/>
+        <File path="src/v9958clone/vdp_hvcounter.vhd" type="file.vhdl" enable="1"/>
+        <File path="src/v9958clone/vdp_interrupt.vhd" type="file.vhdl" enable="1"/>
+        <File path="src/v9958clone/vdp_linebuf.vhd" type="file.vhdl" enable="1"/>
+        <File path="src/v9958clone/vdp_ntsc_pal.vhd" type="file.vhdl" enable="1"/>
+        <File path="src/v9958clone/vdp_package.vhd" type="file.vhdl" enable="1"/>
+        <File path="src/v9958clone/vdp_register.vhd" type="file.vhdl" enable="1"/>
+        <File path="src/v9958clone/vdp_spinforam.vhd" type="file.vhdl" enable="1"/>
+        <File path="src/v9958clone/vdp_sprite.vhd" type="file.vhdl" enable="1"/>
+        <File path="src/v9958clone/vdp_ssg.vhd" type="file.vhdl" enable="1"/>
+        <File path="src/v9958clone/vdp_text12.vhd" type="file.vhdl" enable="1"/>
+        <File path="src/v9958clone/vdp_vga.vhd" type="file.vhdl" enable="1"/>
+        <File path="src/v9958clone/vdp_wait_control.vhd" type="file.vhdl" enable="1"/>
+        <File path="src/Tang20kcartMSX.cst" type="file.cst" enable="1"/>
+    </FileList>
+</Project>

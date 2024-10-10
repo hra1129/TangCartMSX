@@ -1,6 +1,17 @@
 GowinSynthesis start
 Running parser ...
 Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\TangcartMSX\src\gowin_pll\gowin_pll.v'
+Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\TangcartMSX\src\ikaopll\IKAOPLL.v'
+Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\TangcartMSX\src\ikaopll\IKAOPLL_modules\IKAOPLL_dac.v'
+Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\TangcartMSX\src\ikaopll\IKAOPLL_modules\IKAOPLL_eg.v'
+Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\TangcartMSX\src\ikaopll\IKAOPLL_modules\IKAOPLL_lfo.v'
+Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\TangcartMSX\src\ikaopll\IKAOPLL_modules\IKAOPLL_op.v'
+Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\TangcartMSX\src\ikaopll\IKAOPLL_modules\IKAOPLL_pg.v'
+Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\TangcartMSX\src\ikaopll\IKAOPLL_modules\IKAOPLL_primitives.v'
+Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\TangcartMSX\src\ikaopll\IKAOPLL_modules\IKAOPLL_reg.v'
+Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\TangcartMSX\src\ikaopll\IKAOPLL_modules\IKAOPLL_timinggen.v'
+Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\TangcartMSX\src\ikaopll_wrap\ikaopll_wrap.v'
+Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\TangcartMSX\src\ikaopll_wrap\ip_msxmusic_rom.v'
 Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\TangcartMSX\src\ikascc\IKASCC.v'
 Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\TangcartMSX\src\ikascc\IKASCC_modules\IKASCC_player_a.v'
 Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\TangcartMSX\src\ikascc\IKASCC_modules\IKASCC_player_s.v'
@@ -8,13 +19,10 @@ Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\TangcartMSX\src\ik
 Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\TangcartMSX\src\ikascc\IKASCC_modules\IKASCC_vrc_a.v'
 Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\TangcartMSX\src\ikascc\IKASCC_modules\IKASCC_vrc_s.v'
 Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\TangcartMSX\src\ikascc_wrap\ip_ikascc_wrap.v'
-Undeclared symbol 'w_rom_cs_n', assumed default net type 'wire'("D:\github\HRA_product\TangCartMSX\RTL\TangcartMSX\src\ikascc_wrap\ip_ikascc_wrap.v":58)
-Undeclared symbol 'w_rom_ma', assumed default net type 'wire'("D:\github\HRA_product\TangCartMSX\RTL\TangcartMSX\src\ikascc_wrap\ip_ikascc_wrap.v":59)
 Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\TangcartMSX\src\pwm\ip_pwm.v'
 Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\TangcartMSX\src\tangcart_msx.v'
 Compiling module 'tangcart_msx'("D:\github\HRA_product\TangCartMSX\RTL\TangcartMSX\src\tangcart_msx.v":26)
 Compiling module 'Gowin_PLL'("D:\github\HRA_product\TangCartMSX\RTL\TangcartMSX\src\gowin_pll\gowin_pll.v":10)
-WARN  (EX3771) : Module instantiation should have an instance name("D:\github\HRA_product\TangCartMSX\RTL\TangcartMSX\src\tangcart_msx.v":115)
 Compiling module 'ip_ikascc_wrapper'("D:\github\HRA_product\TangCartMSX\RTL\TangcartMSX\src\ikascc_wrap\ip_ikascc_wrap.v":24)
 Compiling module 'IKASCC'("D:\github\HRA_product\TangCartMSX\RTL\TangcartMSX\src\ikascc\IKASCC.v":1)
 Compiling module 'IKASCC_vrc_s(RAMCTRL_ASYNC=1)'("D:\github\HRA_product\TangCartMSX\RTL\TangcartMSX\src\ikascc\IKASCC_modules\IKASCC_vrc_s.v":1)
@@ -28,15 +36,37 @@ Compiling module 'IKASCC_player_control_s(RAMCTRL_ASYNC=1,ADDR_RAM_BASE=8'h20,AD
 Compiling module 'IKASCC_player_control_s(RAMCTRL_ASYNC=1,ADDR_RAM_BASE=8'h40,ADDR_FREQ_BASE=8'h84,ADDR_VOL=8'h8C,ADDR_MUTE=8'h8F,BIT_MUTE=2)'("D:\github\HRA_product\TangCartMSX\RTL\TangcartMSX\src\ikascc\IKASCC_modules\IKASCC_player_s.v":372)
 Compiling module 'IKASCC_player_control_s(RAMCTRL_ASYNC=1,ADDR_RAM_BASE=8'h60,ADDR_FREQ_BASE=8'h86,ADDR_VOL=8'h8D,ADDR_MUTE=8'h8F,BIT_MUTE=3)'("D:\github\HRA_product\TangCartMSX\RTL\TangcartMSX\src\ikascc\IKASCC_modules\IKASCC_player_s.v":372)
 Compiling module 'IKASCC_player_control_s(RAMCTRL_ASYNC=1,ADDR_RAM_BASE=8'h60,ADDR_FREQ_BASE=8'h88,ADDR_VOL=8'h8E,ADDR_MUTE=8'h8F,BIT_MUTE=4)'("D:\github\HRA_product\TangCartMSX\RTL\TangcartMSX\src\ikascc\IKASCC_modules\IKASCC_player_s.v":372)
-WARN  (EX3670) : Actual bit length 1 differs from formal bit length 6 for port 'o_ROMADDR'("D:\github\HRA_product\TangCartMSX\RTL\TangcartMSX\src\ikascc_wrap\ip_ikascc_wrap.v":59)
-WARN  (EX3791) : Expression size 23 truncated to fit in target size 22("D:\github\HRA_product\TangCartMSX\RTL\TangcartMSX\src\ikascc_wrap\ip_ikascc_wrap.v":78)
-WARN  (EX3670) : Actual bit length 6 differs from formal bit length 5 for port 'n_led'("D:\github\HRA_product\TangCartMSX\RTL\TangcartMSX\src\tangcart_msx.v":127)
+Compiling module 'ip_msxmusic_rom'("D:\github\HRA_product\TangCartMSX\RTL\TangcartMSX\src\ikaopll_wrap\ip_msxmusic_rom.v":5)
+Compiling module 'ip_ikaopll_wrapper(BUILT_IN_MODE=1)'("D:\github\HRA_product\TangCartMSX\RTL\TangcartMSX\src\ikaopll_wrap\ikaopll_wrap.v":7)
+Compiling module 'IKAOPLL(FAST_RESET=1,USE_PIPELINED_MULTIPLIER=1)'("D:\github\HRA_product\TangCartMSX\RTL\TangcartMSX\src\ikaopll\IKAOPLL.v":1)
+Compiling module 'IKAOPLL_timinggen(FAST_RESET=1)'("D:\github\HRA_product\TangCartMSX\RTL\TangcartMSX\src\ikaopll\IKAOPLL_modules\IKAOPLL_timinggen.v":1)
+Compiling module 'IKAOPLL_reg'("D:\github\HRA_product\TangCartMSX\RTL\TangcartMSX\src\ikaopll\IKAOPLL_modules\IKAOPLL_reg.v":1)
+Compiling module 'IKAOPLL_rw_synchronizer'("D:\github\HRA_product\TangCartMSX\RTL\TangcartMSX\src\ikaopll\IKAOPLL_modules\IKAOPLL_reg.v":467)
+Compiling module 'IKAOPLL_d9reg(WIDTH=8)'("D:\github\HRA_product\TangCartMSX\RTL\TangcartMSX\src\ikaopll\IKAOPLL_modules\IKAOPLL_reg.v":525)
+Compiling module 'IKAOPLL_sr(WIDTH=8,TAP0=2,TAP1=5,TAP2=8)'("D:\github\HRA_product\TangCartMSX\RTL\TangcartMSX\src\ikaopll\IKAOPLL_modules\IKAOPLL_primitives.v":31)
+Compiling module 'IKAOPLL_d9reg'("D:\github\HRA_product\TangCartMSX\RTL\TangcartMSX\src\ikaopll\IKAOPLL_modules\IKAOPLL_reg.v":525)
+Compiling module 'IKAOPLL_sr(TAP0=2,TAP1=5,TAP2=8)'("D:\github\HRA_product\TangCartMSX\RTL\TangcartMSX\src\ikaopll\IKAOPLL_modules\IKAOPLL_primitives.v":31)
+Compiling module 'IKAOPLL_d9reg(WIDTH=3)'("D:\github\HRA_product\TangCartMSX\RTL\TangcartMSX\src\ikaopll\IKAOPLL_modules\IKAOPLL_reg.v":525)
+Compiling module 'IKAOPLL_sr(WIDTH=3,TAP0=2,TAP1=5,TAP2=8)'("D:\github\HRA_product\TangCartMSX\RTL\TangcartMSX\src\ikaopll\IKAOPLL_modules\IKAOPLL_primitives.v":31)
+Compiling module 'IKAOPLL_d9reg(WIDTH=4)'("D:\github\HRA_product\TangCartMSX\RTL\TangcartMSX\src\ikaopll\IKAOPLL_modules\IKAOPLL_reg.v":525)
+Compiling module 'IKAOPLL_sr(WIDTH=4,TAP0=2,TAP1=5,TAP2=8)'("D:\github\HRA_product\TangCartMSX\RTL\TangcartMSX\src\ikaopll\IKAOPLL_modules\IKAOPLL_primitives.v":31)
+Compiling module 'IKAOPLL_instrom'("D:\github\HRA_product\TangCartMSX\RTL\TangcartMSX\src\ikaopll\IKAOPLL_modules\IKAOPLL_reg.v":554)
+Compiling module 'IKAOPLL_lfo'("D:\github\HRA_product\TangCartMSX\RTL\TangcartMSX\src\ikaopll\IKAOPLL_modules\IKAOPLL_lfo.v":1)
+Compiling module 'IKAOPLL_pg'("D:\github\HRA_product\TangCartMSX\RTL\TangcartMSX\src\ikaopll\IKAOPLL_modules\IKAOPLL_pg.v":1)
+Compiling module 'IKAOPLL_sr(WIDTH=19,LENGTH=15)'("D:\github\HRA_product\TangCartMSX\RTL\TangcartMSX\src\ikaopll\IKAOPLL_modules\IKAOPLL_primitives.v":31)
+Compiling module 'IKAOPLL_eg'("D:\github\HRA_product\TangCartMSX\RTL\TangcartMSX\src\ikaopll\IKAOPLL_modules\IKAOPLL_eg.v":1)
+Compiling module 'IKAOPLL_sr(WIDTH=2,LENGTH=18,TAP0=16)'("D:\github\HRA_product\TangCartMSX\RTL\TangcartMSX\src\ikaopll\IKAOPLL_modules\IKAOPLL_primitives.v":31)
+Compiling module 'IKAOPLL_sr(WIDTH=7,LENGTH=17,TAP0=15,TAP1=16)'("D:\github\HRA_product\TangCartMSX\RTL\TangcartMSX\src\ikaopll\IKAOPLL_modules\IKAOPLL_primitives.v":31)
+Compiling module 'IKAOPLL_op'("D:\github\HRA_product\TangCartMSX\RTL\TangcartMSX\src\ikaopll\IKAOPLL_modules\IKAOPLL_op.v":1)
+Compiling module 'IKAOPLL_logsinrom'("D:\github\HRA_product\TangCartMSX\RTL\TangcartMSX\src\ikaopll\IKAOPLL_modules\IKAOPLL_op.v":277)
+Compiling module 'IKAOPLL_exprom'("D:\github\HRA_product\TangCartMSX\RTL\TangcartMSX\src\ikaopll\IKAOPLL_modules\IKAOPLL_op.v":325)
+Compiling module 'IKAOPLL_sr(WIDTH=12,TAP0=6)'("D:\github\HRA_product\TangCartMSX\RTL\TangcartMSX\src\ikaopll\IKAOPLL_modules\IKAOPLL_primitives.v":31)
+Compiling module 'IKAOPLL_dac'("D:\github\HRA_product\TangCartMSX\RTL\TangcartMSX\src\ikaopll\IKAOPLL_modules\IKAOPLL_dac.v":1)
+Compiling module 'IKAOPLL_sr(WIDTH=9,LENGTH=5)'("D:\github\HRA_product\TangCartMSX\RTL\TangcartMSX\src\ikaopll\IKAOPLL_modules\IKAOPLL_primitives.v":31)
 Compiling module 'ip_pwm'("D:\github\HRA_product\TangCartMSX\RTL\TangcartMSX\src\pwm\ip_pwm.v":27)
 NOTE  (EX0101) : Current top module is "tangcart_msx"
 [5%] Running netlist conversion ...
 WARN  (CV0016) : Input n_tmerq is unused("D:\github\HRA_product\TangCartMSX\RTL\TangcartMSX\src\tangcart_msx.v":30)
-WARN  (CV0016) : Input n_tiorq is unused("D:\github\HRA_product\TangCartMSX\RTL\TangcartMSX\src\tangcart_msx.v":31)
-WARN  (CV0020) : Input ta[10:8] is unused("D:\github\HRA_product\TangCartMSX\RTL\TangcartMSX\src\tangcart_msx.v":34)
 WARN  (CV0016) : Input button is unused("D:\github\HRA_product\TangCartMSX\RTL\TangcartMSX\src\tangcart_msx.v":39)
 WARN  (CV0016) : Input dip_sw is unused("D:\github\HRA_product\TangCartMSX\RTL\TangcartMSX\src\tangcart_msx.v":40)
 Running device independent optimization ...

@@ -1,0 +1,14 @@
+# vsim -c -t 1ps -do "run.do" tb 
+# Start time: 22:00:49 on Jul 06,2024
+# Loading sv_std.std
+# Loading work.tb
+# Loading work.ip_msxbus
+# do run.do
+# Memory Write Test
+# I/O Write Test
+# Memory Read Test
+# I/O Read Test
+# ** Note: $finish    : tb.sv(685)
+#    Time: 40589529 ps  Iteration: 1  Instance: /tb
+# End time: 22:00:50 on Jul 06,2024, Elapsed time: 0:00:01
+# Errors: 0, Warnings: 0

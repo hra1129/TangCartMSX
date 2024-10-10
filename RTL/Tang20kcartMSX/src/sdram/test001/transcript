@@ -1,0 +1,2 @@
+# OpenFile D:/github/HRA_product/TangCartMSX/RTL/Tang20kcartMSX/src/sdram/test001/vsim.wlf
+add wave -position end vsim:/tb/u_sdram_controller/*

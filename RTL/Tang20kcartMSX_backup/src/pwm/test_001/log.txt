@@ -1,0 +1,10 @@
+# vsim -c -t 1ps -do "run.do" tb 
+# Start time: 06:58:12 on May 06,2024
+# Loading sv_std.std
+# Loading work.tb
+# Loading work.ip_pwm
+# do run.do
+# ** Note: $finish    : tb.sv(105)
+#    Time: 3055616400 ps  Iteration: 2  Instance: /tb
+# End time: 06:58:13 on May 06,2024, Elapsed time: 0:00:01
+# Errors: 0, Warnings: 0

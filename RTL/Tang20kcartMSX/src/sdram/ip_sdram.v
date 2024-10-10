@@ -32,12 +32,12 @@ module ip_sdram #(
 	input			clk,				// 54MHz
 	input			clk_sdram,			// 54MHz with 180degree delay
 	//	CPU I/F
-	input			rd,					// Set to 1 to read
-	input			wr,					// Set to 1 to write
+	input			rd_n,				// Set to 0 to read
+	input			wr_n,				// Set to 0 to write
 	output			busy,
 	input	[22:0]	address,			// Byte address (8MBytes)
 	input	[7:0]	wdata,
-	output	[7:0]	rdata,
+	output	[15:0]	rdata,
 	output			rdata_en,
 	//	SDRAM I/F
 	output			O_sdram_clk,
@@ -115,10 +115,10 @@ module ip_sdram #(
 	reg		[7:0]				ff_data;
 	reg							ff_write;
 	reg							ff_read;
-	reg		[7:0]				ff_rdata;
+	reg		[15:0]				ff_rdata;
 	reg							ff_rdata_en;
 	reg		[7:0]				ff_column;
-	reg		[1:0]				ff_byte_sel;
+	reg							ff_word_sel;
 	reg		[REFRESH_BITS-1:0]	ff_refresh_timer;
 
 	always @( posedge clk_sdram ) begin
@@ -130,7 +130,7 @@ module ip_sdram #(
 			ff_address			<= 11'd0;
 			ff_write			<= 1'b0;
 			ff_read				<= 1'b0;
-			ff_byte_sel			<= 2'b00;
+			ff_word_sel			<= 1'b0;
 			ff_refresh_timer	<= 'd0;
 		end
 		else begin
@@ -158,6 +158,7 @@ module ip_sdram #(
 					ff_next_state		<= ST_INIT_AUTO_REFRESH2;
 					ff_next_command		<= CMD_AUTO_REFRESH;
 					ff_address			<= { 1'b0, 1'b0, 2'b00, 3'b010, 1'b0, 3'b000 };		//	CAS Latency: 2cyc, Burst length: 1
+//					ff_address			<= { 1'b0, 1'b0, 2'b00, 3'b011, 1'b0, 3'b000 };		//	CAS Latency: 3cyc, Burst length: 1
 				end
 			ST_INIT_AUTO_REFRESH2: begin
 					ff_state			<= ST_NOP3;
@@ -184,7 +185,7 @@ module ip_sdram #(
 			//	Idle process
 			// ----------------------------------------------------------------
 			ST_IDLE: begin
-					if( wr ) begin
+					if( !wr_n ) begin
 						ff_state			<= ST_NOP3;
 						ff_next_state		<= ST_WRITE;
 						ff_next_command		<= CMD_WRITE;
@@ -205,8 +206,8 @@ module ip_sdram #(
 						ff_write			<= 1'b0;
 						ff_refresh_timer	<= 'd0;
 					end
-					else if( rd ) begin
-						ff_state			<= ST_NOP3;
+					else if( !rd_n ) begin
+						ff_state			<= ST_NOP2;
 						ff_next_state		<= ST_READ;
 						ff_next_command		<= CMD_READ;
 						if( ff_bank == { 1'b0, address[22:21] } && ff_row == address[20:10] ) begin
@@ -220,7 +221,7 @@ module ip_sdram #(
 						ff_row				<= address[20:10];				//	Row Address
 						ff_column			<= address[ 9: 2];				//	Column Address
 						ff_data_mask		<= 4'b0000;
-						ff_byte_sel			<= address[1:0];
+						ff_word_sel			<= address[1];
 						ff_write			<= 1'b0;
 						ff_refresh_timer	<= 'd0;
 					end
@@ -263,7 +264,7 @@ module ip_sdram #(
 					ff_address[10]		<= 1'b1;
 				end
 			ST_READ_PRECHARGE: begin
-					ff_state			<= ST_NOP1;
+					ff_state			<= ST_NOP1;						//	CAS Latency 2
 					ff_command			<= CMD_NOP;
 					ff_next_state		<= ST_READ_AUTO_REFRESH;
 					ff_next_command		<= CMD_AUTO_REFRESH;
@@ -325,16 +326,17 @@ module ip_sdram #(
 		if( !n_reset ) begin
 			ff_rdata_en <= 1'b0;
 		end
-		else begin
+		else if( ff_state == ST_NOP1 ) begin
 			ff_rdata_en <= ff_read;
+		end
+		else begin
+			ff_rdata_en <= 1'b0;
 		end
 	end
 
 	always @( posedge clk ) begin
 		if( ff_read ) begin
-			ff_rdata	<= (ff_byte_sel == 2'd0) ? IO_sdram_dq[ 7: 0]:
-			        	   (ff_byte_sel == 2'd1) ? IO_sdram_dq[15: 8]:
-			        	   (ff_byte_sel == 2'd2) ? IO_sdram_dq[23:16]: IO_sdram_dq[31:24];
+ 			ff_rdata	<= (ff_word_sel == 1'b0) ? IO_sdram_dq[15: 0]: IO_sdram_dq[31:16];
 		end
 	end
 

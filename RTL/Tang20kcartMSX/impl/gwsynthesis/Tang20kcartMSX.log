@@ -2,39 +2,162 @@ GowinSynthesis start
 Running parser ...
 Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\Tang20kcartMSX\src\debugger\ip_debugger.v'
 Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\Tang20kcartMSX\src\gowin_pll\gowin_pll.v'
-Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\Tang20kcartMSX\src\gowin_rpll\gowin_rpll.v'
-Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\Tang20kcartMSX\src\gpio\ip_gpio.v'
-Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\Tang20kcartMSX\src\msxbus\ip_msxbus.v'
-Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\Tang20kcartMSX\src\pwm\ip_pwm.v'
 Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\Tang20kcartMSX\src\sdram\ip_sdram.v'
-Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\Tang20kcartMSX\src\tang20\tang20.v'
 Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\Tang20kcartMSX\src\tang20cart_msx.v'
-Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\Tang20kcartMSX\src\uart\ip_uart.v'
-Compiling module 'tang20cart_msx'("D:\github\HRA_product\TangCartMSX\RTL\Tang20kcartMSX\src\tang20cart_msx.v":26)
-Compiling module 'Gowin_rPLL'("D:\github\HRA_product\TangCartMSX\RTL\Tang20kcartMSX\src\gowin_rpll\gowin_rpll.v":9)
-WARN  (EX3791) : Expression size 27 truncated to fit in target size 26("D:\github\HRA_product\TangCartMSX\RTL\Tang20kcartMSX\src\tang20cart_msx.v":197)
-WARN  (EX3791) : Expression size 3 truncated to fit in target size 2("D:\github\HRA_product\TangCartMSX\RTL\Tang20kcartMSX\src\tang20cart_msx.v":206)
-Compiling module 'tang20'("D:\github\HRA_product\TangCartMSX\RTL\Tang20kcartMSX\src\tang20\tang20.v":26)
-Compiling module 'ip_msxbus'("D:\github\HRA_product\TangCartMSX\RTL\Tang20kcartMSX\src\msxbus\ip_msxbus.v":28)
-Compiling module 'ip_gpio'("D:\github\HRA_product\TangCartMSX\RTL\Tang20kcartMSX\src\gpio\ip_gpio.v":27)
+Analyzing VHDL file 'D:\github\HRA_product\TangCartMSX\RTL\Tang20kcartMSX\src\v9958clone\ram.vhd'
+Analyzing entity 'ram'("D:\github\HRA_product\TangCartMSX\RTL\Tang20kcartMSX\src\v9958clone\ram.vhd":37)
+Analyzing architecture 'rtl'("D:\github\HRA_product\TangCartMSX\RTL\Tang20kcartMSX\src\v9958clone\ram.vhd":47)
+Analyzing VHDL file 'D:\github\HRA_product\TangCartMSX\RTL\Tang20kcartMSX\src\v9958clone\vdp_package.vhd'
+Analyzing package 'vdp_package'("D:\github\HRA_product\TangCartMSX\RTL\Tang20kcartMSX\src\v9958clone\vdp_package.vhd":82)
+Analyzing VHDL file 'D:\github\HRA_product\TangCartMSX\RTL\Tang20kcartMSX\src\v9958clone\vdp.vhd'
+Analyzing entity 'vdp'("D:\github\HRA_product\TangCartMSX\RTL\Tang20kcartMSX\src\v9958clone\vdp.vhd":254)
+Analyzing architecture 'rtl'("D:\github\HRA_product\TangCartMSX\RTL\Tang20kcartMSX\src\v9958clone\vdp.vhd":304)
+Analyzing VHDL file 'D:\github\HRA_product\TangCartMSX\RTL\Tang20kcartMSX\src\v9958clone\vdp_colordec.vhd'
+Analyzing entity 'vdp_colordec'("D:\github\HRA_product\TangCartMSX\RTL\Tang20kcartMSX\src\v9958clone\vdp_colordec.vhd":68)
+Analyzing architecture 'rtl'("D:\github\HRA_product\TangCartMSX\RTL\Tang20kcartMSX\src\v9958clone\vdp_colordec.vhd":115)
+Analyzing VHDL file 'D:\github\HRA_product\TangCartMSX\RTL\Tang20kcartMSX\src\v9958clone\vdp_command.vhd'
+Analyzing entity 'vdp_command'("D:\github\HRA_product\TangCartMSX\RTL\Tang20kcartMSX\src\v9958clone\vdp_command.vhd":67)
+Analyzing architecture 'rtl'("D:\github\HRA_product\TangCartMSX\RTL\Tang20kcartMSX\src\v9958clone\vdp_command.vhd":106)
+Analyzing VHDL file 'D:\github\HRA_product\TangCartMSX\RTL\Tang20kcartMSX\src\v9958clone\vdp_doublebuf.vhd'
+Analyzing entity 'vdp_doublebuf'("D:\github\HRA_product\TangCartMSX\RTL\Tang20kcartMSX\src\v9958clone\vdp_doublebuf.vhd":80)
+Analyzing architecture 'rtl'("D:\github\HRA_product\TangCartMSX\RTL\Tang20kcartMSX\src\v9958clone\vdp_doublebuf.vhd":97)
+Analyzing VHDL file 'D:\github\HRA_product\TangCartMSX\RTL\Tang20kcartMSX\src\v9958clone\vdp_graphic123m.vhd'
+Analyzing entity 'vdp_graphic123m'("D:\github\HRA_product\TangCartMSX\RTL\Tang20kcartMSX\src\v9958clone\vdp_graphic123m.vhd":86)
+Analyzing architecture 'rtl'("D:\github\HRA_product\TangCartMSX\RTL\Tang20kcartMSX\src\v9958clone\vdp_graphic123m.vhd":118)
+Analyzing VHDL file 'D:\github\HRA_product\TangCartMSX\RTL\Tang20kcartMSX\src\v9958clone\vdp_graphic4567.vhd'
+Analyzing entity 'vdp_graphic4567'("D:\github\HRA_product\TangCartMSX\RTL\Tang20kcartMSX\src\v9958clone\vdp_graphic4567.vhd":97)
+Analyzing architecture 'rtl'("D:\github\HRA_product\TangCartMSX\RTL\Tang20kcartMSX\src\v9958clone\vdp_graphic4567.vhd":138)
+Analyzing VHDL file 'D:\github\HRA_product\TangCartMSX\RTL\Tang20kcartMSX\src\v9958clone\vdp_hvcounter.vhd'
+Analyzing entity 'vdp_hvcounter'("D:\github\HRA_product\TangCartMSX\RTL\Tang20kcartMSX\src\v9958clone\vdp_hvcounter.vhd":67)
+Analyzing architecture 'rtl'("D:\github\HRA_product\TangCartMSX\RTL\Tang20kcartMSX\src\v9958clone\vdp_hvcounter.vhd":87)
+Analyzing VHDL file 'D:\github\HRA_product\TangCartMSX\RTL\Tang20kcartMSX\src\v9958clone\vdp_interrupt.vhd'
+Analyzing entity 'vdp_interrupt'("D:\github\HRA_product\TangCartMSX\RTL\Tang20kcartMSX\src\v9958clone\vdp_interrupt.vhd":65)
+Analyzing architecture 'rtl'("D:\github\HRA_product\TangCartMSX\RTL\Tang20kcartMSX\src\v9958clone\vdp_interrupt.vhd":83)
+Analyzing VHDL file 'D:\github\HRA_product\TangCartMSX\RTL\Tang20kcartMSX\src\v9958clone\vdp_linebuf.vhd'
+Analyzing entity 'vdp_linebuf'("D:\github\HRA_product\TangCartMSX\RTL\Tang20kcartMSX\src\v9958clone\vdp_linebuf.vhd":89)
+Analyzing architecture 'rtl'("D:\github\HRA_product\TangCartMSX\RTL\Tang20kcartMSX\src\v9958clone\vdp_linebuf.vhd":100)
+Analyzing VHDL file 'D:\github\HRA_product\TangCartMSX\RTL\Tang20kcartMSX\src\v9958clone\vdp_ntsc_pal.vhd'
+Analyzing entity 'vdp_ntsc_pal'("D:\github\HRA_product\TangCartMSX\RTL\Tang20kcartMSX\src\v9958clone\vdp_ntsc_pal.vhd":96)
+Analyzing architecture 'rtl'("D:\github\HRA_product\TangCartMSX\RTL\Tang20kcartMSX\src\v9958clone\vdp_ntsc_pal.vhd":120)
+Analyzing VHDL file 'D:\github\HRA_product\TangCartMSX\RTL\Tang20kcartMSX\src\v9958clone\vdp_register.vhd'
+Analyzing entity 'vdp_register'("D:\github\HRA_product\TangCartMSX\RTL\Tang20kcartMSX\src\v9958clone\vdp_register.vhd":89)
+Analyzing architecture 'rtl'("D:\github\HRA_product\TangCartMSX\RTL\Tang20kcartMSX\src\v9958clone\vdp_register.vhd":206)
+Analyzing VHDL file 'D:\github\HRA_product\TangCartMSX\RTL\Tang20kcartMSX\src\v9958clone\vdp_spinforam.vhd'
+Analyzing entity 'vdp_spinforam'("D:\github\HRA_product\TangCartMSX\RTL\Tang20kcartMSX\src\v9958clone\vdp_spinforam.vhd":88)
+Analyzing architecture 'rtl'("D:\github\HRA_product\TangCartMSX\RTL\Tang20kcartMSX\src\v9958clone\vdp_spinforam.vhd":99)
+Analyzing VHDL file 'D:\github\HRA_product\TangCartMSX\RTL\Tang20kcartMSX\src\v9958clone\vdp_sprite.vhd'
+Analyzing entity 'vdp_sprite'("D:\github\HRA_product\TangCartMSX\RTL\Tang20kcartMSX\src\v9958clone\vdp_sprite.vhd":183)
+Analyzing architecture 'rtl'("D:\github\HRA_product\TangCartMSX\RTL\Tang20kcartMSX\src\v9958clone\vdp_sprite.vhd":233)
+Analyzing VHDL file 'D:\github\HRA_product\TangCartMSX\RTL\Tang20kcartMSX\src\v9958clone\vdp_ssg.vhd'
+Analyzing entity 'vdp_ssg'("D:\github\HRA_product\TangCartMSX\RTL\Tang20kcartMSX\src\v9958clone\vdp_ssg.vhd":69)
+Analyzing architecture 'rtl'("D:\github\HRA_product\TangCartMSX\RTL\Tang20kcartMSX\src\v9958clone\vdp_ssg.vhd":109)
+Analyzing VHDL file 'D:\github\HRA_product\TangCartMSX\RTL\Tang20kcartMSX\src\v9958clone\vdp_text12.vhd'
+Analyzing entity 'vdp_text12'("D:\github\HRA_product\TangCartMSX\RTL\Tang20kcartMSX\src\v9958clone\vdp_text12.vhd":104)
+Analyzing architecture 'rtl'("D:\github\HRA_product\TangCartMSX\RTL\Tang20kcartMSX\src\v9958clone\vdp_text12.vhd":138)
+Analyzing VHDL file 'D:\github\HRA_product\TangCartMSX\RTL\Tang20kcartMSX\src\v9958clone\vdp_vga.vhd'
+Analyzing entity 'vdp_vga'("D:\github\HRA_product\TangCartMSX\RTL\Tang20kcartMSX\src\v9958clone\vdp_vga.vhd":103)
+Analyzing architecture 'rtl'("D:\github\HRA_product\TangCartMSX\RTL\Tang20kcartMSX\src\v9958clone\vdp_vga.vhd":133)
+Analyzing VHDL file 'D:\github\HRA_product\TangCartMSX\RTL\Tang20kcartMSX\src\v9958clone\vdp_wait_control.vhd'
+Analyzing entity 'vdp_wait_control'("D:\github\HRA_product\TangCartMSX\RTL\Tang20kcartMSX\src\v9958clone\vdp_wait_control.vhd":59)
+Analyzing architecture 'rtl'("D:\github\HRA_product\TangCartMSX\RTL\Tang20kcartMSX\src\v9958clone\vdp_wait_control.vhd":79)
+Compiling module 'ip_debugger'("D:\github\HRA_product\TangCartMSX\RTL\Tang20kcartMSX\src\debugger\ip_debugger.v":27)
+WARN  (EX3791) : Expression size 7 truncated to fit in target size 6("D:\github\HRA_product\TangCartMSX\RTL\Tang20kcartMSX\src\debugger\ip_debugger.v":72)
+WARN  (EX3791) : Expression size 7 truncated to fit in target size 6("D:\github\HRA_product\TangCartMSX\RTL\Tang20kcartMSX\src\debugger\ip_debugger.v":80)
+WARN  (EX3791) : Expression size 7 truncated to fit in target size 6("D:\github\HRA_product\TangCartMSX\RTL\Tang20kcartMSX\src\debugger\ip_debugger.v":88)
+WARN  (EX3791) : Expression size 7 truncated to fit in target size 6("D:\github\HRA_product\TangCartMSX\RTL\Tang20kcartMSX\src\debugger\ip_debugger.v":96)
+WARN  (EX3791) : Expression size 7 truncated to fit in target size 6("D:\github\HRA_product\TangCartMSX\RTL\Tang20kcartMSX\src\debugger\ip_debugger.v":104)
+WARN  (EX3791) : Expression size 7 truncated to fit in target size 6("D:\github\HRA_product\TangCartMSX\RTL\Tang20kcartMSX\src\debugger\ip_debugger.v":112)
+WARN  (EX3791) : Expression size 7 truncated to fit in target size 6("D:\github\HRA_product\TangCartMSX\RTL\Tang20kcartMSX\src\debugger\ip_debugger.v":120)
+WARN  (EX3791) : Expression size 7 truncated to fit in target size 6("D:\github\HRA_product\TangCartMSX\RTL\Tang20kcartMSX\src\debugger\ip_debugger.v":127)
+WARN  (EX3791) : Expression size 7 truncated to fit in target size 6("D:\github\HRA_product\TangCartMSX\RTL\Tang20kcartMSX\src\debugger\ip_debugger.v":134)
+WARN  (EX3791) : Expression size 7 truncated to fit in target size 6("D:\github\HRA_product\TangCartMSX\RTL\Tang20kcartMSX\src\debugger\ip_debugger.v":141)
+WARN  (EX3791) : Expression size 7 truncated to fit in target size 6("D:\github\HRA_product\TangCartMSX\RTL\Tang20kcartMSX\src\debugger\ip_debugger.v":148)
+WARN  (EX3791) : Expression size 7 truncated to fit in target size 6("D:\github\HRA_product\TangCartMSX\RTL\Tang20kcartMSX\src\debugger\ip_debugger.v":155)
+WARN  (EX3791) : Expression size 7 truncated to fit in target size 6("D:\github\HRA_product\TangCartMSX\RTL\Tang20kcartMSX\src\debugger\ip_debugger.v":162)
+WARN  (EX3791) : Expression size 7 truncated to fit in target size 6("D:\github\HRA_product\TangCartMSX\RTL\Tang20kcartMSX\src\debugger\ip_debugger.v":169)
+WARN  (EX3791) : Expression size 7 truncated to fit in target size 6("D:\github\HRA_product\TangCartMSX\RTL\Tang20kcartMSX\src\debugger\ip_debugger.v":176)
+WARN  (EX3791) : Expression size 7 truncated to fit in target size 6("D:\github\HRA_product\TangCartMSX\RTL\Tang20kcartMSX\src\debugger\ip_debugger.v":183)
+WARN  (EX3791) : Expression size 7 truncated to fit in target size 6("D:\github\HRA_product\TangCartMSX\RTL\Tang20kcartMSX\src\debugger\ip_debugger.v":190)
+WARN  (EX3791) : Expression size 7 truncated to fit in target size 6("D:\github\HRA_product\TangCartMSX\RTL\Tang20kcartMSX\src\debugger\ip_debugger.v":197)
+WARN  (EX3791) : Expression size 7 truncated to fit in target size 6("D:\github\HRA_product\TangCartMSX\RTL\Tang20kcartMSX\src\debugger\ip_debugger.v":204)
+WARN  (EX3791) : Expression size 7 truncated to fit in target size 6("D:\github\HRA_product\TangCartMSX\RTL\Tang20kcartMSX\src\debugger\ip_debugger.v":211)
+WARN  (EX3791) : Expression size 7 truncated to fit in target size 6("D:\github\HRA_product\TangCartMSX\RTL\Tang20kcartMSX\src\debugger\ip_debugger.v":218)
+WARN  (EX3791) : Expression size 7 truncated to fit in target size 6("D:\github\HRA_product\TangCartMSX\RTL\Tang20kcartMSX\src\debugger\ip_debugger.v":225)
+WARN  (EX3791) : Expression size 7 truncated to fit in target size 6("D:\github\HRA_product\TangCartMSX\RTL\Tang20kcartMSX\src\debugger\ip_debugger.v":232)
+WARN  (EX3791) : Expression size 7 truncated to fit in target size 6("D:\github\HRA_product\TangCartMSX\RTL\Tang20kcartMSX\src\debugger\ip_debugger.v":239)
+WARN  (EX3791) : Expression size 7 truncated to fit in target size 6("D:\github\HRA_product\TangCartMSX\RTL\Tang20kcartMSX\src\debugger\ip_debugger.v":246)
+WARN  (EX3791) : Expression size 7 truncated to fit in target size 6("D:\github\HRA_product\TangCartMSX\RTL\Tang20kcartMSX\src\debugger\ip_debugger.v":253)
+WARN  (EX3791) : Expression size 7 truncated to fit in target size 6("D:\github\HRA_product\TangCartMSX\RTL\Tang20kcartMSX\src\debugger\ip_debugger.v":260)
+WARN  (EX3791) : Expression size 7 truncated to fit in target size 6("D:\github\HRA_product\TangCartMSX\RTL\Tang20kcartMSX\src\debugger\ip_debugger.v":267)
+WARN  (EX3791) : Expression size 7 truncated to fit in target size 6("D:\github\HRA_product\TangCartMSX\RTL\Tang20kcartMSX\src\debugger\ip_debugger.v":274)
+WARN  (EX3791) : Expression size 7 truncated to fit in target size 6("D:\github\HRA_product\TangCartMSX\RTL\Tang20kcartMSX\src\debugger\ip_debugger.v":281)
+WARN  (EX3791) : Expression size 7 truncated to fit in target size 6("D:\github\HRA_product\TangCartMSX\RTL\Tang20kcartMSX\src\debugger\ip_debugger.v":288)
+WARN  (EX3791) : Expression size 7 truncated to fit in target size 6("D:\github\HRA_product\TangCartMSX\RTL\Tang20kcartMSX\src\debugger\ip_debugger.v":295)
+WARN  (EX3791) : Expression size 7 truncated to fit in target size 6("D:\github\HRA_product\TangCartMSX\RTL\Tang20kcartMSX\src\debugger\ip_debugger.v":302)
+WARN  (EX3791) : Expression size 7 truncated to fit in target size 6("D:\github\HRA_product\TangCartMSX\RTL\Tang20kcartMSX\src\debugger\ip_debugger.v":309)
+WARN  (EX3791) : Expression size 7 truncated to fit in target size 6("D:\github\HRA_product\TangCartMSX\RTL\Tang20kcartMSX\src\debugger\ip_debugger.v":316)
+WARN  (EX3791) : Expression size 7 truncated to fit in target size 6("D:\github\HRA_product\TangCartMSX\RTL\Tang20kcartMSX\src\debugger\ip_debugger.v":323)
+WARN  (EX3791) : Expression size 7 truncated to fit in target size 6("D:\github\HRA_product\TangCartMSX\RTL\Tang20kcartMSX\src\debugger\ip_debugger.v":330)
+WARN  (EX3791) : Expression size 7 truncated to fit in target size 6("D:\github\HRA_product\TangCartMSX\RTL\Tang20kcartMSX\src\debugger\ip_debugger.v":337)
+WARN  (EX3791) : Expression size 7 truncated to fit in target size 6("D:\github\HRA_product\TangCartMSX\RTL\Tang20kcartMSX\src\debugger\ip_debugger.v":344)
+WARN  (EX3791) : Expression size 7 truncated to fit in target size 6("D:\github\HRA_product\TangCartMSX\RTL\Tang20kcartMSX\src\debugger\ip_debugger.v":357)
+WARN  (EX3791) : Expression size 7 truncated to fit in target size 6("D:\github\HRA_product\TangCartMSX\RTL\Tang20kcartMSX\src\debugger\ip_debugger.v":376)
+WARN  (EX3791) : Expression size 7 truncated to fit in target size 6("D:\github\HRA_product\TangCartMSX\RTL\Tang20kcartMSX\src\debugger\ip_debugger.v":383)
+WARN  (EX3791) : Expression size 7 truncated to fit in target size 6("D:\github\HRA_product\TangCartMSX\RTL\Tang20kcartMSX\src\debugger\ip_debugger.v":394)
+Compiling module 'Gowin_PLL'("D:\github\HRA_product\TangCartMSX\RTL\Tang20kcartMSX\src\gowin_pll\gowin_pll.v":9)
 Compiling module 'ip_sdram'("D:\github\HRA_product\TangCartMSX\RTL\Tang20kcartMSX\src\sdram\ip_sdram.v":27)
 WARN  (EX3791) : Expression size 14 truncated to fit in target size 13("D:\github\HRA_product\TangCartMSX\RTL\Tang20kcartMSX\src\sdram\ip_sdram.v":74)
-WARN  (EX3791) : Expression size 11 truncated to fit in target size 10("D:\github\HRA_product\TangCartMSX\RTL\Tang20kcartMSX\src\sdram\ip_sdram.v":233)
-WARN  (EX3791) : Expression size 27 truncated to fit in target size 26("D:\github\HRA_product\TangCartMSX\RTL\Tang20kcartMSX\src\tang20cart_msx.v":457)
-Compiling module 'ip_uart(clk_freq=54000000)'("D:\github\HRA_product\TangCartMSX\RTL\Tang20kcartMSX\src\uart\ip_uart.v":27)
-WARN  (EX3791) : Expression size 32 truncated to fit in target size 11("D:\github\HRA_product\TangCartMSX\RTL\Tang20kcartMSX\src\uart\ip_uart.v":68)
-Compiling module 'ip_debugger'("D:\github\HRA_product\TangCartMSX\RTL\Tang20kcartMSX\src\debugger\ip_debugger.v":27)
-Compiling module 'ip_pwm'("D:\github\HRA_product\TangCartMSX\RTL\Tang20kcartMSX\src\pwm\ip_pwm.v":27)
+WARN  (EX3791) : Expression size 11 truncated to fit in target size 10("D:\github\HRA_product\TangCartMSX\RTL\Tang20kcartMSX\src\sdram\ip_sdram.v":234)
+Compiling module 'tang20cart_msx'("D:\github\HRA_product\TangCartMSX\RTL\Tang20kcartMSX\src\tang20cart_msx.v":26)
+WARN  (EX3791) : Expression size 27 truncated to fit in target size 26("D:\github\HRA_product\TangCartMSX\RTL\Tang20kcartMSX\src\tang20cart_msx.v":174)
+WARN  (EX3791) : Expression size 3 truncated to fit in target size 2("D:\github\HRA_product\TangCartMSX\RTL\Tang20kcartMSX\src\tang20cart_msx.v":183)
+Switching to VHDL mode to elaborate design unit 'VDP'("D:\github\HRA_product\TangCartMSX\RTL\Tang20kcartMSX\src\tang20cart_msx.v":249)
+Processing 'VDP(RTL)'("D:\github\HRA_product\TangCartMSX\RTL\Tang20kcartMSX\src\v9958clone\vdp.vhd":254)
+Processing 'VDP_NTSC_PAL(RTL)'("D:\github\HRA_product\TangCartMSX\RTL\Tang20kcartMSX\src\v9958clone\vdp_ntsc_pal.vhd":96)
+Processing 'VDP_VGA(RTL)'("D:\github\HRA_product\TangCartMSX\RTL\Tang20kcartMSX\src\v9958clone\vdp_vga.vhd":103)
+Processing 'VDP_DOUBLEBUF(RTL)'("D:\github\HRA_product\TangCartMSX\RTL\Tang20kcartMSX\src\v9958clone\vdp_doublebuf.vhd":80)
+Processing 'VDP_LINEBUF(RTL)'("D:\github\HRA_product\TangCartMSX\RTL\Tang20kcartMSX\src\v9958clone\vdp_linebuf.vhd":89)
+Extracting RAM for identifier 'IMEM'("D:\github\HRA_product\TangCartMSX\RTL\Tang20kcartMSX\src\v9958clone\vdp_linebuf.vhd":102)
+Processing 'VDP_INTERRUPT(RTL)'("D:\github\HRA_product\TangCartMSX\RTL\Tang20kcartMSX\src\v9958clone\vdp_interrupt.vhd":65)
+Processing 'VDP_SSG(RTL)'("D:\github\HRA_product\TangCartMSX\RTL\Tang20kcartMSX\src\v9958clone\vdp_ssg.vhd":69)
+Processing 'VDP_HVCOUNTER(RTL)'("D:\github\HRA_product\TangCartMSX\RTL\Tang20kcartMSX\src\v9958clone\vdp_hvcounter.vhd":67)
+'others' clause is never selected("D:\github\HRA_product\TangCartMSX\RTL\Tang20kcartMSX\src\v9958clone\vdp_ssg.vhd":237)
+Processing 'VDP_COLORDEC(RTL)'("D:\github\HRA_product\TangCartMSX\RTL\Tang20kcartMSX\src\v9958clone\vdp_colordec.vhd":68)
+Processing 'VDP_TEXT12(RTL)'("D:\github\HRA_product\TangCartMSX\RTL\Tang20kcartMSX\src\v9958clone\vdp_text12.vhd":104)
+'others' clause is never selected("D:\github\HRA_product\TangCartMSX\RTL\Tang20kcartMSX\src\v9958clone\vdp_text12.vhd":354)
+'others' clause is never selected("D:\github\HRA_product\TangCartMSX\RTL\Tang20kcartMSX\src\v9958clone\vdp_text12.vhd":416)
+Processing 'VDP_GRAPHIC123M(RTL)'("D:\github\HRA_product\TangCartMSX\RTL\Tang20kcartMSX\src\v9958clone\vdp_graphic123m.vhd":86)
+Processing 'VDP_GRAPHIC4567(RTL)'("D:\github\HRA_product\TangCartMSX\RTL\Tang20kcartMSX\src\v9958clone\vdp_graphic4567.vhd":97)
+Processing 'ram(RTL)'("D:\github\HRA_product\TangCartMSX\RTL\Tang20kcartMSX\src\v9958clone\ram.vhd":37)
+Extracting RAM for identifier 'blkram'("D:\github\HRA_product\TangCartMSX\RTL\Tang20kcartMSX\src\v9958clone\ram.vhd":49)
+'others' clause is never selected("D:\github\HRA_product\TangCartMSX\RTL\Tang20kcartMSX\src\v9958clone\vdp_graphic4567.vhd":313)
+'others' clause is never selected("D:\github\HRA_product\TangCartMSX\RTL\Tang20kcartMSX\src\v9958clone\vdp_graphic4567.vhd":350)
+'others' clause is never selected("D:\github\HRA_product\TangCartMSX\RTL\Tang20kcartMSX\src\v9958clone\vdp_graphic4567.vhd":396)
+Processing 'VDP_SPRITE(RTL)'("D:\github\HRA_product\TangCartMSX\RTL\Tang20kcartMSX\src\v9958clone\vdp_sprite.vhd":183)
+Processing 'VDP_SPINFORAM(RTL)'("D:\github\HRA_product\TangCartMSX\RTL\Tang20kcartMSX\src\v9958clone\vdp_spinforam.vhd":88)
+Extracting RAM for identifier 'IMEM'("D:\github\HRA_product\TangCartMSX\RTL\Tang20kcartMSX\src\v9958clone\vdp_spinforam.vhd":101)
+'others' clause is never selected("D:\github\HRA_product\TangCartMSX\RTL\Tang20kcartMSX\src\v9958clone\vdp_sprite.vhd":474)
+'others' clause is never selected("D:\github\HRA_product\TangCartMSX\RTL\Tang20kcartMSX\src\v9958clone\vdp_sprite.vhd":554)
+'others' clause is never selected("D:\github\HRA_product\TangCartMSX\RTL\Tang20kcartMSX\src\v9958clone\vdp_sprite.vhd":1021)
+Processing 'VDP_REGISTER(RTL)'("D:\github\HRA_product\TangCartMSX\RTL\Tang20kcartMSX\src\v9958clone\vdp_register.vhd":89)
+'others' clause is never selected("D:\github\HRA_product\TangCartMSX\RTL\Tang20kcartMSX\src\v9958clone\vdp_register.vhd":622)
+'others' clause is never selected("D:\github\HRA_product\TangCartMSX\RTL\Tang20kcartMSX\src\v9958clone\vdp_register.vhd":652)
+Processing 'VDP_COMMAND(RTL)'("D:\github\HRA_product\TangCartMSX\RTL\Tang20kcartMSX\src\v9958clone\vdp_command.vhd":67)
+Processing 'VDP_WAIT_CONTROL(RTL)'("D:\github\HRA_product\TangCartMSX\RTL\Tang20kcartMSX\src\v9958clone\vdp_wait_control.vhd":59)
+WARN  (EX3670) : Actual bit length 23 differs from formal bit length 17 for port 'PRAMADR'("D:\github\HRA_product\TangCartMSX\RTL\Tang20kcartMSX\src\tang20cart_msx.v":228)
+Returning to Verilog mode to proceed with elaboration("D:\github\HRA_product\TangCartMSX\RTL\Tang20kcartMSX\src\tang20cart_msx.v":249)
+WARN  (EX1998) : Net 'w_is_output' does not have a driver("D:\github\HRA_product\TangCartMSX\RTL\Tang20kcartMSX\src\tang20cart_msx.v":100)
+WARN  (EX1998) : Net 'w_ta[1]' does not have a driver("D:\github\HRA_product\TangCartMSX\RTL\Tang20kcartMSX\src\tang20cart_msx.v":118)
 NOTE  (EX0101) : Current top module is "tang20cart_msx"
-WARN  (EX0211) : The output port "mspi_cs" of module "tang20cart_msx" has no driver, assigning undriven bits to Z, simulation mismatch possible("D:\github\HRA_product\TangCartMSX\RTL\Tang20kcartMSX\src\tang20cart_msx.v":45)
-WARN  (EX0211) : The output port "mspi_sclk" of module "tang20cart_msx" has no driver, assigning undriven bits to Z, simulation mismatch possible("D:\github\HRA_product\TangCartMSX\RTL\Tang20kcartMSX\src\tang20cart_msx.v":46)
+WARN  (EX0211) : The output port "lcd_clk" of module "tang20cart_msx" has no driver, assigning undriven bits to Z, simulation mismatch possible("D:\github\HRA_product\TangCartMSX\RTL\Tang20kcartMSX\src\tang20cart_msx.v":57)
+WARN  (EX0211) : The output port "lcd_de" of module "tang20cart_msx" has no driver, assigning undriven bits to Z, simulation mismatch possible("D:\github\HRA_product\TangCartMSX\RTL\Tang20kcartMSX\src\tang20cart_msx.v":58)
 [5%] Running netlist conversion ...
 WARN  (CV0016) : Input n_treset is unused("D:\github\HRA_product\TangCartMSX\RTL\Tang20kcartMSX\src\tang20cart_msx.v":29)
-WARN  (CV0016) : Input tclock is unused("D:\github\HRA_product\TangCartMSX\RTL\Tang20kcartMSX\src\tang20cart_msx.v":30)
-WARN  (CV0020) : Input ta[7:6] is unused("D:\github\HRA_product\TangCartMSX\RTL\Tang20kcartMSX\src\tang20cart_msx.v":36)
-WARN  (CV0018) : Input keys[1] is unused("D:\github\HRA_product\TangCartMSX\RTL\Tang20kcartMSX\src\tang20cart_msx.v":41)
-WARN  (CV0017) : Inout mspi_mosi is unused("D:\github\HRA_product\TangCartMSX\RTL\Tang20kcartMSX\src\tang20cart_msx.v":47)
-WARN  (CV0017) : Inout mspi_miso is unused("D:\github\HRA_product\TangCartMSX\RTL\Tang20kcartMSX\src\tang20cart_msx.v":48)
+WARN  (CV0016) : Input n_ce is unused("D:\github\HRA_product\TangCartMSX\RTL\Tang20kcartMSX\src\tang20cart_msx.v":31)
+WARN  (CV0016) : Input n_twr is unused("D:\github\HRA_product\TangCartMSX\RTL\Tang20kcartMSX\src\tang20cart_msx.v":32)
+WARN  (CV0016) : Input n_trd is unused("D:\github\HRA_product\TangCartMSX\RTL\Tang20kcartMSX\src\tang20cart_msx.v":33)
+WARN  (CV0016) : Input ta is unused("D:\github\HRA_product\TangCartMSX\RTL\Tang20kcartMSX\src\tang20cart_msx.v":34)
+WARN  (CV0016) : Input keys is unused("D:\github\HRA_product\TangCartMSX\RTL\Tang20kcartMSX\src\tang20cart_msx.v":45)
 Running device independent optimization ...
 [10%] Optimizing Phase 0 completed
 [15%] Optimizing Phase 1 completed
@@ -50,7 +173,21 @@ Running technical mapping ...
 [75%] Tech-Mapping Phase 2 completed
 [80%] Tech-Mapping Phase 3 completed
 [90%] Tech-Mapping Phase 4 completed
-WARN  (NL0002) : The module "ip_pwm" instantiated to "u_pwm" is swept in optimizing("D:\github\HRA_product\TangCartMSX\RTL\Tang20kcartMSX\src\tang20cart_msx.v":538)
+WARN  (NL0002) : The module "VDP_INTERRUPT" instantiated to "U_INTERRUPT" is swept in optimizing("D:\github\HRA_product\TangCartMSX\RTL\Tang20kcartMSX\src\v9958clone\vdp.vhd":1145)
+WARN  (NL0002) : The module "VDP_SPINFORAM" instantiated to "ISPINFORAM" is swept in optimizing("D:\github\HRA_product\TangCartMSX\RTL\Tang20kcartMSX\src\v9958clone\vdp_sprite.vhd":382)
+WARN  (NL0002) : The module "ram" instantiated to "U_EVEN_LINE_BUF" is swept in optimizing("D:\github\HRA_product\TangCartMSX\RTL\Tang20kcartMSX\src\v9958clone\vdp_sprite.vhd":414)
+WARN  (NL0002) : The module "ram" instantiated to "U_ODD_LINE_BUF" is swept in optimizing("D:\github\HRA_product\TangCartMSX\RTL\Tang20kcartMSX\src\v9958clone\vdp_sprite.vhd":430)
+WARN  (NL0002) : The module "VDP_COLORDEC" instantiated to "U_VDP_COLORDEC" is swept in optimizing("D:\github\HRA_product\TangCartMSX\RTL\Tang20kcartMSX\src\v9958clone\vdp.vhd":1562)
+WARN  (NL0002) : The module "VDP_COMMAND" instantiated to "U_VDP_COMMAND" is swept in optimizing("D:\github\HRA_product\TangCartMSX\RTL\Tang20kcartMSX\src\v9958clone\vdp.vhd":1852)
+WARN  (NL0002) : The module "VDP_GRAPHIC4567" instantiated to "U_VDP_GRAPHIC4567" is swept in optimizing("D:\github\HRA_product\TangCartMSX\RTL\Tang20kcartMSX\src\v9958clone\vdp.vhd":1660)
+WARN  (NL0002) : The module "ram" instantiated to "U_FIFOMEM" is swept in optimizing("D:\github\HRA_product\TangCartMSX\RTL\Tang20kcartMSX\src\v9958clone\vdp_graphic4567.vhd":208)
+WARN  (NL0002) : The module "VDP_NTSC_PAL" instantiated to "U_VDP_NTSC_PAL" is swept in optimizing("D:\github\HRA_product\TangCartMSX\RTL\Tang20kcartMSX\src\v9958clone\vdp.vhd":1068)
+WARN  (NL0002) : The module "VDP_REGISTER" instantiated to "U_VDP_REGISTER" is swept in optimizing("D:\github\HRA_product\TangCartMSX\RTL\Tang20kcartMSX\src\v9958clone\vdp.vhd":1734)
+WARN  (NL0002) : The module "ram" instantiated to "U_PALETTEMEMG" is swept in optimizing("D:\github\HRA_product\TangCartMSX\RTL\Tang20kcartMSX\src\v9958clone\vdp_register.vhd":391)
+WARN  (NL0002) : The module "ram" instantiated to "U_PALETTEMEMRB" is swept in optimizing("D:\github\HRA_product\TangCartMSX\RTL\Tang20kcartMSX\src\v9958clone\vdp_register.vhd":382)
+WARN  (NL0002) : The module "VDP_TEXT12" instantiated to "U_VDP_TEXT12" is swept in optimizing("D:\github\HRA_product\TangCartMSX\RTL\Tang20kcartMSX\src\v9958clone\vdp.vhd":1611)
+WARN  (NL0002) : The module "VDP_LINEBUF" instantiated to "U_BUF_GE" is swept in optimizing("D:\github\HRA_product\TangCartMSX\RTL\Tang20kcartMSX\src\v9958clone\vdp_doublebuf.vhd":131)
+WARN  (NL0002) : The module "VDP_LINEBUF" instantiated to "U_BUF_GO" is swept in optimizing("D:\github\HRA_product\TangCartMSX\RTL\Tang20kcartMSX\src\v9958clone\vdp_doublebuf.vhd":161)
 [95%] Generate netlist file "D:\github\HRA_product\TangCartMSX\RTL\Tang20kcartMSX\impl\gwsynthesis\Tang20kcartMSX.vg" completed
 [100%] Generate report file "D:\github\HRA_product\TangCartMSX\RTL\Tang20kcartMSX\impl\gwsynthesis\Tang20kcartMSX_syn.rpt.html" completed
 GowinSynthesis finish

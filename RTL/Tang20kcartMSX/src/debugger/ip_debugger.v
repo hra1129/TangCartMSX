@@ -30,390 +30,386 @@ module ip_debugger #(
 	//	Internal I/F
 	input			n_reset,
 	input			clk,
-	//	UART output
-	output	[7:0]	send_data,
-	output			send_req,
-	input			send_busy,
 	//	Key input
 	input	[1:0]	keys,
 	//	Target signal for observation
-	output			sdram_rd,
-	output			sdram_wr,
-	input			sdram_busy,
-	output	[22:0]	sdram_address,
-	output	[7:0]	sdram_wdata,
-	input	[7:0]	sdram_rdata,
-	input			sdram_rdata_en
+	output			req,
+	input			ack,
+	output			wr,				//	0: read, 1: write
+	output	[1:0]	address,
+	output	[7:0]	wdata,
+	input	[7:0]	rdata
 );
-	reg		[1:0]	ff_keys;
-	wire	[1:0]	w_keys;
+	localparam		c_vdp_port0			= 2'd0;
+	localparam		c_vdp_port1			= 2'd1;
+	localparam		c_vdp_port2			= 2'd2;
+	localparam		c_vdp_port3			= 2'd3;
+	localparam		c_st_palette		= 'd58;
+	localparam		c_st_write			= 'd60;
+
+	reg				ff_req;
+	reg				ff_wr;
+	reg		[1:0]	ff_address;
+	reg		[7:0]	ff_wdata;
 	reg		[5:0]	ff_state;
-	reg		[7:0]	ff_send_data;
-	reg				ff_send_req;
-	reg		[22:0]	ff_sdram_address;
-	reg				ff_sdram_rd;
-	reg				ff_sdram_wr;
-	reg		[7:0]	ff_sdram_wdata;
-	reg		[7:0]	ff_sdram_rdata;
+	reg		[5:0]	ff_vdp_reg;
+	reg		[7:0]	ff_vdp_data;
+	reg		[5:0]	ff_next_state;
 
 	// --------------------------------------------------------------------
-	//	4bit binary --> 8bit ASCII code converter
-	//	0000...1001 --> '0'...'9'
-	//	1010...1111 --> 'A'...'F'
-	//
-	function [7:0] func_conv(
-		input	[3:0]	d
-	);
-		case( d )
-		4'h0:		func_conv = 8'h30;
-		4'h1:		func_conv = 8'h31;
-		4'h2:		func_conv = 8'h32;
-		4'h3:		func_conv = 8'h33;
-		4'h4:		func_conv = 8'h34;
-		4'h5:		func_conv = 8'h35;
-		4'h6:		func_conv = 8'h36;
-		4'h7:		func_conv = 8'h37;
-		4'h8:		func_conv = 8'h38;
-		4'h9:		func_conv = 8'h39;
-		4'hA:		func_conv = 8'h41;
-		4'hB:		func_conv = 8'h42;
-		4'hC:		func_conv = 8'h43;
-		4'hD:		func_conv = 8'h44;
-		4'hE:		func_conv = 8'h45;
-		4'hF:		func_conv = 8'h46;
-		default:	func_conv = 8'h3F;
-		endcase
-	endfunction
-
-	// --------------------------------------------------------------------
-	//	Key press detecter
-	// --------------------------------------------------------------------
-	always @( posedge clk ) begin
-		if( !n_reset ) begin
-			ff_keys <= 2'd0;
-		end
-		else begin
-			ff_keys <= keys;
-		end
-	end
-
-	assign w_keys[0] = ~ff_keys[0] & keys[0];
-	assign w_keys[1] = ~ff_keys[1] & keys[1];
-
-	always @( posedge clk ) begin
-		if( sdram_rdata_en ) begin
-			ff_sdram_rdata <= sdram_rdata;
-		end
-		else begin
-			//	hold
-		end
-	end
-
-	// --------------------------------------------------------------------
-	//	State machine
+	//	main thread
 	// --------------------------------------------------------------------
 	always @( posedge clk ) begin
 		if( !n_reset ) begin
 			ff_state <= 'd0;
-			ff_send_req <= 1'b0;
-			ff_sdram_address <= 'd0;
-			ff_sdram_rd <= 1'b0;
-			ff_sdram_wr <= 1'b0;
-			ff_sdram_wdata <= 'd0;
-		end
-		else if( send_busy ) begin
-			//	hold
 		end
 		else begin
 			case( ff_state )
 			'd0:
 				begin
-					if( w_keys[0] ) begin
-						ff_state <= 'd1;
+					//	wait press the key[0].
+					if( keys[0] == 1'b1 ) begin
+						ff_state <= ff_state + 'd1;
 					end
 				end
 			'd1:
 				begin
-					ff_send_data <= 'h53;		//	'S'
-					ff_send_req <= 1'b1;
-					ff_state <= 'd2;
+					//	R#0: SCREEN0 (40X24, TEXT Mode)
+					ff_vdp_reg		<= 5'h00;
+					ff_vdp_data		<= 8'h00;
+					ff_next_state	<= ff_state + 'd1;
+					ff_state		<= c_st_write;
 				end
 			'd2:
 				begin
-					ff_send_data <= 'h44;		//	'D'
-					ff_send_req <= 1'b1;
-					ff_state <= 'd3;
+					//	R#1: SCREEN0 (40X24, TEXT Mode)
+					ff_vdp_reg		<= 5'h01;
+					ff_vdp_data		<= 8'h50;
+					ff_next_state	<= ff_state + 'd1;
+					ff_state		<= c_st_write;
 				end
 			'd3:
 				begin
-					ff_send_data <= 'h52;		//	'R'
-					ff_send_req <= 1'b1;
-					ff_state <= 'd4;
+					//	R#2: Pattern Name Table is 0x0000
+					ff_vdp_reg		<= 5'h02;
+					ff_vdp_data		<= 8'h00;
+					ff_next_state	<= ff_state + 'd1;
+					ff_state		<= c_st_write;
 				end
 			'd4:
 				begin
-					ff_send_data <= 'h20;		//	' '
-					ff_send_req <= 1'b1;
-					ff_state <= 'd5;
+					//	R#4: Pattern Generator Table is 0x0800
+					ff_vdp_reg		<= 5'h04;
+					ff_vdp_data		<= 8'h01;
+					ff_next_state	<= ff_state + 'd1;
+					ff_state		<= c_st_write;
 				end
 			'd5:
 				begin
-					ff_send_data <= 'h54;		//	'T'
-					ff_send_req <= 1'b1;
-					ff_state <= 'd6;
+					//	R#7: Set Color (White on Blue)
+					ff_vdp_reg		<= 5'h07;
+					ff_vdp_data		<= 8'hF4;
+					ff_next_state	<= ff_state + 'd1;
+					ff_state		<= c_st_write;
 				end
 			'd6:
 				begin
-					ff_send_data <= 'h45;		//	'E'
-					ff_send_req <= 1'b1;
-					ff_state <= 'd7;
+					//	R#16: Palette selector #0
+					ff_vdp_reg		<= 5'h10;
+					ff_vdp_data		<= 8'h00;
+					ff_next_state	<= ff_state + 'd1;
+					ff_state		<= c_st_write;
 				end
 			'd7:
 				begin
-					ff_send_data <= 'h53;		//	'S'
-					ff_send_req <= 1'b1;
-					ff_state <= 'd8;
+					//	Palette #0 LSB
+					ff_vdp_data		<= 8'h00;
+					ff_next_state	<= ff_state + 'd1;
+					ff_state		<= c_st_palette;
 				end
 			'd8:
 				begin
-					ff_send_data <= 'h54;		//	'T'
-					ff_send_req <= 1'b1;
-					ff_state <= 'd9;
+					//	Palette #0 MSB
+					ff_vdp_data		<= 8'h00;
+					ff_next_state	<= ff_state + 'd1;
+					ff_state		<= c_st_palette;
 				end
 			'd9:
 				begin
-					ff_send_data <= 'h0D;		//	CR
-					ff_send_req <= 1'b1;
-					ff_state <= 'd10;
+					//	Palette #1 LSB
+					ff_vdp_data		<= 8'h00;
+					ff_next_state	<= ff_state + 'd1;
+					ff_state		<= c_st_palette;
 				end
 			'd10:
 				begin
-					ff_send_data <= 'h0A;		//	LF
-					ff_sdram_address <= 'd0;
-					ff_send_req <= 1'b1;
-					ff_state <= 'd11;
+					//	Palette #1 MSB
+					ff_vdp_data		<= 8'h00;
+					ff_next_state	<= ff_state + 'd1;
+					ff_state		<= c_st_palette;
 				end
 			'd11:
 				begin
-					//	Start write datas
-					ff_send_req <= 1'b0;
-					ff_state <= 'd12;
-					ff_sdram_address[7:0] <= 8'd0;
-					ff_sdram_wdata <= 8'hFF;
+					//	Palette #2 LSB
+					ff_vdp_data		<= 8'h33;
+					ff_next_state	<= ff_state + 'd1;
+					ff_state		<= c_st_palette;
 				end
 			'd12:
 				begin
-					ff_sdram_wr <= 1'b1;
-					ff_state <= 'd13;
-					ff_send_req <= 1'b0;
+					//	Palette #2 MSB
+					ff_vdp_data		<= 8'h05;
+					ff_next_state	<= ff_state + 'd1;
+					ff_state		<= c_st_palette;
 				end
 			'd13:
 				begin
-					ff_send_req <= 1'b0;
-					if( !sdram_busy ) begin
-						if( ff_sdram_address[7:0] == 8'hFF ) begin
-							ff_state <= 'd14;
-						end
-						else begin
-							ff_sdram_wdata <= ff_sdram_wdata - 8'd1;
-							ff_state <= 'd12;
-						end
-						ff_sdram_wr <= 1'b0;
-						ff_sdram_address[7:0] <= ff_sdram_address[7:0] + 8'd1;
-					end
-					else begin
-						//	hold
-					end
+					//	Palette #3 LSB
+					ff_vdp_data		<= 8'h44;
+					ff_next_state	<= ff_state + 'd1;
+					ff_state		<= c_st_palette;
 				end
 			'd14:
 				begin
-					//ff_send_data <= 'h2A;		//	'*'
-					//ff_send_req <= 1'b1;
-					ff_state <= 'd15;
+					//	Palette #3 MSB
+					ff_vdp_data		<= 8'h06;
+					ff_next_state	<= ff_state + 'd1;
+					ff_state		<= c_st_palette;
 				end
 			'd15:
 				begin
-					ff_send_req <= 1'b0;
-					ff_sdram_address[22:8] <= ff_sdram_address[22:8] + 15'd1;
-					if( ff_sdram_address[22:8] == TEST_ROWS ) begin
-						ff_state <= 'd16;
-					end
-					else begin
-						ff_state <= 'd11;
-					end
+					//	Palette #4 LSB
+					ff_vdp_data		<= 8'h37;
+					ff_next_state	<= ff_state + 'd1;
+					ff_state		<= c_st_palette;
 				end
 			'd16:
 				begin
-					ff_send_data <= 'h57;		//	'W'
-					ff_send_req <= 1'b1;
-					ff_state <= 'd17;
+					//	Palette #4 MSB
+					ff_vdp_data		<= 8'h02;
+					ff_next_state	<= ff_state + 'd1;
+					ff_state		<= c_st_palette;
 				end
 			'd17:
 				begin
-					ff_send_data <= 'h52;		//	'R'
-					ff_send_req <= 1'b1;
-					ff_state <= 'd18;
+					//	Palette #5 LSB
+					ff_vdp_data		<= 8'h47;
+					ff_next_state	<= ff_state + 'd1;
+					ff_state		<= c_st_palette;
 				end
 			'd18:
 				begin
-					ff_send_data <= 'h54;		//	'T'
-					ff_send_req <= 1'b1;
-					ff_state <= 'd19;
+					//	Palette #5 MSB
+					ff_vdp_data		<= 8'h03;
+					ff_next_state	<= ff_state + 'd1;
+					ff_state		<= c_st_palette;
 				end
 			'd19:
 				begin
-					ff_send_data <= 'h20;		//	' '
-					ff_send_req <= 1'b1;
-					ff_state <= 'd20;
+					//	Palette #6 LSB
+					ff_vdp_data		<= 8'h52;
+					ff_next_state	<= ff_state + 'd1;
+					ff_state		<= c_st_palette;
 				end
 			'd20:
 				begin
-					ff_send_data <= 'h4F;		//	'O'
-					ff_send_req <= 1'b1;
-					ff_state <= 'd21;
+					//	Palette #6 MSB
+					ff_vdp_data		<= 8'h03;
+					ff_next_state	<= ff_state + 'd1;
+					ff_state		<= c_st_palette;
 				end
 			'd21:
 				begin
-					ff_send_data <= 'h4B;		//	'K'
-					ff_send_req <= 1'b1;
-					ff_state <= 'd22;
+					//	Palette #7 LSB
+					ff_vdp_data		<= 8'h36;
+					ff_next_state	<= ff_state + 'd1;
+					ff_state		<= c_st_palette;
 				end
 			'd22:
 				begin
-					ff_send_req <= 1'b0;		//	•¶Žš’âŽ~
-					ff_sdram_address <= 'd0;
-					ff_state <= 'd23;
+					//	Palette #7 MSB
+					ff_vdp_data		<= 8'h05;
+					ff_next_state	<= ff_state + 'd1;
+					ff_state		<= c_st_palette;
 				end
 			'd23:
 				begin
-					//	Start read datas
-					ff_send_req <= 1'b0;
-					ff_state <= 'd24;
-					ff_sdram_address[7:0] <= 8'd0;
-					ff_sdram_wdata <= 8'hFF;
+					//	Palette #8 LSB
+					ff_vdp_data		<= 8'h62;
+					ff_next_state	<= ff_state + 'd1;
+					ff_state		<= c_st_palette;
 				end
 			'd24:
 				begin
-					ff_sdram_rd <= 1'b1;
-					ff_state <= 'd25;
-					ff_send_req <= 1'b0;
+					//	Palette #8 MSB
+					ff_vdp_data		<= 8'h03;
+					ff_next_state	<= ff_state + 'd1;
+					ff_state		<= c_st_palette;
 				end
 			'd25:
 				begin
-					ff_send_req <= 1'b0;
-					if( !sdram_busy ) begin
-						if( ff_sdram_rdata != ff_sdram_wdata ) begin
-							ff_state <= 'd34;	// error
-						end
-						else if( ff_sdram_address[7:0] == 8'hFF ) begin
-							ff_state <= 'd26;
-						end
-						else begin
-							ff_sdram_wdata <= ff_sdram_wdata - 8'd1;
-							ff_state <= 'd24;
-						end
-						ff_sdram_rd <= 1'b0;
-						ff_sdram_address[7:0] <= ff_sdram_address[7:0] + 8'd1;
+					//	Palette #9 LSB
+					ff_vdp_data		<= 8'h63;
+					ff_next_state	<= ff_state + 'd1;
+					ff_state		<= c_st_palette;
+				end
+			'd26:
+				begin
+					//	Palette #9 MSB
+					ff_vdp_data		<= 8'h04;
+					ff_next_state	<= ff_state + 'd1;
+					ff_state		<= c_st_palette;
+				end
+			'd27:
+				begin
+					//	Palette #10 LSB
+					ff_vdp_data		<= 8'h53;
+					ff_next_state	<= ff_state + 'd1;
+					ff_state		<= c_st_palette;
+				end
+			'd28:
+				begin
+					//	Palette #10 MSB
+					ff_vdp_data		<= 8'h06;
+					ff_next_state	<= ff_state + 'd1;
+					ff_state		<= c_st_palette;
+				end
+			'd29:
+				begin
+					//	Palette #11 LSB
+					ff_vdp_data		<= 8'h64;
+					ff_next_state	<= ff_state + 'd1;
+					ff_state		<= c_st_palette;
+				end
+			'd30:
+				begin
+					//	Palette #11 MSB
+					ff_vdp_data		<= 8'h06;
+					ff_next_state	<= ff_state + 'd1;
+					ff_state		<= c_st_palette;
+				end
+			'd31:
+				begin
+					//	Palette #12 LSB
+					ff_vdp_data		<= 8'h21;
+					ff_next_state	<= ff_state + 'd1;
+					ff_state		<= c_st_palette;
+				end
+			'd32:
+				begin
+					//	Palette #12 MSB
+					ff_vdp_data		<= 8'h04;
+					ff_next_state	<= ff_state + 'd1;
+					ff_state		<= c_st_palette;
+				end
+			'd33:
+				begin
+					//	Palette #13 LSB
+					ff_vdp_data		<= 8'h55;
+					ff_next_state	<= ff_state + 'd1;
+					ff_state		<= c_st_palette;
+				end
+			'd34:
+				begin
+					//	Palette #13 MSB
+					ff_vdp_data		<= 8'h03;
+					ff_next_state	<= ff_state + 'd1;
+					ff_state		<= c_st_palette;
+				end
+			'd35:
+				begin
+					//	Palette #14 LSB
+					ff_vdp_data		<= 8'h55;
+					ff_next_state	<= ff_state + 'd1;
+					ff_state		<= c_st_palette;
+				end
+			'd36:
+				begin
+					//	Palette #14 MSB
+					ff_vdp_data		<= 8'h05;
+					ff_next_state	<= ff_state + 'd1;
+					ff_state		<= c_st_palette;
+				end
+			'd37:
+				begin
+					//	Palette #15 LSB
+					ff_vdp_data		<= 8'h77;
+					ff_next_state	<= ff_state + 'd1;
+					ff_state		<= c_st_palette;
+				end
+			'd38:
+				begin
+					//	Palette #15 MSB
+					ff_vdp_data		<= 8'h07;
+					ff_next_state	<= ff_state + 'd1;
+					ff_state		<= c_st_palette;
+				end
+			'd39:
+				begin
+					//	hold
+				end
+				// palette write access
+			c_st_palette:
+				begin
+					ff_wr			<= 1'b1;
+					ff_address		<= c_vdp_port2;
+					ff_req			<= 1'b1;
+					ff_state		<= ff_state + 'd1;
+					ff_wdata		<= ff_vdp_data;
+				end
+			(c_st_palette + 1):
+				begin
+					if( ack == 1'b1 ) begin
+						ff_req			<= 1'b0;
+						ff_state		<= ff_next_state;
 					end
 					else begin
 						//	hold
 					end
 				end
-			'd26:
+				// write access
+			c_st_write:
 				begin
-					//ff_send_data <= 'h2A;		//	'*'
-					//ff_send_req <= 1'b1;
-					ff_state <= 'd27;
+					ff_wr			<= 1'b1;
+					ff_address		<= c_vdp_port1;
+					ff_req			<= 1'b1;
+					ff_state		<= ff_state + 'd1;
+					ff_wdata		<= ff_vdp_data;
 				end
-			'd27:
+			(c_st_write + 1):
 				begin
-					ff_send_req <= 1'b0;
-					ff_sdram_address[22:8] <= ff_sdram_address[22:8] + 15'd1;
-					if( ff_sdram_address[22:8] == TEST_ROWS ) begin
-						ff_state <= 'd28;
+					if( ack == 1'b1 ) begin
+						ff_req			<= 1'b0;
+						ff_state		<= ff_state + 'd1;
 					end
 					else begin
-						ff_state <= 'd23;
+						//	hold
 					end
 				end
-			'd28:
+			(c_st_write + 2):
 				begin
-					ff_send_data <= 'h52;		//	'R'
-					ff_send_req <= 1'b1;
-					ff_state <= 'd29;
+					ff_wr			<= 1'b1;
+					ff_address		<= c_vdp_port1;
+					ff_req			<= 1'b1;
+					ff_state		<= ff_state + 'd1;
+					ff_wdata		<= { 2'b10, ff_vdp_reg };
 				end
-			'd29:
+			(c_st_write + 3):
 				begin
-					ff_send_data <= 'h44;		//	'D'
-					ff_send_req <= 1'b1;
-					ff_state <= 'd30;
-				end
-			'd30:
-				begin
-					ff_send_data <= 'h20;		//	' '
-					ff_send_req <= 1'b1;
-					ff_state <= 'd31;
-				end
-			'd31:
-				begin
-					ff_send_data <= 'h4F;		//	'O'
-					ff_send_req <= 1'b1;
-					ff_state <= 'd32;
-				end
-			'd32:
-				begin
-					ff_send_data <= 'h4B;		//	'K'
-					ff_send_req <= 1'b1;
-					ff_state <= 'd33;
-				end
-			'd33:
-				begin
-					ff_send_req <= 1'b0;
-					ff_state <= 'd0;
-				end
-			'd34:
-				begin
-					ff_send_data <= 'h52;		//	'R'
-					ff_send_req <= 1'b1;
-					ff_state <= 'd35;
-				end
-			'd35:
-				begin
-					ff_send_data <= 'h44;		//	'D'
-					ff_send_req <= 1'b1;
-					ff_state <= 'd36;
-				end
-			'd36:
-				begin
-					ff_send_data <= 'h20;		//	' '
-					ff_send_req <= 1'b1;
-					ff_state <= 'd37;
-				end
-			'd37:
-				begin
-					ff_send_data <= 'h4E;		//	'N'
-					ff_send_req <= 1'b1;
-					ff_state <= 'd38;
-				end
-			'd38:
-				begin
-					ff_send_data <= 'h47;		//	'G'
-					ff_send_req <= 1'b1;
-					ff_state <= 'd33;
-				end
-			default:
-				begin
-					//	hold
+					if( ack == 1'b1 ) begin
+						ff_req			<= 1'b0;
+						ff_state		<= ff_next_state;
+					end
+					else begin
+						//	hold
+					end
 				end
 			endcase
 		end
 	end
 
-	assign send_data		= ff_send_data;
-	assign send_req			= ff_send_req;
-
-	assign sdram_rd			= ff_sdram_rd;
-	assign sdram_wr			= ff_sdram_wr;
-	assign sdram_address	= ff_sdram_address;
-	assign sdram_wdata		= ff_sdram_wdata;
+	assign req			= ff_req;
+	assign wr			= ff_wr;
+	assign address		= ff_address;
+	assign wdata		= ff_wdata;
 endmodule

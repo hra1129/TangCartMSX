@@ -1,0 +1,23 @@
+
+Starting:    C:\Gowin\Gowin_V1.9.2.01Beta\SynplifyPro\bin64\mbin\synbatch.exe
+Install:     C:\Gowin\Gowin_V1.9.2.01Beta\SynplifyPro
+Hostname:    MSI
+Date:        Tue Aug 20 06:31:09 2024
+Version:     P-2019.03G
+
+Arguments:   -product synplify_pro -batch D:/github/HRA_product/TangCartMSX/RTL/Tang20kcartMSX/impl/synthesize/Tang20kcartMSX.prj
+ProductType: synplify_pro
+
+No such feature exists.
+Feature:       synplifypro
+License path:  D:\download\Altera\QuartusPrime21.1\LR-067964_License.dat;
+FlexNet Licensing error:-5,234
+
+License for feature synplifypro is not available.
+
+Host ID:  "0a0027000011 48a472fa6528 4aa472fa6527 48a472fa6527 48a472fa652b"
+Please contact support at https://solvnet.synopsys.com/ManageCase?ccf=1
+
+
+Running in Vendor Mode
+

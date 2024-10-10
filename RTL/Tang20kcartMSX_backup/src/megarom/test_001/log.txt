@@ -1,0 +1,510 @@
+# vsim -c -t 1ps -do "run.do" tb 
+# Start time: 20:44:57 on May 25,2024
+# Loading sv_std.std
+# Loading work.tb
+# Loading work.ip_megarom
+# do run.do
+# Check CS port
+# 000: Check ASC8 mode
+# -- 001: Read bank and check read address
+# ---- bank2 mirror
+# ---- bank3 mirror
+# ---- bank0
+# ---- bank1
+# ---- bank2
+# ---- bank3
+# ---- bank0 mirror
+# ---- bank1 mirror
+# -- 002: Write bank registers
+# -- 002: Read bank and check read address
+# ---- bank2 mirror
+# ---- bank3 mirror
+# ---- bank0
+# ---- bank1
+# ---- bank2
+# ---- bank3
+# ---- bank0 mirror
+# ---- bank1 mirror
+# -- 003: Write bank registers
+# -- 003: Read bank and check read address
+# ---- bank2 mirror
+# ---- bank3 mirror
+# ---- bank0
+# ---- bank1
+# ---- bank2
+# ---- bank3
+# ---- bank0 mirror
+# ---- bank1 mirror
+# Check ASC16 mode
+# -- 101: Read bank and check read address
+# ---- bank1 mirror
+# ---- bank1 mirror
+# ---- bank0
+# ---- bank0
+# ---- bank1
+# ---- bank1
+# ---- bank0 mirror
+# ---- bank0 mirror
+# -- 102: Write bank registers
+# -- 102: Read bank and check read address
+# ---- bank1 mirror
+# ---- bank1 mirror
+# ---- bank0
+# ---- bank0
+# ---- bank1
+# ---- bank1
+# ---- bank0 mirror
+# ---- bank0 mirror
+# -- 103: Write bank registers
+# -- 103: Read bank and check read address
+# ---- bank1 mirror
+# ---- bank1 mirror
+# ---- bank0
+# ---- bank0
+# ---- bank1
+# ---- bank1
+# ---- bank0 mirror
+# ---- bank0 mirror
+# -- 104: Write invalid registers
+# -- 104: Read bank and check read address
+# ---- bank1 mirror
+# ---- bank1 mirror
+# ---- bank0
+# ---- bank0
+# ---- bank1
+# ---- bank1
+# ---- bank0 mirror
+# ---- bank0 mirror
+# 200: Check Normal mode
+# -- 201: Write invalid registers
+# -- 201: Read bank and check read address
+# ---- bank2 mirror
+# ---- bank3 mirror
+# ---- bank0
+# ---- bank1
+# ---- bank2
+# ---- bank3
+# ---- bank0 mirror
+# ---- bank1 mirror
+# 300: Check Kon4 mode
+# -- 301: Read bank and check read address
+# ---- bank2 mirror
+# ---- bank3 mirror
+# ---- bank0 (always 0)
+# ---- bank1
+# ---- bank2
+# ---- bank3
+# ---- bank0 mirror
+# ---- bank1 mirror
+# -- 302: Write bank registers
+# -- 302: Read bank and check read address
+# ---- bank2 mirror
+# ---- bank3 mirror
+# ---- bank0 (always 0)
+# ---- bank1
+# ---- bank2
+# ---- bank3
+# ---- bank0 mirror
+# ---- bank1 mirror
+# -- 303: Write bank registers
+# -- 303: Read bank and check read address
+# ---- bank2 mirror
+# ---- bank3 mirror
+# ---- bank0 (always 0)
+# ---- bank1
+# ---- bank2
+# ---- bank3
+# ---- bank0 mirror
+# ---- bank1 mirror
+# 400: Check SCC mode
+# -- 401: Read bank and check read address
+# ---- bank2 mirror
+# ---- bank3 mirror
+# ---- bank0
+# ---- bank1
+# ---- bank2
+# ---- bank3
+# ---- bank0 mirror
+# ---- bank1 mirror
+# -- 402: Write bank registers
+# -- 402: Read bank and check read address
+# ---- bank2 mirror
+# ---- bank3 mirror
+# ---- bank0
+# ---- bank1
+# ---- bank2
+# ---- bank3
+# ---- bank0 mirror
+# ---- bank1 mirror
+# -- 403: Write bank registers
+# -- 403: Read bank and check read address
+# ---- bank2 mirror
+# ---- bank3 mirror
+# ---- bank0
+# ---- bank1
+# ---- bank2
+# ---- bank3
+# ---- bank0 mirror
+# ---- bank1 mirror
+# -- 404: Write invalid registers
+# -- 404: Read bank and check read address
+# ---- bank2 mirror
+# ---- bank3 mirror
+# ---- bank0
+# ---- bank1
+# ---- bank2
+# ---- bank3
+# ---- bank0 mirror
+# ---- bank1 mirror
+# -- 405: Write invalid registers
+# -- 405: Read bank and check read address
+# ---- bank2 mirror
+# ---- bank3 mirror
+# ---- bank0
+# ---- bank1
+# ---- bank2
+# ---- bank3
+# ---- bank0 mirror
+# ---- bank1 mirror
+# -- 406: Write invalid registers
+# -- 406: Read bank and check read address
+# ---- bank2 mirror
+# ---- bank3 mirror
+# ---- bank0
+# ---- bank1
+# ---- bank2
+# ---- bank3
+# ---- bank0 mirror
+# ---- bank1 mirror
+# -- 407: Write invalid registers
+# -- 407: Read bank and check read address
+# ---- bank2 mirror
+# ---- bank3 mirror
+# ---- bank0
+# ---- bank1
+# ---- bank2
+# ---- bank3
+# ---- bank0 mirror
+# ---- bank1 mirror
+# -- 408: Write bank registers
+# -- 408: Read bank and check read address
+# ---- bank2 mirror
+# ---- bank3 mirror
+# ---- bank0
+# ---- bank1
+# ---- bank3
+# ---- bank0 mirror
+# ---- bank1 mirror
+# -- 409: Read/Write SCC bank
+# 500: Check SCC+ mode
+# -- 501: Read bank and check read address
+# ---- bank2 mirror
+# ---- bank3 mirror
+# ---- bank0
+# ---- bank1
+# ---- bank2
+# ---- bank3
+# ---- bank0 mirror
+# ---- bank1 mirror
+# -- 502: Write bank registers
+# -- 502: Read bank and check read address
+# ---- bank2 mirror
+# ---- bank3 mirror
+# ---- bank0
+# ---- bank1
+# ---- bank2
+# ---- bank3
+# ---- bank0 mirror
+# ---- bank1 mirror
+# -- 503: Write bank registers
+# -- 503: Read bank and check read address
+# ---- bank2 mirror
+# ---- bank3 mirror
+# ---- bank0
+# ---- bank1
+# ---- bank2
+# ---- bank3
+# ---- bank0 mirror
+# ---- bank1 mirror
+# -- 504: Write invalid registers
+# -- 504: Read bank and check read address
+# ---- bank2 mirror
+# ---- bank3 mirror
+# ---- bank0
+# ---- bank1
+# ---- bank2
+# ---- bank3
+# ---- bank0 mirror
+# ---- bank1 mirror
+# -- 505: Write invalid registers
+# -- 505: Read bank and check read address
+# ---- bank2 mirror
+# ---- bank3 mirror
+# ---- bank0
+# ---- bank1
+# ---- bank2
+# ---- bank3
+# ---- bank0 mirror
+# ---- bank1 mirror
+# -- 506: Write invalid registers
+# -- 506: Read bank and check read address
+# ---- bank2 mirror
+# ---- bank3 mirror
+# ---- bank0
+# ---- bank1
+# ---- bank2
+# ---- bank3
+# ---- bank0 mirror
+# ---- bank1 mirror
+# -- 507: Write invalid registers
+# -- 507: Read bank and check read address
+# ---- bank2 mirror
+# ---- bank3 mirror
+# ---- bank0
+# ---- bank1
+# ---- bank2
+# ---- bank3
+# ---- bank0 mirror
+# ---- bank1 mirror
+# -- 508: Write bank#3Fh with SCC Compatible Mode
+# -- 508: Read bank and check read address
+# ---- bank2 mirror
+# ---- bank3 mirror
+# ---- bank0
+# ---- bank1
+# ---- bank3
+# ---- bank0 mirror
+# ---- bank1 mirror
+# -- 509: Read/Write SCC bank
+# -- 510: Write bank#80h with SCC Compatible Mode
+# -- 510: Read bank and check read address
+# ---- bank2 mirror
+# ---- bank3 mirror
+# ---- bank0
+# ---- bank1
+# ---- bank2
+# ---- bank3
+# ---- bank0 mirror
+# ---- bank1 mirror
+# -- 511: Write bank#3Fh with SCC+ Mode
+# -- 511: Read bank and check read address
+# ---- bank2 mirror
+# ---- bank3 mirror
+# ---- bank0
+# ---- bank1
+# ---- bank2
+# ---- bank3
+# ---- bank0 mirror
+# ---- bank1 mirror
+# -- 512: Write bank#80h with SCC+ Mode
+# -- 510: Read bank and check read address
+# ---- bank2 mirror
+# ---- bank3 mirror
+# ---- bank0
+# ---- bank1
+# ---- bank2
+# ---- bank0 mirror
+# ---- bank1 mirror
+# -- 513: Read/Write SCC bank
+# -- 513: DRAM Mode
+# ---- Bank2 Mirror
+# ---- Bank3 Mirror
+# ---- Bank0
+# ---- Bank1
+# ---- Bank2
+# ---- Bank3
+# ---- Bank0 Mirror
+# ---- Bank1 Mirror
+# -- 514: DRAM Mode
+# ---- Bank2 Mirror
+# ---- Bank3 Mirror
+# ---- Bank0
+# ---- Bank1
+# ---- Bank2
+# ---- Bank3
+# ---- Bank0 Mirror
+# ---- Bank1 Mirror
+# 600: Check Generic8 mode
+# -- 601: Read bank and check read address
+# ---- bank2 mirror
+# ---- bank3 mirror
+# ---- bank0
+# ---- bank1
+# ---- bank2
+# ---- bank3
+# ---- bank0 mirror
+# ---- bank1 mirror
+# -- 602: Write bank registers
+# -- 602: Read bank and check read address
+# ---- bank2 mirror
+# ---- bank3 mirror
+# ---- bank0
+# ---- bank1
+# ---- bank2
+# ---- bank3
+# ---- bank0 mirror
+# ---- bank1 mirror
+# -- 603: Write bank registers
+# -- 603: Read bank and check read address
+# ---- bank2 mirror
+# ---- bank3 mirror
+# ---- bank0
+# ---- bank1
+# ---- bank2
+# ---- bank3
+# ---- bank0 mirror
+# ---- bank1 mirror
+# -- 604: Write bank registers
+# -- 604: Read bank and check read address
+# ---- bank2 mirror
+# ---- bank3 mirror
+# ---- bank0
+# ---- bank1
+# ---- bank2
+# ---- bank3
+# ---- bank0 mirror
+# ---- bank1 mirror
+# -- 605: Write bank registers
+# -- 605: Read bank and check read address
+# ---- bank2 mirror
+# ---- bank3 mirror
+# ---- bank0
+# ---- bank1
+# ---- bank2
+# ---- bank3
+# ---- bank0 mirror
+# ---- bank1 mirror
+# -- 606: Write invalid registers
+# -- 606: Read bank and check read address
+# ---- bank2 mirror
+# ---- bank3 mirror
+# ---- bank0
+# ---- bank1
+# ---- bank2
+# ---- bank3
+# ---- bank0 mirror
+# ---- bank1 mirror
+# -- 607: Write invalid registers
+# -- 607: Read bank and check read address
+# ---- bank2 mirror
+# ---- bank3 mirror
+# ---- bank0
+# ---- bank1
+# ---- bank2
+# ---- bank3
+# ---- bank0 mirror
+# ---- bank1 mirror
+# -- 608: Write invalid registers
+# -- 608: Read bank and check read address
+# ---- bank2 mirror
+# ---- bank3 mirror
+# ---- bank0
+# ---- bank1
+# ---- bank2
+# ---- bank3
+# ---- bank0 mirror
+# ---- bank1 mirror
+# -- 609: Write invalid registers
+# -- 609: Read bank and check read address
+# ---- bank2 mirror
+# ---- bank3 mirror
+# ---- bank0
+# ---- bank1
+# ---- bank2
+# ---- bank3
+# ---- bank0 mirror
+# ---- bank1 mirror
+# 700: Check Generic16 mode
+# -- 701: Read bank and check read address
+# ---- bank2 mirror
+# ---- bank3 mirror
+# ---- bank0
+# ---- bank1
+# ---- bank2
+# ---- bank3
+# ---- bank0 mirror
+# ---- bank1 mirror
+# -- 702: Write bank registers
+# -- 702: Read bank and check read address
+# ---- bank2 mirror
+# ---- bank3 mirror
+# ---- bank0
+# ---- bank1
+# ---- bank2
+# ---- bank3
+# ---- bank0 mirror
+# ---- bank1 mirror
+# -- 703: Write bank registers
+# -- 703: Read bank and check read address
+# ---- bank2 mirror
+# ---- bank3 mirror
+# ---- bank0
+# ---- bank1
+# ---- bank2
+# ---- bank3
+# ---- bank0 mirror
+# ---- bank1 mirror
+# -- 704: Write bank registers
+# -- 704: Read bank and check read address
+# ---- bank2 mirror
+# ---- bank3 mirror
+# ---- bank0
+# ---- bank1
+# ---- bank2
+# ---- bank3
+# ---- bank0 mirror
+# ---- bank1 mirror
+# -- 705: Write bank registers
+# -- 705: Read bank and check read address
+# ---- bank2 mirror
+# ---- bank3 mirror
+# ---- bank0
+# ---- bank1
+# ---- bank2
+# ---- bank3
+# ---- bank0 mirror
+# ---- bank1 mirror
+# -- 706: Write invalid registers
+# -- 706: Read bank and check read address
+# ---- bank2 mirror
+# ---- bank3 mirror
+# ---- bank0
+# ---- bank1
+# ---- bank2
+# ---- bank3
+# ---- bank0 mirror
+# ---- bank1 mirror
+# -- 707: Write invalid registers
+# -- 707: Read bank and check read address
+# ---- bank2 mirror
+# ---- bank3 mirror
+# ---- bank0
+# ---- bank1
+# ---- bank2
+# ---- bank3
+# ---- bank0 mirror
+# ---- bank1 mirror
+# -- 708: Write invalid registers
+# -- 708: Read bank and check read address
+# ---- bank2 mirror
+# ---- bank3 mirror
+# ---- bank0
+# ---- bank1
+# ---- bank2
+# ---- bank3
+# ---- bank0 mirror
+# ---- bank1 mirror
+# -- 709: Write invalid registers
+# -- 709: Read bank and check read address
+# ---- bank2 mirror
+# ---- bank3 mirror
+# ---- bank0
+# ---- bank1
+# ---- bank2
+# ---- bank3
+# ---- bank0 mirror
+# ---- bank1 mirror
+# ** Note: $finish    : tb.sv(1360)
+#    Time: 793763656560 ps  Iteration: 1  Instance: /tb
+# End time: 20:47:51 on May 25,2024, Elapsed time: 0:02:54
+# Errors: 0, Warnings: 0

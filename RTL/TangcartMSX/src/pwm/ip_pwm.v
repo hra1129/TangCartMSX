@@ -25,21 +25,22 @@
 // -----------------------------------------------------------------------------
 
 module ip_pwm (
-	input			n_reset,
-	input			clk,
-	input			enable,
-	input	[15:0]	signal_level,
-	output			pwm_wave
+	input				n_reset,
+	input				clk,
+	input				enable,
+	input	[16:0]		signal_level,	//	signed
+	output				pwm_wave
 );
-	reg		[16:0]	ff_integ;
-	wire	[16:0]	w_integ;
+	reg		[16:0]		ff_integ;		//	unsigned
+	wire	[17:0]		w_integ;		//	unsigned
+	reg					ff_out;
 
 	// --------------------------------------------------------------------
 	//	Integral unit
 	// --------------------------------------------------------------------
 	always @( posedge clk ) begin
 		if( !n_reset ) begin
-			ff_integ <= 17'd0;
+			ff_integ <= 'd0;
 		end
 		else if( enable ) begin
 			ff_integ <= w_integ[16:0];
@@ -48,10 +49,19 @@ module ip_pwm (
 			//	hold
 		end
 	end
-	assign w_integ	= { 1'b0, ff_integ[15:0] } + { 1'b0, signal_level };
+	assign w_integ	= { 1'b0, ff_integ[16:0] } + { 1'b0, ~signal_level[16], signal_level[15:0] };
+
+	always @( posedge clk ) begin
+		if( !n_reset ) begin
+			ff_out <= 1'b0;
+		end
+		else begin
+			ff_out <= w_integ[17];
+		end
+	end
 
 	// --------------------------------------------------------------------
 	//	Output assignment
 	// --------------------------------------------------------------------
-	assign pwm_wave	= ff_integ[16];
+	assign pwm_wave	= ff_out;
 endmodule
