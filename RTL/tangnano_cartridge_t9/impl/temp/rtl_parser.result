@@ -1,0 +1,656 @@
+[
+ {
+  "InstFile" : "D:/github/HRA_product/TangCartMSX/RTL/TangcartMSX/src/tangcart_msx.v",
+  "InstLine" : 26,
+  "InstName" : "tangcart_msx",
+  "ModuleFile" : "D:/github/HRA_product/TangCartMSX/RTL/TangcartMSX/src/tangcart_msx.v",
+  "ModuleLine" : 26,
+  "ModuleName" : "tangcart_msx",
+  "SubInsts" : [
+   {
+    "InstFile" : "D:/github/HRA_product/TangCartMSX/RTL/TangcartMSX/src/tangcart_msx.v",
+    "InstLine" : 96,
+    "InstName" : "u_pll",
+    "ModuleFile" : "D:/github/HRA_product/TangCartMSX/RTL/TangcartMSX/src/gowin_pll/gowin_pll.v",
+    "ModuleLine" : 10,
+    "ModuleName" : "Gowin_PLL"
+   },
+   {
+    "InstFile" : "D:/github/HRA_product/TangCartMSX/RTL/TangcartMSX/src/tangcart_msx.v",
+    "InstLine" : 121,
+    "InstName" : "u_ikascc_wrapper",
+    "ModuleFile" : "D:/github/HRA_product/TangCartMSX/RTL/TangcartMSX/src/ikascc_wrap/ip_ikascc_wrap.v",
+    "ModuleLine" : 24,
+    "ModuleName" : "ip_ikascc_wrapper",
+    "SubInsts" : [
+     {
+      "InstFile" : "D:/github/HRA_product/TangCartMSX/RTL/TangcartMSX/src/ikascc_wrap/ip_ikascc_wrap.v",
+      "InstLine" : 53,
+      "InstName" : "u_ikascc",
+      "ModuleFile" : "D:/github/HRA_product/TangCartMSX/RTL/TangcartMSX/src/ikascc/IKASCC.v",
+      "ModuleLine" : 1,
+      "ModuleName" : "IKASCC",
+      "SubInsts" : [
+       {
+        "InstFile" : "D:/github/HRA_product/TangCartMSX/RTL/TangcartMSX/src/ikascc/IKASCC.v",
+        "InstLine" : 136,
+        "InstName" : "IKASCC_SYNC_MODE.u_vrc_s_main",
+        "ModuleFile" : "D:/github/HRA_product/TangCartMSX/RTL/TangcartMSX/src/ikascc/IKASCC_modules/IKASCC_vrc_s.v",
+        "ModuleLine" : 1,
+        "ModuleName" : "IKASCC_vrc_s"
+       },
+       {
+        "InstFile" : "D:/github/HRA_product/TangCartMSX/RTL/TangcartMSX/src/ikascc/IKASCC.v",
+        "InstLine" : 161,
+        "InstName" : "IKASCC_SYNC_MODE.u_player_main",
+        "ModuleFile" : "D:/github/HRA_product/TangCartMSX/RTL/TangcartMSX/src/ikascc/IKASCC_modules/IKASCC_player_s.v",
+        "ModuleLine" : 1,
+        "ModuleName" : "IKASCC_player_s",
+        "SubInsts" : [
+         {
+          "InstFile" : "D:/github/HRA_product/TangCartMSX/RTL/TangcartMSX/src/ikascc/IKASCC_modules/IKASCC_player_s.v",
+          "InstLine" : 87,
+          "InstName" : "u_mem_ch1",
+          "ModuleFile" : "D:/github/HRA_product/TangCartMSX/RTL/TangcartMSX/src/ikascc/IKASCC_modules/IKASCC_player_s.v",
+          "ModuleLine" : 670,
+          "ModuleName" : "IKASCC_player_memory_s"
+         },
+         {
+          "InstFile" : "D:/github/HRA_product/TangCartMSX/RTL/TangcartMSX/src/ikascc/IKASCC_modules/IKASCC_player_s.v",
+          "InstLine" : 104,
+          "InstName" : "u_ctrl_ch1",
+          "ModuleFile" : "D:/github/HRA_product/TangCartMSX/RTL/TangcartMSX/src/ikascc/IKASCC_modules/IKASCC_player_s.v",
+          "ModuleLine" : 372,
+          "ModuleName" : "IKASCC_player_control_s",
+          "SubInsts" : [
+           {
+            "InstFile" : "D:/github/HRA_product/TangCartMSX/RTL/TangcartMSX/src/ikascc/IKASCC_modules/IKASCC_player_s.v",
+            "InstLine" : 494,
+            "InstName" : "u_cyccntr",
+            "ModuleFile" : "D:/github/HRA_product/TangCartMSX/RTL/TangcartMSX/src/ikascc/IKASCC_modules/IKASCC_primitives.v",
+            "ModuleLine" : 1,
+            "ModuleName" : "IKASCC_primitive_dncntr"
+           },
+           {
+            "InstFile" : "D:/github/HRA_product/TangCartMSX/RTL/TangcartMSX/src/ikascc/IKASCC_modules/IKASCC_player_s.v",
+            "InstLine" : 502,
+            "InstName" : "u_fraccntr_a",
+            "ModuleFile" : "D:/github/HRA_product/TangCartMSX/RTL/TangcartMSX/src/ikascc/IKASCC_modules/IKASCC_primitives.v",
+            "ModuleLine" : 1,
+            "ModuleName" : "IKASCC_primitive_dncntr"
+           },
+           {
+            "InstFile" : "D:/github/HRA_product/TangCartMSX/RTL/TangcartMSX/src/ikascc/IKASCC_modules/IKASCC_player_s.v",
+            "InstLine" : 510,
+            "InstName" : "u_fraccntr_b",
+            "ModuleFile" : "D:/github/HRA_product/TangCartMSX/RTL/TangcartMSX/src/ikascc/IKASCC_modules/IKASCC_primitives.v",
+            "ModuleLine" : 1,
+            "ModuleName" : "IKASCC_primitive_dncntr"
+           },
+           {
+            "InstFile" : "D:/github/HRA_product/TangCartMSX/RTL/TangcartMSX/src/ikascc/IKASCC_modules/IKASCC_player_s.v",
+            "InstLine" : 519,
+            "InstName" : "u_fraccntr_c",
+            "ModuleFile" : "D:/github/HRA_product/TangCartMSX/RTL/TangcartMSX/src/ikascc/IKASCC_modules/IKASCC_primitives.v",
+            "ModuleLine" : 1,
+            "ModuleName" : "IKASCC_primitive_dncntr"
+           },
+           {
+            "InstFile" : "D:/github/HRA_product/TangCartMSX/RTL/TangcartMSX/src/ikascc/IKASCC_modules/IKASCC_player_s.v",
+            "InstLine" : 528,
+            "InstName" : "u_intcntr",
+            "ModuleFile" : "D:/github/HRA_product/TangCartMSX/RTL/TangcartMSX/src/ikascc/IKASCC_modules/IKASCC_primitives.v",
+            "ModuleLine" : 1,
+            "ModuleName" : "IKASCC_primitive_dncntr"
+           }
+          ]
+         },
+         {
+          "InstFile" : "D:/github/HRA_product/TangCartMSX/RTL/TangcartMSX/src/ikascc/IKASCC_modules/IKASCC_player_s.v",
+          "InstLine" : 139,
+          "InstName" : "u_mem_ch2",
+          "ModuleFile" : "D:/github/HRA_product/TangCartMSX/RTL/TangcartMSX/src/ikascc/IKASCC_modules/IKASCC_player_s.v",
+          "ModuleLine" : 670,
+          "ModuleName" : "IKASCC_player_memory_s"
+         },
+         {
+          "InstFile" : "D:/github/HRA_product/TangCartMSX/RTL/TangcartMSX/src/ikascc/IKASCC_modules/IKASCC_player_s.v",
+          "InstLine" : 156,
+          "InstName" : "u_ctrl_ch2",
+          "ModuleFile" : "D:/github/HRA_product/TangCartMSX/RTL/TangcartMSX/src/ikascc/IKASCC_modules/IKASCC_player_s.v",
+          "ModuleLine" : 372,
+          "ModuleName" : "IKASCC_player_control_s",
+          "SubInsts" : [
+           {
+            "InstFile" : "D:/github/HRA_product/TangCartMSX/RTL/TangcartMSX/src/ikascc/IKASCC_modules/IKASCC_player_s.v",
+            "InstLine" : 494,
+            "InstName" : "u_cyccntr",
+            "ModuleFile" : "D:/github/HRA_product/TangCartMSX/RTL/TangcartMSX/src/ikascc/IKASCC_modules/IKASCC_primitives.v",
+            "ModuleLine" : 1,
+            "ModuleName" : "IKASCC_primitive_dncntr"
+           },
+           {
+            "InstFile" : "D:/github/HRA_product/TangCartMSX/RTL/TangcartMSX/src/ikascc/IKASCC_modules/IKASCC_player_s.v",
+            "InstLine" : 502,
+            "InstName" : "u_fraccntr_a",
+            "ModuleFile" : "D:/github/HRA_product/TangCartMSX/RTL/TangcartMSX/src/ikascc/IKASCC_modules/IKASCC_primitives.v",
+            "ModuleLine" : 1,
+            "ModuleName" : "IKASCC_primitive_dncntr"
+           },
+           {
+            "InstFile" : "D:/github/HRA_product/TangCartMSX/RTL/TangcartMSX/src/ikascc/IKASCC_modules/IKASCC_player_s.v",
+            "InstLine" : 510,
+            "InstName" : "u_fraccntr_b",
+            "ModuleFile" : "D:/github/HRA_product/TangCartMSX/RTL/TangcartMSX/src/ikascc/IKASCC_modules/IKASCC_primitives.v",
+            "ModuleLine" : 1,
+            "ModuleName" : "IKASCC_primitive_dncntr"
+           },
+           {
+            "InstFile" : "D:/github/HRA_product/TangCartMSX/RTL/TangcartMSX/src/ikascc/IKASCC_modules/IKASCC_player_s.v",
+            "InstLine" : 519,
+            "InstName" : "u_fraccntr_c",
+            "ModuleFile" : "D:/github/HRA_product/TangCartMSX/RTL/TangcartMSX/src/ikascc/IKASCC_modules/IKASCC_primitives.v",
+            "ModuleLine" : 1,
+            "ModuleName" : "IKASCC_primitive_dncntr"
+           },
+           {
+            "InstFile" : "D:/github/HRA_product/TangCartMSX/RTL/TangcartMSX/src/ikascc/IKASCC_modules/IKASCC_player_s.v",
+            "InstLine" : 528,
+            "InstName" : "u_intcntr",
+            "ModuleFile" : "D:/github/HRA_product/TangCartMSX/RTL/TangcartMSX/src/ikascc/IKASCC_modules/IKASCC_primitives.v",
+            "ModuleLine" : 1,
+            "ModuleName" : "IKASCC_primitive_dncntr"
+           }
+          ]
+         },
+         {
+          "InstFile" : "D:/github/HRA_product/TangCartMSX/RTL/TangcartMSX/src/ikascc/IKASCC_modules/IKASCC_player_s.v",
+          "InstLine" : 191,
+          "InstName" : "u_mem_ch3",
+          "ModuleFile" : "D:/github/HRA_product/TangCartMSX/RTL/TangcartMSX/src/ikascc/IKASCC_modules/IKASCC_player_s.v",
+          "ModuleLine" : 670,
+          "ModuleName" : "IKASCC_player_memory_s"
+         },
+         {
+          "InstFile" : "D:/github/HRA_product/TangCartMSX/RTL/TangcartMSX/src/ikascc/IKASCC_modules/IKASCC_player_s.v",
+          "InstLine" : 208,
+          "InstName" : "u_ctrl_ch3",
+          "ModuleFile" : "D:/github/HRA_product/TangCartMSX/RTL/TangcartMSX/src/ikascc/IKASCC_modules/IKASCC_player_s.v",
+          "ModuleLine" : 372,
+          "ModuleName" : "IKASCC_player_control_s",
+          "SubInsts" : [
+           {
+            "InstFile" : "D:/github/HRA_product/TangCartMSX/RTL/TangcartMSX/src/ikascc/IKASCC_modules/IKASCC_player_s.v",
+            "InstLine" : 494,
+            "InstName" : "u_cyccntr",
+            "ModuleFile" : "D:/github/HRA_product/TangCartMSX/RTL/TangcartMSX/src/ikascc/IKASCC_modules/IKASCC_primitives.v",
+            "ModuleLine" : 1,
+            "ModuleName" : "IKASCC_primitive_dncntr"
+           },
+           {
+            "InstFile" : "D:/github/HRA_product/TangCartMSX/RTL/TangcartMSX/src/ikascc/IKASCC_modules/IKASCC_player_s.v",
+            "InstLine" : 502,
+            "InstName" : "u_fraccntr_a",
+            "ModuleFile" : "D:/github/HRA_product/TangCartMSX/RTL/TangcartMSX/src/ikascc/IKASCC_modules/IKASCC_primitives.v",
+            "ModuleLine" : 1,
+            "ModuleName" : "IKASCC_primitive_dncntr"
+           },
+           {
+            "InstFile" : "D:/github/HRA_product/TangCartMSX/RTL/TangcartMSX/src/ikascc/IKASCC_modules/IKASCC_player_s.v",
+            "InstLine" : 510,
+            "InstName" : "u_fraccntr_b",
+            "ModuleFile" : "D:/github/HRA_product/TangCartMSX/RTL/TangcartMSX/src/ikascc/IKASCC_modules/IKASCC_primitives.v",
+            "ModuleLine" : 1,
+            "ModuleName" : "IKASCC_primitive_dncntr"
+           },
+           {
+            "InstFile" : "D:/github/HRA_product/TangCartMSX/RTL/TangcartMSX/src/ikascc/IKASCC_modules/IKASCC_player_s.v",
+            "InstLine" : 519,
+            "InstName" : "u_fraccntr_c",
+            "ModuleFile" : "D:/github/HRA_product/TangCartMSX/RTL/TangcartMSX/src/ikascc/IKASCC_modules/IKASCC_primitives.v",
+            "ModuleLine" : 1,
+            "ModuleName" : "IKASCC_primitive_dncntr"
+           },
+           {
+            "InstFile" : "D:/github/HRA_product/TangCartMSX/RTL/TangcartMSX/src/ikascc/IKASCC_modules/IKASCC_player_s.v",
+            "InstLine" : 528,
+            "InstName" : "u_intcntr",
+            "ModuleFile" : "D:/github/HRA_product/TangCartMSX/RTL/TangcartMSX/src/ikascc/IKASCC_modules/IKASCC_primitives.v",
+            "ModuleLine" : 1,
+            "ModuleName" : "IKASCC_primitive_dncntr"
+           }
+          ]
+         },
+         {
+          "InstFile" : "D:/github/HRA_product/TangCartMSX/RTL/TangcartMSX/src/ikascc/IKASCC_modules/IKASCC_player_s.v",
+          "InstLine" : 281,
+          "InstName" : "u_mem_ch45",
+          "ModuleFile" : "D:/github/HRA_product/TangCartMSX/RTL/TangcartMSX/src/ikascc/IKASCC_modules/IKASCC_player_s.v",
+          "ModuleLine" : 670,
+          "ModuleName" : "IKASCC_player_memory_s"
+         },
+         {
+          "InstFile" : "D:/github/HRA_product/TangCartMSX/RTL/TangcartMSX/src/ikascc/IKASCC_modules/IKASCC_player_s.v",
+          "InstLine" : 298,
+          "InstName" : "u_ctrl_ch4",
+          "ModuleFile" : "D:/github/HRA_product/TangCartMSX/RTL/TangcartMSX/src/ikascc/IKASCC_modules/IKASCC_player_s.v",
+          "ModuleLine" : 372,
+          "ModuleName" : "IKASCC_player_control_s",
+          "SubInsts" : [
+           {
+            "InstFile" : "D:/github/HRA_product/TangCartMSX/RTL/TangcartMSX/src/ikascc/IKASCC_modules/IKASCC_player_s.v",
+            "InstLine" : 494,
+            "InstName" : "u_cyccntr",
+            "ModuleFile" : "D:/github/HRA_product/TangCartMSX/RTL/TangcartMSX/src/ikascc/IKASCC_modules/IKASCC_primitives.v",
+            "ModuleLine" : 1,
+            "ModuleName" : "IKASCC_primitive_dncntr"
+           },
+           {
+            "InstFile" : "D:/github/HRA_product/TangCartMSX/RTL/TangcartMSX/src/ikascc/IKASCC_modules/IKASCC_player_s.v",
+            "InstLine" : 502,
+            "InstName" : "u_fraccntr_a",
+            "ModuleFile" : "D:/github/HRA_product/TangCartMSX/RTL/TangcartMSX/src/ikascc/IKASCC_modules/IKASCC_primitives.v",
+            "ModuleLine" : 1,
+            "ModuleName" : "IKASCC_primitive_dncntr"
+           },
+           {
+            "InstFile" : "D:/github/HRA_product/TangCartMSX/RTL/TangcartMSX/src/ikascc/IKASCC_modules/IKASCC_player_s.v",
+            "InstLine" : 510,
+            "InstName" : "u_fraccntr_b",
+            "ModuleFile" : "D:/github/HRA_product/TangCartMSX/RTL/TangcartMSX/src/ikascc/IKASCC_modules/IKASCC_primitives.v",
+            "ModuleLine" : 1,
+            "ModuleName" : "IKASCC_primitive_dncntr"
+           },
+           {
+            "InstFile" : "D:/github/HRA_product/TangCartMSX/RTL/TangcartMSX/src/ikascc/IKASCC_modules/IKASCC_player_s.v",
+            "InstLine" : 519,
+            "InstName" : "u_fraccntr_c",
+            "ModuleFile" : "D:/github/HRA_product/TangCartMSX/RTL/TangcartMSX/src/ikascc/IKASCC_modules/IKASCC_primitives.v",
+            "ModuleLine" : 1,
+            "ModuleName" : "IKASCC_primitive_dncntr"
+           },
+           {
+            "InstFile" : "D:/github/HRA_product/TangCartMSX/RTL/TangcartMSX/src/ikascc/IKASCC_modules/IKASCC_player_s.v",
+            "InstLine" : 528,
+            "InstName" : "u_intcntr",
+            "ModuleFile" : "D:/github/HRA_product/TangCartMSX/RTL/TangcartMSX/src/ikascc/IKASCC_modules/IKASCC_primitives.v",
+            "ModuleLine" : 1,
+            "ModuleName" : "IKASCC_primitive_dncntr"
+           }
+          ]
+         },
+         {
+          "InstFile" : "D:/github/HRA_product/TangCartMSX/RTL/TangcartMSX/src/ikascc/IKASCC_modules/IKASCC_player_s.v",
+          "InstLine" : 329,
+          "InstName" : "u_ctrl_ch5",
+          "ModuleFile" : "D:/github/HRA_product/TangCartMSX/RTL/TangcartMSX/src/ikascc/IKASCC_modules/IKASCC_player_s.v",
+          "ModuleLine" : 372,
+          "ModuleName" : "IKASCC_player_control_s",
+          "SubInsts" : [
+           {
+            "InstFile" : "D:/github/HRA_product/TangCartMSX/RTL/TangcartMSX/src/ikascc/IKASCC_modules/IKASCC_player_s.v",
+            "InstLine" : 494,
+            "InstName" : "u_cyccntr",
+            "ModuleFile" : "D:/github/HRA_product/TangCartMSX/RTL/TangcartMSX/src/ikascc/IKASCC_modules/IKASCC_primitives.v",
+            "ModuleLine" : 1,
+            "ModuleName" : "IKASCC_primitive_dncntr"
+           },
+           {
+            "InstFile" : "D:/github/HRA_product/TangCartMSX/RTL/TangcartMSX/src/ikascc/IKASCC_modules/IKASCC_player_s.v",
+            "InstLine" : 502,
+            "InstName" : "u_fraccntr_a",
+            "ModuleFile" : "D:/github/HRA_product/TangCartMSX/RTL/TangcartMSX/src/ikascc/IKASCC_modules/IKASCC_primitives.v",
+            "ModuleLine" : 1,
+            "ModuleName" : "IKASCC_primitive_dncntr"
+           },
+           {
+            "InstFile" : "D:/github/HRA_product/TangCartMSX/RTL/TangcartMSX/src/ikascc/IKASCC_modules/IKASCC_player_s.v",
+            "InstLine" : 510,
+            "InstName" : "u_fraccntr_b",
+            "ModuleFile" : "D:/github/HRA_product/TangCartMSX/RTL/TangcartMSX/src/ikascc/IKASCC_modules/IKASCC_primitives.v",
+            "ModuleLine" : 1,
+            "ModuleName" : "IKASCC_primitive_dncntr"
+           },
+           {
+            "InstFile" : "D:/github/HRA_product/TangCartMSX/RTL/TangcartMSX/src/ikascc/IKASCC_modules/IKASCC_player_s.v",
+            "InstLine" : 519,
+            "InstName" : "u_fraccntr_c",
+            "ModuleFile" : "D:/github/HRA_product/TangCartMSX/RTL/TangcartMSX/src/ikascc/IKASCC_modules/IKASCC_primitives.v",
+            "ModuleLine" : 1,
+            "ModuleName" : "IKASCC_primitive_dncntr"
+           },
+           {
+            "InstFile" : "D:/github/HRA_product/TangCartMSX/RTL/TangcartMSX/src/ikascc/IKASCC_modules/IKASCC_player_s.v",
+            "InstLine" : 528,
+            "InstName" : "u_intcntr",
+            "ModuleFile" : "D:/github/HRA_product/TangCartMSX/RTL/TangcartMSX/src/ikascc/IKASCC_modules/IKASCC_primitives.v",
+            "ModuleLine" : 1,
+            "ModuleName" : "IKASCC_primitive_dncntr"
+           }
+          ]
+         }
+        ]
+       }
+      ]
+     },
+     {
+      "InstFile" : "D:/github/HRA_product/TangCartMSX/RTL/TangcartMSX/src/ikascc_wrap/ip_ikascc_wrap.v",
+      "InstLine" : 74,
+      "InstName" : "u_rom",
+      "ModuleFile" : "D:/github/HRA_product/TangCartMSX/RTL/TangcartMSX/src/ikaopll_wrap/ip_msxmusic_rom.v",
+      "ModuleLine" : 5,
+      "ModuleName" : "ip_msxmusic_rom"
+     }
+    ]
+   },
+   {
+    "InstFile" : "D:/github/HRA_product/TangCartMSX/RTL/TangcartMSX/src/tangcart_msx.v",
+    "InstLine" : 140,
+    "InstName" : "u_ikaopll_wrapper",
+    "ModuleFile" : "D:/github/HRA_product/TangCartMSX/RTL/TangcartMSX/src/ikaopll_wrap/ikaopll_wrap.v",
+    "ModuleLine" : 7,
+    "ModuleName" : "ip_ikaopll_wrapper",
+    "SubInsts" : [
+     {
+      "InstFile" : "D:/github/HRA_product/TangCartMSX/RTL/TangcartMSX/src/ikaopll_wrap/ikaopll_wrap.v",
+      "InstLine" : 56,
+      "InstName" : "u_ikaopll",
+      "ModuleFile" : "D:/github/HRA_product/TangCartMSX/RTL/TangcartMSX/src/ikaopll/IKAOPLL.v",
+      "ModuleLine" : 1,
+      "ModuleName" : "IKAOPLL",
+      "SubInsts" : [
+       {
+        "InstFile" : "D:/github/HRA_product/TangCartMSX/RTL/TangcartMSX/src/ikaopll/IKAOPLL.v",
+        "InstLine" : 133,
+        "InstName" : "u_TIMINGGEN",
+        "ModuleFile" : "D:/github/HRA_product/TangCartMSX/RTL/TangcartMSX/src/ikaopll/IKAOPLL_modules/IKAOPLL_timinggen.v",
+        "ModuleLine" : 1,
+        "ModuleName" : "IKAOPLL_timinggen"
+       },
+       {
+        "InstFile" : "D:/github/HRA_product/TangCartMSX/RTL/TangcartMSX/src/ikaopll/IKAOPLL.v",
+        "InstLine" : 170,
+        "InstName" : "u_REG",
+        "ModuleFile" : "D:/github/HRA_product/TangCartMSX/RTL/TangcartMSX/src/ikaopll/IKAOPLL_modules/IKAOPLL_reg.v",
+        "ModuleLine" : 1,
+        "ModuleName" : "IKAOPLL_reg",
+        "SubInsts" : [
+         {
+          "InstFile" : "D:/github/HRA_product/TangCartMSX/RTL/TangcartMSX/src/ikaopll/IKAOPLL_modules/IKAOPLL_reg.v",
+          "InstLine" : 71,
+          "InstName" : "u_sync_addrreg",
+          "ModuleFile" : "D:/github/HRA_product/TangCartMSX/RTL/TangcartMSX/src/ikaopll/IKAOPLL_modules/IKAOPLL_reg.v",
+          "ModuleLine" : 467,
+          "ModuleName" : "IKAOPLL_rw_synchronizer"
+         },
+         {
+          "InstFile" : "D:/github/HRA_product/TangCartMSX/RTL/TangcartMSX/src/ikaopll/IKAOPLL_modules/IKAOPLL_reg.v",
+          "InstLine" : 75,
+          "InstName" : "u_sync_datareg",
+          "ModuleFile" : "D:/github/HRA_product/TangCartMSX/RTL/TangcartMSX/src/ikaopll/IKAOPLL_modules/IKAOPLL_reg.v",
+          "ModuleLine" : 467,
+          "ModuleName" : "IKAOPLL_rw_synchronizer"
+         },
+         {
+          "InstFile" : "D:/github/HRA_product/TangCartMSX/RTL/TangcartMSX/src/ikaopll/IKAOPLL_modules/IKAOPLL_reg.v",
+          "InstLine" : 250,
+          "InstName" : "u_fnum_lsbs",
+          "ModuleFile" : "D:/github/HRA_product/TangCartMSX/RTL/TangcartMSX/src/ikaopll/IKAOPLL_modules/IKAOPLL_reg.v",
+          "ModuleLine" : 525,
+          "ModuleName" : "IKAOPLL_d9reg",
+          "SubInsts" : [
+           {
+            "InstFile" : "D:/github/HRA_product/TangCartMSX/RTL/TangcartMSX/src/ikaopll/IKAOPLL_modules/IKAOPLL_reg.v",
+            "InstLine" : 538,
+            "InstName" : "u_d9reg",
+            "ModuleFile" : "D:/github/HRA_product/TangCartMSX/RTL/TangcartMSX/src/ikaopll/IKAOPLL_modules/IKAOPLL_primitives.v",
+            "ModuleLine" : 31,
+            "ModuleName" : "IKAOPLL_sr"
+           }
+          ]
+         },
+         {
+          "InstFile" : "D:/github/HRA_product/TangCartMSX/RTL/TangcartMSX/src/ikaopll/IKAOPLL_modules/IKAOPLL_reg.v",
+          "InstLine" : 253,
+          "InstName" : "u_fnum_msb",
+          "ModuleFile" : "D:/github/HRA_product/TangCartMSX/RTL/TangcartMSX/src/ikaopll/IKAOPLL_modules/IKAOPLL_reg.v",
+          "ModuleLine" : 525,
+          "ModuleName" : "IKAOPLL_d9reg",
+          "SubInsts" : [
+           {
+            "InstFile" : "D:/github/HRA_product/TangCartMSX/RTL/TangcartMSX/src/ikaopll/IKAOPLL_modules/IKAOPLL_reg.v",
+            "InstLine" : 538,
+            "InstName" : "u_d9reg",
+            "ModuleFile" : "D:/github/HRA_product/TangCartMSX/RTL/TangcartMSX/src/ikaopll/IKAOPLL_modules/IKAOPLL_primitives.v",
+            "ModuleLine" : 31,
+            "ModuleName" : "IKAOPLL_sr"
+           }
+          ]
+         },
+         {
+          "InstFile" : "D:/github/HRA_product/TangCartMSX/RTL/TangcartMSX/src/ikaopll/IKAOPLL_modules/IKAOPLL_reg.v",
+          "InstLine" : 256,
+          "InstName" : "u_block",
+          "ModuleFile" : "D:/github/HRA_product/TangCartMSX/RTL/TangcartMSX/src/ikaopll/IKAOPLL_modules/IKAOPLL_reg.v",
+          "ModuleLine" : 525,
+          "ModuleName" : "IKAOPLL_d9reg",
+          "SubInsts" : [
+           {
+            "InstFile" : "D:/github/HRA_product/TangCartMSX/RTL/TangcartMSX/src/ikaopll/IKAOPLL_modules/IKAOPLL_reg.v",
+            "InstLine" : 538,
+            "InstName" : "u_d9reg",
+            "ModuleFile" : "D:/github/HRA_product/TangCartMSX/RTL/TangcartMSX/src/ikaopll/IKAOPLL_modules/IKAOPLL_primitives.v",
+            "ModuleLine" : 31,
+            "ModuleName" : "IKAOPLL_sr"
+           }
+          ]
+         },
+         {
+          "InstFile" : "D:/github/HRA_product/TangCartMSX/RTL/TangcartMSX/src/ikaopll/IKAOPLL_modules/IKAOPLL_reg.v",
+          "InstLine" : 259,
+          "InstName" : "u_kon",
+          "ModuleFile" : "D:/github/HRA_product/TangCartMSX/RTL/TangcartMSX/src/ikaopll/IKAOPLL_modules/IKAOPLL_reg.v",
+          "ModuleLine" : 525,
+          "ModuleName" : "IKAOPLL_d9reg",
+          "SubInsts" : [
+           {
+            "InstFile" : "D:/github/HRA_product/TangCartMSX/RTL/TangcartMSX/src/ikaopll/IKAOPLL_modules/IKAOPLL_reg.v",
+            "InstLine" : 538,
+            "InstName" : "u_d9reg",
+            "ModuleFile" : "D:/github/HRA_product/TangCartMSX/RTL/TangcartMSX/src/ikaopll/IKAOPLL_modules/IKAOPLL_primitives.v",
+            "ModuleLine" : 31,
+            "ModuleName" : "IKAOPLL_sr"
+           }
+          ]
+         },
+         {
+          "InstFile" : "D:/github/HRA_product/TangCartMSX/RTL/TangcartMSX/src/ikaopll/IKAOPLL_modules/IKAOPLL_reg.v",
+          "InstLine" : 262,
+          "InstName" : "u_susen",
+          "ModuleFile" : "D:/github/HRA_product/TangCartMSX/RTL/TangcartMSX/src/ikaopll/IKAOPLL_modules/IKAOPLL_reg.v",
+          "ModuleLine" : 525,
+          "ModuleName" : "IKAOPLL_d9reg",
+          "SubInsts" : [
+           {
+            "InstFile" : "D:/github/HRA_product/TangCartMSX/RTL/TangcartMSX/src/ikaopll/IKAOPLL_modules/IKAOPLL_reg.v",
+            "InstLine" : 538,
+            "InstName" : "u_d9reg",
+            "ModuleFile" : "D:/github/HRA_product/TangCartMSX/RTL/TangcartMSX/src/ikaopll/IKAOPLL_modules/IKAOPLL_primitives.v",
+            "ModuleLine" : 31,
+            "ModuleName" : "IKAOPLL_sr"
+           }
+          ]
+         },
+         {
+          "InstFile" : "D:/github/HRA_product/TangCartMSX/RTL/TangcartMSX/src/ikaopll/IKAOPLL_modules/IKAOPLL_reg.v",
+          "InstLine" : 265,
+          "InstName" : "u_vol",
+          "ModuleFile" : "D:/github/HRA_product/TangCartMSX/RTL/TangcartMSX/src/ikaopll/IKAOPLL_modules/IKAOPLL_reg.v",
+          "ModuleLine" : 525,
+          "ModuleName" : "IKAOPLL_d9reg",
+          "SubInsts" : [
+           {
+            "InstFile" : "D:/github/HRA_product/TangCartMSX/RTL/TangcartMSX/src/ikaopll/IKAOPLL_modules/IKAOPLL_reg.v",
+            "InstLine" : 538,
+            "InstName" : "u_d9reg",
+            "ModuleFile" : "D:/github/HRA_product/TangCartMSX/RTL/TangcartMSX/src/ikaopll/IKAOPLL_modules/IKAOPLL_primitives.v",
+            "ModuleLine" : 31,
+            "ModuleName" : "IKAOPLL_sr"
+           }
+          ]
+         },
+         {
+          "InstFile" : "D:/github/HRA_product/TangCartMSX/RTL/TangcartMSX/src/ikaopll/IKAOPLL_modules/IKAOPLL_reg.v",
+          "InstLine" : 268,
+          "InstName" : "u_inst",
+          "ModuleFile" : "D:/github/HRA_product/TangCartMSX/RTL/TangcartMSX/src/ikaopll/IKAOPLL_modules/IKAOPLL_reg.v",
+          "ModuleLine" : 525,
+          "ModuleName" : "IKAOPLL_d9reg",
+          "SubInsts" : [
+           {
+            "InstFile" : "D:/github/HRA_product/TangCartMSX/RTL/TangcartMSX/src/ikaopll/IKAOPLL_modules/IKAOPLL_reg.v",
+            "InstLine" : 538,
+            "InstName" : "u_d9reg",
+            "ModuleFile" : "D:/github/HRA_product/TangCartMSX/RTL/TangcartMSX/src/ikaopll/IKAOPLL_modules/IKAOPLL_primitives.v",
+            "ModuleLine" : 31,
+            "ModuleName" : "IKAOPLL_sr"
+           }
+          ]
+         },
+         {
+          "InstFile" : "D:/github/HRA_product/TangCartMSX/RTL/TangcartMSX/src/ikaopll/IKAOPLL_modules/IKAOPLL_reg.v",
+          "InstLine" : 301,
+          "InstName" : "u_instrom",
+          "ModuleFile" : "D:/github/HRA_product/TangCartMSX/RTL/TangcartMSX/src/ikaopll/IKAOPLL_modules/IKAOPLL_reg.v",
+          "ModuleLine" : 554,
+          "ModuleName" : "IKAOPLL_instrom"
+         }
+        ]
+       },
+       {
+        "InstFile" : "D:/github/HRA_product/TangCartMSX/RTL/TangcartMSX/src/ikaopll/IKAOPLL.v",
+        "InstLine" : 233,
+        "InstName" : "u_LFO",
+        "ModuleFile" : "D:/github/HRA_product/TangCartMSX/RTL/TangcartMSX/src/ikaopll/IKAOPLL_modules/IKAOPLL_lfo.v",
+        "ModuleLine" : 1,
+        "ModuleName" : "IKAOPLL_lfo"
+       },
+       {
+        "InstFile" : "D:/github/HRA_product/TangCartMSX/RTL/TangcartMSX/src/ikaopll/IKAOPLL.v",
+        "InstLine" : 258,
+        "InstName" : "u_PG",
+        "ModuleFile" : "D:/github/HRA_product/TangCartMSX/RTL/TangcartMSX/src/ikaopll/IKAOPLL_modules/IKAOPLL_pg.v",
+        "ModuleLine" : 1,
+        "ModuleName" : "IKAOPLL_pg",
+        "SubInsts" : [
+         {
+          "InstFile" : "D:/github/HRA_product/TangCartMSX/RTL/TangcartMSX/src/ikaopll/IKAOPLL_modules/IKAOPLL_pg.v",
+          "InstLine" : 269,
+          "InstName" : "u_cyc4r_cyc18r_phase_sr",
+          "ModuleFile" : "D:/github/HRA_product/TangCartMSX/RTL/TangcartMSX/src/ikaopll/IKAOPLL_modules/IKAOPLL_primitives.v",
+          "ModuleLine" : 31,
+          "ModuleName" : "IKAOPLL_sr"
+         }
+        ]
+       },
+       {
+        "InstFile" : "D:/github/HRA_product/TangCartMSX/RTL/TangcartMSX/src/ikaopll/IKAOPLL.v",
+        "InstLine" : 289,
+        "InstName" : "u_EG",
+        "ModuleFile" : "D:/github/HRA_product/TangCartMSX/RTL/TangcartMSX/src/ikaopll/IKAOPLL_modules/IKAOPLL_eg.v",
+        "ModuleLine" : 1,
+        "ModuleName" : "IKAOPLL_eg",
+        "SubInsts" : [
+         {
+          "InstFile" : "D:/github/HRA_product/TangCartMSX/RTL/TangcartMSX/src/ikaopll/IKAOPLL_modules/IKAOPLL_eg.v",
+          "InstLine" : 122,
+          "InstName" : "u_cyc2r_cyc19r_envstatreg",
+          "ModuleFile" : "D:/github/HRA_product/TangCartMSX/RTL/TangcartMSX/src/ikaopll/IKAOPLL_modules/IKAOPLL_primitives.v",
+          "ModuleLine" : 31,
+          "ModuleName" : "IKAOPLL_sr"
+         },
+         {
+          "InstFile" : "D:/github/HRA_product/TangCartMSX/RTL/TangcartMSX/src/ikaopll/IKAOPLL_modules/IKAOPLL_eg.v",
+          "InstLine" : 296,
+          "InstName" : "u_cyc3r_cyc19r_attnlvreg",
+          "ModuleFile" : "D:/github/HRA_product/TangCartMSX/RTL/TangcartMSX/src/ikaopll/IKAOPLL_modules/IKAOPLL_primitives.v",
+          "ModuleLine" : 31,
+          "ModuleName" : "IKAOPLL_sr"
+         }
+        ]
+       },
+       {
+        "InstFile" : "D:/github/HRA_product/TangCartMSX/RTL/TangcartMSX/src/ikaopll/IKAOPLL.v",
+        "InstLine" : 331,
+        "InstName" : "u_OP",
+        "ModuleFile" : "D:/github/HRA_product/TangCartMSX/RTL/TangcartMSX/src/ikaopll/IKAOPLL_modules/IKAOPLL_op.v",
+        "ModuleLine" : 1,
+        "ModuleName" : "IKAOPLL_op",
+        "SubInsts" : [
+         {
+          "InstFile" : "D:/github/HRA_product/TangCartMSX/RTL/TangcartMSX/src/ikaopll/IKAOPLL_modules/IKAOPLL_op.v",
+          "InstLine" : 65,
+          "InstName" : "u_cyc19c_logsinrom",
+          "ModuleFile" : "D:/github/HRA_product/TangCartMSX/RTL/TangcartMSX/src/ikaopll/IKAOPLL_modules/IKAOPLL_op.v",
+          "ModuleLine" : 277,
+          "ModuleName" : "IKAOPLL_logsinrom"
+         },
+         {
+          "InstFile" : "D:/github/HRA_product/TangCartMSX/RTL/TangcartMSX/src/ikaopll/IKAOPLL_modules/IKAOPLL_op.v",
+          "InstLine" : 110,
+          "InstName" : "u_cyc20c_exprom",
+          "ModuleFile" : "D:/github/HRA_product/TangCartMSX/RTL/TangcartMSX/src/ikaopll/IKAOPLL_modules/IKAOPLL_op.v",
+          "ModuleLine" : 325,
+          "ModuleName" : "IKAOPLL_exprom"
+         },
+         {
+          "InstFile" : "D:/github/HRA_product/TangCartMSX/RTL/TangcartMSX/src/ikaopll/IKAOPLL_modules/IKAOPLL_op.v",
+          "InstLine" : 194,
+          "InstName" : "u_op_z_reg",
+          "ModuleFile" : "D:/github/HRA_product/TangCartMSX/RTL/TangcartMSX/src/ikaopll/IKAOPLL_modules/IKAOPLL_primitives.v",
+          "ModuleLine" : 31,
+          "ModuleName" : "IKAOPLL_sr"
+         },
+         {
+          "InstFile" : "D:/github/HRA_product/TangCartMSX/RTL/TangcartMSX/src/ikaopll/IKAOPLL_modules/IKAOPLL_op.v",
+          "InstLine" : 199,
+          "InstName" : "u_op_zz_reg",
+          "ModuleFile" : "D:/github/HRA_product/TangCartMSX/RTL/TangcartMSX/src/ikaopll/IKAOPLL_modules/IKAOPLL_primitives.v",
+          "ModuleLine" : 31,
+          "ModuleName" : "IKAOPLL_sr"
+         }
+        ]
+       },
+       {
+        "InstFile" : "D:/github/HRA_product/TangCartMSX/RTL/TangcartMSX/src/ikaopll/IKAOPLL.v",
+        "InstLine" : 356,
+        "InstName" : "u_DAC",
+        "ModuleFile" : "D:/github/HRA_product/TangCartMSX/RTL/TangcartMSX/src/ikaopll/IKAOPLL_modules/IKAOPLL_dac.v",
+        "ModuleLine" : 1,
+        "ModuleName" : "IKAOPLL_dac",
+        "SubInsts" : [
+         {
+          "InstFile" : "D:/github/HRA_product/TangCartMSX/RTL/TangcartMSX/src/ikaopll/IKAOPLL_modules/IKAOPLL_dac.v",
+          "InstLine" : 80,
+          "InstName" : "u_percussion_sr",
+          "ModuleFile" : "D:/github/HRA_product/TangCartMSX/RTL/TangcartMSX/src/ikaopll/IKAOPLL_modules/IKAOPLL_primitives.v",
+          "ModuleLine" : 31,
+          "ModuleName" : "IKAOPLL_sr"
+         }
+        ]
+       }
+      ]
+     }
+    ]
+   },
+   {
+    "InstFile" : "D:/github/HRA_product/TangCartMSX/RTL/TangcartMSX/src/tangcart_msx.v",
+    "InstLine" : 164,
+    "InstName" : "u_pwm",
+    "ModuleFile" : "D:/github/HRA_product/TangCartMSX/RTL/TangcartMSX/src/pwm/ip_pwm.v",
+    "ModuleLine" : 27,
+    "ModuleName" : "ip_pwm"
+   }
+  ]
+ }
+]

@@ -1,0 +1,18 @@
+# vsim -c -t 1ps -do "run.do" tb 
+# Start time: 10:06:44 on Sep 15,2024
+# Loading sv_std.std
+# Loading work.tb
+# Loading work.ip_ikascc_wrapper
+# Loading work.IKASCC
+# Loading work.IKASCC_vrc_s
+# Loading work.IKASCC_player_s
+# Loading work.IKASCC_player_memory_s
+# Loading work.IKASCC_player_control_s
+# Loading work.IKASCC_primitive_dncntr
+# ** Warning: (vsim-3015) [PCDPC] - Port size (6) does not match connection size (1) for port 'o_ROMADDR'. The port definition is at: ../../ikascc/IKASCC.v(27).
+#    Time: 0 ps  Iteration: 0  Instance: /tb/u_ikascc_wrapper/u_ikascc File: ../ip_ikascc_wrap.v Line: 46
+# do run.do
+# ** Note: $finish    : tb.sv(130)
+#    Time: 6006326 ps  Iteration: 1  Instance: /tb
+# End time: 10:06:45 on Sep 15,2024, Elapsed time: 0:00:01
+# Errors: 0, Warnings: 1

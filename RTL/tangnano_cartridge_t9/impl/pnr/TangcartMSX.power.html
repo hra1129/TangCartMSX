@@ -1,0 +1,610 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//ENhttp://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+<head>
+<title>Power Analysis Report</title>
+<style type="text/css">
+body { font-family: Verdana, Arial, sans-serif; font-size: 12px; }
+div#main_wrapper { width: 100%; }
+div#content { margin-left: 350px; margin-right: 30px; }
+div#catalog_wrapper {position: fixed; top: 30px; width: 350px; float: left; }
+div#catalog ul { list-style-type: none; }
+div#catalog li { text-align: left; list-style-type:circle; color: #0084ff; margin-top: 3px; margin-bottom: 3px; }
+div#catalog a { display:inline-block; text-decoration: none; color: #0084ff; font-weight: bold; padding: 3px; }
+div#catalog a:visited { color: #0084ff; }
+div#catalog a:hover { color: #fff; background: #0084ff; }
+hr { margin-top: 30px; margin-bottom: 30px; }
+h1, h3 { text-align: center; }
+h1 {margin-top: 50px; }
+table, th, td {white-space:pre;  border: 1px solid #aaa; }
+table { border-collapse:collapse; margin-top: 10px; margin-bottom: 20px; width: 100%; }
+th, td { padding: 5px 5px 5px 5px; }
+th { color: #fff; font-weight: bold; background-color: #0084ff; }
+table.summary_table td.label { width: 24%; min-width: 200px; background-color: #dee8f4; }
+table.thermal_table td.label { width: 24%; min-width: 200px; background-color: #dee8f4; }
+table.Configure_table td.label { width: 24%; min-width: 200px; background-color: #dee8f4; }
+table.detail_table th.label {  min-width: 8%; width: 8%; }
+</style>
+</head>
+<body>
+<div id="main_wrapper">
+<div id="catalog_wrapper">
+<div id="catalog">
+<ul>
+<li><a href="#Message" style=" font-size: 16px;">Power Messages</a>
+<ul>
+<li><a href="#Configure_Info" style=" font-size: 14px;">Configure Information</a></li>
+</ul>
+</li>
+<li><a href="#Summary" style=" font-size: 16px;">Power Summary</a>
+<ul>
+<li><a href="#Power_Info" style=" font-size: 14px;">Power Information</a></li>
+<li><a href="#Thermal_Info" style=" font-size: 14px;">Thermal Information</a></li>
+<li><a href="#Supply_Summary" style=" font-size: 14px;">Supply Information</a></li>
+</ul>
+</li>
+<li><a href="#Detail" style=" font-size: 16px;">Power Details</a>
+<ul>
+<li><a href="#By_Block_Type" style=" font-size: 14px;">Power By Block Type</a></li>
+<li><a href="#By_Hierarchy" style=" font-size: 14px;">Power By Hierarchy</a></li>
+<li><a href="#By_Clock_Domain" style=" font-size: 14px;">Power By Clock Domain</a></li>
+</ul>
+</li>
+</ul>
+</div><!-- catalog -->
+</div><!-- catalog_wrapper -->
+<div id="content">
+<h1><a name="Message">Power Messages</a></h1>
+<table class="summary_table">
+<tr>
+<td class="label">Report Title</td>
+<td>Power Analysis Report</td>
+</tr>
+<tr>
+<td class="label">Design File</td>
+<td>D:\github\HRA_product\TangCartMSX\RTL\TangcartMSX\impl\gwsynthesis\TangcartMSX.vg</td>
+</tr>
+<tr>
+<td class="label">Physical Constraints File</td>
+<td>D:\github\HRA_product\TangCartMSX\RTL\TangcartMSX\src\TangcartMSX.cst</td>
+</tr>
+<tr>
+<td class="label">Timing Constraints File</td>
+<td>D:\github\HRA_product\TangCartMSX\RTL\TangcartMSX\src\TangcartMSX.sdc</td>
+</tr>
+<tr>
+<td class="label">Tool Version</td>
+<td>V1.9.9.03 (64-bit)</td>
+</tr>
+<tr>
+<td class="label">Part Number</td>
+<td>GW1NR-LV9QN88PC6/I5</td>
+</tr>
+<tr>
+<td class="label">Device</td>
+<td>GW1NR-9</td>
+</tr>
+<tr>
+<td class="label">Device Version</td>
+<td>C</td>
+</tr>
+<tr>
+<td class="label">Created Time</td>
+<td>Thu Sep 19 06:28:35 2024
+</td>
+</tr>
+<tr>
+<td class="label">Legal Announcement</td>
+<td>Copyright (C)2014-2024 Gowin Semiconductor Corporation. All rights reserved.</td>
+</tr>
+</table>
+<h2><a name="Configure_Info">Configure Information:</a></h2>
+<table class="summary_table">
+<tr>
+<td class="label">Grade</td>
+<td>Commercial</td>
+</tr>
+<tr>
+<td class="label">Process</td>
+<td>Typical</td>
+</tr>
+<tr>
+<td class="label">Ambient Temperature</td>
+<td>25.000
+</tr>
+<tr>
+<td class="label">Use Custom Theta JA</td>
+<td>false</td>
+</tr>
+<tr>
+<td class="label">Heat Sink</td>
+<td>None</td>
+</tr>
+<tr>
+<td class="label">Air Flow</td>
+<td>LFM_0</td>
+</tr>
+<tr>
+<td class="label">Use Custom Theta SA</td>
+<td>false</td>
+</tr>
+<tr>
+<td class="label">Board Thermal Model</td>
+<td>None</td>
+</tr>
+<tr>
+<td class="label">Use Custom Theta JB</td>
+<td>false</td>
+</tr>
+<tr>
+<td class="label">Related Vcd File</td>
+<td></td>
+</tr>
+<tr>
+<td class="label">Related Saif File</td>
+<td></td>
+</tr>
+<tr>
+<td class="label">Filter Glitches</td>
+<td>false</td>
+</tr>
+<tr>
+<td class="label">Default IO Toggle Rate</td>
+<td>0.125</td>
+</tr>
+<tr>
+<td class="label">Default Remain Toggle Rate</td>
+<td>0.125</td>
+</tr>
+</table>
+<h1><a name="Summary">Power Summary</a></h1>
+<h2><a name="Power_Info">Power Information:</a></h2>
+<table class="summary_table">
+<tr>
+<td class="label">Total Power (mW)</td>
+<td>30.777</td>
+</tr>
+<tr>
+<td class="label">Quiescent Power (mW)</td>
+<td>26.793</td>
+</tr>
+<tr>
+<td class="label">Dynamic Power (mW)</td>
+<td>3.983</td>
+</tr>
+<tr>
+<td class="label">Psram Power (mW)</td>
+<td>86.000</td>
+</tr>
+</table>
+<h2><a name="Thermal_Info">Thermal Information:</a></h2>
+<table class="summary_table">
+<tr>
+<td class="label">Junction Temperature</td>
+<td>25.626</td>
+</tr>
+<tr>
+<td class="label">Theta JA</td>
+<td>21.450</td>
+</tr>
+<tr>
+<td class="label">Max Allowed Ambient Temperature</td>
+<td>84.374</td>
+</tr>
+</table>
+<h2><a name="Supply_Summary">Supply Information:</a></h2>
+<table class="summary_table">
+<tr>
+<th class="label">Voltage Source</th>
+<th class="label">Voltage</th>
+<th class="label">Dynamic Current(mA)</th>
+<th class="label">Quiescent Current(mA)</th>
+<th class="label">Power(mW)</th>
+</tr>
+<tr>
+<td>VCC</td>
+<td>1.200</td>
+<td>2.868</td>
+<td>3.502</td>
+<td>7.644</td>
+</tr>
+<tr>
+<td>VCCX</td>
+<td>3.300</td>
+<td>0.083</td>
+<td>5.000</td>
+<td>16.773</td>
+</tr>
+<tr>
+<td>VCCIO18</td>
+<td>1.800</td>
+<td>0.003</td>
+<td>0.355</td>
+<td>0.643</td>
+</tr>
+<tr>
+<td>VCCIO33</td>
+<td>3.300</td>
+<td>0.080</td>
+<td>1.652</td>
+<td>5.716</td>
+</tr>
+</table>
+<h1><a name="Detail">Power Details</a></h1>
+<h2><a name="By_Block_Type">Power By Block Type:</a></h2>
+<table class="detail_table">
+<tr>
+<th class="label">Block Type</th>
+<th class="label">Total Power(mW)</th>
+<th class="label">Static Power(mW)</th>
+<th class="label">Average Toggle Rate(millions of transitions/sec)</th>
+</tr>
+<tr>
+<td>Logic</td>
+<td>0.258</td>
+<td>NA</td>
+<td>2.664</td>
+</tr>
+<tr>
+<td>IO</td>
+<td>7.654
+<td>7.014
+<td>2.361
+</tr>
+<tr>
+<td>BSRAM</td>
+<td>1.382
+<td>NA</td>
+<td>NA</td>
+</tr>
+<tr>
+<td>PLL</td>
+<td>0.599
+<td>NA</td>
+<td>NA</td>
+</tr>
+<tr>
+<td>DSP</td>
+<td>1.102
+<td>NA</td>
+<td>0.996
+</tr>
+</table>
+<h2><a name="By_Hierarchy">Power By Hierarchy:</a></h2>
+<table class="detail_table">
+<tr>
+<th class="label">Hierarchy Entity</th>
+<th class="label">Total Power(mW)</th>
+<th class="label">Block Dynamic Power(mW)</th>
+</tr>
+<tr>
+<td>tangcart_msx</td>
+<td>3.341</td>
+<td>3.341(3.334)</td>
+<tr>
+<td>tangcart_msx/u_ikaopll_wrapper/</td>
+<td>2.179</td>
+<td>2.179(2.179)</td>
+<tr>
+<td>tangcart_msx/u_ikaopll_wrapper/u_ikaopll/</td>
+<td>2.179</td>
+<td>2.179(2.179)</td>
+<tr>
+<td>tangcart_msx/u_ikaopll_wrapper/u_ikaopll/u_DAC/</td>
+<td>0.916</td>
+<td>0.916(0.001)</td>
+<tr>
+<td>tangcart_msx/u_ikaopll_wrapper/u_ikaopll/u_DAC/u_percussion_sr/</td>
+<td>0.001</td>
+<td>0.001(0.000)</td>
+<tr>
+<td>tangcart_msx/u_ikaopll_wrapper/u_ikaopll/u_EG/</td>
+<td>0.947</td>
+<td>0.947(0.001)</td>
+<tr>
+<td>tangcart_msx/u_ikaopll_wrapper/u_ikaopll/u_EG/u_cyc2r_cyc19r_envstatreg/</td>
+<td>0.000</td>
+<td>0.000(0.000)</td>
+<tr>
+<td>tangcart_msx/u_ikaopll_wrapper/u_ikaopll/u_EG/u_cyc3r_cyc19r_attnlvreg/</td>
+<td>0.001</td>
+<td>0.001(0.000)</td>
+<tr>
+<td>tangcart_msx/u_ikaopll_wrapper/u_ikaopll/u_LFO/</td>
+<td>0.005</td>
+<td>0.005(0.000)</td>
+<tr>
+<td>tangcart_msx/u_ikaopll_wrapper/u_ikaopll/u_OP/</td>
+<td>0.053</td>
+<td>0.053(0.018)</td>
+<tr>
+<td>tangcart_msx/u_ikaopll_wrapper/u_ikaopll/u_OP/u_cyc19c_logsinrom/</td>
+<td>0.009</td>
+<td>0.009(0.000)</td>
+<tr>
+<td>tangcart_msx/u_ikaopll_wrapper/u_ikaopll/u_OP/u_cyc20c_exprom/</td>
+<td>0.006</td>
+<td>0.006(0.000)</td>
+<tr>
+<td>tangcart_msx/u_ikaopll_wrapper/u_ikaopll/u_OP/u_op_z_reg/</td>
+<td>0.001</td>
+<td>0.001(0.000)</td>
+<tr>
+<td>tangcart_msx/u_ikaopll_wrapper/u_ikaopll/u_OP/u_op_zz_reg/</td>
+<td>0.001</td>
+<td>0.001(0.000)</td>
+<tr>
+<td>tangcart_msx/u_ikaopll_wrapper/u_ikaopll/u_PG/</td>
+<td>0.227</td>
+<td>0.227(0.001)</td>
+<tr>
+<td>tangcart_msx/u_ikaopll_wrapper/u_ikaopll/u_PG/u_cyc4r_cyc18r_phase_sr/</td>
+<td>0.001</td>
+<td>0.001(0.000)</td>
+<tr>
+<td>tangcart_msx/u_ikaopll_wrapper/u_ikaopll/u_REG/</td>
+<td>0.031</td>
+<td>0.031(0.019)</td>
+<tr>
+<td>tangcart_msx/u_ikaopll_wrapper/u_ikaopll/u_REG/u_block/</td>
+<td>0.001</td>
+<td>0.001(0.001)</td>
+<tr>
+<td>tangcart_msx/u_ikaopll_wrapper/u_ikaopll/u_REG/u_block/u_d9reg/</td>
+<td>0.001</td>
+<td>0.001(0.000)</td>
+<tr>
+<td>tangcart_msx/u_ikaopll_wrapper/u_ikaopll/u_REG/u_fnum_lsbs/</td>
+<td>0.004</td>
+<td>0.004(0.002)</td>
+<tr>
+<td>tangcart_msx/u_ikaopll_wrapper/u_ikaopll/u_REG/u_fnum_lsbs/u_d9reg/</td>
+<td>0.002</td>
+<td>0.002(0.000)</td>
+<tr>
+<td>tangcart_msx/u_ikaopll_wrapper/u_ikaopll/u_REG/u_fnum_msb/</td>
+<td>0.000</td>
+<td>0.000(0.000)</td>
+<tr>
+<td>tangcart_msx/u_ikaopll_wrapper/u_ikaopll/u_REG/u_fnum_msb/u_d9reg/</td>
+<td>0.000</td>
+<td>0.000(0.000)</td>
+<tr>
+<td>tangcart_msx/u_ikaopll_wrapper/u_ikaopll/u_REG/u_inst/</td>
+<td>0.002</td>
+<td>0.002(0.001)</td>
+<tr>
+<td>tangcart_msx/u_ikaopll_wrapper/u_ikaopll/u_REG/u_inst/u_d9reg/</td>
+<td>0.001</td>
+<td>0.001(0.000)</td>
+<tr>
+<td>tangcart_msx/u_ikaopll_wrapper/u_ikaopll/u_REG/u_instrom/</td>
+<td>0.009</td>
+<td>0.009(0.000)</td>
+<tr>
+<td>tangcart_msx/u_ikaopll_wrapper/u_ikaopll/u_REG/u_kon/</td>
+<td>0.000</td>
+<td>0.000(0.000)</td>
+<tr>
+<td>tangcart_msx/u_ikaopll_wrapper/u_ikaopll/u_REG/u_kon/u_d9reg/</td>
+<td>0.000</td>
+<td>0.000(0.000)</td>
+<tr>
+<td>tangcart_msx/u_ikaopll_wrapper/u_ikaopll/u_REG/u_susen/</td>
+<td>0.000</td>
+<td>0.000(0.000)</td>
+<tr>
+<td>tangcart_msx/u_ikaopll_wrapper/u_ikaopll/u_REG/u_susen/u_d9reg/</td>
+<td>0.000</td>
+<td>0.000(0.000)</td>
+<tr>
+<td>tangcart_msx/u_ikaopll_wrapper/u_ikaopll/u_REG/u_sync_addrreg/</td>
+<td>0.000</td>
+<td>0.000(0.000)</td>
+<tr>
+<td>tangcart_msx/u_ikaopll_wrapper/u_ikaopll/u_REG/u_sync_datareg/</td>
+<td>0.000</td>
+<td>0.000(0.000)</td>
+<tr>
+<td>tangcart_msx/u_ikaopll_wrapper/u_ikaopll/u_REG/u_vol/</td>
+<td>0.002</td>
+<td>0.002(0.001)</td>
+<tr>
+<td>tangcart_msx/u_ikaopll_wrapper/u_ikaopll/u_REG/u_vol/u_d9reg/</td>
+<td>0.001</td>
+<td>0.001(0.000)</td>
+<tr>
+<td>tangcart_msx/u_ikaopll_wrapper/u_ikaopll/u_TIMINGGEN/</td>
+<td>0.002</td>
+<td>0.002(0.000)</td>
+<tr>
+<td>tangcart_msx/u_ikascc_wrapper/</td>
+<td>0.548</td>
+<td>0.548(0.546)</td>
+<tr>
+<td>tangcart_msx/u_ikascc_wrapper/u_ikascc/</td>
+<td>0.076</td>
+<td>0.076(0.075)</td>
+<tr>
+<td>tangcart_msx/u_ikascc_wrapper/u_ikascc/IKASCC_SYNC_MODE.u_player_main/</td>
+<td>0.073</td>
+<td>0.073(0.050)</td>
+<tr>
+<td>tangcart_msx/u_ikascc_wrapper/u_ikascc/IKASCC_SYNC_MODE.u_player_main/u_ctrl_ch1/</td>
+<td>0.008</td>
+<td>0.008(0.003)</td>
+<tr>
+<td>tangcart_msx/u_ikascc_wrapper/u_ikascc/IKASCC_SYNC_MODE.u_player_main/u_ctrl_ch1/u_cyccntr/</td>
+<td>0.000</td>
+<td>0.000(0.000)</td>
+<tr>
+<td>tangcart_msx/u_ikascc_wrapper/u_ikascc/IKASCC_SYNC_MODE.u_player_main/u_ctrl_ch1/u_fraccntr_a/</td>
+<td>0.001</td>
+<td>0.001(0.000)</td>
+<tr>
+<td>tangcart_msx/u_ikascc_wrapper/u_ikascc/IKASCC_SYNC_MODE.u_player_main/u_ctrl_ch1/u_fraccntr_b/</td>
+<td>0.001</td>
+<td>0.001(0.000)</td>
+<tr>
+<td>tangcart_msx/u_ikascc_wrapper/u_ikascc/IKASCC_SYNC_MODE.u_player_main/u_ctrl_ch1/u_fraccntr_c/</td>
+<td>0.001</td>
+<td>0.001(0.000)</td>
+<tr>
+<td>tangcart_msx/u_ikascc_wrapper/u_ikascc/IKASCC_SYNC_MODE.u_player_main/u_ctrl_ch1/u_intcntr/</td>
+<td>0.001</td>
+<td>0.001(0.000)</td>
+<tr>
+<td>tangcart_msx/u_ikascc_wrapper/u_ikascc/IKASCC_SYNC_MODE.u_player_main/u_ctrl_ch2/</td>
+<td>0.008</td>
+<td>0.008(0.003)</td>
+<tr>
+<td>tangcart_msx/u_ikascc_wrapper/u_ikascc/IKASCC_SYNC_MODE.u_player_main/u_ctrl_ch2/u_cyccntr/</td>
+<td>0.000</td>
+<td>0.000(0.000)</td>
+<tr>
+<td>tangcart_msx/u_ikascc_wrapper/u_ikascc/IKASCC_SYNC_MODE.u_player_main/u_ctrl_ch2/u_fraccntr_a/</td>
+<td>0.001</td>
+<td>0.001(0.000)</td>
+<tr>
+<td>tangcart_msx/u_ikascc_wrapper/u_ikascc/IKASCC_SYNC_MODE.u_player_main/u_ctrl_ch2/u_fraccntr_b/</td>
+<td>0.001</td>
+<td>0.001(0.000)</td>
+<tr>
+<td>tangcart_msx/u_ikascc_wrapper/u_ikascc/IKASCC_SYNC_MODE.u_player_main/u_ctrl_ch2/u_fraccntr_c/</td>
+<td>0.001</td>
+<td>0.001(0.000)</td>
+<tr>
+<td>tangcart_msx/u_ikascc_wrapper/u_ikascc/IKASCC_SYNC_MODE.u_player_main/u_ctrl_ch2/u_intcntr/</td>
+<td>0.001</td>
+<td>0.001(0.000)</td>
+<tr>
+<td>tangcart_msx/u_ikascc_wrapper/u_ikascc/IKASCC_SYNC_MODE.u_player_main/u_ctrl_ch3/</td>
+<td>0.008</td>
+<td>0.008(0.003)</td>
+<tr>
+<td>tangcart_msx/u_ikascc_wrapper/u_ikascc/IKASCC_SYNC_MODE.u_player_main/u_ctrl_ch3/u_cyccntr/</td>
+<td>0.000</td>
+<td>0.000(0.000)</td>
+<tr>
+<td>tangcart_msx/u_ikascc_wrapper/u_ikascc/IKASCC_SYNC_MODE.u_player_main/u_ctrl_ch3/u_fraccntr_a/</td>
+<td>0.001</td>
+<td>0.001(0.000)</td>
+<tr>
+<td>tangcart_msx/u_ikascc_wrapper/u_ikascc/IKASCC_SYNC_MODE.u_player_main/u_ctrl_ch3/u_fraccntr_b/</td>
+<td>0.001</td>
+<td>0.001(0.000)</td>
+<tr>
+<td>tangcart_msx/u_ikascc_wrapper/u_ikascc/IKASCC_SYNC_MODE.u_player_main/u_ctrl_ch3/u_fraccntr_c/</td>
+<td>0.001</td>
+<td>0.001(0.000)</td>
+<tr>
+<td>tangcart_msx/u_ikascc_wrapper/u_ikascc/IKASCC_SYNC_MODE.u_player_main/u_ctrl_ch3/u_intcntr/</td>
+<td>0.001</td>
+<td>0.001(0.000)</td>
+<tr>
+<td>tangcart_msx/u_ikascc_wrapper/u_ikascc/IKASCC_SYNC_MODE.u_player_main/u_ctrl_ch4/</td>
+<td>0.008</td>
+<td>0.008(0.003)</td>
+<tr>
+<td>tangcart_msx/u_ikascc_wrapper/u_ikascc/IKASCC_SYNC_MODE.u_player_main/u_ctrl_ch4/u_cyccntr/</td>
+<td>0.000</td>
+<td>0.000(0.000)</td>
+<tr>
+<td>tangcart_msx/u_ikascc_wrapper/u_ikascc/IKASCC_SYNC_MODE.u_player_main/u_ctrl_ch4/u_fraccntr_a/</td>
+<td>0.001</td>
+<td>0.001(0.000)</td>
+<tr>
+<td>tangcart_msx/u_ikascc_wrapper/u_ikascc/IKASCC_SYNC_MODE.u_player_main/u_ctrl_ch4/u_fraccntr_b/</td>
+<td>0.001</td>
+<td>0.001(0.000)</td>
+<tr>
+<td>tangcart_msx/u_ikascc_wrapper/u_ikascc/IKASCC_SYNC_MODE.u_player_main/u_ctrl_ch4/u_fraccntr_c/</td>
+<td>0.001</td>
+<td>0.001(0.000)</td>
+<tr>
+<td>tangcart_msx/u_ikascc_wrapper/u_ikascc/IKASCC_SYNC_MODE.u_player_main/u_ctrl_ch4/u_intcntr/</td>
+<td>0.001</td>
+<td>0.001(0.000)</td>
+<tr>
+<td>tangcart_msx/u_ikascc_wrapper/u_ikascc/IKASCC_SYNC_MODE.u_player_main/u_ctrl_ch5/</td>
+<td>0.008</td>
+<td>0.008(0.003)</td>
+<tr>
+<td>tangcart_msx/u_ikascc_wrapper/u_ikascc/IKASCC_SYNC_MODE.u_player_main/u_ctrl_ch5/u_cyccntr/</td>
+<td>0.000</td>
+<td>0.000(0.000)</td>
+<tr>
+<td>tangcart_msx/u_ikascc_wrapper/u_ikascc/IKASCC_SYNC_MODE.u_player_main/u_ctrl_ch5/u_fraccntr_a/</td>
+<td>0.001</td>
+<td>0.001(0.000)</td>
+<tr>
+<td>tangcart_msx/u_ikascc_wrapper/u_ikascc/IKASCC_SYNC_MODE.u_player_main/u_ctrl_ch5/u_fraccntr_b/</td>
+<td>0.001</td>
+<td>0.001(0.000)</td>
+<tr>
+<td>tangcart_msx/u_ikascc_wrapper/u_ikascc/IKASCC_SYNC_MODE.u_player_main/u_ctrl_ch5/u_fraccntr_c/</td>
+<td>0.001</td>
+<td>0.001(0.000)</td>
+<tr>
+<td>tangcart_msx/u_ikascc_wrapper/u_ikascc/IKASCC_SYNC_MODE.u_player_main/u_ctrl_ch5/u_intcntr/</td>
+<td>0.001</td>
+<td>0.001(0.000)</td>
+<tr>
+<td>tangcart_msx/u_ikascc_wrapper/u_ikascc/IKASCC_SYNC_MODE.u_player_main/u_mem_ch1/</td>
+<td>0.002</td>
+<td>0.002(0.000)</td>
+<tr>
+<td>tangcart_msx/u_ikascc_wrapper/u_ikascc/IKASCC_SYNC_MODE.u_player_main/u_mem_ch2/</td>
+<td>0.002</td>
+<td>0.002(0.000)</td>
+<tr>
+<td>tangcart_msx/u_ikascc_wrapper/u_ikascc/IKASCC_SYNC_MODE.u_player_main/u_mem_ch3/</td>
+<td>0.002</td>
+<td>0.002(0.000)</td>
+<tr>
+<td>tangcart_msx/u_ikascc_wrapper/u_ikascc/IKASCC_SYNC_MODE.u_player_main/u_mem_ch45/</td>
+<td>0.002</td>
+<td>0.002(0.000)</td>
+<tr>
+<td>tangcart_msx/u_ikascc_wrapper/u_ikascc/IKASCC_SYNC_MODE.u_vrc_s_main/</td>
+<td>0.002</td>
+<td>0.002(0.000)</td>
+<tr>
+<td>tangcart_msx/u_ikascc_wrapper/u_rom/</td>
+<td>0.470</td>
+<td>0.470(0.000)</td>
+<tr>
+<td>tangcart_msx/u_pll/</td>
+<td>0.599</td>
+<td>0.599(0.000)</td>
+<tr>
+<td>tangcart_msx/u_pwm/</td>
+<td>0.008</td>
+<td>0.008(0.000)</td>
+</table>
+<h2><a name="By_Clock_Domain">Power By Clock Domain:</a></h2>
+<table class="detail_table">
+<tr>
+<th class="label">Clock Domain</th>
+<th class="label">Clock Frequency(Mhz)</th>
+<th class="label">Total Dynamic Power(mW)</th>
+</tr>
+<tr>
+<td>u_pll/pll_inst/CLKOUT.default_gen_clk</td>
+<td>21.474</td>
+<td>2.744</td>
+</tr>
+<tr>
+<td>NO CLOCK DOMAIN</td>
+<td>0.000</td>
+<td>0.000</td>
+</tr>
+<tr>
+<td>tclock</td>
+<td>3.579</td>
+<td>0.599</td>
+</tr>
+</table>
+</div><!-- content -->
+</div><!-- main_wrapper -->
+</body>
+</html>

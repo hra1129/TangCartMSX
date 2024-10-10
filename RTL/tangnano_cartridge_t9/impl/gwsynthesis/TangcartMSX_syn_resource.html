@@ -1,0 +1,796 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+<head>
+<title>Hierarchy Module Resource</title>
+<style type="text/css">
+body { font-family: Verdana, Arial, sans-serif; font-size: 14px; }
+div#main_wrapper{ width: 100%; }
+h1 {text-align: center; }
+h1 {margin-top: 36px; }
+table, th, td { border: 1px solid #aaa; }
+table { border-collapse:collapse; margin-top: 10px; margin-bottom: 20px; width: 100%; }
+th, td { align = "center"; padding: 5px 2px 5px 5px; }
+th { color: #fff; font-weight: bold; background-color: #0084ff; }
+table td.label { width: 20%; white-space: nowrap; min-width: 20px; background-color: #dee8f4; }
+</style>
+</head>
+<body>
+<div id="main_wrapper">
+<div id="content">
+<h1>Hierarchy Module Resource</h1>
+<table>
+<tr>
+<th class="label">MODULE NAME</th>
+<th class="label">REG NUMBER</th>
+<th class="label">ALU NUMBER</th>
+<th class="label">LUT NUMBER</th>
+<th class="label">DSP NUMBER</th>
+<th class="label">BSRAM NUMBER</th>
+<th class="label">SSRAM NUMBER</th>
+<th class="label">ROM16 NUMBER</th>
+</tr>
+<tr>
+<td class="label">tangcart_msx (D:/github/HRA_product/TangCartMSX/RTL/TangcartMSX/src/tangcart_msx.v)</td>
+<td align = "center">32</td>
+<td align = "center">12</td>
+<td align = "center">14</td>
+<td align = "center">-</td>
+<td align = "center">-</td>
+<td align = "center">-</td>
+<td align = "center">-</td>
+</tr>
+<td class="label">&nbsp&nbsp&nbsp&nbsp|--u_pll
+ (D:/github/HRA_product/TangCartMSX/RTL/TangcartMSX/src/tangcart_msx.v)</td>
+<td align = "center">-</td>
+<td align = "center">-</td>
+<td align = "center">-</td>
+<td align = "center">-</td>
+<td align = "center">-</td>
+<td align = "center">-</td>
+<td align = "center">-</td>
+</tr>
+<td class="label">&nbsp&nbsp&nbsp&nbsp|--u_ikascc_wrapper
+ (D:/github/HRA_product/TangCartMSX/RTL/TangcartMSX/src/tangcart_msx.v)</td>
+<td align = "center">-</td>
+<td align = "center">-</td>
+<td align = "center">41</td>
+<td align = "center">-</td>
+<td align = "center">-</td>
+<td align = "center">-</td>
+<td align = "center">-</td>
+</tr>
+<td class="label">&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp|--u_ikascc
+ (D:/github/HRA_product/TangCartMSX/RTL/TangcartMSX/src/ikascc_wrap/ip_ikascc_wrap.v)</td>
+<td align = "center">2</td>
+<td align = "center">-</td>
+<td align = "center">1</td>
+<td align = "center">-</td>
+<td align = "center">-</td>
+<td align = "center">-</td>
+<td align = "center">-</td>
+</tr>
+<td class="label">&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp|--IKASCC_SYNC_MODE.u_vrc_s_main
+ (D:/github/HRA_product/TangCartMSX/RTL/TangcartMSX/src/ikascc/IKASCC.v)</td>
+<td align = "center">35</td>
+<td align = "center">-</td>
+<td align = "center">18</td>
+<td align = "center">-</td>
+<td align = "center">-</td>
+<td align = "center">-</td>
+<td align = "center">-</td>
+</tr>
+<td class="label">&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp|--IKASCC_SYNC_MODE.u_player_main
+ (D:/github/HRA_product/TangCartMSX/RTL/TangcartMSX/src/ikascc/IKASCC.v)</td>
+<td align = "center">42</td>
+<td align = "center">44</td>
+<td align = "center">63</td>
+<td align = "center">-</td>
+<td align = "center">-</td>
+<td align = "center">-</td>
+<td align = "center">-</td>
+</tr>
+<td class="label">&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp|--u_mem_ch1
+ (D:/github/HRA_product/TangCartMSX/RTL/TangcartMSX/src/ikascc/IKASCC_modules/IKASCC_player_s.v)</td>
+<td align = "center">16</td>
+<td align = "center">-</td>
+<td align = "center">14</td>
+<td align = "center">-</td>
+<td align = "center">-</td>
+<td align = "center">4</td>
+<td align = "center">-</td>
+</tr>
+<td class="label">&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp|--u_ctrl_ch1
+ (D:/github/HRA_product/TangCartMSX/RTL/TangcartMSX/src/ikascc/IKASCC_modules/IKASCC_player_s.v)</td>
+<td align = "center">44</td>
+<td align = "center">5</td>
+<td align = "center">32</td>
+<td align = "center">-</td>
+<td align = "center">-</td>
+<td align = "center">-</td>
+<td align = "center">-</td>
+</tr>
+<td class="label">&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp|--u_cyccntr
+ (D:/github/HRA_product/TangCartMSX/RTL/TangcartMSX/src/ikascc/IKASCC_modules/IKASCC_player_s.v)</td>
+<td align = "center">4</td>
+<td align = "center">-</td>
+<td align = "center">4</td>
+<td align = "center">-</td>
+<td align = "center">-</td>
+<td align = "center">-</td>
+<td align = "center">-</td>
+</tr>
+<td class="label">&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp|--u_fraccntr_a
+ (D:/github/HRA_product/TangCartMSX/RTL/TangcartMSX/src/ikascc/IKASCC_modules/IKASCC_player_s.v)</td>
+<td align = "center">4</td>
+<td align = "center">-</td>
+<td align = "center">12</td>
+<td align = "center">-</td>
+<td align = "center">-</td>
+<td align = "center">-</td>
+<td align = "center">-</td>
+</tr>
+<td class="label">&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp|--u_fraccntr_b
+ (D:/github/HRA_product/TangCartMSX/RTL/TangcartMSX/src/ikascc/IKASCC_modules/IKASCC_player_s.v)</td>
+<td align = "center">4</td>
+<td align = "center">-</td>
+<td align = "center">12</td>
+<td align = "center">-</td>
+<td align = "center">-</td>
+<td align = "center">-</td>
+<td align = "center">-</td>
+</tr>
+<td class="label">&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp|--u_fraccntr_c
+ (D:/github/HRA_product/TangCartMSX/RTL/TangcartMSX/src/ikascc/IKASCC_modules/IKASCC_player_s.v)</td>
+<td align = "center">4</td>
+<td align = "center">-</td>
+<td align = "center">13</td>
+<td align = "center">-</td>
+<td align = "center">-</td>
+<td align = "center">-</td>
+<td align = "center">-</td>
+</tr>
+<td class="label">&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp|--u_intcntr
+ (D:/github/HRA_product/TangCartMSX/RTL/TangcartMSX/src/ikascc/IKASCC_modules/IKASCC_player_s.v)</td>
+<td align = "center">5</td>
+<td align = "center">-</td>
+<td align = "center">9</td>
+<td align = "center">-</td>
+<td align = "center">-</td>
+<td align = "center">-</td>
+<td align = "center">-</td>
+</tr>
+<td class="label">&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp|--u_mem_ch2
+ (D:/github/HRA_product/TangCartMSX/RTL/TangcartMSX/src/ikascc/IKASCC_modules/IKASCC_player_s.v)</td>
+<td align = "center">16</td>
+<td align = "center">-</td>
+<td align = "center">13</td>
+<td align = "center">-</td>
+<td align = "center">-</td>
+<td align = "center">4</td>
+<td align = "center">-</td>
+</tr>
+<td class="label">&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp|--u_ctrl_ch2
+ (D:/github/HRA_product/TangCartMSX/RTL/TangcartMSX/src/ikascc/IKASCC_modules/IKASCC_player_s.v)</td>
+<td align = "center">42</td>
+<td align = "center">5</td>
+<td align = "center">30</td>
+<td align = "center">-</td>
+<td align = "center">-</td>
+<td align = "center">-</td>
+<td align = "center">-</td>
+</tr>
+<td class="label">&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp|--u_cyccntr
+ (D:/github/HRA_product/TangCartMSX/RTL/TangcartMSX/src/ikascc/IKASCC_modules/IKASCC_player_s.v)</td>
+<td align = "center">4</td>
+<td align = "center">-</td>
+<td align = "center">4</td>
+<td align = "center">-</td>
+<td align = "center">-</td>
+<td align = "center">-</td>
+<td align = "center">-</td>
+</tr>
+<td class="label">&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp|--u_fraccntr_a
+ (D:/github/HRA_product/TangCartMSX/RTL/TangcartMSX/src/ikascc/IKASCC_modules/IKASCC_player_s.v)</td>
+<td align = "center">4</td>
+<td align = "center">-</td>
+<td align = "center">11</td>
+<td align = "center">-</td>
+<td align = "center">-</td>
+<td align = "center">-</td>
+<td align = "center">-</td>
+</tr>
+<td class="label">&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp|--u_fraccntr_b
+ (D:/github/HRA_product/TangCartMSX/RTL/TangcartMSX/src/ikascc/IKASCC_modules/IKASCC_player_s.v)</td>
+<td align = "center">4</td>
+<td align = "center">-</td>
+<td align = "center">12</td>
+<td align = "center">-</td>
+<td align = "center">-</td>
+<td align = "center">-</td>
+<td align = "center">-</td>
+</tr>
+<td class="label">&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp|--u_fraccntr_c
+ (D:/github/HRA_product/TangCartMSX/RTL/TangcartMSX/src/ikascc/IKASCC_modules/IKASCC_player_s.v)</td>
+<td align = "center">4</td>
+<td align = "center">-</td>
+<td align = "center">12</td>
+<td align = "center">-</td>
+<td align = "center">-</td>
+<td align = "center">-</td>
+<td align = "center">-</td>
+</tr>
+<td class="label">&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp|--u_intcntr
+ (D:/github/HRA_product/TangCartMSX/RTL/TangcartMSX/src/ikascc/IKASCC_modules/IKASCC_player_s.v)</td>
+<td align = "center">5</td>
+<td align = "center">-</td>
+<td align = "center">8</td>
+<td align = "center">-</td>
+<td align = "center">-</td>
+<td align = "center">-</td>
+<td align = "center">-</td>
+</tr>
+<td class="label">&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp|--u_mem_ch3
+ (D:/github/HRA_product/TangCartMSX/RTL/TangcartMSX/src/ikascc/IKASCC_modules/IKASCC_player_s.v)</td>
+<td align = "center">16</td>
+<td align = "center">-</td>
+<td align = "center">16</td>
+<td align = "center">-</td>
+<td align = "center">-</td>
+<td align = "center">4</td>
+<td align = "center">-</td>
+</tr>
+<td class="label">&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp|--u_ctrl_ch3
+ (D:/github/HRA_product/TangCartMSX/RTL/TangcartMSX/src/ikascc/IKASCC_modules/IKASCC_player_s.v)</td>
+<td align = "center">42</td>
+<td align = "center">5</td>
+<td align = "center">27</td>
+<td align = "center">-</td>
+<td align = "center">-</td>
+<td align = "center">-</td>
+<td align = "center">-</td>
+</tr>
+<td class="label">&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp|--u_cyccntr
+ (D:/github/HRA_product/TangCartMSX/RTL/TangcartMSX/src/ikascc/IKASCC_modules/IKASCC_player_s.v)</td>
+<td align = "center">4</td>
+<td align = "center">-</td>
+<td align = "center">4</td>
+<td align = "center">-</td>
+<td align = "center">-</td>
+<td align = "center">-</td>
+<td align = "center">-</td>
+</tr>
+<td class="label">&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp|--u_fraccntr_a
+ (D:/github/HRA_product/TangCartMSX/RTL/TangcartMSX/src/ikascc/IKASCC_modules/IKASCC_player_s.v)</td>
+<td align = "center">4</td>
+<td align = "center">-</td>
+<td align = "center">11</td>
+<td align = "center">-</td>
+<td align = "center">-</td>
+<td align = "center">-</td>
+<td align = "center">-</td>
+</tr>
+<td class="label">&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp|--u_fraccntr_b
+ (D:/github/HRA_product/TangCartMSX/RTL/TangcartMSX/src/ikascc/IKASCC_modules/IKASCC_player_s.v)</td>
+<td align = "center">4</td>
+<td align = "center">-</td>
+<td align = "center">12</td>
+<td align = "center">-</td>
+<td align = "center">-</td>
+<td align = "center">-</td>
+<td align = "center">-</td>
+</tr>
+<td class="label">&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp|--u_fraccntr_c
+ (D:/github/HRA_product/TangCartMSX/RTL/TangcartMSX/src/ikascc/IKASCC_modules/IKASCC_player_s.v)</td>
+<td align = "center">4</td>
+<td align = "center">-</td>
+<td align = "center">13</td>
+<td align = "center">-</td>
+<td align = "center">-</td>
+<td align = "center">-</td>
+<td align = "center">-</td>
+</tr>
+<td class="label">&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp|--u_intcntr
+ (D:/github/HRA_product/TangCartMSX/RTL/TangcartMSX/src/ikascc/IKASCC_modules/IKASCC_player_s.v)</td>
+<td align = "center">5</td>
+<td align = "center">-</td>
+<td align = "center">8</td>
+<td align = "center">-</td>
+<td align = "center">-</td>
+<td align = "center">-</td>
+<td align = "center">-</td>
+</tr>
+<td class="label">&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp|--u_mem_ch45
+ (D:/github/HRA_product/TangCartMSX/RTL/TangcartMSX/src/ikascc/IKASCC_modules/IKASCC_player_s.v)</td>
+<td align = "center">16</td>
+<td align = "center">-</td>
+<td align = "center">17</td>
+<td align = "center">-</td>
+<td align = "center">-</td>
+<td align = "center">4</td>
+<td align = "center">-</td>
+</tr>
+<td class="label">&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp|--u_ctrl_ch4
+ (D:/github/HRA_product/TangCartMSX/RTL/TangcartMSX/src/ikascc/IKASCC_modules/IKASCC_player_s.v)</td>
+<td align = "center">42</td>
+<td align = "center">5</td>
+<td align = "center">29</td>
+<td align = "center">-</td>
+<td align = "center">-</td>
+<td align = "center">-</td>
+<td align = "center">-</td>
+</tr>
+<td class="label">&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp|--u_cyccntr
+ (D:/github/HRA_product/TangCartMSX/RTL/TangcartMSX/src/ikascc/IKASCC_modules/IKASCC_player_s.v)</td>
+<td align = "center">4</td>
+<td align = "center">-</td>
+<td align = "center">4</td>
+<td align = "center">-</td>
+<td align = "center">-</td>
+<td align = "center">-</td>
+<td align = "center">-</td>
+</tr>
+<td class="label">&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp|--u_fraccntr_a
+ (D:/github/HRA_product/TangCartMSX/RTL/TangcartMSX/src/ikascc/IKASCC_modules/IKASCC_player_s.v)</td>
+<td align = "center">4</td>
+<td align = "center">-</td>
+<td align = "center">11</td>
+<td align = "center">-</td>
+<td align = "center">-</td>
+<td align = "center">-</td>
+<td align = "center">-</td>
+</tr>
+<td class="label">&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp|--u_fraccntr_b
+ (D:/github/HRA_product/TangCartMSX/RTL/TangcartMSX/src/ikascc/IKASCC_modules/IKASCC_player_s.v)</td>
+<td align = "center">4</td>
+<td align = "center">-</td>
+<td align = "center">12</td>
+<td align = "center">-</td>
+<td align = "center">-</td>
+<td align = "center">-</td>
+<td align = "center">-</td>
+</tr>
+<td class="label">&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp|--u_fraccntr_c
+ (D:/github/HRA_product/TangCartMSX/RTL/TangcartMSX/src/ikascc/IKASCC_modules/IKASCC_player_s.v)</td>
+<td align = "center">4</td>
+<td align = "center">-</td>
+<td align = "center">13</td>
+<td align = "center">-</td>
+<td align = "center">-</td>
+<td align = "center">-</td>
+<td align = "center">-</td>
+</tr>
+<td class="label">&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp|--u_intcntr
+ (D:/github/HRA_product/TangCartMSX/RTL/TangcartMSX/src/ikascc/IKASCC_modules/IKASCC_player_s.v)</td>
+<td align = "center">5</td>
+<td align = "center">-</td>
+<td align = "center">8</td>
+<td align = "center">-</td>
+<td align = "center">-</td>
+<td align = "center">-</td>
+<td align = "center">-</td>
+</tr>
+<td class="label">&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp|--u_ctrl_ch5
+ (D:/github/HRA_product/TangCartMSX/RTL/TangcartMSX/src/ikascc/IKASCC_modules/IKASCC_player_s.v)</td>
+<td align = "center">42</td>
+<td align = "center">5</td>
+<td align = "center">31</td>
+<td align = "center">-</td>
+<td align = "center">-</td>
+<td align = "center">-</td>
+<td align = "center">-</td>
+</tr>
+<td class="label">&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp|--u_cyccntr
+ (D:/github/HRA_product/TangCartMSX/RTL/TangcartMSX/src/ikascc/IKASCC_modules/IKASCC_player_s.v)</td>
+<td align = "center">4</td>
+<td align = "center">-</td>
+<td align = "center">4</td>
+<td align = "center">-</td>
+<td align = "center">-</td>
+<td align = "center">-</td>
+<td align = "center">-</td>
+</tr>
+<td class="label">&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp|--u_fraccntr_a
+ (D:/github/HRA_product/TangCartMSX/RTL/TangcartMSX/src/ikascc/IKASCC_modules/IKASCC_player_s.v)</td>
+<td align = "center">4</td>
+<td align = "center">-</td>
+<td align = "center">11</td>
+<td align = "center">-</td>
+<td align = "center">-</td>
+<td align = "center">-</td>
+<td align = "center">-</td>
+</tr>
+<td class="label">&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp|--u_fraccntr_b
+ (D:/github/HRA_product/TangCartMSX/RTL/TangcartMSX/src/ikascc/IKASCC_modules/IKASCC_player_s.v)</td>
+<td align = "center">4</td>
+<td align = "center">-</td>
+<td align = "center">12</td>
+<td align = "center">-</td>
+<td align = "center">-</td>
+<td align = "center">-</td>
+<td align = "center">-</td>
+</tr>
+<td class="label">&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp|--u_fraccntr_c
+ (D:/github/HRA_product/TangCartMSX/RTL/TangcartMSX/src/ikascc/IKASCC_modules/IKASCC_player_s.v)</td>
+<td align = "center">4</td>
+<td align = "center">-</td>
+<td align = "center">13</td>
+<td align = "center">-</td>
+<td align = "center">-</td>
+<td align = "center">-</td>
+<td align = "center">-</td>
+</tr>
+<td class="label">&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp|--u_intcntr
+ (D:/github/HRA_product/TangCartMSX/RTL/TangcartMSX/src/ikascc/IKASCC_modules/IKASCC_player_s.v)</td>
+<td align = "center">5</td>
+<td align = "center">-</td>
+<td align = "center">8</td>
+<td align = "center">-</td>
+<td align = "center">-</td>
+<td align = "center">-</td>
+<td align = "center">-</td>
+</tr>
+<td class="label">&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp|--u_rom
+ (D:/github/HRA_product/TangCartMSX/RTL/TangcartMSX/src/ikascc_wrap/ip_ikascc_wrap.v)</td>
+<td align = "center">1</td>
+<td align = "center">-</td>
+<td align = "center">3</td>
+<td align = "center">-</td>
+<td align = "center">8</td>
+<td align = "center">-</td>
+<td align = "center">-</td>
+</tr>
+<td class="label">&nbsp&nbsp&nbsp&nbsp|--u_ikaopll_wrapper
+ (D:/github/HRA_product/TangCartMSX/RTL/TangcartMSX/src/tangcart_msx.v)</td>
+<td align = "center">1</td>
+<td align = "center">-</td>
+<td align = "center">9</td>
+<td align = "center">-</td>
+<td align = "center">-</td>
+<td align = "center">-</td>
+<td align = "center">-</td>
+</tr>
+<td class="label">&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp|--u_ikaopll
+ (D:/github/HRA_product/TangCartMSX/RTL/TangcartMSX/src/ikaopll_wrap/ikaopll_wrap.v)</td>
+<td align = "center">-</td>
+<td align = "center">-</td>
+<td align = "center">-</td>
+<td align = "center">-</td>
+<td align = "center">-</td>
+<td align = "center">-</td>
+<td align = "center">-</td>
+</tr>
+<td class="label">&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp|--u_TIMINGGEN
+ (D:/github/HRA_product/TangCartMSX/RTL/TangcartMSX/src/ikaopll/IKAOPLL.v)</td>
+<td align = "center">20</td>
+<td align = "center">-</td>
+<td align = "center">22</td>
+<td align = "center">-</td>
+<td align = "center">-</td>
+<td align = "center">-</td>
+<td align = "center">-</td>
+</tr>
+<td class="label">&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp|--u_REG
+ (D:/github/HRA_product/TangCartMSX/RTL/TangcartMSX/src/ikaopll/IKAOPLL.v)</td>
+<td align = "center">133</td>
+<td align = "center">8</td>
+<td align = "center">83</td>
+<td align = "center">-</td>
+<td align = "center">-</td>
+<td align = "center">2</td>
+<td align = "center">-</td>
+</tr>
+<td class="label">&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp|--u_sync_addrreg
+ (D:/github/HRA_product/TangCartMSX/RTL/TangcartMSX/src/ikaopll/IKAOPLL_modules/IKAOPLL_reg.v)</td>
+<td align = "center">3</td>
+<td align = "center">-</td>
+<td align = "center">3</td>
+<td align = "center">-</td>
+<td align = "center">-</td>
+<td align = "center">-</td>
+<td align = "center">-</td>
+</tr>
+<td class="label">&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp|--u_sync_datareg
+ (D:/github/HRA_product/TangCartMSX/RTL/TangcartMSX/src/ikaopll/IKAOPLL_modules/IKAOPLL_reg.v)</td>
+<td align = "center">3</td>
+<td align = "center">-</td>
+<td align = "center">2</td>
+<td align = "center">-</td>
+<td align = "center">-</td>
+<td align = "center">-</td>
+<td align = "center">-</td>
+</tr>
+<td class="label">&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp|--u_fnum_lsbs
+ (D:/github/HRA_product/TangCartMSX/RTL/TangcartMSX/src/ikaopll/IKAOPLL_modules/IKAOPLL_reg.v)</td>
+<td align = "center">-</td>
+<td align = "center">-</td>
+<td align = "center">26</td>
+<td align = "center">-</td>
+<td align = "center">-</td>
+<td align = "center">-</td>
+<td align = "center">-</td>
+</tr>
+<td class="label">&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp|--u_d9reg
+ (D:/github/HRA_product/TangCartMSX/RTL/TangcartMSX/src/ikaopll/IKAOPLL_modules/IKAOPLL_reg.v)</td>
+<td align = "center">24</td>
+<td align = "center">-</td>
+<td align = "center">-</td>
+<td align = "center">-</td>
+<td align = "center">-</td>
+<td align = "center">6</td>
+<td align = "center">-</td>
+</tr>
+<td class="label">&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp|--u_fnum_msb
+ (D:/github/HRA_product/TangCartMSX/RTL/TangcartMSX/src/ikaopll/IKAOPLL_modules/IKAOPLL_reg.v)</td>
+<td align = "center">-</td>
+<td align = "center">-</td>
+<td align = "center">4</td>
+<td align = "center">-</td>
+<td align = "center">-</td>
+<td align = "center">-</td>
+<td align = "center">-</td>
+</tr>
+<td class="label">&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp|--u_d9reg
+ (D:/github/HRA_product/TangCartMSX/RTL/TangcartMSX/src/ikaopll/IKAOPLL_modules/IKAOPLL_reg.v)</td>
+<td align = "center">9</td>
+<td align = "center">-</td>
+<td align = "center">-</td>
+<td align = "center">-</td>
+<td align = "center">-</td>
+<td align = "center">-</td>
+<td align = "center">-</td>
+</tr>
+<td class="label">&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp|--u_block
+ (D:/github/HRA_product/TangCartMSX/RTL/TangcartMSX/src/ikaopll/IKAOPLL_modules/IKAOPLL_reg.v)</td>
+<td align = "center">-</td>
+<td align = "center">-</td>
+<td align = "center">9</td>
+<td align = "center">-</td>
+<td align = "center">-</td>
+<td align = "center">-</td>
+<td align = "center">-</td>
+</tr>
+<td class="label">&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp|--u_d9reg
+ (D:/github/HRA_product/TangCartMSX/RTL/TangcartMSX/src/ikaopll/IKAOPLL_modules/IKAOPLL_reg.v)</td>
+<td align = "center">27</td>
+<td align = "center">-</td>
+<td align = "center">-</td>
+<td align = "center">-</td>
+<td align = "center">-</td>
+<td align = "center">-</td>
+<td align = "center">-</td>
+</tr>
+<td class="label">&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp|--u_kon
+ (D:/github/HRA_product/TangCartMSX/RTL/TangcartMSX/src/ikaopll/IKAOPLL_modules/IKAOPLL_reg.v)</td>
+<td align = "center">-</td>
+<td align = "center">-</td>
+<td align = "center">1</td>
+<td align = "center">-</td>
+<td align = "center">-</td>
+<td align = "center">-</td>
+<td align = "center">-</td>
+</tr>
+<td class="label">&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp|--u_d9reg
+ (D:/github/HRA_product/TangCartMSX/RTL/TangcartMSX/src/ikaopll/IKAOPLL_modules/IKAOPLL_reg.v)</td>
+<td align = "center">9</td>
+<td align = "center">-</td>
+<td align = "center">-</td>
+<td align = "center">-</td>
+<td align = "center">-</td>
+<td align = "center">-</td>
+<td align = "center">-</td>
+</tr>
+<td class="label">&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp|--u_susen
+ (D:/github/HRA_product/TangCartMSX/RTL/TangcartMSX/src/ikaopll/IKAOPLL_modules/IKAOPLL_reg.v)</td>
+<td align = "center">-</td>
+<td align = "center">-</td>
+<td align = "center">1</td>
+<td align = "center">-</td>
+<td align = "center">-</td>
+<td align = "center">-</td>
+<td align = "center">-</td>
+</tr>
+<td class="label">&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp|--u_d9reg
+ (D:/github/HRA_product/TangCartMSX/RTL/TangcartMSX/src/ikaopll/IKAOPLL_modules/IKAOPLL_reg.v)</td>
+<td align = "center">9</td>
+<td align = "center">-</td>
+<td align = "center">-</td>
+<td align = "center">-</td>
+<td align = "center">-</td>
+<td align = "center">-</td>
+<td align = "center">-</td>
+</tr>
+<td class="label">&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp|--u_vol
+ (D:/github/HRA_product/TangCartMSX/RTL/TangcartMSX/src/ikaopll/IKAOPLL_modules/IKAOPLL_reg.v)</td>
+<td align = "center">-</td>
+<td align = "center">-</td>
+<td align = "center">13</td>
+<td align = "center">-</td>
+<td align = "center">-</td>
+<td align = "center">-</td>
+<td align = "center">-</td>
+</tr>
+<td class="label">&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp|--u_d9reg
+ (D:/github/HRA_product/TangCartMSX/RTL/TangcartMSX/src/ikaopll/IKAOPLL_modules/IKAOPLL_reg.v)</td>
+<td align = "center">12</td>
+<td align = "center">-</td>
+<td align = "center">-</td>
+<td align = "center">-</td>
+<td align = "center">-</td>
+<td align = "center">3</td>
+<td align = "center">-</td>
+</tr>
+<td class="label">&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp|--u_inst
+ (D:/github/HRA_product/TangCartMSX/RTL/TangcartMSX/src/ikaopll/IKAOPLL_modules/IKAOPLL_reg.v)</td>
+<td align = "center">-</td>
+<td align = "center">-</td>
+<td align = "center">12</td>
+<td align = "center">-</td>
+<td align = "center">-</td>
+<td align = "center">-</td>
+<td align = "center">-</td>
+</tr>
+<td class="label">&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp|--u_d9reg
+ (D:/github/HRA_product/TangCartMSX/RTL/TangcartMSX/src/ikaopll/IKAOPLL_modules/IKAOPLL_reg.v)</td>
+<td align = "center">12</td>
+<td align = "center">-</td>
+<td align = "center">-</td>
+<td align = "center">-</td>
+<td align = "center">-</td>
+<td align = "center">3</td>
+<td align = "center">-</td>
+</tr>
+<td class="label">&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp|--u_instrom
+ (D:/github/HRA_product/TangCartMSX/RTL/TangcartMSX/src/ikaopll/IKAOPLL_modules/IKAOPLL_reg.v)</td>
+<td align = "center">55</td>
+<td align = "center">-</td>
+<td align = "center">129</td>
+<td align = "center">-</td>
+<td align = "center">-</td>
+<td align = "center">-</td>
+<td align = "center">-</td>
+</tr>
+<td class="label">&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp|--u_LFO
+ (D:/github/HRA_product/TangCartMSX/RTL/TangcartMSX/src/ikaopll/IKAOPLL.v)</td>
+<td align = "center">30</td>
+<td align = "center">5</td>
+<td align = "center">28</td>
+<td align = "center">-</td>
+<td align = "center">-</td>
+<td align = "center">-</td>
+<td align = "center">-</td>
+</tr>
+<td class="label">&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp|--u_PG
+ (D:/github/HRA_product/TangCartMSX/RTL/TangcartMSX/src/ikaopll/IKAOPLL.v)</td>
+<td align = "center">143</td>
+<td align = "center">32</td>
+<td align = "center">94</td>
+<td align = "center">1</td>
+<td align = "center">-</td>
+<td align = "center">-</td>
+<td align = "center">-</td>
+</tr>
+<td class="label">&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp|--u_cyc4r_cyc18r_phase_sr
+ (D:/github/HRA_product/TangCartMSX/RTL/TangcartMSX/src/ikaopll/IKAOPLL_modules/IKAOPLL_pg.v)</td>
+<td align = "center">19</td>
+<td align = "center">-</td>
+<td align = "center">-</td>
+<td align = "center">-</td>
+<td align = "center">-</td>
+<td align = "center">-</td>
+<td align = "center">-</td>
+</tr>
+<td class="label">&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp|--u_EG
+ (D:/github/HRA_product/TangCartMSX/RTL/TangcartMSX/src/ikaopll/IKAOPLL.v)</td>
+<td align = "center">86</td>
+<td align = "center">42</td>
+<td align = "center">195</td>
+<td align = "center">-</td>
+<td align = "center">1</td>
+<td align = "center">10</td>
+<td align = "center">-</td>
+</tr>
+<td class="label">&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp|--u_cyc2r_cyc19r_envstatreg
+ (D:/github/HRA_product/TangCartMSX/RTL/TangcartMSX/src/ikaopll/IKAOPLL_modules/IKAOPLL_eg.v)</td>
+<td align = "center">4</td>
+<td align = "center">-</td>
+<td align = "center">-</td>
+<td align = "center">-</td>
+<td align = "center">-</td>
+<td align = "center">-</td>
+<td align = "center">-</td>
+</tr>
+<td class="label">&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp|--u_cyc3r_cyc19r_attnlvreg
+ (D:/github/HRA_product/TangCartMSX/RTL/TangcartMSX/src/ikaopll/IKAOPLL_modules/IKAOPLL_eg.v)</td>
+<td align = "center">12</td>
+<td align = "center">-</td>
+<td align = "center">6</td>
+<td align = "center">-</td>
+<td align = "center">-</td>
+<td align = "center">2</td>
+<td align = "center">-</td>
+</tr>
+<td class="label">&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp|--u_OP
+ (D:/github/HRA_product/TangCartMSX/RTL/TangcartMSX/src/ikaopll/IKAOPLL.v)</td>
+<td align = "center">60</td>
+<td align = "center">52</td>
+<td align = "center">190</td>
+<td align = "center">-</td>
+<td align = "center">-</td>
+<td align = "center">-</td>
+<td align = "center">-</td>
+</tr>
+<td class="label">&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp|--u_cyc19c_logsinrom
+ (D:/github/HRA_product/TangCartMSX/RTL/TangcartMSX/src/ikaopll/IKAOPLL_modules/IKAOPLL_op.v)</td>
+<td align = "center">46</td>
+<td align = "center">-</td>
+<td align = "center">132</td>
+<td align = "center">-</td>
+<td align = "center">-</td>
+<td align = "center">-</td>
+<td align = "center">-</td>
+</tr>
+<td class="label">&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp|--u_cyc20c_exprom
+ (D:/github/HRA_product/TangCartMSX/RTL/TangcartMSX/src/ikaopll/IKAOPLL_modules/IKAOPLL_op.v)</td>
+<td align = "center">44</td>
+<td align = "center">-</td>
+<td align = "center">85</td>
+<td align = "center">-</td>
+<td align = "center">-</td>
+<td align = "center">-</td>
+<td align = "center">-</td>
+</tr>
+<td class="label">&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp|--u_op_z_reg
+ (D:/github/HRA_product/TangCartMSX/RTL/TangcartMSX/src/ikaopll/IKAOPLL_modules/IKAOPLL_op.v)</td>
+<td align = "center">24</td>
+<td align = "center">-</td>
+<td align = "center">-</td>
+<td align = "center">-</td>
+<td align = "center">-</td>
+<td align = "center">3</td>
+<td align = "center">-</td>
+</tr>
+<td class="label">&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp|--u_op_zz_reg
+ (D:/github/HRA_product/TangCartMSX/RTL/TangcartMSX/src/ikaopll/IKAOPLL_modules/IKAOPLL_op.v)</td>
+<td align = "center">24</td>
+<td align = "center">-</td>
+<td align = "center">-</td>
+<td align = "center">-</td>
+<td align = "center">-</td>
+<td align = "center">3</td>
+<td align = "center">-</td>
+</tr>
+<td class="label">&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp|--u_DAC
+ (D:/github/HRA_product/TangCartMSX/RTL/TangcartMSX/src/ikaopll/IKAOPLL.v)</td>
+<td align = "center">47</td>
+<td align = "center">24</td>
+<td align = "center">73</td>
+<td align = "center">1</td>
+<td align = "center">-</td>
+<td align = "center">-</td>
+<td align = "center">-</td>
+</tr>
+<td class="label">&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp|--u_percussion_sr
+ (D:/github/HRA_product/TangCartMSX/RTL/TangcartMSX/src/ikaopll/IKAOPLL_modules/IKAOPLL_dac.v)</td>
+<td align = "center">3</td>
+<td align = "center">-</td>
+<td align = "center">5</td>
+<td align = "center">-</td>
+<td align = "center">-</td>
+<td align = "center">3</td>
+<td align = "center">-</td>
+</tr>
+<td class="label">&nbsp&nbsp&nbsp&nbsp|--u_pwm
+ (D:/github/HRA_product/TangCartMSX/RTL/TangcartMSX/src/tangcart_msx.v)</td>
+<td align = "center">18</td>
+<td align = "center">17</td>
+<td align = "center">-</td>
+<td align = "center">-</td>
+<td align = "center">-</td>
+<td align = "center">-</td>
+<td align = "center">-</td>
+</tr>
+</table>
+</div><!-- content -->
+</div><!-- main_wrapper -->
+</body>
+</html>

@@ -1,0 +1,2 @@
+# OpenFile D:/github/HRA_product/TangCartMSX/RTL/TangcartMSX/src/ikaopll_wrap/test_001/vsim.wlf
+add wave -position end vsim:/tb/u_ikaopll_wrapper/u_ikaopll/*
