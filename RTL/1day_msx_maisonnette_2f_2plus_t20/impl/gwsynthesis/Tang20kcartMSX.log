@@ -11,7 +11,7 @@ Analyzing VHDL file 'D:\github\HRA_product\TangCartMSX\RTL\1day_msx_maisonnette_
 Analyzing package 'vdp_package'("D:\github\HRA_product\TangCartMSX\RTL\1day_msx_maisonnette_2f_2plus_t20\src\v9958clone\vdp_package.vhd":82)
 Analyzing VHDL file 'D:\github\HRA_product\TangCartMSX\RTL\1day_msx_maisonnette_2f_2plus_t20\src\v9958clone\vdp.vhd'
 Analyzing entity 'vdp'("D:\github\HRA_product\TangCartMSX\RTL\1day_msx_maisonnette_2f_2plus_t20\src\v9958clone\vdp.vhd":254)
-Analyzing architecture 'rtl'("D:\github\HRA_product\TangCartMSX\RTL\1day_msx_maisonnette_2f_2plus_t20\src\v9958clone\vdp.vhd":305)
+Analyzing architecture 'rtl'("D:\github\HRA_product\TangCartMSX\RTL\1day_msx_maisonnette_2f_2plus_t20\src\v9958clone\vdp.vhd":308)
 Analyzing VHDL file 'D:\github\HRA_product\TangCartMSX\RTL\1day_msx_maisonnette_2f_2plus_t20\src\v9958clone\vdp_colordec.vhd'
 Analyzing entity 'vdp_colordec'("D:\github\HRA_product\TangCartMSX\RTL\1day_msx_maisonnette_2f_2plus_t20\src\v9958clone\vdp_colordec.vhd":68)
 Analyzing architecture 'rtl'("D:\github\HRA_product\TangCartMSX\RTL\1day_msx_maisonnette_2f_2plus_t20\src\v9958clone\vdp_colordec.vhd":115)
@@ -114,7 +114,7 @@ WARN  (EX3791) : Expression size 11 truncated to fit in target size 10("D:\githu
 Compiling module 'tang20cart_msx'("D:\github\HRA_product\TangCartMSX\RTL\1day_msx_maisonnette_2f_2plus_t20\src\tang20cart_msx.v":26)
 WARN  (EX3791) : Expression size 27 truncated to fit in target size 26("D:\github\HRA_product\TangCartMSX\RTL\1day_msx_maisonnette_2f_2plus_t20\src\tang20cart_msx.v":174)
 WARN  (EX3791) : Expression size 3 truncated to fit in target size 2("D:\github\HRA_product\TangCartMSX\RTL\1day_msx_maisonnette_2f_2plus_t20\src\tang20cart_msx.v":183)
-Switching to VHDL mode to elaborate design unit 'VDP'("D:\github\HRA_product\TangCartMSX\RTL\1day_msx_maisonnette_2f_2plus_t20\src\tang20cart_msx.v":266)
+Switching to VHDL mode to elaborate design unit 'VDP'("D:\github\HRA_product\TangCartMSX\RTL\1day_msx_maisonnette_2f_2plus_t20\src\tang20cart_msx.v":268)
 Processing 'VDP(RTL)'("D:\github\HRA_product\TangCartMSX\RTL\1day_msx_maisonnette_2f_2plus_t20\src\v9958clone\vdp.vhd":254)
 Processing 'VDP_NTSC_PAL(RTL)'("D:\github\HRA_product\TangCartMSX\RTL\1day_msx_maisonnette_2f_2plus_t20\src\v9958clone\vdp_ntsc_pal.vhd":96)
 Processing 'VDP_VGA(RTL)'("D:\github\HRA_product\TangCartMSX\RTL\1day_msx_maisonnette_2f_2plus_t20\src\v9958clone\vdp_vga.vhd":103)
@@ -148,11 +148,9 @@ Processing 'VDP_REGISTER(RTL)'("D:\github\HRA_product\TangCartMSX\RTL\1day_msx_m
 'others' clause is never selected("D:\github\HRA_product\TangCartMSX\RTL\1day_msx_maisonnette_2f_2plus_t20\src\v9958clone\vdp_register.vhd":654)
 Processing 'VDP_COMMAND(RTL)'("D:\github\HRA_product\TangCartMSX\RTL\1day_msx_maisonnette_2f_2plus_t20\src\v9958clone\vdp_command.vhd":67)
 Processing 'VDP_WAIT_CONTROL(RTL)'("D:\github\HRA_product\TangCartMSX\RTL\1day_msx_maisonnette_2f_2plus_t20\src\v9958clone\vdp_wait_control.vhd":59)
-Returning to Verilog mode to proceed with elaboration("D:\github\HRA_product\TangCartMSX\RTL\1day_msx_maisonnette_2f_2plus_t20\src\tang20cart_msx.v":266)
+Returning to Verilog mode to proceed with elaboration("D:\github\HRA_product\TangCartMSX\RTL\1day_msx_maisonnette_2f_2plus_t20\src\tang20cart_msx.v":268)
 WARN  (EX1998) : Net 'w_is_output' does not have a driver("D:\github\HRA_product\TangCartMSX\RTL\1day_msx_maisonnette_2f_2plus_t20\src\tang20cart_msx.v":100)
 NOTE  (EX0101) : Current top module is "tang20cart_msx"
-WARN  (EX0211) : The output port "lcd_clk" of module "tang20cart_msx" has no driver, assigning undriven bits to Z, simulation mismatch possible("D:\github\HRA_product\TangCartMSX\RTL\1day_msx_maisonnette_2f_2plus_t20\src\tang20cart_msx.v":57)
-WARN  (EX0211) : The output port "lcd_de" of module "tang20cart_msx" has no driver, assigning undriven bits to Z, simulation mismatch possible("D:\github\HRA_product\TangCartMSX\RTL\1day_msx_maisonnette_2f_2plus_t20\src\tang20cart_msx.v":58)
 [5%] Running netlist conversion ...
 WARN  (CV0016) : Input n_treset is unused("D:\github\HRA_product\TangCartMSX\RTL\1day_msx_maisonnette_2f_2plus_t20\src\tang20cart_msx.v":29)
 WARN  (CV0016) : Input n_ce is unused("D:\github\HRA_product\TangCartMSX\RTL\1day_msx_maisonnette_2f_2plus_t20\src\tang20cart_msx.v":31)
@@ -175,8 +173,8 @@ Running technical mapping ...
 [75%] Tech-Mapping Phase 2 completed
 [80%] Tech-Mapping Phase 3 completed
 [90%] Tech-Mapping Phase 4 completed
-WARN  (NL0002) : The module "VDP_INTERRUPT" instantiated to "U_INTERRUPT" is swept in optimizing("D:\github\HRA_product\TangCartMSX\RTL\1day_msx_maisonnette_2f_2plus_t20\src\v9958clone\vdp.vhd":1189)
-WARN  (NL0002) : The module "VDP_NTSC_PAL" instantiated to "U_VDP_NTSC_PAL" is swept in optimizing("D:\github\HRA_product\TangCartMSX\RTL\1day_msx_maisonnette_2f_2plus_t20\src\v9958clone\vdp.vhd":1112)
+WARN  (NL0002) : The module "VDP_INTERRUPT" instantiated to "U_INTERRUPT" is swept in optimizing("D:\github\HRA_product\TangCartMSX\RTL\1day_msx_maisonnette_2f_2plus_t20\src\v9958clone\vdp.vhd":1213)
+WARN  (NL0002) : The module "VDP_NTSC_PAL" instantiated to "U_VDP_NTSC_PAL" is swept in optimizing("D:\github\HRA_product\TangCartMSX\RTL\1day_msx_maisonnette_2f_2plus_t20\src\v9958clone\vdp.vhd":1133)
 WARN  (NL0002) : The module "ram" instantiated to "U_PALETTEMEMG" is swept in optimizing("D:\github\HRA_product\TangCartMSX\RTL\1day_msx_maisonnette_2f_2plus_t20\src\v9958clone\vdp_register.vhd":393)
 WARN  (NL0002) : The module "VDP_LINEBUF" instantiated to "U_BUF_GE" is swept in optimizing("D:\github\HRA_product\TangCartMSX\RTL\1day_msx_maisonnette_2f_2plus_t20\src\v9958clone\vdp_doublebuf.vhd":131)
 WARN  (NL0002) : The module "VDP_LINEBUF" instantiated to "U_BUF_GO" is swept in optimizing("D:\github\HRA_product\TangCartMSX\RTL\1day_msx_maisonnette_2f_2plus_t20\src\v9958clone\vdp_doublebuf.vhd":161)

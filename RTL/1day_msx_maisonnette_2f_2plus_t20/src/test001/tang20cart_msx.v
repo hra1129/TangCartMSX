@@ -248,6 +248,8 @@ module tang20cart_msx (
 		.VDPSPEEDMODE		( 1'b0						),	// IN	STD_LOGIC;
 		.RATIOMODE			( 3'b000					),	// IN	STD_LOGIC_VECTOR(  2 DOWNTO 0 );
 		.CENTERYJK_R25_N	( 1'b1						),	// IN	STD_LOGIC;
+		.PVIDEO_CLK			( lcd_clk					),	// OUT	STD_LOGIC;
+		.PVIDEO_DATA_EN		( lcd_de					),	// OUT	STD_LOGIC;
 		.PVIDEOR			( w_lcd_red					),	// OUT	STD_LOGIC_VECTOR(  5 DOWNTO 0 );
 		.PVIDEOG			( w_lcd_green				),	// OUT	STD_LOGIC_VECTOR(  5 DOWNTO 0 );
 		.PVIDEOB			( w_lcd_blue				),	// OUT	STD_LOGIC_VECTOR(  5 DOWNTO 0 );
