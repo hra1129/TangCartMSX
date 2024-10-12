@@ -24,9 +24,7 @@
 //		Debugger
 // -----------------------------------------------------------------------------
 
-module ip_debugger #( 
-	parameter		TEST_ROWS = 15'b111_1111_1111_1111
-) (
+module ip_debugger (
 	//	Internal I/F
 	input			n_reset,
 	input			clk,
@@ -38,14 +36,15 @@ module ip_debugger #(
 	output			wr,				//	0: read, 1: write
 	output	[1:0]	address,
 	output	[7:0]	wdata,
-	input	[7:0]	rdata
+	input	[7:0]	rdata,
+	input			sdram_busy
 );
 	localparam		c_vdp_port0			= 2'd0;
 	localparam		c_vdp_port1			= 2'd1;
 	localparam		c_vdp_port2			= 2'd2;
 	localparam		c_vdp_port3			= 2'd3;
-	localparam		c_st_palette		= 'd58;
-	localparam		c_st_write			= 'd60;
+	localparam		c_st_palette		= 'd45;
+	localparam		c_st_write			= 'd50;
 
 	reg				ff_req;
 	reg				ff_wr;
@@ -55,13 +54,25 @@ module ip_debugger #(
 	reg		[5:0]	ff_vdp_reg;
 	reg		[7:0]	ff_vdp_data;
 	reg		[5:0]	ff_next_state;
+	reg				ff_sdram_busy;
 
 	// --------------------------------------------------------------------
 	//	main thread
 	// --------------------------------------------------------------------
 	always @( posedge clk ) begin
 		if( !n_reset ) begin
-			ff_state <= 'd0;
+			ff_state		<= 'd0;
+			ff_req			<= 1'b0;
+			ff_wr			<= 1'b0;
+			ff_sdram_busy	<= 1'b1;
+		end
+		else if( ff_sdram_busy ) begin
+			if( !sdram_busy ) begin
+				ff_sdram_busy	<= 1'b0;
+			end
+			else begin
+				//	hold
+			end
 		end
 		else begin
 			case( ff_state )
@@ -361,6 +372,15 @@ module ip_debugger #(
 				begin
 					if( ack == 1'b1 ) begin
 						ff_req			<= 1'b0;
+						ff_state		<= ff_state + 'd1;
+					end
+					else begin
+						//	hold
+					end
+				end
+			(c_st_palette + 2):
+				begin
+					if( ack == 1'b0 ) begin
 						ff_state		<= ff_next_state;
 					end
 					else begin
@@ -388,16 +408,34 @@ module ip_debugger #(
 				end
 			(c_st_write + 2):
 				begin
+					if( ack == 1'b0 ) begin
+						ff_state		<= ff_state + 'd1;
+					end
+					else begin
+						//	hold
+					end
+				end
+			(c_st_write + 3):
+				begin
 					ff_wr			<= 1'b1;
 					ff_address		<= c_vdp_port1;
 					ff_req			<= 1'b1;
 					ff_state		<= ff_state + 'd1;
 					ff_wdata		<= { 2'b10, ff_vdp_reg };
 				end
-			(c_st_write + 3):
+			(c_st_write + 4):
 				begin
 					if( ack == 1'b1 ) begin
 						ff_req			<= 1'b0;
+						ff_state		<= ff_state + 'd1;
+					end
+					else begin
+						//	hold
+					end
+				end
+			(c_st_write + 5):
+				begin
+					if( ack == 1'b0 ) begin
 						ff_state		<= ff_next_state;
 					end
 					else begin

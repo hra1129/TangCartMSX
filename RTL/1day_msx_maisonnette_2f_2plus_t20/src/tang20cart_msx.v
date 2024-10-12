@@ -115,13 +115,13 @@ module tang20cart_msx (
 	wire			w_req;
 	wire			w_ack;
 	wire			w_wr;
-	wire	[1:0]	w_ta;
+	wire	[1:0]	w_a;
+	wire	[7:0]	w_wdata;
+	wire	[7:0]	w_rdata;
+
 	wire	[5:0]	w_lcd_red;
 	wire	[5:0]	w_lcd_green;
 	wire	[5:0]	w_lcd_blue;
-
-	assign w_req		= 1'b0;
-	assign w_wr			= 1'b0;
 
 	// --------------------------------------------------------------------
 	//	OUTPUT Assignment
@@ -185,6 +185,22 @@ module tang20cart_msx (
 	end
 
 	// --------------------------------------------------------------------
+	//	DEBUGGER
+	// --------------------------------------------------------------------
+	ip_debugger u_debugger (
+		.n_reset			( w_n_reset					),
+		.clk				( clk						),
+		.keys				( keys						),
+		.req				( w_req						),
+		.ack				( w_ack						),
+		.wr					( w_wr						),
+		.address			( w_a						),
+		.wdata				( w_wdata					),
+		.rdata				( w_rdata					),
+		.sdram_busy			( w_sdram_busy				)
+	);
+
+	// --------------------------------------------------------------------
 	//	SDRAM
 	// --------------------------------------------------------------------
 	ip_sdram u_sdram (
@@ -216,12 +232,13 @@ module tang20cart_msx (
 	VDP u_v9958 (
 		.CLK				( clk						),	// IN	STD_LOGIC;
 		.RESET				( !w_n_reset				),	// IN	STD_LOGIC;
+		.INITIAL_BUSY		( w_sdram_busy				),	// IN	STD_LOGIC;
 		.REQ				( w_req						),	// IN	STD_LOGIC;
 		.ACK				( w_ack						),	// OUT	STD_LOGIC;
 		.WRT				( w_wr						),	// IN	STD_LOGIC;
-		.ADR				( w_ta						),	// IN	STD_LOGIC_VECTOR(  1 DOWNTO 0 );
-		.DBI				( 							),	// OUT	STD_LOGIC_VECTOR(  7 DOWNTO 0 );
-		.DBO				( 8'd0						),	// IN	STD_LOGIC_VECTOR(  7 DOWNTO 0 );
+		.ADR				( w_a						),	// IN	STD_LOGIC_VECTOR(  1 DOWNTO 0 );
+		.DBI				( w_rdata					),	// OUT	STD_LOGIC_VECTOR(  7 DOWNTO 0 );
+		.DBO				( w_wdata					),	// IN	STD_LOGIC_VECTOR(  7 DOWNTO 0 );
 		.INT_N				( 							),	// OUT	STD_LOGIC;
 		.PRAMOE_N			( w_sdram_read_n			),	// OUT	STD_LOGIC;
 		.PRAMWE_N			( w_sdram_write_n			),	// OUT	STD_LOGIC;

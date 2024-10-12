@@ -256,6 +256,7 @@ ENTITY VDP IS
 		-- VDP CLOCK ... 21.477MHZ
 		CLK					: IN	STD_LOGIC;
 		RESET				: IN	STD_LOGIC;
+		INITIAL_BUSY		: IN	STD_LOGIC;
 		REQ					: IN	STD_LOGIC;
 		ACK					: OUT	STD_LOGIC;
 		WRT					: IN	STD_LOGIC;
@@ -267,7 +268,7 @@ ENTITY VDP IS
 
 		PRAMOE_N			: OUT	STD_LOGIC;
 		PRAMWE_N			: OUT	STD_LOGIC;
-		PRAMADR				: OUT	STD_LOGIC_VECTOR( 16 DOWNTO 0 );
+		PRAMADR				: OUT	STD_LOGIC_VECTOR( 22 DOWNTO 0 );
 		PRAMDBI				: IN	STD_LOGIC_VECTOR( 15 DOWNTO 0 );
 		PRAMDBO				: OUT	STD_LOGIC_VECTOR(  7 DOWNTO 0 );
 
@@ -1012,6 +1013,11 @@ ARCHITECTURE RTL OF VDP IS
 	SIGNAL HSYNC						: STD_LOGIC;
 	SIGNAL ENAHSYNC						: STD_LOGIC;
 
+	SIGNAL FF_INITIAL_BUSY				: STD_LOGIC;
+	SIGNAL FF_REQ						: STD_LOGIC;
+	SIGNAL FF_WRT						: STD_LOGIC;
+	SIGNAL W_ACK						: STD_LOGIC;
+
 	CONSTANT VRAM_ACCESS_IDLE			: INTEGER := 0;
 	CONSTANT VRAM_ACCESS_DRAW			: INTEGER := 1;
 	CONSTANT VRAM_ACCESS_CPUW			: INTEGER := 2;
@@ -1022,7 +1028,7 @@ ARCHITECTURE RTL OF VDP IS
 	CONSTANT VRAM_ACCESS_VDPS			: INTEGER := 7;
 BEGIN
 
-	PRAMADR		<=	IRAMADR;
+	PRAMADR		<=	"000000" & IRAMADR;
 	XRAMSEL		<=	IRAMADR(16);
 	PRAMDAT		<=	PRAMDBI(  7 DOWNTO 0 )	WHEN( XRAMSEL = '0' )ELSE
 					PRAMDBI( 15 DOWNTO 8 );
@@ -1030,12 +1036,50 @@ BEGIN
 					PRAMDBI( 15 DOWNTO 8 );
 
 	----------------------------------------------------------------
+	-- WAIT
+	----------------------------------------------------------------
+	PROCESS( CLK )
+	BEGIN
+		IF( CLK'EVENT AND CLK = '1' )THEN
+			IF( RESET = '1' )THEN
+				FF_INITIAL_BUSY <= '1';
+			ELSIF( INITIAL_BUSY = '0' )THEN
+				FF_INITIAL_BUSY <= '0';
+			ELSE
+				-- HOLD
+			END IF;
+		END IF;
+	END PROCESS;
+
+	----------------------------------------------------------------
+	-- REQUEST SIGNAL
+	----------------------------------------------------------------
+	PROCESS( CLK )
+	BEGIN
+		IF( CLK'EVENT AND CLK = '1' )THEN
+			IF( RESET = '1' )THEN
+				FF_REQ <= '0';
+				FF_WRT <= '0';
+			ELSIF( ENABLE = '1' )THEN
+				IF( W_ACK = '1' )THEN
+					FF_REQ <= '0';
+				ELSE
+					FF_REQ <= REQ;
+					FF_WRT <= WRT;
+				END IF;
+			ELSE
+				-- HOLD
+			END IF;
+		END IF;
+	END PROCESS;
+
+	----------------------------------------------------------------
 	-- CLOCK DIVIDER
 	----------------------------------------------------------------
 	PROCESS( CLK )
 	BEGIN
 		IF( CLK'EVENT AND CLK = '1' )THEN
-			IF( RESET = '1' ) THEN
+			IF( RESET = '1' OR FF_INITIAL_BUSY = '1' ) THEN
 				FF_ENABLE_CNT <= "00";
 				ENABLE <= '0';
 			ELSE
@@ -1731,15 +1775,17 @@ BEGIN
 	-----------------------------------------------------------------------------
 	-- VDP REGISTER ACCESS
 	-----------------------------------------------------------------------------
+	ACK <= W_ACK;
+
 	U_VDP_REGISTER: VDP_REGISTER
 	PORT MAP(
 		RESET						=> RESET						,
 		CLK							=> CLK							,
 		ENABLE						=> ENABLE						,
 
-		REQ							=> REQ							,
-		ACK							=> ACK							,
-		WRT							=> WRT							,
+		REQ							=> FF_REQ						,
+		ACK							=> W_ACK						,
+		WRT							=> FF_WRT						,
 		ADR							=> ADR							,
 		DBI							=> DBI							,
 		DBO							=> DBO							,

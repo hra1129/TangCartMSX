@@ -1,8 +1,8 @@
--d D:\github\HRA_product\TangCartMSX\RTL\Tang20kcartMSX\impl\gwsynthesis\Tang20kcartMSX.vg
+-d D:\github\HRA_product\TangCartMSX\RTL\1day_msx_maisonnette_2f_2plus_t20\impl\gwsynthesis\Tang20kcartMSX.vg
 -p GW2AR-18-QFN88-8
 -pn GW2AR-LV18QN88C8/I7
--cst D:\github\HRA_product\TangCartMSX\RTL\Tang20kcartMSX\src\Tang20kcartMSX.cst
--cfg D:\github\HRA_product\TangCartMSX\RTL\Tang20kcartMSX\impl\pnr\device.cfg
+-cst D:\github\HRA_product\TangCartMSX\RTL\1day_msx_maisonnette_2f_2plus_t20\src\Tang20kcartMSX.cst
+-cfg D:\github\HRA_product\TangCartMSX\RTL\1day_msx_maisonnette_2f_2plus_t20\impl\pnr\device.cfg
 -bit
 -tr
 -ph

@@ -1,7 +1,7 @@
-Reading netlist file: "D:\github\HRA_product\TangCartMSX\RTL\Tang20kcartMSX\impl\gwsynthesis\Tang20kcartMSX.vg"
-Parsing netlist file "D:\github\HRA_product\TangCartMSX\RTL\Tang20kcartMSX\impl\gwsynthesis\Tang20kcartMSX.vg" completed
+Reading netlist file: "D:\github\HRA_product\TangCartMSX\RTL\1day_msx_maisonnette_2f_2plus_t20\impl\gwsynthesis\Tang20kcartMSX.vg"
+Parsing netlist file "D:\github\HRA_product\TangCartMSX\RTL\1day_msx_maisonnette_2f_2plus_t20\impl\gwsynthesis\Tang20kcartMSX.vg" completed
 Processing netlist completed
-Reading constraint file: "D:\github\HRA_product\TangCartMSX\RTL\Tang20kcartMSX\src\Tang20kcartMSX.cst"
+Reading constraint file: "D:\github\HRA_product\TangCartMSX\RTL\1day_msx_maisonnette_2f_2plus_t20\src\Tang20kcartMSX.cst"
 Physical Constraint parsed completed
 Running placement......
 [10%] Placement Phase 0 completed
@@ -21,10 +21,10 @@ Bitstream generation in progress......
 Bitstream generation completed
 Running power analysis......
 [100%] Power analysis completed
-Generate file "D:\github\HRA_product\TangCartMSX\RTL\Tang20kcartMSX\impl\pnr\Tang20kcartMSX.power.html" completed
-Generate file "D:\github\HRA_product\TangCartMSX\RTL\Tang20kcartMSX\impl\pnr\Tang20kcartMSX.pin.html" completed
-Generate file "D:\github\HRA_product\TangCartMSX\RTL\Tang20kcartMSX\impl\pnr\Tang20kcartMSX.rpt.html" completed
-Generate file "D:\github\HRA_product\TangCartMSX\RTL\Tang20kcartMSX\impl\pnr\Tang20kcartMSX.rpt.txt" completed
-Generate file "D:\github\HRA_product\TangCartMSX\RTL\Tang20kcartMSX\impl\pnr\Tang20kcartMSX.tr.html" completed
-Thu Oct 10 07:03:51 2024
+Generate file "D:\github\HRA_product\TangCartMSX\RTL\1day_msx_maisonnette_2f_2plus_t20\impl\pnr\Tang20kcartMSX.power.html" completed
+Generate file "D:\github\HRA_product\TangCartMSX\RTL\1day_msx_maisonnette_2f_2plus_t20\impl\pnr\Tang20kcartMSX.pin.html" completed
+Generate file "D:\github\HRA_product\TangCartMSX\RTL\1day_msx_maisonnette_2f_2plus_t20\impl\pnr\Tang20kcartMSX.rpt.html" completed
+Generate file "D:\github\HRA_product\TangCartMSX\RTL\1day_msx_maisonnette_2f_2plus_t20\impl\pnr\Tang20kcartMSX.rpt.txt" completed
+Generate file "D:\github\HRA_product\TangCartMSX\RTL\1day_msx_maisonnette_2f_2plus_t20\impl\pnr\Tang20kcartMSX.tr.html" completed
+Sat Oct 12 08:45:51 2024
 
