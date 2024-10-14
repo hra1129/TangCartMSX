@@ -1,5 +1,5 @@
 # vsim -c -t 1ps -do "run.do" tb 
-# Start time: 17:29:08 on Oct 05,2024
+# Start time: 07:56:49 on Oct 14,2024
 # Loading sv_std.std
 # Loading work.tb
 # Loading work.ip_sdram
@@ -14,53 +14,37 @@
 # tb.u_sdram :                             Write Burst Mode = Programmed Burst Length
 # tb.u_sdram : at time   61848.1 ns ACT  : Bank = 0 Row =    0
 # tb.u_sdram : at time   61912.9 ns WRITE: Bank = 0 Row =    0, Col =   0, Data = xxxxxx12
-# tb.u_sdram : at time   61949.9 ns AREF : Auto Refresh
-# tb.u_sdram : at time   61996.2 ns ACT  : Bank = 0 Row =    0
-# tb.u_sdram : at time   62024.0 ns WRITE: Bank = 0 Row =    0, Col =   0, Data = xxxx2312
-# tb.u_sdram : at time   62061.0 ns AREF : Auto Refresh
-# tb.u_sdram : at time   62107.3 ns ACT  : Bank = 0 Row = 1024
-# tb.u_sdram : at time   62135.1 ns WRITE: Bank = 0 Row = 1024, Col =   0, Data = xx34xxxx
-# tb.u_sdram : at time   62172.1 ns AREF : Auto Refresh
-# tb.u_sdram : at time   62218.4 ns ACT  : Bank = 0 Row = 1024
-# tb.u_sdram : at time   62246.2 ns WRITE: Bank = 0 Row = 1024, Col =   0, Data = 4534xxxx
-# tb.u_sdram : at time   62283.2 ns AREF : Auto Refresh
-# tb.u_sdram : at time   62329.5 ns ACT  : Bank = 1 Row =    0
-# tb.u_sdram : at time   62357.3 ns WRITE: Bank = 1 Row =    0, Col =   0, Data = xxxxxx56
-# tb.u_sdram : at time   62394.3 ns AREF : Auto Refresh
-# tb.u_sdram : at time   62440.6 ns ACT  : Bank = 1 Row =    0
-# tb.u_sdram : at time   62468.4 ns WRITE: Bank = 1 Row =    0, Col =   0, Data = xxxx6756
-# tb.u_sdram : at time   62505.4 ns AREF : Auto Refresh
-# tb.u_sdram : at time   62551.7 ns ACT  : Bank = 1 Row = 1024
-# tb.u_sdram : at time   62579.5 ns WRITE: Bank = 1 Row = 1024, Col =   0, Data = xx78xxxx
-# tb.u_sdram : at time   62616.5 ns AREF : Auto Refresh
-# tb.u_sdram : at time   62662.8 ns ACT  : Bank = 1 Row = 1024
-# tb.u_sdram : at time   62690.5 ns WRITE: Bank = 1 Row = 1024, Col =   0, Data = 8978xxxx
-# tb.u_sdram : at time   62727.6 ns AREF : Auto Refresh
-# tb.u_sdram : at time   62773.9 ns ACT  : Bank = 0 Row =    0
-# tb.u_sdram : at time   62801.6 ns READ : Bank = 0 Row =    0, Col =   0, Data = xxxx2312
-# tb.u_sdram : at time   62820.2 ns AREF : Auto Refresh
-# tb.u_sdram : at time   62866.4 ns ACT  : Bank = 0 Row =    0
-# tb.u_sdram : at time   62894.2 ns READ : Bank = 0 Row =    0, Col =   0, Data = xxxx2312
-# tb.u_sdram : at time   62912.7 ns AREF : Auto Refresh
-# tb.u_sdram : at time   62959.0 ns ACT  : Bank = 0 Row = 1024
-# tb.u_sdram : at time   62986.8 ns READ : Bank = 0 Row = 1024, Col =   0, Data = 4534xxxx
-# tb.u_sdram : at time   63005.3 ns AREF : Auto Refresh
-# tb.u_sdram : at time   63051.6 ns ACT  : Bank = 0 Row = 1024
-# tb.u_sdram : at time   63079.4 ns READ : Bank = 0 Row = 1024, Col =   0, Data = 4534xxxx
-# tb.u_sdram : at time   63097.9 ns AREF : Auto Refresh
-# tb.u_sdram : at time   63144.2 ns ACT  : Bank = 1 Row =    0
-# tb.u_sdram : at time   63172.0 ns READ : Bank = 1 Row =    0, Col =   0, Data = xxxx6756
-# tb.u_sdram : at time   63190.5 ns AREF : Auto Refresh
-# tb.u_sdram : at time   63236.8 ns ACT  : Bank = 1 Row =    0
-# tb.u_sdram : at time   63264.5 ns READ : Bank = 1 Row =    0, Col =   0, Data = xxxx6756
-# tb.u_sdram : at time   63283.1 ns AREF : Auto Refresh
-# tb.u_sdram : at time   63329.3 ns ACT  : Bank = 1 Row = 1024
-# tb.u_sdram : at time   63357.1 ns READ : Bank = 1 Row = 1024, Col =   0, Data = 8978xxxx
-# tb.u_sdram : at time   63375.6 ns AREF : Auto Refresh
-# tb.u_sdram : at time   63421.9 ns ACT  : Bank = 1 Row = 1024
-# tb.u_sdram : at time   63449.7 ns READ : Bank = 1 Row = 1024, Col =   0, Data = 8978xxxx
-# tb.u_sdram : at time   63468.2 ns AREF : Auto Refresh
+# tb.u_sdram : at time   61986.9 ns ERROR: Bank is not Activated for Write
+# tb.u_sdram : at time   61986.9 ns WRITE: Bank = 0 Row =    0, Col =   0, Data = xxxx2312
+# tb.u_sdram : at time   62042.5 ns ACT  : Bank = 0 Row = 1024
+# tb.u_sdram : at time   62061.0 ns WRITE: Bank = 0 Row = 1024, Col =   0, Data = xx34xxxx
+# tb.u_sdram : at time   62135.1 ns ERROR: Bank is not Activated for Write
+# tb.u_sdram : at time   62135.1 ns WRITE: Bank = 0 Row = 1024, Col =   0, Data = 4534xxxx
+# tb.u_sdram : at time   62190.6 ns ACT  : Bank = 1 Row =    0
+# tb.u_sdram : at time   62209.1 ns WRITE: Bank = 1 Row =    0, Col =   0, Data = xxxxxx56
+# tb.u_sdram : at time   62283.2 ns ERROR: Bank is not Activated for Write
+# tb.u_sdram : at time   62283.2 ns WRITE: Bank = 1 Row =    0, Col =   0, Data = xxxx6756
+# tb.u_sdram : at time   62338.7 ns ACT  : Bank = 1 Row = 1024
+# tb.u_sdram : at time   62357.3 ns WRITE: Bank = 1 Row = 1024, Col =   0, Data = xx78xxxx
+# tb.u_sdram : at time   62431.3 ns ERROR: Bank is not Activated for Write
+# tb.u_sdram : at time   62431.3 ns WRITE: Bank = 1 Row = 1024, Col =   0, Data = 8978xxxx
+# tb.u_sdram : at time   62486.9 ns ACT  : Bank = 0 Row =    0
+# tb.u_sdram : at time   62514.7 ns READ : Bank = 0 Row =    0, Col =   0, Data = xxxx2312
+# tb.u_sdram : at time   62551.7 ns ACT  : Bank = 0 Row =    0
+# tb.u_sdram : at time   62579.5 ns READ : Bank = 0 Row =    0, Col =   0, Data = xxxx2312
+# tb.u_sdram : at time   62616.5 ns ACT  : Bank = 0 Row = 1024
+# tb.u_sdram : at time   62644.3 ns READ : Bank = 0 Row = 1024, Col =   0, Data = 4534xxxx
+# tb.u_sdram : at time   62681.3 ns ACT  : Bank = 0 Row = 1024
+# tb.u_sdram : at time   62709.1 ns READ : Bank = 0 Row = 1024, Col =   0, Data = 4534xxxx
+# tb.u_sdram : at time   62746.1 ns ACT  : Bank = 1 Row =    0
+# tb.u_sdram : at time   62773.9 ns READ : Bank = 1 Row =    0, Col =   0, Data = xxxx6756
+# tb.u_sdram : at time   62810.9 ns ACT  : Bank = 1 Row =    0
+# tb.u_sdram : at time   62838.7 ns READ : Bank = 1 Row =    0, Col =   0, Data = xxxx6756
+# tb.u_sdram : at time   62875.7 ns ACT  : Bank = 1 Row = 1024
+# tb.u_sdram : at time   62903.5 ns READ : Bank = 1 Row = 1024, Col =   0, Data = 8978xxxx
+# tb.u_sdram : at time   62940.5 ns ACT  : Bank = 1 Row = 1024
+# tb.u_sdram : at time   62968.3 ns READ : Bank = 1 Row = 1024, Col =   0, Data = 8978xxxx
 # ** Note: $finish    : tb.sv(196)
-#    Time: 63505251 ps  Iteration: 1  Instance: /tb
-# End time: 17:29:09 on Oct 05,2024, Elapsed time: 0:00:01
+#    Time: 62996061 ps  Iteration: 1  Instance: /tb
+# End time: 07:56:50 on Oct 14,2024, Elapsed time: 0:00:01
 # Errors: 0, Warnings: 0

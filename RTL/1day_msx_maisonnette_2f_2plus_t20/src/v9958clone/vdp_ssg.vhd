@@ -409,6 +409,8 @@ BEGIN
 				FF_PRE_Y_CNT		<= (OTHERS =>'0');
 				FF_MONITOR_LINE		<= (OTHERS =>'0');
 				PREWINDOW_Y			<= '0';
+				PREWINDOW_Y_SP		<= '0';
+				ENAHSYNC			<= '0';
 			ELSIF( ENABLE = '0' )THEN
 				-- HOLD
 			ELSIF( W_HSYNC = '1' )THEN

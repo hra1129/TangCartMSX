@@ -1,6 +1,7 @@
 rmdir /S /Q work
 vlib work
 vlog ..\debugger\ip_debugger.v
+vlog ..\debugger\vram_image_rom_wrap.v
 vlog MT48LC2M32B2.v
 vlog ..\sdram\ip_sdram.v
 vcom ..\v9958clone\ram.vhd
@@ -19,7 +20,8 @@ vcom ..\v9958clone\vdp_spinforam.vhd
 vcom ..\v9958clone\vdp_sprite.vhd
 vcom ..\v9958clone\vdp_ssg.vhd
 vcom ..\v9958clone\vdp_text12.vhd
-vcom ..\v9958clone\vdp_vga.vhd
+rem vcom ..\v9958clone\vdp_vga.vhd
+vlog ..\v9958clone\vdp_lcd.v
 vcom ..\v9958clone\vdp_wait_control.vhd
 vcom ..\v9958clone\vdp.vhd
 vlog gowin_pll_dummy.v

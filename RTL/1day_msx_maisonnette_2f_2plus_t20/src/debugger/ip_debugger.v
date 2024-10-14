@@ -43,18 +43,30 @@ module ip_debugger (
 	localparam		c_vdp_port1			= 2'd1;
 	localparam		c_vdp_port2			= 2'd2;
 	localparam		c_vdp_port3			= 2'd3;
-	localparam		c_st_palette		= 'd45;
-	localparam		c_st_write			= 'd50;
+	localparam		c_st_palette		= 'd105;
+	localparam		c_st_write			= 'd110;
 
 	reg				ff_req;
 	reg				ff_wr;
 	reg		[1:0]	ff_address;
 	reg		[7:0]	ff_wdata;
-	reg		[5:0]	ff_state;
+	reg		[6:0]	ff_state;
 	reg		[5:0]	ff_vdp_reg;
 	reg		[7:0]	ff_vdp_data;
-	reg		[5:0]	ff_next_state;
+	reg		[6:0]	ff_next_state;
 	reg				ff_sdram_busy;
+	reg		[13:0]	ff_rom_address;
+	wire	[7:0]	w_rom_data;
+	reg		[5:0]	ff_wait_count;
+
+	// --------------------------------------------------------------------
+	//	VRAM Image ROM
+	// --------------------------------------------------------------------
+	vram_image_rom u_rom (
+		.clk		( clk				),
+		.adr		( ff_rom_address	),
+		.dbi		( w_rom_data		)
+	);
 
 	// --------------------------------------------------------------------
 	//	main thread
@@ -85,45 +97,69 @@ module ip_debugger (
 				end
 			'd1:
 				begin
-					//	R#0: SCREEN0 (40X24, TEXT Mode)
+					//	R#0: Mode register 0: SCREEN1 (32X24, GRAPHIC1 Mode)
 					ff_vdp_reg		<= 5'h00;
-					ff_vdp_data		<= 8'h00;
+					ff_vdp_data		<= 8'b0_0_0_0_000_0;		// [0][DG][IE2][IE1][M5][M4][M3][0]
 					ff_next_state	<= ff_state + 'd1;
 					ff_state		<= c_st_write;
 				end
 			'd2:
 				begin
-					//	R#1: SCREEN0 (40X24, TEXT Mode)
+					//	R#1: Mode register 1: SCREEN1 (32X24, GRAPHIC1 Mode)
 					ff_vdp_reg		<= 5'h01;
-					ff_vdp_data		<= 8'h50;
+					ff_vdp_data		<= 8'b0_1_1_00_0_0_0;		// [0][BL][IE0][M1][M2][0][SI][MAG]
 					ff_next_state	<= ff_state + 'd1;
 					ff_state		<= c_st_write;
 				end
 			'd3:
 				begin
-					//	R#2: Pattern Name Table is 0x0000
+					//	R#2: Pattern Name Table is 0x1800 = 17'b0_0001_1000_0000_0000
 					ff_vdp_reg		<= 5'h02;
-					ff_vdp_data		<= 8'h00;
+					ff_vdp_data		<= 8'b0_0_0001_10;		// [0][A16][A15][A14][A13][A12][A11][A10]
 					ff_next_state	<= ff_state + 'd1;
 					ff_state		<= c_st_write;
 				end
 			'd4:
 				begin
-					//	R#4: Pattern Generator Table is 0x0800
-					ff_vdp_reg		<= 5'h04;
-					ff_vdp_data		<= 8'h01;
+					//	R#3: Color Table is 0x2000 = 17'b0_0010_0000_0000_0000
+					ff_vdp_reg		<= 5'h03;
+					ff_vdp_data		<= 8'b10_0000_00;		//	[A13][A12][A11][A10][A9][A8][A7][A6]
 					ff_next_state	<= ff_state + 'd1;
 					ff_state		<= c_st_write;
 				end
 			'd5:
 				begin
-					//	R#7: Set Color (White on Blue)
-					ff_vdp_reg		<= 5'h07;
-					ff_vdp_data		<= 8'hF4;
+					//	R#4: Pattern Generator Table is 0x0000 = 17'b0_0000_0000_0000_0000
+					ff_vdp_reg		<= 5'h04;
+					ff_vdp_data		<= 8'b00_0_0000_0;		//	[0][0][A16][A15][A14][A13][A12][A11]
 					ff_next_state	<= ff_state + 'd1;
 					ff_state		<= c_st_write;
 				end
 			'd6:
+				begin
+					//	R#7: Set Color (White on Blue)
+					ff_vdp_reg		<= 5'h07;
+					ff_vdp_data		<= 8'hF7;				//	[TC3][TC2][TC1][TC0][BD3][BD2][BD1][BD0]
+					ff_next_state	<= ff_state + 'd1;
+					ff_state		<= c_st_write;
+				end
+			'd7:
+				begin
+					//	R#8: Mode register 2: Sprite off
+					ff_vdp_reg		<= 5'h08;
+					ff_vdp_data		<= 8'b0_0_0_0_1_0_1_0;	//	[0][0][TP][CB][1][0][SPD][0]
+					ff_next_state	<= ff_state + 'd1;
+					ff_state		<= c_st_write;
+				end
+			'd8:
+				begin
+					//	R#9: Mode register 3: NTSC
+					ff_vdp_reg		<= 5'h09;
+					ff_vdp_data		<= 8'b0_00_0_0_0_0;		//	[LN][0][S1][S0][IL][EO][NT][DC]
+					ff_next_state	<= ff_state + 'd1;
+					ff_state		<= c_st_write;
+				end
+			'd9:
 				begin
 					//	R#16: Palette selector #0
 					ff_vdp_reg		<= 5'h10;
@@ -131,231 +167,327 @@ module ip_debugger (
 					ff_next_state	<= ff_state + 'd1;
 					ff_state		<= c_st_write;
 				end
-			'd7:
+			'd10:
 				begin
 					//	Palette #0 LSB
 					ff_vdp_data		<= 8'h00;
 					ff_next_state	<= ff_state + 'd1;
 					ff_state		<= c_st_palette;
 				end
-			'd8:
+			'd11:
 				begin
 					//	Palette #0 MSB
 					ff_vdp_data		<= 8'h00;
 					ff_next_state	<= ff_state + 'd1;
 					ff_state		<= c_st_palette;
 				end
-			'd9:
+			'd12:
 				begin
 					//	Palette #1 LSB
 					ff_vdp_data		<= 8'h00;
 					ff_next_state	<= ff_state + 'd1;
 					ff_state		<= c_st_palette;
 				end
-			'd10:
+			'd13:
 				begin
 					//	Palette #1 MSB
 					ff_vdp_data		<= 8'h00;
 					ff_next_state	<= ff_state + 'd1;
 					ff_state		<= c_st_palette;
 				end
-			'd11:
-				begin
-					//	Palette #2 LSB
-					ff_vdp_data		<= 8'h33;
-					ff_next_state	<= ff_state + 'd1;
-					ff_state		<= c_st_palette;
-				end
-			'd12:
-				begin
-					//	Palette #2 MSB
-					ff_vdp_data		<= 8'h05;
-					ff_next_state	<= ff_state + 'd1;
-					ff_state		<= c_st_palette;
-				end
-			'd13:
-				begin
-					//	Palette #3 LSB
-					ff_vdp_data		<= 8'h44;
-					ff_next_state	<= ff_state + 'd1;
-					ff_state		<= c_st_palette;
-				end
 			'd14:
 				begin
-					//	Palette #3 MSB
-					ff_vdp_data		<= 8'h06;
+					//	Palette #2 LSB
+//					ff_vdp_data		<= 8'h33;
+					ff_vdp_data		<= 8'h11;
 					ff_next_state	<= ff_state + 'd1;
 					ff_state		<= c_st_palette;
 				end
 			'd15:
 				begin
-					//	Palette #4 LSB
-					ff_vdp_data		<= 8'h37;
+					//	Palette #2 MSB
+//					ff_vdp_data		<= 8'h05;
+					ff_vdp_data		<= 8'h06;
 					ff_next_state	<= ff_state + 'd1;
 					ff_state		<= c_st_palette;
 				end
 			'd16:
 				begin
-					//	Palette #4 MSB
-					ff_vdp_data		<= 8'h02;
+					//	Palette #3 LSB
+//					ff_vdp_data		<= 8'h44;
+					ff_vdp_data		<= 8'h33;
 					ff_next_state	<= ff_state + 'd1;
 					ff_state		<= c_st_palette;
 				end
 			'd17:
 				begin
-					//	Palette #5 LSB
-					ff_vdp_data		<= 8'h47;
+					//	Palette #3 MSB
+//					ff_vdp_data		<= 8'h06;
+					ff_vdp_data		<= 8'h07;
 					ff_next_state	<= ff_state + 'd1;
 					ff_state		<= c_st_palette;
 				end
 			'd18:
 				begin
-					//	Palette #5 MSB
-					ff_vdp_data		<= 8'h03;
+					//	Palette #4 LSB
+//					ff_vdp_data		<= 8'h37;
+					ff_vdp_data		<= 8'h17;
 					ff_next_state	<= ff_state + 'd1;
 					ff_state		<= c_st_palette;
 				end
 			'd19:
 				begin
-					//	Palette #6 LSB
-					ff_vdp_data		<= 8'h52;
+					//	Palette #4 MSB
+//					ff_vdp_data		<= 8'h02;
+					ff_vdp_data		<= 8'h01;
 					ff_next_state	<= ff_state + 'd1;
 					ff_state		<= c_st_palette;
 				end
 			'd20:
 				begin
-					//	Palette #6 MSB
-					ff_vdp_data		<= 8'h03;
+					//	Palette #5 LSB
+//					ff_vdp_data		<= 8'h47;
+					ff_vdp_data		<= 8'h27;
 					ff_next_state	<= ff_state + 'd1;
 					ff_state		<= c_st_palette;
 				end
 			'd21:
 				begin
-					//	Palette #7 LSB
-					ff_vdp_data		<= 8'h36;
+					//	Palette #5 MSB
+//					ff_vdp_data		<= 8'h03;
+					ff_vdp_data		<= 8'h03;
 					ff_next_state	<= ff_state + 'd1;
 					ff_state		<= c_st_palette;
 				end
 			'd22:
 				begin
-					//	Palette #7 MSB
-					ff_vdp_data		<= 8'h05;
+					//	Palette #6 LSB
+//					ff_vdp_data		<= 8'h52;
+					ff_vdp_data		<= 8'h51;
 					ff_next_state	<= ff_state + 'd1;
 					ff_state		<= c_st_palette;
 				end
 			'd23:
 				begin
-					//	Palette #8 LSB
-					ff_vdp_data		<= 8'h62;
+					//	Palette #6 MSB
+//					ff_vdp_data		<= 8'h03;
+					ff_vdp_data		<= 8'h01;
 					ff_next_state	<= ff_state + 'd1;
 					ff_state		<= c_st_palette;
 				end
 			'd24:
 				begin
-					//	Palette #8 MSB
-					ff_vdp_data		<= 8'h03;
+					//	Palette #7 LSB
+//					ff_vdp_data		<= 8'h36;
+					ff_vdp_data		<= 8'h27;
 					ff_next_state	<= ff_state + 'd1;
 					ff_state		<= c_st_palette;
 				end
 			'd25:
 				begin
-					//	Palette #9 LSB
-					ff_vdp_data		<= 8'h63;
+					//	Palette #7 MSB
+//					ff_vdp_data		<= 8'h05;
+					ff_vdp_data		<= 8'h06;
 					ff_next_state	<= ff_state + 'd1;
 					ff_state		<= c_st_palette;
 				end
 			'd26:
 				begin
-					//	Palette #9 MSB
-					ff_vdp_data		<= 8'h04;
+					//	Palette #8 LSB
+//					ff_vdp_data		<= 8'h62;
+					ff_vdp_data		<= 8'h71;
 					ff_next_state	<= ff_state + 'd1;
 					ff_state		<= c_st_palette;
 				end
 			'd27:
 				begin
-					//	Palette #10 LSB
-					ff_vdp_data		<= 8'h53;
+					//	Palette #8 MSB
+//					ff_vdp_data		<= 8'h03;
+					ff_vdp_data		<= 8'h01;
 					ff_next_state	<= ff_state + 'd1;
 					ff_state		<= c_st_palette;
 				end
 			'd28:
 				begin
-					//	Palette #10 MSB
-					ff_vdp_data		<= 8'h06;
+					//	Palette #9 LSB
+//					ff_vdp_data		<= 8'h63;
+					ff_vdp_data		<= 8'h73;
 					ff_next_state	<= ff_state + 'd1;
 					ff_state		<= c_st_palette;
 				end
 			'd29:
 				begin
-					//	Palette #11 LSB
-					ff_vdp_data		<= 8'h64;
+					//	Palette #9 MSB
+//					ff_vdp_data		<= 8'h04;
+					ff_vdp_data		<= 8'h03;
 					ff_next_state	<= ff_state + 'd1;
 					ff_state		<= c_st_palette;
 				end
 			'd30:
 				begin
-					//	Palette #11 MSB
-					ff_vdp_data		<= 8'h06;
+					//	Palette #10 LSB
+//					ff_vdp_data		<= 8'h53;
+					ff_vdp_data		<= 8'h61;
 					ff_next_state	<= ff_state + 'd1;
 					ff_state		<= c_st_palette;
 				end
 			'd31:
 				begin
-					//	Palette #12 LSB
-					ff_vdp_data		<= 8'h21;
+					//	Palette #10 MSB
+//					ff_vdp_data		<= 8'h06;
+					ff_vdp_data		<= 8'h06;
 					ff_next_state	<= ff_state + 'd1;
 					ff_state		<= c_st_palette;
 				end
 			'd32:
 				begin
-					//	Palette #12 MSB
-					ff_vdp_data		<= 8'h04;
+					//	Palette #11 LSB
+//					ff_vdp_data		<= 8'h64;
+					ff_vdp_data		<= 8'h64;
 					ff_next_state	<= ff_state + 'd1;
 					ff_state		<= c_st_palette;
 				end
 			'd33:
 				begin
-					//	Palette #13 LSB
-					ff_vdp_data		<= 8'h55;
+					//	Palette #11 MSB
+//					ff_vdp_data		<= 8'h06;
+					ff_vdp_data		<= 8'h06;
 					ff_next_state	<= ff_state + 'd1;
 					ff_state		<= c_st_palette;
 				end
 			'd34:
 				begin
-					//	Palette #13 MSB
-					ff_vdp_data		<= 8'h03;
+					//	Palette #12 LSB
+//					ff_vdp_data		<= 8'h21;
+					ff_vdp_data		<= 8'h11;
 					ff_next_state	<= ff_state + 'd1;
 					ff_state		<= c_st_palette;
 				end
 			'd35:
+				begin
+					//	Palette #12 MSB
+//					ff_vdp_data		<= 8'h04;
+					ff_vdp_data		<= 8'h04;
+					ff_next_state	<= ff_state + 'd1;
+					ff_state		<= c_st_palette;
+				end
+			'd36:
+				begin
+					//	Palette #13 LSB
+//					ff_vdp_data		<= 8'h55;
+					ff_vdp_data		<= 8'h65;
+					ff_next_state	<= ff_state + 'd1;
+					ff_state		<= c_st_palette;
+				end
+			'd37:
+				begin
+					//	Palette #13 MSB
+//					ff_vdp_data		<= 8'h03;
+					ff_vdp_data		<= 8'h02;
+					ff_next_state	<= ff_state + 'd1;
+					ff_state		<= c_st_palette;
+				end
+			'd38:
 				begin
 					//	Palette #14 LSB
 					ff_vdp_data		<= 8'h55;
 					ff_next_state	<= ff_state + 'd1;
 					ff_state		<= c_st_palette;
 				end
-			'd36:
+			'd39:
 				begin
 					//	Palette #14 MSB
 					ff_vdp_data		<= 8'h05;
 					ff_next_state	<= ff_state + 'd1;
 					ff_state		<= c_st_palette;
 				end
-			'd37:
+			'd40:
 				begin
 					//	Palette #15 LSB
 					ff_vdp_data		<= 8'h77;
 					ff_next_state	<= ff_state + 'd1;
 					ff_state		<= c_st_palette;
 				end
-			'd38:
+			'd41:
 				begin
 					//	Palette #15 MSB
 					ff_vdp_data		<= 8'h07;
 					ff_next_state	<= ff_state + 'd1;
 					ff_state		<= c_st_palette;
 				end
-			'd39:
+			'd42:
+				begin
+					//	set VRAM address
+					ff_rom_address	<= 14'd0;
+					ff_wr			<= 1'b1;
+					ff_address		<= c_vdp_port1;
+					ff_req			<= 1'b1;
+					ff_state		<= ff_state + 'd1;
+					ff_wdata		<= 8'h00;					//	VRAM address[7:0]
+				end
+			'd43:
+				begin
+					if( ack == 1'b1 ) begin
+						ff_req			<= 1'b0;
+						ff_state		<= ff_state + 'd1;
+					end
+					else begin
+						//	hold
+					end
+				end
+			'd44:
+				begin
+					//	set VRAM address
+					ff_wr			<= 1'b1;
+					ff_address		<= c_vdp_port1;
+					ff_req			<= 1'b1;
+					ff_state		<= ff_state + 'd1;
+					ff_wdata		<= 8'h40;					//	VRAM address[13:8]
+				end
+			'd45:
+				begin
+					if( ack == 1'b1 ) begin
+						ff_req			<= 1'b0;
+						ff_state		<= ff_state + 'd1;
+					end
+					else begin
+						//	hold
+					end
+				end
+			'd46:
+				begin
+					//	write VRAM
+					ff_wr			<= 1'b1;
+					ff_address		<= c_vdp_port0;
+					ff_req			<= 1'b1;
+					ff_state		<= ff_state + 'd1;
+					ff_wdata		<= w_rom_data;				//	write ROM data
+				end
+			'd47:
+				begin
+					if( ack == 1'b1 ) begin
+						ff_req			<= 1'b0;
+						ff_state		<= ff_state + 'd1;
+						ff_wait_count	<= 6'd63;
+						ff_rom_address	<= ff_rom_address + 14'd1;
+					end
+					else begin
+						//	hold
+					end
+				end
+			'd48:
+				begin
+					if( ff_wait_count != 6'd0 ) begin
+						ff_wait_count	<= ff_wait_count - 'd1;
+					end
+					else if( ff_rom_address == 14'h0000 ) begin
+						ff_state		<= ff_state + 'd1;
+					end
+					else begin
+						ff_state		<= 'd46;
+					end
+				end
+			'd49:
 				begin
 					//	hold
 				end

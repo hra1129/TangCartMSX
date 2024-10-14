@@ -1,31 +1,15 @@
 # vsim -c -t 1ps -do "run.do" tb 
-# Start time: 22:43:37 on Oct 10,2024
+# Start time: 07:58:32 on Oct 14,2024
 # Loading sv_std.std
 # Loading work.tb
 # Loading work.ip_debugger
+# ** Error: (vsim-3033) Instantiation of 'vram_image_rom' failed. The design unit was not found.
+#    Time: 0 ps  Iteration: 0  Instance: /tb/u_debugger File: ../../debugger/ip_debugger.v Line: 65
+#         Searched libraries:
+#             D:/github/HRA_product/TangCartMSX/RTL/1day_msx_maisonnette_2f_2plus_t20/src/sdram/test002/work
 # Loading work.ip_uart
 # Loading work.ip_sdram
 # Loading work.mt48lc2m32b2
-# ** Error (suppressible): (vsim-3389) Port 'send_data' not found in the connected module (3rd connection).
-#    Time: 0 ps  Iteration: 0  Instance: /tb/u_debugger File: tb.sv Line: 60
-# ** Error (suppressible): (vsim-3389) Port 'send_req' not found in the connected module (4th connection).
-#    Time: 0 ps  Iteration: 0  Instance: /tb/u_debugger File: tb.sv Line: 60
-# ** Error (suppressible): (vsim-3389) Port 'send_busy' not found in the connected module (5th connection).
-#    Time: 0 ps  Iteration: 0  Instance: /tb/u_debugger File: tb.sv Line: 60
-# ** Error (suppressible): (vsim-3389) Port 'sdram_rd' not found in the connected module (7th connection).
-#    Time: 0 ps  Iteration: 0  Instance: /tb/u_debugger File: tb.sv Line: 60
-# ** Error (suppressible): (vsim-3389) Port 'sdram_wr' not found in the connected module (8th connection).
-#    Time: 0 ps  Iteration: 0  Instance: /tb/u_debugger File: tb.sv Line: 60
-# ** Error (suppressible): (vsim-3389) Port 'sdram_busy' not found in the connected module (9th connection).
-#    Time: 0 ps  Iteration: 0  Instance: /tb/u_debugger File: tb.sv Line: 60
-# ** Error (suppressible): (vsim-3389) Port 'sdram_address' not found in the connected module (10th connection).
-#    Time: 0 ps  Iteration: 0  Instance: /tb/u_debugger File: tb.sv Line: 60
-# ** Error (suppressible): (vsim-3389) Port 'sdram_wdata' not found in the connected module (11th connection).
-#    Time: 0 ps  Iteration: 0  Instance: /tb/u_debugger File: tb.sv Line: 60
-# ** Error (suppressible): (vsim-3389) Port 'sdram_rdata' not found in the connected module (12th connection).
-#    Time: 0 ps  Iteration: 0  Instance: /tb/u_debugger File: tb.sv Line: 60
-# ** Error (suppressible): (vsim-3389) Port 'sdram_rdata_en' not found in the connected module (13th connection).
-#    Time: 0 ps  Iteration: 0  Instance: /tb/u_debugger File: tb.sv Line: 60
 # Error loading design
-# End time: 22:43:37 on Oct 10,2024, Elapsed time: 0:00:00
-# Errors: 10, Warnings: 0
+# End time: 07:58:33 on Oct 14,2024, Elapsed time: 0:00:01
+# Errors: 1, Warnings: 0

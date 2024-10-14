@@ -56,6 +56,7 @@ module ip_sdram #(
 	localparam TIMER_BITS		= $clog2(TIMER_COUNT + 1);
 	localparam REFRESH_COUNT	= 15_000 / CLOCK_TIME;		// clock
 	localparam REFRESH_BITS		= $clog2(REFRESH_COUNT + 1);
+	localparam REFRESH_NONE		= 10_000 / CLOCK_TIME;		// clock
 
 	// --------------------------------------------------------------------
 	//	Timer for initialization process
@@ -80,7 +81,7 @@ module ip_sdram #(
 	//	State machine
 	// --------------------------------------------------------------------
 	localparam		ST_INIT_WAIT_TIMER		= 6'd0;
-	localparam		ST_INIT_PRECHARGE			= 6'd1;
+	localparam		ST_INIT_PRECHARGE		= 6'd1;
 	localparam		ST_INIT_AUTO_REFRESH1	= 6'd2;
 	localparam		ST_INIT_AUTO_REFRESH2	= 6'd3;
 	localparam		ST_INIT_LMR				= 6'd4;
@@ -120,6 +121,34 @@ module ip_sdram #(
 	reg		[7:0]				ff_column;
 	reg							ff_word_sel;
 	reg		[REFRESH_BITS-1:0]	ff_refresh_timer;
+	reg							ff_busy;
+
+	always @( posedge clk ) begin
+		if( !n_reset ) begin
+			ff_busy				<= 1'b0;
+		end
+		else if( ff_state == ST_IDLE ) begin
+			ff_busy				<= 1'b0;
+		end
+		else begin
+			ff_busy				<= 1'b1;
+		end
+	end
+
+	always @( posedge clk ) begin
+		if( !n_reset ) begin
+			ff_refresh_timer	<= 'd0;
+		end
+		else if( ff_command == CMD_AUTO_REFRESH ) begin
+			ff_refresh_timer	<= 'd0;
+		end
+		else if( ff_refresh_timer == REFRESH_COUNT ) begin
+			//	hold
+		end
+		else begin
+			ff_refresh_timer	<= ff_refresh_timer + 'd1;
+		end
+	end
 
 	always @( posedge clk_sdram ) begin
 		if( !n_reset ) begin
@@ -131,7 +160,6 @@ module ip_sdram #(
 			ff_write			<= 1'b0;
 			ff_read				<= 1'b0;
 			ff_word_sel			<= 1'b0;
-			ff_refresh_timer	<= 'd0;
 		end
 		else begin
 			case( ff_state )
@@ -186,7 +214,7 @@ module ip_sdram #(
 			// ----------------------------------------------------------------
 			ST_IDLE: begin
 					if( !wr_n ) begin
-						ff_state			<= ST_NOP3;
+						ff_state			<= ST_NOP2;
 						ff_next_state		<= ST_WRITE;
 						ff_next_command		<= CMD_WRITE;
 						if( ff_bank == { 1'b0, address[22:21] } && ff_row == address[20:10] ) begin
@@ -204,7 +232,6 @@ module ip_sdram #(
 						            		   (address[1:0] == 2'b10) ? 4'b1011 : 4'b0111;
 						ff_data				<= wdata;
 						ff_write			<= 1'b0;
-						ff_refresh_timer	<= 'd0;
 					end
 					else if( !rd_n ) begin
 						ff_state			<= ST_NOP2;
@@ -223,15 +250,13 @@ module ip_sdram #(
 						ff_data_mask		<= 4'b0000;
 						ff_word_sel			<= address[1];
 						ff_write			<= 1'b0;
-						ff_refresh_timer	<= 'd0;
 					end
 					else if( ff_refresh_timer == REFRESH_COUNT ) begin
 						ff_state			<= ST_WRITE_AUTO_REFRESH;
 						ff_command			<= CMD_AUTO_REFRESH;
-						ff_refresh_timer	<= 'd0;
 					end
 					else begin
-						ff_refresh_timer	<= ff_refresh_timer + 'd1;
+						//	hold
 					end
 				end
 			// ----------------------------------------------------------------
@@ -247,8 +272,14 @@ module ip_sdram #(
 			ST_WRITE_PRECHARGE: begin
 					ff_state			<= ST_NOP1;
 					ff_command			<= CMD_NOP;
-					ff_next_state		<= ST_WRITE_AUTO_REFRESH;
-					ff_next_command		<= CMD_AUTO_REFRESH;
+					if( ff_refresh_timer < REFRESH_NONE ) begin
+						ff_next_state		<= ST_IDLE;
+						ff_next_command		<= CMD_NOP;
+					end
+					else begin
+						ff_next_state		<= ST_WRITE_AUTO_REFRESH;
+						ff_next_command		<= CMD_AUTO_REFRESH;
+					end
 				end
 			ST_WRITE_AUTO_REFRESH: begin
 					ff_state			<= ST_NOP3;
@@ -265,13 +296,21 @@ module ip_sdram #(
 				end
 			ST_READ_PRECHARGE: begin
 					ff_state			<= ST_NOP1;						//	CAS Latency 2
-					ff_command			<= CMD_NOP;
-					ff_next_state		<= ST_READ_AUTO_REFRESH;
-					ff_next_command		<= CMD_AUTO_REFRESH;
 					ff_read				<= 1'b1;
+					if( ff_refresh_timer < REFRESH_NONE ) begin
+						ff_command			<= CMD_NOP;
+						ff_next_state		<= ST_IDLE;
+						ff_next_command		<= CMD_NOP;
+						ff_bank				<= 3'b100;
+					end
+					else begin
+						ff_command			<= CMD_NOP;
+						ff_next_state		<= ST_READ_AUTO_REFRESH;
+						ff_next_command		<= CMD_AUTO_REFRESH;
+					end
 				end
 			ST_READ_AUTO_REFRESH: begin
-					ff_state			<= ST_NOP3;
+					ff_state			<= ST_NOP2;
 					ff_command			<= CMD_NOP;
 					ff_next_state		<= ST_IDLE;
 					ff_next_command		<= CMD_NOP;
@@ -343,7 +382,7 @@ module ip_sdram #(
 	// ----------------------------------------------------------------
 	//	I/F port assignment
 	// ----------------------------------------------------------------
-	assign busy				= (ff_state == ST_IDLE) ? 1'b0: 1'b1;
+	assign busy				= ff_busy;
 	assign rdata			= ff_rdata;
 	assign rdata_en			= ff_rdata_en;
 

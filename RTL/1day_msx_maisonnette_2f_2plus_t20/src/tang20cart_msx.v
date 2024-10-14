@@ -260,7 +260,7 @@ module tang20cart_msx (
 		.PVIDEODLCLK		( 							),	// OUT	STD_LOGIC;
 		.BLANK_O			( 							),	// OUT	STD_LOGIC;
 		.DISPRESO			( 1'b1						),	// IN	STD_LOGIC;
-		.NTSC_PAL_TYPE		( 1'b1						),	// IN	STD_LOGIC;
+		.NTSC_PAL_TYPE		( 1'b0						),	// IN	STD_LOGIC;
 		.FORCED_V_MODE		( 1'b0						),	// IN	STD_LOGIC;
 		.LEGACY_VGA			( 1'b0						),	// IN	STD_LOGIC;
 		.VDP_ID				( c_vdpid					),	// IN	STD_LOGIC_VECTOR(  4 DOWNTO 0 );
