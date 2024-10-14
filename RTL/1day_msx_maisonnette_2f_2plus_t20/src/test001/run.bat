@@ -2,8 +2,12 @@ rmdir /S /Q work
 vlib work
 vlog ..\debugger\ip_debugger.v
 vlog ..\debugger\vram_image_rom_wrap.v
+
 vlog MT48LC2M32B2.v
-vlog ..\sdram\ip_sdram.v
+
+rem vlog ..\sdram\ip_sdram.v
+vcom ..\sdram\ip_sdram_dummy.vhd
+
 vcom ..\v9958clone\ram.vhd
 vcom ..\v9958clone\vdp_package.vhd
 vcom ..\v9958clone\vdp_colordec.vhd

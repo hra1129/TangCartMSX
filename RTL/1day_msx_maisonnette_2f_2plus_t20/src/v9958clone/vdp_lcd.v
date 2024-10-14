@@ -62,6 +62,9 @@ module vdp_lcd(
 	input			clk,
 	input			reset,
 	input			enable,
+	// lcd output
+	output			lcd_clk,
+	output			lcd_de,
 	// video input
 	input	[5:0]	videorin,
 	input	[5:0]	videogin,
@@ -79,48 +82,279 @@ module vdp_lcd(
 	output	[5:0]	videobout,
 	output			videohsout_n,
 	output			videovsout_n,
-	// hdmi support
-	output			blank_o,
 	// switched i/o signals
 	input	[2:0]	ratiomode
 );
+	// LCD 800x480 parameters
+	// Horizontal timing by ff_h_cnt value : 1368cyc
+	localparam		clocks_per_line		= 1368;
+	localparam		disp_width			= 576;
+	localparam		h_pulse_end			= 19;							//	min 0 ... max 39
+	localparam		h_back_porch_end	= 45;
+	localparam		h_active_end		= h_back_porch_end + 800;
+	localparam		h_front_porch_end	= h_active_end + 522;
+	localparam		h_vdp_active_start	= h_back_porch_end + 112;
+	localparam		h_vdp_active_end	= h_vdp_active_start + disp_width;
+	// Vertical timing by ff_v_cnt value
+	localparam		v_pulse_start		= 18;
+	localparam		v_pulse_end			= v_pulse_start + 6;			//	min 0 ... max 19
+	localparam		v_back_porch_end	= v_pulse_start + 22;
+	localparam		v_active_end		= v_back_porch_end + 480;
+	localparam		v_front_porch_end	= v_active_end + 21;
+
 	// ff_disp_start_x + disp_width < clocks_per_line/2 = 684
-	localparam		clocks_per_line	= 1368;
-	localparam		disp_width		= 576;
 	localparam		disp_start_y	= 3;
 	localparam		prb_height		= 25;
 	localparam		right_x			= 684 - disp_width - 2;				// 106
 	localparam		pal_right_x		= 87;								// 87
 	localparam		center_x		= right_x - 32 - 2;					// 72
 	localparam		base_left_x		= center_x - 32 - 2 - 3;			// 35
-	localparam		center_y		= 12;								// based on hdmi av output
 
-	reg				ff_hsync_n;
+//	reg				ff_hsync_n;
 	reg				ff_vsync_n;
 
 	// video output enable
-	reg				ff_video_out_x;
+//	reg				ff_video_out_x;
 
 	// double buffer signal
 	wire	[9:0]	w_x_position_w;
-	reg		[9:0]	ff_x_position_r;
+//	reg		[9:0]	ff_x_position_r;
 	wire			w_evenodd;
 	wire			w_we_buf;
 	wire	[5:0]	w_data_r_out;
 	wire	[5:0]	w_data_g_out;
 	wire	[5:0]	w_data_b_out;
-	reg		[10:0]	ff_disp_start_x;
+//	reg		[10:0]	ff_disp_start_x;
 
-	assign videorout	= ( ff_video_out_x == 1'b1 ) ? w_data_r_out: 6'd0;
-	assign videogout	= ( ff_video_out_x == 1'b1 ) ? w_data_g_out: 6'd0;
-	assign videobout	= ( ff_video_out_x == 1'b1 ) ? w_data_b_out: 6'd0;
+	reg				ff_lcd_clk;
+	reg		[10:0]	ff_h_cnt;
+	reg				ff_h_sync;
+	reg				ff_h_active;
+	reg				ff_h_vdp_active;
+	wire			w_h_pulse_end;
+	wire			w_h_back_porch_end;
+	wire			w_h_active_end;
+	wire			w_h_front_porch_end;
+	wire			w_h_vdp_active_start;
+	wire			w_h_vdp_active_end;
+	reg		[9:0]	ff_v_cnt;
+	reg				ff_v_sync;
+	reg				ff_v_active;
+	wire	[9:0]	w_v_front_porch_end_position;
+	wire			w_v_pulse_end;
+	wire			w_v_back_porch_end;
+	wire			w_v_active_end;
+	wire			w_v_front_porch_end;
+	wire			w_lcd_de;
+	wire			w_vdp_de;
+	wire	[9:0]	w_x_position_r;
+
+	// --------------------------------------------------------------------
+	//	Timing signals
+	// --------------------------------------------------------------------
+	assign w_h_pulse_end		= (ff_h_cnt == h_pulse_end);
+	assign w_h_back_porch_end	= (ff_h_cnt == h_back_porch_end);
+	assign w_h_active_end		= (ff_h_cnt == h_active_end);
+	assign w_h_front_porch_end	= (ff_h_cnt == h_front_porch_end);
+	assign w_v_pulse_end		= (ff_v_cnt == v_pulse_end);
+	assign w_v_back_porch_end	= (ff_v_cnt == v_back_porch_end);
+	assign w_v_active_end		= (ff_v_cnt == v_active_end);
+	assign w_v_front_porch_end	= (ff_v_cnt == w_v_front_porch_end_position);
+	assign w_h_vdp_active_start	= (ff_h_cnt == h_vdp_active_start);
+	assign w_h_vdp_active_end	= (ff_h_cnt == h_vdp_active_end);
+
+	assign w_v_front_porch_end_position	=	(interlace_mode == 1'b0 && pal_mode == 1'b0) ? 10'd523 : 
+											(interlace_mode == 1'b0 && pal_mode == 1'b1) ? 10'd524 : 
+											(interlace_mode == 1'b1 && pal_mode == 1'b0) ? 10'd625 : 10'd624;
+
+	// --------------------------------------------------------------------
+	//	LCD clock
+	// --------------------------------------------------------------------
+	always @( posedge clk ) begin
+		if( reset ) begin
+			ff_lcd_clk <= 1'b0;
+		end
+		else begin
+			ff_lcd_clk <= ~ff_lcd_clk;
+		end
+	end
+	assign lcd_clk	= ff_lcd_clk;
+
+	// --------------------------------------------------------------------
+	//	H Counter
+	// --------------------------------------------------------------------
+	always @( posedge clk ) begin
+		if( reset ) begin
+			ff_h_cnt <= 11'd0;
+		end
+		else if( !ff_lcd_clk ) begin
+			if( w_h_front_porch_end ) begin
+				ff_h_cnt <= 11'd0;
+			end
+			else begin
+				ff_h_cnt <= ff_h_cnt + 11'd1;
+			end
+		end
+		else begin
+			//	hold
+		end
+	end
+	assign w_x_position_r		= ff_h_cnt - (h_vdp_active_start + 1);
+
+	// --------------------------------------------------------------------
+	//	H Sync
+	// --------------------------------------------------------------------
+	always @( posedge clk ) begin
+		if( reset ) begin
+			ff_h_sync <= 1'b0;
+		end
+		else if( !ff_lcd_clk ) begin
+			if( w_h_front_porch_end ) begin
+				ff_h_sync <= 1'b0;
+			end
+			else if( w_h_pulse_end ) begin
+				ff_h_sync <= 1'b1;
+			end
+			else begin
+				//	hold
+			end
+		end
+		else begin
+			//	hold
+		end
+	end
+
+	// --------------------------------------------------------------------
+	//	H Active
+	// --------------------------------------------------------------------
+	always @( posedge clk ) begin
+		if( reset ) begin
+			ff_h_active <= 1'b0;
+		end
+		else if( !ff_lcd_clk ) begin
+			if( w_h_active_end ) begin
+				ff_h_active <= 1'b0;
+			end
+			else if( w_h_back_porch_end ) begin
+				ff_h_active <= 1'b1;
+			end
+			else begin
+				//	hold
+			end
+		end
+		else begin
+			//	hold
+		end
+	end
+
+	// --------------------------------------------------------------------
+	//	H VDP Active
+	// --------------------------------------------------------------------
+	always @( posedge clk ) begin
+		if( reset ) begin
+			ff_h_vdp_active <= 1'b0;
+		end
+		else if( !ff_lcd_clk ) begin
+			if( w_h_vdp_active_start ) begin
+				ff_h_vdp_active <= 1'b1;
+			end
+			else if( w_h_vdp_active_end ) begin
+				ff_h_vdp_active <= 1'b0;
+			end
+			else begin
+				//	hold
+			end
+		end
+		else begin
+			//	hold
+		end
+	end
+
+	// --------------------------------------------------------------------
+	//	V Counter
+	// --------------------------------------------------------------------
+	always @( posedge clk ) begin
+		if( reset ) begin
+			ff_v_cnt <= 10'd0;
+		end
+		else if( !ff_lcd_clk ) begin
+			if( w_v_front_porch_end && w_h_front_porch_end ) begin
+				ff_v_cnt <= 10'd0;
+			end
+			else begin
+				ff_v_cnt <= ff_v_cnt + 10'd1;
+			end
+		end
+		else begin
+			//	hold
+		end
+	end
+	assign w_x_position_r		= ff_h_cnt - (h_vdp_active_start + 1);
+
+	// --------------------------------------------------------------------
+	//	V Active
+	// --------------------------------------------------------------------
+	always @( posedge clk ) begin
+		if( reset )begin
+			ff_v_active <= 1'b0;
+		end
+		else if( enable == 1'b0 )begin
+			// hold
+		end
+		else if( pal_mode == 1'b0 )begin
+			if( interlace_mode == 1'b0 )begin
+				if(      (vcounterin == v_back_porch_end) || (vcounterin == (524 + v_back_porch_end)) )begin
+					ff_v_active <= 1'b1;
+				end
+				else if( (vcounterin == v_active_end)   || (vcounterin == (524 + v_active_end))   )begin
+					ff_v_active <= 1'b0;
+				end
+			end
+			else begin
+				if(      (vcounterin == v_back_porch_end) || (vcounterin == (525 + v_back_porch_end)) )begin
+					ff_v_active <= 1'b1;
+				end
+				else if( (vcounterin == v_active_end)   || (vcounterin == (525 + v_active_end))   )begin
+					ff_v_active <= 1'b0;
+				end
+			end
+		end
+		else begin
+			if( interlace_mode == 1'b0 )begin
+				if(      (vcounterin == v_back_porch_end + 6) || (vcounterin == (626 + v_back_porch_end + 6)) )begin
+					ff_v_active <= 1'b1;
+				end
+				else if( (vcounterin == v_active_end + 6)   || (vcounterin == (626 + v_active_end + 6))   )begin
+					ff_v_active <= 1'b0;
+				end
+			end
+			else begin
+				if(      (vcounterin == v_back_porch_end + 6) || (vcounterin == (625 + v_back_porch_end + 6)) )begin
+					ff_v_active <= 1'b1;
+				end
+				else if( (vcounterin == v_active_end + 6)   || (vcounterin == (625 + v_active_end + 6))   )begin
+					ff_v_active <= 1'b0;
+				end
+			end
+		end
+	end
+
+	// --------------------------------------------------------------------
+	//	Color
+	// --------------------------------------------------------------------
+	assign w_lcd_de		= ff_h_active && ff_v_active;
+	assign w_vdp_de		= ff_h_vdp_active && ff_v_active;
+	assign videorout	= w_vdp_de ? w_data_r_out: 6'd0;
+	assign videogout	= w_vdp_de ? w_data_g_out: 6'd0;
+	assign videobout	= w_vdp_de ? w_data_b_out: 6'd0;
+	assign lcd_de		= w_lcd_de;
 
 	vdp_doublebuf dbuf (
 		.clk			( clk				),
-		.enable			( enable			),
 		.xpositionw		( w_x_position_w	),
-		.xpositionr		( ff_x_position_r	),
+		.xpositionr		( w_x_position_r	),
 		.evenodd		( w_evenodd			),
+		.enable			( enable			),
 		.we				( w_we_buf			),
 		.datarin		( videorin			),
 		.datagin		( videogin			),
@@ -134,59 +368,59 @@ module vdp_lcd(
 	assign w_evenodd		= vcounterin[1];
 	assign w_we_buf			= 1'b1;
 
-	// pixel ratio 1:1 for led display
-	always @( posedge clk ) begin
-		if( reset )begin
-			ff_disp_start_x <= 684 - disp_width - 2;
-		end
-		else if( enable == 1'b0 )begin
-			// hold
-		end
-		else if( (ratiomode == 3'b000 || interlace_mode == 1'b1 || pal_mode == 1'b1) && legacy_vga == 1'b1 )begin
-			// legacy output
-			ff_disp_start_x <= right_x;			// 106
-		end
-		else if( pal_mode == 1'b1 )begin
-			// 50hz
-			ff_disp_start_x <= pal_right_x;		// 87
-		end
-		else if( ratiomode == 3'b000 || interlace_mode == 1'b1 )begin
-			// 60hz
-			ff_disp_start_x <= center_x;			// 72
-		end
-		else if( (vcounterin < 38 + disp_start_y + prb_height) ||
-			   (vcounterin > 526 - prb_height && vcounterin < 526 ) ||
-			   (vcounterin > 524 + 38 + disp_start_y && vcounterin < 524 + 38 + disp_start_y + prb_height) ||
-			   (vcounterin > 524 + 526 - prb_height) )begin
-			// pixel ratio 1:1 (vga mode, 60hz, not interlaced)
-//			if( w_evenodd == 1'b0 )begin											// plot from top-right
-			if( w_evenodd == 1'b1 )begin											// plot from top-left
-				ff_disp_start_x <= base_left_x + ~ratiomode;						// 35 to 41
-			end
-			else begin
-				ff_disp_start_x <= right_x;	// 106
-			end
-		end
-		else begin
-			ff_disp_start_x <= center_x;			// 72
-		end
-	end
+//	// pixel ratio 1:1 for led display
+//	always @( posedge clk ) begin
+//		if( reset )begin
+//			ff_disp_start_x <= 684 - disp_width - 2;
+//		end
+//		else if( enable == 1'b0 )begin
+//			// hold
+//		end
+//		else if( (ratiomode == 3'b000 || interlace_mode == 1'b1 || pal_mode == 1'b1) && legacy_vga == 1'b1 )begin
+//			// legacy output
+//			ff_disp_start_x <= right_x;			// 106
+//		end
+//		else if( pal_mode == 1'b1 )begin
+//			// 50hz
+//			ff_disp_start_x <= pal_right_x;		// 87
+//		end
+//		else if( ratiomode == 3'b000 || interlace_mode == 1'b1 )begin
+//			// 60hz
+//			ff_disp_start_x <= center_x;			// 72
+//		end
+//		else if( (vcounterin < 38 + disp_start_y + prb_height) ||
+//			   (vcounterin > 526 - prb_height && vcounterin < 526 ) ||
+//			   (vcounterin > 524 + 38 + disp_start_y && vcounterin < 524 + 38 + disp_start_y + prb_height) ||
+//			   (vcounterin > 524 + 526 - prb_height) )begin
+//			// pixel ratio 1:1 (vga mode, 60hz, not interlaced)
+////			if( w_evenodd == 1'b0 )begin											// plot from top-right
+//			if( w_evenodd == 1'b1 )begin											// plot from top-left
+//				ff_disp_start_x <= base_left_x + ~ratiomode;						// 35 to 41
+//			end
+//			else begin
+//				ff_disp_start_x <= right_x;	// 106
+//			end
+//		end
+//		else begin
+//			ff_disp_start_x <= center_x;			// 72
+//		end
+//	end
 
-	// generate h-sync signal
-	always @( posedge clk ) begin
-		if( reset )begin
-			ff_hsync_n <= 1'b1;
-		end
-		else if( enable == 1'b0 )begin
-			// hold
-		end
-		else if( (hcounterin == 0) || (hcounterin == (clocks_per_line/2)) )begin
-			ff_hsync_n <= 1'b0;
-		end
-		else if( (hcounterin == 40) || (hcounterin == (clocks_per_line/2) + 40) )begin
-			ff_hsync_n <= 1'b1;
-		end
-	end
+//	// generate h-sync signal
+//	always @( posedge clk ) begin
+//		if( reset )begin
+//			ff_hsync_n <= 1'b1;
+//		end
+//		else if( enable == 1'b0 )begin
+//			// hold
+//		end
+//		else if( (hcounterin == 0) || (hcounterin == (clocks_per_line/2)) )begin
+//			ff_hsync_n <= 1'b0;
+//		end
+//		else if( (hcounterin == 40) || (hcounterin == (clocks_per_line/2) + 40) )begin
+//			ff_hsync_n <= 1'b1;
+//		end
+//	end
 
 	// generate v-sync signal
 	// the videovsin_n signal is not used
@@ -199,78 +433,77 @@ module vdp_lcd(
 		end
 		else if( pal_mode == 1'b0 )begin
 			if( interlace_mode == 1'b0 )begin
-				if( (vcounterin == 3*2 + center_y) || (vcounterin == 524 + 3*2 + center_y) )begin
+				if(      (vcounterin == v_pulse_start) || (vcounterin == (524 + v_pulse_start)) )begin
 					ff_vsync_n <= 1'b0;
 				end
-				else if( (vcounterin == 6*2 + center_y) || (vcounterin == 524 + 6*2 + center_y) )begin
+				else if( (vcounterin == v_pulse_end)   || (vcounterin == (524 + v_pulse_end))   )begin
 					ff_vsync_n <= 1'b1;
 				end
 			end
 			else begin
-				if( (vcounterin == 3*2 + center_y) || (vcounterin == 525 + 3*2 + center_y) )begin
+				if(      (vcounterin == v_pulse_start) || (vcounterin == (525 + v_pulse_start)) )begin
 					ff_vsync_n <= 1'b0;
 				end
-				else if( (vcounterin == 6*2 + center_y) || (vcounterin == 525 + 6*2 + center_y) )begin
+				else if( (vcounterin == v_pulse_end)   || (vcounterin == (525 + v_pulse_end))   )begin
 					ff_vsync_n <= 1'b1;
 				end
 			end
 		end
 		else begin
 			if( interlace_mode == 1'b0 )begin
-				if( (vcounterin == 3*2 + center_y + 6) || (vcounterin == 626 + 3*2 + center_y + 6) )begin
+				if(      (vcounterin == v_pulse_start + 6) || (vcounterin == (626 + v_pulse_start + 6)) )begin
 					ff_vsync_n <= 1'b0;
 				end
-				else if( (vcounterin == 6*2 + center_y + 6) || (vcounterin == 626 + 6*2 + center_y + 6) )begin
+				else if( (vcounterin == v_pulse_end + 6)   || (vcounterin == (626 + v_pulse_end + 6))   )begin
 					ff_vsync_n <= 1'b1;
 				end
 			end
 			else begin
-				if( (vcounterin == 3*2 + center_y + 6) || (vcounterin == 625 + 3*2 + center_y + 6) )begin
+				if(      (vcounterin == v_pulse_start + 6) || (vcounterin == (625 + v_pulse_start + 6)) )begin
 					ff_vsync_n <= 1'b0;
 				end
-				else if( (vcounterin == 6*2 + center_y + 6) || (vcounterin == 625 + 6*2 + center_y + 6) )begin
+				else if( (vcounterin == v_pulse_end + 6)   || (vcounterin == (625 + v_pulse_end + 6))   )begin
 					ff_vsync_n <= 1'b1;
 				end
 			end
 		end
 	end
 
-	// generate data read timing
-	always @( posedge clk ) begin
-		if( reset )begin
-			ff_x_position_r <= 10'd0;
-		end
-		else if( enable == 1'b0 )begin
-			// hold
-		end
-		else if( (hcounterin == ff_disp_start_x) ||
-				(hcounterin == ff_disp_start_x + (clocks_per_line/2)) )begin
-			ff_x_position_r <= 10'd0;
-		end
-		else begin
-			ff_x_position_r <= ff_x_position_r + 1;
-		end
-	end
+//	// generate data read timing
+//	always @( posedge clk ) begin
+//		if( reset )begin
+//			ff_x_position_r <= 10'd0;
+//		end
+//		else if( enable == 1'b0 )begin
+//			// hold
+//		end
+//		else if( (hcounterin == ff_disp_start_x) ||
+//				(hcounterin == ff_disp_start_x + (clocks_per_line/2)) )begin
+//			ff_x_position_r <= 10'd0;
+//		end
+//		else begin
+//			ff_x_position_r <= ff_x_position_r + 1;
+//		end
+//	end
 
-	// generate video output timing
-	always @( posedge clk ) begin
-		if( reset )begin
-			ff_video_out_x <= 1'b0;
-		end
-		else if( enable == 1'b0 )begin
-			// hold
-		end
-		else if( (hcounterin == ff_disp_start_x) ||
-				((hcounterin == ff_disp_start_x + (clocks_per_line/2)) && interlace_mode == 1'b0) )begin
-			ff_video_out_x <= 1'b1;
-		end
-		else if( (hcounterin == ff_disp_start_x + disp_width) ||
-				(hcounterin == ff_disp_start_x + disp_width + (clocks_per_line/2)) )begin
-			ff_video_out_x <= 1'b0;
-		end
-	end
+//	// generate video output timing
+//	always @( posedge clk ) begin
+//		if( reset )begin
+//			ff_video_out_x <= 1'b0;
+//		end
+//		else if( enable == 1'b0 )begin
+//			// hold
+//		end
+//		else if( (hcounterin == ff_disp_start_x) ||
+//				((hcounterin == ff_disp_start_x + (clocks_per_line/2)) && interlace_mode == 1'b0) )begin
+//			ff_video_out_x <= 1'b1;
+//		end
+//		else if( (hcounterin == ff_disp_start_x + disp_width) ||
+//				(hcounterin == ff_disp_start_x + disp_width + (clocks_per_line/2)) )begin
+//			ff_video_out_x <= 1'b0;
+//		end
+//	end
 
-	assign videohsout_n		= ff_hsync_n;
+	assign videohsout_n		= ff_h_sync;
 	assign videovsout_n		= ff_vsync_n;
-	assign blank_o			= ( ff_video_out_x == 1'b0 || ff_vsync_n == 1'b0 )? 1'b1: 1'b0;
 endmodule

@@ -57,7 +57,7 @@ module ip_debugger (
 	reg				ff_sdram_busy;
 	reg		[13:0]	ff_rom_address;
 	wire	[7:0]	w_rom_data;
-	reg		[5:0]	ff_wait_count;
+	reg		[9:0]	ff_wait_count;
 
 	// --------------------------------------------------------------------
 	//	VRAM Image ROM
@@ -468,7 +468,7 @@ module ip_debugger (
 					if( ack == 1'b1 ) begin
 						ff_req			<= 1'b0;
 						ff_state		<= ff_state + 'd1;
-						ff_wait_count	<= 6'd63;
+						ff_wait_count	<= 10'd1023;
 						ff_rom_address	<= ff_rom_address + 14'd1;
 					end
 					else begin
@@ -477,7 +477,7 @@ module ip_debugger (
 				end
 			'd48:
 				begin
-					if( ff_wait_count != 6'd0 ) begin
+					if( ff_wait_count != 10'd0 ) begin
 						ff_wait_count	<= ff_wait_count - 'd1;
 					end
 					else if( ff_rom_address == 14'h0000 ) begin

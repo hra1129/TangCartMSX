@@ -258,7 +258,6 @@ module tang20cart_msx (
 		.PVIDEOCS_N			( 							),	// OUT	STD_LOGIC;
 		.PVIDEODHCLK		( 							),	// OUT	STD_LOGIC;
 		.PVIDEODLCLK		( 							),	// OUT	STD_LOGIC;
-		.BLANK_O			( 							),	// OUT	STD_LOGIC;
 		.DISPRESO			( 1'b1						),	// IN	STD_LOGIC;
 		.NTSC_PAL_TYPE		( 1'b0						),	// IN	STD_LOGIC;
 		.FORCED_V_MODE		( 1'b0						),	// IN	STD_LOGIC;

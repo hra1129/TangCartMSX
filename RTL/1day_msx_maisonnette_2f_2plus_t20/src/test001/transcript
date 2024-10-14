@@ -1,7 +1,2 @@
 # OpenFile D:/github/HRA_product/TangCartMSX/RTL/1day_msx_maisonnette_2f_2plus_t20/src/test001/vsim.wlf
-add wave -position end  vsim:/tb/u_dut/u_v9958/PVIDEODHCLK
-add wave -position end  vsim:/tb/u_dut/u_v9958/PVIDEODLCLK
-add wave -position 0  vsim:/tb/u_dut/u_v9958/CLK
-add wave -position 1  vsim:/tb/u_dut/u_v9958/ENABLE
-add wave -position end  vsim:/tb/u_dut/u_v9958/PRAMOE_N
-add wave -position end  vsim:/tb/u_dut/u_v9958/PRAMWE_N
+add wave -position end vsim:/tb/u_dut/u_v9958/U_VDP_LCD/*

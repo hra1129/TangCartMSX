@@ -14,16 +14,17 @@
    "Type" : "verilog"
   },
   {
-   "Path" : "D:/github/HRA_product/TangCartMSX/RTL/1day_msx_maisonnette_2f_2plus_t20/src/sdram/ip_sdram.v",
-   "Type" : "verilog"
-  },
-  {
    "Path" : "D:/github/HRA_product/TangCartMSX/RTL/1day_msx_maisonnette_2f_2plus_t20/src/tang20cart_msx.v",
    "Type" : "verilog"
   },
   {
    "Path" : "D:/github/HRA_product/TangCartMSX/RTL/1day_msx_maisonnette_2f_2plus_t20/src/v9958clone/vdp_lcd.v",
    "Type" : "verilog"
+  },
+  {
+   "Library" : "work",
+   "Path" : "D:/github/HRA_product/TangCartMSX/RTL/1day_msx_maisonnette_2f_2plus_t20/src/sdram/ip_sdram_dummy.vhd",
+   "Type" : "vhdl"
   },
   {
    "Library" : "work",
