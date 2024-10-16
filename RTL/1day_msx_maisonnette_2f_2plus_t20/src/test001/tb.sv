@@ -159,7 +159,7 @@ module tb ();
 		keys[0]				= 1'b0;
 		@( posedge clk );
 
-		repeat( 1368 * 2500 ) @( posedge clk );
+		repeat( 1368 * 7000 ) @( posedge clk );
 
 		$finish;
 	end

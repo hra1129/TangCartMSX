@@ -14,6 +14,10 @@
    "Type" : "verilog"
   },
   {
+   "Path" : "D:/github/HRA_product/TangCartMSX/RTL/1day_msx_maisonnette_2f_2plus_t20/src/sdram/ip_sdram_dummy2.v",
+   "Type" : "verilog"
+  },
+  {
    "Path" : "D:/github/HRA_product/TangCartMSX/RTL/1day_msx_maisonnette_2f_2plus_t20/src/tang20cart_msx.v",
    "Type" : "verilog"
   },
@@ -22,14 +26,16 @@
    "Type" : "verilog"
   },
   {
-   "Library" : "work",
-   "Path" : "D:/github/HRA_product/TangCartMSX/RTL/1day_msx_maisonnette_2f_2plus_t20/src/sdram/ip_sdram_dummy.vhd",
-   "Type" : "vhdl"
+   "Path" : "D:/github/HRA_product/TangCartMSX/RTL/1day_msx_maisonnette_2f_2plus_t20/src/v9958clone/vdp_linebuf.v",
+   "Type" : "verilog"
   },
   {
-   "Library" : "work",
-   "Path" : "D:/github/HRA_product/TangCartMSX/RTL/1day_msx_maisonnette_2f_2plus_t20/src/v9958clone/ram.vhd",
-   "Type" : "vhdl"
+   "Path" : "D:/github/HRA_product/TangCartMSX/RTL/1day_msx_maisonnette_2f_2plus_t20/src/v9958clone/vdp_ram256.v",
+   "Type" : "verilog"
+  },
+  {
+   "Path" : "D:/github/HRA_product/TangCartMSX/RTL/1day_msx_maisonnette_2f_2plus_t20/src/v9958clone/vdp_graphic123m.v",
+   "Type" : "verilog"
   },
   {
    "Library" : "work",
@@ -53,11 +59,6 @@
   },
   {
    "Library" : "work",
-   "Path" : "D:/github/HRA_product/TangCartMSX/RTL/1day_msx_maisonnette_2f_2plus_t20/src/v9958clone/vdp_graphic123m.vhd",
-   "Type" : "vhdl"
-  },
-  {
-   "Library" : "work",
    "Path" : "D:/github/HRA_product/TangCartMSX/RTL/1day_msx_maisonnette_2f_2plus_t20/src/v9958clone/vdp_graphic4567.vhd",
    "Type" : "vhdl"
   },
@@ -69,16 +70,6 @@
   {
    "Library" : "work",
    "Path" : "D:/github/HRA_product/TangCartMSX/RTL/1day_msx_maisonnette_2f_2plus_t20/src/v9958clone/vdp_interrupt.vhd",
-   "Type" : "vhdl"
-  },
-  {
-   "Library" : "work",
-   "Path" : "D:/github/HRA_product/TangCartMSX/RTL/1day_msx_maisonnette_2f_2plus_t20/src/v9958clone/vdp_linebuf.vhd",
-   "Type" : "vhdl"
-  },
-  {
-   "Library" : "work",
-   "Path" : "D:/github/HRA_product/TangCartMSX/RTL/1day_msx_maisonnette_2f_2plus_t20/src/v9958clone/vdp_ntsc_pal.vhd",
    "Type" : "vhdl"
   },
   {

@@ -60,23 +60,44 @@ entity ip_sdram is
 end ip_sdram;
 
 architecture RTL of ip_sdram is
-	type typram is array ( 16383 downto 0 ) of std_logic_vector( 7 downto 0 );
-	signal	blkram		: typram;
+	type ram_type is array ( 0 to 16383 ) of std_logic_vector( 7 downto 0 );
+	signal	ff_ram		: ram_type;
+	signal	ff_address	: std_logic_vector( 13 downto 0 );
+	signal	ff_rd_n		: std_logic;
+	signal	ff_wr_n		: std_logic;
 	signal	ff_rdata	: std_logic_vector( 7 downto 0 );
-	signal	ff_rdata_en	: std_logic;
+	signal	ff_wdata	: std_logic_vector( 7 downto 0 );
 begin
 
 	process (clk)
 	begin
-		if( clk'event and clk ='1' )then
-			if( wr_n = '0' )then
-				blkram( conv_integer( address( 13 downto 0 ) ) ) <= wdata;
-				ff_rdata_en	<= '0';
-			elsif( rd_n = '0' )then
-				ff_rdata	<= blkram( conv_integer( address( 13 downto 0 ) ) );
-				ff_rdata_en	<= '1';
+		if( clk'event and clk = '1' )then
+			if( wr_n = '0' or rd_n = '0' )then
+				ff_address	<= address( 13 downto 0 );
+				ff_wr_n		<= wr_n;
+				ff_rd_n		<= rd_n;
+				ff_wdata	<= wdata;
 			else
-				ff_rdata_en	<= '0';
+				ff_wr_n		<= '1';
+				ff_rd_n		<= '1';
+			end if;
+		end if;
+	end process;
+
+	process (clk)
+	begin
+		if( clk'event and clk = '1' )then
+			if( ff_wr_n = '0' )then
+				ff_ram( conv_integer( ff_address ) ) <= ff_wdata;
+			end if;
+		end if;
+	end process;
+
+	process (clk)
+	begin
+		if( clk'event and clk = '1' )then
+			if( ff_rd_n = '0' )then
+				ff_rdata <= ff_ram( conv_integer( ff_address ) );
 			end if;
 		end if;
 	end process;
@@ -94,5 +115,5 @@ begin
 
 	busy			<= '0';
 	rdata			<= ff_rdata & ff_rdata;
-	rdata_en		<= ff_rdata_en;
+	rdata_en		<= '0';
 end RTL;

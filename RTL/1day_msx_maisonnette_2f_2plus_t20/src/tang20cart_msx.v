@@ -131,7 +131,7 @@ module tang20cart_msx (
 	assign sd_dat2		= ~ff_led[0];
 	assign sd_dat3		= ~ff_led[1];
 
-//	assign w_is_output	= 1'd0;			// *************************
+	assign w_is_output	= 1'd0;			// *************************
 //	assign w_o_data		= 8'd0;			// *************************
 
 //	assign td			= w_is_output   ? w_o_data : 8'hZZ;
@@ -210,7 +210,7 @@ module tang20cart_msx (
 		.rd_n				( w_sdram_read_n			),
 		.wr_n				( w_sdram_write_n			),
 		.busy				( w_sdram_busy				),
-		.address			( w_sdram_address			),
+		.address			( w_sdram_address[16:0]		),
 		.wdata				( w_sdram_wdata				),
 		.rdata				( w_sdram_rdata				),
 		.rdata_en			( w_sdram_rdata_en			),
@@ -242,7 +242,7 @@ module tang20cart_msx (
 		.INT_N				( 							),	// OUT	STD_LOGIC;
 		.PRAMOE_N			( w_sdram_read_n			),	// OUT	STD_LOGIC;
 		.PRAMWE_N			( w_sdram_write_n			),	// OUT	STD_LOGIC;
-		.PRAMADR			( w_sdram_address			),	// OUT	STD_LOGIC_VECTOR( 16 DOWNTO 0 );
+		.PRAMADR			( w_sdram_address[16:0]		),	// OUT	STD_LOGIC_VECTOR( 16 DOWNTO 0 );
 		.PRAMDBI			( w_sdram_rdata				),	// IN	STD_LOGIC_VECTOR( 15 DOWNTO 0 );
 		.PRAMDBO			( w_sdram_wdata				),	// OUT	STD_LOGIC_VECTOR(  7 DOWNTO 0 );
 		.VDPSPEEDMODE		( 1'b0						),	// IN	STD_LOGIC;
@@ -255,7 +255,6 @@ module tang20cart_msx (
 		.PVIDEOB			( w_lcd_blue				),	// OUT	STD_LOGIC_VECTOR(  5 DOWNTO 0 );
 		.PVIDEOHS_N			( lcd_hsync					),	// OUT	STD_LOGIC;
 		.PVIDEOVS_N			( lcd_vsync					),	// OUT	STD_LOGIC;
-		.PVIDEOCS_N			( 							),	// OUT	STD_LOGIC;
 		.PVIDEODHCLK		( 							),	// OUT	STD_LOGIC;
 		.PVIDEODLCLK		( 							),	// OUT	STD_LOGIC;
 		.DISPRESO			( 1'b1						),	// IN	STD_LOGIC;
@@ -266,10 +265,11 @@ module tang20cart_msx (
 		.OFFSET_Y			( c_offset_y				)	// IN	STD_LOGIC_VECTOR(  6 DOWNTO 0 )
     );
 
-	assign lcd_red		= w_lcd_red[5:1];
-	assign lcd_green	= w_lcd_green;
-	assign lcd_blue		= w_lcd_blue[5:1];
-	assign lcd_bl		= 1'b1;
+	assign w_sdram_address[22:17]	= 6'b000000;
+	assign lcd_red					= w_lcd_red[5:1];
+	assign lcd_green				= w_lcd_green;
+	assign lcd_blue					= w_lcd_blue[5:1];
+	assign lcd_bl					= 1'b1;
 endmodule
 
 `default_nettype wire

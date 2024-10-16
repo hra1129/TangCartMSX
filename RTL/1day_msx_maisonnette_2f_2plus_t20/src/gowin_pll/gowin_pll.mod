@@ -7,16 +7,16 @@
 
 -mod_name Gowin_PLL
 -file_name gowin_pll
--path D:/github/HRA_product/TangCartMSX/RTL/Tang20kcartMSX/src/gowin_pll/
+-path D:/github/HRA_product/TangCartMSX/RTL/1day_msx_maisonnette_2f_2plus_t20/src/gowin_pll/
 -type PLL
 -file_type vlg
 -dev_type GW2AR-18
 -dyn_idiv_sel false
--idiv_sel 4
+-idiv_sel 1
 -dyn_fbdiv_sel false
--fbdiv_sel 13
+-fbdiv_sel 2
 -dyn_odiv_sel false
--odiv_sel 8
+-odiv_sel 16
 -dyn_da_en false
 -rst_sig false
 -rst_sig_p false

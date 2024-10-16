@@ -6,7 +6,8 @@ vlog ..\debugger\vram_image_rom_wrap.v
 vlog MT48LC2M32B2.v
 
 rem vlog ..\sdram\ip_sdram.v
-vcom ..\sdram\ip_sdram_dummy.vhd
+rem vcom ..\sdram\ip_sdram_dummy.vhd
+vlog ..\sdram\ip_sdram_dummy2.v
 
 vcom ..\v9958clone\ram.vhd
 vcom ..\v9958clone\vdp_package.vhd
@@ -17,14 +18,12 @@ vcom ..\v9958clone\vdp_graphic123m.vhd
 vcom ..\v9958clone\vdp_graphic4567.vhd
 vcom ..\v9958clone\vdp_hvcounter.vhd
 vcom ..\v9958clone\vdp_interrupt.vhd
-vcom ..\v9958clone\vdp_linebuf.vhd
-vcom ..\v9958clone\vdp_ntsc_pal.vhd
+vlog ..\v9958clone\vdp_linebuf.v
 vcom ..\v9958clone\vdp_register.vhd
 vcom ..\v9958clone\vdp_spinforam.vhd
 vcom ..\v9958clone\vdp_sprite.vhd
 vcom ..\v9958clone\vdp_ssg.vhd
 vcom ..\v9958clone\vdp_text12.vhd
-rem vcom ..\v9958clone\vdp_vga.vhd
 vlog ..\v9958clone\vdp_lcd.v
 vcom ..\v9958clone\vdp_wait_control.vhd
 vcom ..\v9958clone\vdp.vhd

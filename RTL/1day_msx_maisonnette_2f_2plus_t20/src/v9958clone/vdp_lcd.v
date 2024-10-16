@@ -121,12 +121,12 @@ module vdp_lcd(
 //	reg		[9:0]	ff_x_position_r;
 	wire			w_evenodd;
 	wire			w_we_buf;
-	wire	[5:0]	w_data_r_out;
-	wire	[5:0]	w_data_g_out;
-	wire	[5:0]	w_data_b_out;
+	wire	[4:0]	w_data_r_out;
+	wire	[4:0]	w_data_g_out;
+	wire	[4:0]	w_data_b_out;
 //	reg		[10:0]	ff_disp_start_x;
 
-	reg				ff_lcd_clk;
+	reg				ff_lcd_clk = 1'b0;
 	reg		[10:0]	ff_h_cnt;
 	reg				ff_h_sync;
 	reg				ff_h_active;
@@ -170,15 +170,15 @@ module vdp_lcd(
 	// --------------------------------------------------------------------
 	//	LCD clock
 	// --------------------------------------------------------------------
-	always @( posedge clk ) begin
-		if( reset ) begin
-			ff_lcd_clk <= 1'b0;
-		end
-		else begin
-			ff_lcd_clk <= ~ff_lcd_clk;
-		end
-	end
-	assign lcd_clk	= ff_lcd_clk;
+//	always @( posedge clk ) begin
+//		if( reset ) begin
+//			ff_lcd_clk <= 1'b0;
+//		end
+//		else begin
+//			ff_lcd_clk <= ~ff_lcd_clk;
+//		end
+//	end
+	assign lcd_clk	= clk;	//ff_lcd_clk;
 
 	// --------------------------------------------------------------------
 	//	H Counter
@@ -344,9 +344,9 @@ module vdp_lcd(
 	// --------------------------------------------------------------------
 	assign w_lcd_de		= ff_h_active && ff_v_active;
 	assign w_vdp_de		= ff_h_vdp_active && ff_v_active;
-	assign videorout	= w_vdp_de ? w_data_r_out: 6'd0;
-	assign videogout	= w_vdp_de ? w_data_g_out: 6'd0;
-	assign videobout	= w_vdp_de ? w_data_b_out: 6'd0;
+	assign videorout	= w_vdp_de ? { w_data_r_out, 1'b0 }: 6'd0;
+	assign videogout	= w_vdp_de ? { w_data_g_out, 1'b0 }: 6'd0;
+	assign videobout	= w_vdp_de ? { w_data_b_out, 1'b0 }: 6'd0;
 	assign lcd_de		= w_lcd_de;
 
 	vdp_doublebuf dbuf (
@@ -354,11 +354,10 @@ module vdp_lcd(
 		.xpositionw		( w_x_position_w	),
 		.xpositionr		( w_x_position_r	),
 		.evenodd		( w_evenodd			),
-		.enable			( enable			),
 		.we				( w_we_buf			),
-		.datarin		( videorin			),
-		.datagin		( videogin			),
-		.databin		( videobin			),
+		.datarin		( videorin[5:1]		),
+		.datagin		( videogin[5:1]		),
+		.databin		( videobin[5:1]		),
 		.datarout		( w_data_r_out		),
 		.datagout		( w_data_g_out		),
 		.databout		( w_data_b_out		)
