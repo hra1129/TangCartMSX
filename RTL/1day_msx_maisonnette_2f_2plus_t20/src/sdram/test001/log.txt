@@ -1,50 +1,99 @@
-# vsim -c -t 1ps -do "run.do" tb 
-# Start time: 07:56:49 on Oct 14,2024
+# vsim -c -t 1ns -do "run.do" tb 
+# Start time: 21:43:22 on Oct 22,2024
 # Loading sv_std.std
 # Loading work.tb
 # Loading work.ip_sdram
 # Loading work.mt48lc2m32b2
 # do run.do
-# tb.u_sdram : at time   61755.5 ns AREF : Auto Refresh
-# tb.u_sdram : at time   61792.5 ns AREF : Auto Refresh
-# tb.u_sdram : at time   61829.6 ns LMR  : Load Mode Register
-# tb.u_sdram :                             CAS Latency      = 2
+# tb.u_sdram : at time    9258.0 ns LMR  : Load Mode Register
+# tb.u_sdram :                             CAS Latency      = Reserved
 # tb.u_sdram :                             Burst Length     = 1
 # tb.u_sdram :                             Burst Type       = Sequential
 # tb.u_sdram :                             Write Burst Mode = Programmed Burst Length
-# tb.u_sdram : at time   61848.1 ns ACT  : Bank = 0 Row =    0
-# tb.u_sdram : at time   61912.9 ns WRITE: Bank = 0 Row =    0, Col =   0, Data = xxxxxx12
-# tb.u_sdram : at time   61986.9 ns ERROR: Bank is not Activated for Write
-# tb.u_sdram : at time   61986.9 ns WRITE: Bank = 0 Row =    0, Col =   0, Data = xxxx2312
-# tb.u_sdram : at time   62042.5 ns ACT  : Bank = 0 Row = 1024
-# tb.u_sdram : at time   62061.0 ns WRITE: Bank = 0 Row = 1024, Col =   0, Data = xx34xxxx
-# tb.u_sdram : at time   62135.1 ns ERROR: Bank is not Activated for Write
-# tb.u_sdram : at time   62135.1 ns WRITE: Bank = 0 Row = 1024, Col =   0, Data = 4534xxxx
-# tb.u_sdram : at time   62190.6 ns ACT  : Bank = 1 Row =    0
-# tb.u_sdram : at time   62209.1 ns WRITE: Bank = 1 Row =    0, Col =   0, Data = xxxxxx56
-# tb.u_sdram : at time   62283.2 ns ERROR: Bank is not Activated for Write
-# tb.u_sdram : at time   62283.2 ns WRITE: Bank = 1 Row =    0, Col =   0, Data = xxxx6756
-# tb.u_sdram : at time   62338.7 ns ACT  : Bank = 1 Row = 1024
-# tb.u_sdram : at time   62357.3 ns WRITE: Bank = 1 Row = 1024, Col =   0, Data = xx78xxxx
-# tb.u_sdram : at time   62431.3 ns ERROR: Bank is not Activated for Write
-# tb.u_sdram : at time   62431.3 ns WRITE: Bank = 1 Row = 1024, Col =   0, Data = 8978xxxx
-# tb.u_sdram : at time   62486.9 ns ACT  : Bank = 0 Row =    0
-# tb.u_sdram : at time   62514.7 ns READ : Bank = 0 Row =    0, Col =   0, Data = xxxx2312
-# tb.u_sdram : at time   62551.7 ns ACT  : Bank = 0 Row =    0
-# tb.u_sdram : at time   62579.5 ns READ : Bank = 0 Row =    0, Col =   0, Data = xxxx2312
-# tb.u_sdram : at time   62616.5 ns ACT  : Bank = 0 Row = 1024
-# tb.u_sdram : at time   62644.3 ns READ : Bank = 0 Row = 1024, Col =   0, Data = 4534xxxx
-# tb.u_sdram : at time   62681.3 ns ACT  : Bank = 0 Row = 1024
-# tb.u_sdram : at time   62709.1 ns READ : Bank = 0 Row = 1024, Col =   0, Data = 4534xxxx
-# tb.u_sdram : at time   62746.1 ns ACT  : Bank = 1 Row =    0
-# tb.u_sdram : at time   62773.9 ns READ : Bank = 1 Row =    0, Col =   0, Data = xxxx6756
-# tb.u_sdram : at time   62810.9 ns ACT  : Bank = 1 Row =    0
-# tb.u_sdram : at time   62838.7 ns READ : Bank = 1 Row =    0, Col =   0, Data = xxxx6756
-# tb.u_sdram : at time   62875.7 ns ACT  : Bank = 1 Row = 1024
-# tb.u_sdram : at time   62903.5 ns READ : Bank = 1 Row = 1024, Col =   0, Data = 8978xxxx
-# tb.u_sdram : at time   62940.5 ns ACT  : Bank = 1 Row = 1024
-# tb.u_sdram : at time   62968.3 ns READ : Bank = 1 Row = 1024, Col =   0, Data = 8978xxxx
-# ** Note: $finish    : tb.sv(196)
-#    Time: 62996061 ps  Iteration: 1  Instance: /tb
-# End time: 07:56:50 on Oct 14,2024, Elapsed time: 0:00:01
+# tb.u_sdram : at time    9258.0 ns ERROR: all banks must be Precharge before Load Mode Register
+# tb.u_sdram : at time    9258.0 ns ERROR: tMRD violation during Load Mode Register
+# tb.u_sdram : at time   18516.0 ns LMR  : Load Mode Register
+# tb.u_sdram :                             CAS Latency      = Reserved
+# tb.u_sdram :                             Burst Length     = 1
+# tb.u_sdram :                             Burst Type       = Sequential
+# tb.u_sdram :                             Write Burst Mode = Programmed Burst Length
+# tb.u_sdram : at time   18516.0 ns ERROR: all banks must be Precharge before Load Mode Register
+# tb.u_sdram : at time   18516.0 ns ERROR: tMRD violation during Load Mode Register
+# tb.u_sdram : at time   27774.0 ns LMR  : Load Mode Register
+# tb.u_sdram :                             CAS Latency      = Reserved
+# tb.u_sdram :                             Burst Length     = 1
+# tb.u_sdram :                             Burst Type       = Sequential
+# tb.u_sdram :                             Write Burst Mode = Programmed Burst Length
+# tb.u_sdram : at time   27774.0 ns ERROR: all banks must be Precharge before Load Mode Register
+# tb.u_sdram : at time   27774.0 ns ERROR: tMRD violation during Load Mode Register
+# tb.u_sdram : at time 101115876.0 ns AREF : Auto Refresh
+# tb.u_sdram : at time 101115876.0 ns ERROR: All banks must be Precharge before Auto Refresh
+# tb.u_sdram : at time 101273262.0 ns AREF : Auto Refresh
+# tb.u_sdram : at time 101273262.0 ns ERROR: All banks must be Precharge before Auto Refresh
+# tb.u_sdram : at time 101430648.0 ns LMR  : Load Mode Register
+# tb.u_sdram :                             CAS Latency      = 2
+# tb.u_sdram :                             Burst Length     = 1
+# tb.u_sdram :                             Burst Type       = Sequential
+# tb.u_sdram :                             Write Burst Mode = Single Location Access
+# tb.u_sdram : at time 101578776.0 ns ERROR: Bank is not Activated for Read
+# tb.u_sdram : at time 101588034.0 ns NOTE : Start Internal Auto Precharge for Bank 0
+# tb.u_sdram : at time 101588040.0 ns READ : Bank = 0 Row =    x, Col =   0, Data = xxxxxxxx
+# tb.u_sdram : at time 101615808.0 ns AREF : Auto Refresh
+# tb.u_sdram : at time 101615808.0 ns ERROR: All banks must be Precharge before Auto Refresh
+# tb.u_sdram : at time 101625066.0 ns AREF : Auto Refresh
+# tb.u_sdram : at time 101625066.0 ns ERROR: All banks must be Precharge before Auto Refresh
+# tb.u_sdram : at time 101726904.0 ns ERROR: Bank is not Activated for Write
+# tb.u_sdram : at time 101726904.0 ns WRITE: Bank = 0 Row =    x, Col =   0, Data = xxxxxx12
+# tb.u_sdram : at time 101736162.0 ns NOTE : Start Internal Auto Precharge for Bank 0
+# tb.u_sdram : at time 101875032.0 ns ERROR: Bank is not Activated for Write
+# tb.u_sdram : at time 101875032.0 ns WRITE: Bank = 0 Row =    x, Col =   0, Data = xx23xxxx
+# tb.u_sdram : at time 101884290.0 ns NOTE : Start Internal Auto Precharge for Bank 0
+# tb.u_sdram : at time 102023160.0 ns ERROR: Bank is not Activated for Write
+# tb.u_sdram : at time 102023160.0 ns WRITE: Bank = 0 Row =    x, Col =   1, Data = xxxxxx34
+# tb.u_sdram : at time 102032418.0 ns NOTE : Start Internal Auto Precharge for Bank 0
+# tb.u_sdram : at time 102171288.0 ns ERROR: Bank is not Activated for Write
+# tb.u_sdram : at time 102171288.0 ns WRITE: Bank = 0 Row =    x, Col =   1, Data = xx45xxxx
+# tb.u_sdram : at time 102180546.0 ns NOTE : Start Internal Auto Precharge for Bank 0
+# tb.u_sdram : at time 102319416.0 ns ERROR: Bank is not Activated for Write
+# tb.u_sdram : at time 102319416.0 ns WRITE: Bank = 0 Row =    x, Col =   2, Data = xxxxxx56
+# tb.u_sdram : at time 102328674.0 ns NOTE : Start Internal Auto Precharge for Bank 0
+# tb.u_sdram : at time 102467544.0 ns ERROR: Bank is not Activated for Write
+# tb.u_sdram : at time 102467544.0 ns WRITE: Bank = 0 Row =    x, Col =   2, Data = xx67xxxx
+# tb.u_sdram : at time 102476802.0 ns NOTE : Start Internal Auto Precharge for Bank 0
+# tb.u_sdram : at time 102615672.0 ns ERROR: Bank is not Activated for Write
+# tb.u_sdram : at time 102615672.0 ns WRITE: Bank = 0 Row =    x, Col =   3, Data = xxxxxx78
+# tb.u_sdram : at time 102624930.0 ns NOTE : Start Internal Auto Precharge for Bank 0
+# tb.u_sdram : at time 102763800.0 ns ERROR: Bank is not Activated for Write
+# tb.u_sdram : at time 102763800.0 ns WRITE: Bank = 0 Row =    x, Col =   3, Data = xx89xxxx
+# tb.u_sdram : at time 102773058.0 ns NOTE : Start Internal Auto Precharge for Bank 0
+# tb.u_sdram : at time 102911928.0 ns ERROR: Bank is not Activated for Read
+# tb.u_sdram : at time 102921186.0 ns NOTE : Start Internal Auto Precharge for Bank 0
+# tb.u_sdram : at time 102921192.0 ns READ : Bank = 0 Row =    x, Col =   0, Data = xxxxxxxx
+# tb.u_sdram : at time 103060056.0 ns ERROR: Bank is not Activated for Read
+# tb.u_sdram : at time 103069314.0 ns NOTE : Start Internal Auto Precharge for Bank 0
+# tb.u_sdram : at time 103069320.0 ns READ : Bank = 0 Row =    x, Col =   0, Data = xxxxxxxx
+# tb.u_sdram : at time 103208184.0 ns ERROR: Bank is not Activated for Read
+# tb.u_sdram : at time 103217442.0 ns NOTE : Start Internal Auto Precharge for Bank 0
+# tb.u_sdram : at time 103217448.0 ns READ : Bank = 0 Row =    x, Col =   1, Data = xxxxxxxx
+# tb.u_sdram : at time 103356312.0 ns ERROR: Bank is not Activated for Read
+# tb.u_sdram : at time 103365570.0 ns NOTE : Start Internal Auto Precharge for Bank 0
+# tb.u_sdram : at time 103365576.0 ns READ : Bank = 0 Row =    x, Col =   1, Data = xxxxxxxx
+# tb.u_sdram : at time 103504440.0 ns ERROR: Bank is not Activated for Read
+# tb.u_sdram : at time 103513698.0 ns NOTE : Start Internal Auto Precharge for Bank 0
+# tb.u_sdram : at time 103513704.0 ns READ : Bank = 0 Row =    x, Col =   0, Data = xxxxxxxx
+# tb.u_sdram : at time 103652568.0 ns ERROR: Bank is not Activated for Read
+# tb.u_sdram : at time 103661826.0 ns NOTE : Start Internal Auto Precharge for Bank 0
+# tb.u_sdram : at time 103661832.0 ns READ : Bank = 0 Row =    x, Col =   0, Data = xxxxxxxx
+# tb.u_sdram : at time 103800696.0 ns ERROR: Bank is not Activated for Read
+# tb.u_sdram : at time 103809954.0 ns NOTE : Start Internal Auto Precharge for Bank 0
+# tb.u_sdram : at time 103809960.0 ns READ : Bank = 0 Row =    x, Col =   1, Data = xxxxxxxx
+# tb.u_sdram : at time 103948824.0 ns ERROR: Bank is not Activated for Read
+# tb.u_sdram : at time 103958082.0 ns NOTE : Start Internal Auto Precharge for Bank 0
+# tb.u_sdram : at time 103958088.0 ns READ : Bank = 0 Row =    x, Col =   1, Data = xxxxxxxx
+# tb.u_sdram : at time 104096952.0 ns ERROR: Bank is not Activated for Read
+# tb.u_sdram : at time 104106210.0 ns NOTE : Start Internal Auto Precharge for Bank 0
+# tb.u_sdram : at time 104106216.0 ns READ : Bank = 0 Row =    x, Col =   1, Data = xxxxxxxx
+# ** Note: $finish    : tb.sv(203)
+#    Time: 104166387 ns  Iteration: 1  Instance: /tb
+# End time: 21:43:23 on Oct 22,2024, Elapsed time: 0:00:01
 # Errors: 0, Warnings: 0

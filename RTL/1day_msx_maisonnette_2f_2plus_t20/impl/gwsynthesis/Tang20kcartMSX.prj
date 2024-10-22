@@ -5,14 +5,14 @@
     <Device id="GW2AR-18" package="QFN88" speed="8" partNumber="GW2AR-LV18QN88C8/I7"/>
     <FileList>
         <File path="D:\github\HRA_product\TangCartMSX\RTL\1day_msx_maisonnette_2f_2plus_t20\src\debugger\ip_debugger.v" type="verilog"/>
-        <File path="D:\github\HRA_product\TangCartMSX\RTL\1day_msx_maisonnette_2f_2plus_t20\src\debugger\vram_image_rom_wrap.v" type="verilog"/>
+        <File path="D:\github\HRA_product\TangCartMSX\RTL\1day_msx_maisonnette_2f_2plus_t20\src\debugger\vram_image_rom.v" type="verilog"/>
         <File path="D:\github\HRA_product\TangCartMSX\RTL\1day_msx_maisonnette_2f_2plus_t20\src\gowin_pll\gowin_pll.v" type="verilog"/>
-        <File path="D:\github\HRA_product\TangCartMSX\RTL\1day_msx_maisonnette_2f_2plus_t20\src\sdram\ip_sdram_dummy2.v" type="verilog"/>
+        <File path="D:\github\HRA_product\TangCartMSX\RTL\1day_msx_maisonnette_2f_2plus_t20\src\sdram\ip_sdram.v" type="verilog"/>
         <File path="D:\github\HRA_product\TangCartMSX\RTL\1day_msx_maisonnette_2f_2plus_t20\src\tang20cart_msx.v" type="verilog"/>
+        <File path="D:\github\HRA_product\TangCartMSX\RTL\1day_msx_maisonnette_2f_2plus_t20\src\v9958clone\vdp_graphic123m.v" type="verilog"/>
         <File path="D:\github\HRA_product\TangCartMSX\RTL\1day_msx_maisonnette_2f_2plus_t20\src\v9958clone\vdp_lcd.v" type="verilog"/>
         <File path="D:\github\HRA_product\TangCartMSX\RTL\1day_msx_maisonnette_2f_2plus_t20\src\v9958clone\vdp_linebuf.v" type="verilog"/>
         <File path="D:\github\HRA_product\TangCartMSX\RTL\1day_msx_maisonnette_2f_2plus_t20\src\v9958clone\vdp_ram256.v" type="verilog"/>
-        <File path="D:\github\HRA_product\TangCartMSX\RTL\1day_msx_maisonnette_2f_2plus_t20\src\v9958clone\vdp_graphic123m.v" type="verilog"/>
         <File path="D:\github\HRA_product\TangCartMSX\RTL\1day_msx_maisonnette_2f_2plus_t20\src\v9958clone\vdp.vhd" type="vhdl"/>
         <File path="D:\github\HRA_product\TangCartMSX\RTL\1day_msx_maisonnette_2f_2plus_t20\src\v9958clone\vdp_colordec.vhd" type="vhdl"/>
         <File path="D:\github\HRA_product\TangCartMSX\RTL\1day_msx_maisonnette_2f_2plus_t20\src\v9958clone\vdp_command.vhd" type="vhdl"/>

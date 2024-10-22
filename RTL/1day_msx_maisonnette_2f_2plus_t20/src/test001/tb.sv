@@ -151,7 +151,7 @@ module tb ();
 		@( posedge clk );
 
 		n_treset		= 1;
-		repeat( 10000 ) @( posedge clk );
+		repeat( 11000 ) @( posedge clk );
 
 		keys[0]				= 1'b1;
 		@( posedge clk );
@@ -159,7 +159,7 @@ module tb ();
 		keys[0]				= 1'b0;
 		@( posedge clk );
 
-		repeat( 1368 * 7000 ) @( posedge clk );
+		repeat( 1368 * 1000 ) @( posedge clk );
 
 		$finish;
 	end

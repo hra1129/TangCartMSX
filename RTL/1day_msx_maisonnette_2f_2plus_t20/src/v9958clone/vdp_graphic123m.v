@@ -110,7 +110,7 @@ module vdp_graphic123m (
 									  ( { reg_r4_pt_gen_addr[5:2], dot_counter_y[7:6], ff_pat_num, dot_counter_y[2:0] } & { 4'b1111, reg_r4_pt_gen_addr[1:0], 11'b11111111111 } );
 
 	assign w_req_pat_col_tbl_addr	= ( vdp_mode_multi == 1'b1 || vdp_mode_multiq == 1'b1 ) ? { reg_r4_pt_gen_addr, ff_pat_num, dot_counter_y[4:2] } :
-									  ( vdp_mode_graphic1 == 1'b1 )                       ? { reg_r10r3_col_addr, 1'b0, ff_pat_num[7:3] } :
+									  ( vdp_mode_graphic1 == 1'b1 )                         ? { reg_r10r3_col_addr, 1'b0, ff_pat_num[7:3] } :
 									  ( { reg_r10r3_col_addr[10:7], dot_counter_y[7:6], ff_pat_num, dot_counter_y[2:0] } & { 4'b1111, reg_r10r3_col_addr[6:0], 6'b111111 } );
 
 	// dram read request
@@ -139,7 +139,10 @@ module vdp_graphic123m (
 	assign p_ram_adr		= ff_req_addr;
 	assign p_color_code		= ff_col_code;
 
-	// ff
+	// --------------------------------------------------------------------
+	//	[memo]
+	//	dot_state: 00 -> 01 -> 11 -> 10 -> 00 (gray code)
+	// --------------------------------------------------------------------
 	always @( posedge clk ) begin
 		if( reset )begin
 			ff_pat_col <= 8'd0;
@@ -162,7 +165,7 @@ module vdp_graphic123m (
 		else if( dot_state == 2'b00 && w_eight_dot_state_dec[0] == 1'b1 )begin
 			ff_pat_gen <= ff_pre_pat_gen;
 		end
-		else if( dot_state == 2'b01 )begin
+		else if( dot_state == 2'b11 )begin
 			ff_pat_gen <= { ff_pat_gen[6:0], 1'b0 };
 		end
 	end
@@ -174,7 +177,7 @@ module vdp_graphic123m (
 		else if( !enable )begin
 			//	hold
 		end
-		else if( dot_state == 2'b01 && w_eight_dot_state_dec[1] == 1'b1 )begin
+		else if( dot_state == 2'b11 && w_eight_dot_state_dec[1] == 1'b1 )begin
 			ff_pat_num <= p_ram_dat;
 		end
 	end
@@ -186,7 +189,7 @@ module vdp_graphic123m (
 		else if( !enable )begin
 			//	hold
 		end
-		else if( dot_state == 2'b01 && w_eight_dot_state_dec[2] == 1'b1 )begin
+		else if( dot_state == 2'b11 && w_eight_dot_state_dec[2] == 1'b1 )begin
 			ff_pre_pat_gen <= p_ram_dat;
 		end
 	end
@@ -198,7 +201,7 @@ module vdp_graphic123m (
 		else if( !enable )begin
 			//	hold
 		end
-		else if( dot_state == 2'b01 && w_eight_dot_state_dec[3] == 1'b1 )begin
+		else if( dot_state == 2'b11 && w_eight_dot_state_dec[3] == 1'b1 )begin
 			ff_pre_pat_col <= p_ram_dat;
 		end
 	end
@@ -210,7 +213,7 @@ module vdp_graphic123m (
 		else if( !enable )begin
 			//	hold
 		end
-		else if( dot_state == 2'b01 )begin
+		else if( dot_state == 2'b11 )begin
 			ff_col_code <= w_col_code;
 		end
 	end

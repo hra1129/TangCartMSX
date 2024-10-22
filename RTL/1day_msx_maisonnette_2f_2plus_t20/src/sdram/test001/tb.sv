@@ -27,15 +27,16 @@
 module tb ();
 	localparam		clk_base	= 1_000_000_000/108_000;	//	ps
 	reg				n_reset;
-	reg				clk;				// 108MHz
-	reg				clk_sdram;			// 108MHz with 180dgree delay
-	reg				rd;					// Set to 1 to read
-	reg				wr;					// Set to 1 to write
-	wire			busy;
-	reg		[22:0]	address;			// Byte address (8MBytes)
-	reg		[7:0]	wdata;
+	reg				clk;				//	85.90908MHz
+	reg				clk_sdram;			//	85.90908MHz
+	wire			exec;				//	21.47727MHz
+	wire			sdram_busy;
+	reg				dh_clk;				//	10.738635MHz: VideoDHClk
+	reg				dl_clk;				//	 5.369318MHz: VideoDLClk
+	reg		[22:0]	address;
+	reg				is_write;			//	0:Read, 1:Write
+	reg		[ 7:0]	wdata;
 	wire	[15:0]	rdata;
-	wire			rdata_en;
 	wire			O_sdram_clk;
 	wire			O_sdram_cke;
 	wire			O_sdram_cs_n;		// chip select
@@ -44,8 +45,9 @@ module tb ();
 	wire			O_sdram_wen_n;		// write enable
 	wire	[31:0]	IO_sdram_dq;		// 32 bit bidirectional data bus
 	wire	[10:0]	O_sdram_addr;		// 11 bit multiplexed address bus
-	wire	[1:0]	O_sdram_ba;			// two banks
-	wire	[3:0]	O_sdram_dqm;		// data mask
+	wire	[ 1:0]	O_sdram_ba;			// two banks
+	wire	[ 3:0]	O_sdram_dqm;		// data mask
+	reg		[ 1:0]	ff_video_clk;
 
 	// --------------------------------------------------------------------
 	//	DUT
@@ -54,13 +56,14 @@ module tb ();
 		.n_reset			( n_reset			),
 		.clk				( clk				),
 		.clk_sdram			( clk_sdram			),
-		.rd_n				( !rd				),
-		.wr_n				( !wr				),
-		.busy				( busy				),
+		.exec				( exec				),
+		.sdram_busy			( sdram_busy		),
+		.dh_clk				( dh_clk			),
+		.dl_clk				( dl_clk			),
 		.address			( address			),
+		.is_write			( is_write			),
 		.wdata				( wdata				),
 		.rdata				( rdata				),
-		.rdata_en			( rdata_en			),
 		.O_sdram_clk		( O_sdram_clk		),
 		.O_sdram_cke		( O_sdram_cke		),
 		.O_sdram_cs_n		( O_sdram_cs_n		),
@@ -95,6 +98,30 @@ module tb ();
 		clk_sdram <= ~clk_sdram;
 	end
 
+	always @( posedge clk ) begin
+		ff_video_clk <= ff_video_clk + 2'd1;
+	end
+
+	assign exec		= (ff_video_clk == 2'b11);
+
+	always @( posedge clk ) begin
+		if( sdram_busy ) begin
+			//	hold
+		end
+		else if( exec ) begin
+			dh_clk <= ~dh_clk;
+		end
+	end
+
+	always @( posedge clk ) begin
+		if( sdram_busy ) begin
+			//	hold
+		end
+		else if( exec && !dh_clk ) begin
+			dl_clk <= ~dl_clk;
+		end
+	end
+
 	// --------------------------------------------------------------------
 	//	Tasks
 	// --------------------------------------------------------------------
@@ -102,19 +129,15 @@ module tb ();
 		input	[22:0]	p_address,
 		input	[7:0]	p_data
 	);
-		while( busy ) begin
-			@( posedge clk );
-		end
-
 		address		<= p_address;
 		wdata		<= p_data;
-		wr			<= 1'b1;
-		@( posedge clk );
+		is_write	<= 1'b1;
+		repeat( 4 ) @( posedge clk );
 
 		address		<= 0;
 		wdata		<= 0;
-		wr			<= 1'b0;
-		@( posedge clk );
+		is_write	<= 1'b0;
+		repeat( 12 ) @( posedge clk );
 	endtask: write_data
 
 	// --------------------------------------------------------------------
@@ -124,29 +147,9 @@ module tb ();
 	);
 		int time_out;
 
-		while( busy ) begin
-			@( posedge clk );
-		end
-
 		address		<= p_address;
-		rd			<= 1'b1;
-		@( posedge clk );
-
-		rd			<= 1'b0;
-		time_out	= 100;
-		forever begin
-			if( rdata_en ) begin
-				assert( p_data == rdata );
-				break;
-			end
-			@( posedge clk );
-			time_out <= time_out - 1;
-			if( time_out == 0 ) begin
-				$error( "Read time out." );
-				$finish;
-			end
-		end
-		@( posedge clk );
+		is_write	<= 1'b0;
+		repeat( 16 ) @( posedge clk );
 	endtask: read_data
 
 	// --------------------------------------------------------------------
@@ -156,43 +159,47 @@ module tb ();
 		n_reset = 0;
 		clk = 0;
 		clk_sdram = 1;
-		rd = 0;
-		wr = 0;
+		is_write = 0;
 		address = 0;
 		wdata = 0;
+		ff_video_clk = 0;
+
+		dh_clk = 0;
+		dl_clk = 1;
 
 		@( negedge clk );
 		@( negedge clk );
 		@( posedge clk );
 
 		n_reset			= 1;
-		repeat( 10 ) @( posedge clk );
+		@( posedge clk );
 
-		write_data( 'h000000, 'h12 );
-		write_data( 'h000001, 'h23 );
-		write_data( 'h100002, 'h34 );
-		write_data( 'h100003, 'h45 );
-		write_data( 'h200000, 'h56 );
-		write_data( 'h200001, 'h67 );
-		write_data( 'h300002, 'h78 );
-		write_data( 'h300003, 'h89 );
-
-		read_data(  'h000000, 'h2312 );
-		read_data(  'h000001, 'h2312 );
-		read_data(  'h100002, 'h4534 );
-		read_data(  'h100003, 'h4534 );
-		read_data(  'h200000, 'h6756 );
-		read_data(  'h200001, 'h6756 );
-		read_data(  'h300002, 'h8978 );
-		read_data(  'h300003, 'h8978 );
-
-		forever begin
-			if( !busy ) begin
-				break;
-			end
+		while( sdram_busy ) begin
 			@( posedge clk );
 		end
 
+		repeat( 16 ) @( posedge clk );
+		repeat( 8 ) @( posedge clk );
+
+		write_data( 'h000000, 'h12 );
+		write_data( 'h000001, 'h23 );
+		write_data( 'h000002, 'h34 );
+		write_data( 'h000003, 'h45 );
+		write_data( 'h000004, 'h56 );
+		write_data( 'h000005, 'h67 );
+		write_data( 'h000006, 'h78 );
+		write_data( 'h000007, 'h89 );
+
+		read_data(  'h000000, 'h2312 );
+		read_data(  'h000001, 'h2312 );
+		read_data(  'h000002, 'h4534 );
+		read_data(  'h000003, 'h4534 );
+		read_data(  'h000000, 'h6756 );
+		read_data(  'h000001, 'h6756 );
+		read_data(  'h000002, 'h8978 );
+		read_data(  'h000003, 'h8978 );
+
+		repeat( 12 ) @( posedge clk );
 		$finish;
 	end
 endmodule

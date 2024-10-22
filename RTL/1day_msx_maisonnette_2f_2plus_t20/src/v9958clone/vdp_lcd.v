@@ -126,7 +126,7 @@ module vdp_lcd(
 	wire	[4:0]	w_data_b_out;
 //	reg		[10:0]	ff_disp_start_x;
 
-	reg				ff_lcd_clk = 1'b0;
+	reg				ff_lcd_clk;
 	reg		[10:0]	ff_h_cnt;
 	reg				ff_h_sync;
 	reg				ff_h_active;
@@ -170,15 +170,15 @@ module vdp_lcd(
 	// --------------------------------------------------------------------
 	//	LCD clock
 	// --------------------------------------------------------------------
-//	always @( posedge clk ) begin
-//		if( reset ) begin
-//			ff_lcd_clk <= 1'b0;
-//		end
-//		else begin
-//			ff_lcd_clk <= ~ff_lcd_clk;
-//		end
-//	end
-	assign lcd_clk	= clk;	//ff_lcd_clk;
+	always @( posedge clk ) begin
+		if( reset ) begin
+			ff_lcd_clk <= 1'b0;
+		end
+		else begin
+			ff_lcd_clk <= ~ff_lcd_clk;
+		end
+	end
+	assign lcd_clk	= ff_lcd_clk;
 
 	// --------------------------------------------------------------------
 	//	H Counter

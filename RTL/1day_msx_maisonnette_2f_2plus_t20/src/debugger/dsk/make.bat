@@ -1,2 +1,2 @@
-bin2v hello.bin ..\vram_image_rom.v 14
+python bin2v.py hello.bin ..\vram_image_rom.v
 pause

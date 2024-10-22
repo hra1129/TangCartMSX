@@ -76,7 +76,6 @@ module tang20cart_msx (
 	output	[3:0]	O_sdram_dqm		//	Internal
 );
 
-`default_nettype none
 //	localparam		c_vdpid			= 5'b00001;		// V9938
 	localparam		c_vdpid			= 5'b00010;		// V9958
 	localparam		c_offset_y		= 7'd19;
@@ -88,6 +87,7 @@ module tang20cart_msx (
 	reg		[4:0]	ff_wait = 5'b10000;
 	wire			clk;
 	wire			clk_sdram;
+	wire			clk_half;
 	reg				ff_21mhz = 1'b0;
 	wire			w_n_reset;
 	wire	[7:0]	w_o_data;
@@ -122,6 +122,10 @@ module tang20cart_msx (
 	wire	[5:0]	w_lcd_red;
 	wire	[5:0]	w_lcd_green;
 	wire	[5:0]	w_lcd_blue;
+	wire			w_vdp_exec;
+
+	wire			w_dh_clk;
+	wire			w_dl_clk;
 
 	// --------------------------------------------------------------------
 	//	OUTPUT Assignment
@@ -158,9 +162,9 @@ module tang20cart_msx (
 	//	PLL 3.579545MHz --> 42.95454MHz
 	// --------------------------------------------------------------------
 	Gowin_PLL u_pll (
-		.clkout				( clk						),		// output		108MHz
-		.clkoutp			( clk_sdram					),		// output		108MHz with 180degree phase shifted.
-		.clkin				( clk27m					)		// input		27MHz
+		.clkout				( clk						),		//output		87.75MHz
+		.clkoutp			( clk_sdram					),		//output		87.75MHz (180deg phase shift)
+		.clkin				( clk27m					)		//input			27MHz
 	);
 
 	always @( posedge clk ) begin
@@ -203,17 +207,41 @@ module tang20cart_msx (
 	// --------------------------------------------------------------------
 	//	SDRAM
 	// --------------------------------------------------------------------
+//	ip_sdram u_sdram (
+//		.n_reset			( w_n_reset					),
+//		.clk				( clk						),
+//		.clk_sdram			( clk_sdram					),
+//		.rd_n				( w_sdram_read_n			),
+//		.wr_n				( w_sdram_write_n			),
+//		.exec				( w_vdp_exec				),
+//		.busy				( w_sdram_busy				),
+//		.address			( w_sdram_address[16:0]		),
+//		.wdata				( w_sdram_wdata				),
+//		.rdata				( w_sdram_rdata				),
+//		.rdata_en			( w_sdram_rdata_en			),
+//		.O_sdram_clk		( O_sdram_clk				),
+//		.O_sdram_cke		( O_sdram_cke				),
+//		.O_sdram_cs_n		( O_sdram_cs_n				),
+//		.O_sdram_cas_n		( O_sdram_cas_n				),
+//		.O_sdram_ras_n		( O_sdram_ras_n				),
+//		.O_sdram_wen_n		( O_sdram_wen_n				),
+//		.IO_sdram_dq		( IO_sdram_dq				),
+//		.O_sdram_addr		( O_sdram_addr				),
+//		.O_sdram_ba			( O_sdram_ba				),
+//		.O_sdram_dqm		( O_sdram_dqm				)
+//	);
+
 	ip_sdram u_sdram (
 		.n_reset			( w_n_reset					),
 		.clk				( clk						),
-		.clk_sdram			( clk_sdram					),
-		.rd_n				( w_sdram_read_n			),
-		.wr_n				( w_sdram_write_n			),
-		.busy				( w_sdram_busy				),
-		.address			( w_sdram_address[16:0]		),
+		.exec				( w_vdp_exec				),
+		.sdram_busy			( w_sdram_busy				),
+		.dh_clk				( w_dh_clk					),
+		.dl_clk				( w_dl_clk					),
+		.address			( w_sdram_address			),
+		.is_write			( !w_sdram_write_n			),
 		.wdata				( w_sdram_wdata				),
 		.rdata				( w_sdram_rdata				),
-		.rdata_en			( w_sdram_rdata_en			),
 		.O_sdram_clk		( O_sdram_clk				),
 		.O_sdram_cke		( O_sdram_cke				),
 		.O_sdram_cs_n		( O_sdram_cs_n				),
@@ -239,6 +267,7 @@ module tang20cart_msx (
 		.ADR				( w_a						),	// IN	STD_LOGIC_VECTOR(  1 DOWNTO 0 );
 		.DBI				( w_rdata					),	// OUT	STD_LOGIC_VECTOR(  7 DOWNTO 0 );
 		.DBO				( w_wdata					),	// IN	STD_LOGIC_VECTOR(  7 DOWNTO 0 );
+		.EXEC				( w_vdp_exec				),	// OUT	STD_LOGIC;
 		.INT_N				( 							),	// OUT	STD_LOGIC;
 		.PRAMOE_N			( w_sdram_read_n			),	// OUT	STD_LOGIC;
 		.PRAMWE_N			( w_sdram_write_n			),	// OUT	STD_LOGIC;
@@ -255,8 +284,8 @@ module tang20cart_msx (
 		.PVIDEOB			( w_lcd_blue				),	// OUT	STD_LOGIC_VECTOR(  5 DOWNTO 0 );
 		.PVIDEOHS_N			( lcd_hsync					),	// OUT	STD_LOGIC;
 		.PVIDEOVS_N			( lcd_vsync					),	// OUT	STD_LOGIC;
-		.PVIDEODHCLK		( 							),	// OUT	STD_LOGIC;
-		.PVIDEODLCLK		( 							),	// OUT	STD_LOGIC;
+		.PVIDEODHCLK		( w_dh_clk					),	// OUT	STD_LOGIC;
+		.PVIDEODLCLK		( w_dl_clk					),	// OUT	STD_LOGIC;
 		.DISPRESO			( 1'b1						),	// IN	STD_LOGIC;
 		.NTSC_PAL_TYPE		( 1'b0						),	// IN	STD_LOGIC;
 		.FORCED_V_MODE		( 1'b0						),	// IN	STD_LOGIC;
