@@ -25,7 +25,7 @@
     "SubInsts" : [
      {
       "InstFile" : "D:/github/HRA_product/TangCartMSX/RTL/1day_msx_maisonnette_2f_2plus_t20/src/debugger/ip_debugger.v",
-      "InstLine" : 65,
+      "InstLine" : 68,
       "InstName" : "u_rom",
       "ModuleFile" : "D:/github/HRA_product/TangCartMSX/RTL/1day_msx_maisonnette_2f_2plus_t20/src/debugger/vram_image_rom.v",
       "ModuleLine" : 27,
@@ -35,7 +35,7 @@
    },
    {
     "InstFile" : "D:/github/HRA_product/TangCartMSX/RTL/1day_msx_maisonnette_2f_2plus_t20/src/tang20cart_msx.v",
-    "InstLine" : 234,
+    "InstLine" : 237,
     "InstName" : "u_sdram",
     "ModuleFile" : "D:/github/HRA_product/TangCartMSX/RTL/1day_msx_maisonnette_2f_2plus_t20/src/sdram/ip_sdram.v",
     "ModuleLine" : 31,
@@ -43,7 +43,7 @@
    },
    {
     "InstFile" : "D:/github/HRA_product/TangCartMSX/RTL/1day_msx_maisonnette_2f_2plus_t20/src/tang20cart_msx.v",
-    "InstLine" : 260,
+    "InstLine" : 264,
     "InstName" : "u_v9958",
     "ModuleFile" : "D:/github/HRA_product/TangCartMSX/RTL/1day_msx_maisonnette_2f_2plus_t20/src/v9958clone/vdp.vhd",
     "ModuleLine" : 254,

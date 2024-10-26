@@ -154,7 +154,7 @@ module tb ();
 		repeat( 11000 ) @( posedge clk );
 
 		keys[0]				= 1'b1;
-		@( posedge clk );
+		repeat( 50 ) @( posedge clk );
 
 		keys[0]				= 1'b0;
 		@( posedge clk );

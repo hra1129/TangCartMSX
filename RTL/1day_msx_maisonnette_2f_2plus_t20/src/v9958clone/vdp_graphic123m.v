@@ -141,7 +141,34 @@ module vdp_graphic123m (
 
 	// --------------------------------------------------------------------
 	//	[memo]
-	//	dot_state: 00 -> 01 -> 11 -> 10 -> 00 (gray code)
+	//	dot_state:   00 -> 01 -> 11 -> 10 -> 00 (gray code)
+	// --------------------------------------------------------------------
+	always @( posedge clk ) begin
+		if( reset )begin
+			ff_req_addr <= 17'd0;
+		end
+		else if( !enable )begin
+			//	hold
+		end
+		else if( dot_state == 2'b11 )begin
+			ff_req_addr <= w_req_addr;
+		end
+	end
+
+	always @( posedge clk ) begin
+		if( reset )begin
+			ff_col_code <= 4'd0;
+		end
+		else if( !enable )begin
+			//	hold
+		end
+		else if( dot_state == 2'b01 )begin
+			ff_col_code <= w_col_code;
+		end
+	end
+
+	// --------------------------------------------------------------------
+	//	eight dot state = 0: shift pattern generator table
 	// --------------------------------------------------------------------
 	always @( posedge clk ) begin
 		if( reset )begin
@@ -165,11 +192,14 @@ module vdp_graphic123m (
 		else if( dot_state == 2'b00 && w_eight_dot_state_dec[0] == 1'b1 )begin
 			ff_pat_gen <= ff_pre_pat_gen;
 		end
-		else if( dot_state == 2'b11 )begin
+		else if( dot_state == 2'b00 )begin
 			ff_pat_gen <= { ff_pat_gen[6:0], 1'b0 };
 		end
 	end
 
+	// --------------------------------------------------------------------
+	//	eight dot state = 1: read pattern name table
+	// --------------------------------------------------------------------
 	always @( posedge clk ) begin
 		if( reset )begin
 			ff_pat_num <= 8'd0;
@@ -177,11 +207,14 @@ module vdp_graphic123m (
 		else if( !enable )begin
 			//	hold
 		end
-		else if( dot_state == 2'b11 && w_eight_dot_state_dec[1] == 1'b1 )begin
+		else if( dot_state == 2'b01 && w_eight_dot_state_dec[1] == 1'b1 )begin
 			ff_pat_num <= p_ram_dat;
 		end
 	end
 
+	// --------------------------------------------------------------------
+	//	eight dot state = 2: read pattern generator table
+	// --------------------------------------------------------------------
 	always @( posedge clk ) begin
 		if( reset )begin
 			ff_pre_pat_gen <= 8'd0;
@@ -189,11 +222,14 @@ module vdp_graphic123m (
 		else if( !enable )begin
 			//	hold
 		end
-		else if( dot_state == 2'b11 && w_eight_dot_state_dec[2] == 1'b1 )begin
+		else if( dot_state == 2'b01 && w_eight_dot_state_dec[2] == 1'b1 )begin
 			ff_pre_pat_gen <= p_ram_dat;
 		end
 	end
 
+	// --------------------------------------------------------------------
+	//	eight dot state = 3: read color table
+	// --------------------------------------------------------------------
 	always @( posedge clk ) begin
 		if( reset )begin
 			ff_pre_pat_col <= 8'd0;
@@ -201,32 +237,8 @@ module vdp_graphic123m (
 		else if( !enable )begin
 			//	hold
 		end
-		else if( dot_state == 2'b11 && w_eight_dot_state_dec[3] == 1'b1 )begin
+		else if( dot_state == 2'b01 && w_eight_dot_state_dec[3] == 1'b1 )begin
 			ff_pre_pat_col <= p_ram_dat;
-		end
-	end
-
-	always @( posedge clk ) begin
-		if( reset )begin
-			ff_col_code <= 4'd0;
-		end
-		else if( !enable )begin
-			//	hold
-		end
-		else if( dot_state == 2'b11 )begin
-			ff_col_code <= w_col_code;
-		end
-	end
-
-	always @( posedge clk ) begin
-		if( reset )begin
-			ff_req_addr <= 17'd0;
-		end
-		else if( !enable )begin
-			//	hold
-		end
-		else if( dot_state == 2'b11 )begin
-			ff_req_addr <= w_req_addr;
 		end
 	end
 endmodule

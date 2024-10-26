@@ -29,7 +29,6 @@ module tb ();
 	reg				n_reset;
 	reg				clk;				//	85.90908MHz
 	reg				clk_sdram;			//	85.90908MHz
-	wire			exec;				//	21.47727MHz
 	wire			sdram_busy;
 	reg				dh_clk;				//	10.738635MHz: VideoDHClk
 	reg				dl_clk;				//	 5.369318MHz: VideoDLClk
@@ -56,7 +55,7 @@ module tb ();
 		.n_reset			( n_reset			),
 		.clk				( clk				),
 		.clk_sdram			( clk_sdram			),
-		.exec				( exec				),
+		.enable_state		( ff_video_clk		),
 		.sdram_busy			( sdram_busy		),
 		.dh_clk				( dh_clk			),
 		.dl_clk				( dl_clk			),
@@ -102,13 +101,11 @@ module tb ();
 		ff_video_clk <= ff_video_clk + 2'd1;
 	end
 
-	assign exec		= (ff_video_clk == 2'b11);
-
 	always @( posedge clk ) begin
 		if( sdram_busy ) begin
 			//	hold
 		end
-		else if( exec ) begin
+		else if( ff_video_clk == 2'b11 ) begin
 			dh_clk <= ~dh_clk;
 		end
 	end
@@ -117,7 +114,7 @@ module tb ();
 		if( sdram_busy ) begin
 			//	hold
 		end
-		else if( exec && !dh_clk ) begin
+		else if( (ff_video_clk == 2'b11) && !dh_clk ) begin
 			dl_clk <= ~dl_clk;
 		end
 	end
@@ -132,6 +129,12 @@ module tb ();
 		address		<= p_address;
 		wdata		<= p_data;
 		is_write	<= 1'b1;
+		forever begin
+			if( dl_clk && dh_clk && (ff_video_clk == 2'b00) ) begin
+				break;
+			end
+			@( posedge clk );
+		end
 		repeat( 4 ) @( posedge clk );
 
 		address		<= 0;
@@ -149,6 +152,12 @@ module tb ();
 
 		address		<= p_address;
 		is_write	<= 1'b0;
+		forever begin
+			if( dl_clk && dh_clk && (ff_video_clk == 2'b00) ) begin
+				break;
+			end
+			@( posedge clk );
+		end
 		repeat( 16 ) @( posedge clk );
 	endtask: read_data
 

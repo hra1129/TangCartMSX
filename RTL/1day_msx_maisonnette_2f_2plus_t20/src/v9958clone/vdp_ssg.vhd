@@ -207,8 +207,8 @@ BEGIN
 		IF( CLK'EVENT AND CLK = '1' )THEN
 			IF( RESET = '1' )THEN
 				FF_DOTSTATE		<= "00";
-				FF_VIDEO_DH_CLK <= '0';
-				FF_VIDEO_DL_CLK <= '0';
+				FF_VIDEO_DH_CLK <= '1';
+				FF_VIDEO_DL_CLK <= '1';
 			ELSIF( ENABLE = '0' )THEN
 				-- HOLD
 			ELSIF( W_H_CNT = CLOCKS_PER_LINE-1 )THEN

@@ -30,6 +30,9 @@ module ip_debugger (
 	input			clk,
 	//	Key input
 	input	[1:0]	keys,
+	input	[1:0]	enable_state,
+	input			dh_clk,
+	input			dl_clk,
 	//	Target signal for observation
 	output			req,
 	input			ack,
@@ -85,6 +88,9 @@ module ip_debugger (
 			else begin
 				//	hold
 			end
+		end
+		else if( enable_state != 2'b01 ) begin
+			//	hold
 		end
 		else begin
 			case( ff_state )
@@ -505,6 +511,7 @@ module ip_debugger (
 					if( ack == 1'b1 ) begin
 						ff_req			<= 1'b0;
 						ff_state		<= ff_state + 'd1;
+						ff_wait_count	<= 10'd24;
 					end
 					else begin
 						//	hold
@@ -512,6 +519,9 @@ module ip_debugger (
 				end
 			(c_st_palette + 2):
 				begin
+					if( ff_wait_count != 10'd0 ) begin
+						ff_wait_count	<= ff_wait_count - 10'd1;
+					end
 					if( ack == 1'b0 ) begin
 						ff_state		<= ff_next_state;
 					end
@@ -533,6 +543,7 @@ module ip_debugger (
 					if( ack == 1'b1 ) begin
 						ff_req			<= 1'b0;
 						ff_state		<= ff_state + 'd1;
+						ff_wait_count	<= 10'd24;
 					end
 					else begin
 						//	hold
@@ -540,7 +551,10 @@ module ip_debugger (
 				end
 			(c_st_write + 2):
 				begin
-					if( ack == 1'b0 ) begin
+					if( ff_wait_count != 10'd0 ) begin
+						ff_wait_count	<= ff_wait_count - 10'd1;
+					end
+					else if( ack == 1'b0 ) begin
 						ff_state		<= ff_state + 'd1;
 					end
 					else begin
@@ -560,6 +574,7 @@ module ip_debugger (
 					if( ack == 1'b1 ) begin
 						ff_req			<= 1'b0;
 						ff_state		<= ff_state + 'd1;
+						ff_wait_count	<= 10'd24;
 					end
 					else begin
 						//	hold
@@ -567,6 +582,9 @@ module ip_debugger (
 				end
 			(c_st_write + 5):
 				begin
+					if( ff_wait_count != 10'd0 ) begin
+						ff_wait_count	<= ff_wait_count - 10'd1;
+					end
 					if( ack == 1'b0 ) begin
 						ff_state		<= ff_next_state;
 					end

@@ -122,7 +122,7 @@ module tang20cart_msx (
 	wire	[5:0]	w_lcd_red;
 	wire	[5:0]	w_lcd_green;
 	wire	[5:0]	w_lcd_blue;
-	wire			w_vdp_exec;
+	wire	[1:0]	w_vdp_enable_state;
 
 	wire			w_dh_clk;
 	wire			w_dl_clk;
@@ -195,6 +195,9 @@ module tang20cart_msx (
 		.n_reset			( w_n_reset					),
 		.clk				( clk						),
 		.keys				( keys						),
+		.enable_state		( w_vdp_enable_state		),
+		.dh_clk				( w_dh_clk					),
+		.dl_clk				( w_dl_clk					),
 		.req				( w_req						),
 		.ack				( w_ack						),
 		.wr					( w_wr						),
@@ -213,7 +216,7 @@ module tang20cart_msx (
 //		.clk_sdram			( clk_sdram					),
 //		.rd_n				( w_sdram_read_n			),
 //		.wr_n				( w_sdram_write_n			),
-//		.exec				( w_vdp_exec				),
+//		.exec				( w_vdp_enable_state		),
 //		.busy				( w_sdram_busy				),
 //		.address			( w_sdram_address[16:0]		),
 //		.wdata				( w_sdram_wdata				),
@@ -234,7 +237,8 @@ module tang20cart_msx (
 	ip_sdram u_sdram (
 		.n_reset			( w_n_reset					),
 		.clk				( clk						),
-		.exec				( w_vdp_exec				),
+		.clk_sdram			( clk_sdram					),
+		.enable_state		( w_vdp_enable_state		),
 		.sdram_busy			( w_sdram_busy				),
 		.dh_clk				( w_dh_clk					),
 		.dl_clk				( w_dl_clk					),
@@ -267,7 +271,7 @@ module tang20cart_msx (
 		.ADR				( w_a						),	// IN	STD_LOGIC_VECTOR(  1 DOWNTO 0 );
 		.DBI				( w_rdata					),	// OUT	STD_LOGIC_VECTOR(  7 DOWNTO 0 );
 		.DBO				( w_wdata					),	// IN	STD_LOGIC_VECTOR(  7 DOWNTO 0 );
-		.EXEC				( w_vdp_exec				),	// OUT	STD_LOGIC;
+		.ENABLE_STATE		( w_vdp_enable_state		),	// OUT	STD_LOGIC;
 		.INT_N				( 							),	// OUT	STD_LOGIC;
 		.PRAMOE_N			( w_sdram_read_n			),	// OUT	STD_LOGIC;
 		.PRAMWE_N			( w_sdram_write_n			),	// OUT	STD_LOGIC;
