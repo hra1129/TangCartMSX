@@ -191,22 +191,22 @@
       "InstFile" : "D:/github/HRA_product/TangCartMSX/RTL/1day_msx_maisonnette_2f_2plus_t20/src/v9958clone/vdp.vhd",
       "InstLine" : 1725,
       "InstName" : "U_VDP_REGISTER",
-      "ModuleFile" : "D:/github/HRA_product/TangCartMSX/RTL/1day_msx_maisonnette_2f_2plus_t20/src/v9958clone/vdp_register.vhd",
-      "ModuleLine" : 89,
-      "ModuleName" : "VDP_REGISTER",
+      "ModuleFile" : "D:/github/HRA_product/TangCartMSX/RTL/1day_msx_maisonnette_2f_2plus_t20/src/v9958clone/vdp_register.v",
+      "ModuleLine" : 56,
+      "ModuleName" : "vdp_register",
       "SubInsts" : [
        {
-        "InstFile" : "D:/github/HRA_product/TangCartMSX/RTL/1day_msx_maisonnette_2f_2plus_t20/src/v9958clone/vdp_register.vhd",
-        "InstLine" : 382,
-        "InstName" : "U_PALETTEMEMRB",
+        "InstFile" : "D:/github/HRA_product/TangCartMSX/RTL/1day_msx_maisonnette_2f_2plus_t20/src/v9958clone/vdp_register.v",
+        "InstLine" : 326,
+        "InstName" : "u_palette_mem_rb",
         "ModuleFile" : "D:/github/HRA_product/TangCartMSX/RTL/1day_msx_maisonnette_2f_2plus_t20/src/v9958clone/vdp_ram256.v",
         "ModuleLine" : 33,
         "ModuleName" : "vdp_ram256"
        },
        {
-        "InstFile" : "D:/github/HRA_product/TangCartMSX/RTL/1day_msx_maisonnette_2f_2plus_t20/src/v9958clone/vdp_register.vhd",
-        "InstLine" : 391,
-        "InstName" : "U_PALETTEMEMG",
+        "InstFile" : "D:/github/HRA_product/TangCartMSX/RTL/1day_msx_maisonnette_2f_2plus_t20/src/v9958clone/vdp_register.v",
+        "InstLine" : 334,
+        "InstName" : "u_palette_mem_g",
         "ModuleFile" : "D:/github/HRA_product/TangCartMSX/RTL/1day_msx_maisonnette_2f_2plus_t20/src/v9958clone/vdp_ram256.v",
         "ModuleLine" : 33,
         "ModuleName" : "vdp_ram256"

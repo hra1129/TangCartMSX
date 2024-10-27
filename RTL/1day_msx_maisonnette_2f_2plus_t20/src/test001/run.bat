@@ -19,7 +19,7 @@ vcom ..\v9958clone\vdp_graphic4567.vhd
 vcom ..\v9958clone\vdp_hvcounter.vhd
 vcom ..\v9958clone\vdp_interrupt.vhd
 vlog ..\v9958clone\vdp_linebuf.v
-vcom ..\v9958clone\vdp_register.vhd
+vlog ..\v9958clone\vdp_register.v
 vcom ..\v9958clone\vdp_spinforam.vhd
 vcom ..\v9958clone\vdp_sprite.vhd
 vcom ..\v9958clone\vdp_ssg.vhd
@@ -30,6 +30,7 @@ vcom ..\v9958clone\vdp.vhd
 vlog gowin_pll_dummy.v
 vlog ..\tang20cart_msx.v
 vlog tb.sv
+pause
 vsim -c -t 1ns -do run.do tb
 move transcript log.txt
 pause
