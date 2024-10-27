@@ -54,7 +54,7 @@ module tb ();
 	ip_sdram u_sdram_controller (
 		.n_reset			( n_reset			),
 		.clk				( clk				),
-		.clk_sdram			( clk_sdram			),
+		.clk_sdram			( clk				),
 		.enable_state		( ff_video_clk		),
 		.sdram_busy			( sdram_busy		),
 		.dh_clk				( dh_clk			),
@@ -188,7 +188,7 @@ module tb ();
 		end
 
 		repeat( 16 ) @( posedge clk );
-		repeat( 8 ) @( posedge clk );
+		repeat( 7 ) @( posedge clk );
 
 		write_data( 'h000000, 'h12 );
 		write_data( 'h000001, 'h23 );

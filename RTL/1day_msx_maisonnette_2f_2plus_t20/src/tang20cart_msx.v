@@ -237,7 +237,7 @@ module tang20cart_msx (
 	ip_sdram u_sdram (
 		.n_reset			( w_n_reset					),
 		.clk				( clk						),
-		.clk_sdram			( clk_sdram					),
+		.clk_sdram			( clk						),
 		.enable_state		( w_vdp_enable_state		),
 		.sdram_busy			( w_sdram_busy				),
 		.dh_clk				( w_dh_clk					),
