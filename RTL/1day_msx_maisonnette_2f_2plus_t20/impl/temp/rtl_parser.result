@@ -97,14 +97,14 @@
       "InstFile" : "D:/github/HRA_product/TangCartMSX/RTL/1day_msx_maisonnette_2f_2plus_t20/src/v9958clone/vdp.vhd",
       "InstLine" : 1167,
       "InstName" : "U_SSG",
-      "ModuleFile" : "D:/github/HRA_product/TangCartMSX/RTL/1day_msx_maisonnette_2f_2plus_t20/src/v9958clone/vdp_ssg.vhd",
-      "ModuleLine" : 69,
-      "ModuleName" : "VDP_SSG",
+      "ModuleFile" : "D:/github/HRA_product/TangCartMSX/RTL/1day_msx_maisonnette_2f_2plus_t20/src/v9958clone/vdp_ssg.v",
+      "ModuleLine" : 58,
+      "ModuleName" : "vdp_ssg",
       "SubInsts" : [
        {
-        "InstFile" : "D:/github/HRA_product/TangCartMSX/RTL/1day_msx_maisonnette_2f_2plus_t20/src/v9958clone/vdp_ssg.vhd",
-        "InstLine" : 183,
-        "InstName" : "U_HVCOUNTER",
+        "InstFile" : "D:/github/HRA_product/TangCartMSX/RTL/1day_msx_maisonnette_2f_2plus_t20/src/v9958clone/vdp_ssg.v",
+        "InstLine" : 158,
+        "InstName" : "u_hvcounter",
         "ModuleFile" : "D:/github/HRA_product/TangCartMSX/RTL/1day_msx_maisonnette_2f_2plus_t20/src/v9958clone/vdp_hvcounter.vhd",
         "ModuleLine" : 67,
         "ModuleName" : "VDP_HVCOUNTER"

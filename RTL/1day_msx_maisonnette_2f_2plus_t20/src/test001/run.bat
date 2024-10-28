@@ -22,7 +22,7 @@ vlog ..\v9958clone\vdp_linebuf.v
 vlog ..\v9958clone\vdp_register.v
 vcom ..\v9958clone\vdp_spinforam.vhd
 vcom ..\v9958clone\vdp_sprite.vhd
-vcom ..\v9958clone\vdp_ssg.vhd
+vlog ..\v9958clone\vdp_ssg.v
 vcom ..\v9958clone\vdp_text12.vhd
 vlog ..\v9958clone\vdp_lcd.v
 vcom ..\v9958clone\vdp_wait_control.vhd

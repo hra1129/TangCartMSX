@@ -20,6 +20,7 @@
         <File path="src/v9958clone/vdp_linebuf.v" type="file.verilog" enable="1"/>
         <File path="src/v9958clone/vdp_ram256.v" type="file.verilog" enable="1"/>
         <File path="src/v9958clone/vdp_register.v" type="file.verilog" enable="1"/>
+        <File path="src/v9958clone/vdp_ssg.v" type="file.verilog" enable="1"/>
         <File path="src/v9958clone/vdp.vhd" type="file.vhdl" enable="1"/>
         <File path="src/v9958clone/vdp_colordec.vhd" type="file.vhdl" enable="1"/>
         <File path="src/v9958clone/vdp_command.vhd" type="file.vhdl" enable="1"/>
@@ -30,7 +31,6 @@
         <File path="src/v9958clone/vdp_package.vhd" type="file.vhdl" enable="1"/>
         <File path="src/v9958clone/vdp_spinforam.vhd" type="file.vhdl" enable="1"/>
         <File path="src/v9958clone/vdp_sprite.vhd" type="file.vhdl" enable="1"/>
-        <File path="src/v9958clone/vdp_ssg.vhd" type="file.vhdl" enable="1"/>
         <File path="src/v9958clone/vdp_text12.vhd" type="file.vhdl" enable="1"/>
         <File path="src/v9958clone/vdp_wait_control.vhd" type="file.vhdl" enable="1"/>
         <File path="src/Tang20kcartMSX.cst" type="file.cst" enable="1"/>

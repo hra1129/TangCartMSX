@@ -10,6 +10,7 @@ Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\1day_msx_maisonnet
 Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\1day_msx_maisonnette_2f_2plus_t20\src\v9958clone\vdp_linebuf.v'
 Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\1day_msx_maisonnette_2f_2plus_t20\src\v9958clone\vdp_ram256.v'
 Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\1day_msx_maisonnette_2f_2plus_t20\src\v9958clone\vdp_register.v'
+Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\1day_msx_maisonnette_2f_2plus_t20\src\v9958clone\vdp_ssg.v'
 Analyzing VHDL file 'D:\github\HRA_product\TangCartMSX\RTL\1day_msx_maisonnette_2f_2plus_t20\src\v9958clone\vdp_package.vhd'
 Analyzing package 'vdp_package'("D:\github\HRA_product\TangCartMSX\RTL\1day_msx_maisonnette_2f_2plus_t20\src\v9958clone\vdp_package.vhd":82)
 Analyzing VHDL file 'D:\github\HRA_product\TangCartMSX\RTL\1day_msx_maisonnette_2f_2plus_t20\src\v9958clone\vdp.vhd'
@@ -39,9 +40,6 @@ Analyzing architecture 'rtl'("D:\github\HRA_product\TangCartMSX\RTL\1day_msx_mai
 Analyzing VHDL file 'D:\github\HRA_product\TangCartMSX\RTL\1day_msx_maisonnette_2f_2plus_t20\src\v9958clone\vdp_sprite.vhd'
 Analyzing entity 'vdp_sprite'("D:\github\HRA_product\TangCartMSX\RTL\1day_msx_maisonnette_2f_2plus_t20\src\v9958clone\vdp_sprite.vhd":183)
 Analyzing architecture 'rtl'("D:\github\HRA_product\TangCartMSX\RTL\1day_msx_maisonnette_2f_2plus_t20\src\v9958clone\vdp_sprite.vhd":233)
-Analyzing VHDL file 'D:\github\HRA_product\TangCartMSX\RTL\1day_msx_maisonnette_2f_2plus_t20\src\v9958clone\vdp_ssg.vhd'
-Analyzing entity 'vdp_ssg'("D:\github\HRA_product\TangCartMSX\RTL\1day_msx_maisonnette_2f_2plus_t20\src\v9958clone\vdp_ssg.vhd":69)
-Analyzing architecture 'rtl'("D:\github\HRA_product\TangCartMSX\RTL\1day_msx_maisonnette_2f_2plus_t20\src\v9958clone\vdp_ssg.vhd":109)
 Analyzing VHDL file 'D:\github\HRA_product\TangCartMSX\RTL\1day_msx_maisonnette_2f_2plus_t20\src\v9958clone\vdp_text12.vhd'
 Analyzing entity 'vdp_text12'("D:\github\HRA_product\TangCartMSX\RTL\1day_msx_maisonnette_2f_2plus_t20\src\v9958clone\vdp_text12.vhd":104)
 Analyzing architecture 'rtl'("D:\github\HRA_product\TangCartMSX\RTL\1day_msx_maisonnette_2f_2plus_t20\src\v9958clone\vdp_text12.vhd":138)
@@ -133,9 +131,16 @@ Returning to Verilog mode to proceed with elaboration("D:\github\HRA_product\Tan
 WARN  (EX3791) : Expression size 32 truncated to fit in target size 10("D:\github\HRA_product\TangCartMSX\RTL\1day_msx_maisonnette_2f_2plus_t20\src\v9958clone\vdp_lcd.v":366)
 Returning to VHDL mode to continue with elaboration("D:\github\HRA_product\TangCartMSX\RTL\1day_msx_maisonnette_2f_2plus_t20\src\v9958clone\vdp.vhd":1104)
 Processing 'VDP_INTERRUPT(RTL)'("D:\github\HRA_product\TangCartMSX\RTL\1day_msx_maisonnette_2f_2plus_t20\src\v9958clone\vdp_interrupt.vhd":65)
-Processing 'VDP_SSG(RTL)'("D:\github\HRA_product\TangCartMSX\RTL\1day_msx_maisonnette_2f_2plus_t20\src\v9958clone\vdp_ssg.vhd":69)
+Switching to Verilog mode to elaborate module 'VDP_SSG'("D:\github\HRA_product\TangCartMSX\RTL\1day_msx_maisonnette_2f_2plus_t20\src\v9958clone\vdp.vhd":1204)
+Compiling module 'vdp_ssg'("D:\github\HRA_product\TangCartMSX\RTL\1day_msx_maisonnette_2f_2plus_t20\src\v9958clone\vdp_ssg.v":58)
+Switching to VHDL mode to elaborate design unit 'vdp_hvcounter'("D:\github\HRA_product\TangCartMSX\RTL\1day_msx_maisonnette_2f_2plus_t20\src\v9958clone\vdp_ssg.v":172)
 Processing 'VDP_HVCOUNTER(RTL)'("D:\github\HRA_product\TangCartMSX\RTL\1day_msx_maisonnette_2f_2plus_t20\src\v9958clone\vdp_hvcounter.vhd":67)
-'others' clause is never selected("D:\github\HRA_product\TangCartMSX\RTL\1day_msx_maisonnette_2f_2plus_t20\src\v9958clone\vdp_ssg.vhd":237)
+Returning to Verilog mode to proceed with elaboration("D:\github\HRA_product\TangCartMSX\RTL\1day_msx_maisonnette_2f_2plus_t20\src\v9958clone\vdp_ssg.v":172)
+WARN  (EX3791) : Expression size 4 truncated to fit in target size 3("D:\github\HRA_product\TangCartMSX\RTL\1day_msx_maisonnette_2f_2plus_t20\src\v9958clone\vdp_ssg.v":240)
+WARN  (EX3791) : Expression size 10 truncated to fit in target size 9("D:\github\HRA_product\TangCartMSX\RTL\1day_msx_maisonnette_2f_2plus_t20\src\v9958clone\vdp_ssg.v":280)
+WARN  (EX3791) : Expression size 10 truncated to fit in target size 9("D:\github\HRA_product\TangCartMSX\RTL\1day_msx_maisonnette_2f_2plus_t20\src\v9958clone\vdp_ssg.v":303)
+WARN  (EX3791) : Expression size 10 truncated to fit in target size 9("D:\github\HRA_product\TangCartMSX\RTL\1day_msx_maisonnette_2f_2plus_t20\src\v9958clone\vdp_ssg.v":416)
+Returning to VHDL mode to continue with elaboration("D:\github\HRA_product\TangCartMSX\RTL\1day_msx_maisonnette_2f_2plus_t20\src\v9958clone\vdp.vhd":1204)
 Processing 'VDP_COLORDEC(RTL)'("D:\github\HRA_product\TangCartMSX\RTL\1day_msx_maisonnette_2f_2plus_t20\src\v9958clone\vdp_colordec.vhd":68)
 Processing 'VDP_TEXT12(RTL)'("D:\github\HRA_product\TangCartMSX\RTL\1day_msx_maisonnette_2f_2plus_t20\src\v9958clone\vdp_text12.vhd":104)
 'others' clause is never selected("D:\github\HRA_product\TangCartMSX\RTL\1day_msx_maisonnette_2f_2plus_t20\src\v9958clone\vdp_text12.vhd":354)
