@@ -17,7 +17,7 @@ vcom ..\v9958clone\vdp_doublebuf.vhd
 vlog ..\v9958clone\vdp_graphic123m.v
 vcom ..\v9958clone\vdp_graphic4567.vhd
 vcom ..\v9958clone\vdp_hvcounter.vhd
-vcom ..\v9958clone\vdp_interrupt.vhd
+vlog ..\v9958clone\vdp_interrupt.v
 vlog ..\v9958clone\vdp_linebuf.v
 vlog ..\v9958clone\vdp_register.v
 vcom ..\v9958clone\vdp_spinforam.vhd

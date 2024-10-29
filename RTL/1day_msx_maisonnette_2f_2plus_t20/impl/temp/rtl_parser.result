@@ -89,9 +89,9 @@
       "InstFile" : "D:/github/HRA_product/TangCartMSX/RTL/1day_msx_maisonnette_2f_2plus_t20/src/v9958clone/vdp.vhd",
       "InstLine" : 1132,
       "InstName" : "U_INTERRUPT",
-      "ModuleFile" : "D:/github/HRA_product/TangCartMSX/RTL/1day_msx_maisonnette_2f_2plus_t20/src/v9958clone/vdp_interrupt.vhd",
-      "ModuleLine" : 65,
-      "ModuleName" : "VDP_INTERRUPT"
+      "ModuleFile" : "D:/github/HRA_product/TangCartMSX/RTL/1day_msx_maisonnette_2f_2plus_t20/src/v9958clone/vdp_interrupt.v",
+      "ModuleLine" : 57,
+      "ModuleName" : "vdp_interrupt"
      },
      {
       "InstFile" : "D:/github/HRA_product/TangCartMSX/RTL/1day_msx_maisonnette_2f_2plus_t20/src/v9958clone/vdp.vhd",
