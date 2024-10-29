@@ -11,7 +11,7 @@ rem vlog ..\sdram\ip_sdram_dummy2.v
 
 vlog ..\v9958clone\vdp_ram256.v
 vcom ..\v9958clone\vdp_package.vhd
-vcom ..\v9958clone\vdp_colordec.vhd
+vlog ..\v9958clone\vdp_colordec.v
 vcom ..\v9958clone\vdp_command.vhd
 vlog ..\v9958clone\vdp_doublebuf.v
 vlog ..\v9958clone\vdp_graphic123m.v
