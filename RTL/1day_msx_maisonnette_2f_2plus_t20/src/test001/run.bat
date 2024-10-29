@@ -25,7 +25,7 @@ vcom ..\v9958clone\vdp_sprite.vhd
 vlog ..\v9958clone\vdp_ssg.v
 vcom ..\v9958clone\vdp_text12.vhd
 vlog ..\v9958clone\vdp_lcd.v
-vcom ..\v9958clone\vdp_wait_control.vhd
+vlog ..\v9958clone\vdp_wait_control.v
 vcom ..\v9958clone\vdp.vhd
 vlog gowin_pll_dummy.v
 vlog ..\tang20cart_msx.v

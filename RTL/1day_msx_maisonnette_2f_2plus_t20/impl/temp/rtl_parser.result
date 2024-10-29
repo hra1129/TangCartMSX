@@ -225,9 +225,9 @@
       "InstFile" : "D:/github/HRA_product/TangCartMSX/RTL/1day_msx_maisonnette_2f_2plus_t20/src/v9958clone/vdp.vhd",
       "InstLine" : 1874,
       "InstName" : "U_VDP_WAIT_CONTROL",
-      "ModuleFile" : "D:/github/HRA_product/TangCartMSX/RTL/1day_msx_maisonnette_2f_2plus_t20/src/v9958clone/vdp_wait_control.vhd",
-      "ModuleLine" : 59,
-      "ModuleName" : "VDP_WAIT_CONTROL"
+      "ModuleFile" : "D:/github/HRA_product/TangCartMSX/RTL/1day_msx_maisonnette_2f_2plus_t20/src/v9958clone/vdp_wait_control.v",
+      "ModuleLine" : 31,
+      "ModuleName" : "vdp_wait_control"
      }
     ]
    }
