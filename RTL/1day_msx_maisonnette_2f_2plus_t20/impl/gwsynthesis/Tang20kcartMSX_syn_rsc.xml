@@ -8,8 +8,8 @@
     <SubModule name="u_v9958" Register="69" Lut="355" T_Register="1249(69)" T_Alu="244(0)" T_Lut="2358(355)" T_Bsram="6(0)" T_Ssram="8(0)">
         <SubModule name="U_VDP_LCD" Register="17" Lut="67" T_Register="37(17)" T_Lut="123(67)" T_Bsram="2(0)">
             <SubModule name="dbuf" Lut="35" T_Register="20(0)" T_Lut="56(35)" T_Bsram="2(0)">
-                <SubModule name="U_BUF_EVEN" Register="10" Lut="11" Bsram="1" T_Register="10(10)" T_Lut="11(11)" T_Bsram="1(1)"/>
-                <SubModule name="U_BUF_ODD" Register="10" Lut="10" Bsram="1" T_Register="10(10)" T_Lut="10(10)" T_Bsram="1(1)"/>
+                <SubModule name="u_buf_even" Register="10" Lut="11" Bsram="1" T_Register="10(10)" T_Lut="11(11)" T_Bsram="1(1)"/>
+                <SubModule name="u_buf_odd" Register="10" Lut="10" Bsram="1" T_Register="10(10)" T_Lut="10(10)" T_Bsram="1(1)"/>
             </SubModule>
         </SubModule>
         <SubModule name="U_SSG" Register="66" Alu="28" Lut="113" T_Register="100(66)" T_Alu="28(28)" T_Lut="172(113)">

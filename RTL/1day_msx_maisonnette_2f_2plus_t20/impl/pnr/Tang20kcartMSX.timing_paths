@@ -1333,7 +1333,7 @@ HOLD
 u_v9958/U_SSG/u_hvcounter/FF_V_CNT_IN_FRAME_1_s0
 6.168
 6.370
-u_v9958/U_VDP_LCD/dbuf/U_BUF_ODD/ff_imem_ff_imem_0_0_s
+u_v9958/U_VDP_LCD/dbuf/u_buf_odd/ff_imem_ff_imem_0_0_s
 6.370
 =====
 HOLD
@@ -1343,7 +1343,7 @@ HOLD
 u_v9958/U_SSG/u_hvcounter/FF_V_CNT_IN_FRAME_1_s0
 6.168
 6.370
-u_v9958/U_VDP_LCD/dbuf/U_BUF_EVEN/ff_imem_ff_imem_0_0_s
+u_v9958/U_VDP_LCD/dbuf/u_buf_even/ff_imem_ff_imem_0_0_s
 6.370
 =====
 HOLD

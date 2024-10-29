@@ -13,7 +13,7 @@ vlog ..\v9958clone\vdp_ram256.v
 vcom ..\v9958clone\vdp_package.vhd
 vcom ..\v9958clone\vdp_colordec.vhd
 vcom ..\v9958clone\vdp_command.vhd
-vcom ..\v9958clone\vdp_doublebuf.vhd
+vlog ..\v9958clone\vdp_doublebuf.v
 vlog ..\v9958clone\vdp_graphic123m.v
 vcom ..\v9958clone\vdp_graphic4567.vhd
 vcom ..\v9958clone\vdp_hvcounter.vhd

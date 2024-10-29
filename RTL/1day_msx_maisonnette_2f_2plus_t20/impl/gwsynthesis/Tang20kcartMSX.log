@@ -6,12 +6,13 @@ Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\1day_msx_maisonnet
 Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\1day_msx_maisonnette_2f_2plus_t20\src\sdram\ip_sdram.v'
 Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\1day_msx_maisonnette_2f_2plus_t20\src\tang20cart_msx.v'
 Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\1day_msx_maisonnette_2f_2plus_t20\src\v9958clone\vdp_graphic123m.v'
+Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\1day_msx_maisonnette_2f_2plus_t20\src\v9958clone\vdp_interrupt.v'
 Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\1day_msx_maisonnette_2f_2plus_t20\src\v9958clone\vdp_lcd.v'
 Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\1day_msx_maisonnette_2f_2plus_t20\src\v9958clone\vdp_linebuf.v'
 Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\1day_msx_maisonnette_2f_2plus_t20\src\v9958clone\vdp_ram256.v'
 Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\1day_msx_maisonnette_2f_2plus_t20\src\v9958clone\vdp_register.v'
 Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\1day_msx_maisonnette_2f_2plus_t20\src\v9958clone\vdp_ssg.v'
-Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\1day_msx_maisonnette_2f_2plus_t20\src\v9958clone\vdp_interrupt.v'
+Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\1day_msx_maisonnette_2f_2plus_t20\src\v9958clone\vdp_doublebuf.v'
 Analyzing VHDL file 'D:\github\HRA_product\TangCartMSX\RTL\1day_msx_maisonnette_2f_2plus_t20\src\v9958clone\vdp_package.vhd'
 Analyzing package 'vdp_package'("D:\github\HRA_product\TangCartMSX\RTL\1day_msx_maisonnette_2f_2plus_t20\src\v9958clone\vdp_package.vhd":82)
 Analyzing VHDL file 'D:\github\HRA_product\TangCartMSX\RTL\1day_msx_maisonnette_2f_2plus_t20\src\v9958clone\vdp.vhd'
@@ -23,9 +24,6 @@ Analyzing architecture 'rtl'("D:\github\HRA_product\TangCartMSX\RTL\1day_msx_mai
 Analyzing VHDL file 'D:\github\HRA_product\TangCartMSX\RTL\1day_msx_maisonnette_2f_2plus_t20\src\v9958clone\vdp_command.vhd'
 Analyzing entity 'vdp_command'("D:\github\HRA_product\TangCartMSX\RTL\1day_msx_maisonnette_2f_2plus_t20\src\v9958clone\vdp_command.vhd":67)
 Analyzing architecture 'rtl'("D:\github\HRA_product\TangCartMSX\RTL\1day_msx_maisonnette_2f_2plus_t20\src\v9958clone\vdp_command.vhd":106)
-Analyzing VHDL file 'D:\github\HRA_product\TangCartMSX\RTL\1day_msx_maisonnette_2f_2plus_t20\src\v9958clone\vdp_doublebuf.vhd'
-Analyzing entity 'vdp_doublebuf'("D:\github\HRA_product\TangCartMSX\RTL\1day_msx_maisonnette_2f_2plus_t20\src\v9958clone\vdp_doublebuf.vhd":80)
-Analyzing architecture 'rtl'("D:\github\HRA_product\TangCartMSX\RTL\1day_msx_maisonnette_2f_2plus_t20\src\v9958clone\vdp_doublebuf.vhd":96)
 Analyzing VHDL file 'D:\github\HRA_product\TangCartMSX\RTL\1day_msx_maisonnette_2f_2plus_t20\src\v9958clone\vdp_graphic4567.vhd'
 Analyzing entity 'vdp_graphic4567'("D:\github\HRA_product\TangCartMSX\RTL\1day_msx_maisonnette_2f_2plus_t20\src\v9958clone\vdp_graphic4567.vhd":97)
 Analyzing architecture 'rtl'("D:\github\HRA_product\TangCartMSX\RTL\1day_msx_maisonnette_2f_2plus_t20\src\v9958clone\vdp_graphic4567.vhd":138)
@@ -117,15 +115,9 @@ Switching to Verilog mode to elaborate module 'VDP_LCD'("D:\github\HRA_product\T
 Compiling module 'vdp_lcd'("D:\github\HRA_product\TangCartMSX\RTL\1day_msx_maisonnette_2f_2plus_t20\src\v9958clone\vdp_lcd.v":60)
 WARN  (EX3791) : Expression size 32 truncated to fit in target size 10("D:\github\HRA_product\TangCartMSX\RTL\1day_msx_maisonnette_2f_2plus_t20\src\v9958clone\vdp_lcd.v":202)
 WARN  (EX3791) : Expression size 32 truncated to fit in target size 10("D:\github\HRA_product\TangCartMSX\RTL\1day_msx_maisonnette_2f_2plus_t20\src\v9958clone\vdp_lcd.v":292)
-Switching to VHDL mode to elaborate design unit 'vdp_doublebuf'("D:\github\HRA_product\TangCartMSX\RTL\1day_msx_maisonnette_2f_2plus_t20\src\v9958clone\vdp_lcd.v":364)
-Processing 'VDP_DOUBLEBUF(RTL)'("D:\github\HRA_product\TangCartMSX\RTL\1day_msx_maisonnette_2f_2plus_t20\src\v9958clone\vdp_doublebuf.vhd":80)
-Switching to Verilog mode to elaborate module 'VDP_LINEBUF'("D:\github\HRA_product\TangCartMSX\RTL\1day_msx_maisonnette_2f_2plus_t20\src\v9958clone\vdp_doublebuf.vhd":125)
+Compiling module 'vdp_doublebuf'("D:\github\HRA_product\TangCartMSX\RTL\1day_msx_maisonnette_2f_2plus_t20\src\v9958clone\vdp_doublebuf.v":58)
 Compiling module 'vdp_linebuf'("D:\github\HRA_product\TangCartMSX\RTL\1day_msx_maisonnette_2f_2plus_t20\src\v9958clone\vdp_linebuf.v":85)
 Extracting RAM for identifier 'ff_imem'("D:\github\HRA_product\TangCartMSX\RTL\1day_msx_maisonnette_2f_2plus_t20\src\v9958clone\vdp_linebuf.v":92)
-Returning to VHDL mode to continue with elaboration("D:\github\HRA_product\TangCartMSX\RTL\1day_msx_maisonnette_2f_2plus_t20\src\v9958clone\vdp_doublebuf.vhd":125)
-Switching to Verilog mode to elaborate module 'VDP_LINEBUF'("D:\github\HRA_product\TangCartMSX\RTL\1day_msx_maisonnette_2f_2plus_t20\src\v9958clone\vdp_doublebuf.vhd":135)
-Returning to VHDL mode to continue with elaboration("D:\github\HRA_product\TangCartMSX\RTL\1day_msx_maisonnette_2f_2plus_t20\src\v9958clone\vdp_doublebuf.vhd":135)
-Returning to Verilog mode to proceed with elaboration("D:\github\HRA_product\TangCartMSX\RTL\1day_msx_maisonnette_2f_2plus_t20\src\v9958clone\vdp_lcd.v":364)
 WARN  (EX3791) : Expression size 32 truncated to fit in target size 10("D:\github\HRA_product\TangCartMSX\RTL\1day_msx_maisonnette_2f_2plus_t20\src\v9958clone\vdp_lcd.v":366)
 Returning to VHDL mode to continue with elaboration("D:\github\HRA_product\TangCartMSX\RTL\1day_msx_maisonnette_2f_2plus_t20\src\v9958clone\vdp.vhd":1104)
 Switching to Verilog mode to elaborate module 'VDP_INTERRUPT'("D:\github\HRA_product\TangCartMSX\RTL\1day_msx_maisonnette_2f_2plus_t20\src\v9958clone\vdp.vhd":1147)

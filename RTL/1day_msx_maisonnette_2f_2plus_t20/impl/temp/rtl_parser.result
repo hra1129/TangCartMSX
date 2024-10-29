@@ -61,22 +61,22 @@
         "InstFile" : "D:/github/HRA_product/TangCartMSX/RTL/1day_msx_maisonnette_2f_2plus_t20/src/v9958clone/vdp_lcd.v",
         "InstLine" : 352,
         "InstName" : "dbuf",
-        "ModuleFile" : "D:/github/HRA_product/TangCartMSX/RTL/1day_msx_maisonnette_2f_2plus_t20/src/v9958clone/vdp_doublebuf.vhd",
-        "ModuleLine" : 80,
-        "ModuleName" : "VDP_DOUBLEBUF",
+        "ModuleFile" : "D:/github/HRA_product/TangCartMSX/RTL/1day_msx_maisonnette_2f_2plus_t20/src/v9958clone/vdp_doublebuf.v",
+        "ModuleLine" : 58,
+        "ModuleName" : "vdp_doublebuf",
         "SubInsts" : [
          {
-          "InstFile" : "D:/github/HRA_product/TangCartMSX/RTL/1day_msx_maisonnette_2f_2plus_t20/src/v9958clone/vdp_doublebuf.vhd",
-          "InstLine" : 118,
-          "InstName" : "U_BUF_EVEN",
+          "InstFile" : "D:/github/HRA_product/TangCartMSX/RTL/1day_msx_maisonnette_2f_2plus_t20/src/v9958clone/vdp_doublebuf.v",
+          "InstLine" : 82,
+          "InstName" : "u_buf_even",
           "ModuleFile" : "D:/github/HRA_product/TangCartMSX/RTL/1day_msx_maisonnette_2f_2plus_t20/src/v9958clone/vdp_linebuf.v",
           "ModuleLine" : 85,
           "ModuleName" : "vdp_linebuf"
          },
          {
-          "InstFile" : "D:/github/HRA_product/TangCartMSX/RTL/1day_msx_maisonnette_2f_2plus_t20/src/v9958clone/vdp_doublebuf.vhd",
-          "InstLine" : 128,
-          "InstName" : "U_BUF_ODD",
+          "InstFile" : "D:/github/HRA_product/TangCartMSX/RTL/1day_msx_maisonnette_2f_2plus_t20/src/v9958clone/vdp_doublebuf.v",
+          "InstLine" : 91,
+          "InstName" : "u_buf_odd",
           "ModuleFile" : "D:/github/HRA_product/TangCartMSX/RTL/1day_msx_maisonnette_2f_2plus_t20/src/v9958clone/vdp_linebuf.v",
           "ModuleLine" : 85,
           "ModuleName" : "vdp_linebuf"
