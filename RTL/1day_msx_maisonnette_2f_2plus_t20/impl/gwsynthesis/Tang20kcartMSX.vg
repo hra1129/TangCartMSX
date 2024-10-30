@@ -1,7 +1,7 @@
 //
 //Written by GowinSynthesis
 //Tool Version "V1.9.9.03 (64-bit)"
-//Wed Oct 30 20:57:23 2024
+//Wed Oct 30 21:25:04 2024
 
 //Source file index table:
 //file0 "\D:/github/HRA_product/TangCartMSX/RTL/1day_msx_maisonnette_2f_2plus_t20/src/debugger/ip_debugger.v"
@@ -19,12 +19,12 @@
 //file12 "\D:/github/HRA_product/TangCartMSX/RTL/1day_msx_maisonnette_2f_2plus_t20/src/v9958/vdp_register.v"
 //file13 "\D:/github/HRA_product/TangCartMSX/RTL/1day_msx_maisonnette_2f_2plus_t20/src/v9958/vdp_ssg.v"
 //file14 "\D:/github/HRA_product/TangCartMSX/RTL/1day_msx_maisonnette_2f_2plus_t20/src/v9958/vdp_wait_control.v"
-//file15 "\D:/github/HRA_product/TangCartMSX/RTL/1day_msx_maisonnette_2f_2plus_t20/src/v9958/vdp.vhd"
-//file16 "\D:/github/HRA_product/TangCartMSX/RTL/1day_msx_maisonnette_2f_2plus_t20/src/v9958/vdp_command.vhd"
-//file17 "\D:/github/HRA_product/TangCartMSX/RTL/1day_msx_maisonnette_2f_2plus_t20/src/v9958/vdp_graphic4567.vhd"
-//file18 "\D:/github/HRA_product/TangCartMSX/RTL/1day_msx_maisonnette_2f_2plus_t20/src/v9958/vdp_hvcounter.vhd"
-//file19 "\D:/github/HRA_product/TangCartMSX/RTL/1day_msx_maisonnette_2f_2plus_t20/src/v9958/vdp_package.vhd"
-//file20 "\D:/github/HRA_product/TangCartMSX/RTL/1day_msx_maisonnette_2f_2plus_t20/src/v9958/vdp_spinforam.vhd"
+//file15 "\D:/github/HRA_product/TangCartMSX/RTL/1day_msx_maisonnette_2f_2plus_t20/src/v9958/vdp_spinforam.v"
+//file16 "\D:/github/HRA_product/TangCartMSX/RTL/1day_msx_maisonnette_2f_2plus_t20/src/v9958/vdp.vhd"
+//file17 "\D:/github/HRA_product/TangCartMSX/RTL/1day_msx_maisonnette_2f_2plus_t20/src/v9958/vdp_command.vhd"
+//file18 "\D:/github/HRA_product/TangCartMSX/RTL/1day_msx_maisonnette_2f_2plus_t20/src/v9958/vdp_graphic4567.vhd"
+//file19 "\D:/github/HRA_product/TangCartMSX/RTL/1day_msx_maisonnette_2f_2plus_t20/src/v9958/vdp_hvcounter.vhd"
+//file20 "\D:/github/HRA_product/TangCartMSX/RTL/1day_msx_maisonnette_2f_2plus_t20/src/v9958/vdp_package.vhd"
 //file21 "\D:/github/HRA_product/TangCartMSX/RTL/1day_msx_maisonnette_2f_2plus_t20/src/v9958/vdp_sprite.vhd"
 //file22 "\D:/github/HRA_product/TangCartMSX/RTL/1day_msx_maisonnette_2f_2plus_t20/src/v9958/vdp_text12.vhd"
 `timescale 100 ps/100 ps
@@ -16066,11 +16066,11 @@ defparam n688_s.ALU_MODE=1;
     .G(GND)
 );
 endmodule /* VDP_GRAPHIC4567 */
-module VDP_SPINFORAM (
+module vdp_spinforam (
   O_sdram_clk_d,
+  ENABLE,
   SPINFORAMIC_IN,
   SPINFORAMCC_IN,
-  ENABLE,
   SPINFORAMWE,
   SPINFORAMADDR,
   SPINFORAMCOLOR_IN,
@@ -16081,9 +16081,9 @@ module VDP_SPINFORAM (
 )
 ;
 input O_sdram_clk_d;
+input ENABLE;
 input SPINFORAMIC_IN;
 input SPINFORAMCC_IN;
-input ENABLE;
 input SPINFORAMWE;
 input [2:0] SPINFORAMADDR;
 input [3:0] SPINFORAMCOLOR_IN;
@@ -16091,94 +16091,97 @@ input [15:0] SPINFORAMPATTERN_IN;
 input [8:0] SPINFORAMX_IN;
 output [0:0] SPINFORAMDATA_OUT_Z;
 output [30:1] SPINFORAMDATA_OUT;
-wire n37_5;
-wire [2:0] IADDRESS;
+wire n6_5;
+wire [2:0] ff_address;
 wire [3:3] DO;
 wire VCC;
 wire GND;
-  LUT2 n37_s1 (
-    .F(n37_5),
+  LUT2 n6_s1 (
+    .F(n6_5),
     .I0(ENABLE),
     .I1(SPINFORAMWE) 
 );
-defparam n37_s1.INIT=4'h8;
-  DFF IADDRESS_1_s0 (
-    .Q(IADDRESS[1]),
+defparam n6_s1.INIT=4'h8;
+  DFFE ff_address_1_s0 (
+    .Q(ff_address[1]),
     .D(SPINFORAMADDR[1]),
-    .CLK(O_sdram_clk_d) 
+    .CLK(O_sdram_clk_d),
+    .CE(ENABLE) 
 );
-  DFF IADDRESS_0_s0 (
-    .Q(IADDRESS[0]),
+  DFFE ff_address_0_s0 (
+    .Q(ff_address[0]),
     .D(SPINFORAMADDR[0]),
-    .CLK(O_sdram_clk_d) 
+    .CLK(O_sdram_clk_d),
+    .CE(ENABLE) 
 );
-  DFF IADDRESS_2_s0 (
-    .Q(IADDRESS[2]),
+  DFFE ff_address_2_s0 (
+    .Q(ff_address[2]),
     .D(SPINFORAMADDR[2]),
-    .CLK(O_sdram_clk_d) 
+    .CLK(O_sdram_clk_d),
+    .CE(ENABLE) 
 );
-  RAM16SDP4 IMEM_IMEM_0_0_s (
+  RAM16SDP4 ff_memory_ff_memory_0_0_s (
     .DO({SPINFORAMDATA_OUT[3:1],SPINFORAMDATA_OUT_Z[0]}),
     .DI({SPINFORAMCOLOR_IN[1:0],SPINFORAMCC_IN,SPINFORAMIC_IN}),
     .WAD({GND,SPINFORAMADDR[2:0]}),
-    .RAD({GND,IADDRESS[2:0]}),
-    .WRE(n37_5),
+    .RAD({GND,ff_address[2:0]}),
+    .WRE(n6_5),
     .CLK(O_sdram_clk_d) 
 );
-  RAM16SDP4 IMEM_IMEM_0_1_s (
+  RAM16SDP4 ff_memory_ff_memory_0_1_s (
     .DO(SPINFORAMDATA_OUT[7:4]),
     .DI({SPINFORAMPATTERN_IN[1:0],SPINFORAMCOLOR_IN[3:2]}),
     .WAD({GND,SPINFORAMADDR[2:0]}),
-    .RAD({GND,IADDRESS[2:0]}),
-    .WRE(n37_5),
+    .RAD({GND,ff_address[2:0]}),
+    .WRE(n6_5),
     .CLK(O_sdram_clk_d) 
 );
-  RAM16SDP4 IMEM_IMEM_0_2_s (
+  RAM16SDP4 ff_memory_ff_memory_0_2_s (
     .DO(SPINFORAMDATA_OUT[11:8]),
     .DI(SPINFORAMPATTERN_IN[5:2]),
     .WAD({GND,SPINFORAMADDR[2:0]}),
-    .RAD({GND,IADDRESS[2:0]}),
-    .WRE(n37_5),
+    .RAD({GND,ff_address[2:0]}),
+    .WRE(n6_5),
     .CLK(O_sdram_clk_d) 
 );
-  RAM16SDP4 IMEM_IMEM_0_3_s (
+  RAM16SDP4 ff_memory_ff_memory_0_3_s (
     .DO(SPINFORAMDATA_OUT[15:12]),
     .DI(SPINFORAMPATTERN_IN[9:6]),
     .WAD({GND,SPINFORAMADDR[2:0]}),
-    .RAD({GND,IADDRESS[2:0]}),
-    .WRE(n37_5),
+    .RAD({GND,ff_address[2:0]}),
+    .WRE(n6_5),
     .CLK(O_sdram_clk_d) 
 );
-  RAM16SDP4 IMEM_IMEM_0_4_s (
+  RAM16SDP4 ff_memory_ff_memory_0_4_s (
     .DO(SPINFORAMDATA_OUT[19:16]),
     .DI(SPINFORAMPATTERN_IN[13:10]),
     .WAD({GND,SPINFORAMADDR[2:0]}),
-    .RAD({GND,IADDRESS[2:0]}),
-    .WRE(n37_5),
+    .RAD({GND,ff_address[2:0]}),
+    .WRE(n6_5),
     .CLK(O_sdram_clk_d) 
 );
-  RAM16SDP4 IMEM_IMEM_0_5_s (
+  RAM16SDP4 ff_memory_ff_memory_0_5_s (
     .DO(SPINFORAMDATA_OUT[23:20]),
     .DI({SPINFORAMX_IN[1:0],SPINFORAMPATTERN_IN[15:14]}),
     .WAD({GND,SPINFORAMADDR[2:0]}),
-    .RAD({GND,IADDRESS[2:0]}),
-    .WRE(n37_5),
+    .RAD({GND,ff_address[2:0]}),
+    .WRE(n6_5),
     .CLK(O_sdram_clk_d) 
 );
-  RAM16SDP4 IMEM_IMEM_0_6_s (
+  RAM16SDP4 ff_memory_ff_memory_0_6_s (
     .DO(SPINFORAMDATA_OUT[27:24]),
     .DI(SPINFORAMX_IN[5:2]),
     .WAD({GND,SPINFORAMADDR[2:0]}),
-    .RAD({GND,IADDRESS[2:0]}),
-    .WRE(n37_5),
+    .RAD({GND,ff_address[2:0]}),
+    .WRE(n6_5),
     .CLK(O_sdram_clk_d) 
 );
-  RAM16SDP4 IMEM_IMEM_0_7_s (
+  RAM16SDP4 ff_memory_ff_memory_0_7_s (
     .DO({DO[3],SPINFORAMDATA_OUT[30:28]}),
     .DI({GND,SPINFORAMX_IN[8:6]}),
     .WAD({GND,SPINFORAMADDR[2:0]}),
-    .RAD({GND,IADDRESS[2:0]}),
-    .WRE(n37_5),
+    .RAD({GND,ff_address[2:0]}),
+    .WRE(n6_5),
     .CLK(O_sdram_clk_d) 
 );
   VCC VCC_cZ (
@@ -16187,7 +16190,7 @@ defparam n37_s1.INIT=4'h8;
   GND GND_cZ (
     .G(GND)
 );
-endmodule /* VDP_SPINFORAM */
+endmodule /* vdp_spinforam */
 module vdp_ram256_0 (
   W_RAM_EVEN_WE,
   O_sdram_clk_d,
@@ -20924,11 +20927,11 @@ defparam n1769_s0.ALU_MODE=3;
     .O(n358_9),
     .I(n926_1) 
 );
-  VDP_SPINFORAM ISPINFORAM (
+  vdp_spinforam ISPINFORAM (
     .O_sdram_clk_d(O_sdram_clk_d),
+    .ENABLE(ENABLE),
     .SPINFORAMIC_IN(SPINFORAMIC_IN),
     .SPINFORAMCC_IN(SPINFORAMCC_IN),
-    .ENABLE(ENABLE),
     .SPINFORAMWE(SPINFORAMWE),
     .SPINFORAMADDR(SPINFORAMADDR[2:0]),
     .SPINFORAMCOLOR_IN(SPINFORAMCOLOR_IN[3:0]),

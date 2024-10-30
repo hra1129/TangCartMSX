@@ -165,9 +165,9 @@
         "InstFile" : "D:/github/HRA_product/TangCartMSX/RTL/1day_msx_maisonnette_2f_2plus_t20/src/v9958/vdp_sprite.vhd",
         "InstLine" : 382,
         "InstName" : "ISPINFORAM",
-        "ModuleFile" : "D:/github/HRA_product/TangCartMSX/RTL/1day_msx_maisonnette_2f_2plus_t20/src/v9958/vdp_spinforam.vhd",
-        "ModuleLine" : 88,
-        "ModuleName" : "VDP_SPINFORAM"
+        "ModuleFile" : "D:/github/HRA_product/TangCartMSX/RTL/1day_msx_maisonnette_2f_2plus_t20/src/v9958/vdp_spinforam.v",
+        "ModuleLine" : 58,
+        "ModuleName" : "vdp_spinforam"
        },
        {
         "InstFile" : "D:/github/HRA_product/TangCartMSX/RTL/1day_msx_maisonnette_2f_2plus_t20/src/v9958/vdp_sprite.vhd",

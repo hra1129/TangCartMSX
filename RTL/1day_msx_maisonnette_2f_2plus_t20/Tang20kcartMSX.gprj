@@ -23,6 +23,7 @@
         <File path="src/v9958/vdp_linebuf.v" type="file.verilog" enable="1"/>
         <File path="src/v9958/vdp_ram256.v" type="file.verilog" enable="1"/>
         <File path="src/v9958/vdp_register.v" type="file.verilog" enable="1"/>
+        <File path="src/v9958/vdp_spinforam.v" type="file.verilog" enable="1"/>
         <File path="src/v9958/vdp_ssg.v" type="file.verilog" enable="1"/>
         <File path="src/v9958/vdp_wait_control.v" type="file.verilog" enable="1"/>
         <File path="src/v9958/vdp.vhd" type="file.vhdl" enable="1"/>
@@ -30,7 +31,6 @@
         <File path="src/v9958/vdp_graphic4567.vhd" type="file.vhdl" enable="1"/>
         <File path="src/v9958/vdp_hvcounter.vhd" type="file.vhdl" enable="1"/>
         <File path="src/v9958/vdp_package.vhd" type="file.vhdl" enable="1"/>
-        <File path="src/v9958/vdp_spinforam.vhd" type="file.vhdl" enable="1"/>
         <File path="src/v9958/vdp_sprite.vhd" type="file.vhdl" enable="1"/>
         <File path="src/v9958/vdp_text12.vhd" type="file.vhdl" enable="1"/>
         <File path="src/Tang20kcartMSX.cst" type="file.cst" enable="1"/>
