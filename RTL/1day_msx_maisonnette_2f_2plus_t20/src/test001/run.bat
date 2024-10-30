@@ -23,7 +23,7 @@ vlog ..\v9958\vdp_register.v
 vlog ..\v9958\vdp_spinforam.v
 vcom ..\v9958\vdp_sprite.vhd
 vlog ..\v9958\vdp_ssg.v
-vcom ..\v9958\vdp_text12.vhd
+vlog ..\v9958\vdp_text12.v
 vlog ..\v9958\vdp_lcd.v
 vlog ..\v9958\vdp_wait_control.v
 vcom ..\v9958\vdp.vhd

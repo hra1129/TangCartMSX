@@ -13,9 +13,9 @@ Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\1day_msx_maisonnet
 Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\1day_msx_maisonnette_2f_2plus_t20\src\v9958\vdp_linebuf.v'
 Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\1day_msx_maisonnette_2f_2plus_t20\src\v9958\vdp_ram256.v'
 Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\1day_msx_maisonnette_2f_2plus_t20\src\v9958\vdp_register.v'
+Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\1day_msx_maisonnette_2f_2plus_t20\src\v9958\vdp_spinforam.v'
 Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\1day_msx_maisonnette_2f_2plus_t20\src\v9958\vdp_ssg.v'
 Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\1day_msx_maisonnette_2f_2plus_t20\src\v9958\vdp_wait_control.v'
-Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\1day_msx_maisonnette_2f_2plus_t20\src\v9958\vdp_spinforam.v'
 Analyzing VHDL file 'D:\github\HRA_product\TangCartMSX\RTL\1day_msx_maisonnette_2f_2plus_t20\src\v9958\vdp_package.vhd'
 Analyzing package 'vdp_package'("D:\github\HRA_product\TangCartMSX\RTL\1day_msx_maisonnette_2f_2plus_t20\src\v9958\vdp_package.vhd":82)
 Analyzing VHDL file 'D:\github\HRA_product\TangCartMSX\RTL\1day_msx_maisonnette_2f_2plus_t20\src\v9958\vdp.vhd'
