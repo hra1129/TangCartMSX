@@ -7,8 +7,6 @@ Running placement......
 [10%] Placement Phase 0 completed
 [20%] Placement Phase 1 completed
 [30%] Placement Phase 2 completed
-WARN  (TA1117) : Can't calculate clocks' relationship between: "u_v9958/ENABLE" and "u_pll/pll_inst/CLKOUT.default_gen_clk"
-WARN  (TA1117) : Can't calculate clocks' relationship between: "u_pll/pll_inst/CLKOUT.default_gen_clk" and "u_v9958/ENABLE"
 [50%] Placement Phase 3 completed
 Running routing......
 [60%] Routing Phase 0 completed
@@ -28,5 +26,5 @@ Generate file "D:\github\HRA_product\TangCartMSX\RTL\1day_msx_maisonnette_2f_2pl
 Generate file "D:\github\HRA_product\TangCartMSX\RTL\1day_msx_maisonnette_2f_2plus_t20\impl\pnr\Tang20kcartMSX.rpt.html" completed
 Generate file "D:\github\HRA_product\TangCartMSX\RTL\1day_msx_maisonnette_2f_2plus_t20\impl\pnr\Tang20kcartMSX.rpt.txt" completed
 Generate file "D:\github\HRA_product\TangCartMSX\RTL\1day_msx_maisonnette_2f_2plus_t20\impl\pnr\Tang20kcartMSX.tr.html" completed
-Thu Oct 31 06:43:12 2024
+Thu Oct 31 21:05:13 2024
 

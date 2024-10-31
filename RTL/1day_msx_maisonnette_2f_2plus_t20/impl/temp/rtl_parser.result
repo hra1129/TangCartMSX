@@ -105,9 +105,9 @@
         "InstFile" : "D:/github/HRA_product/TangCartMSX/RTL/1day_msx_maisonnette_2f_2plus_t20/src/v9958/vdp_ssg.v",
         "InstLine" : 158,
         "InstName" : "u_hvcounter",
-        "ModuleFile" : "D:/github/HRA_product/TangCartMSX/RTL/1day_msx_maisonnette_2f_2plus_t20/src/v9958/vdp_hvcounter.vhd",
-        "ModuleLine" : 67,
-        "ModuleName" : "VDP_HVCOUNTER"
+        "ModuleFile" : "D:/github/HRA_product/TangCartMSX/RTL/1day_msx_maisonnette_2f_2plus_t20/src/v9958/vdp_hvcounter.v",
+        "ModuleLine" : 58,
+        "ModuleName" : "vdp_hvcounter"
        }
       ]
      },
@@ -123,9 +123,9 @@
       "InstFile" : "D:/github/HRA_product/TangCartMSX/RTL/1day_msx_maisonnette_2f_2plus_t20/src/v9958/vdp.vhd",
       "InstLine" : 1600,
       "InstName" : "U_VDP_TEXT12",
-      "ModuleFile" : "D:/github/HRA_product/TangCartMSX/RTL/1day_msx_maisonnette_2f_2plus_t20/src/v9958/vdp_text12.vhd",
-      "ModuleLine" : 104,
-      "ModuleName" : "VDP_TEXT12"
+      "ModuleFile" : "D:/github/HRA_product/TangCartMSX/RTL/1day_msx_maisonnette_2f_2plus_t20/src/v9958/vdp_text12.v",
+      "ModuleLine" : 58,
+      "ModuleName" : "vdp_text12"
      },
      {
       "InstFile" : "D:/github/HRA_product/TangCartMSX/RTL/1day_msx_maisonnette_2f_2plus_t20/src/v9958/vdp.vhd",

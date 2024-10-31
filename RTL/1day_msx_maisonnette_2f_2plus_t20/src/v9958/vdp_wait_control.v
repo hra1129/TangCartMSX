@@ -249,7 +249,7 @@ module vdp_wait_control (
 		c_wait_table_605[15] = 16'h8000;	//	hmmc
 	end
 
-	always @( clk ) begin
+	always @( posedge clk ) begin
 		if( reset )begin
 			ff_wait_cnt <= 16'd0;
 		end

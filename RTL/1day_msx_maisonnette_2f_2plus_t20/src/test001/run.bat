@@ -16,7 +16,7 @@ vcom ..\v9958\vdp_command.vhd
 vlog ..\v9958\vdp_doublebuf.v
 vlog ..\v9958\vdp_graphic123m.v
 vcom ..\v9958\vdp_graphic4567.vhd
-vcom ..\v9958\vdp_hvcounter.vhd
+vlog ..\v9958\vdp_hvcounter.v
 vlog ..\v9958\vdp_interrupt.v
 vlog ..\v9958\vdp_linebuf.v
 vlog ..\v9958\vdp_register.v
