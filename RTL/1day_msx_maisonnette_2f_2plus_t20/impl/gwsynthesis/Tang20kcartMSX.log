@@ -15,10 +15,11 @@ Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\1day_msx_maisonnet
 Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\1day_msx_maisonnette_2f_2plus_t20\src\v9958\vdp_ram256.v'
 Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\1day_msx_maisonnette_2f_2plus_t20\src\v9958\vdp_register.v'
 Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\1day_msx_maisonnette_2f_2plus_t20\src\v9958\vdp_spinforam.v'
+Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\1day_msx_maisonnette_2f_2plus_t20\src\v9958\vdp_sprite.v'
 Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\1day_msx_maisonnette_2f_2plus_t20\src\v9958\vdp_ssg.v'
 Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\1day_msx_maisonnette_2f_2plus_t20\src\v9958\vdp_text12.v'
 Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\1day_msx_maisonnette_2f_2plus_t20\src\v9958\vdp_wait_control.v'
-Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\1day_msx_maisonnette_2f_2plus_t20\src\v9958\vdp_sprite.v'
+Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\1day_msx_maisonnette_2f_2plus_t20\src\v9958\vdp_graphic4567.v'
 Analyzing VHDL file 'D:\github\HRA_product\TangCartMSX\RTL\1day_msx_maisonnette_2f_2plus_t20\src\v9958\vdp_package.vhd'
 Analyzing package 'vdp_package'("D:\github\HRA_product\TangCartMSX\RTL\1day_msx_maisonnette_2f_2plus_t20\src\v9958\vdp_package.vhd":82)
 Analyzing VHDL file 'D:\github\HRA_product\TangCartMSX\RTL\1day_msx_maisonnette_2f_2plus_t20\src\v9958\vdp.vhd'
@@ -27,9 +28,6 @@ Analyzing architecture 'rtl'("D:\github\HRA_product\TangCartMSX\RTL\1day_msx_mai
 Analyzing VHDL file 'D:\github\HRA_product\TangCartMSX\RTL\1day_msx_maisonnette_2f_2plus_t20\src\v9958\vdp_command.vhd'
 Analyzing entity 'vdp_command'("D:\github\HRA_product\TangCartMSX\RTL\1day_msx_maisonnette_2f_2plus_t20\src\v9958\vdp_command.vhd":67)
 Analyzing architecture 'rtl'("D:\github\HRA_product\TangCartMSX\RTL\1day_msx_maisonnette_2f_2plus_t20\src\v9958\vdp_command.vhd":106)
-Analyzing VHDL file 'D:\github\HRA_product\TangCartMSX\RTL\1day_msx_maisonnette_2f_2plus_t20\src\v9958\vdp_graphic4567.vhd'
-Analyzing entity 'vdp_graphic4567'("D:\github\HRA_product\TangCartMSX\RTL\1day_msx_maisonnette_2f_2plus_t20\src\v9958\vdp_graphic4567.vhd":97)
-Analyzing architecture 'rtl'("D:\github\HRA_product\TangCartMSX\RTL\1day_msx_maisonnette_2f_2plus_t20\src\v9958\vdp_graphic4567.vhd":138)
 Compiling module 'ip_debugger'("D:\github\HRA_product\TangCartMSX\RTL\1day_msx_maisonnette_2f_2plus_t20\src\debugger\ip_debugger.v":27)
 Compiling module 'vram_image_rom'("D:\github\HRA_product\TangCartMSX\RTL\1day_msx_maisonnette_2f_2plus_t20\src\debugger\vram_image_rom.v":27)
 Extracting RAM for identifier 'ff_ram'("D:\github\HRA_product\TangCartMSX\RTL\1day_msx_maisonnette_2f_2plus_t20\src\debugger\vram_image_rom.v":34)
@@ -137,15 +135,17 @@ Returning to VHDL mode to continue with elaboration("D:\github\HRA_product\TangC
 Switching to Verilog mode to elaborate module 'VDP_GRAPHIC123M'("D:\github\HRA_product\TangCartMSX\RTL\1day_msx_maisonnette_2f_2plus_t20\src\v9958\vdp.vhd":1647)
 Compiling module 'vdp_graphic123m'("D:\github\HRA_product\TangCartMSX\RTL\1day_msx_maisonnette_2f_2plus_t20\src\v9958\vdp_graphic123m.v":62)
 Returning to VHDL mode to continue with elaboration("D:\github\HRA_product\TangCartMSX\RTL\1day_msx_maisonnette_2f_2plus_t20\src\v9958\vdp.vhd":1647)
-Processing 'VDP_GRAPHIC4567(RTL)'("D:\github\HRA_product\TangCartMSX\RTL\1day_msx_maisonnette_2f_2plus_t20\src\v9958\vdp_graphic4567.vhd":97)
-Switching to Verilog mode to elaborate module 'vdp_ram256'("D:\github\HRA_product\TangCartMSX\RTL\1day_msx_maisonnette_2f_2plus_t20\src\v9958\vdp_graphic4567.vhd":215)
+Switching to Verilog mode to elaborate module 'VDP_GRAPHIC4567'("D:\github\HRA_product\TangCartMSX\RTL\1day_msx_maisonnette_2f_2plus_t20\src\v9958\vdp.vhd":1678)
+Compiling module 'vdp_graphic4567'("D:\github\HRA_product\TangCartMSX\RTL\1day_msx_maisonnette_2f_2plus_t20\src\v9958\vdp_graphic4567.v":58)
 Compiling module 'vdp_ram256'("D:\github\HRA_product\TangCartMSX\RTL\1day_msx_maisonnette_2f_2plus_t20\src\v9958\vdp_ram256.v":33)
 Extracting RAM for identifier 'ff_block_ram'("D:\github\HRA_product\TangCartMSX\RTL\1day_msx_maisonnette_2f_2plus_t20\src\v9958\vdp_ram256.v":40)
-Returning to VHDL mode to continue with elaboration("D:\github\HRA_product\TangCartMSX\RTL\1day_msx_maisonnette_2f_2plus_t20\src\v9958\vdp_graphic4567.vhd":215)
-'others' clause is never selected("D:\github\HRA_product\TangCartMSX\RTL\1day_msx_maisonnette_2f_2plus_t20\src\v9958\vdp_graphic4567.vhd":229)
-'others' clause is never selected("D:\github\HRA_product\TangCartMSX\RTL\1day_msx_maisonnette_2f_2plus_t20\src\v9958\vdp_graphic4567.vhd":314)
-'others' clause is never selected("D:\github\HRA_product\TangCartMSX\RTL\1day_msx_maisonnette_2f_2plus_t20\src\v9958\vdp_graphic4567.vhd":351)
-'others' clause is never selected("D:\github\HRA_product\TangCartMSX\RTL\1day_msx_maisonnette_2f_2plus_t20\src\v9958\vdp_graphic4567.vhd":397)
+WARN  (EX3791) : Expression size 9 truncated to fit in target size 8("D:\github\HRA_product\TangCartMSX\RTL\1day_msx_maisonnette_2f_2plus_t20\src\v9958\vdp_graphic4567.v":222)
+WARN  (EX3791) : Expression size 9 truncated to fit in target size 8("D:\github\HRA_product\TangCartMSX\RTL\1day_msx_maisonnette_2f_2plus_t20\src\v9958\vdp_graphic4567.v":242)
+WARN  (EX3791) : Expression size 9 truncated to fit in target size 8("D:\github\HRA_product\TangCartMSX\RTL\1day_msx_maisonnette_2f_2plus_t20\src\v9958\vdp_graphic4567.v":246)
+WARN  (EX3791) : Expression size 10 truncated to fit in target size 9("D:\github\HRA_product\TangCartMSX\RTL\1day_msx_maisonnette_2f_2plus_t20\src\v9958\vdp_graphic4567.v":469)
+WARN  (EX3791) : Expression size 5 truncated to fit in target size 4("D:\github\HRA_product\TangCartMSX\RTL\1day_msx_maisonnette_2f_2plus_t20\src\v9958\vdp_graphic4567.v":491)
+WARN  (EX3791) : Expression size 5 truncated to fit in target size 4("D:\github\HRA_product\TangCartMSX\RTL\1day_msx_maisonnette_2f_2plus_t20\src\v9958\vdp_graphic4567.v":494)
+Returning to VHDL mode to continue with elaboration("D:\github\HRA_product\TangCartMSX\RTL\1day_msx_maisonnette_2f_2plus_t20\src\v9958\vdp.vhd":1678)
 Switching to Verilog mode to elaborate module 'VDP_SPRITE'("D:\github\HRA_product\TangCartMSX\RTL\1day_msx_maisonnette_2f_2plus_t20\src\v9958\vdp.vhd":1718)
 Compiling module 'vdp_sprite'("D:\github\HRA_product\TangCartMSX\RTL\1day_msx_maisonnette_2f_2plus_t20\src\v9958\vdp_sprite.v":58)
 Compiling module 'vdp_spinforam'("D:\github\HRA_product\TangCartMSX\RTL\1day_msx_maisonnette_2f_2plus_t20\src\v9958\vdp_spinforam.v":58)

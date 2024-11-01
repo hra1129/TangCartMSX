@@ -15,7 +15,7 @@ vlog ..\v9958\vdp_colordec.v
 vcom ..\v9958\vdp_command.vhd
 vlog ..\v9958\vdp_doublebuf.v
 vlog ..\v9958\vdp_graphic123m.v
-vcom ..\v9958\vdp_graphic4567.vhd
+vlog ..\v9958\vdp_graphic4567.v
 vlog ..\v9958\vdp_hvcounter.v
 vlog ..\v9958\vdp_interrupt.v
 vlog ..\v9958\vdp_linebuf.v

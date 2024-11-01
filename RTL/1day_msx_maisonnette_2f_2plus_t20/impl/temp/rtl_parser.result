@@ -139,14 +139,14 @@
       "InstFile" : "D:/github/HRA_product/TangCartMSX/RTL/1day_msx_maisonnette_2f_2plus_t20/src/v9958/vdp.vhd",
       "InstLine" : 1649,
       "InstName" : "U_VDP_GRAPHIC4567",
-      "ModuleFile" : "D:/github/HRA_product/TangCartMSX/RTL/1day_msx_maisonnette_2f_2plus_t20/src/v9958/vdp_graphic4567.vhd",
-      "ModuleLine" : 97,
-      "ModuleName" : "VDP_GRAPHIC4567",
+      "ModuleFile" : "D:/github/HRA_product/TangCartMSX/RTL/1day_msx_maisonnette_2f_2plus_t20/src/v9958/vdp_graphic4567.v",
+      "ModuleLine" : 58,
+      "ModuleName" : "vdp_graphic4567",
       "SubInsts" : [
        {
-        "InstFile" : "D:/github/HRA_product/TangCartMSX/RTL/1day_msx_maisonnette_2f_2plus_t20/src/v9958/vdp_graphic4567.vhd",
-        "InstLine" : 208,
-        "InstName" : "U_FIFOMEM",
+        "InstFile" : "D:/github/HRA_product/TangCartMSX/RTL/1day_msx_maisonnette_2f_2plus_t20/src/v9958/vdp_graphic4567.v",
+        "InstLine" : 152,
+        "InstName" : "u_fifomem",
         "ModuleFile" : "D:/github/HRA_product/TangCartMSX/RTL/1day_msx_maisonnette_2f_2plus_t20/src/v9958/vdp_ram256.v",
         "ModuleLine" : 33,
         "ModuleName" : "vdp_ram256"

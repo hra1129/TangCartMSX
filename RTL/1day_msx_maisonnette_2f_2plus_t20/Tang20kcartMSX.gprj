@@ -18,6 +18,7 @@
         <File path="src/v9958/vdp_colordec.v" type="file.verilog" enable="1"/>
         <File path="src/v9958/vdp_doublebuf.v" type="file.verilog" enable="1"/>
         <File path="src/v9958/vdp_graphic123m.v" type="file.verilog" enable="1"/>
+        <File path="src/v9958/vdp_graphic4567.v" type="file.verilog" enable="1"/>
         <File path="src/v9958/vdp_hvcounter.v" type="file.verilog" enable="1"/>
         <File path="src/v9958/vdp_interrupt.v" type="file.verilog" enable="1"/>
         <File path="src/v9958/vdp_lcd.v" type="file.verilog" enable="1"/>
@@ -31,7 +32,6 @@
         <File path="src/v9958/vdp_wait_control.v" type="file.verilog" enable="1"/>
         <File path="src/v9958/vdp.vhd" type="file.vhdl" enable="1"/>
         <File path="src/v9958/vdp_command.vhd" type="file.vhdl" enable="1"/>
-        <File path="src/v9958/vdp_graphic4567.vhd" type="file.vhdl" enable="1"/>
         <File path="src/v9958/vdp_package.vhd" type="file.vhdl" enable="1"/>
         <File path="src/Tang20kcartMSX.cst" type="file.cst" enable="1"/>
     </FileList>
