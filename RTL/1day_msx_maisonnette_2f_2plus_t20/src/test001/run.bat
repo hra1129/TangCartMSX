@@ -21,7 +21,7 @@ vlog ..\v9958\vdp_interrupt.v
 vlog ..\v9958\vdp_linebuf.v
 vlog ..\v9958\vdp_register.v
 vlog ..\v9958\vdp_spinforam.v
-vcom ..\v9958\vdp_sprite.vhd
+vlog ..\v9958\vdp_sprite.v
 vlog ..\v9958\vdp_ssg.v
 vlog ..\v9958\vdp_text12.v
 vlog ..\v9958\vdp_lcd.v
