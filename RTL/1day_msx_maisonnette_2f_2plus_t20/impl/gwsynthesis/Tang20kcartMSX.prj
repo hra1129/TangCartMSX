@@ -12,6 +12,7 @@
         <File path="D:\github\HRA_product\TangCartMSX\RTL\1day_msx_maisonnette_2f_2plus_t20\src\v9958\vdp_colordec.v" type="verilog"/>
         <File path="D:\github\HRA_product\TangCartMSX\RTL\1day_msx_maisonnette_2f_2plus_t20\src\v9958\vdp_doublebuf.v" type="verilog"/>
         <File path="D:\github\HRA_product\TangCartMSX\RTL\1day_msx_maisonnette_2f_2plus_t20\src\v9958\vdp_graphic123m.v" type="verilog"/>
+        <File path="D:\github\HRA_product\TangCartMSX\RTL\1day_msx_maisonnette_2f_2plus_t20\src\v9958\vdp_graphic4567.v" type="verilog"/>
         <File path="D:\github\HRA_product\TangCartMSX\RTL\1day_msx_maisonnette_2f_2plus_t20\src\v9958\vdp_hvcounter.v" type="verilog"/>
         <File path="D:\github\HRA_product\TangCartMSX\RTL\1day_msx_maisonnette_2f_2plus_t20\src\v9958\vdp_interrupt.v" type="verilog"/>
         <File path="D:\github\HRA_product\TangCartMSX\RTL\1day_msx_maisonnette_2f_2plus_t20\src\v9958\vdp_lcd.v" type="verilog"/>
@@ -23,9 +24,8 @@
         <File path="D:\github\HRA_product\TangCartMSX\RTL\1day_msx_maisonnette_2f_2plus_t20\src\v9958\vdp_ssg.v" type="verilog"/>
         <File path="D:\github\HRA_product\TangCartMSX\RTL\1day_msx_maisonnette_2f_2plus_t20\src\v9958\vdp_text12.v" type="verilog"/>
         <File path="D:\github\HRA_product\TangCartMSX\RTL\1day_msx_maisonnette_2f_2plus_t20\src\v9958\vdp_wait_control.v" type="verilog"/>
-        <File path="D:\github\HRA_product\TangCartMSX\RTL\1day_msx_maisonnette_2f_2plus_t20\src\v9958\vdp_graphic4567.v" type="verilog"/>
+        <File path="D:\github\HRA_product\TangCartMSX\RTL\1day_msx_maisonnette_2f_2plus_t20\src\v9958\vdp_command.v" type="verilog"/>
         <File path="D:\github\HRA_product\TangCartMSX\RTL\1day_msx_maisonnette_2f_2plus_t20\src\v9958\vdp.vhd" type="vhdl"/>
-        <File path="D:\github\HRA_product\TangCartMSX\RTL\1day_msx_maisonnette_2f_2plus_t20\src\v9958\vdp_command.vhd" type="vhdl"/>
         <File path="D:\github\HRA_product\TangCartMSX\RTL\1day_msx_maisonnette_2f_2plus_t20\src\v9958\vdp_package.vhd" type="vhdl"/>
     </FileList>
     <OptionList>

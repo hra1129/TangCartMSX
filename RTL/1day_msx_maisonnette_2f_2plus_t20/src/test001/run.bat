@@ -12,7 +12,7 @@ rem vlog ..\sdram\ip_sdram_dummy2.v
 vlog ..\v9958\vdp_ram256.v
 vcom ..\v9958\vdp_package.vhd
 vlog ..\v9958\vdp_colordec.v
-vcom ..\v9958\vdp_command.vhd
+vlog ..\v9958\vdp_command.v
 vlog ..\v9958\vdp_doublebuf.v
 vlog ..\v9958\vdp_graphic123m.v
 vlog ..\v9958\vdp_graphic4567.v

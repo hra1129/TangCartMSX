@@ -217,9 +217,9 @@
       "InstFile" : "D:/github/HRA_product/TangCartMSX/RTL/1day_msx_maisonnette_2f_2plus_t20/src/v9958/vdp.vhd",
       "InstLine" : 1840,
       "InstName" : "U_VDP_COMMAND",
-      "ModuleFile" : "D:/github/HRA_product/TangCartMSX/RTL/1day_msx_maisonnette_2f_2plus_t20/src/v9958/vdp_command.vhd",
-      "ModuleLine" : 67,
-      "ModuleName" : "VDP_COMMAND"
+      "ModuleFile" : "D:/github/HRA_product/TangCartMSX/RTL/1day_msx_maisonnette_2f_2plus_t20/src/v9958/vdp_command.v",
+      "ModuleLine" : 56,
+      "ModuleName" : "vdp_command"
      },
      {
       "InstFile" : "D:/github/HRA_product/TangCartMSX/RTL/1day_msx_maisonnette_2f_2plus_t20/src/v9958/vdp.vhd",
