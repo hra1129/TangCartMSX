@@ -45,58 +45,22 @@
     "InstFile" : "D:/github/HRA_product/TangCartMSX/RTL/1day_msx_maisonnette_2f_2plus_t20/src/tang20cart_msx.v",
     "InstLine" : 264,
     "InstName" : "u_v9958",
-    "ModuleFile" : "D:/github/HRA_product/TangCartMSX/RTL/1day_msx_maisonnette_2f_2plus_t20/src/v9958/vdp.vhd",
-    "ModuleLine" : 254,
-    "ModuleName" : "VDP",
+    "ModuleFile" : "D:/github/HRA_product/TangCartMSX/RTL/1day_msx_maisonnette_2f_2plus_t20/src/v9958/vdp.v",
+    "ModuleLine" : 58,
+    "ModuleName" : "vdp",
     "SubInsts" : [
      {
-      "InstFile" : "D:/github/HRA_product/TangCartMSX/RTL/1day_msx_maisonnette_2f_2plus_t20/src/v9958/vdp.vhd",
-      "InstLine" : 1082,
-      "InstName" : "U_VDP_LCD",
-      "ModuleFile" : "D:/github/HRA_product/TangCartMSX/RTL/1day_msx_maisonnette_2f_2plus_t20/src/v9958/vdp_lcd.v",
-      "ModuleLine" : 60,
-      "ModuleName" : "vdp_lcd",
-      "SubInsts" : [
-       {
-        "InstFile" : "D:/github/HRA_product/TangCartMSX/RTL/1day_msx_maisonnette_2f_2plus_t20/src/v9958/vdp_lcd.v",
-        "InstLine" : 352,
-        "InstName" : "dbuf",
-        "ModuleFile" : "D:/github/HRA_product/TangCartMSX/RTL/1day_msx_maisonnette_2f_2plus_t20/src/v9958/vdp_doublebuf.v",
-        "ModuleLine" : 58,
-        "ModuleName" : "vdp_doublebuf",
-        "SubInsts" : [
-         {
-          "InstFile" : "D:/github/HRA_product/TangCartMSX/RTL/1day_msx_maisonnette_2f_2plus_t20/src/v9958/vdp_doublebuf.v",
-          "InstLine" : 82,
-          "InstName" : "u_buf_even",
-          "ModuleFile" : "D:/github/HRA_product/TangCartMSX/RTL/1day_msx_maisonnette_2f_2plus_t20/src/v9958/vdp_linebuf.v",
-          "ModuleLine" : 85,
-          "ModuleName" : "vdp_linebuf"
-         },
-         {
-          "InstFile" : "D:/github/HRA_product/TangCartMSX/RTL/1day_msx_maisonnette_2f_2plus_t20/src/v9958/vdp_doublebuf.v",
-          "InstLine" : 91,
-          "InstName" : "u_buf_odd",
-          "ModuleFile" : "D:/github/HRA_product/TangCartMSX/RTL/1day_msx_maisonnette_2f_2plus_t20/src/v9958/vdp_linebuf.v",
-          "ModuleLine" : 85,
-          "ModuleName" : "vdp_linebuf"
-         }
-        ]
-       }
-      ]
-     },
-     {
-      "InstFile" : "D:/github/HRA_product/TangCartMSX/RTL/1day_msx_maisonnette_2f_2plus_t20/src/v9958/vdp.vhd",
-      "InstLine" : 1132,
-      "InstName" : "U_INTERRUPT",
+      "InstFile" : "D:/github/HRA_product/TangCartMSX/RTL/1day_msx_maisonnette_2f_2plus_t20/src/v9958/vdp.v",
+      "InstLine" : 800,
+      "InstName" : "u_interrupt",
       "ModuleFile" : "D:/github/HRA_product/TangCartMSX/RTL/1day_msx_maisonnette_2f_2plus_t20/src/v9958/vdp_interrupt.v",
       "ModuleLine" : 57,
       "ModuleName" : "vdp_interrupt"
      },
      {
-      "InstFile" : "D:/github/HRA_product/TangCartMSX/RTL/1day_msx_maisonnette_2f_2plus_t20/src/v9958/vdp.vhd",
-      "InstLine" : 1167,
-      "InstName" : "U_SSG",
+      "InstFile" : "D:/github/HRA_product/TangCartMSX/RTL/1day_msx_maisonnette_2f_2plus_t20/src/v9958/vdp.v",
+      "InstLine" : 819,
+      "InstName" : "u_ssg",
       "ModuleFile" : "D:/github/HRA_product/TangCartMSX/RTL/1day_msx_maisonnette_2f_2plus_t20/src/v9958/vdp_ssg.v",
       "ModuleLine" : 58,
       "ModuleName" : "vdp_ssg",
@@ -112,33 +76,33 @@
       ]
      },
      {
-      "InstFile" : "D:/github/HRA_product/TangCartMSX/RTL/1day_msx_maisonnette_2f_2plus_t20/src/v9958/vdp.vhd",
-      "InstLine" : 1551,
-      "InstName" : "U_VDP_COLORDEC",
+      "InstFile" : "D:/github/HRA_product/TangCartMSX/RTL/1day_msx_maisonnette_2f_2plus_t20/src/v9958/vdp.v",
+      "InstLine" : 860,
+      "InstName" : "u_vdp_colordec",
       "ModuleFile" : "D:/github/HRA_product/TangCartMSX/RTL/1day_msx_maisonnette_2f_2plus_t20/src/v9958/vdp_colordec.v",
       "ModuleLine" : 56,
       "ModuleName" : "vdp_colordec"
      },
      {
-      "InstFile" : "D:/github/HRA_product/TangCartMSX/RTL/1day_msx_maisonnette_2f_2plus_t20/src/v9958/vdp.vhd",
-      "InstLine" : 1600,
-      "InstName" : "U_VDP_TEXT12",
+      "InstFile" : "D:/github/HRA_product/TangCartMSX/RTL/1day_msx_maisonnette_2f_2plus_t20/src/v9958/vdp.v",
+      "InstLine" : 908,
+      "InstName" : "u_vdp_text12",
       "ModuleFile" : "D:/github/HRA_product/TangCartMSX/RTL/1day_msx_maisonnette_2f_2plus_t20/src/v9958/vdp_text12.v",
       "ModuleLine" : 58,
       "ModuleName" : "vdp_text12"
      },
      {
-      "InstFile" : "D:/github/HRA_product/TangCartMSX/RTL/1day_msx_maisonnette_2f_2plus_t20/src/v9958/vdp.vhd",
-      "InstLine" : 1625,
-      "InstName" : "U_VDP_GRAPHIC123M",
+      "InstFile" : "D:/github/HRA_product/TangCartMSX/RTL/1day_msx_maisonnette_2f_2plus_t20/src/v9958/vdp.v",
+      "InstLine" : 932,
+      "InstName" : "u_vdp_graphic123m",
       "ModuleFile" : "D:/github/HRA_product/TangCartMSX/RTL/1day_msx_maisonnette_2f_2plus_t20/src/v9958/vdp_graphic123m.v",
       "ModuleLine" : 62,
       "ModuleName" : "vdp_graphic123m"
      },
      {
-      "InstFile" : "D:/github/HRA_product/TangCartMSX/RTL/1day_msx_maisonnette_2f_2plus_t20/src/v9958/vdp.vhd",
-      "InstLine" : 1649,
-      "InstName" : "U_VDP_GRAPHIC4567",
+      "InstFile" : "D:/github/HRA_product/TangCartMSX/RTL/1day_msx_maisonnette_2f_2plus_t20/src/v9958/vdp.v",
+      "InstLine" : 955,
+      "InstName" : "u_vdp_graphic4567",
       "ModuleFile" : "D:/github/HRA_product/TangCartMSX/RTL/1day_msx_maisonnette_2f_2plus_t20/src/v9958/vdp_graphic4567.v",
       "ModuleLine" : 58,
       "ModuleName" : "vdp_graphic4567",
@@ -154,9 +118,9 @@
       ]
      },
      {
-      "InstFile" : "D:/github/HRA_product/TangCartMSX/RTL/1day_msx_maisonnette_2f_2plus_t20/src/v9958/vdp.vhd",
-      "InstLine" : 1683,
-      "InstName" : "U_SPRITE",
+      "InstFile" : "D:/github/HRA_product/TangCartMSX/RTL/1day_msx_maisonnette_2f_2plus_t20/src/v9958/vdp.v",
+      "InstLine" : 988,
+      "InstName" : "u_sprite",
       "ModuleFile" : "D:/github/HRA_product/TangCartMSX/RTL/1day_msx_maisonnette_2f_2plus_t20/src/v9958/vdp_sprite.v",
       "ModuleLine" : 58,
       "ModuleName" : "vdp_sprite",
@@ -188,9 +152,9 @@
       ]
      },
      {
-      "InstFile" : "D:/github/HRA_product/TangCartMSX/RTL/1day_msx_maisonnette_2f_2plus_t20/src/v9958/vdp.vhd",
-      "InstLine" : 1725,
-      "InstName" : "U_VDP_REGISTER",
+      "InstFile" : "D:/github/HRA_product/TangCartMSX/RTL/1day_msx_maisonnette_2f_2plus_t20/src/v9958/vdp.v",
+      "InstLine" : 1029,
+      "InstName" : "u_vdp_register",
       "ModuleFile" : "D:/github/HRA_product/TangCartMSX/RTL/1day_msx_maisonnette_2f_2plus_t20/src/v9958/vdp_register.v",
       "ModuleLine" : 56,
       "ModuleName" : "vdp_register",
@@ -214,20 +178,56 @@
       ]
      },
      {
-      "InstFile" : "D:/github/HRA_product/TangCartMSX/RTL/1day_msx_maisonnette_2f_2plus_t20/src/v9958/vdp.vhd",
-      "InstLine" : 1840,
-      "InstName" : "U_VDP_COMMAND",
+      "InstFile" : "D:/github/HRA_product/TangCartMSX/RTL/1day_msx_maisonnette_2f_2plus_t20/src/v9958/vdp.v",
+      "InstLine" : 1143,
+      "InstName" : "u_vdp_command",
       "ModuleFile" : "D:/github/HRA_product/TangCartMSX/RTL/1day_msx_maisonnette_2f_2plus_t20/src/v9958/vdp_command.v",
       "ModuleLine" : 56,
       "ModuleName" : "vdp_command"
      },
      {
-      "InstFile" : "D:/github/HRA_product/TangCartMSX/RTL/1day_msx_maisonnette_2f_2plus_t20/src/v9958/vdp.vhd",
-      "InstLine" : 1874,
-      "InstName" : "U_VDP_WAIT_CONTROL",
+      "InstFile" : "D:/github/HRA_product/TangCartMSX/RTL/1day_msx_maisonnette_2f_2plus_t20/src/v9958/vdp.v",
+      "InstLine" : 1177,
+      "InstName" : "u_vdp_wait_control",
       "ModuleFile" : "D:/github/HRA_product/TangCartMSX/RTL/1day_msx_maisonnette_2f_2plus_t20/src/v9958/vdp_wait_control.v",
       "ModuleLine" : 31,
       "ModuleName" : "vdp_wait_control"
+     },
+     {
+      "InstFile" : "D:/github/HRA_product/TangCartMSX/RTL/1day_msx_maisonnette_2f_2plus_t20/src/v9958/vdp.v",
+      "InstLine" : 1198,
+      "InstName" : "u_vdp_lcd",
+      "ModuleFile" : "D:/github/HRA_product/TangCartMSX/RTL/1day_msx_maisonnette_2f_2plus_t20/src/v9958/vdp_lcd.v",
+      "ModuleLine" : 60,
+      "ModuleName" : "vdp_lcd",
+      "SubInsts" : [
+       {
+        "InstFile" : "D:/github/HRA_product/TangCartMSX/RTL/1day_msx_maisonnette_2f_2plus_t20/src/v9958/vdp_lcd.v",
+        "InstLine" : 352,
+        "InstName" : "dbuf",
+        "ModuleFile" : "D:/github/HRA_product/TangCartMSX/RTL/1day_msx_maisonnette_2f_2plus_t20/src/v9958/vdp_doublebuf.v",
+        "ModuleLine" : 58,
+        "ModuleName" : "vdp_doublebuf",
+        "SubInsts" : [
+         {
+          "InstFile" : "D:/github/HRA_product/TangCartMSX/RTL/1day_msx_maisonnette_2f_2plus_t20/src/v9958/vdp_doublebuf.v",
+          "InstLine" : 82,
+          "InstName" : "u_buf_even",
+          "ModuleFile" : "D:/github/HRA_product/TangCartMSX/RTL/1day_msx_maisonnette_2f_2plus_t20/src/v9958/vdp_linebuf.v",
+          "ModuleLine" : 85,
+          "ModuleName" : "vdp_linebuf"
+         },
+         {
+          "InstFile" : "D:/github/HRA_product/TangCartMSX/RTL/1day_msx_maisonnette_2f_2plus_t20/src/v9958/vdp_doublebuf.v",
+          "InstLine" : 91,
+          "InstName" : "u_buf_odd",
+          "ModuleFile" : "D:/github/HRA_product/TangCartMSX/RTL/1day_msx_maisonnette_2f_2plus_t20/src/v9958/vdp_linebuf.v",
+          "ModuleLine" : 85,
+          "ModuleName" : "vdp_linebuf"
+         }
+        ]
+       }
+      ]
      }
     ]
    }

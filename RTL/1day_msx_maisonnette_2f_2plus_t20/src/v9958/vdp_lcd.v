@@ -83,7 +83,7 @@ module vdp_lcd(
 	output			videohsout_n,
 	output			videovsout_n,
 	// switched i/o signals
-	input	[2:0]	ratiomode
+	input	[2:0]	ratio_mode
 );
 	// LCD 800x480 parameters
 	// Horizontal timing by ff_h_cnt value : 1368cyc
@@ -375,7 +375,7 @@ module vdp_lcd(
 //		else if( enable == 1'b0 )begin
 //			// hold
 //		end
-//		else if( (ratiomode == 3'b000 || interlace_mode == 1'b1 || pal_mode == 1'b1) && legacy_vga == 1'b1 )begin
+//		else if( (ratio_mode == 3'b000 || interlace_mode == 1'b1 || pal_mode == 1'b1) && legacy_vga == 1'b1 )begin
 //			// legacy output
 //			ff_disp_start_x <= right_x;			// 106
 //		end
@@ -383,7 +383,7 @@ module vdp_lcd(
 //			// 50hz
 //			ff_disp_start_x <= pal_right_x;		// 87
 //		end
-//		else if( ratiomode == 3'b000 || interlace_mode == 1'b1 )begin
+//		else if( ratio_mode == 3'b000 || interlace_mode == 1'b1 )begin
 //			// 60hz
 //			ff_disp_start_x <= center_x;			// 72
 //		end
@@ -394,7 +394,7 @@ module vdp_lcd(
 //			// pixel ratio 1:1 (vga mode, 60hz, not interlaced)
 ////			if( w_evenodd == 1'b0 )begin											// plot from top-right
 //			if( w_evenodd == 1'b1 )begin											// plot from top-left
-//				ff_disp_start_x <= base_left_x + ~ratiomode;						// 35 to 41
+//				ff_disp_start_x <= base_left_x + ~ratio_mode;						// 35 to 41
 //			end
 //			else begin
 //				ff_disp_start_x <= right_x;	// 106

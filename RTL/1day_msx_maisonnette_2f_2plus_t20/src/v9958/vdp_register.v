@@ -65,7 +65,7 @@ module vdp_register (
 	output reg	[7:0]	dbi,
 	input		[7:0]	dbo,
 
-	input		[1:0]	dotstate,
+	input		[1:0]	dot_state,
 
 	input				vdp_cmd_tr_clr_ack,
 	input				vdp_cmd_reg_wr_ack,
@@ -288,7 +288,7 @@ module vdp_register (
 	// --------------------------------------------------------------------
 	assign palette_addr		= ( ff_palette_in ) ? { 4'b0000, palette_wr_num }: { 4'b0000, palette_addr_out };
 	assign palette_we		=   ff_palette_in;
-	assign w_even_dotstate	= ( dotstate == 2'b00 || dotstate == 2'b11 ) ? 1'b1: 1'b0;
+	assign w_even_dotstate	= ( dot_state == 2'b00 || dot_state == 2'b11 ) ? 1'b1: 1'b0;
 
 	always @( posedge clk ) begin
 		if( reset ) begin

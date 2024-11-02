@@ -60,14 +60,14 @@ module vdp_text12 (
 	input			reset						,
 	input			enable						,
 
-	input	[1:0]	dotstate					,
+	input	[1:0]	dot_state					,
 	input	[8:0]	dotcounterx					,
 	input	[8:0]	dotcountery					,
 	input	[8:0]	dotcounteryp				,
 
-	input			vdpmodetext1				,
-	input			vdpmodetext1q				,
-	input			vdpmodetext2				,
+	input			vdp_mode_text1				,
+	input			vdp_mode_text1q				,
+	input			vdp_mode_text2				,
 
 	// registers
 	input			reg_r1_bl_clks				,
@@ -114,8 +114,8 @@ module vdp_text12 (
 	wire	[3:0]	w_blink_cnt_max;
 	wire			w_blink_sync;
 
-	// jp: ramは dotstateが 2'b10, 2'b00 の時にアドレスを出して 2'b01 でアクセスする。
-	// jp: eightdotstateで見ると、
+	// jp: ramは dot_stateが 2'b10, 2'b00 の時にアドレスを出して 2'b01 でアクセスする。
+	// jp: eight_dot_stateで見ると、
 	// jp:	0-1		read ff_pattern num.
 	// jp:	1-2		read ff_pattern
 	// jp: となる。
@@ -125,17 +125,17 @@ module vdp_text12 (
 	// --------------------------------------------------------------------
 	assign w_tx_char_counter		=	ff_tx_char_counter_start_of_line + ff_tx_char_counter_x;
 
-	assign w_logical_vram_addr_nam	=	( vdpmodetext1 || vdpmodetext1q ) ? { reg_r2_pt_nam_addr, w_tx_char_counter[9:0] }:
+	assign w_logical_vram_addr_nam	=	( vdp_mode_text1 || vdp_mode_text1q ) ? { reg_r2_pt_nam_addr, w_tx_char_counter[9:0] }:
 										{ reg_r2_pt_nam_addr[6:2], w_tx_char_counter };
 
 	assign w_logical_vram_addr_gen	=	{ reg_r4_pt_gen_addr, ff_pattern_num, dotcountery[2:0] };
 
 	assign w_logical_vram_addr_col	=	{ reg_r10r3_col_addr[10:3], w_tx_char_counter[11:3] };
 
-	assign txvramreaden				=	( vdpmodetext1 || vdpmodetext1q ) ? ff_tx_vram_read_en :
-										( vdpmodetext2                  ) ? (ff_tx_vram_read_en | ff_tx_vram_read_en2) : 1'b0;
+	assign txvramreaden				=	( vdp_mode_text1 || vdp_mode_text1q ) ? ff_tx_vram_read_en :
+										( vdp_mode_text2                  ) ? (ff_tx_vram_read_en | ff_tx_vram_read_en2) : 1'b0;
 
-	assign w_tx_color				=	( vdpmodetext2 && ff_blink_state && ff_blink[7] ) ? reg_r12_blink_mode : reg_r7_frame_col;
+	assign w_tx_color				=	( vdp_mode_text2 && ff_blink_state && ff_blink[7] ) ? reg_r12_blink_mode : reg_r7_frame_col;
 	assign pcolorcode				=	( ff_tx_window_x &&  ff_is_foreground ) ? w_tx_color[7:4] :
 										( ff_tx_window_x && !ff_is_foreground ) ? w_tx_color[3:0] :
 										reg_r7_frame_col[3:0];
@@ -150,7 +150,7 @@ module vdp_text12 (
 		else if( !enable ) begin
 			// hold
 		end
-		else if( dotstate == 2'b10 ) begin
+		else if( dot_state == 2'b10 ) begin
 			if( dotcounterx == 12 ) begin
 				// jp: dotcounterは 2'b10 のタイミングでは既にカウントアップしているので注意
 				ff_dot_counter24 <= 5'd0;
@@ -176,7 +176,7 @@ module vdp_text12 (
 		else if( !enable ) begin
 			// hold
 		end
-		else if( dotstate == 2'b10 ) begin
+		else if( dot_state == 2'b10 ) begin
 			if( dotcounterx == 12 ) begin
 				ff_tx_prewindow_x <= 1'b1;
 			end
@@ -193,7 +193,7 @@ module vdp_text12 (
 		else if( !enable ) begin
 			// hold
 		end
-		else if( dotstate == 2'b01 ) begin
+		else if( dot_state == 2'b01 ) begin
 			if( dotcounterx == 16 ) begin
 				ff_tx_window_x <= 1'b1;
 			end
@@ -222,7 +222,7 @@ module vdp_text12 (
 			// hold
 		end
 		else begin
-			case( dotstate )
+			case( dot_state )
 			2'b11:
 				begin
 					if( ff_tx_prewindow_x ) begin
@@ -256,7 +256,7 @@ module vdp_text12 (
 								// it is used if vdpmode is test2.
 								ff_ramadr <= w_logical_vram_addr_nam;
 								ff_tx_vram_read_en2 <= 1'b1;
-								if( vdpmodetext2 ) begin
+								if( vdp_mode_text2 ) begin
 									ff_tx_char_counter_x <= ff_tx_char_counter_x + 1;
 								end
 							end
@@ -316,7 +316,7 @@ module vdp_text12 (
 						begin
 							// read ff_pattern generator table
 							// it is used if vdpmode is test2.
-							if( vdpmodetext2 ) begin
+							if( vdp_mode_text2 ) begin
 								ff_prepattern <= pramdat;
 							end
 						end
@@ -352,7 +352,7 @@ module vdp_text12 (
 			// hold
 		end
 		else begin
-			case( dotstate )
+			case( dot_state )
 			2'b00:
 				begin
 					if( ff_dot_counter24[2:0] == 3'b100 ) begin
@@ -365,7 +365,7 @@ module vdp_text12 (
 						// jp: で行われるので 3'b100 のタイミングでロードする
 						ff_pattern <= ff_prepattern;
 					end
-					else if( (ff_dot_counter24[2:0] == 3'b001) && (vdpmodetext2 == 1'b1) ) begin
+					else if( (ff_dot_counter24[2:0] == 3'b001) && (vdp_mode_text2 == 1'b1) ) begin
 						// jp: text2では 3'b001 のタイミングでもロードする。
 						ff_pattern <= ff_prepattern;
 					end
@@ -393,7 +393,7 @@ module vdp_text12 (
 				end
 			2'b10:
 				begin
-					if( vdpmodetext2 ) begin
+					if( vdp_mode_text2 ) begin
 						ff_is_foreground <= ff_pattern[7];
 						// パターンをシフト
 						ff_pattern <= { ff_pattern[6:0], 1'b0 };
@@ -411,8 +411,8 @@ module vdp_text12 (
 	// ff_blink timing generation fixed by caro and t.hara
 	// --------------------------------------------------------------------
 	assign w_blink_cnt_max	=	( !ff_blink_state ) ? reg_r13_blink_period[3:0]: reg_r13_blink_period[7:4];
-	assign w_blink_sync		=	( (dotcounterx == 0) && (dotcounteryp == 0) && (dotstate == 2'b00) && (!reg_r1_bl_clks) ) ? 1'b1:
-								( (dotcounterx == 0) &&                        (dotstate == 2'b00) &&   reg_r1_bl_clks  ) ? 1'b1: 1'b0;
+	assign w_blink_sync		=	( (dotcounterx == 0) && (dotcounteryp == 0) && (dot_state == 2'b00) && (!reg_r1_bl_clks) ) ? 1'b1:
+								( (dotcounterx == 0) &&                        (dot_state == 2'b00) &&   reg_r1_bl_clks  ) ? 1'b1: 1'b0;
 
 	always @( posedge clk ) begin
 		if( reset ) begin

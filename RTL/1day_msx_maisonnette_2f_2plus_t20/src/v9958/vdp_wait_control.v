@@ -40,7 +40,7 @@ module vdp_wait_control (
 	input			reg_r8_sp_off,		// 0=sprite on, 1=sprite off
 	input			reg_r9_y_dots,		// 0=192 lines, 1=212 lines
 
-	input			vdpspeedmode,
+	input			vdp_speed_mode,
 	input			drive,
 
 	output			active
@@ -324,5 +324,5 @@ module vdp_wait_control (
 		end
 	end
 
-	assign active	= ff_wait_cnt[15] || vdpspeedmode;
+	assign active	= ff_wait_cnt[15] || vdp_speed_mode;
 endmodule

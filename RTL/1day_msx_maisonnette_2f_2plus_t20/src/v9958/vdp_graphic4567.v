@@ -61,15 +61,15 @@ module vdp_graphic4567(
 	input				reset,
 	input				enable,
 
-	input		[1:0]	dotstate,
-	input		[2:0]	eightdotstate,
+	input		[1:0]	dot_state,
+	input		[2:0]	eight_dot_state,
 	input		[8:0]	dotcounterx,
 	input		[8:0]	dotcountery,
 
-	input				vdpmodegraphic4,
-	input				vdpmodegraphic5,
-	input				vdpmodegraphic6,
-	input				vdpmodegraphic7,
+	input				vdp_mode_graphic4,
+	input				vdp_mode_graphic5,
+	input				vdp_mode_graphic6,
+	input				vdp_mode_graphic7,
 
 	// registers
 	input				reg_r1_bl_clks,
@@ -145,7 +145,7 @@ module vdp_graphic4567(
 	// --------------------------------------------------------------------
 	assign w_fifo_address	=	( ff_fifo_write ) ? ff_fifo_write_address : ff_fifo_read_address;
 	assign w_fifo_we		=	ff_fifo_write;
-	assign w_fifo_wdata		=	( (dotstate == 2'b00) || (dotstate == 2'b01) ) ? pramdat : pramdatpair;
+	assign w_fifo_wdata		=	( (dot_state == 2'b00) || (dot_state == 2'b01) ) ? pramdat : pramdatpair;
 
 	assign w_ram_we			= w_fifo_we & enable;
 
@@ -158,12 +158,12 @@ module vdp_graphic4567(
 	);
 
 	always @( posedge clk ) begin
-		if( dotstate == 2'b01 ) begin
+		if( dot_state == 2'b01 ) begin
 			if( !enable ) begin
 				//	hold
 			end
 			else begin
-				case( eightdotstate[1:0] )
+				case( eight_dot_state[1:0] )
 				2'b00:	ff_fifo0	<= w_fifo_rdata;
 				2'b01:	ff_fifo1	<= w_fifo_rdata;
 				2'b10:	ff_fifo2	<= w_fifo_rdata;
@@ -181,7 +181,7 @@ module vdp_graphic4567(
 		if( !enable ) begin
 			//	hold
 		end
-		else if( dotstate == 2'b00 && eightdotstate[1:0] == 2'b00 ) begin
+		else if( dot_state == 2'b00 && eight_dot_state[1:0] == 2'b00 ) begin
 			ff_pix0 <= ff_fifo0;
 			ff_pix1 <= ff_fifo1;
 			ff_pix2 <= ff_fifo2;
@@ -189,9 +189,9 @@ module vdp_graphic4567(
 		end
 	end
 
-	assign w_pix	=	( eightdotstate[1:0] == 2'b00) ? ff_pix0 :
-						( eightdotstate[1:0] == 2'b01) ? ff_pix1 :
-						( eightdotstate[1:0] == 2'b10) ? ff_pix2 : ff_pix3;
+	assign w_pix	=	( eight_dot_state[1:0] == 2'b00) ? ff_pix0 :
+						( eight_dot_state[1:0] == 2'b01) ? ff_pix1 :
+						( eight_dot_state[1:0] == 2'b10) ? ff_pix2 : ff_pix3;
 
 	// two screen h-scroll mode (r25 sp2 = 1'b1)
 	// consider r#13 blinking to flip pages
@@ -213,8 +213,8 @@ module vdp_graphic4567(
 		else if( !enable ) begin
 			//	hold
 		end
-		else if( dotstate == 2'b00 ) begin
-			if( eightdotstate == 3'b000 && dotcounterx == 0 ) begin
+		else if( dot_state == 2'b00 ) begin
+			if( eight_dot_state == 3'b000 && dotcounterx == 0 ) begin
 				ff_fifo_write_address <= 8'd0;
 			end
 		end
@@ -231,17 +231,17 @@ module vdp_graphic4567(
 			//	hold
 		end
 		else begin
-			case( dotstate )
+			case( dot_state )
 			2'b00:
 				begin
 					//	hold
 				end
 			2'b01:
 				begin
-					if( !vdpmodegraphic4 && !vdpmodegraphic5 ) begin
+					if( !vdp_mode_graphic4 && !vdp_mode_graphic5 ) begin
 						ff_fifo_read_address <= ff_fifo_read_address + 1;
 					end
-					else if( !eightdotstate[0] ) begin
+					else if( !eight_dot_state[0] ) begin
 						// graphic4, 5
 						ff_fifo_read_address <= ff_fifo_read_address + 1;
 					end
@@ -272,16 +272,16 @@ module vdp_graphic4567(
 			//	hold
 		end
 		else begin
-			case( dotstate )
+			case( dot_state )
 			2'b00:
 				begin
-					if(		eightdotstate == 3'b000 ) begin
+					if(		eight_dot_state == 3'b000 ) begin
 						ff_fifo_write <= 1'b0;
 					end
-					else if((eightdotstate == 3'b001) ||
-							(eightdotstate == 3'b010) ||
-							(eightdotstate == 3'b011) ||
-							(eightdotstate == 3'b100) ) begin
+					else if((eight_dot_state == 3'b001) ||
+							(eight_dot_state == 3'b010) ||
+							(eight_dot_state == 3'b011) ||
+							(eight_dot_state == 3'b100) ) begin
 						ff_fifo_write <= 1'b1;
 					end
 				end
@@ -289,11 +289,11 @@ module vdp_graphic4567(
 				ff_fifo_write <= 1'b0;
 			2'b11:
 				begin
-					if( (vdpmodegraphic6 || vdpmodegraphic7) &&
-						(	(eightdotstate == 3'b001) ||
-							(eightdotstate == 3'b010) ||
-							(eightdotstate == 3'b011) ||
-							(eightdotstate == 3'b100)) ) begin
+					if( (vdp_mode_graphic6 || vdp_mode_graphic7) &&
+						(	(eight_dot_state == 3'b001) ||
+							(eight_dot_state == 3'b010) ||
+							(eight_dot_state == 3'b011) ||
+							(eight_dot_state == 3'b100)) ) begin
 						ff_fifo_write <= 1'b1;
 					end
 				end
@@ -317,15 +317,15 @@ module vdp_graphic4567(
 			//	hold
 		end
 		else begin
-			case( dotstate )
+			case( dot_state )
 			2'b00:
 				begin
 					//	hold
 				end
 			2'b01:
 				begin
-					if( vdpmodegraphic4 || vdpmodegraphic5 ) begin
-						if( !eightdotstate[0] ) begin
+					if( vdp_mode_graphic4 || vdp_mode_graphic5 ) begin
+						if( !eight_dot_state[0] ) begin
 							ff_color_data		<= w_pix;
 							pcolorcode[7:4]		<= 4'd0;
 							pcolorcode[3:0]		<= w_pix[7:4];
@@ -335,7 +335,7 @@ module vdp_graphic4567(
 							pcolorcode[3:0]		<= ff_color_data[3:0];
 						end
 					end
-					else if( vdpmodegraphic6 || reg_r25_yae ) begin
+					else if( vdp_mode_graphic6 || reg_r25_yae ) begin
 						ff_color_data		<= w_pix;
 						pcolorcode[7:4]		<= 4'd0;
 						pcolorcode[3:0]		<= w_pix[7:4];
@@ -351,7 +351,7 @@ module vdp_graphic4567(
 				end
 			2'b10:
 				// high resolution mode .
-				if( vdpmodegraphic6 ) begin
+				if( vdp_mode_graphic6 ) begin
 					pcolorcode[7:4]		<= 4'd0;
 					pcolorcode[3:0]		<= ff_color_data[3:0];
 				end
@@ -394,7 +394,7 @@ module vdp_graphic4567(
 		else if( !enable ) begin
 			//	hold
 		end
-		else if( dotstate == 2'b01 ) begin
+		else if( dot_state == 2'b01 ) begin
 			p_yjk_r <= w_r;
 			p_yjk_g <= w_g;
 			p_yjk_b <= w_b;
@@ -408,7 +408,7 @@ module vdp_graphic4567(
 		else if( !enable ) begin
 			//	hold
 		end
-		else if( dotstate == 2'b01 ) begin
+		else if( dot_state == 2'b01 ) begin
 			if( reg_r25_yae && w_pix[3] ) begin
 				// palette color on screen10/screen11
 				p_yjk_en <= 1'b0;
@@ -424,11 +424,11 @@ module vdp_graphic4567(
 		if( reset ) begin
 			pramadr <= 17'd0;
 		end
-		else if( dotstate == 2'b11 ) begin
+		else if( dot_state == 2'b11 ) begin
 			if( !enable ) begin
 				//	hold
 			end
-			else if( vdpmodegraphic4 || vdpmodegraphic5 ) begin
+			else if( vdp_mode_graphic4 || vdp_mode_graphic5 ) begin
 				pramadr <= w_vram_address_g45[16:0];
 			end
 			else begin
@@ -444,7 +444,7 @@ module vdp_graphic4567(
 		else if( !enable ) begin
 			//	hold
 		end
-		else if( dotstate == 2'b00 && eightdotstate == 3'b000 ) begin
+		else if( dot_state == 2'b00 && eight_dot_state == 3'b000 ) begin
 			ff_pattern_name_base_address <= reg_r2_pt_nam_addr;
 		end
 	end
@@ -458,22 +458,22 @@ module vdp_graphic4567(
 		else if( !enable ) begin
 			//	hold
 		end
-		else if( dotstate == 2'b00 ) begin
-			if( eightdotstate == 3'b000 ) begin
+		else if( dot_state == 2'b00 ) begin
+			if( eight_dot_state == 3'b000 ) begin
 				ff_local_dot_counter_x <= w_dotcounterx;
 			end
-			else if((eightdotstate == 3'b001) ||
-					(eightdotstate == 3'b010) ||
-					(eightdotstate == 3'b011) ||
-					(eightdotstate == 3'b100) ) begin
+			else if((eight_dot_state == 3'b001) ||
+					(eight_dot_state == 3'b010) ||
+					(eight_dot_state == 3'b011) ||
+					(eight_dot_state == 3'b100) ) begin
 				ff_local_dot_counter_x <= ff_local_dot_counter_x + 2;
 			end
 		end
 	end
 
 	assign w_blink_cnt_max	=	( ff_blink_state ) ? reg_r13_blink_period[3:0] : reg_r13_blink_period[7:4];
-	assign w_blink_sync		=	( (dotcounterx == 0) && (dotcountery == 0) && (dotstate == 2'b00) && !reg_r1_bl_clks ) ? 1'b1 :
-								( (dotcounterx == 0) &&                       (dotstate == 2'b00) &&  reg_r1_bl_clks ) ? 1'b1 : 1'b0;
+	assign w_blink_sync		=	( (dotcounterx == 0) && (dotcountery == 0) && (dot_state == 2'b00) && !reg_r1_bl_clks ) ? 1'b1 :
+								( (dotcounterx == 0) &&                       (dot_state == 2'b00) &&  reg_r1_bl_clks ) ? 1'b1 : 1'b0;
 
 	always @( posedge clk ) begin
 		if( reset ) begin

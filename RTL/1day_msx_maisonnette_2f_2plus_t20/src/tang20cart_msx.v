@@ -261,41 +261,41 @@ module tang20cart_msx (
 	// --------------------------------------------------------------------
 	//	V9958 clone
 	// --------------------------------------------------------------------
-	VDP u_v9958 (
-		.CLK				( clk						),	// IN	STD_LOGIC;
-		.RESET				( !w_n_reset				),	// IN	STD_LOGIC;
-		.INITIAL_BUSY		( w_sdram_busy				),	// IN	STD_LOGIC;
-		.REQ				( w_req						),	// IN	STD_LOGIC;
-		.ACK				( w_ack						),	// OUT	STD_LOGIC;
-		.WRT				( w_wr						),	// IN	STD_LOGIC;
-		.ADR				( w_a						),	// IN	STD_LOGIC_VECTOR(  1 DOWNTO 0 );
-		.DBI				( w_rdata					),	// OUT	STD_LOGIC_VECTOR(  7 DOWNTO 0 );
-		.DBO				( w_wdata					),	// IN	STD_LOGIC_VECTOR(  7 DOWNTO 0 );
-		.ENABLE_STATE		( w_vdp_enable_state		),	// OUT	STD_LOGIC;
-		.INT_N				( 							),	// OUT	STD_LOGIC;
-		.PRAMOE_N			( w_sdram_read_n			),	// OUT	STD_LOGIC;
-		.PRAMWE_N			( w_sdram_write_n			),	// OUT	STD_LOGIC;
-		.PRAMADR			( w_sdram_address[16:0]		),	// OUT	STD_LOGIC_VECTOR( 16 DOWNTO 0 );
-		.PRAMDBI			( w_sdram_rdata				),	// IN	STD_LOGIC_VECTOR( 15 DOWNTO 0 );
-		.PRAMDBO			( w_sdram_wdata				),	// OUT	STD_LOGIC_VECTOR(  7 DOWNTO 0 );
-		.VDPSPEEDMODE		( 1'b0						),	// IN	STD_LOGIC;
-		.RATIOMODE			( 3'b000					),	// IN	STD_LOGIC_VECTOR(  2 DOWNTO 0 );
-		.CENTERYJK_R25_N	( 1'b1						),	// IN	STD_LOGIC;
-		.PVIDEO_CLK			( lcd_clk					),	// OUT	STD_LOGIC;
-		.PVIDEO_DATA_EN		( lcd_de					),	// OUT	STD_LOGIC;
-		.PVIDEOR			( w_lcd_red					),	// OUT	STD_LOGIC_VECTOR(  5 DOWNTO 0 );
-		.PVIDEOG			( w_lcd_green				),	// OUT	STD_LOGIC_VECTOR(  5 DOWNTO 0 );
-		.PVIDEOB			( w_lcd_blue				),	// OUT	STD_LOGIC_VECTOR(  5 DOWNTO 0 );
-		.PVIDEOHS_N			( lcd_hsync					),	// OUT	STD_LOGIC;
-		.PVIDEOVS_N			( lcd_vsync					),	// OUT	STD_LOGIC;
-		.PVIDEODHCLK		( w_dh_clk					),	// OUT	STD_LOGIC;
-		.PVIDEODLCLK		( w_dl_clk					),	// OUT	STD_LOGIC;
-		.DISPRESO			( 1'b1						),	// IN	STD_LOGIC;
-		.NTSC_PAL_TYPE		( 1'b0						),	// IN	STD_LOGIC;
-		.FORCED_V_MODE		( 1'b0						),	// IN	STD_LOGIC;
-		.LEGACY_VGA			( 1'b0						),	// IN	STD_LOGIC;
-		.VDP_ID				( c_vdpid					),	// IN	STD_LOGIC_VECTOR(  4 DOWNTO 0 );
-		.OFFSET_Y			( c_offset_y				)	// IN	STD_LOGIC_VECTOR(  6 DOWNTO 0 )
+	vdp u_v9958 (
+		.clk				( clk						),	// IN	STD_LOGIC;
+		.reset				( !w_n_reset				),	// IN	STD_LOGIC;
+		.initial_busy		( w_sdram_busy				),	// IN	STD_LOGIC;
+		.req				( w_req						),	// IN	STD_LOGIC;
+		.ack				( w_ack						),	// OUT	STD_LOGIC;
+		.wrt				( w_wr						),	// IN	STD_LOGIC;
+		.adr				( w_a						),	// IN	STD_LOGIC_VECTOR(  1 DOWNTO 0 );
+		.dbi				( w_rdata					),	// OUT	STD_LOGIC_VECTOR(  7 DOWNTO 0 );
+		.dbo				( w_wdata					),	// IN	STD_LOGIC_VECTOR(  7 DOWNTO 0 );
+		.enable_state		( w_vdp_enable_state		),	// OUT	STD_LOGIC;
+		.int_n				( 							),	// OUT	STD_LOGIC;
+		.pramoe_n			( w_sdram_read_n			),	// OUT	STD_LOGIC;
+		.pramwe_n			( w_sdram_write_n			),	// OUT	STD_LOGIC;
+		.pramadr			( w_sdram_address[16:0]		),	// OUT	STD_LOGIC_VECTOR( 16 DOWNTO 0 );
+		.pramdbi			( w_sdram_rdata				),	// IN	STD_LOGIC_VECTOR( 15 DOWNTO 0 );
+		.pramdbo			( w_sdram_wdata				),	// OUT	STD_LOGIC_VECTOR(  7 DOWNTO 0 );
+		.vdp_speed_mode		( 1'b0						),	// IN	STD_LOGIC;
+		.ratio_mode			( 3'b000					),	// IN	STD_LOGIC_VECTOR(  2 DOWNTO 0 );
+		.centeryjk_r25_n	( 1'b1						),	// IN	STD_LOGIC;
+		.pvideo_clk			( lcd_clk					),	// OUT	STD_LOGIC;
+		.pvideo_data_en		( lcd_de					),	// OUT	STD_LOGIC;
+		.pvideor			( w_lcd_red					),	// OUT	STD_LOGIC_VECTOR(  5 DOWNTO 0 );
+		.pvideog			( w_lcd_green				),	// OUT	STD_LOGIC_VECTOR(  5 DOWNTO 0 );
+		.pvideob			( w_lcd_blue				),	// OUT	STD_LOGIC_VECTOR(  5 DOWNTO 0 );
+		.pvideohs_n			( lcd_hsync					),	// OUT	STD_LOGIC;
+		.pvideovs_n			( lcd_vsync					),	// OUT	STD_LOGIC;
+		.pvideodhclk		( w_dh_clk					),	// OUT	STD_LOGIC;
+		.pvideodlclk		( w_dl_clk					),	// OUT	STD_LOGIC;
+		.dispreso			( 1'b1						),	// IN	STD_LOGIC;
+		.ntsc_pal_type		( 1'b0						),	// IN	STD_LOGIC;
+		.forced_v_mode		( 1'b0						),	// IN	STD_LOGIC;
+		.legacy_vga			( 1'b0						),	// IN	STD_LOGIC;
+		.vdp_id				( c_vdpid					),	// IN	STD_LOGIC_VECTOR(  4 DOWNTO 0 );
+		.offset_y			( c_offset_y				)	// IN	STD_LOGIC_VECTOR(  6 DOWNTO 0 )
     );
 
 	assign w_sdram_address[22:17]	= 6'b000000;

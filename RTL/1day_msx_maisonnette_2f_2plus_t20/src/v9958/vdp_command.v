@@ -58,16 +58,14 @@ module vdp_command (
 	input				clk					,
 	input				enable				,
 
-	input				vdpmodegraphic4		,
-	input				vdpmodegraphic5		,
-	input				vdpmodegraphic6		,
-	input				vdpmodegraphic7		,
-	input				vdpmodeishighres	,
+	input				vdp_mode_graphic4		,
+	input				vdp_mode_graphic5		,
+	input				vdp_mode_graphic6		,
+	input				vdp_mode_graphic7		,
+	input				vdp_mode_is_highres	,
 
 	input				vramwrack			,
 	input				vramrdack			,
-	input				vramreadingr		,
-	input				vramreadinga		,
 	input	[7:0]		vramrddata			,
 	input				regwrreq			,
 	input				trclrreq			,
@@ -185,8 +183,8 @@ module vdp_command (
 	// r25 cmd bit
 	// 0 = normal
 	// 1 = vdp command on text/graphic1/graphic2/graphic3/mosaic mode
-	assign w_vdpcmd_en	= ( !(vdpmodegraphic4 | vdpmodegraphic5 | vdpmodegraphic6) ) ? (vdpmodegraphic7 | reg_r25_cmd) : (vdpmodegraphic4 | vdpmodegraphic5 | vdpmodegraphic6);
-	assign w_graphic46	= vdpmodegraphic4 | vdpmodegraphic6;
+	assign w_vdpcmd_en	= ( !(vdp_mode_graphic4 | vdp_mode_graphic5 | vdp_mode_graphic6) ) ? (vdp_mode_graphic7 | reg_r25_cmd) : (vdp_mode_graphic4 | vdp_mode_graphic5 | vdp_mode_graphic6);
+	assign w_graphic46	= vdp_mode_graphic4 | vdp_mode_graphic6;
 
 	always @( posedge clk ) begin: vdp_command_processor
 		reg				ff_initializing;
@@ -269,7 +267,7 @@ module vdp_command (
 								ff_x_count_delta = 11'b11111111110; // -2
 							end
 						end
-						else if( vdpmodegraphic5 == 1'b1 ) begin
+						else if( vdp_mode_graphic5 == 1'b1 ) begin
 							// graphic5 (screen 6)
 							ff_nx_count = 2'b00 & ff_r40r41_nx[9:2];
 							if( !ff_r45_dix ) begin
@@ -304,7 +302,7 @@ module vdp_command (
 						if( w_graphic46 ) begin
 							ff_col_mask = 8'b00001111;
 						end
-						else if(vdpmodegraphic5 == 1'b1) begin
+						else if(vdp_mode_graphic5 == 1'b1) begin
 							ff_col_mask = 8'b00000011;
 						end
 						else begin
@@ -327,7 +325,7 @@ module vdp_command (
 			if( !enable ) begin
 				// hold
 			end
-			else if(vdpmodeishighres == 1'b1) begin
+			else if(vdp_mode_is_highres == 1'b1) begin
 				// graphic 5,6 (screen 6, 7)
 				maxxmask = 2'b10;
 			end
@@ -392,7 +390,7 @@ module vdp_command (
 						rdpoint = { 4'b0000, vramrddata[3:0] };
 					end
 				end
-				else if(vdpmodegraphic5 == 1'b1) begin
+				else if(vdp_mode_graphic5 == 1'b1) begin
 					// Graphic 5 (Screen 6)
 					case( ff_read_x_low )
 					2'b00:
@@ -652,7 +650,7 @@ module vdp_command (
 										ff_vram_wdata	<= { vramrddata[7:4], ff_logop_dest_col[3:0] };
 									end
 								end
-								else if( vdpmodegraphic5 ) begin
+								else if( vdp_mode_graphic5 ) begin
 									// screen 6
 									case( ff_read_x_low )
 										2'b00:
@@ -843,15 +841,15 @@ module vdp_command (
 					endcase
 				end
 
-				if(      vdpmodegraphic4 ) begin
+				if(      vdp_mode_graphic4 ) begin
 					//	Graphic4 (Screen5)
 					ff_vram_address <= { ff_current_y[9:0], ff_current_x[7:1] };
 				end
-				else if( vdpmodegraphic5 ) begin
+				else if( vdp_mode_graphic5 ) begin
 					//	Graphic5 (Screen6)
 					ff_vram_address <= { ff_current_y[9:0], ff_current_x[8:2] };
 				end
-				else if( vdpmodegraphic6 ) begin
+				else if( vdp_mode_graphic6 ) begin
 					//	Graphic6 (Screen7)
 					ff_vram_address <= { ff_current_y[8:0], ff_current_x[8:1] };
 				end

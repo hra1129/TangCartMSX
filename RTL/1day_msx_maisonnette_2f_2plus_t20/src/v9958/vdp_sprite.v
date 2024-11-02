@@ -61,8 +61,8 @@ module vdp_sprite (
 	input				reset						,
 	input				enable						,
 
-	input		[1:0]	dotstate					,
-	input		[2:0]	eightdotstate				,
+	input		[1:0]	dot_state					,
+	input		[2:0]	eight_dot_state				,
 
 	input		[8:0]	dotcounterx					,
 	input		[8:0]	dotcounteryp				,
@@ -97,9 +97,9 @@ module vdp_sprite (
 
 	// jp: スプライトを描画した時に1'b1になる。カラーコード0で
 	// jp: 描画する事もできるので、このビットが必要
-	output reg			spcolorout					,
+	output reg			sp_color_code_en			,
 	// output color
-	output reg	[3:0]	spcolorcode					,
+	output reg	[3:0]	sp_color_code				,
 	input				reg_r9_y_dots				
 );
 	reg				ff_sp_en;
@@ -217,7 +217,7 @@ module vdp_sprite (
 		else if( !enable ) begin
 			//	hold
 		end
-		else if( dotstate == 2'b01 && dotcounterx == 0 ) begin
+		else if( dot_state == 2'b01 && dotcounterx == 0 ) begin
 			ff_sp_en <= w_active;
 		end
 	end
@@ -278,7 +278,7 @@ module vdp_sprite (
 	);
 
 	//---------------------------------------------------------------------------
-	assign w_prepare_x_pos		=	( eightdotstate == 3'd4 ) ? 1'b1 : 1'b0;
+	assign w_prepare_x_pos		=	( eight_dot_state == 3'd4 ) ? 1'b1 : 1'b0;
 
 	// jp: vramアクセスアドレスの出力
 	assign w_vram_address		= ( ff_main_state == c_state_ytest_draw ) ? ff_y_test_address : ff_preread_address;
@@ -294,7 +294,7 @@ module vdp_sprite (
 		else if( !enable ) begin
 			//	hold
 		end
-		else if( dotstate == 2'b10 ) begin
+		else if( dot_state == 2'b10 ) begin
 			case( ff_main_state )
 			c_state_idle:
 				if( dotcounterx == 0 ) begin
@@ -321,7 +321,7 @@ module vdp_sprite (
 		if( !enable ) begin
 			//	hold
 		end
-		else if( (dotstate == 2'b01) && (dotcounterx == 0) ) begin
+		else if( (dot_state == 2'b01) && (dotcounterx == 0) ) begin
 			//	 +1 should be needed. because it will be drawn in the next line.
 			ff_cur_y <= dotcounteryp + { 1'b0, reg_r23_vstart_line } + 1;
 		end
@@ -331,7 +331,7 @@ module vdp_sprite (
 		if( !enable ) begin
 			//	hold
 		end
-		else if( (dotstate == 2'b01) && (dotcounterx == 0) ) begin
+		else if( (dot_state == 2'b01) && (dotcounterx == 0) ) begin
 			ff_prev_cur_y <= ff_cur_y;
 		end
 	end
@@ -347,7 +347,7 @@ module vdp_sprite (
 		if( !enable ) begin
 			//	hold
 		end
-		else if( (dotstate == 2'b01) && (dotcounterx == 0) ) begin
+		else if( (dot_state == 2'b01) && (dotcounterx == 0) ) begin
 			ff_pattern_gen_base_address <= reg_r6_sp_gen_addr;
 			if( !spmode2 ) begin
 				ff_attribute_base_address <= reg_r11r5_sp_atr_addr[9:0];
@@ -368,7 +368,7 @@ module vdp_sprite (
 		else if( !enable ) begin
 			//	hold
 		end
-		else if( dotstate == 2'b10 ) begin
+		else if( dot_state == 2'b10 ) begin
 			case( ff_main_state )
 			c_state_idle:
 				begin
@@ -446,11 +446,11 @@ module vdp_sprite (
 		else if( !enable ) begin
 			//	hold
 		end
-		else if( dotstate == 2'b01 ) begin
+		else if( dot_state == 2'b01 ) begin
 			if( dotcounterx == 0 ) begin
 				ff_y_test_en <= ff_sp_en;
 			end
-			else if( eightdotstate == 3'd6 ) begin
+			else if( eight_dot_state == 3'd6 ) begin
 				if( w_sp_off || (w_sp_overmap && w_target_sp_en) || (ff_y_test_sp_num == 5'b11111) ) begin
 					ff_y_test_en <= 1'b0;
 				end
@@ -468,11 +468,11 @@ module vdp_sprite (
 		else if( !enable ) begin
 			//	hold
 		end
-		else if( dotstate == 2'b01 ) begin
+		else if( dot_state == 2'b01 ) begin
 			if( dotcounterx == 0 ) begin
 				ff_y_test_sp_num <= 5'd0;
 			end
-			else if( eightdotstate == 3'd6 ) begin
+			else if( eight_dot_state == 3'd6 ) begin
 				if( ff_y_test_en && ff_y_test_sp_num != 5'b11111 ) begin
 					ff_y_test_sp_num <= ff_y_test_sp_num + 1;
 				end
@@ -490,12 +490,12 @@ module vdp_sprite (
 		else if( !enable ) begin
 			//	hold
 		end
-		else if( dotstate == 2'b01 ) begin
+		else if( dot_state == 2'b01 ) begin
 			if( dotcounterx == 0 ) begin
 				// initialize
 				ff_y_test_listup_addr <= 4'd0;
 			end
-			else if( eightdotstate == 3'd6 ) begin
+			else if( eight_dot_state == 3'd6 ) begin
 				// next sprite [リストアップメモリが満杯になるまでインクリメント]
 				if( ff_y_test_en && w_target_sp_en && !w_sp_overmap && !w_sp_off ) begin
 					ff_y_test_listup_addr <= ff_y_test_listup_addr + 1;
@@ -511,11 +511,11 @@ module vdp_sprite (
 		if( !enable ) begin
 			//	hold
 		end
-		else if( dotstate == 2'b01 ) begin
+		else if( dot_state == 2'b01 ) begin
 			if( dotcounterx == 0 ) begin
 				// initialize
 			end
-			else if( eightdotstate == 3'd6 ) begin
+			else if( eight_dot_state == 3'd6 ) begin
 				// next sprite
 				if( ff_y_test_en && w_target_sp_en && !w_sp_overmap && !w_sp_off ) begin
 					ff_render_planes[ ff_y_test_listup_addr ] <= ff_y_test_sp_num;
@@ -538,11 +538,11 @@ module vdp_sprite (
 			// s#0が読み込まれるまでクリアしない
 			ff_sp_overmap		<= 1'b0;
 		end
-		else if( dotstate == 2'b01 ) begin
+		else if( dot_state == 2'b01 ) begin
 			if( dotcounterx == 0 ) begin
 				// initialize
 			end
-			else if( eightdotstate == 3'd6 ) begin
+			else if( eight_dot_state == 3'd6 ) begin
 				if( ff_window_y && ff_y_test_en && w_target_sp_en && w_sp_overmap && !w_sp_off ) begin
 					ff_sp_overmap <= 1'b1;
 				end
@@ -563,11 +563,11 @@ module vdp_sprite (
 		else if( pvdps0resetreq == ~ff_vdps0resetack ) begin
 			ff_sp_overmap_num	<= 5'b11111;
 		end
-		else if( dotstate == 2'b01 ) begin
+		else if( dot_state == 2'b01 ) begin
 			if( dotcounterx == 0 ) begin
 				// initialize
 			end
-			else if( eightdotstate == 3'd6 ) begin
+			else if( eight_dot_state == 3'd6 ) begin
 				// jp: 調査をあきらめたスプライト番号が格納される。overmapとは限らない。
 				// jp: しかし、すでに overmap で値が確定している場合は更新しない。
 				if( ff_window_y && ff_y_test_en && w_target_sp_en && w_sp_overmap && !w_sp_off && !ff_sp_overmap ) begin
@@ -587,7 +587,7 @@ module vdp_sprite (
 		else if( !enable ) begin
 			//	hold
 		end
-		else if( dotstate == 2'b11 ) begin
+		else if( dot_state == 2'b11 ) begin
 			ff_y_test_address <= { ff_attribute_base_address, ff_y_test_sp_num, 2'b00 };
 		end
 	end
@@ -618,8 +618,8 @@ module vdp_sprite (
 		else if( !enable ) begin
 			//	hold
 		end
-		else if( dotstate == 2'b11 ) begin
-			case( eightdotstate )
+		else if( dot_state == 2'b11 ) begin
+			case( eight_dot_state )
 			3'b000:								// y read
 				ff_preread_address <= { w_attribute_address, 2'b00 };
 			3'b001:								// x read
@@ -643,13 +643,13 @@ module vdp_sprite (
 			//	hold
 		end
 		else begin
-			case( dotstate )
+			case( dot_state )
 			2'b11:
 				ff_info_ram_we <= 1'b0;
 			2'b01:
 				begin
 					if( ff_main_state == c_state_prepare ) begin
-						if( eightdotstate == 3'b110 ) begin
+						if( eight_dot_state == 3'b110 ) begin
 							ff_info_ram_we <= 1'b1;
 						end
 					end
@@ -674,9 +674,9 @@ module vdp_sprite (
 			//	hold
 		end
 		else begin
-			if( dotstate == 2'b01 ) begin
+			if( dot_state == 2'b01 ) begin
 				if( ff_main_state == c_state_prepare ) begin
-					case( eightdotstate )
+					case( eight_dot_state )
 					3'b001:								// y read
 						begin
 							// jp: スプライトの何行目が該当したか覚えておく
@@ -753,9 +753,9 @@ module vdp_sprite (
 		if( !enable ) begin
 			//	hold
 		end
-		else if( dotstate == 2'b01 ) begin
+		else if( dot_state == 2'b01 ) begin
 			if( ff_main_state == c_state_prepare ) begin
-				if( eightdotstate == 3'd7 ) begin
+				if( eight_dot_state == 3'd7 ) begin
 					ff_prepare_plane_num <= ff_render_planes[ ff_prepare_local_plane_num + 1 ];
 				end
 			end
@@ -800,7 +800,7 @@ module vdp_sprite (
 			//	hold
 		end
 		else if( ff_main_state == c_state_ytest_draw ) begin
-			case( dotstate )
+			case( dot_state )
 			2'b10:
 				// jp: 処理単位の始まり
 				ff_line_buf_draw_we <= 1'b0;
@@ -908,7 +908,7 @@ module vdp_sprite (
 	end
 
 	//---------------------------------------------------------------------------
-	// jp: 画面へのレンダリング。vdpエンティティがdotstate=2'b11の時に値を取得できるように、
+	// jp: 画面へのレンダリング。vdpエンティティがdot_state=2'b11の時に値を取得できるように、
 	// jp: 2'b01のタイミングで出力する。
 	//---------------------------------------------------------------------------
 	always @( posedge clk ) begin
@@ -918,7 +918,7 @@ module vdp_sprite (
 		else if( !enable ) begin
 			//	hold
 		end
-		else if( dotstate == 2'b10 ) begin
+		else if( dot_state == 2'b10 ) begin
 			// jp: dotcounterと実際の表示(カラーコードの出力)は8ドットずれている
 			if( dotcounterx == 8 ) begin
 				ff_line_buf_disp_x <= { 5'b00000, reg_r27_h_scroll };
@@ -936,7 +936,7 @@ module vdp_sprite (
 		else if( !enable ) begin
 			//	hold
 		end
-		else if( dotstate == 2'b10 ) begin
+		else if( dot_state == 2'b10 ) begin
 			// jp: dotcounterと実際の表示(カラーコードの出力)は8ドットずれている
 			if( dotcounterx == 8 ) begin
 				ff_window_x <= 1'b1;
@@ -954,10 +954,10 @@ module vdp_sprite (
 		else if( !enable ) begin
 			//	hold
 		end
-		else if( dotstate == 2'b10 ) begin
+		else if( dot_state == 2'b10 ) begin
 			ff_line_buf_disp_we <= 1'b0;
 		end
-		else if( dotstate == 2'b11 && ff_window_x == 1'b1 ) begin
+		else if( dot_state == 2'b11 && ff_window_x == 1'b1 ) begin
 			// clear displayed dot
 			ff_line_buf_disp_we <= 1'b1;
 		end
@@ -966,20 +966,20 @@ module vdp_sprite (
 	// jp: ウィンドウで表示をカットする
 	always @( posedge clk ) begin
 		if( reset ) begin
-			spcolorout	<= 1'b0;				// jp:	0=透明, 1=スプライトドット
-			spcolorcode <= 4'd0;				// jp:	spcolorout=1 の時のスプライトドット色番号
+			sp_color_code_en	<= 1'b0;				// jp:	0=透明, 1=スプライトドット
+			sp_color_code		<= 4'd0;				// jp:	sp_color_code_en=1 の時のスプライトドット色番号
 		end
 		else if( !enable ) begin
 			//	hold
 		end
-		else if( dotstate == 2'b01 ) begin
+		else if( dot_state == 2'b01 ) begin
 			if( ff_window_x ) begin
-				spcolorout	<= w_line_buf_disp_data[7];
-				spcolorcode <= w_line_buf_disp_data[3:0];
+				sp_color_code_en	<= w_line_buf_disp_data[7];
+				sp_color_code		<= w_line_buf_disp_data[3:0];
 			end
 			else begin
-				spcolorout	<= 1'b0;
-				spcolorcode <= 4'd0;
+				sp_color_code_en	<= 1'b0;
+				sp_color_code		<= 4'd0;
 			end
 		end
 	end

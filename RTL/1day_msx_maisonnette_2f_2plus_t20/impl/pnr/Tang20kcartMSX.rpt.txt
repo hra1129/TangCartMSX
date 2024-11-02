@@ -11,27 +11,27 @@
   <Tool Version>: V1.9.9.03 (64-bit)
   <Part Number>: GW2AR-LV18QN88C8/I7
   <Device>: GW2AR-18
-  <Created Time>:Sat Nov  2 08:04:47 2024
+  <Created Time>:Sat Nov  2 14:32:21 2024
 
 
 2. PnR Details
 
   Running placement:
-    Placement Phase 0: CPU time = 0h 0m 0.614s, Elapsed time = 0h 0m 0.614s
-    Placement Phase 1: CPU time = 0h 0m 0.386s, Elapsed time = 0h 0m 0.386s
-    Placement Phase 2: CPU time = 0h 0m 0.923s, Elapsed time = 0h 0m 0.923s
+    Placement Phase 0: CPU time = 0h 0m 0.646s, Elapsed time = 0h 0m 0.647s
+    Placement Phase 1: CPU time = 0h 0m 0.377s, Elapsed time = 0h 0m 0.376s
+    Placement Phase 2: CPU time = 0h 0m 0.941s, Elapsed time = 0h 0m 0.941s
     Placement Phase 3: CPU time = 0h 0m 2s, Elapsed time = 0h 0m 2s
     Total Placement: CPU time = 0h 0m 4s, Elapsed time = 0h 0m 4s
  Running routing:
     Routing Phase 0: CPU time = 0h 0m 0.002s, Elapsed time = 0h 0m 0.002s
-    Routing Phase 1: CPU time = 0h 0m 0.244s, Elapsed time = 0h 0m 0.244s
-    Routing Phase 2: CPU time = 0h 0m 2s, Elapsed time = 0h 0m 2s
+    Routing Phase 1: CPU time = 0h 0m 0.234s, Elapsed time = 0h 0m 0.234s
+    Routing Phase 2: CPU time = 0h 0m 3s, Elapsed time = 0h 0m 3s
     Routing Phase 3: CPU time = 0h 0m 0s, Elapsed time = 0h 0m 0s
     Total Routing: CPU time = 0h 0m 3s, Elapsed time = 0h 0m 3s
  Generate output files:
     CPU time = 0h 0m 3s, Elapsed time = 0h 0m 3s
 
- Total Time and Memory Usage: CPU time = 0h 0m 9s, Elapsed time = 0h 0m 9s, Peak memory usage = 479MB
+ Total Time and Memory Usage: CPU time = 0h 0m 10s, Elapsed time = 0h 0m 10s, Peak memory usage = 481MB
 
 
 3. Resource Usage Summary
@@ -39,15 +39,15 @@
   ----------------------------------------------------------
   Resources                   | Usage
   ----------------------------------------------------------
-  Logic                       | 2908/20736  15%
-    --LUT,ALU,ROM16           | 2860(2549 LUT, 311 ALU, 0 ROM16)
+  Logic                       | 2881/20736  14%
+    --LUT,ALU,ROM16           | 2833(2523 LUT, 310 ALU, 0 ROM16)
     --SSRAM(RAM16)            | 8
   Register                    | 1416/15915  9%
     --Logic Register as Latch | 0/15552  0%
     --Logic Register as FF    | 1406/15552  10%
     --I/O Register as Latch   | 0/363  0%
     --I/O Register as FF      | 10/363  3%
-  CLS                         | 1975/10368  20%
+  CLS                         | 1962/10368  19%
   I/O Port                    | 42
   I/O Buf                     | 35
     --Input Buf               | 2
@@ -110,7 +110,7 @@
   clk27m_d       | PRIMARY        |  BL
   O_sdram_clk_d  | PRIMARY        |  TR TL BR BL
   n207_5         | LW             |  -
-  u_v9958/ENABLE | LW             |  -
+  u_v9958/ff_enable| LW             |  -
   ===========================================
 
 
@@ -219,7 +219,7 @@ Loc./Bank| Signal            | Dir.  | Site     | IO Type  | Drive | Pull Mode |
 19/6     | td[2]             | out   | IOL51[A] | LVTTL33  | 8     | UP        | NA        | NA         | OFF        | NA         | OFF             | NA            | 3.3  
 20/6     | td[1]             | out   | IOL51[B] | LVTTL33  | 8     | UP        | NA        | NA         | OFF        | NA         | OFF             | NA            | 3.3  
 ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-8/2      | -                 | out   | IOR25[A] | LVCMOS18 | 8     | UP        | NA        | NA         | OFF        | NA         | NA              | NA            | 3.3  
+8/2      | -                 | in    | IOR25[A] | LVCMOS18 | NA    | UP        | ON        | NONE       | NA         | NA         | NA              | NA            | 3.3  
 5/2      | -                 | in    | IOR25[B] | LVCMOS18 | NA    | UP        | ON        | NONE       | NA         | NA         | NA              | NA            | 3.3  
 6/2      | -                 | in    | IOR26[A] | LVCMOS18 | NA    | UP        | ON        | NONE       | NA         | NA         | NA              | NA            | 3.3  
 7/2      | -                 | in    | IOR26[B] | LVCMOS18 | NA    | UP        | ON        | NONE       | NA         | NA         | NA              | NA            | 3.3  

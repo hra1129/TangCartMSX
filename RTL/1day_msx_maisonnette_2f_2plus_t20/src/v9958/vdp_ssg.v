@@ -62,8 +62,8 @@ module vdp_ssg (
 
 	output		[10:0]	h_cnt,
 	output		[10:0]	v_cnt,
-	output		[1:0]	dotstate,
-	output		[2:0]	eightdotstate,
+	output		[1:0]	dot_state,
+	output		[2:0]	eight_dot_state,
 	output		[8:0]	predotcounter_x,
 	output		[8:0]	predotcounter_y,
 	output		[8:0]	predotcounter_yp,
@@ -138,8 +138,8 @@ module vdp_ssg (
 	//---------------------------------------------------------------------------
 	assign h_cnt				= w_h_cnt;
 	assign v_cnt				= w_v_cnt_in_frame;
-	assign dotstate				= ff_dotstate;
-	assign eightdotstate		= ff_eightdotstate;
+	assign dot_state				= ff_dotstate;
+	assign eight_dot_state		= ff_eightdotstate;
 	assign field				= w_field;
 	assign window_x				= ff_window_x;
 	assign pvideodhclk			= ff_video_dh_clk;
