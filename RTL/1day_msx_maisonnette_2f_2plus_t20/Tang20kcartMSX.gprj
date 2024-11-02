@@ -21,7 +21,6 @@
         <File path="src/v9958/vdp_doublebuf.v" type="file.verilog" enable="1"/>
         <File path="src/v9958/vdp_graphic123m.v" type="file.verilog" enable="1"/>
         <File path="src/v9958/vdp_graphic4567.v" type="file.verilog" enable="1"/>
-        <File path="src/v9958/vdp_hvcounter.v" type="file.verilog" enable="1"/>
         <File path="src/v9958/vdp_interrupt.v" type="file.verilog" enable="1"/>
         <File path="src/v9958/vdp_lcd.v" type="file.verilog" enable="1"/>
         <File path="src/v9958/vdp_linebuf.v" type="file.verilog" enable="1"/>

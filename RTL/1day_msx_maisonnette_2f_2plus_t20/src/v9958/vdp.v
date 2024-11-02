@@ -101,8 +101,7 @@ module vdp(
 	input					forced_v_mode,
 	input					legacy_vga,
 
-	input		[4:0]		vdp_id,
-	input		[6:0]		offset_y
+	input		[4:0]		vdp_id
 );
 	localparam		clocks_per_line		= 1368;
 	localparam		offset_x			= 7'b0110001;
@@ -850,8 +849,7 @@ module vdp(
 		.reg_r25_msk					( reg_r25_msk					),
 		.reg_r27_h_scroll				( reg_r27_h_scroll				),
 		.reg_r25_yjk					( reg_r25_yjk					),
-		.centeryjk_r25_n				( centeryjk_r25_n				),
-		.offset_y						( offset_y						)
+		.centeryjk_r25_n				( centeryjk_r25_n				)
 	);
 
 	//---------------------------------------------------------------------

@@ -78,7 +78,6 @@ module tang20cart_msx (
 
 //	localparam		c_vdpid			= 5'b00001;		// V9938
 	localparam		c_vdpid			= 5'b00010;		// V9958
-	localparam		c_offset_y		= 7'd19;
 
 	reg		[25:0]	ff_count = 26'd0;
 	reg		[1:0]	ff_led = 2'd0;
@@ -294,8 +293,7 @@ module tang20cart_msx (
 		.ntsc_pal_type		( 1'b0						),	// IN	STD_LOGIC;
 		.forced_v_mode		( 1'b0						),	// IN	STD_LOGIC;
 		.legacy_vga			( 1'b0						),	// IN	STD_LOGIC;
-		.vdp_id				( c_vdpid					),	// IN	STD_LOGIC_VECTOR(  4 DOWNTO 0 );
-		.offset_y			( c_offset_y				)	// IN	STD_LOGIC_VECTOR(  6 DOWNTO 0 )
+		.vdp_id				( c_vdpid					)	// IN	STD_LOGIC_VECTOR(  4 DOWNTO 0 );
     );
 
 	assign w_sdram_address[22:17]	= 6'b000000;
