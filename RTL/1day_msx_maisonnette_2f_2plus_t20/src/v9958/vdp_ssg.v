@@ -64,21 +64,21 @@ module vdp_ssg (
 	output		[10:0]	v_cnt,
 	output		[1:0]	dot_state,
 	output		[2:0]	eight_dot_state,
-	output		[8:0]	predotcounter_x,
-	output		[8:0]	predotcounter_y,
-	output		[8:0]	predotcounter_yp,
-	output reg			prewindow_y,
-	output reg			prewindow_y_sp,
+	output		[8:0]	pre_dot_counter_x,
+	output		[8:0]	pre_dot_counter_y,
+	output		[8:0]	pre_dot_counter_yp,
+	output				pre_window_y,
+	output				pre_window_y_sp,
 	output				field,
 	output				window_x,
-	output				pvideodhclk,
-	output				pvideodlclk,
-	output reg			ivideovs_n,
+	output				p_video_dh_clk,
+	output				p_video_dl_clk,
+	output				p_video_vs_n,
 
 	output				hd,
 	output				vd,
 	output				hsync,
-	output reg			enahsync,
+	output				hsync_en,
 	output				v_blanking_start,
 
 	input				vdp_r9_pal_mode,
@@ -92,8 +92,8 @@ module vdp_ssg (
 	input				centeryjk_r25_n
 );
 	localparam		clocks_per_line				= 1368;
-	localparam		offset_x					= 7'b0110001;
-	localparam		offset_y					= 7'd19;
+	localparam		offset_x					= 49;
+	localparam		offset_y					= 19;
 	localparam		led_tv_x_ntsc				= -3;
 	localparam		led_tv_y_ntsc				= 1;
 	localparam		led_tv_x_pal				= -2;
@@ -105,6 +105,10 @@ module vdp_ssg (
 	localparam		left_border					= 235;
 
 	// flip flop
+	reg				ff_hsync_en;
+	reg				ff_pre_window_y;
+	reg				ff_pre_window_y_sp;
+	reg				ff_video_vs_n;
 	reg		[1:0]	ff_dotstate;
 	reg		[2:0]	ff_eightdotstate;
 	reg		[8:0]	ff_pre_x_cnt;
@@ -153,14 +157,18 @@ module vdp_ssg (
 	assign eight_dot_state		= ff_eightdotstate;
 	assign field				= ff_field;
 	assign window_x				= ff_window_x;
-	assign pvideodhclk			= ff_video_dh_clk;
-	assign pvideodlclk			= ff_video_dl_clk;
-	assign predotcounter_x		= ff_pre_x_cnt;
-	assign predotcounter_y		= ff_pre_y_cnt;
-	assign predotcounter_yp		= ff_monitor_line;
+	assign p_video_dh_clk		= ff_video_dh_clk;
+	assign p_video_dl_clk		= ff_video_dl_clk;
+	assign p_video_vs_n			= ff_video_vs_n;
+	assign pre_dot_counter_x	= ff_pre_x_cnt;
+	assign pre_dot_counter_y	= ff_pre_y_cnt;
+	assign pre_dot_counter_yp	= ff_monitor_line;
+	assign pre_window_y			= ff_pre_window_y;
+	assign pre_window_y_sp		= ff_pre_window_y_sp;
 	assign hd					= ff_h_blank;
 	assign vd					= ff_v_blank;
 	assign hsync				= ( ff_h_cnt[1:0] == 2'b10 && ff_pre_x_cnt == 9'b111111111 ) ? 1'b1: 1'b0;
+	assign hsync_en				= ff_hsync_en;
 	assign v_blanking_start		= w_v_blanking_start;
 
 	// --------------------------------------------------------------------
@@ -456,18 +464,18 @@ module vdp_ssg (
 	//---------------------------------------------------------------------------
 	always @( posedge clk ) begin
 		if( reset )begin
-			ivideovs_n <= 1'b1;
+			ff_video_vs_n <= 1'b1;
 		end
 		else if( !enable )begin
 			// hold
 		end
 		else if( ff_v_cnt_in_field == 6 )begin
 			// sstate = sstate_b
-			ivideovs_n <= 1'b0;
+			ff_video_vs_n <= 1'b0;
 		end
 		else if( ff_v_cnt_in_field == 12 )begin
 			// sstate = sstate_a
-			ivideovs_n <= 1'b1;
+			ff_video_vs_n <= 1'b1;
 		end
 	end
 
@@ -529,9 +537,9 @@ module vdp_ssg (
 		if( reset ) begin
 			ff_pre_y_cnt		<= 'd0;
 			ff_monitor_line		<= 'd0;
-			prewindow_y			<= 1'b0;
-			prewindow_y_sp		<= 1'b0;
-			enahsync			<= 1'b0;
+			ff_pre_window_y			<= 1'b0;
+			ff_pre_window_y_sp		<= 1'b0;
+			ff_hsync_en			<= 1'b0;
 		end
 		else if( !enable )begin
 			// hold
@@ -552,7 +560,7 @@ module vdp_ssg (
 					pre_dot_counter_yp_start = 9'b111010101;					// top border lines = -43
 				end
 				ff_monitor_line <= pre_dot_counter_yp_start + w_y_adj;
-				prewindow_y_sp	<= 1'b1;
+				ff_pre_window_y_sp	<= 1'b1;
 			end
 			else begin
 				if( pre_dot_counter_yp_v == 255 )begin
@@ -562,19 +570,19 @@ module vdp_ssg (
 					pre_dot_counter_yp_v = ff_monitor_line + 1;
 				end
 				if( pre_dot_counter_yp_v == 0 ) begin
-					enahsync		<= 1'b1;
-					prewindow_y		<= 1'b1;
+					ff_hsync_en		<= 1'b1;
+					ff_pre_window_y		<= 1'b1;
 				end
 				else if((reg_r9_y_dots == 1'b0 && pre_dot_counter_yp_v == 192) ||
 						(reg_r9_y_dots == 1'b1 && pre_dot_counter_yp_v == 212) )begin
-					prewindow_y		<= 1'b0;
-					prewindow_y_sp	<= 1'b0;
+					ff_pre_window_y		<= 1'b0;
+					ff_pre_window_y_sp	<= 1'b0;
 				end
-				else if((reg_r9_y_dots == 1'b0 && ff_pal_mode == 1'b0 && pre_dot_counter_yp_v == 235) ||
-						(reg_r9_y_dots == 1'b1 && ff_pal_mode == 1'b0 && pre_dot_counter_yp_v == 245) ||
-						(reg_r9_y_dots == 1'b0 && ff_pal_mode == 1'b1 && pre_dot_counter_yp_v == 259) ||
-						(reg_r9_y_dots == 1'b1 && ff_pal_mode == 1'b1 && pre_dot_counter_yp_v == 269) )begin
-					enahsync		<= 1'b0;
+				else if((!reg_r9_y_dots && !ff_pal_mode && pre_dot_counter_yp_v == 235) ||
+						( reg_r9_y_dots && !ff_pal_mode && pre_dot_counter_yp_v == 245) ||
+						(!reg_r9_y_dots &&  ff_pal_mode && pre_dot_counter_yp_v == 259) ||
+						( reg_r9_y_dots &&  ff_pal_mode && pre_dot_counter_yp_v == 269) )begin
+					ff_hsync_en		<= 1'b0;
 				end
 				ff_monitor_line		<= pre_dot_counter_yp_v;
 			end
@@ -597,9 +605,9 @@ module vdp_ssg (
 										  (w_line_mode == 2'b10) ? v_blanking_start_212_ntsc:
 										  (w_line_mode == 2'b01) ? v_blanking_start_192_pal: v_blanking_start_212_pal;
 
-	assign	w_v_blanking_end	=	(ff_v_cnt_in_field == {2'b00, (offset_y + led_tv_y_ntsc), (ff_field & ff_interlace_mode)} && ff_pal_mode == 1'b0) ||
-									(ff_v_cnt_in_field == {2'b00, (offset_y + led_tv_y_pal ), (ff_field & ff_interlace_mode)} && ff_pal_mode == 1'b1);
-	assign	w_v_blanking_start	=	(ff_v_cnt_in_field == {(w_v_sync_intr_start_line + led_tv_y_ntsc), (ff_field & ff_interlace_mode)} && ff_pal_mode == 1'b0) ||
-									(ff_v_cnt_in_field == {(w_v_sync_intr_start_line + led_tv_y_pal ), (ff_field & ff_interlace_mode)} && ff_pal_mode == 1'b1);
+	assign	w_v_blanking_end	=	(ff_v_cnt_in_field == {2'b00, (offset_y + led_tv_y_ntsc),          (ff_field & ff_interlace_mode)} && !ff_pal_mode) ||
+									(ff_v_cnt_in_field == {2'b00, (offset_y + led_tv_y_pal ),          (ff_field & ff_interlace_mode)} &&  ff_pal_mode);
+	assign	w_v_blanking_start	=	(ff_v_cnt_in_field == {(w_v_sync_intr_start_line + led_tv_y_ntsc), (ff_field & ff_interlace_mode)} && !ff_pal_mode) ||
+									(ff_v_cnt_in_field == {(w_v_sync_intr_start_line + led_tv_y_pal ), (ff_field & ff_interlace_mode)} &&  ff_pal_mode);
 
 endmodule

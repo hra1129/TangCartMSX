@@ -287,8 +287,8 @@ module tang20cart_msx (
 		.pvideob			( w_lcd_blue				),	// OUT	STD_LOGIC_VECTOR(  5 DOWNTO 0 );
 		.pvideohs_n			( lcd_hsync					),	// OUT	STD_LOGIC;
 		.pvideovs_n			( lcd_vsync					),	// OUT	STD_LOGIC;
-		.pvideodhclk		( w_dh_clk					),	// OUT	STD_LOGIC;
-		.pvideodlclk		( w_dl_clk					),	// OUT	STD_LOGIC;
+		.p_video_dh_clk		( w_dh_clk					),	// OUT	STD_LOGIC;
+		.p_video_dl_clk		( w_dl_clk					),	// OUT	STD_LOGIC;
 		.dispreso			( 1'b1						),	// IN	STD_LOGIC;
 		.ntsc_pal_type		( 1'b0						),	// IN	STD_LOGIC;
 		.forced_v_mode		( 1'b0						),	// IN	STD_LOGIC;
