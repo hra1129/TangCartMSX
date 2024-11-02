@@ -76,9 +76,6 @@ module tang20cart_msx (
 	output	[3:0]	O_sdram_dqm		//	Internal
 );
 
-//	localparam		c_vdpid			= 5'b00001;		// V9938
-	localparam		c_vdpid			= 5'b00010;		// V9958
-
 	reg		[25:0]	ff_count = 26'd0;
 	reg		[1:0]	ff_led = 2'd0;
 	wire	[15:0]	taddress;
@@ -260,9 +257,10 @@ module tang20cart_msx (
 	// --------------------------------------------------------------------
 	//	V9958 clone
 	// --------------------------------------------------------------------
-	vdp u_v9958 (
+	vdp_inst u_v9958 (
 		.clk				( clk						),	// IN	STD_LOGIC;
-		.reset				( !w_n_reset				),	// IN	STD_LOGIC;
+		.enable_state		( w_vdp_enable_state		),	// OUT	STD_LOGIC;
+		.reset_n			( w_n_reset					),	// IN	STD_LOGIC;
 		.initial_busy		( w_sdram_busy				),	// IN	STD_LOGIC;
 		.req				( w_req						),	// IN	STD_LOGIC;
 		.ack				( w_ack						),	// OUT	STD_LOGIC;
@@ -270,16 +268,12 @@ module tang20cart_msx (
 		.adr				( w_a						),	// IN	STD_LOGIC_VECTOR(  1 DOWNTO 0 );
 		.dbi				( w_rdata					),	// OUT	STD_LOGIC_VECTOR(  7 DOWNTO 0 );
 		.dbo				( w_wdata					),	// IN	STD_LOGIC_VECTOR(  7 DOWNTO 0 );
-		.enable_state		( w_vdp_enable_state		),	// OUT	STD_LOGIC;
 		.int_n				( 							),	// OUT	STD_LOGIC;
 		.pramoe_n			( w_sdram_read_n			),	// OUT	STD_LOGIC;
 		.pramwe_n			( w_sdram_write_n			),	// OUT	STD_LOGIC;
 		.pramadr			( w_sdram_address[16:0]		),	// OUT	STD_LOGIC_VECTOR( 16 DOWNTO 0 );
 		.pramdbi			( w_sdram_rdata				),	// IN	STD_LOGIC_VECTOR( 15 DOWNTO 0 );
 		.pramdbo			( w_sdram_wdata				),	// OUT	STD_LOGIC_VECTOR(  7 DOWNTO 0 );
-		.vdp_speed_mode		( 1'b0						),	// IN	STD_LOGIC;
-		.ratio_mode			( 3'b000					),	// IN	STD_LOGIC_VECTOR(  2 DOWNTO 0 );
-		.centeryjk_r25_n	( 1'b1						),	// IN	STD_LOGIC;
 		.pvideo_clk			( lcd_clk					),	// OUT	STD_LOGIC;
 		.pvideo_data_en		( lcd_de					),	// OUT	STD_LOGIC;
 		.pvideor			( w_lcd_red					),	// OUT	STD_LOGIC_VECTOR(  5 DOWNTO 0 );
@@ -288,12 +282,7 @@ module tang20cart_msx (
 		.pvideohs_n			( lcd_hsync					),	// OUT	STD_LOGIC;
 		.pvideovs_n			( lcd_vsync					),	// OUT	STD_LOGIC;
 		.p_video_dh_clk		( w_dh_clk					),	// OUT	STD_LOGIC;
-		.p_video_dl_clk		( w_dl_clk					),	// OUT	STD_LOGIC;
-		.dispreso			( 1'b1						),	// IN	STD_LOGIC;
-		.ntsc_pal_type		( 1'b0						),	// IN	STD_LOGIC;
-		.forced_v_mode		( 1'b0						),	// IN	STD_LOGIC;
-		.legacy_vga			( 1'b0						),	// IN	STD_LOGIC;
-		.vdp_id				( c_vdpid					)	// IN	STD_LOGIC_VECTOR(  4 DOWNTO 0 );
+		.p_video_dl_clk		( w_dl_clk					)	// OUT	STD_LOGIC
     );
 
 	assign w_sdram_address[22:17]	= 6'b000000;

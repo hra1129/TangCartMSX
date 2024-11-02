@@ -25,6 +25,7 @@ vlog ..\v9958\vdp_text12.v
 vlog ..\v9958\vdp_lcd.v
 vlog ..\v9958\vdp_wait_control.v
 vlog ..\v9958\vdp.v
+vlog ..\v9958\vdp_inst.v
 vlog gowin_pll_dummy.v
 vlog ..\tang20cart_msx.v
 vlog tb.sv

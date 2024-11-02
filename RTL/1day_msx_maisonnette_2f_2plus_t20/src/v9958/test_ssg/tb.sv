@@ -60,6 +60,7 @@ module tb ();
 	reg			[2:0]	reg_r27_h_scroll;
 	reg					reg_r25_yjk;
 	reg					centeryjk_r25_n;
+	int					i, j;
 
 	// --------------------------------------------------------------------
 	//	DUT
@@ -127,9 +128,14 @@ module tb ();
 		@( posedge clk );
 
 		reset					= 0;
-		repeat( 11000 ) @( posedge clk );
+		@( posedge clk );
 
-		repeat( 1368 * 1000 ) @( posedge clk );
+		for( i = 0; i < 10; i++ ) begin
+			$display( "[%d]", i );
+			repeat( 1368 * 1000 ) begin
+				@( posedge clk );
+			end
+		end
 
 		$finish;
 	end

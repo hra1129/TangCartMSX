@@ -56,17 +56,16 @@
 //-----------------------------------------------------------------------------
 
 module vdp(
-	// vdp clock ... 21.477mhz
-	input					clk,
 	input					reset,
 	input					initial_busy,
+	input					clk,				//	21.47727MHz or over
+	input					enable,				//	21.47727MHz pulse
 	input					req,
 	output					ack,
 	input					wrt,
 	input		[1:0]		adr,
 	output		[7:0]		dbi,
 	input		[7:0]		dbo,
-	output		[1:0]		enable_state,
 
 	output					int_n,
 
@@ -110,8 +109,6 @@ module vdp(
 	localparam		led_tv_x_pal		= -2;
 	localparam		led_tv_y_pal		= 3;
 
-	reg				ff_enable;
-	reg		[1:0]	ff_enable_cnt;
 	wire	[10:0]	w_h_count;
 	wire	[10:0]	w_v_count;
 
@@ -309,7 +306,6 @@ module vdp(
 	wire			w_hsync;
 	wire			w_hsync_en;
 
-	reg				ff_initial_busy;
 	reg				ff_req;
 	reg				ff_wrt;
 	wire			w_ack;
@@ -327,28 +323,12 @@ module vdp(
 	localparam	[2:0]	vram_access_vdps	= 3'd7;
 
 	// --------------------------------------------------------------------
-	assign enable_state		= ff_enable_cnt;
 	assign pramadr			= ff_vram_address;
 	assign w_vram_rdata_sel	= ff_vram_address[16];
 	assign w_vram_data		= ( !w_vram_rdata_sel ) ? pramdbi[ 7:0] : pramdbi[15:8];
 	assign w_vram_data_pair	= (  w_vram_rdata_sel ) ? pramdbi[ 7:0] : pramdbi[15:8];
 	assign pramoe_n			= ff_pramoe_n;
 	assign pramwe_n			= ff_pramwe_n;
-
-	//--------------------------------------------------------------
-	// wait
-	//--------------------------------------------------------------
-	always @( posedge clk ) begin
-		if( reset ) begin
-			ff_initial_busy <= 1'b1;
-		end
-		else if( !initial_busy ) begin
-			ff_initial_busy <= 1'b0;
-		end
-		else begin
-			// hold
-		end
-	end
 
 	//--------------------------------------------------------------
 	// request signal
@@ -358,7 +338,7 @@ module vdp(
 			ff_req <= 1'b0;
 			ff_wrt <= 1'b0;
 		end
-		else if( ff_enable ) begin
+		else if( enable ) begin
 			if( w_ack ) begin
 				ff_req <= 1'b0;
 			end
@@ -369,32 +349,6 @@ module vdp(
 		end
 		else begin
 			// hold
-		end
-	end
-
-	//--------------------------------------------------------------
-	// clock divider
-	//--------------------------------------------------------------
-	always @( posedge clk ) begin
-		if( reset || ff_initial_busy ) begin
-			ff_enable_cnt	<= 2'b00;
-		end
-		else begin
-			ff_enable_cnt	<= ff_enable_cnt + 2'b01;
-		end
-	end
-
-	always @( posedge clk ) begin
-		if( reset || ff_initial_busy ) begin
-			ff_enable			<= 1'b0;
-		end
-		else begin
-			if( ff_enable_cnt == 2'b11 ) begin
-				ff_enable		<= 1'b1;
-			end
-			else begin
-				ff_enable		<= 1'b0;
-			end
 		end
 	end
 
@@ -434,7 +388,7 @@ module vdp(
 		if( reset ) begin
 			ff_active_line <= 1'b0;
 		end
-		else if( !ff_enable ) begin
+		else if( !enable ) begin
 			// hold
 		end
 		else if( w_pre_dot_counter_x == 255 ) begin
@@ -450,7 +404,7 @@ module vdp(
 		if( reset ) begin
 			ff_bwindow_x <= 1'b0;
 		end
-		else if( !ff_enable ) begin
+		else if( !enable ) begin
 			// hold
 		end
 		else if( w_h_count == 200 ) begin
@@ -465,7 +419,7 @@ module vdp(
 		if( reset ) begin
 			ff_bwindow_y <= 1'b0;
 		end
-		else if( !ff_enable ) begin
+		else if( !enable ) begin
 			// hold
 		end
 		else if( !reg_r9_interlace_mode ) begin
@@ -505,7 +459,7 @@ module vdp(
 		if( reset ) begin
 			ff_bwindow <= 1'b0;
 		end
-		else if( !ff_enable ) begin
+		else if( !enable ) begin
 			// hold
 		end
 		else begin
@@ -521,7 +475,7 @@ module vdp(
 		if( reset ) begin
 			ff_prewindow_x <= 1'b0;
 		end
-		else if( !ff_enable ) begin
+		else if( !enable ) begin
 			// hold
 		end
 		else if((w_h_count == {2'b00, (offset_x + led_tv_x_ntsc - {(reg_r25_msk & ~centeryjk_r25_n), 2'b00} + 4), 2'b10} && ( reg_r25_yjk &&  centeryjk_r25_n) && !w_r9_pal_mode) ||
@@ -549,7 +503,7 @@ module vdp(
 			ff_vram_read_data		<= 8'd0;
 			ff_vram_reading_ack		<= 1'b0;
 		end
-		else if( !ff_enable ) begin
+		else if( !enable ) begin
 			// hold
 		end
 		else if( w_dot_state == 2'b01 ) begin
@@ -566,7 +520,7 @@ module vdp(
 			ff_vdpcmd_vram_read_ack		<= 1'b0;
 			ff_vdpcmd_vram_reading_ack	<= 1'b0;
 		end
-		else if( !ff_enable ) begin
+		else if( !enable ) begin
 			// hold
 		end
 		else if( w_dot_state == 2'b01 ) begin
@@ -601,7 +555,7 @@ module vdp(
 			ff_vdpcmd_vram_reading_req <= 1'b0;
 			ff_vdp_command_drive <= 1'b0;
 		end
-		else if( !ff_enable ) begin
+		else if( !enable ) begin
 			// hold
 		end
 		else begin
@@ -799,7 +753,7 @@ module vdp(
 	vdp_interrupt u_interrupt(
 		.reset							( reset							),
 		.clk							( clk							),
-		.enable							( ff_enable						),
+		.enable							( enable						),
 
 		.h_cnt							( w_h_count						),
 		.y_cnt							( w_pre_dot_counter_y[7:0]		),
@@ -818,7 +772,7 @@ module vdp(
 	vdp_ssg u_ssg(
 		.reset							( reset							),
 		.clk							( clk							),
-		.enable							( ff_enable						),
+		.enable							( enable						),
 
 		.h_cnt							( w_h_count						),
 		.v_cnt							( w_v_count						),
@@ -858,7 +812,7 @@ module vdp(
 	vdp_colordec u_vdp_colordec(
 		.reset							( reset							),
 		.clk							( clk							),
-		.enable							( ff_enable						),
+		.enable							( enable						),
 
 		.dot_state						( w_dot_state					),
 
@@ -906,7 +860,7 @@ module vdp(
 	vdp_text12 u_vdp_text12(
 		.clk							( clk							),
 		.reset							( reset							),
-		.enable							( ff_enable						),
+		.enable							( enable						),
 		.dot_state						( w_dot_state					),
 		.dotcounterx					( w_pre_dot_counter_x			),
 		.dotcountery					( w_pre_dot_counter_y			),
@@ -930,7 +884,7 @@ module vdp(
 	vdp_graphic123m u_vdp_graphic123m(
 		.clk							( clk							),
 		.reset							( reset							),
-		.enable							( ff_enable						),
+		.enable							( enable						),
 		.dot_state						( w_dot_state					),
 		.eight_dot_state				( w_eight_dot_state				),
 		.dot_counter_x					( w_pre_dot_counter_x			),
@@ -953,7 +907,7 @@ module vdp(
 	vdp_graphic4567 u_vdp_graphic4567(
 		.clk							( clk							),
 		.reset							( reset							),
-		.enable							( ff_enable						),
+		.enable							( enable						),
 		.dot_state						( w_dot_state					),
 		.eight_dot_state				( w_eight_dot_state				),
 		.dotcounterx					( w_pre_dot_counter_x			),
@@ -986,7 +940,7 @@ module vdp(
 	vdp_sprite u_sprite(
 		.clk							( clk							),
 		.reset							( reset							),
-		.enable							( ff_enable						),
+		.enable							( enable						),
 		.dot_state						( w_dot_state					),
 		.eight_dot_state				( w_eight_dot_state				),
 		.dotcounterx					( w_pre_dot_counter_x			),
@@ -1027,7 +981,7 @@ module vdp(
 	vdp_register u_vdp_register(
 		.reset							( reset							),
 		.clk							( clk							),
-		.enable							( ff_enable						),
+		.enable							( enable						),
 
 		.req							( ff_req						),
 		.ack							( w_ack							),
@@ -1141,7 +1095,7 @@ module vdp(
 	vdp_command u_vdp_command (
 		.reset							( reset							),
 		.clk							( clk							),
-		.enable							( ff_enable						),
+		.enable							( enable						),
 		.vdp_mode_graphic4				( w_vdp_mode_graphic4			),
 		.vdp_mode_graphic5				( w_vdp_mode_graphic5			),
 		.vdp_mode_graphic6				( w_vdp_mode_graphic6			),
@@ -1175,7 +1129,7 @@ module vdp(
 	vdp_wait_control u_vdp_wait_control(
 		.reset							( reset							),
 		.clk							( clk							),
-		.enable							( ff_enable						),
+		.enable							( enable						),
 
 		.vdp_command					( w_current_vdp_command			),
 
@@ -1196,7 +1150,7 @@ module vdp(
 	vdp_lcd u_vdp_lcd(
 		.clk							( clk							),
 		.reset							( reset							),
-		.enable							( ff_enable						),
+		.enable							( enable						),
 		.lcd_clk						( pvideo_clk					),
 		.lcd_de							( pvideo_data_en				),
 		.videorin						( w_video_r						),

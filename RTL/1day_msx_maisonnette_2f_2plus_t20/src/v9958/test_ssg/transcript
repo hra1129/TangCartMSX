@@ -1,2 +1,9 @@
 # OpenFile D:/github/HRA_product/TangCartMSX/RTL/1day_msx_maisonnette_2f_2plus_t20/src/v9958/test_ssg/vsim.wlf
-add wave -position end vsim:/tb/u_vdp_ssg/*
+add wave -position end  vsim:/tb/u_vdp_ssg/ff_h_cnt
+add wave -position end  vsim:/tb/u_vdp_ssg/ff_v_cnt_in_field
+add wave -position end  vsim:/tb/u_vdp_ssg/ff_field
+add wave -position end  vsim:/tb/u_vdp_ssg/ff_v_cnt_in_frame
+add wave -position 0  vsim:/tb/u_vdp_ssg/clk
+add wave -position end  vsim:/tb/u_vdp_ssg/ff_x_cnt
+add wave -position end  vsim:/tb/u_vdp_ssg/ff_pre_x_cnt
+add wave -position end  vsim:/tb/u_vdp_ssg/ff_x_cnt

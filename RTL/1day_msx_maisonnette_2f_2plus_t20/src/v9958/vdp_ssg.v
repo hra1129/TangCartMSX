@@ -105,25 +105,26 @@ module vdp_ssg (
 	localparam		left_border					= 235;
 
 	// flip flop
+	reg		[10:0]	ff_h_cnt;
+	reg		[ 9:0]	ff_v_cnt_in_field;
+	reg				ff_field;
+	reg		[10:0]	ff_v_cnt_in_frame;
+
 	reg				ff_hsync_en;
 	reg				ff_pre_window_y;
 	reg				ff_pre_window_y_sp;
 	reg				ff_video_vs_n;
-	reg		[1:0]	ff_dotstate;
-	reg		[2:0]	ff_eightdotstate;
-	reg		[8:0]	ff_pre_x_cnt;
-	reg		[8:0]	ff_x_cnt;
-	reg		[8:0]	ff_pre_y_cnt;
-	reg		[8:0]	ff_monitor_line;
+	reg		[ 1:0]	ff_dotstate;
+	reg		[ 2:0]	ff_eightdotstate;
+	reg		[ 8:0]	ff_pre_x_cnt;
+	reg		[ 8:0]	ff_x_cnt;
+	reg		[ 8:0]	ff_pre_y_cnt;
+	reg		[ 8:0]	ff_monitor_line;
 	reg				ff_video_dh_clk;
 	reg				ff_video_dl_clk;
-	reg		[5:0]	ff_pre_x_cnt_start1;
-	reg		[8:0]	ff_right_mask;
+	reg		[ 5:0]	ff_pre_x_cnt_start1;
+	reg		[ 8:0]	ff_right_mask;
 	reg				ff_window_x;
-	reg		[10:0]	ff_h_cnt;
-	reg		[9:0]	ff_v_cnt_in_field;
-	reg				ff_field;
-	reg		[10:0]	ff_v_cnt_in_frame;
 	reg				ff_h_blank;
 	reg				ff_v_blank;
 	reg				ff_pal_mode;
@@ -147,6 +148,83 @@ module vdp_ssg (
 	wire	[1:0]	w_display_mode;
 	wire			w_h_blank_start;
 	wire			w_h_blank_end;
+
+	// --------------------------------------------------------------------
+	//	horizontal counter
+	// --------------------------------------------------------------------
+	assign w_h_cnt_half		=	( ff_h_cnt == (clocks_per_line/2)-1 ) ? 1'b1: 1'b0;
+	assign w_h_cnt_end		=	( ff_h_cnt ==  clocks_per_line   -1 ) ? 1'b1: 1'b0;
+
+	always @( posedge clk ) begin
+		if( reset ) begin
+			ff_h_cnt <= 11'd0;
+		end
+		else if( !enable ) begin
+			//	hold
+		end
+		else if( w_h_cnt_end ) begin
+			ff_h_cnt <= 11'd0;
+		end
+		else begin
+			ff_h_cnt <= ff_h_cnt + 1;
+		end
+	end
+
+	// --------------------------------------------------------------------
+	//	vertical counter
+	// --------------------------------------------------------------------
+	function [9:0] func_field_end_cnt (
+		input	[1:0]		w_display_mode
+	);
+		case( w_display_mode )
+		2'b00:		func_field_end_cnt = 10'd523;
+		2'b10:		func_field_end_cnt = 10'd524;
+		2'b01:		func_field_end_cnt = 10'd625;
+		2'b11:		func_field_end_cnt = 10'd624;
+		default:	func_field_end_cnt = 10'dx;
+		endcase
+	endfunction
+
+	assign w_display_mode	= { ff_interlace_mode, ff_pal_mode };
+	assign w_field_end_cnt	= func_field_end_cnt( w_display_mode );
+	assign w_field_end		= ( ff_v_cnt_in_field == w_field_end_cnt ) ? 1'b1: 1'b0;
+
+	always @( posedge clk ) begin
+		if( reset ) begin
+			ff_v_cnt_in_field	<= 10'd0;
+		end
+		else if( !enable ) begin
+			//	hold
+		end
+		else if( w_h_cnt_half || w_h_cnt_end ) begin
+			if( w_field_end ) begin
+				ff_v_cnt_in_field <= 10'd0;
+			end
+			else begin
+				ff_v_cnt_in_field <= ff_v_cnt_in_field + 1;
+			end
+		end
+	end
+
+	// --------------------------------------------------------------------
+	//	vertical counter in frame
+	// --------------------------------------------------------------------
+	always @( posedge clk ) begin
+		if( reset ) begin
+			ff_v_cnt_in_frame	<= 11'd0;
+		end
+		else if( !enable ) begin
+			//	hold
+		end
+		else if( w_h_cnt_half || w_h_cnt_end ) begin
+			if( w_field_end && ff_field ) begin
+				ff_v_cnt_in_frame	<= 11'd0;
+			end
+			else begin
+				ff_v_cnt_in_frame	<= ff_v_cnt_in_frame + 1;
+			end
+		end
+	end
 
 	//---------------------------------------------------------------------------
 	//	port assignment
@@ -189,65 +267,6 @@ module vdp_ssg (
 	end
 
 	// --------------------------------------------------------------------
-	//	horizontal counter
-	// --------------------------------------------------------------------
-	assign w_h_cnt_half		=	( ff_h_cnt == (clocks_per_line/2)-1 ) ? 1'b1: 1'b0;
-	assign w_h_cnt_end		=	( ff_h_cnt ==  clocks_per_line   -1 ) ? 1'b1: 1'b0;
-
-	always @( posedge clk ) begin
-		if( reset ) begin
-			ff_h_cnt <= 11'd0;
-		end
-		else if( !enable ) begin
-			//	hold
-		end
-		else if( w_h_cnt_end ) begin
-			ff_h_cnt <= 11'd0;
-		end
-		else begin
-			ff_h_cnt <= ff_h_cnt + 1;
-		end
-	end
-
-	// --------------------------------------------------------------------
-	//	vertical counter
-	// --------------------------------------------------------------------
-	assign w_display_mode	=	{ ff_interlace_mode, ff_pal_mode };
-
-	function [9:0] func_field_end_cnt (
-		input	[1:0]		w_display_mode
-	);
-		case( w_display_mode )
-		2'b00:		func_field_end_cnt = 10'd523;
-		2'b10:		func_field_end_cnt = 10'd524;
-		2'b01:		func_field_end_cnt = 10'd625;
-		2'b11:		func_field_end_cnt = 10'd624;
-		default:	func_field_end_cnt = 10'dx;
-		endcase
-	endfunction
-
-	assign w_field_end_cnt	= func_field_end_cnt( w_display_mode );
-
-	assign w_field_end		= ( ff_v_cnt_in_field == w_field_end_cnt ) ? 1'b1: 1'b0;
-
-	always @( posedge clk ) begin
-		if( reset ) begin
-			ff_v_cnt_in_field	<= 10'd0;
-		end
-		else if( !enable ) begin
-			//	hold
-		end
-		else if( w_h_cnt_half || w_h_cnt_end ) begin
-			if( w_field_end) begin
-				ff_v_cnt_in_field <= 10'd0;
-			end
-			else begin
-				ff_v_cnt_in_field <= ff_v_cnt_in_field + 1;
-			end
-		end
-	end
-
-	// --------------------------------------------------------------------
 	//	field id
 	// --------------------------------------------------------------------
 	always @( posedge clk ) begin
@@ -260,26 +279,6 @@ module vdp_ssg (
 		else if( w_h_cnt_half || w_h_cnt_end ) begin
 			if( w_field_end ) begin
 				ff_field <= ~ff_field;
-			end
-		end
-	end
-
-	// --------------------------------------------------------------------
-	//	vertical counter in frame
-	// --------------------------------------------------------------------
-	always @( posedge clk ) begin
-		if( reset ) begin
-			ff_v_cnt_in_frame	<= 11'd0;
-		end
-		else if( !enable ) begin
-			//	hold
-		end
-		else if( w_h_cnt_half || w_h_cnt_end ) begin
-			if( w_field_end && ff_field ) begin
-				ff_v_cnt_in_frame	<= 11'd0;
-			end
-			else begin
-				ff_v_cnt_in_frame	<= ff_v_cnt_in_frame + 1;
 			end
 		end
 	end
