@@ -632,34 +632,34 @@ module vdp_register (
 				case( vdp_reg_ptr[4:0] )
 				5'b00000:		// #00
 					begin
-						ff_r0_disp_mode		<= vdp_p1_data[3:1];
-						reg_r0_hsync_int_en	<= vdp_p1_data[4];
+						ff_r0_disp_mode			<= vdp_p1_data[3:1];
+						reg_r0_hsync_int_en		<= vdp_p1_data[4];
 					end
 				5'b00001:		// #01
 					begin
-						reg_r1_sp_zoom		<= vdp_p1_data[0];
-						reg_r1_sp_size		<= vdp_p1_data[1];
-						reg_r1_bl_clks		<= vdp_p1_data[2];
-						ff_r1_disp_mode		<= vdp_p1_data[4:3];
-						reg_r1_vsync_int_en <= vdp_p1_data[5];
-						ff_r1_disp_on		<= vdp_p1_data[6];
+						reg_r1_sp_zoom			<= vdp_p1_data[0];
+						reg_r1_sp_size			<= vdp_p1_data[1];
+						reg_r1_bl_clks			<= vdp_p1_data[2];
+						ff_r1_disp_mode			<= vdp_p1_data[4:3];
+						reg_r1_vsync_int_en		<= vdp_p1_data[5];
+						ff_r1_disp_on			<= vdp_p1_data[6];
 					end
 				5'b00010:		// #02
-					ff_r2_pt_nam_addr		<= vdp_p1_data[6:0];
+					ff_r2_pt_nam_addr			<= vdp_p1_data[6:0];
 				5'b00011:		// #03
-					reg_r10r3_color[7:0]	<= vdp_p1_data[7:0];
+					reg_r10r3_color[7:0]		<= vdp_p1_data[7:0];
 				5'b00100:		// #04
-					reg_r4_pattern_generator		<= vdp_p1_data[5:0];
+					reg_r4_pattern_generator	<= vdp_p1_data[5:0];
 				5'b00101:		// #05
 					reg_r11r5_sp_atr_addr[7:0]	<= vdp_p1_data;
 				5'b00110:		// #06
-					reg_r6_sp_gen_addr		<= vdp_p1_data[5:0];
+					reg_r6_sp_gen_addr			<= vdp_p1_data[5:0];
 				5'b00111:		// #07
-					reg_r7_frame_col		<= vdp_p1_data[7:0];
+					reg_r7_frame_col			<= vdp_p1_data[7:0];
 				5'b01000:		// #08
 					begin
-						reg_r8_sp_off		<= vdp_p1_data[1];
-						reg_r8_col0_on		<= vdp_p1_data[5];
+						reg_r8_sp_off			<= vdp_p1_data[1];
+						reg_r8_col0_on			<= vdp_p1_data[5];
 					end
 				5'b01001:		// #09
 					begin

@@ -57,7 +57,7 @@
 
 module vdp_spinforam (
 	input	[2:0]	address,
-	input			inclock,
+	input			clk	,
 	input			enable,
 	input			we,
 	input	[31:0]	data,
@@ -66,7 +66,7 @@ module vdp_spinforam (
 	reg		[31:0]	ff_memory [0:7];
 	reg		[2:0]	ff_address;
 
-	always @( posedge inclock ) begin
+	always @( posedge clk	 ) begin
 		if( !enable ) begin
 			//	hold
 		end
@@ -75,7 +75,7 @@ module vdp_spinforam (
 		end
 	end
 
-	always @( posedge inclock ) begin
+	always @( posedge clk	 ) begin
 		if( !enable ) begin
 			//	hold
 		end

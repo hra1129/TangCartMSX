@@ -34,6 +34,8 @@
         <Option type="output_file" value="D:\github\HRA_product\TangCartMSX\RTL\1day_msx_maisonnette_2f_2plus_t20\impl\gwsynthesis\Tang20kcartMSX.vg"/>
         <Option type="print_all_synthesis_warning" value="0"/>
         <Option type="ram_rw_check" value="0"/>
+        <Option type="vcc" value="1.0"/>
+        <Option type="vccx" value="3.3"/>
         <Option type="verilog_language" value="verilog-2001"/>
         <Option type="vhdl_language" value="vhdl-1993"/>
     </OptionList>

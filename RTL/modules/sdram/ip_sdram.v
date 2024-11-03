@@ -110,6 +110,7 @@ module ip_sdram #(
 	reg		[31:0]				ff_sdr_write_data		= 32'd0;
 	reg		[ 3:0]				ff_sdr_dq_mask			= 4'b1111;
 	reg		[15:0]				ff_sdr_read_data		= 16'd0;
+	reg		[15:0]				ff_sdr_read_data2		= 16'd0;
 
 	wire						w_refresh;
 
@@ -259,17 +260,17 @@ module ip_sdram #(
 			c_init_state_send_precharge_all:
 				begin
 					ff_sdr_command		<= c_sdr_command_precharge_all;
-					ff_sdr_dq_mask			<= 4'b1111;
+					ff_sdr_dq_mask		<= 4'b1111;
 				end
 			c_init_state_send_refresh_all1, c_init_state_send_refresh_all2:
 				begin
 					ff_sdr_command		<= c_sdr_command_refresh;
-					ff_sdr_dq_mask			<= 4'b0000;
+					ff_sdr_dq_mask		<= 4'b0000;
 				end
 			c_init_state_send_mode_register_set:
 				begin
 					ff_sdr_command		<= c_sdr_command_mode_register_set;
-					ff_sdr_dq_mask			<= 4'b1111;
+					ff_sdr_dq_mask		<= 4'b1111;
 				end
 			default:
 				if( ff_sdr_ready ) begin
@@ -280,23 +281,23 @@ module ip_sdram #(
 						else if( ff_do_refresh ) begin
 //							$display( "do_refresh: precharge_all" );
 							ff_sdr_command		<= c_sdr_command_precharge_all;
-							ff_sdr_dq_mask			<= 4'b0000;
+							ff_sdr_dq_mask		<= 4'b0000;
 						end
 						else begin
 							if( w_vdp_phase ) begin
 //								$display( "activate address %X", { address[20:17], address[15:9] } );
 								ff_sdr_command		<= c_sdr_command_activate;
-								ff_sdr_dq_mask			<= 4'b1111;
+								ff_sdr_dq_mask		<= 4'b1111;
 							end
 							else begin
 								ff_sdr_command		<= c_sdr_command_no_operation;
-								ff_sdr_dq_mask			<= 4'b1111;
+								ff_sdr_dq_mask		<= 4'b1111;
 							end
 						end
 					c_main_state_read_or_write:
 						if( ff_do_refresh ) begin
 							ff_sdr_command		<= c_sdr_command_refresh;
-							ff_sdr_dq_mask			<= 4'b0000;
+							ff_sdr_dq_mask		<= 4'b0000;
 						end
 						else begin
 							if( w_vdp_phase ) begin
@@ -312,24 +313,24 @@ module ip_sdram #(
 								end
 								else begin
 									ff_sdr_command		<= c_sdr_command_read;
-									ff_sdr_dq_mask			<= 4'b0000;
+									ff_sdr_dq_mask		<= 4'b0000;
 								end
 							end
 							else begin
 								ff_sdr_command		<= c_sdr_command_no_operation;
-								ff_sdr_dq_mask			<= 4'b1111;
+								ff_sdr_dq_mask		<= 4'b1111;
 							end
 						end
 					default:
 						begin
 							ff_sdr_command		<= c_sdr_command_no_operation;
-							ff_sdr_dq_mask			<= 4'b1111;
+							ff_sdr_dq_mask		<= 4'b1111;
 						end
 					endcase
 				end
 				else begin
 					ff_sdr_command		<= c_sdr_command_no_operation;
-					ff_sdr_dq_mask			<= 4'b1111;
+					ff_sdr_dq_mask		<= 4'b1111;
 				end
 			endcase
 		end
@@ -440,7 +441,7 @@ module ip_sdram #(
 		if( !n_reset ) begin
 			ff_sdr_read_data <= 16'd0;
 		end
-		else if( ff_sdr_ready && ff_main_state == c_main_state_data_fetch ) begin
+		else if( ff_main_state == c_main_state_data_fetch ) begin
 			if( w_vdp_phase ) begin
 				if( address[0] == 1'b0 ) begin
 					ff_sdr_read_data <= IO_sdram_dq[15:0];
@@ -452,6 +453,23 @@ module ip_sdram #(
 			else begin
 				//	hold
 			end
+		end
+	end
+
+	always @( posedge clk ) begin
+		if( !n_reset ) begin
+			ff_sdr_read_data2 <= 16'd0;
+		end
+		else if( ff_main_state == c_main_state_finish ) begin
+			if( w_vdp_phase ) begin
+				ff_sdr_read_data2 <= ff_sdr_read_data;
+			end
+			else begin
+				//	hold
+			end
+		end
+		else begin
+			//	hold
 		end
 	end
 
@@ -468,5 +486,5 @@ module ip_sdram #(
 	assign O_sdram_addr			= ff_sdr_address[10:0];
 	assign IO_sdram_dq			= ff_sdr_write_data;
 
-	assign rdata				= ff_sdr_read_data;
+	assign rdata				= ff_sdr_read_data2;
 endmodule

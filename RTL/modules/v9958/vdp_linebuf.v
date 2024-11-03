@@ -1,10 +1,8 @@
 //
-//	vdp_linebuf.vhd
+//	vdp_linebuf.v
 //	  Line buffer for VGA upscan converter.
 //
-//	Copyright (C) 2006 Kunihiko Ohnaka
-//	All rights reserved.
-//									   http://www.ohnaka.jp/ese-vdp/
+//	Copyright (C) 2024 Takayuki Hara
 //
 //	本ソフトウェアおよび本ソフトウェアに基づいて作成された派生物は、以下の条件を
 //	満たす場合に限り、再頒布および使用が許可されます。
@@ -84,25 +82,22 @@
 
 module vdp_linebuf (
 	input	[9:0]	address,
-	input			inclock,
+	input			clk	,
 	input			we,
 	input	[14:0]	d,
 	output	[14:0]	q
 );
 	reg		[14:0]	ff_imem [0:1023];
-	reg		[9:0]	ff_iaddress;
+	reg		[14:0]	ff_q;
 
-	always @( posedge inclock ) begin
+	always @( posedge clk	 ) begin
 		if( we ) begin
 			ff_imem[ address ] <= d;
 		end
-	end
-
-	always @( posedge inclock ) begin
-		if( !we ) begin
-			ff_iaddress <= address;
+		else begin
+			ff_q <= ff_imem[ address ];
 		end
 	end
 
-	assign q = ff_imem[ ff_iaddress ];
+	assign q = ff_q;
 endmodule

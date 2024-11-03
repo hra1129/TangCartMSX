@@ -228,7 +228,7 @@ module vdp_sprite (
 	//---------------------------------------------------------------------------
 	vdp_spinforam u_sprite_info_ram (
 		.address		( w_info_address			),
-		.inclock		( clk						),
+		.clk			( clk						),
 		.enable			( enable					),
 		.we				( ff_info_ram_we			),
 		.data			( w_info_wdata				),

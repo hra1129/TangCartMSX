@@ -119,7 +119,7 @@ module vdp_lcd(
 	// double buffer signal
 	wire	[9:0]	w_x_position_w;
 //	reg		[9:0]	ff_x_position_r;
-	wire			w_evenodd;
+	wire			w_is_odd;
 	wire			w_we_buf;
 	wire	[4:0]	w_data_r_out;
 	wire	[4:0]	w_data_g_out;
@@ -353,73 +353,19 @@ module vdp_lcd(
 		.clk			( clk				),
 		.xpositionw		( w_x_position_w	),
 		.xpositionr		( w_x_position_r	),
-		.evenodd		( w_evenodd			),
+		.is_odd			( w_is_odd			),
 		.we				( w_we_buf			),
-		.datarin		( videorin[5:1]		),
-		.datagin		( videogin[5:1]		),
-		.databin		( videobin[5:1]		),
-		.datarout		( w_data_r_out		),
-		.datagout		( w_data_g_out		),
-		.databout		( w_data_b_out		)
+		.wdata_r		( videorin[5:1]		),
+		.wdata_g		( videogin[5:1]		),
+		.wdata_b		( videobin[5:1]		),
+		.rdata_r		( w_data_r_out		),
+		.rdata_g		( w_data_g_out		),
+		.rdata_b		( w_data_b_out		)
 	);
 
 	assign w_x_position_w	= hcounterin[10:1] - (clocks_per_line/2 - disp_width - 10);
-	assign w_evenodd		= vcounterin[1];
-	assign w_we_buf			= enable;
-
-//	// pixel ratio 1:1 for led display
-//	always @( posedge clk ) begin
-//		if( reset )begin
-//			ff_disp_start_x <= 684 - disp_width - 2;
-//		end
-//		else if( enable == 1'b0 )begin
-//			// hold
-//		end
-//		else if( (ratio_mode == 3'b000 || interlace_mode == 1'b1 || pal_mode == 1'b1) && legacy_vga == 1'b1 )begin
-//			// legacy output
-//			ff_disp_start_x <= right_x;			// 106
-//		end
-//		else if( pal_mode == 1'b1 )begin
-//			// 50hz
-//			ff_disp_start_x <= pal_right_x;		// 87
-//		end
-//		else if( ratio_mode == 3'b000 || interlace_mode == 1'b1 )begin
-//			// 60hz
-//			ff_disp_start_x <= center_x;			// 72
-//		end
-//		else if( (vcounterin < 38 + disp_start_y + prb_height) ||
-//			   (vcounterin > 526 - prb_height && vcounterin < 526 ) ||
-//			   (vcounterin > 524 + 38 + disp_start_y && vcounterin < 524 + 38 + disp_start_y + prb_height) ||
-//			   (vcounterin > 524 + 526 - prb_height) )begin
-//			// pixel ratio 1:1 (vga mode, 60hz, not interlaced)
-////			if( w_evenodd == 1'b0 )begin											// plot from top-right
-//			if( w_evenodd == 1'b1 )begin											// plot from top-left
-//				ff_disp_start_x <= base_left_x + ~ratio_mode;						// 35 to 41
-//			end
-//			else begin
-//				ff_disp_start_x <= right_x;	// 106
-//			end
-//		end
-//		else begin
-//			ff_disp_start_x <= center_x;			// 72
-//		end
-//	end
-
-//	// generate h-sync signal
-//	always @( posedge clk ) begin
-//		if( reset )begin
-//			ff_hsync_n <= 1'b1;
-//		end
-//		else if( enable == 1'b0 )begin
-//			// hold
-//		end
-//		else if( (hcounterin == 0) || (hcounterin == (clocks_per_line/2)) )begin
-//			ff_hsync_n <= 1'b0;
-//		end
-//		else if( (hcounterin == 40) || (hcounterin == (clocks_per_line/2) + 40) )begin
-//			ff_hsync_n <= 1'b1;
-//		end
-//	end
+	assign w_is_odd			= vcounterin[1];
+	assign w_we_buf			= ( w_x_position_w < disp_width ) ? enable : 1'b0;
 
 	// generate v-sync signal
 	// the videovsin_n signal is not used
@@ -467,41 +413,6 @@ module vdp_lcd(
 			end
 		end
 	end
-
-//	// generate data read timing
-//	always @( posedge clk ) begin
-//		if( reset )begin
-//			ff_x_position_r <= 10'd0;
-//		end
-//		else if( enable == 1'b0 )begin
-//			// hold
-//		end
-//		else if( (hcounterin == ff_disp_start_x) ||
-//				(hcounterin == ff_disp_start_x + (clocks_per_line/2)) )begin
-//			ff_x_position_r <= 10'd0;
-//		end
-//		else begin
-//			ff_x_position_r <= ff_x_position_r + 1;
-//		end
-//	end
-
-//	// generate video output timing
-//	always @( posedge clk ) begin
-//		if( reset )begin
-//			ff_video_out_x <= 1'b0;
-//		end
-//		else if( enable == 1'b0 )begin
-//			// hold
-//		end
-//		else if( (hcounterin == ff_disp_start_x) ||
-//				((hcounterin == ff_disp_start_x + (clocks_per_line/2)) && interlace_mode == 1'b0) )begin
-//			ff_video_out_x <= 1'b1;
-//		end
-//		else if( (hcounterin == ff_disp_start_x + disp_width) ||
-//				(hcounterin == ff_disp_start_x + disp_width + (clocks_per_line/2)) )begin
-//			ff_video_out_x <= 1'b0;
-//		end
-//	end
 
 	assign videohsout_n		= ff_h_sync;
 	assign videovsout_n		= ff_vsync_n;

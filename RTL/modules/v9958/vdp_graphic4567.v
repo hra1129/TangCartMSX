@@ -158,22 +158,20 @@ module vdp_graphic4567(
 	);
 
 	always @( posedge clk ) begin
-		if( dot_state == 2'b01 ) begin
-			if( !enable ) begin
-				//	hold
-			end
-			else begin
-				case( eight_dot_state[1:0] )
-				2'b00:	ff_fifo0	<= w_fifo_rdata;
-				2'b01:	ff_fifo1	<= w_fifo_rdata;
-				2'b10:	ff_fifo2	<= w_fifo_rdata;
-				2'b11:	ff_fifo3	<= w_fifo_rdata;
-				default:
-					begin
-						//	hold
-					end
-				endcase
-			end
+		if( !enable ) begin
+			//	hold
+		end
+		else if( dot_state == 2'b01 ) begin
+			case( eight_dot_state[1:0] )
+			2'b00:	ff_fifo0	<= w_fifo_rdata;
+			2'b01:	ff_fifo1	<= w_fifo_rdata;
+			2'b10:	ff_fifo2	<= w_fifo_rdata;
+			2'b11:	ff_fifo3	<= w_fifo_rdata;
+			default:
+				begin
+					//	hold
+				end
+			endcase
 		end
 	end
 
@@ -424,11 +422,11 @@ module vdp_graphic4567(
 		if( reset ) begin
 			pramadr <= 17'd0;
 		end
+		if( !enable ) begin
+			//	hold
+		end
 		else if( dot_state == 2'b11 ) begin
-			if( !enable ) begin
-				//	hold
-			end
-			else if( vdp_mode_graphic4 || vdp_mode_graphic5 ) begin
+			if( vdp_mode_graphic4 || vdp_mode_graphic5 ) begin
 				pramadr <= w_vram_address_g45[16:0];
 			end
 			else begin
@@ -512,5 +510,4 @@ module vdp_graphic4567(
 			end
 		end
 	end
-
 endmodule

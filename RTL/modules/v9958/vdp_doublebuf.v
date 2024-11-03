@@ -59,14 +59,14 @@ module vdp_doublebuf (
 	input			clk,
 	input	[9:0]	xpositionw,
 	input	[9:0]	xpositionr,
-	input			evenodd,
+	input			is_odd,
 	input			we,
-	input	[4:0]	datarin,
-	input	[4:0]	datagin,
-	input	[4:0]	databin,
-	output	[4:0]	datarout,
-	output	[4:0]	datagout,
-	output	[4:0]	databout
+	input	[4:0]	wdata_r,
+	input	[4:0]	wdata_g,
+	input	[4:0]	wdata_b,
+	output	[4:0]	rdata_r,
+	output	[4:0]	rdata_g,
+	output	[4:0]	rdata_b
 );
 	wire			we_e;
 	wire			we_o;
@@ -76,12 +76,12 @@ module vdp_doublebuf (
 	wire	[14:0]	out_o;
 	wire	[14:0]	w_d;
 
-	assign w_d		= { datarin, datagin, databin };
+	assign w_d		= { wdata_r, wdata_g, wdata_b };
 
 	// even line
 	vdp_linebuf u_buf_even (
 		.address	( addr_e		),
-		.inclock	( clk			),
+		.clk		( clk			),
 		.we			( we_e			),
 		.d			( w_d			),
 		.q			( out_e			)
@@ -90,19 +90,19 @@ module vdp_doublebuf (
 	// odd line
 	vdp_linebuf u_buf_odd (
 		.address	( addr_o		),
-		.inclock	( clk			),
+		.clk		( clk			),
 		.we			( we_o			),
 		.d			( w_d			),
 		.q			( out_o			)
 	);
 
-	assign we_e			= ( !evenodd ) ? we : 1'b0;
-	assign we_o			= (  evenodd ) ? we : 1'b0;
+	assign we_e			= ( !is_odd ) ? we : 1'b0;
+	assign we_o			= (  is_odd ) ? we : 1'b0;
 
-	assign addr_e		= ( !evenodd ) ? xpositionw : xpositionr;
-	assign addr_o		= (  evenodd ) ? xpositionw : xpositionr;
+	assign addr_e		= ( !is_odd ) ? xpositionw : xpositionr;
+	assign addr_o		= (  is_odd ) ? xpositionw : xpositionr;
 
-	assign datarout		= (  evenodd ) ? out_e[14:10] : out_o[14:10];
-	assign datagout		= (  evenodd ) ? out_e[ 9: 5] : out_o[ 9: 5];
-	assign databout		= (  evenodd ) ? out_e[ 4: 0] : out_o[ 4: 0];
+	assign rdata_r		= (  is_odd ) ? out_e[14:10] : out_o[14:10];
+	assign rdata_g		= (  is_odd ) ? out_e[ 9: 5] : out_o[ 9: 5];
+	assign rdata_b		= (  is_odd ) ? out_e[ 4: 0] : out_o[ 4: 0];
 endmodule

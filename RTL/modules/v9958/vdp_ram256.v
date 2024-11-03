@@ -4,7 +4,6 @@
 //	 Revision 1.00
 //
 // Copyright (c) 2024 Takayuki Hara
-// All rights reserved.
 //
 // Redistribution and use of this source code or any derivative works, are
 // permitted provided that the following conditions are met:

@@ -112,7 +112,7 @@ module vdp_graphic123m (
 										  ( { reg_r10r3_color[10:7], dot_counter_y[7:6], ff_pre_pattern_num, dot_counter_y[2:0] } & { 4'b1111, reg_r10r3_color[6:0], 6'b111111 } );
 
 	// generate pixel color number
-	assign w_foreground_dot				=	( vdp_mode_multi || vdp_mode_multiq ) ? ~eight_dot_state[2]: ff_pattern_generator[7];
+	assign w_foreground_dot				= ( vdp_mode_multi || vdp_mode_multiq ) ? ~eight_dot_state[2]: ff_pattern_generator[7];
 
 	// out assignment
 	assign p_ram_adr					= ff_vram_address;
@@ -122,7 +122,10 @@ module vdp_graphic123m (
 	//	VRAM latch
 	// --------------------------------------------------------------------
 	always @( posedge clk ) begin
-		if( dot_state == 2'b01 ) begin
+		if( !enable ) begin
+			//	hold
+		end
+		else if( dot_state == 2'b11 ) begin
 			ff_ram_dat <= p_ram_dat;
 		end
 	end
