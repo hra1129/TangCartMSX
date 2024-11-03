@@ -349,10 +349,11 @@ module vdp_lcd(
 	assign videobout	= w_vdp_de ? { w_data_b_out, 1'b0 }: 6'd0;
 	assign lcd_de		= w_lcd_de;
 
-	vdp_doublebuf dbuf (
+	vdp_double_buffer dbuf (
 		.clk			( clk				),
-		.xpositionw		( w_x_position_w	),
-		.xpositionr		( w_x_position_r	),
+		.enable			( enable			),
+		.x_position_w	( w_x_position_w	),
+		.x_position_r	( w_x_position_r	),
 		.is_odd			( w_is_odd			),
 		.we				( w_we_buf			),
 		.wdata_r		( videorin[5:1]		),
@@ -365,7 +366,7 @@ module vdp_lcd(
 
 	assign w_x_position_w	= hcounterin[10:1] - (clocks_per_line/2 - disp_width - 10);
 	assign w_is_odd			= vcounterin[1];
-	assign w_we_buf			= ( w_x_position_w < disp_width ) ? enable : 1'b0;
+	assign w_we_buf			= ( w_x_position_w < disp_width );
 
 	// generate v-sync signal
 	// the videovsin_n signal is not used

@@ -46,7 +46,8 @@ module vram_image_rom (
 	input	[13:0]	adr,
 	output	[ 7:0]	dbi
 );
-	reg		[ 7:0]	ff_dbi;
+	reg		[ 7:0]	ff_dbi1;
+	reg		[ 7:0]	ff_dbi2;
 	reg		[ 7:0]	ff_ram [0:16383];
 
 	initial begin
@@ -63,10 +64,11 @@ module vram_image_rom (
 		f_out.write( """	end
 
 	always @( posedge clk ) begin
-		ff_dbi <= ff_ram[ adr ];
+		ff_dbi1 <= ff_ram[ adr ];
+		ff_dbi2 <= ff_dbi1;
 	end
 
-	assign dbi = ff_dbi;
+	assign dbi = ff_dbi2;
 endmodule
 """ )
 

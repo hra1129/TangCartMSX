@@ -113,7 +113,7 @@ module ip_debugger (
 				begin
 					//	R#1: Mode register 1: SCREEN1 (32X24, GRAPHIC1 Mode)
 					ff_vdp_reg		<= 5'h01;
-					ff_vdp_data		<= 8'b0_1_1_00_0_0_0;		// [0][BL][IE0][M1][M2][0][SI][MAG]
+					ff_vdp_data		<= 8'b0_1_1_00_0_1_1;		// [0][BL][IE0][M1][M2][0][SI][MAG]
 					ff_next_state	<= ff_state + 'd1;
 					ff_state		<= c_st_write;
 				end
@@ -143,21 +143,37 @@ module ip_debugger (
 				end
 			'd6:
 				begin
+					//	R#5: Sprite Attribute Table is 0x1B00 = 17'b0_0001_1011_0000_0000
+					ff_vdp_reg		<= 5'h05;
+					ff_vdp_data		<= 8'b001_101_11;		//	[A14][A13][A12][A11][A10][A9][1][1]
+					ff_next_state	<= ff_state + 'd1;
+					ff_state		<= c_st_write;
+				end
+			'd7:
+				begin
+					//	R#6: Sprite Generator Table is 0x3800 = 17'b0_0011_1000_0000_0000
+					ff_vdp_reg		<= 5'h06;
+					ff_vdp_data		<= 8'b000_0011_1;		//	[0][0][A16][A15][A14][A13][A12][A11]
+					ff_next_state	<= ff_state + 'd1;
+					ff_state		<= c_st_write;
+				end
+			'd8:
+				begin
 					//	R#7: Set Color (White on Blue)
 					ff_vdp_reg		<= 5'h07;
 					ff_vdp_data		<= 8'hF7;				//	[TC3][TC2][TC1][TC0][BD3][BD2][BD1][BD0]
 					ff_next_state	<= ff_state + 'd1;
 					ff_state		<= c_st_write;
 				end
-			'd7:
+			'd9:
 				begin
-					//	R#8: Mode register 2: Sprite off
+					//	R#8: Mode register 2: Sprite on
 					ff_vdp_reg		<= 5'h08;
-					ff_vdp_data		<= 8'b0_0_0_0_1_0_1_0;	//	[0][0][TP][CB][1][0][SPD][0]
+					ff_vdp_data		<= 8'b0_0_0_0_1_0_0_0;	//	[0][0][TP][CB][1][0][SPD][0]
 					ff_next_state	<= ff_state + 'd1;
 					ff_state		<= c_st_write;
 				end
-			'd8:
+			'd10:
 				begin
 					//	R#9: Mode register 3: NTSC
 					ff_vdp_reg		<= 5'h09;
@@ -165,7 +181,7 @@ module ip_debugger (
 					ff_next_state	<= ff_state + 'd1;
 					ff_state		<= c_st_write;
 				end
-			'd9:
+			'd11:
 				begin
 					//	R#16: Palette selector #0
 					ff_vdp_reg		<= 5'h10;
@@ -173,35 +189,35 @@ module ip_debugger (
 					ff_next_state	<= ff_state + 'd1;
 					ff_state		<= c_st_write;
 				end
-			'd10:
+			'd12:
 				begin
 					//	Palette #0 LSB
 					ff_vdp_data		<= 8'h00;
 					ff_next_state	<= ff_state + 'd1;
 					ff_state		<= c_st_palette;
 				end
-			'd11:
+			'd13:
 				begin
 					//	Palette #0 MSB
 					ff_vdp_data		<= 8'h00;
 					ff_next_state	<= ff_state + 'd1;
 					ff_state		<= c_st_palette;
 				end
-			'd12:
+			'd14:
 				begin
 					//	Palette #1 LSB
 					ff_vdp_data		<= 8'h00;
 					ff_next_state	<= ff_state + 'd1;
 					ff_state		<= c_st_palette;
 				end
-			'd13:
+			'd15:
 				begin
 					//	Palette #1 MSB
 					ff_vdp_data		<= 8'h00;
 					ff_next_state	<= ff_state + 'd1;
 					ff_state		<= c_st_palette;
 				end
-			'd14:
+			'd16:
 				begin
 					//	Palette #2 LSB
 //					ff_vdp_data		<= 8'h33;
@@ -209,7 +225,7 @@ module ip_debugger (
 					ff_next_state	<= ff_state + 'd1;
 					ff_state		<= c_st_palette;
 				end
-			'd15:
+			'd17:
 				begin
 					//	Palette #2 MSB
 //					ff_vdp_data		<= 8'h05;
@@ -217,7 +233,7 @@ module ip_debugger (
 					ff_next_state	<= ff_state + 'd1;
 					ff_state		<= c_st_palette;
 				end
-			'd16:
+			'd18:
 				begin
 					//	Palette #3 LSB
 //					ff_vdp_data		<= 8'h44;
@@ -225,7 +241,7 @@ module ip_debugger (
 					ff_next_state	<= ff_state + 'd1;
 					ff_state		<= c_st_palette;
 				end
-			'd17:
+			'd19:
 				begin
 					//	Palette #3 MSB
 //					ff_vdp_data		<= 8'h06;
@@ -233,7 +249,7 @@ module ip_debugger (
 					ff_next_state	<= ff_state + 'd1;
 					ff_state		<= c_st_palette;
 				end
-			'd18:
+			'd20:
 				begin
 					//	Palette #4 LSB
 //					ff_vdp_data		<= 8'h37;
@@ -241,7 +257,7 @@ module ip_debugger (
 					ff_next_state	<= ff_state + 'd1;
 					ff_state		<= c_st_palette;
 				end
-			'd19:
+			'd21:
 				begin
 					//	Palette #4 MSB
 //					ff_vdp_data		<= 8'h02;
@@ -249,7 +265,7 @@ module ip_debugger (
 					ff_next_state	<= ff_state + 'd1;
 					ff_state		<= c_st_palette;
 				end
-			'd20:
+			'd22:
 				begin
 					//	Palette #5 LSB
 //					ff_vdp_data		<= 8'h47;
@@ -257,7 +273,7 @@ module ip_debugger (
 					ff_next_state	<= ff_state + 'd1;
 					ff_state		<= c_st_palette;
 				end
-			'd21:
+			'd23:
 				begin
 					//	Palette #5 MSB
 //					ff_vdp_data		<= 8'h03;
@@ -265,7 +281,7 @@ module ip_debugger (
 					ff_next_state	<= ff_state + 'd1;
 					ff_state		<= c_st_palette;
 				end
-			'd22:
+			'd24:
 				begin
 					//	Palette #6 LSB
 //					ff_vdp_data		<= 8'h52;
@@ -273,7 +289,7 @@ module ip_debugger (
 					ff_next_state	<= ff_state + 'd1;
 					ff_state		<= c_st_palette;
 				end
-			'd23:
+			'd25:
 				begin
 					//	Palette #6 MSB
 //					ff_vdp_data		<= 8'h03;
@@ -281,7 +297,7 @@ module ip_debugger (
 					ff_next_state	<= ff_state + 'd1;
 					ff_state		<= c_st_palette;
 				end
-			'd24:
+			'd26:
 				begin
 					//	Palette #7 LSB
 //					ff_vdp_data		<= 8'h36;
@@ -289,7 +305,7 @@ module ip_debugger (
 					ff_next_state	<= ff_state + 'd1;
 					ff_state		<= c_st_palette;
 				end
-			'd25:
+			'd27:
 				begin
 					//	Palette #7 MSB
 //					ff_vdp_data		<= 8'h05;
@@ -297,7 +313,7 @@ module ip_debugger (
 					ff_next_state	<= ff_state + 'd1;
 					ff_state		<= c_st_palette;
 				end
-			'd26:
+			'd28:
 				begin
 					//	Palette #8 LSB
 //					ff_vdp_data		<= 8'h62;
@@ -305,7 +321,7 @@ module ip_debugger (
 					ff_next_state	<= ff_state + 'd1;
 					ff_state		<= c_st_palette;
 				end
-			'd27:
+			'd29:
 				begin
 					//	Palette #8 MSB
 //					ff_vdp_data		<= 8'h03;
@@ -313,7 +329,7 @@ module ip_debugger (
 					ff_next_state	<= ff_state + 'd1;
 					ff_state		<= c_st_palette;
 				end
-			'd28:
+			'd30:
 				begin
 					//	Palette #9 LSB
 //					ff_vdp_data		<= 8'h63;
@@ -321,7 +337,7 @@ module ip_debugger (
 					ff_next_state	<= ff_state + 'd1;
 					ff_state		<= c_st_palette;
 				end
-			'd29:
+			'd31:
 				begin
 					//	Palette #9 MSB
 //					ff_vdp_data		<= 8'h04;
@@ -329,7 +345,7 @@ module ip_debugger (
 					ff_next_state	<= ff_state + 'd1;
 					ff_state		<= c_st_palette;
 				end
-			'd30:
+			'd32:
 				begin
 					//	Palette #10 LSB
 //					ff_vdp_data		<= 8'h53;
@@ -337,7 +353,7 @@ module ip_debugger (
 					ff_next_state	<= ff_state + 'd1;
 					ff_state		<= c_st_palette;
 				end
-			'd31:
+			'd33:
 				begin
 					//	Palette #10 MSB
 //					ff_vdp_data		<= 8'h06;
@@ -345,7 +361,7 @@ module ip_debugger (
 					ff_next_state	<= ff_state + 'd1;
 					ff_state		<= c_st_palette;
 				end
-			'd32:
+			'd34:
 				begin
 					//	Palette #11 LSB
 //					ff_vdp_data		<= 8'h64;
@@ -353,7 +369,7 @@ module ip_debugger (
 					ff_next_state	<= ff_state + 'd1;
 					ff_state		<= c_st_palette;
 				end
-			'd33:
+			'd35:
 				begin
 					//	Palette #11 MSB
 //					ff_vdp_data		<= 8'h06;
@@ -361,7 +377,7 @@ module ip_debugger (
 					ff_next_state	<= ff_state + 'd1;
 					ff_state		<= c_st_palette;
 				end
-			'd34:
+			'd36:
 				begin
 					//	Palette #12 LSB
 //					ff_vdp_data		<= 8'h21;
@@ -369,7 +385,7 @@ module ip_debugger (
 					ff_next_state	<= ff_state + 'd1;
 					ff_state		<= c_st_palette;
 				end
-			'd35:
+			'd37:
 				begin
 					//	Palette #12 MSB
 //					ff_vdp_data		<= 8'h04;
@@ -377,7 +393,7 @@ module ip_debugger (
 					ff_next_state	<= ff_state + 'd1;
 					ff_state		<= c_st_palette;
 				end
-			'd36:
+			'd38:
 				begin
 					//	Palette #13 LSB
 //					ff_vdp_data		<= 8'h55;
@@ -385,7 +401,7 @@ module ip_debugger (
 					ff_next_state	<= ff_state + 'd1;
 					ff_state		<= c_st_palette;
 				end
-			'd37:
+			'd39:
 				begin
 					//	Palette #13 MSB
 //					ff_vdp_data		<= 8'h03;
@@ -393,35 +409,35 @@ module ip_debugger (
 					ff_next_state	<= ff_state + 'd1;
 					ff_state		<= c_st_palette;
 				end
-			'd38:
+			'd40:
 				begin
 					//	Palette #14 LSB
 					ff_vdp_data		<= 8'h55;
 					ff_next_state	<= ff_state + 'd1;
 					ff_state		<= c_st_palette;
 				end
-			'd39:
+			'd41:
 				begin
 					//	Palette #14 MSB
 					ff_vdp_data		<= 8'h05;
 					ff_next_state	<= ff_state + 'd1;
 					ff_state		<= c_st_palette;
 				end
-			'd40:
+			'd42:
 				begin
 					//	Palette #15 LSB
 					ff_vdp_data		<= 8'h77;
 					ff_next_state	<= ff_state + 'd1;
 					ff_state		<= c_st_palette;
 				end
-			'd41:
+			'd43:
 				begin
 					//	Palette #15 MSB
 					ff_vdp_data		<= 8'h07;
 					ff_next_state	<= ff_state + 'd1;
 					ff_state		<= c_st_palette;
 				end
-			'd42:
+			'd44:
 				begin
 					//	set VRAM address
 					ff_rom_address	<= 14'd0;
@@ -430,25 +446,6 @@ module ip_debugger (
 					ff_req			<= 1'b1;
 					ff_state		<= ff_state + 'd1;
 					ff_wdata		<= 8'h00;					//	VRAM address[7:0]
-				end
-			'd43:
-				begin
-					if( ack == 1'b1 ) begin
-						ff_req			<= 1'b0;
-						ff_state		<= ff_state + 'd1;
-					end
-					else begin
-						//	hold
-					end
-				end
-			'd44:
-				begin
-					//	set VRAM address
-					ff_wr			<= 1'b1;
-					ff_address		<= c_vdp_port1;
-					ff_req			<= 1'b1;
-					ff_state		<= ff_state + 'd1;
-					ff_wdata		<= 8'h40;					//	VRAM address[13:8]
 				end
 			'd45:
 				begin
@@ -462,6 +459,25 @@ module ip_debugger (
 				end
 			'd46:
 				begin
+					//	set VRAM address
+					ff_wr			<= 1'b1;
+					ff_address		<= c_vdp_port1;
+					ff_req			<= 1'b1;
+					ff_state		<= ff_state + 'd1;
+					ff_wdata		<= 8'h40;					//	VRAM address[13:8]
+				end
+			'd47:
+				begin
+					if( ack == 1'b1 ) begin
+						ff_req			<= 1'b0;
+						ff_state		<= ff_state + 'd1;
+					end
+					else begin
+						//	hold
+					end
+				end
+			'd48:
+				begin
 					//	write VRAM
 					ff_wr			<= 1'b1;
 					ff_address		<= c_vdp_port0;
@@ -469,7 +485,7 @@ module ip_debugger (
 					ff_state		<= ff_state + 'd1;
 					ff_wdata		<= w_rom_data;				//	write ROM data
 				end
-			'd47:
+			'd49:
 				begin
 					if( ack == 1'b1 ) begin
 						ff_req			<= 1'b0;
@@ -481,7 +497,7 @@ module ip_debugger (
 						//	hold
 					end
 				end
-			'd48:
+			'd50:
 				begin
 					if( ff_wait_count != 10'd0 ) begin
 						ff_wait_count	<= ff_wait_count - 'd1;
@@ -490,10 +506,10 @@ module ip_debugger (
 						ff_state		<= ff_state + 'd1;
 					end
 					else begin
-						ff_state		<= 'd46;
+						ff_state		<= 'd48;
 					end
 				end
-			'd49:
+			'd51:
 				begin
 					//	hold
 				end

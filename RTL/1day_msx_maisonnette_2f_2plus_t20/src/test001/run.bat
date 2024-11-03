@@ -9,15 +9,15 @@ vlog ..\..\..\modules\sdram\ip_sdram.v
 rem vlog ..\..\..\modules\sdram\ip_sdram_dummy.v
 rem vlog ..\..\..\modules\sdram\ip_sdram_dummy2.v
 
-vlog ..\..\..\modules\v9958\vdp_ram256.v
-vlog ..\..\..\modules\v9958\vdp_palette_ram.v
+vlog ..\..\..\modules\v9958\vdp_ram_256byte.v
+vlog ..\..\..\modules\v9958\vdp_ram_palette.v
+vlog ..\..\..\modules\v9958\vdp_ram_line_buffer.v
 vlog ..\..\..\modules\v9958\vdp_colordec.v
 vlog ..\..\..\modules\v9958\vdp_command.v
-vlog ..\..\..\modules\v9958\vdp_doublebuf.v
+vlog ..\..\..\modules\v9958\vdp_double_buffer.v
 vlog ..\..\..\modules\v9958\vdp_graphic123m.v
 vlog ..\..\..\modules\v9958\vdp_graphic4567.v
 vlog ..\..\..\modules\v9958\vdp_interrupt.v
-vlog ..\..\..\modules\v9958\vdp_linebuf.v
 vlog ..\..\..\modules\v9958\vdp_register.v
 vlog ..\..\..\modules\v9958\vdp_spinforam.v
 vlog ..\..\..\modules\v9958\vdp_sprite.v
@@ -31,6 +31,6 @@ vlog gowin_pll_dummy.v
 vlog ..\tang20cart_msx.v
 vlog tb.sv
 pause
-vsim -c -t 1ns -do run.do tb
+vsim -c -t 1ps -do run.do tb
 move transcript log.txt
 pause

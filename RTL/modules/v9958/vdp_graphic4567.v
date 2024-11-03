@@ -149,12 +149,13 @@ module vdp_graphic4567(
 
 	assign w_ram_we			= w_fifo_we & enable;
 
-	vdp_ram256 u_fifomem (
-		.adr		( w_fifo_address	),
+	vdp_ram_256byte u_fifo_ram (
 		.clk		( clk				),
+		.enable		( enable			),
+		.address	( w_fifo_address	),
 		.we			( w_ram_we			),
-		.dbo		( w_fifo_wdata		),
-		.dbi		( w_fifo_rdata		)
+		.wdata		( w_fifo_wdata		),
+		.rdata		( w_fifo_rdata		)
 	);
 
 	always @( posedge clk ) begin

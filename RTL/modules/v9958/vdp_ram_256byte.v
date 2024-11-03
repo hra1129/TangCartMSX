@@ -1,5 +1,5 @@
 //
-// vdp_ram256.v
+// vdp_ram_256byte.v
 //	 256 bytes of block memory
 //	 Revision 1.00
 //
@@ -29,24 +29,44 @@
 // ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //
 
-module vdp_ram256 (
+module vdp_ram_256byte (
 	input			clk,
-	input	[7:0]	adr,
+	input			enable,
+	input	[7:0]	address,
 	input			we,
-	input	[7:0]	dbo,
-	output	[7:0]	dbi
+	input	[7:0]	wdata,
+	output	[7:0]	rdata
 );
+	reg		[7:0]	ff_address;
+	reg				ff_we;
+	reg		[7:0]	ff_d;
 	reg		[7:0]	ff_block_ram [0:255];
 	reg		[7:0]	ff_q;
+	reg		[7:0]	ff_q_out;
 
 	always @( posedge clk ) begin
-		if( we ) begin
-			ff_block_ram[ adr ]	<= dbo;
+		if( enable ) begin
+			ff_address	<= address;
+			ff_we		<= we;
+			ff_d		<= wdata;
 		end
 		else begin
-			ff_q				<= ff_block_ram[ adr ];
+			ff_we		<= 1'b0;
 		end
 	end
 
-	assign dbi = ff_q;
+	always @( posedge clk ) begin
+		if( ff_we ) begin
+			ff_block_ram[ ff_address ]	<= ff_d;
+		end
+		else begin
+			ff_q						<= ff_block_ram[ ff_address ];
+		end
+	end
+
+	always @( posedge clk ) begin
+		ff_q_out <= ff_q;
+	end
+
+	assign rdata = ff_q_out;
 endmodule

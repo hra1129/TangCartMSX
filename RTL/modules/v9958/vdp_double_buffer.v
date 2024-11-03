@@ -1,5 +1,5 @@
 //
-//	vdp_doublebuf.vhd
+//	vdp_double_buffer.vhd
 //	  Double Buffered Line Memory.
 //
 //	Copyright (C) 2024 Takayuki Hara
@@ -55,10 +55,11 @@
 //
 //-----------------------------------------------------------------------------
 
-module vdp_doublebuf (
+module vdp_double_buffer (
 	input			clk,
-	input	[9:0]	xpositionw,
-	input	[9:0]	xpositionr,
+	input			enable,
+	input	[9:0]	x_position_w,
+	input	[9:0]	x_position_r,
 	input			is_odd,
 	input			we,
 	input	[4:0]	wdata_r,
@@ -79,18 +80,20 @@ module vdp_doublebuf (
 	assign w_d		= { wdata_r, wdata_g, wdata_b };
 
 	// even line
-	vdp_linebuf u_buf_even (
-		.address	( addr_e		),
+	vdp_ram_line_buffer u_buf_even (
 		.clk		( clk			),
+		.enable		( enable		),
+		.address	( addr_e		),
 		.we			( we_e			),
 		.d			( w_d			),
 		.q			( out_e			)
 	);
 
 	// odd line
-	vdp_linebuf u_buf_odd (
-		.address	( addr_o		),
+	vdp_ram_line_buffer u_buf_odd (
 		.clk		( clk			),
+		.enable		( enable		),
+		.address	( addr_o		),
 		.we			( we_o			),
 		.d			( w_d			),
 		.q			( out_o			)
@@ -99,8 +102,8 @@ module vdp_doublebuf (
 	assign we_e			= ( !is_odd ) ? we : 1'b0;
 	assign we_o			= (  is_odd ) ? we : 1'b0;
 
-	assign addr_e		= ( !is_odd ) ? xpositionw : xpositionr;
-	assign addr_o		= (  is_odd ) ? xpositionw : xpositionr;
+	assign addr_e		= ( !is_odd ) ? x_position_w : x_position_r;
+	assign addr_o		= (  is_odd ) ? x_position_w : x_position_r;
 
 	assign rdata_r		= (  is_odd ) ? out_e[14:10] : out_o[14:10];
 	assign rdata_g		= (  is_odd ) ? out_e[ 9: 5] : out_o[ 9: 5];

@@ -57,15 +57,15 @@
 
 module vdp_inst(
 	input					clk,			//	85.90908MHz
-	output		[1:0]		enable_state,	//	21.47727MHz
+	output		[1:0]		enable_state,	//	00, 01, 10, 11, 00, ...
 	input					reset_n,
 	input					initial_busy,
 	input					req,
 	output					ack,
 	input					wrt,
-	input		[1:0]		adr,
-	output		[7:0]		dbi,
-	input		[7:0]		dbo,
+	input		[1:0]		address,
+	output		[7:0]		rdata,
+	input		[7:0]		wdata,
 
 	output					int_n,
 
@@ -141,15 +141,15 @@ module vdp_inst(
 
 	vdp u_v9958_core (
 		.reset				( !reset_n					),	// IN	STD_LOGIC;
-		.initial_busy		( initial_busy				),	// IN	STD_LOGIC;
+		.initial_busy		( ff_initial_busy			),	// IN	STD_LOGIC;
 		.clk				( clk						),	// IN	STD_LOGIC;
 		.enable				( ff_enable					),	// OUT	STD_LOGIC;
 		.req				( req						),	// IN	STD_LOGIC;
 		.ack				( ack						),	// OUT	STD_LOGIC;
 		.wrt				( wrt						),	// IN	STD_LOGIC;
-		.adr				( adr						),	// IN	STD_LOGIC_VECTOR(  1 DOWNTO 0 );
-		.dbi				( dbi						),	// OUT	STD_LOGIC_VECTOR(  7 DOWNTO 0 );
-		.dbo				( dbo						),	// IN	STD_LOGIC_VECTOR(  7 DOWNTO 0 );
+		.address				( address						),	// IN	STD_LOGIC_VECTOR(  1 DOWNTO 0 );
+		.rdata				( rdata						),	// OUT	STD_LOGIC_VECTOR(  7 DOWNTO 0 );
+		.wdata				( wdata						),	// IN	STD_LOGIC_VECTOR(  7 DOWNTO 0 );
 		.int_n				( int_n						),	// OUT	STD_LOGIC;
 		.pramoe_n			( pramoe_n					),	// OUT	STD_LOGIC;
 		.pramwe_n			( pramwe_n					),	// OUT	STD_LOGIC;
@@ -174,5 +174,4 @@ module vdp_inst(
 		.legacy_vga			( 1'b0						),	// IN	STD_LOGIC;
 		.vdp_id				( c_vdpid					)	// IN	STD_LOGIC_VECTOR(  4 DOWNTO 0 );
     );
-
 endmodule

@@ -61,9 +61,9 @@ module vdp_register (
 	input				req,
 	output				ack,
 	input				wrt,
-	input		[1:0]	adr,
-	output reg	[7:0]	dbi,
-	input		[7:0]	dbo,
+	input		[1:0]	address,
+	output reg	[7:0]	rdata,
+	input		[7:0]	wdata,
 
 	input		[1:0]	dot_state,
 
@@ -327,10 +327,10 @@ module vdp_register (
 	assign w_ram_we			= palette_we;
 	assign w_palette_wdata	= { ff_palette_data_r_in, ff_palette_data_b_in, ff_palette_data_g_in };
 
-	vdp_palette_ram u_palette_ram (
+	vdp_ram_palette u_palette_ram (
 		.clk		( clk					),
 		.enable		( enable				),
-		.adr		( palette_addr			),
+		.address		( palette_addr			),
 		.we			( w_ram_we				),
 		.d			( w_palette_wdata		),
 		.q			( w_palette_rdata		)
@@ -344,43 +344,43 @@ module vdp_register (
 	// --------------------------------------------------------------------
 	always @( posedge clk ) begin
 		if( reset ) begin
-			dbi <= 8'h00;
+			rdata <= 8'h00;
 		end
 		else if( !enable ) begin
 			//	hold
 		end
 		else if( req && !ff_ack && !wrt ) begin
 			// read request
-			case( adr[1:0] )
+			case( address[1:0] )
 			2'b00: // port#0 (0x98):read vram
-				dbi <= vdp_vram_rd_data;
+				rdata <= vdp_vram_rd_data;
 			2'b01: // port#1 (0x99):read status register
 				case( vdp_r15_status_reg_num )
 				4'b0000: // read s#0
-					dbi <= { (~req_vsync_int_n), vdp_s0_sp_overmapped, vdp_s0_sp_collision_incidence, vdp_s0_sp_overmapped_num };
+					rdata <= { (~req_vsync_int_n), vdp_s0_sp_overmapped, vdp_s0_sp_collision_incidence, vdp_s0_sp_overmapped_num };
 				4'b0001: // read s#1
-					dbi <= { 2'b00, vdp_id, (~req_hsync_int_n) };
+					rdata <= { 2'b00, vdp_id, (~req_hsync_int_n) };
 				4'b0010: // read s#2
-					dbi <= { vdp_cmd_tr, vd, hd, vdp_cmd_bd, 2'b11, field, vdp_cmd_ce };
+					rdata <= { vdp_cmd_tr, vd, hd, vdp_cmd_bd, 2'b11, field, vdp_cmd_ce };
 				4'b0011: // read s#3
-					dbi <= vdp_s3_s4_sp_collision_x[7:0];
+					rdata <= vdp_s3_s4_sp_collision_x[7:0];
 				4'b0100: // read s#4
-					dbi <= { 7'b0000000, vdp_s3_s4_sp_collision_x[8] };
+					rdata <= { 7'b0000000, vdp_s3_s4_sp_collision_x[8] };
 				4'b0101: // read s#5
-					dbi <= vdp_s5_s6_sp_collision_y[7:0];
+					rdata <= vdp_s5_s6_sp_collision_y[7:0];
 				4'b0110: // read s#6
-					dbi <= { 7'b0000000, vdp_s5_s6_sp_collision_y[8] };
+					rdata <= { 7'b0000000, vdp_s5_s6_sp_collision_y[8] };
 				4'b0111: // read s#7:the color register
-					dbi <= vdp_cmd_clr;
+					rdata <= vdp_cmd_clr;
 				4'b1000: // read s#8:sxtmp lsb
-					dbi <= vdp_cmd_sx_tmp[7:0];
+					rdata <= vdp_cmd_sx_tmp[7:0];
 				4'b1001: // read s#9:sxtmp msb
-					dbi <= { 7'b1111111, vdp_cmd_sx_tmp[8] };
+					rdata <= { 7'b1111111, vdp_cmd_sx_tmp[8] };
 				default:
-					dbi <= 8'h00;
+					rdata <= 8'h00;
 				endcase
 			default: // port#2, #3:not supported in read mode
-				dbi <= 8'hFF;
+				rdata <= 8'hFF;
 			endcase
 		end
 	end
@@ -397,7 +397,7 @@ module vdp_register (
 		end
 		else if( req && !ff_ack && !wrt ) begin
 			// case of read request
-			if( adr[1:0] == 2'b01 && vdp_r15_status_reg_num == 4'b0001 ) begin
+			if( address[1:0] == 2'b01 && vdp_r15_status_reg_num == 4'b0001 ) begin
 				// clear hsync interrupt by read s#1
 				clr_hsync_int <= 1'b1;
 			end
@@ -431,7 +431,7 @@ module vdp_register (
 		end
 		else if( req && !ff_ack && !wrt ) begin
 			// case of read request
-			if( adr[1:0] == 2'b01 && vdp_r15_status_reg_num == 4'b0000 ) begin
+			if( address[1:0] == 2'b01 && vdp_r15_status_reg_num == 4'b0000 ) begin
 				// clear vsync interrupt by read s#0
 				clr_vsync_int <= 1'b1;
 			end
@@ -471,7 +471,7 @@ module vdp_register (
 			reg_r1_vsync_int_en			<= 1'b0;
 			ff_r1_disp_on				<= 1'b0;
 			ff_r2_pt_nam_addr			<= 'd0;
-			reg_r4_pattern_generator			<= 'd0;
+			reg_r4_pattern_generator	<= 'd0;
 			reg_r12_blink_mode			<= 'd0;
 			reg_r13_blink_period		<= 'd0;
 			reg_r6_sp_gen_addr			<= 'd0;
@@ -482,7 +482,7 @@ module vdp_register (
 			ff_r9_2page_mode			<= 1'b0;
 			reg_r9_interlace_mode		<= 1'b0;
 			reg_r9_y_dots				<= 1'b0;
-			reg_r10r3_color			<= 'd0;
+			reg_r10r3_color				<= 'd0;
 			reg_r11r5_sp_atr_addr		<= 'd0;
 			vdp_r15_status_reg_num		<= 'd0;
 			vdp_r16_pal_num				<= 4'd0;
@@ -504,6 +504,7 @@ module vdp_register (
 			vdp_cmd_reg_wr_req			<= 1'b0;
 			vdp_cmd_tr_clr_req			<= 1'b0;
 			ff_sp_vdp_s0_reset_req		<= 1'b0;
+			sp_vdp_s5_reset_req			<= 1'b0;
 
 			// palette
 			ff_palette_data_r_in		<= 3'd0;
@@ -517,7 +518,7 @@ module vdp_register (
 		end
 		else if( req && !ff_ack && !wrt ) begin
 			// read request
-			case( adr[1:0] )
+			case( address[1:0] )
 			2'b00: // port#0 (0x98):read vram
 				vdp_vram_rd_req	<= ~vdp_vram_rd_ack;
 			2'b01: // port#1 (0x99):read status register
@@ -544,10 +545,10 @@ module vdp_register (
 		end
 		else if( req && !ff_ack && wrt ) begin
 			// write request
-			case( adr[1:0] )
+			case( address[1:0] )
 			2'b00: // port#0 (0x98):write vram
 				begin
-					vdp_vram_access_data	<= dbo;
+					vdp_vram_access_data	<= wdata;
 					vdp_vram_wr_req			<= ~vdp_vram_wr_ack;
 				end
 			2'b01: // port#1 (0x99):register write or vram addr setup
@@ -555,33 +556,33 @@ module vdp_register (
 					if( vdp_p1_is_1st_byte ) begin
 						// it is the first byte; buffer it
 						vdp_p1_is_1st_byte	<= 1'b0;
-						vdp_p1_data			<= dbo;
+						vdp_p1_data			<= wdata;
 					end
 					else begin
 						// it is the second byte; process both bytes
 						vdp_p1_is_1st_byte <= 1'b1;
-						case( dbo[7:6] )
+						case( wdata[7:6] )
 						2'b01:	// set vram access address(write)
 							begin
 								vdp_vram_access_addr_tmp[7:0]	<= vdp_p1_data[7:0];
-								vdp_vram_access_addr_tmp[13:8]	<= dbo[5:0];
+								vdp_vram_access_addr_tmp[13:8]	<= wdata[5:0];
 								vdp_vram_addr_set_req			<= ~vdp_vram_addr_set_ack;
 							end
 						2'b00:	// set vram access address(read)
 							begin
 								vdp_vram_access_addr_tmp[7:0]	<= vdp_p1_data[7:0];
-								vdp_vram_access_addr_tmp[13:8]	<= dbo[5:0];
+								vdp_vram_access_addr_tmp[13:8]	<= wdata[5:0];
 								vdp_vram_addr_set_req			<= ~vdp_vram_addr_set_ack;
 								vdp_vram_rd_req					<= ~vdp_vram_rd_ack;
 							end
 						2'b10:	// direct register selection
 							begin
-								vdp_reg_ptr			<= dbo[5:0];
+								vdp_reg_ptr			<= wdata[5:0];
 								vdpregwrpulse		<= 1'b1;
 							end
 						2'b11:	// direct register selection ??
 							begin
-								vdp_reg_ptr			<= dbo[5:0];
+								vdp_reg_ptr			<= wdata[5:0];
 								vdpregwrpulse		<= 1'b1;
 							end
 						default:
@@ -594,14 +595,14 @@ module vdp_register (
 			2'b10:	// port#2:palette write
 				begin
 					if( vdp_p2_is_1st_byte ) begin
-						ff_palette_data_r_in		<= dbo[6:4];
-						ff_palette_data_b_in		<= dbo[2:0];
+						ff_palette_data_r_in		<= wdata[6:4];
+						ff_palette_data_b_in		<= wdata[2:0];
 						vdp_p2_is_1st_byte			<= 1'b0;
 					end
 					else begin
 						// パレットはrgbのデータが揃った時に一度に書き換える。
 						// (実機で動作を確認した)
-						ff_palette_data_g_in		<= dbo[2:0];
+						ff_palette_data_g_in		<= wdata[2:0];
 						ff_palette_wr_num			<= vdp_r16_pal_num;
 						ff_palette_wr_req			<= ~ff_palette_wr_ack;
 						vdp_p2_is_1st_byte			<= 1'b1;
@@ -614,7 +615,7 @@ module vdp_register (
 						// register 17 can not be modified. all others are ok
 						vdpregwrpulse <= 1'b1;
 					end
-					vdp_p1_data <= dbo;
+					vdp_p1_data <= wdata;
 					vdp_reg_ptr <= vdp_r17_reg_num;
 					if( vdp_r17_inc_reg_num ) begin
 						vdp_r17_reg_num <= vdp_r17_reg_num + 6'd1;

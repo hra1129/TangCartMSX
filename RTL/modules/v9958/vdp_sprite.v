@@ -254,12 +254,13 @@ module vdp_sprite (
 
 	assign w_ram_even_we			= w_line_buf_we_even & enable;
 
-	vdp_ram256 u_even_line_buf (
-		.adr		( w_line_buf_address_even		),
+	vdp_ram_256byte u_even_line_buf (
 		.clk		( clk							),
+		.enable		( enable						),
+		.address	( w_line_buf_address_even		),
 		.we			( w_ram_even_we					),
-		.dbo		( w_line_buf_wdata_even			),
-		.dbi		( w_line_buf_rdata_even			)
+		.wdata		( w_line_buf_wdata_even			),
+		.rdata		( w_line_buf_rdata_even			)
 	);
 
 	assign w_line_buf_address_odd	= ( !dotcounteryp[0] ) ? ff_line_buf_draw_x		: ff_line_buf_disp_x;
@@ -269,12 +270,13 @@ module vdp_sprite (
 
 	assign w_ram_odd_we				= w_line_buf_we_odd & enable;
 
-	vdp_ram256 u_odd_line_buf (
-		.adr		( w_line_buf_address_odd		),
+	vdp_ram_256byte u_odd_line_buf (
 		.clk		( clk							),
+		.enable		( enable						),
+		.address	( w_line_buf_address_odd		),
 		.we			( w_ram_odd_we					),
-		.dbo		( w_line_buf_wdata_odd			),
-		.dbi		( w_line_buf_rdata_odd			)
+		.wdata		( w_line_buf_wdata_odd			),
+		.rdata		( w_line_buf_rdata_odd			)
 	);
 
 	//---------------------------------------------------------------------------
@@ -620,15 +622,15 @@ module vdp_sprite (
 		end
 		else if( dot_state == 2'b11 ) begin
 			case( eight_dot_state )
-			3'b000:								// y read
+			3'd0:								// y read
 				ff_preread_address <= { w_attribute_address, 2'b00 };
-			3'b001:								// x read
+			3'd1:								// x read
 				ff_preread_address <= { w_attribute_address, 2'b01 };
-			3'b010:								// pattern num read
+			3'd2:								// pattern num read
 				ff_preread_address <= { w_attribute_address, 2'b10 };
-			3'b011, 3'b100:						// pattern read
+			3'd3, 3'd4:						// pattern read
 				ff_preread_address <= w_read_pattern_address;
-			3'b101:								// color read
+			3'd5:								// color read
 				ff_preread_address <= w_read_color_address;
 			default:
 				begin
@@ -789,6 +791,8 @@ module vdp_sprite (
 			ff_line_buf_draw_color		<= 'd0;
 			ff_line_buf_draw_x			<= 'd0;
 			ff_draw_color				<= 'd0;
+			ff_vdps0resetack			<= 1'b0;
+			ff_vdps5resetack			<= 1'b0;
 
 			ff_s0_collision_incidence	= 1'b0;						// jp: スプライトが衝突したかどうかを示すフラグ
 			ff_s3s4_collision_x			= 'd0;

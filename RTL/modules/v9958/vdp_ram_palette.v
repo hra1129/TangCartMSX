@@ -1,5 +1,5 @@
 //
-// vdp_palette_ram.v
+// vdp_ram_palette.v
 //	 256 bytes of block memory
 //	 Revision 1.00
 //
@@ -29,29 +29,44 @@
 // ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //
 
-module vdp_palette_ram (
+module vdp_ram_palette (
 	input			clk,
 	input			enable,
-	input	[3:0]	adr,
+	input	[3:0]	address,
 	input			we,
 	input	[8:0]	d,
 	output	[8:0]	q
 );
+	reg		[3:0]	ff_address;
+	reg				ff_we;
+	reg		[8:0]	ff_d;
 	reg		[8:0]	ff_block_ram [0:15];
 	reg		[8:0]	ff_q;
+	reg		[8:0]	ff_q_out;
 
 	always @( posedge clk ) begin
-		if( !enable ) begin
-			//	hold
-		end
-		else if( we ) begin
-			ff_block_ram[ adr ]	<= d;
-			ff_q				<= 9'd0;
+		if( enable ) begin
+			ff_address	<= address;
+			ff_we		<= we;
+			ff_d		<= d;
 		end
 		else begin
-			ff_q				<= ff_block_ram[ adr ];
+			ff_we		<= 1'b0;
 		end
 	end
 
-	assign q = ff_q;
+	always @( posedge clk ) begin
+		if( ff_we ) begin
+			ff_block_ram[ ff_address ]	<= ff_d;
+		end
+		else begin
+			ff_q						<= ff_block_ram[ ff_address ];
+		end
+	end
+
+	always @( posedge clk ) begin
+		ff_q_out		<= ff_q;
+	end
+
+	assign q = ff_q_out;
 endmodule

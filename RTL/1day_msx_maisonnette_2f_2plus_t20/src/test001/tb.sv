@@ -159,7 +159,10 @@ module tb ();
 		keys[0]				= 1'b0;
 		@( posedge clk );
 
-		repeat( 1368 * 1000 ) @( posedge clk );
+		//	ŽÀŒøŽžŠÔ‚Í run.do ‚ÅŽw’è‚µ‚Ä‚­‚¾‚³‚¢ ---------------
+		forever begin
+			@( posedge clk );
+		end
 
 		$finish;
 	end

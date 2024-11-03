@@ -110,7 +110,6 @@ module ip_sdram #(
 	reg		[31:0]				ff_sdr_write_data		= 32'd0;
 	reg		[ 3:0]				ff_sdr_dq_mask			= 4'b1111;
 	reg		[15:0]				ff_sdr_read_data		= 16'd0;
-	reg		[15:0]				ff_sdr_read_data2		= 16'd0;
 
 	wire						w_refresh;
 
@@ -456,23 +455,6 @@ module ip_sdram #(
 		end
 	end
 
-	always @( posedge clk ) begin
-		if( !n_reset ) begin
-			ff_sdr_read_data2 <= 16'd0;
-		end
-		else if( ff_main_state == c_main_state_finish ) begin
-			if( w_vdp_phase ) begin
-				ff_sdr_read_data2 <= ff_sdr_read_data;
-			end
-			else begin
-				//	hold
-			end
-		end
-		else begin
-			//	hold
-		end
-	end
-
 	assign O_sdram_clk			= clk_sdram;
 	assign O_sdram_cke			= 1'b1;
 	assign O_sdram_cs_n			= ff_sdr_command[3];
@@ -486,5 +468,5 @@ module ip_sdram #(
 	assign O_sdram_addr			= ff_sdr_address[10:0];
 	assign IO_sdram_dq			= ff_sdr_write_data;
 
-	assign rdata				= ff_sdr_read_data2;
+	assign rdata				= ff_sdr_read_data;
 endmodule

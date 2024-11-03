@@ -1,5 +1,5 @@
 //
-//	vdp_linebuf.v
+//	vdp_ram_line_buffer.v
 //	  Line buffer for VGA upscan converter.
 //
 //	Copyright (C) 2024 Takayuki Hara
@@ -54,50 +54,45 @@
 //	POSSIBILITY OF SUCH DAMAGE.
 //
 //-----------------------------------------------------------------------------
-// Memo
-//	 Japanese comment lines are starts with "JP:".
-//	 JP: 日本語のコメント行は JP:を頭に付ける事にする
-//
-//-----------------------------------------------------------------------------
-// Revision History
-//
-// 29th,October,2006 modified by Kunihiko Ohnaka
-//	 - Insert the license text.
-//	 - Add the document part below.
-//
-// 21st,March,2008 modified by t.hara
-//	 JP: リファクタリング, 桁揃えなど些細な修正。
-//
-//-----------------------------------------------------------------------------
-// Document
-//
-// JP: NTSCタイミングの 15kHzで出力されるビデオ信号をVGAタイミングに
-// JP: 合わせた31kHzの倍レートで出力するためのラインバッファモジュール
-// JP: です。
-// JP: ESE-VDPのメインクロックである21.477MHzで動作させるため、
-// JP: ドットクロックは一般的な 640x480ドットVGAモードの25.175MHz
-// JP: とは異なります。そのため、液晶モニタ等で表示させるとドットの形が
-// JP: いびつな形になる事があります。
-//
 
-module vdp_linebuf (
+module vdp_ram_line_buffer (
+	input			clk,
+	input			enable,
 	input	[9:0]	address,
-	input			clk	,
 	input			we,
 	input	[14:0]	d,
 	output	[14:0]	q
 );
+	reg		[9:0]	ff_address;
+	reg				ff_we;
+	reg		[14:0]	ff_d;
 	reg		[14:0]	ff_imem [0:1023];
 	reg		[14:0]	ff_q;
+	reg		[14:0]	ff_q_out;
 
-	always @( posedge clk	 ) begin
-		if( we ) begin
-			ff_imem[ address ] <= d;
+	always @( posedge clk ) begin
+		if( enable ) begin
+			ff_address	<= address;
+			ff_we		<= we;
+			ff_d		<= d;
 		end
 		else begin
-			ff_q <= ff_imem[ address ];
+			ff_we		<= 1'b0;
 		end
 	end
 
-	assign q = ff_q;
+	always @( posedge clk ) begin
+		if( ff_we ) begin
+			ff_imem[ ff_address ]	<= ff_d;
+		end
+		else begin
+			ff_q					<= ff_imem[ ff_address ];
+		end
+	end
+
+	always @( posedge clk ) begin
+		ff_q_out <= ff_q;
+	end
+
+	assign q = ff_q_out;
 endmodule

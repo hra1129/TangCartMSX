@@ -3,26 +3,26 @@ Running parser ...
 Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\1day_msx_maisonnette_2f_2plus_t20\src\debugger\ip_debugger.v'
 Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\1day_msx_maisonnette_2f_2plus_t20\src\debugger\vram_image_rom.v'
 Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\1day_msx_maisonnette_2f_2plus_t20\src\gowin_pll\gowin_pll.v'
-Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\modules\sdram\ip_sdram.v'
 Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\1day_msx_maisonnette_2f_2plus_t20\src\tang20cart_msx.v'
+Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\modules\sdram\ip_sdram.v'
 Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\modules\v9958\vdp.v'
 Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\modules\v9958\vdp_colordec.v'
 Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\modules\v9958\vdp_command.v'
-Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\modules\v9958\vdp_doublebuf.v'
+Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\modules\v9958\vdp_double_buffer.v'
 Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\modules\v9958\vdp_graphic123m.v'
 Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\modules\v9958\vdp_graphic4567.v'
 Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\modules\v9958\vdp_inst.v'
 Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\modules\v9958\vdp_interrupt.v'
 Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\modules\v9958\vdp_lcd.v'
-Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\modules\v9958\vdp_linebuf.v'
-Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\modules\v9958\vdp_ram256.v'
+Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\modules\v9958\vdp_ram_line_buffer.v'
+Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\modules\v9958\vdp_ram_palette.v'
+Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\modules\v9958\vdp_ram_256byte.v'
 Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\modules\v9958\vdp_register.v'
 Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\modules\v9958\vdp_spinforam.v'
 Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\modules\v9958\vdp_sprite.v'
 Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\modules\v9958\vdp_ssg.v'
 Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\modules\v9958\vdp_text12.v'
 Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\modules\v9958\vdp_wait_control.v'
-Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\modules\v9958\vdp_palette_ram.v'
 Compiling module 'tang20cart_msx'("D:\github\HRA_product\TangCartMSX\RTL\1day_msx_maisonnette_2f_2plus_t20\src\tang20cart_msx.v":26)
 Compiling module 'Gowin_PLL'("D:\github\HRA_product\TangCartMSX\RTL\1day_msx_maisonnette_2f_2plus_t20\src\gowin_pll\gowin_pll.v":9)
 WARN  (EX3791) : Expression size 27 truncated to fit in target size 26("D:\github\HRA_product\TangCartMSX\RTL\1day_msx_maisonnette_2f_2plus_t20\src\tang20cart_msx.v":174)
@@ -40,11 +40,11 @@ WARN  (EX3791) : Expression size 8 truncated to fit in target size 7("D:\github\
 WARN  (EX3791) : Expression size 8 truncated to fit in target size 7("D:\github\HRA_product\TangCartMSX\RTL\1day_msx_maisonnette_2f_2plus_t20\src\debugger\ip_debugger.v":157)
 WARN  (EX3791) : Expression size 8 truncated to fit in target size 7("D:\github\HRA_product\TangCartMSX\RTL\1day_msx_maisonnette_2f_2plus_t20\src\debugger\ip_debugger.v":165)
 WARN  (EX3791) : Expression size 8 truncated to fit in target size 7("D:\github\HRA_product\TangCartMSX\RTL\1day_msx_maisonnette_2f_2plus_t20\src\debugger\ip_debugger.v":173)
-WARN  (EX3791) : Expression size 8 truncated to fit in target size 7("D:\github\HRA_product\TangCartMSX\RTL\1day_msx_maisonnette_2f_2plus_t20\src\debugger\ip_debugger.v":180)
-WARN  (EX3791) : Expression size 8 truncated to fit in target size 7("D:\github\HRA_product\TangCartMSX\RTL\1day_msx_maisonnette_2f_2plus_t20\src\debugger\ip_debugger.v":187)
-WARN  (EX3791) : Expression size 8 truncated to fit in target size 7("D:\github\HRA_product\TangCartMSX\RTL\1day_msx_maisonnette_2f_2plus_t20\src\debugger\ip_debugger.v":194)
-WARN  (EX3791) : Expression size 8 truncated to fit in target size 7("D:\github\HRA_product\TangCartMSX\RTL\1day_msx_maisonnette_2f_2plus_t20\src\debugger\ip_debugger.v":201)
-WARN  (EX3791) : Expression size 8 truncated to fit in target size 7("D:\github\HRA_product\TangCartMSX\RTL\1day_msx_maisonnette_2f_2plus_t20\src\debugger\ip_debugger.v":209)
+WARN  (EX3791) : Expression size 8 truncated to fit in target size 7("D:\github\HRA_product\TangCartMSX\RTL\1day_msx_maisonnette_2f_2plus_t20\src\debugger\ip_debugger.v":181)
+WARN  (EX3791) : Expression size 8 truncated to fit in target size 7("D:\github\HRA_product\TangCartMSX\RTL\1day_msx_maisonnette_2f_2plus_t20\src\debugger\ip_debugger.v":189)
+WARN  (EX3791) : Expression size 8 truncated to fit in target size 7("D:\github\HRA_product\TangCartMSX\RTL\1day_msx_maisonnette_2f_2plus_t20\src\debugger\ip_debugger.v":196)
+WARN  (EX3791) : Expression size 8 truncated to fit in target size 7("D:\github\HRA_product\TangCartMSX\RTL\1day_msx_maisonnette_2f_2plus_t20\src\debugger\ip_debugger.v":203)
+WARN  (EX3791) : Expression size 8 truncated to fit in target size 7("D:\github\HRA_product\TangCartMSX\RTL\1day_msx_maisonnette_2f_2plus_t20\src\debugger\ip_debugger.v":210)
 WARN  (EX3791) : Expression size 8 truncated to fit in target size 7("D:\github\HRA_product\TangCartMSX\RTL\1day_msx_maisonnette_2f_2plus_t20\src\debugger\ip_debugger.v":217)
 WARN  (EX3791) : Expression size 8 truncated to fit in target size 7("D:\github\HRA_product\TangCartMSX\RTL\1day_msx_maisonnette_2f_2plus_t20\src\debugger\ip_debugger.v":225)
 WARN  (EX3791) : Expression size 8 truncated to fit in target size 7("D:\github\HRA_product\TangCartMSX\RTL\1day_msx_maisonnette_2f_2plus_t20\src\debugger\ip_debugger.v":233)
@@ -68,28 +68,30 @@ WARN  (EX3791) : Expression size 8 truncated to fit in target size 7("D:\github\
 WARN  (EX3791) : Expression size 8 truncated to fit in target size 7("D:\github\HRA_product\TangCartMSX\RTL\1day_msx_maisonnette_2f_2plus_t20\src\debugger\ip_debugger.v":377)
 WARN  (EX3791) : Expression size 8 truncated to fit in target size 7("D:\github\HRA_product\TangCartMSX\RTL\1day_msx_maisonnette_2f_2plus_t20\src\debugger\ip_debugger.v":385)
 WARN  (EX3791) : Expression size 8 truncated to fit in target size 7("D:\github\HRA_product\TangCartMSX\RTL\1day_msx_maisonnette_2f_2plus_t20\src\debugger\ip_debugger.v":393)
-WARN  (EX3791) : Expression size 8 truncated to fit in target size 7("D:\github\HRA_product\TangCartMSX\RTL\1day_msx_maisonnette_2f_2plus_t20\src\debugger\ip_debugger.v":400)
-WARN  (EX3791) : Expression size 8 truncated to fit in target size 7("D:\github\HRA_product\TangCartMSX\RTL\1day_msx_maisonnette_2f_2plus_t20\src\debugger\ip_debugger.v":407)
-WARN  (EX3791) : Expression size 8 truncated to fit in target size 7("D:\github\HRA_product\TangCartMSX\RTL\1day_msx_maisonnette_2f_2plus_t20\src\debugger\ip_debugger.v":414)
-WARN  (EX3791) : Expression size 8 truncated to fit in target size 7("D:\github\HRA_product\TangCartMSX\RTL\1day_msx_maisonnette_2f_2plus_t20\src\debugger\ip_debugger.v":421)
-WARN  (EX3791) : Expression size 8 truncated to fit in target size 7("D:\github\HRA_product\TangCartMSX\RTL\1day_msx_maisonnette_2f_2plus_t20\src\debugger\ip_debugger.v":431)
-WARN  (EX3791) : Expression size 8 truncated to fit in target size 7("D:\github\HRA_product\TangCartMSX\RTL\1day_msx_maisonnette_2f_2plus_t20\src\debugger\ip_debugger.v":438)
-WARN  (EX3791) : Expression size 8 truncated to fit in target size 7("D:\github\HRA_product\TangCartMSX\RTL\1day_msx_maisonnette_2f_2plus_t20\src\debugger\ip_debugger.v":450)
-WARN  (EX3791) : Expression size 8 truncated to fit in target size 7("D:\github\HRA_product\TangCartMSX\RTL\1day_msx_maisonnette_2f_2plus_t20\src\debugger\ip_debugger.v":457)
-WARN  (EX3791) : Expression size 8 truncated to fit in target size 7("D:\github\HRA_product\TangCartMSX\RTL\1day_msx_maisonnette_2f_2plus_t20\src\debugger\ip_debugger.v":469)
-WARN  (EX3791) : Expression size 8 truncated to fit in target size 7("D:\github\HRA_product\TangCartMSX\RTL\1day_msx_maisonnette_2f_2plus_t20\src\debugger\ip_debugger.v":476)
-WARN  (EX3791) : Expression size 32 truncated to fit in target size 10("D:\github\HRA_product\TangCartMSX\RTL\1day_msx_maisonnette_2f_2plus_t20\src\debugger\ip_debugger.v":487)
-WARN  (EX3791) : Expression size 8 truncated to fit in target size 7("D:\github\HRA_product\TangCartMSX\RTL\1day_msx_maisonnette_2f_2plus_t20\src\debugger\ip_debugger.v":490)
+WARN  (EX3791) : Expression size 8 truncated to fit in target size 7("D:\github\HRA_product\TangCartMSX\RTL\1day_msx_maisonnette_2f_2plus_t20\src\debugger\ip_debugger.v":401)
+WARN  (EX3791) : Expression size 8 truncated to fit in target size 7("D:\github\HRA_product\TangCartMSX\RTL\1day_msx_maisonnette_2f_2plus_t20\src\debugger\ip_debugger.v":409)
+WARN  (EX3791) : Expression size 8 truncated to fit in target size 7("D:\github\HRA_product\TangCartMSX\RTL\1day_msx_maisonnette_2f_2plus_t20\src\debugger\ip_debugger.v":416)
+WARN  (EX3791) : Expression size 8 truncated to fit in target size 7("D:\github\HRA_product\TangCartMSX\RTL\1day_msx_maisonnette_2f_2plus_t20\src\debugger\ip_debugger.v":423)
+WARN  (EX3791) : Expression size 8 truncated to fit in target size 7("D:\github\HRA_product\TangCartMSX\RTL\1day_msx_maisonnette_2f_2plus_t20\src\debugger\ip_debugger.v":430)
+WARN  (EX3791) : Expression size 8 truncated to fit in target size 7("D:\github\HRA_product\TangCartMSX\RTL\1day_msx_maisonnette_2f_2plus_t20\src\debugger\ip_debugger.v":437)
+WARN  (EX3791) : Expression size 8 truncated to fit in target size 7("D:\github\HRA_product\TangCartMSX\RTL\1day_msx_maisonnette_2f_2plus_t20\src\debugger\ip_debugger.v":447)
+WARN  (EX3791) : Expression size 8 truncated to fit in target size 7("D:\github\HRA_product\TangCartMSX\RTL\1day_msx_maisonnette_2f_2plus_t20\src\debugger\ip_debugger.v":454)
+WARN  (EX3791) : Expression size 8 truncated to fit in target size 7("D:\github\HRA_product\TangCartMSX\RTL\1day_msx_maisonnette_2f_2plus_t20\src\debugger\ip_debugger.v":466)
+WARN  (EX3791) : Expression size 8 truncated to fit in target size 7("D:\github\HRA_product\TangCartMSX\RTL\1day_msx_maisonnette_2f_2plus_t20\src\debugger\ip_debugger.v":473)
+WARN  (EX3791) : Expression size 8 truncated to fit in target size 7("D:\github\HRA_product\TangCartMSX\RTL\1day_msx_maisonnette_2f_2plus_t20\src\debugger\ip_debugger.v":485)
+WARN  (EX3791) : Expression size 8 truncated to fit in target size 7("D:\github\HRA_product\TangCartMSX\RTL\1day_msx_maisonnette_2f_2plus_t20\src\debugger\ip_debugger.v":492)
+WARN  (EX3791) : Expression size 32 truncated to fit in target size 10("D:\github\HRA_product\TangCartMSX\RTL\1day_msx_maisonnette_2f_2plus_t20\src\debugger\ip_debugger.v":503)
 WARN  (EX3791) : Expression size 8 truncated to fit in target size 7("D:\github\HRA_product\TangCartMSX\RTL\1day_msx_maisonnette_2f_2plus_t20\src\debugger\ip_debugger.v":506)
-WARN  (EX3791) : Expression size 8 truncated to fit in target size 7("D:\github\HRA_product\TangCartMSX\RTL\1day_msx_maisonnette_2f_2plus_t20\src\debugger\ip_debugger.v":513)
-WARN  (EX3791) : Expression size 8 truncated to fit in target size 7("D:\github\HRA_product\TangCartMSX\RTL\1day_msx_maisonnette_2f_2plus_t20\src\debugger\ip_debugger.v":538)
-WARN  (EX3791) : Expression size 8 truncated to fit in target size 7("D:\github\HRA_product\TangCartMSX\RTL\1day_msx_maisonnette_2f_2plus_t20\src\debugger\ip_debugger.v":545)
-WARN  (EX3791) : Expression size 8 truncated to fit in target size 7("D:\github\HRA_product\TangCartMSX\RTL\1day_msx_maisonnette_2f_2plus_t20\src\debugger\ip_debugger.v":558)
-WARN  (EX3791) : Expression size 8 truncated to fit in target size 7("D:\github\HRA_product\TangCartMSX\RTL\1day_msx_maisonnette_2f_2plus_t20\src\debugger\ip_debugger.v":569)
-WARN  (EX3791) : Expression size 8 truncated to fit in target size 7("D:\github\HRA_product\TangCartMSX\RTL\1day_msx_maisonnette_2f_2plus_t20\src\debugger\ip_debugger.v":576)
+WARN  (EX3791) : Expression size 8 truncated to fit in target size 7("D:\github\HRA_product\TangCartMSX\RTL\1day_msx_maisonnette_2f_2plus_t20\src\debugger\ip_debugger.v":522)
+WARN  (EX3791) : Expression size 8 truncated to fit in target size 7("D:\github\HRA_product\TangCartMSX\RTL\1day_msx_maisonnette_2f_2plus_t20\src\debugger\ip_debugger.v":529)
+WARN  (EX3791) : Expression size 8 truncated to fit in target size 7("D:\github\HRA_product\TangCartMSX\RTL\1day_msx_maisonnette_2f_2plus_t20\src\debugger\ip_debugger.v":554)
+WARN  (EX3791) : Expression size 8 truncated to fit in target size 7("D:\github\HRA_product\TangCartMSX\RTL\1day_msx_maisonnette_2f_2plus_t20\src\debugger\ip_debugger.v":561)
+WARN  (EX3791) : Expression size 8 truncated to fit in target size 7("D:\github\HRA_product\TangCartMSX\RTL\1day_msx_maisonnette_2f_2plus_t20\src\debugger\ip_debugger.v":574)
+WARN  (EX3791) : Expression size 8 truncated to fit in target size 7("D:\github\HRA_product\TangCartMSX\RTL\1day_msx_maisonnette_2f_2plus_t20\src\debugger\ip_debugger.v":585)
+WARN  (EX3791) : Expression size 8 truncated to fit in target size 7("D:\github\HRA_product\TangCartMSX\RTL\1day_msx_maisonnette_2f_2plus_t20\src\debugger\ip_debugger.v":592)
 Compiling module 'ip_sdram'("D:\github\HRA_product\TangCartMSX\RTL\modules\sdram\ip_sdram.v":31)
-WARN  (EX3791) : Expression size 12 truncated to fit in target size 11("D:\github\HRA_product\TangCartMSX\RTL\modules\sdram\ip_sdram.v":132)
-WARN  (EX3791) : Expression size 32 truncated to fit in target size 14("D:\github\HRA_product\TangCartMSX\RTL\modules\sdram\ip_sdram.v":239)
+WARN  (EX3791) : Expression size 12 truncated to fit in target size 11("D:\github\HRA_product\TangCartMSX\RTL\modules\sdram\ip_sdram.v":131)
+WARN  (EX3791) : Expression size 32 truncated to fit in target size 14("D:\github\HRA_product\TangCartMSX\RTL\modules\sdram\ip_sdram.v":238)
 Compiling module 'vdp_inst'("D:\github\HRA_product\TangCartMSX\RTL\modules\v9958\vdp_inst.v":58)
 Compiling module 'vdp'("D:\github\HRA_product\TangCartMSX\RTL\modules\v9958\vdp.v":58)
 WARN  (EX3791) : Expression size 18 truncated to fit in target size 17("D:\github\HRA_product\TangCartMSX\RTL\modules\v9958\vdp.v":643)
@@ -114,38 +116,36 @@ WARN  (EX3791) : Expression size 5 truncated to fit in target size 4("D:\github\
 WARN  (EX3791) : Expression size 5 truncated to fit in target size 4("D:\github\HRA_product\TangCartMSX\RTL\modules\v9958\vdp_text12.v":471)
 Compiling module 'vdp_graphic123m'("D:\github\HRA_product\TangCartMSX\RTL\modules\v9958\vdp_graphic123m.v":62)
 Compiling module 'vdp_graphic4567'("D:\github\HRA_product\TangCartMSX\RTL\modules\v9958\vdp_graphic4567.v":58)
-Compiling module 'vdp_ram256'("D:\github\HRA_product\TangCartMSX\RTL\modules\v9958\vdp_ram256.v":32)
-Extracting RAM for identifier 'ff_block_ram'("D:\github\HRA_product\TangCartMSX\RTL\modules\v9958\vdp_ram256.v":39)
-WARN  (EX3791) : Expression size 9 truncated to fit in target size 8("D:\github\HRA_product\TangCartMSX\RTL\modules\v9958\vdp_graphic4567.v":220)
-WARN  (EX3791) : Expression size 9 truncated to fit in target size 8("D:\github\HRA_product\TangCartMSX\RTL\modules\v9958\vdp_graphic4567.v":240)
-WARN  (EX3791) : Expression size 9 truncated to fit in target size 8("D:\github\HRA_product\TangCartMSX\RTL\modules\v9958\vdp_graphic4567.v":244)
-WARN  (EX3791) : Expression size 10 truncated to fit in target size 9("D:\github\HRA_product\TangCartMSX\RTL\modules\v9958\vdp_graphic4567.v":464)
-WARN  (EX3791) : Expression size 5 truncated to fit in target size 4("D:\github\HRA_product\TangCartMSX\RTL\modules\v9958\vdp_graphic4567.v":490)
-WARN  (EX3791) : Expression size 5 truncated to fit in target size 4("D:\github\HRA_product\TangCartMSX\RTL\modules\v9958\vdp_graphic4567.v":493)
+Compiling module 'vdp_ram_256byte'("D:\github\HRA_product\TangCartMSX\RTL\modules\v9958\vdp_ram_256byte.v":32)
+Extracting RAM for identifier 'ff_block_ram'("D:\github\HRA_product\TangCartMSX\RTL\modules\v9958\vdp_ram_256byte.v":43)
+WARN  (EX3791) : Expression size 9 truncated to fit in target size 8("D:\github\HRA_product\TangCartMSX\RTL\modules\v9958\vdp_graphic4567.v":221)
+WARN  (EX3791) : Expression size 9 truncated to fit in target size 8("D:\github\HRA_product\TangCartMSX\RTL\modules\v9958\vdp_graphic4567.v":241)
+WARN  (EX3791) : Expression size 9 truncated to fit in target size 8("D:\github\HRA_product\TangCartMSX\RTL\modules\v9958\vdp_graphic4567.v":245)
+WARN  (EX3791) : Expression size 10 truncated to fit in target size 9("D:\github\HRA_product\TangCartMSX\RTL\modules\v9958\vdp_graphic4567.v":465)
+WARN  (EX3791) : Expression size 5 truncated to fit in target size 4("D:\github\HRA_product\TangCartMSX\RTL\modules\v9958\vdp_graphic4567.v":491)
+WARN  (EX3791) : Expression size 5 truncated to fit in target size 4("D:\github\HRA_product\TangCartMSX\RTL\modules\v9958\vdp_graphic4567.v":494)
 Compiling module 'vdp_sprite'("D:\github\HRA_product\TangCartMSX\RTL\modules\v9958\vdp_sprite.v":58)
 Compiling module 'vdp_spinforam'("D:\github\HRA_product\TangCartMSX\RTL\modules\v9958\vdp_spinforam.v":58)
 Extracting RAM for identifier 'ff_memory'("D:\github\HRA_product\TangCartMSX\RTL\modules\v9958\vdp_spinforam.v":66)
-WARN  (EX3791) : Expression size 11 truncated to fit in target size 9("D:\github\HRA_product\TangCartMSX\RTL\modules\v9958\vdp_sprite.v":326)
-WARN  (EX3791) : Expression size 6 truncated to fit in target size 5("D:\github\HRA_product\TangCartMSX\RTL\modules\v9958\vdp_sprite.v":477)
-WARN  (EX3791) : Expression size 5 truncated to fit in target size 4("D:\github\HRA_product\TangCartMSX\RTL\modules\v9958\vdp_sprite.v":501)
-WARN  (EX3791) : Expression size 32 truncated to fit in target size 9("D:\github\HRA_product\TangCartMSX\RTL\modules\v9958\vdp_sprite.v":722)
-WARN  (EX3791) : Expression size 4 truncated to fit in target size 3("D:\github\HRA_product\TangCartMSX\RTL\modules\v9958\vdp_sprite.v":733)
-WARN  (EX3791) : Expression size 10 truncated to fit in target size 9("D:\github\HRA_product\TangCartMSX\RTL\modules\v9958\vdp_sprite.v":818)
-WARN  (EX3791) : Expression size 10 truncated to fit in target size 9("D:\github\HRA_product\TangCartMSX\RTL\modules\v9958\vdp_sprite.v":856)
-WARN  (EX3791) : Expression size 10 truncated to fit in target size 9("D:\github\HRA_product\TangCartMSX\RTL\modules\v9958\vdp_sprite.v":858)
-WARN  (EX3791) : Expression size 4 truncated to fit in target size 3("D:\github\HRA_product\TangCartMSX\RTL\modules\v9958\vdp_sprite.v":869)
-WARN  (EX3791) : Expression size 9 truncated to fit in target size 8("D:\github\HRA_product\TangCartMSX\RTL\modules\v9958\vdp_sprite.v":927)
+WARN  (EX3791) : Expression size 11 truncated to fit in target size 9("D:\github\HRA_product\TangCartMSX\RTL\modules\v9958\vdp_sprite.v":328)
+WARN  (EX3791) : Expression size 6 truncated to fit in target size 5("D:\github\HRA_product\TangCartMSX\RTL\modules\v9958\vdp_sprite.v":479)
+WARN  (EX3791) : Expression size 5 truncated to fit in target size 4("D:\github\HRA_product\TangCartMSX\RTL\modules\v9958\vdp_sprite.v":503)
+WARN  (EX3791) : Expression size 32 truncated to fit in target size 9("D:\github\HRA_product\TangCartMSX\RTL\modules\v9958\vdp_sprite.v":724)
+WARN  (EX3791) : Expression size 4 truncated to fit in target size 3("D:\github\HRA_product\TangCartMSX\RTL\modules\v9958\vdp_sprite.v":735)
+WARN  (EX3791) : Expression size 10 truncated to fit in target size 9("D:\github\HRA_product\TangCartMSX\RTL\modules\v9958\vdp_sprite.v":822)
+WARN  (EX3791) : Expression size 10 truncated to fit in target size 9("D:\github\HRA_product\TangCartMSX\RTL\modules\v9958\vdp_sprite.v":860)
+WARN  (EX3791) : Expression size 10 truncated to fit in target size 9("D:\github\HRA_product\TangCartMSX\RTL\modules\v9958\vdp_sprite.v":862)
+WARN  (EX3791) : Expression size 4 truncated to fit in target size 3("D:\github\HRA_product\TangCartMSX\RTL\modules\v9958\vdp_sprite.v":873)
+WARN  (EX3791) : Expression size 9 truncated to fit in target size 8("D:\github\HRA_product\TangCartMSX\RTL\modules\v9958\vdp_sprite.v":931)
 Compiling module 'vdp_register'("D:\github\HRA_product\TangCartMSX\RTL\modules\v9958\vdp_register.v":56)
-Compiling module 'vdp_palette_ram'("D:\github\HRA_product\TangCartMSX\RTL\modules\v9958\vdp_palette_ram.v":32)
-Extracting RAM for identifier 'ff_block_ram'("D:\github\HRA_product\TangCartMSX\RTL\modules\v9958\vdp_palette_ram.v":40)
-WARN  (EX3670) : Actual bit length 1 differs from formal bit length 8 for port 'vdp_cmd_clr'("D:\github\HRA_product\TangCartMSX\RTL\modules\v9958\vdp.v":1015)
+Compiling module 'vdp_ram_palette'("D:\github\HRA_product\TangCartMSX\RTL\modules\v9958\vdp_ram_palette.v":32)
+Extracting RAM for identifier 'ff_block_ram'("D:\github\HRA_product\TangCartMSX\RTL\modules\v9958\vdp_ram_palette.v":43)
 Compiling module 'vdp_command'("D:\github\HRA_product\TangCartMSX\RTL\modules\v9958\vdp_command.v":56)
 WARN  (EX3791) : Expression size 32 truncated to fit in target size 10("D:\github\HRA_product\TangCartMSX\RTL\modules\v9958\vdp_command.v":514)
 WARN  (EX3791) : Expression size 32 truncated to fit in target size 10("D:\github\HRA_product\TangCartMSX\RTL\modules\v9958\vdp_command.v":620)
 WARN  (EX3791) : Expression size 32 truncated to fit in target size 10("D:\github\HRA_product\TangCartMSX\RTL\modules\v9958\vdp_command.v":702)
 WARN  (EX3791) : Expression size 11 truncated to fit in target size 10("D:\github\HRA_product\TangCartMSX\RTL\modules\v9958\vdp_command.v":734)
 WARN  (EX3791) : Expression size 32 truncated to fit in target size 10("D:\github\HRA_product\TangCartMSX\RTL\modules\v9958\vdp_command.v":821)
-WARN  (EX3670) : Actual bit length 1 differs from formal bit length 8 for port 'pclr'("D:\github\HRA_product\TangCartMSX\RTL\modules\v9958\vdp.v":1117)
 Compiling module 'vdp_wait_control'("D:\github\HRA_product\TangCartMSX\RTL\modules\v9958\vdp_wait_control.v":31)
 Extracting RAM for identifier 'c_wait_table_501'("D:\github\HRA_product\TangCartMSX\RTL\modules\v9958\vdp_wait_control.v":50)
 Extracting RAM for identifier 'c_wait_table_502'("D:\github\HRA_product\TangCartMSX\RTL\modules\v9958\vdp_wait_control.v":52)
@@ -160,10 +160,10 @@ Extracting RAM for identifier 'c_wait_table_605'("D:\github\HRA_product\TangCart
 Compiling module 'vdp_lcd'("D:\github\HRA_product\TangCartMSX\RTL\modules\v9958\vdp_lcd.v":60)
 WARN  (EX3791) : Expression size 32 truncated to fit in target size 10("D:\github\HRA_product\TangCartMSX\RTL\modules\v9958\vdp_lcd.v":202)
 WARN  (EX3791) : Expression size 32 truncated to fit in target size 10("D:\github\HRA_product\TangCartMSX\RTL\modules\v9958\vdp_lcd.v":292)
-Compiling module 'vdp_doublebuf'("D:\github\HRA_product\TangCartMSX\RTL\modules\v9958\vdp_doublebuf.v":58)
-Compiling module 'vdp_linebuf'("D:\github\HRA_product\TangCartMSX\RTL\modules\v9958\vdp_linebuf.v":83)
-Extracting RAM for identifier 'ff_imem'("D:\github\HRA_product\TangCartMSX\RTL\modules\v9958\vdp_linebuf.v":90)
-WARN  (EX3791) : Expression size 32 truncated to fit in target size 10("D:\github\HRA_product\TangCartMSX\RTL\modules\v9958\vdp_lcd.v":366)
+Compiling module 'vdp_double_buffer'("D:\github\HRA_product\TangCartMSX\RTL\modules\v9958\vdp_double_buffer.v":58)
+Compiling module 'vdp_ram_line_buffer'("D:\github\HRA_product\TangCartMSX\RTL\modules\v9958\vdp_ram_line_buffer.v":58)
+Extracting RAM for identifier 'ff_imem'("D:\github\HRA_product\TangCartMSX\RTL\modules\v9958\vdp_ram_line_buffer.v":69)
+WARN  (EX3791) : Expression size 32 truncated to fit in target size 10("D:\github\HRA_product\TangCartMSX\RTL\modules\v9958\vdp_lcd.v":367)
 NOTE  (EX0101) : Current top module is "tang20cart_msx"
 [5%] Running netlist conversion ...
 WARN  (CV0016) : Input n_treset is unused("D:\github\HRA_product\TangCartMSX\RTL\1day_msx_maisonnette_2f_2plus_t20\src\tang20cart_msx.v":29)

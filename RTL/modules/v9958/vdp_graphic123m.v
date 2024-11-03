@@ -125,7 +125,7 @@ module vdp_graphic123m (
 		if( !enable ) begin
 			//	hold
 		end
-		else if( dot_state == 2'b11 ) begin
+		else if( dot_state == 2'b01 ) begin
 			ff_ram_dat <= p_ram_dat;
 		end
 	end

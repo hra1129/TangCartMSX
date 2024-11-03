@@ -63,9 +63,9 @@ module vdp(
 	input					req,
 	output					ack,
 	input					wrt,
-	input		[1:0]		adr,
-	output		[7:0]		dbi,
-	input		[7:0]		dbo,
+	input		[1:0]		address,
+	output		[7:0]		rdata,
+	input		[7:0]		wdata,
 
 	output					int_n,
 
@@ -255,7 +255,7 @@ module vdp(
 	wire	[7:0]	w_palette_data_g;
 
 	// vdp command signals - can be read & set by cpu
-	wire			w_vdpcmd_clr;					// r44, s#7
+	wire	[7:0]	w_vdpcmd_clr;					// r44, s#7
 	// vdp command signals - can be read by cpu
 	wire			w_vdpcmd_ce;					// s#2 (bit 0)
 	wire			w_vdpcmd_bd;					// s#2 (bit 4)
@@ -986,9 +986,9 @@ module vdp(
 		.req							( ff_req						),
 		.ack							( w_ack							),
 		.wrt							( ff_wrt						),
-		.adr							( adr							),
-		.dbi							( dbi							),
-		.dbo							( dbo							),
+		.address						( address						),
+		.rdata							( rdata							),
+		.wdata							( wdata							),
 
 		.dot_state						( w_dot_state					),
 

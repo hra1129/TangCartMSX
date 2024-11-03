@@ -258,31 +258,31 @@ module tang20cart_msx (
 	//	V9958 clone
 	// --------------------------------------------------------------------
 	vdp_inst u_v9958 (
-		.clk				( clk						),	// IN	STD_LOGIC;
-		.enable_state		( w_vdp_enable_state		),	// OUT	STD_LOGIC;
-		.reset_n			( w_n_reset					),	// IN	STD_LOGIC;
-		.initial_busy		( w_sdram_busy				),	// IN	STD_LOGIC;
-		.req				( w_req						),	// IN	STD_LOGIC;
-		.ack				( w_ack						),	// OUT	STD_LOGIC;
-		.wrt				( w_wr						),	// IN	STD_LOGIC;
-		.adr				( w_a						),	// IN	STD_LOGIC_VECTOR(  1 DOWNTO 0 );
-		.dbi				( w_rdata					),	// OUT	STD_LOGIC_VECTOR(  7 DOWNTO 0 );
-		.dbo				( w_wdata					),	// IN	STD_LOGIC_VECTOR(  7 DOWNTO 0 );
-		.int_n				( 							),	// OUT	STD_LOGIC;
-		.pramoe_n			( w_sdram_read_n			),	// OUT	STD_LOGIC;
-		.pramwe_n			( w_sdram_write_n			),	// OUT	STD_LOGIC;
-		.pramadr			( w_sdram_address[16:0]		),	// OUT	STD_LOGIC_VECTOR( 16 DOWNTO 0 );
-		.pramdbi			( w_sdram_rdata				),	// IN	STD_LOGIC_VECTOR( 15 DOWNTO 0 );
-		.pramdbo			( w_sdram_wdata				),	// OUT	STD_LOGIC_VECTOR(  7 DOWNTO 0 );
-		.pvideo_clk			( lcd_clk					),	// OUT	STD_LOGIC;
-		.pvideo_data_en		( lcd_de					),	// OUT	STD_LOGIC;
-		.pvideor			( w_lcd_red					),	// OUT	STD_LOGIC_VECTOR(  5 DOWNTO 0 );
-		.pvideog			( w_lcd_green				),	// OUT	STD_LOGIC_VECTOR(  5 DOWNTO 0 );
-		.pvideob			( w_lcd_blue				),	// OUT	STD_LOGIC_VECTOR(  5 DOWNTO 0 );
-		.pvideohs_n			( lcd_hsync					),	// OUT	STD_LOGIC;
-		.pvideovs_n			( lcd_vsync					),	// OUT	STD_LOGIC;
-		.p_video_dh_clk		( w_dh_clk					),	// OUT	STD_LOGIC;
-		.p_video_dl_clk		( w_dl_clk					)	// OUT	STD_LOGIC
+		.clk				( clk						),
+		.enable_state		( w_vdp_enable_state		),
+		.reset_n			( w_n_reset					),
+		.initial_busy		( w_sdram_busy				),
+		.req				( w_req						),
+		.ack				( w_ack						),
+		.wrt				( w_wr						),
+		.address			( w_a						),		//	[ 1: 0];
+		.rdata				( w_rdata					),		//	[ 7: 0];
+		.wdata				( w_wdata					),		//	[ 7: 0];
+		.int_n				( 							),		
+		.pramoe_n			( w_sdram_read_n			),		
+		.pramwe_n			( w_sdram_write_n			),		
+		.pramadr			( w_sdram_address[16:0]		),		//	[16: 0];
+		.pramdbi			( w_sdram_rdata				),		//	[15: 0];
+		.pramdbo			( w_sdram_wdata				),		//	[ 7: 0];
+		.pvideo_clk			( lcd_clk					),		
+		.pvideo_data_en		( lcd_de					),		
+		.pvideor			( w_lcd_red					),		//	[ 5: 0];
+		.pvideog			( w_lcd_green				),		//	[ 5: 0];
+		.pvideob			( w_lcd_blue				),		//	[ 5: 0];
+		.pvideohs_n			( lcd_hsync					),
+		.pvideovs_n			( lcd_vsync					),
+		.p_video_dh_clk		( w_dh_clk					),
+		.p_video_dl_clk		( w_dl_clk					)
     );
 
 	assign w_sdram_address[22:17]	= 6'b000000;
