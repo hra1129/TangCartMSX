@@ -174,9 +174,9 @@ module vdp(
 	wire			reg_r1_bl_clks;
 	wire			reg_r1_vsync_int_en;
 	wire			reg_r1_disp_on;
-	wire	[6:0]	reg_r2_pt_nam_addr;
-	wire	[5:0]	reg_r4_pt_gen_addr;
-	wire	[10:0]	reg_r10r3_col_addr;
+	wire	[6:0]	reg_r2_pattern_name;
+	wire	[5:0]	reg_r4_pattern_generator;
+	wire	[10:0]	reg_r10r3_color;
 	wire	[9:0]	reg_r11r5_sp_atr_addr;
 	wire	[5:0]	reg_r6_sp_gen_addr;
 	wire	[7:0]	reg_r7_frame_col;
@@ -539,10 +539,10 @@ module vdp(
 		reg		[2:0]	ff_vram_access_state;
 
 		if( reset ) begin
-			ff_vram_address <= 17'b11111111111111111;
-			pramdbo <= 8'dz;
-			ff_pramoe_n <= 1'b1;
-			ff_pramwe_n <= 1'b1;
+			ff_vram_address	<= 17'b11111111111111111;
+			pramdbo			<= 8'd0;
+			ff_pramoe_n		<= 1'b1;
+			ff_pramwe_n		<= 1'b1;
 
 			ff_vram_reading_req <= 1'b0;
 
@@ -565,8 +565,8 @@ module vdp(
 			// vramアクセスタイミングを、w_eight_dot_state によって制御している
 			if( w_dot_state == 2'b10 ) begin
 				if( w_prewindow && reg_r1_disp_on &&
-					((w_eight_dot_state == 3'b000) || (w_eight_dot_state == 3'b001) || (w_eight_dot_state == 3'b010) ||
-					 (w_eight_dot_state == 3'b011) || (w_eight_dot_state == 3'b100)) ) begin
+					((w_eight_dot_state == 3'd0) || (w_eight_dot_state == 3'd1) || (w_eight_dot_state == 3'd2) ||
+					 (w_eight_dot_state == 3'd3) || (w_eight_dot_state == 3'd4)) ) begin
 					//	w_eight_dot_state が 0～4 で、表示中の場合
 					ff_vram_access_state = vram_access_draw;
 				end
@@ -574,13 +574,13 @@ module vdp(
 					//	w_eight_dot_state が 5～7 で、表示中で、テキストモードの場合
 					ff_vram_access_state = vram_access_draw;
 				end
-				else if( ff_prewindow_x && w_prewindow_y_sp && w_sp_vram_accessing && (w_eight_dot_state == 3'b101) && !w_text_mode ) begin
+				else if( ff_prewindow_x && w_prewindow_y_sp && w_sp_vram_accessing && (w_eight_dot_state == 3'd5) && !w_text_mode ) begin
 					// for sprite y-testing
 					ff_vram_access_state = vram_access_sprt;
 				end
 				else if( !ff_prewindow_x && w_prewindow_y_sp && w_sp_vram_accessing && !w_text_mode && (
-							(w_eight_dot_state == 3'b000) || (w_eight_dot_state == 3'b001) || (w_eight_dot_state == 3'b010) ||
-							(w_eight_dot_state == 3'b011) || (w_eight_dot_state == 3'b100) || (w_eight_dot_state == 3'b101)) ) begin
+							(w_eight_dot_state == 3'd0) || (w_eight_dot_state == 3'd1) || (w_eight_dot_state == 3'd2) ||
+							(w_eight_dot_state == 3'd3) || (w_eight_dot_state == 3'd4) || (w_eight_dot_state == 3'd5)) ) begin
 					// for sprite prepareing
 					ff_vram_access_state = vram_access_sprt;
 				end
@@ -672,7 +672,7 @@ module vdp(
 				else begin
 					ff_vram_access_address <= ff_vram_access_address_pre + 1;
 				end
-				pramdbo				<= 8'dz;
+				pramdbo				<= 8'd0;
 				ff_pramoe_n			<= 1'b0;
 				ff_pramwe_n			<= 1'b1;
 				ff_vram_rd_ack		<= ~ff_vram_rd_ack;
@@ -704,7 +704,7 @@ module vdp(
 				else begin
 					ff_vram_address <= w_vdpcmd_vram_access_address;
 				end
-				pramdbo		<= 8'dz;
+				pramdbo		<= 8'd0;
 				ff_pramoe_n	<= 1'b0;
 				ff_pramwe_n	<= 1'b1;
 				ff_vdpcmd_vram_reading_req	<= ~ff_vdpcmd_vram_reading_ack;
@@ -712,15 +712,15 @@ module vdp(
 			else if( ff_vram_access_state == vram_access_sprt ) begin
 				// vram read by sprite module
 				ff_vram_address		<= w_sprite_vram_address;
-				ff_pramoe_n	<= 1'b0;
-				ff_pramwe_n	<= 1'b1;
-				pramdbo		<= 8'dz;
+				ff_pramoe_n			<= 1'b0;
+				ff_pramwe_n			<= 1'b1;
+				pramdbo				<= 8'd0;
 			end
 			else begin
 				// vram_access_draw
 				// vram read for screen image building
 				if( w_dot_state == 2'b10 ) begin
-					pramdbo		<= 8'dz;
+					pramdbo		<= 8'd0;
 					ff_pramoe_n	<= 1'b0;
 					ff_pramwe_n	<= 1'b1;
 					if( w_text_mode ) begin
@@ -734,7 +734,7 @@ module vdp(
 					end
 				end
 				else begin
-					pramdbo		<= 8'dz;
+					pramdbo		<= 8'd0;
 					ff_pramoe_n	<= 1'b1;
 					ff_pramwe_n	<= 1'b1;
 				end
@@ -872,9 +872,9 @@ module vdp(
 		.reg_r7_frame_col				( reg_r7_frame_col				),
 		.reg_r12_blink_mode				( reg_r12_blink_mode			),
 		.reg_r13_blink_period			( reg_r13_blink_period			),
-		.reg_r2_pt_nam_addr				( reg_r2_pt_nam_addr			),
-		.reg_r4_pt_gen_addr				( reg_r4_pt_gen_addr			),
-		.reg_r10r3_col_addr				( reg_r10r3_col_addr			),
+		.reg_r2_pattern_name			( reg_r2_pattern_name			),
+		.reg_r4_pattern_generator		( reg_r4_pattern_generator		),
+		.reg_r10r3_color				( reg_r10r3_color				),
 		.pramdat						( w_vram_data					),
 		.pramadr						( w_vram_address_text12			),
 		.txvramreaden					( w_tx_vram_read_en				),
@@ -894,9 +894,9 @@ module vdp(
 		.vdp_mode_graphic1				( w_vdp_mode_graphic1			),
 		.vdp_mode_graphic2				( w_vdp_mode_graphic2			),
 		.vdp_mode_graphic3				( w_vdp_mode_graphic3			),
-		.reg_r2_pt_nam_addr				( reg_r2_pt_nam_addr			),
-		.reg_r4_pt_gen_addr				( reg_r4_pt_gen_addr			),
-		.reg_r10r3_col_addr				( reg_r10r3_col_addr			),
+		.reg_r2_pattern_name			( reg_r2_pattern_name			),
+		.reg_r4_pattern_generator		( reg_r4_pattern_generator		),
+		.reg_r10r3_color				( reg_r10r3_color				),
 		.reg_r26_h_scroll				( reg_r26_h_scroll				),
 		.reg_r27_h_scroll				( reg_r27_h_scroll				),
 		.p_ram_dat						( w_vram_data					),
@@ -917,7 +917,7 @@ module vdp(
 		.vdp_mode_graphic6				( w_vdp_mode_graphic6			),
 		.vdp_mode_graphic7				( w_vdp_mode_graphic7			),
 		.reg_r1_bl_clks					( reg_r1_bl_clks				),
-		.reg_r2_pt_nam_addr				( reg_r2_pt_nam_addr			),
+		.reg_r2_pattern_name			( reg_r2_pattern_name			),
 		.reg_r13_blink_period			( reg_r13_blink_period			),
 		.reg_r26_h_scroll				( reg_r26_h_scroll				),
 		.reg_r27_h_scroll				( reg_r27_h_scroll				),
@@ -1045,9 +1045,9 @@ module vdp(
 		.reg_r1_bl_clks					( reg_r1_bl_clks				),
 		.reg_r1_vsync_int_en			( reg_r1_vsync_int_en			),
 		.reg_r1_disp_on					( reg_r1_disp_on				),
-		.reg_r2_pt_nam_addr				( reg_r2_pt_nam_addr			),
-		.reg_r4_pt_gen_addr				( reg_r4_pt_gen_addr			),
-		.reg_r10r3_col_addr				( reg_r10r3_col_addr			),
+		.reg_r2_pattern_name			( reg_r2_pattern_name			),
+		.reg_r4_pattern_generator		( reg_r4_pattern_generator		),
+		.reg_r10r3_color				( reg_r10r3_color				),
 		.reg_r11r5_sp_atr_addr			( reg_r11r5_sp_atr_addr			),
 		.reg_r6_sp_gen_addr				( reg_r6_sp_gen_addr			),
 		.reg_r7_frame_col				( reg_r7_frame_col				),

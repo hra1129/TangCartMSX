@@ -73,7 +73,7 @@ module vdp_graphic4567(
 
 	// registers
 	input				reg_r1_bl_clks,
-	input		[6:0]	reg_r2_pt_nam_addr,
+	input		[6:0]	reg_r2_pattern_name,
 	input		[7:0]	reg_r13_blink_period,
 	input		[8:3]	reg_r26_h_scroll,
 	input		[2:0]	reg_r27_h_scroll,
@@ -117,7 +117,7 @@ module vdp_graphic4567(
 	reg		[7:0]	ff_pix3;
 
 	reg		[7:0]	ff_color_data;
-	wire	[8:0]	w_dotcounterx;
+	wire	[8:0]	w_dot_counter_x;
 	wire			w_sp2_h_scroll;
 	wire	[7:0]	w_pix;
 
@@ -445,11 +445,11 @@ module vdp_graphic4567(
 			//	hold
 		end
 		else if( dot_state == 2'b00 && eight_dot_state == 3'b000 ) begin
-			ff_pattern_name_base_address <= reg_r2_pt_nam_addr;
+			ff_pattern_name_base_address <= reg_r2_pattern_name;
 		end
 	end
 
-	assign w_dotcounterx	=	{ (dotcounterx[8:3] + reg_r26_h_scroll), 3'b000 };
+	assign w_dot_counter_x	=	{ (dotcounterx[8:3] + reg_r26_h_scroll), 3'b000 };
 
 	always @( posedge clk ) begin
 		if( reset ) begin
@@ -459,15 +459,16 @@ module vdp_graphic4567(
 			//	hold
 		end
 		else if( dot_state == 2'b00 ) begin
-			if( eight_dot_state == 3'b000 ) begin
-				ff_local_dot_counter_x <= w_dotcounterx;
-			end
-			else if((eight_dot_state == 3'b001) ||
-					(eight_dot_state == 3'b010) ||
-					(eight_dot_state == 3'b011) ||
-					(eight_dot_state == 3'b100) ) begin
+			case( eight_dot_state )
+			3'd0:
+				ff_local_dot_counter_x <= w_dot_counter_x;
+			3'd1, 3'd2, 3'd3, 3'd4:
 				ff_local_dot_counter_x <= ff_local_dot_counter_x + 2;
-			end
+			default:
+				begin
+					//	hold
+				end
+			endcase
 		end
 	end
 
@@ -486,7 +487,7 @@ module vdp_graphic4567(
 		end
 		else if( w_blink_sync ) begin
 
-			if(ff_blink_clk_cnt == 4'b1001) begin
+			if( ff_blink_clk_cnt == 4'd9 ) begin
 				ff_blink_clk_cnt <= 4'd0;
 				ff_blink_period_cnt <= ff_blink_period_cnt + 1;
 			end

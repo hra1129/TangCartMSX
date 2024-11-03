@@ -75,9 +75,9 @@ module vdp_text12 (
 	input	[7:0]	reg_r12_blink_mode			,
 	input	[7:0]	reg_r13_blink_period		,
 
-	input	[6:0]	reg_r2_pt_nam_addr			,
-	input	[5:0]	reg_r4_pt_gen_addr			,
-	input	[10:0]	reg_r10r3_col_addr			,
+	input	[6:0]	reg_r2_pattern_name			,
+	input	[5:0]	reg_r4_pattern_generator			,
+	input	[10:0]	reg_r10r3_color			,
 	//
 	input	[7:0]	pramdat						,
 	output	[16:0]	pramadr						,
@@ -125,12 +125,12 @@ module vdp_text12 (
 	// --------------------------------------------------------------------
 	assign w_tx_char_counter		=	ff_tx_char_counter_start_of_line + ff_tx_char_counter_x;
 
-	assign w_logical_vram_addr_nam	=	( vdp_mode_text1 || vdp_mode_text1q ) ? { reg_r2_pt_nam_addr, w_tx_char_counter[9:0] }:
-										{ reg_r2_pt_nam_addr[6:2], w_tx_char_counter };
+	assign w_logical_vram_addr_nam	=	( vdp_mode_text1 || vdp_mode_text1q ) ? { reg_r2_pattern_name, w_tx_char_counter[9:0] }:
+										{ reg_r2_pattern_name[6:2], w_tx_char_counter };
 
-	assign w_logical_vram_addr_gen	=	{ reg_r4_pt_gen_addr, ff_pattern_num, dotcountery[2:0] };
+	assign w_logical_vram_addr_gen	=	{ reg_r4_pattern_generator, ff_pattern_num, dotcountery[2:0] };
 
-	assign w_logical_vram_addr_col	=	{ reg_r10r3_col_addr[10:3], w_tx_char_counter[11:3] };
+	assign w_logical_vram_addr_col	=	{ reg_r10r3_color[10:3], w_tx_char_counter[11:3] };
 
 	assign txvramreaden				=	( vdp_mode_text1 || vdp_mode_text1q ) ? ff_tx_vram_read_en :
 										( vdp_mode_text2                  ) ? (ff_tx_vram_read_en | ff_tx_vram_read_en2) : 1'b0;

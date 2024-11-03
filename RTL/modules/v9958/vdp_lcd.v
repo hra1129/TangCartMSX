@@ -365,7 +365,7 @@ module vdp_lcd(
 
 	assign w_x_position_w	= hcounterin[10:1] - (clocks_per_line/2 - disp_width - 10);
 	assign w_evenodd		= vcounterin[1];
-	assign w_we_buf			= 1'b1;
+	assign w_we_buf			= enable;
 
 //	// pixel ratio 1:1 for led display
 //	always @( posedge clk ) begin

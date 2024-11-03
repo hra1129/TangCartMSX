@@ -500,7 +500,7 @@ module vdp_ssg (
 		end
 		else if( ff_h_cnt[1:0] == 2'b01 && ff_x_cnt == w_left_mask )begin
 			// when dotcounter_x = 0
-			ff_right_mask <= 9'b100000000 - { 6'b000000, reg_r27_h_scroll };
+			ff_right_mask <= 9'd256 - { 6'd0, reg_r27_h_scroll };
 		end
 	end
 
@@ -536,8 +536,8 @@ module vdp_ssg (
 		if( reset ) begin
 			ff_pre_y_cnt		<= 'd0;
 			ff_monitor_line		<= 'd0;
-			ff_pre_window_y			<= 1'b0;
-			ff_pre_window_y_sp		<= 1'b0;
+			ff_pre_window_y		<= 1'b0;
+			ff_pre_window_y_sp	<= 1'b0;
 			ff_hsync_en			<= 1'b0;
 		end
 		else if( !enable )begin
@@ -562,25 +562,25 @@ module vdp_ssg (
 				ff_pre_window_y_sp	<= 1'b1;
 			end
 			else begin
-				if( pre_dot_counter_yp_v == 255 )begin
+				if( pre_dot_counter_yp_v == 9'd255 )begin
 					pre_dot_counter_yp_v = ff_monitor_line;
 				end
 				else begin
 					pre_dot_counter_yp_v = ff_monitor_line + 1;
 				end
-				if( pre_dot_counter_yp_v == 0 ) begin
-					ff_hsync_en		<= 1'b1;
+				if( pre_dot_counter_yp_v == 9'd0 ) begin
+					ff_hsync_en			<= 1'b1;
 					ff_pre_window_y		<= 1'b1;
 				end
-				else if((reg_r9_y_dots == 1'b0 && pre_dot_counter_yp_v == 192) ||
-						(reg_r9_y_dots == 1'b1 && pre_dot_counter_yp_v == 212) )begin
+				else if((reg_r9_y_dots == 1'b0 && pre_dot_counter_yp_v == 9'd192) ||
+						(reg_r9_y_dots == 1'b1 && pre_dot_counter_yp_v == 9'd212) )begin
 					ff_pre_window_y		<= 1'b0;
 					ff_pre_window_y_sp	<= 1'b0;
 				end
-				else if((!reg_r9_y_dots && !ff_pal_mode && pre_dot_counter_yp_v == 235) ||
-						( reg_r9_y_dots && !ff_pal_mode && pre_dot_counter_yp_v == 245) ||
-						(!reg_r9_y_dots &&  ff_pal_mode && pre_dot_counter_yp_v == 259) ||
-						( reg_r9_y_dots &&  ff_pal_mode && pre_dot_counter_yp_v == 269) )begin
+				else if((!reg_r9_y_dots && !ff_pal_mode && pre_dot_counter_yp_v == 9'd235) ||
+						( reg_r9_y_dots && !ff_pal_mode && pre_dot_counter_yp_v == 9'd245) ||
+						(!reg_r9_y_dots &&  ff_pal_mode && pre_dot_counter_yp_v == 9'd259) ||
+						( reg_r9_y_dots &&  ff_pal_mode && pre_dot_counter_yp_v == 9'd269) )begin
 					ff_hsync_en		<= 1'b0;
 				end
 				ff_monitor_line		<= pre_dot_counter_yp_v;
@@ -604,9 +604,9 @@ module vdp_ssg (
 										  (w_line_mode == 2'b10) ? v_blanking_start_212_ntsc:
 										  (w_line_mode == 2'b01) ? v_blanking_start_192_pal: v_blanking_start_212_pal;
 
-	assign	w_v_blanking_end	=	(ff_v_cnt_in_field == {2'b00, (offset_y + led_tv_y_ntsc),          (ff_field & ff_interlace_mode)} && !ff_pal_mode) ||
-									(ff_v_cnt_in_field == {2'b00, (offset_y + led_tv_y_pal ),          (ff_field & ff_interlace_mode)} &&  ff_pal_mode);
-	assign	w_v_blanking_start	=	(ff_v_cnt_in_field == {(w_v_sync_intr_start_line + led_tv_y_ntsc), (ff_field & ff_interlace_mode)} && !ff_pal_mode) ||
-									(ff_v_cnt_in_field == {(w_v_sync_intr_start_line + led_tv_y_pal ), (ff_field & ff_interlace_mode)} &&  ff_pal_mode);
+	assign	w_v_blanking_end			= (ff_v_cnt_in_field == {2'b00, (offset_y + led_tv_y_ntsc),          (ff_field & ff_interlace_mode)} && !ff_pal_mode) ||
+										  (ff_v_cnt_in_field == {2'b00, (offset_y + led_tv_y_pal ),          (ff_field & ff_interlace_mode)} &&  ff_pal_mode);
+	assign	w_v_blanking_start			= (ff_v_cnt_in_field == {(w_v_sync_intr_start_line + led_tv_y_ntsc), (ff_field & ff_interlace_mode)} && !ff_pal_mode) ||
+										  (ff_v_cnt_in_field == {(w_v_sync_intr_start_line + led_tv_y_pal ), (ff_field & ff_interlace_mode)} &&  ff_pal_mode);
 
 endmodule

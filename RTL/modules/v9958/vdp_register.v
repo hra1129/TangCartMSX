@@ -122,9 +122,9 @@ module vdp_register (
 	output reg			reg_r1_bl_clks,
 	output reg			reg_r1_vsync_int_en,
 	output reg			reg_r1_disp_on,
-	output reg	[6:0]	reg_r2_pt_nam_addr,
-	output reg	[5:0]	reg_r4_pt_gen_addr,
-	output reg	[10:0]	reg_r10r3_col_addr,
+	output reg	[6:0]	reg_r2_pattern_name,
+	output reg	[5:0]	reg_r4_pattern_generator,
+	output reg	[10:0]	reg_r10r3_color,
 	output reg	[9:0]	reg_r11r5_sp_atr_addr,
 	output reg	[5:0]	reg_r6_sp_gen_addr,
 	output reg	[7:0]	reg_r7_frame_col,
@@ -270,16 +270,16 @@ module vdp_register (
 
 	always @( posedge clk ) begin
 		if( reset ) begin
-			reg_r2_pt_nam_addr <= 7'd0;
+			reg_r2_pattern_name <= 7'd0;
 		end
 		else if( !enable ) begin
 			//	hold
 		end
 		else if( w_is_bitmap_mode && ff_r9_2page_mode ) begin
-			reg_r2_pt_nam_addr <= (ff_r2_pt_nam_addr & 7'b1011111) | { 1'b0, field, 5'b00000 };
+			reg_r2_pattern_name <= (ff_r2_pt_nam_addr & 7'b1011111) | { 1'b0, field, 5'b00000 };
 		end
 		else begin
-			reg_r2_pt_nam_addr <= ff_r2_pt_nam_addr;
+			reg_r2_pattern_name <= ff_r2_pt_nam_addr;
 		end
 	end
 
@@ -471,7 +471,7 @@ module vdp_register (
 			reg_r1_vsync_int_en			<= 1'b0;
 			ff_r1_disp_on				<= 1'b0;
 			ff_r2_pt_nam_addr			<= 'd0;
-			reg_r4_pt_gen_addr			<= 'd0;
+			reg_r4_pattern_generator			<= 'd0;
 			reg_r12_blink_mode			<= 'd0;
 			reg_r13_blink_period		<= 'd0;
 			reg_r6_sp_gen_addr			<= 'd0;
@@ -482,7 +482,7 @@ module vdp_register (
 			ff_r9_2page_mode			<= 1'b0;
 			reg_r9_interlace_mode		<= 1'b0;
 			reg_r9_y_dots				<= 1'b0;
-			reg_r10r3_col_addr			<= 'd0;
+			reg_r10r3_color			<= 'd0;
 			reg_r11r5_sp_atr_addr		<= 'd0;
 			vdp_r15_status_reg_num		<= 'd0;
 			vdp_r16_pal_num				<= 4'd0;
@@ -647,9 +647,9 @@ module vdp_register (
 				5'b00010:		// #02
 					ff_r2_pt_nam_addr		<= vdp_p1_data[6:0];
 				5'b00011:		// #03
-					reg_r10r3_col_addr[7:0]	<= vdp_p1_data[7:0];
+					reg_r10r3_color[7:0]	<= vdp_p1_data[7:0];
 				5'b00100:		// #04
-					reg_r4_pt_gen_addr		<= vdp_p1_data[5:0];
+					reg_r4_pattern_generator		<= vdp_p1_data[5:0];
 				5'b00101:		// #05
 					reg_r11r5_sp_atr_addr[7:0]	<= vdp_p1_data;
 				5'b00110:		// #06
@@ -669,7 +669,7 @@ module vdp_register (
 						reg_r9_y_dots			<= vdp_p1_data[7];
 					end
 				5'b01010:		// #10
-					reg_r10r3_col_addr[10:8]	<= vdp_p1_data[2:0];
+					reg_r10r3_color[10:8]	<= vdp_p1_data[2:0];
 				5'b01011:		// #11
 					reg_r11r5_sp_atr_addr[9:8]	<= vdp_p1_data[1:0];
 				5'b01100:		// #12

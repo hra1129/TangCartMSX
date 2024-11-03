@@ -75,9 +75,9 @@ module vdp_graphic123m (
 	input				vdp_mode_graphic2,
 	input				vdp_mode_graphic3,
 	// registers
-	input	[6:0]		reg_r2_pt_nam_addr,
-	input	[5:0]		reg_r4_pt_gen_addr,
-	input	[10:0]		reg_r10r3_col_addr,
+	input	[6:0]		reg_r2_pattern_name,
+	input	[5:0]		reg_r4_pattern_generator,
+	input	[10:0]		reg_r10r3_color,
 	input	[8:3]		reg_r26_h_scroll,
 	input	[2:0]		reg_r27_h_scroll,
 	//
@@ -85,59 +85,47 @@ module vdp_graphic123m (
 	output	[16:0]		p_ram_adr,
 	output	[3:0]		p_color_code
 );
-	reg		[16:0]		ff_req_addr;
-	reg		[3:0]		ff_col_code;
-	reg		[7:0]		ff_pat_num;
-	reg		[7:0]		ff_pre_pat_gen;
-	reg		[7:0]		ff_pre_pat_col;
-	reg		[7:0]		ff_pat_gen;
-	reg		[7:0]		ff_pat_col;
-	wire	[16:0]		w_req_pat_name_tbl_addr;
-	wire	[16:0]		w_req_pat_gen_tbl_addr;
-	wire	[16:0]		w_req_pat_col_tbl_addr;
-	wire	[16:0]		w_req_addr;
-	wire				w_col_hl_sel;
-	wire	[3:0]		w_col_code;
-	wire	[3:0]		w_eight_dot_state_dec;
+	reg		[7:0]		ff_ram_dat;
+	reg		[16:0]		ff_vram_address;
+	reg		[3:0]		ff_color_code;
+	reg		[7:0]		ff_pre_pattern_num;
+	reg		[7:0]		ff_pre_pattern_generator;
+	reg		[7:0]		ff_pre_color;
+	reg		[7:0]		ff_pattern_generator;
+	reg		[7:0]		ff_color;
+	wire	[16:0]		w_pattern_name_address;
+	wire	[16:0]		w_pattern_generator_address;
+	wire	[16:0]		w_color_address;
+	wire				w_foreground_dot;
 	wire	[7:3]		w_dot_counter_x;
 
-	assign w_dot_counter_x			= reg_r26_h_scroll[7:3] + dot_counter_x[7:3];
+	assign w_dot_counter_x				= reg_r26_h_scroll[7:3] + dot_counter_x[7:3];
 
 	// address decode
-	assign w_req_pat_name_tbl_addr	= { reg_r2_pt_nam_addr, dot_counter_y[7:3], w_dot_counter_x };
+	assign w_pattern_name_address		= { reg_r2_pattern_name, dot_counter_y[7:3], w_dot_counter_x };
 
-	assign w_req_pat_gen_tbl_addr	= ( vdp_mode_graphic1 == 1'b1 ) ? { reg_r4_pt_gen_addr, ff_pat_num, dot_counter_y[2:0] } :
-									  ( { reg_r4_pt_gen_addr[5:2], dot_counter_y[7:6], ff_pat_num, dot_counter_y[2:0] } & { 4'b1111, reg_r4_pt_gen_addr[1:0], 11'b11111111111 } );
+	assign w_pattern_generator_address	= ( vdp_mode_graphic1 == 1'b1 ) ? { reg_r4_pattern_generator, ff_pre_pattern_num, dot_counter_y[2:0] } :
+										  ( { reg_r4_pattern_generator[5:2], dot_counter_y[7:6], ff_pre_pattern_num, dot_counter_y[2:0] } & { 4'b1111, reg_r4_pattern_generator[1:0], 11'b11111111111 } );
 
-	assign w_req_pat_col_tbl_addr	= ( vdp_mode_multi == 1'b1 || vdp_mode_multiq == 1'b1 ) ? { reg_r4_pt_gen_addr, ff_pat_num, dot_counter_y[4:2] } :
-									  ( vdp_mode_graphic1 == 1'b1 )                         ? { reg_r10r3_col_addr, 1'b0, ff_pat_num[7:3] } :
-									  ( { reg_r10r3_col_addr[10:7], dot_counter_y[7:6], ff_pat_num, dot_counter_y[2:0] } & { 4'b1111, reg_r10r3_col_addr[6:0], 6'b111111 } );
-
-	// dram read request
-	function [3:0] func_4dec(
-		input	[2:0]	eight_dot_state
-	);
-		case( eight_dot_state )
-			3'd0:		func_4dec = 4'b0001;
-			3'd1:		func_4dec = 4'b0010;
-			3'd2:		func_4dec = 4'b0100;
-			3'd3:		func_4dec = 4'b1000;
-			default:	func_4dec = 4'b0000;
-		endcase
-	endfunction
-	assign w_eight_dot_state_dec	= func_4dec( eight_dot_state );
-
-	assign w_req_addr				= ( eight_dot_state == 3'd0 ) ? w_req_pat_name_tbl_addr:
-									  ( eight_dot_state == 3'd1 ) ? w_req_pat_gen_tbl_addr:
-									  ( eight_dot_state == 3'd2 ) ? w_req_pat_col_tbl_addr: ff_req_addr;
+	assign w_color_address				= ( vdp_mode_multi == 1'b1 || vdp_mode_multiq == 1'b1 ) ? { reg_r4_pattern_generator, ff_pre_pattern_num, dot_counter_y[4:2] } :
+										  ( vdp_mode_graphic1 == 1'b1 )                         ? { reg_r10r3_color, 1'b0, ff_pre_pattern_num[7:3] } :
+										  ( { reg_r10r3_color[10:7], dot_counter_y[7:6], ff_pre_pattern_num, dot_counter_y[2:0] } & { 4'b1111, reg_r10r3_color[6:0], 6'b111111 } );
 
 	// generate pixel color number
-	assign w_col_hl_sel		=	( vdp_mode_multi || vdp_mode_multiq ) ? ~eight_dot_state[2]: ff_pat_gen[7];
-	assign w_col_code		=	( w_col_hl_sel ) ? ff_pat_col[7:4] : ff_pat_col[3:0];
+	assign w_foreground_dot				=	( vdp_mode_multi || vdp_mode_multiq ) ? ~eight_dot_state[2]: ff_pattern_generator[7];
 
 	// out assignment
-	assign p_ram_adr		= ff_req_addr;
-	assign p_color_code		= ff_col_code;
+	assign p_ram_adr					= ff_vram_address;
+	assign p_color_code					= ff_color_code;
+
+	// --------------------------------------------------------------------
+	//	VRAM latch
+	// --------------------------------------------------------------------
+	always @( posedge clk ) begin
+		if( dot_state == 2'b01 ) begin
+			ff_ram_dat <= p_ram_dat;
+		end
+	end
 
 	// --------------------------------------------------------------------
 	//	[memo]
@@ -145,85 +133,72 @@ module vdp_graphic123m (
 	// --------------------------------------------------------------------
 	always @( posedge clk ) begin
 		if( reset )begin
-			ff_req_addr <= 17'd0;
+			ff_vram_address <= 17'd0;
 		end
 		else if( !enable )begin
 			//	hold
 		end
 		else if( dot_state == 2'b11 )begin
-			ff_req_addr <= w_req_addr;
+			case( eight_dot_state )
+			3'd0:		ff_vram_address <= w_pattern_name_address;
+			3'd1:		ff_vram_address <= w_pattern_generator_address;
+			3'd2:		ff_vram_address <= w_color_address;
+			default:
+				begin
+					//	hold
+				end
+			endcase
 		end
 	end
 
 	always @( posedge clk ) begin
 		if( reset )begin
-			ff_col_code <= 4'd0;
+			ff_color_code <= 4'd0;
 		end
 		else if( !enable )begin
 			//	hold
 		end
 		else if( dot_state == 2'b01 )begin
-			ff_col_code <= w_col_code;
-		end
-	end
-
-	// --------------------------------------------------------------------
-	//	eight dot state = 0: shift pattern generator table
-	// --------------------------------------------------------------------
-	always @( posedge clk ) begin
-		if( reset )begin
-			ff_pat_col <= 8'd0;
-		end
-		else if( !enable )begin
-			//	hold
-		end
-		else if( dot_state == 2'b00 && w_eight_dot_state_dec[0] == 1'b1 )begin
-			ff_pat_col <= ff_pre_pat_col;
-		end
-	end
-
-	always @( posedge clk ) begin
-		if( reset )begin
-			ff_pat_gen <= 8'd0;
-		end
-		else if( !enable )begin
-			//	hold
-		end
-		else if( dot_state == 2'b00 && w_eight_dot_state_dec[0] == 1'b1 )begin
-			ff_pat_gen <= ff_pre_pat_gen;
-		end
-		else if( dot_state == 2'b00 )begin
-			ff_pat_gen <= { ff_pat_gen[6:0], 1'b0 };
+			if( w_foreground_dot ) begin
+				ff_color_code <= ff_color[7:4];
+			end
+			else begin
+				ff_color_code <= ff_color[3:0];
+			end
 		end
 	end
 
 	// --------------------------------------------------------------------
 	//	eight dot state = 1: read pattern name table
+	//		パターンジェネレーターテーブルと、カラーテーブルのどこから
+	//		読み出すのか決める値。これをパターンネームテーブルから読み出す。
 	// --------------------------------------------------------------------
 	always @( posedge clk ) begin
 		if( reset )begin
-			ff_pat_num <= 8'd0;
+			ff_pre_pattern_num <= 8'd0;
 		end
 		else if( !enable )begin
 			//	hold
 		end
-		else if( dot_state == 2'b01 && w_eight_dot_state_dec[1] == 1'b1 )begin
-			ff_pat_num <= p_ram_dat;
+		else if( dot_state == 2'b10 && eight_dot_state == 3'd1 )begin
+			ff_pre_pattern_num <= ff_ram_dat;
 		end
 	end
 
 	// --------------------------------------------------------------------
 	//	eight dot state = 2: read pattern generator table
+	//		ff_pre_pattern_num に基づいたパターンジェネレータテーブル
+	//		からの読み出し結果を ff_pre_pattern_generator に保存。
 	// --------------------------------------------------------------------
 	always @( posedge clk ) begin
 		if( reset )begin
-			ff_pre_pat_gen <= 8'd0;
+			ff_pre_pattern_generator <= 8'd0;
 		end
 		else if( !enable )begin
 			//	hold
 		end
-		else if( dot_state == 2'b01 && w_eight_dot_state_dec[2] == 1'b1 )begin
-			ff_pre_pat_gen <= p_ram_dat;
+		else if( dot_state == 2'b10 && eight_dot_state == 3'd2 )begin
+			ff_pre_pattern_generator <= ff_ram_dat;
 		end
 	end
 
@@ -232,13 +207,43 @@ module vdp_graphic123m (
 	// --------------------------------------------------------------------
 	always @( posedge clk ) begin
 		if( reset )begin
-			ff_pre_pat_col <= 8'd0;
+			ff_pre_color <= 8'd0;
 		end
 		else if( !enable )begin
 			//	hold
 		end
-		else if( dot_state == 2'b01 && w_eight_dot_state_dec[3] == 1'b1 )begin
-			ff_pre_pat_col <= p_ram_dat;
+		else if( dot_state == 2'b10 && eight_dot_state == 3'd3 )begin
+			ff_pre_color <= ff_ram_dat;
+		end
+	end
+
+	// --------------------------------------------------------------------
+	//	eight dot state = 0: shift pattern generator table
+	// --------------------------------------------------------------------
+	always @( posedge clk ) begin
+		if( reset )begin
+			ff_color <= 8'd0;
+		end
+		else if( !enable )begin
+			//	hold
+		end
+		else if( dot_state == 2'b00 && eight_dot_state == 3'd0 )begin
+			ff_color <= ff_pre_color;
+		end
+	end
+
+	always @( posedge clk ) begin
+		if( reset )begin
+			ff_pattern_generator <= 8'd0;
+		end
+		else if( !enable )begin
+			//	hold
+		end
+		else if( dot_state == 2'b00 && eight_dot_state == 3'd0 )begin
+			ff_pattern_generator <= ff_pre_pattern_generator;
+		end
+		else if( dot_state == 2'b00 )begin
+			ff_pattern_generator <= { ff_pattern_generator[6:0], 1'b0 };
 		end
 	end
 endmodule

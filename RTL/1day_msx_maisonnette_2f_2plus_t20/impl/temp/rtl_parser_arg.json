@@ -14,7 +14,7 @@
    "Type" : "verilog"
   },
   {
-   "Path" : "D:/github/HRA_product/TangCartMSX/RTL/1day_msx_maisonnette_2f_2plus_t20/src/sdram/ip_sdram.v",
+   "Path" : "D:/github/HRA_product/TangCartMSX/RTL/modules/sdram/ip_sdram.v",
    "Type" : "verilog"
   },
   {
@@ -22,71 +22,71 @@
    "Type" : "verilog"
   },
   {
-   "Path" : "D:/github/HRA_product/TangCartMSX/RTL/1day_msx_maisonnette_2f_2plus_t20/src/v9958/vdp.v",
+   "Path" : "D:/github/HRA_product/TangCartMSX/RTL/modules/v9958/vdp.v",
    "Type" : "verilog"
   },
   {
-   "Path" : "D:/github/HRA_product/TangCartMSX/RTL/1day_msx_maisonnette_2f_2plus_t20/src/v9958/vdp_colordec.v",
+   "Path" : "D:/github/HRA_product/TangCartMSX/RTL/modules/v9958/vdp_colordec.v",
    "Type" : "verilog"
   },
   {
-   "Path" : "D:/github/HRA_product/TangCartMSX/RTL/1day_msx_maisonnette_2f_2plus_t20/src/v9958/vdp_command.v",
+   "Path" : "D:/github/HRA_product/TangCartMSX/RTL/modules/v9958/vdp_command.v",
    "Type" : "verilog"
   },
   {
-   "Path" : "D:/github/HRA_product/TangCartMSX/RTL/1day_msx_maisonnette_2f_2plus_t20/src/v9958/vdp_doublebuf.v",
+   "Path" : "D:/github/HRA_product/TangCartMSX/RTL/modules/v9958/vdp_doublebuf.v",
    "Type" : "verilog"
   },
   {
-   "Path" : "D:/github/HRA_product/TangCartMSX/RTL/1day_msx_maisonnette_2f_2plus_t20/src/v9958/vdp_graphic123m.v",
+   "Path" : "D:/github/HRA_product/TangCartMSX/RTL/modules/v9958/vdp_graphic123m.v",
    "Type" : "verilog"
   },
   {
-   "Path" : "D:/github/HRA_product/TangCartMSX/RTL/1day_msx_maisonnette_2f_2plus_t20/src/v9958/vdp_graphic4567.v",
+   "Path" : "D:/github/HRA_product/TangCartMSX/RTL/modules/v9958/vdp_graphic4567.v",
    "Type" : "verilog"
   },
   {
-   "Path" : "D:/github/HRA_product/TangCartMSX/RTL/1day_msx_maisonnette_2f_2plus_t20/src/v9958/vdp_interrupt.v",
+   "Path" : "D:/github/HRA_product/TangCartMSX/RTL/modules/v9958/vdp_inst.v",
    "Type" : "verilog"
   },
   {
-   "Path" : "D:/github/HRA_product/TangCartMSX/RTL/1day_msx_maisonnette_2f_2plus_t20/src/v9958/vdp_lcd.v",
+   "Path" : "D:/github/HRA_product/TangCartMSX/RTL/modules/v9958/vdp_interrupt.v",
    "Type" : "verilog"
   },
   {
-   "Path" : "D:/github/HRA_product/TangCartMSX/RTL/1day_msx_maisonnette_2f_2plus_t20/src/v9958/vdp_linebuf.v",
+   "Path" : "D:/github/HRA_product/TangCartMSX/RTL/modules/v9958/vdp_lcd.v",
    "Type" : "verilog"
   },
   {
-   "Path" : "D:/github/HRA_product/TangCartMSX/RTL/1day_msx_maisonnette_2f_2plus_t20/src/v9958/vdp_ram256.v",
+   "Path" : "D:/github/HRA_product/TangCartMSX/RTL/modules/v9958/vdp_linebuf.v",
    "Type" : "verilog"
   },
   {
-   "Path" : "D:/github/HRA_product/TangCartMSX/RTL/1day_msx_maisonnette_2f_2plus_t20/src/v9958/vdp_register.v",
+   "Path" : "D:/github/HRA_product/TangCartMSX/RTL/modules/v9958/vdp_ram256.v",
    "Type" : "verilog"
   },
   {
-   "Path" : "D:/github/HRA_product/TangCartMSX/RTL/1day_msx_maisonnette_2f_2plus_t20/src/v9958/vdp_spinforam.v",
+   "Path" : "D:/github/HRA_product/TangCartMSX/RTL/modules/v9958/vdp_register.v",
    "Type" : "verilog"
   },
   {
-   "Path" : "D:/github/HRA_product/TangCartMSX/RTL/1day_msx_maisonnette_2f_2plus_t20/src/v9958/vdp_sprite.v",
+   "Path" : "D:/github/HRA_product/TangCartMSX/RTL/modules/v9958/vdp_spinforam.v",
    "Type" : "verilog"
   },
   {
-   "Path" : "D:/github/HRA_product/TangCartMSX/RTL/1day_msx_maisonnette_2f_2plus_t20/src/v9958/vdp_ssg.v",
+   "Path" : "D:/github/HRA_product/TangCartMSX/RTL/modules/v9958/vdp_sprite.v",
    "Type" : "verilog"
   },
   {
-   "Path" : "D:/github/HRA_product/TangCartMSX/RTL/1day_msx_maisonnette_2f_2plus_t20/src/v9958/vdp_text12.v",
+   "Path" : "D:/github/HRA_product/TangCartMSX/RTL/modules/v9958/vdp_ssg.v",
    "Type" : "verilog"
   },
   {
-   "Path" : "D:/github/HRA_product/TangCartMSX/RTL/1day_msx_maisonnette_2f_2plus_t20/src/v9958/vdp_wait_control.v",
+   "Path" : "D:/github/HRA_product/TangCartMSX/RTL/modules/v9958/vdp_text12.v",
    "Type" : "verilog"
   },
   {
-   "Path" : "D:/github/HRA_product/TangCartMSX/RTL/1day_msx_maisonnette_2f_2plus_t20/src/v9958/vdp_inst.v",
+   "Path" : "D:/github/HRA_product/TangCartMSX/RTL/modules/v9958/vdp_wait_control.v",
    "Type" : "verilog"
   }
  ],
