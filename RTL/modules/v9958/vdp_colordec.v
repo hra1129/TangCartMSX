@@ -69,16 +69,16 @@ module vdp_colordec (
 	input			vdp_mode_text2		,
 	input			vdp_mode_multi		,
 	input			vdp_mode_multiq		,
-	input			vdp_mode_graphic1		,
-	input			vdp_mode_graphic2		,
-	input			vdp_mode_graphic3		,
-	input			vdp_mode_graphic4		,
-	input			vdp_mode_graphic5		,
-	input			vdp_mode_graphic6		,
-	input			vdp_mode_graphic7		,
+	input			vdp_mode_graphic1	,
+	input			vdp_mode_graphic2	,
+	input			vdp_mode_graphic3	,
+	input			vdp_mode_graphic4	,
+	input			vdp_mode_graphic5	,
+	input			vdp_mode_graphic6	,
+	input			vdp_mode_graphic7	,
 
 	input			window				,	// 有効表示領域だけ 1 になる
-	input			sp_color_code_en		,	// スプライトの画素位置だけ 1 になる
+	input			sp_color_code_en	,	// スプライトの画素位置だけ 1 になる
 	input	[3:0]	colorcodet12		,	// text1, 2 の色
 	input	[3:0]	colorcodeg123m		,	// graphic1,2,3,mosaic の色
 	input	[7:0]	colorcodeg4567		,	// graphic4,5,6,7 の色
@@ -144,15 +144,15 @@ module vdp_colordec (
 			end
 			else if( !vdp_mode_graphic7 || reg_r25_yjk ) begin
 				//	palette color (not graphic7, sprite on yjk mode, yae color on yjk mode)
-				ff_video_r <= { palettedatarb_out[6:4], 3'b000 };
-				ff_video_g <= { palettedatag_out [2:0], 3'b000 };
-				ff_video_b <= { palettedatarb_out[2:0], 3'b000 };
+				ff_video_r <= { palettedatarb_out[6:4], palettedatarb_out[6:4] };
+				ff_video_g <= { palettedatag_out [2:0], palettedatag_out [2:0] };
+				ff_video_b <= { palettedatarb_out[2:0], palettedatarb_out[2:0] };
 			end
 			else begin
 				//	graphic7
-				ff_video_r <= { ff_grp7_color_code[4:2], 3'b000 };
-				ff_video_g <= { ff_grp7_color_code[7:5], 3'b000 };
-				ff_video_b <= { ff_grp7_color_code[1:0], ff_grp7_color_code[1], 3'b000 };
+				ff_video_r <= { ff_grp7_color_code[4:2], ff_grp7_color_code[4:2] };
+				ff_video_g <= { ff_grp7_color_code[7:5], ff_grp7_color_code[7:5] };
+				ff_video_b <= { ff_grp7_color_code[1:0], ff_grp7_color_code[1:0], ff_grp7_color_code[1:0] };
 			end
 		end
 	end

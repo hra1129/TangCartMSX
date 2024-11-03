@@ -159,19 +159,11 @@
         "SubInsts" : [
          {
           "InstFile" : "D:/github/HRA_product/TangCartMSX/RTL/modules/v9958/vdp_register.v",
-          "InstLine" : 326,
-          "InstName" : "u_palette_mem_rb",
-          "ModuleFile" : "D:/github/HRA_product/TangCartMSX/RTL/modules/v9958/vdp_ram256.v",
+          "InstLine" : 330,
+          "InstName" : "u_palette_ram",
+          "ModuleFile" : "D:/github/HRA_product/TangCartMSX/RTL/modules/v9958/vdp_palette_ram.v",
           "ModuleLine" : 32,
-          "ModuleName" : "vdp_ram256"
-         },
-         {
-          "InstFile" : "D:/github/HRA_product/TangCartMSX/RTL/modules/v9958/vdp_register.v",
-          "InstLine" : 334,
-          "InstName" : "u_palette_mem_g",
-          "ModuleFile" : "D:/github/HRA_product/TangCartMSX/RTL/modules/v9958/vdp_ram256.v",
-          "ModuleLine" : 32,
-          "ModuleName" : "vdp_ram256"
+          "ModuleName" : "vdp_palette_ram"
          }
         ]
        },

@@ -141,7 +141,7 @@ module vdp_inst(
 
 	vdp u_v9958_core (
 		.reset				( !reset_n					),	// IN	STD_LOGIC;
-		.initial_busy		( w_sdram_busy				),	// IN	STD_LOGIC;
+		.initial_busy		( initial_busy				),	// IN	STD_LOGIC;
 		.clk				( clk						),	// IN	STD_LOGIC;
 		.enable				( ff_enable					),	// OUT	STD_LOGIC;
 		.req				( req						),	// IN	STD_LOGIC;

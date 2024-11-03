@@ -12,7 +12,6 @@ Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\modules\v9958\vdp_
 Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\modules\v9958\vdp_graphic123m.v'
 Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\modules\v9958\vdp_graphic4567.v'
 Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\modules\v9958\vdp_inst.v'
-Undeclared symbol 'w_sdram_busy', assumed default net type 'wire'("D:\github\HRA_product\TangCartMSX\RTL\modules\v9958\vdp_inst.v":144)
 Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\modules\v9958\vdp_interrupt.v'
 Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\modules\v9958\vdp_lcd.v'
 Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\modules\v9958\vdp_linebuf.v'
@@ -23,6 +22,7 @@ Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\modules\v9958\vdp_
 Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\modules\v9958\vdp_ssg.v'
 Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\modules\v9958\vdp_text12.v'
 Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\modules\v9958\vdp_wait_control.v'
+Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\modules\v9958\vdp_palette_ram.v'
 Compiling module 'tang20cart_msx'("D:\github\HRA_product\TangCartMSX\RTL\1day_msx_maisonnette_2f_2plus_t20\src\tang20cart_msx.v":26)
 Compiling module 'Gowin_PLL'("D:\github\HRA_product\TangCartMSX\RTL\1day_msx_maisonnette_2f_2plus_t20\src\gowin_pll\gowin_pll.v":9)
 WARN  (EX3791) : Expression size 27 truncated to fit in target size 26("D:\github\HRA_product\TangCartMSX\RTL\1day_msx_maisonnette_2f_2plus_t20\src\tang20cart_msx.v":174)
@@ -136,6 +136,8 @@ WARN  (EX3791) : Expression size 10 truncated to fit in target size 9("D:\github
 WARN  (EX3791) : Expression size 4 truncated to fit in target size 3("D:\github\HRA_product\TangCartMSX\RTL\modules\v9958\vdp_sprite.v":869)
 WARN  (EX3791) : Expression size 9 truncated to fit in target size 8("D:\github\HRA_product\TangCartMSX\RTL\modules\v9958\vdp_sprite.v":927)
 Compiling module 'vdp_register'("D:\github\HRA_product\TangCartMSX\RTL\modules\v9958\vdp_register.v":56)
+Compiling module 'vdp_palette_ram'("D:\github\HRA_product\TangCartMSX\RTL\modules\v9958\vdp_palette_ram.v":32)
+Extracting RAM for identifier 'ff_block_ram'("D:\github\HRA_product\TangCartMSX\RTL\modules\v9958\vdp_palette_ram.v":40)
 WARN  (EX3670) : Actual bit length 1 differs from formal bit length 8 for port 'vdp_cmd_clr'("D:\github\HRA_product\TangCartMSX\RTL\modules\v9958\vdp.v":1015)
 Compiling module 'vdp_command'("D:\github\HRA_product\TangCartMSX\RTL\modules\v9958\vdp_command.v":56)
 WARN  (EX3791) : Expression size 32 truncated to fit in target size 10("D:\github\HRA_product\TangCartMSX\RTL\modules\v9958\vdp_command.v":514)
@@ -162,7 +164,6 @@ Compiling module 'vdp_doublebuf'("D:\github\HRA_product\TangCartMSX\RTL\modules\
 Compiling module 'vdp_linebuf'("D:\github\HRA_product\TangCartMSX\RTL\modules\v9958\vdp_linebuf.v":83)
 Extracting RAM for identifier 'ff_imem'("D:\github\HRA_product\TangCartMSX\RTL\modules\v9958\vdp_linebuf.v":90)
 WARN  (EX3791) : Expression size 32 truncated to fit in target size 10("D:\github\HRA_product\TangCartMSX\RTL\modules\v9958\vdp_lcd.v":366)
-WARN  (EX1998) : Net 'w_sdram_busy' does not have a driver("D:\github\HRA_product\TangCartMSX\RTL\modules\v9958\vdp_inst.v":144)
 NOTE  (EX0101) : Current top module is "tang20cart_msx"
 [5%] Running netlist conversion ...
 WARN  (CV0016) : Input n_treset is unused("D:\github\HRA_product\TangCartMSX\RTL\1day_msx_maisonnette_2f_2plus_t20\src\tang20cart_msx.v":29)
@@ -187,7 +188,6 @@ Running technical mapping ...
 [80%] Tech-Mapping Phase 3 completed
 [90%] Tech-Mapping Phase 4 completed
 WARN  (NL0002) : The module "vdp_interrupt" instantiated to "u_interrupt" is swept in optimizing("D:\github\HRA_product\TangCartMSX\RTL\modules\v9958\vdp.v":767)
-WARN  (NL0002) : The module "vdp_ram256" instantiated to "u_palette_mem_g" is swept in optimizing("D:\github\HRA_product\TangCartMSX\RTL\modules\v9958\vdp_register.v":340)
 [95%] Generate netlist file "D:\github\HRA_product\TangCartMSX\RTL\1day_msx_maisonnette_2f_2plus_t20\impl\gwsynthesis\Tang20kcartMSX.vg" completed
 [100%] Generate report file "D:\github\HRA_product\TangCartMSX\RTL\1day_msx_maisonnette_2f_2plus_t20\impl\gwsynthesis\Tang20kcartMSX_syn.rpt.html" completed
 GowinSynthesis finish

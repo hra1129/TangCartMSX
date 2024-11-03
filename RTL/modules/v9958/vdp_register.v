@@ -180,11 +180,12 @@ module vdp_register (
 	reg		[5:0]	vdp_r17_reg_num;
 	reg				vdp_r17_inc_reg_num;
 
-	wire	[7:0]	palette_addr;
+	wire	[3:0]	palette_addr;
 	wire			palette_we;
-	reg		[7:0]	palette_data_rb_in;
-	reg		[7:0]	palette_data_g_in;
-	reg		[3:0]	palette_wr_num;
+	reg		[2:0]	ff_palette_data_r_in;
+	reg		[2:0]	ff_palette_data_g_in;
+	reg		[2:0]	ff_palette_data_b_in;
+	reg		[3:0]	ff_palette_wr_num;
 	reg				ff_palette_wr_req;
 	reg				ff_palette_wr_ack;
 	reg				ff_palette_in;
@@ -204,6 +205,8 @@ module vdp_register (
 	wire			w_even_dotstate;
 	wire			w_is_bitmap_mode;
 	wire			w_ram_we;
+	wire	[8:0]	w_palette_wdata;
+	wire	[8:0]	w_palette_rdata;
 
 	assign ack							= ff_ack;
 	assign sp_vdp_s0_reset_req			= ff_sp_vdp_s0_reset_req;
@@ -286,7 +289,7 @@ module vdp_register (
 	// --------------------------------------------------------------------
 	// palette register
 	// --------------------------------------------------------------------
-	assign palette_addr		= ( ff_palette_in ) ? { 4'b0000, palette_wr_num }: { 4'b0000, palette_addr_out };
+	assign palette_addr		= ( ff_palette_in ) ? ff_palette_wr_num : palette_addr_out;
 	assign palette_we		=   ff_palette_in;
 	assign w_even_dotstate	= ( dot_state == 2'b00 || dot_state == 2'b11 ) ? 1'b1: 1'b0;
 
@@ -321,23 +324,20 @@ module vdp_register (
 		end
 	end
 
-	assign w_ram_we		= palette_we && enable;
+	assign w_ram_we			= palette_we;
+	assign w_palette_wdata	= { ff_palette_data_r_in, ff_palette_data_b_in, ff_palette_data_g_in };
 
-	vdp_ram256 u_palette_mem_rb (
-		.adr		( palette_addr			),
+	vdp_palette_ram u_palette_ram (
 		.clk		( clk					),
+		.enable		( enable				),
+		.adr		( palette_addr			),
 		.we			( w_ram_we				),
-		.dbo		( palette_data_rb_in	),
-		.dbi		( palette_data_rb_out	)
+		.d			( w_palette_wdata		),
+		.q			( w_palette_rdata		)
 	);
 
-	vdp_ram256 u_palette_mem_g (
-		.adr		( palette_addr			),
-		.clk		( clk					),
-		.we			( w_ram_we				),
-		.dbo		( palette_data_g_in		),
-		.dbi		( palette_data_g_out	)
-	);
+	assign palette_data_rb_out	= { 1'd0, w_palette_rdata[8:6], 1'd0, w_palette_rdata[5:3] };
+	assign palette_data_g_out	= { 5'd0, w_palette_rdata[2:0] };
 
 	// --------------------------------------------------------------------
 	// process of cpu read request
@@ -503,13 +503,14 @@ module vdp_register (
 			vdp_cmd_reg_data			<= 'd0;
 			vdp_cmd_reg_wr_req			<= 1'b0;
 			vdp_cmd_tr_clr_req			<= 1'b0;
-			ff_sp_vdp_s0_reset_req			<= 1'b0;
+			ff_sp_vdp_s0_reset_req		<= 1'b0;
 
 			// palette
-			palette_data_rb_in			<= 'd0;
-			palette_data_g_in			<= 'd0;
+			ff_palette_data_r_in		<= 3'd0;
+			ff_palette_data_b_in		<= 3'd0;
+			ff_palette_data_g_in		<= 3'd0;
 			ff_palette_wr_req			<= 1'b0;
-			palette_wr_num				<= 'd0;
+			ff_palette_wr_num			<= 'd0;
 		end
 		else if( !enable ) begin
 			//	hold
@@ -593,17 +594,18 @@ module vdp_register (
 			2'b10:	// port#2:palette write
 				begin
 					if( vdp_p2_is_1st_byte ) begin
-						palette_data_rb_in		<= dbo;
-						vdp_p2_is_1st_byte		<= 1'b0;
+						ff_palette_data_r_in		<= dbo[6:4];
+						ff_palette_data_b_in		<= dbo[2:0];
+						vdp_p2_is_1st_byte			<= 1'b0;
 					end
 					else begin
 						// パレットはrgbのデータが揃った時に一度に書き換える。
 						// (実機で動作を確認した)
-						palette_data_g_in		<= dbo;
-						palette_wr_num			<= vdp_r16_pal_num;
-						ff_palette_wr_req		<= ~ff_palette_wr_ack;
-						vdp_p2_is_1st_byte		<= 1'b1;
-						vdp_r16_pal_num			<= vdp_r16_pal_num + 4'd1;
+						ff_palette_data_g_in		<= dbo[2:0];
+						ff_palette_wr_num			<= vdp_r16_pal_num;
+						ff_palette_wr_req			<= ~ff_palette_wr_ack;
+						vdp_p2_is_1st_byte			<= 1'b1;
+						vdp_r16_pal_num				<= vdp_r16_pal_num + 4'd1;
 					end
 				end
 			2'b11:	// port#3:indirect register write

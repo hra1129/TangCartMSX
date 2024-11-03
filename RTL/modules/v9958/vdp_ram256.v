@@ -37,17 +37,16 @@ module vdp_ram256 (
 	output	[7:0]	dbi
 );
 	reg		[7:0]	ff_block_ram [0:255];
-	reg		[7:0]	ff_adr;
+	reg		[7:0]	ff_q;
 
 	always @( posedge clk ) begin
 		if( we ) begin
-			ff_block_ram[ adr ] <= dbo;
+			ff_block_ram[ adr ]	<= dbo;
+		end
+		else begin
+			ff_q				<= ff_block_ram[ adr ];
 		end
 	end
 
-	always @( posedge clk ) begin
-		ff_adr <= adr;
-	end
-
-	assign dbi = ff_block_ram[ ff_adr ];
+	assign dbi = ff_q;
 endmodule

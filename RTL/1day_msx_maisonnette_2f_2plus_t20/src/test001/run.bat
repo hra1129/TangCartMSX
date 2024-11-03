@@ -10,6 +10,7 @@ rem vlog ..\..\..\modules\sdram\ip_sdram_dummy.v
 rem vlog ..\..\..\modules\sdram\ip_sdram_dummy2.v
 
 vlog ..\..\..\modules\v9958\vdp_ram256.v
+vlog ..\..\..\modules\v9958\vdp_palette_ram.v
 vlog ..\..\..\modules\v9958\vdp_colordec.v
 vlog ..\..\..\modules\v9958\vdp_command.v
 vlog ..\..\..\modules\v9958\vdp_doublebuf.v

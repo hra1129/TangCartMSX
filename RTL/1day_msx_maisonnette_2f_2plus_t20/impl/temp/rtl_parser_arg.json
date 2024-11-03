@@ -88,6 +88,10 @@
   {
    "Path" : "D:/github/HRA_product/TangCartMSX/RTL/modules/v9958/vdp_wait_control.v",
    "Type" : "verilog"
+  },
+  {
+   "Path" : "D:/github/HRA_product/TangCartMSX/RTL/modules/v9958/vdp_palette_ram.v",
+   "Type" : "verilog"
   }
  ],
  "IncludePath" : [

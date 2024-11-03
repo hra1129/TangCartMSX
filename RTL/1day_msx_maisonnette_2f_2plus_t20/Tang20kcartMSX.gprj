@@ -10,28 +10,29 @@
         <File path="src/gowin_pll/gowin_pll.v" type="file.verilog" enable="1"/>
         <File path="src/lcd/ip_lcd.v" type="file.verilog" enable="0"/>
         <File path="src/msxbus/ip_msxbus.v" type="file.verilog" enable="0"/>
-        <File path="../modules/sdram/ip_sdram.v" type="file.verilog" enable="1"/>
-        <File path="../modules/sdram/ip_sdram_dummy.v" type="file.verilog" enable="0"/>
-        <File path="../modules/sdram/ip_sdram_dummy2.v" type="file.verilog" enable="0"/>
-        <File path="../modules/sdram/ip_sdram_dummy3.v" type="file.verilog" enable="0"/>
         <File path="src/tang20cart_msx.v" type="file.verilog" enable="1"/>
-        <File path="../modules/v9958/vdp.v" type="file.verilog" enable="1"/>
-        <File path="../modules/v9958/vdp_colordec.v" type="file.verilog" enable="1"/>
-        <File path="../modules/v9958/vdp_command.v" type="file.verilog" enable="1"/>
-        <File path="../modules/v9958/vdp_doublebuf.v" type="file.verilog" enable="1"/>
-        <File path="../modules/v9958/vdp_graphic123m.v" type="file.verilog" enable="1"/>
-        <File path="../modules/v9958/vdp_graphic4567.v" type="file.verilog" enable="1"/>
-        <File path="../modules/v9958/vdp_inst.v" type="file.verilog" enable="1"/>
-        <File path="../modules/v9958/vdp_interrupt.v" type="file.verilog" enable="1"/>
-        <File path="../modules/v9958/vdp_lcd.v" type="file.verilog" enable="1"/>
-        <File path="../modules/v9958/vdp_linebuf.v" type="file.verilog" enable="1"/>
-        <File path="../modules/v9958/vdp_ram256.v" type="file.verilog" enable="1"/>
-        <File path="../modules/v9958/vdp_register.v" type="file.verilog" enable="1"/>
-        <File path="../modules/v9958/vdp_spinforam.v" type="file.verilog" enable="1"/>
-        <File path="../modules/v9958/vdp_sprite.v" type="file.verilog" enable="1"/>
-        <File path="../modules/v9958/vdp_ssg.v" type="file.verilog" enable="1"/>
-        <File path="../modules/v9958/vdp_text12.v" type="file.verilog" enable="1"/>
-        <File path="../modules/v9958/vdp_wait_control.v" type="file.verilog" enable="1"/>
+        <File path="D:/github/HRA_product/TangCartMSX/RTL/modules/sdram/ip_sdram.v" type="file.verilog" enable="1"/>
+        <File path="D:/github/HRA_product/TangCartMSX/RTL/modules/sdram/ip_sdram_dummy.v" type="file.verilog" enable="0"/>
+        <File path="D:/github/HRA_product/TangCartMSX/RTL/modules/sdram/ip_sdram_dummy2.v" type="file.verilog" enable="0"/>
+        <File path="D:/github/HRA_product/TangCartMSX/RTL/modules/sdram/ip_sdram_dummy3.v" type="file.verilog" enable="0"/>
+        <File path="D:/github/HRA_product/TangCartMSX/RTL/modules/v9958/vdp.v" type="file.verilog" enable="1"/>
+        <File path="D:/github/HRA_product/TangCartMSX/RTL/modules/v9958/vdp_colordec.v" type="file.verilog" enable="1"/>
+        <File path="D:/github/HRA_product/TangCartMSX/RTL/modules/v9958/vdp_command.v" type="file.verilog" enable="1"/>
+        <File path="D:/github/HRA_product/TangCartMSX/RTL/modules/v9958/vdp_doublebuf.v" type="file.verilog" enable="1"/>
+        <File path="D:/github/HRA_product/TangCartMSX/RTL/modules/v9958/vdp_graphic123m.v" type="file.verilog" enable="1"/>
+        <File path="D:/github/HRA_product/TangCartMSX/RTL/modules/v9958/vdp_graphic4567.v" type="file.verilog" enable="1"/>
+        <File path="D:/github/HRA_product/TangCartMSX/RTL/modules/v9958/vdp_inst.v" type="file.verilog" enable="1"/>
+        <File path="D:/github/HRA_product/TangCartMSX/RTL/modules/v9958/vdp_interrupt.v" type="file.verilog" enable="1"/>
+        <File path="D:/github/HRA_product/TangCartMSX/RTL/modules/v9958/vdp_lcd.v" type="file.verilog" enable="1"/>
+        <File path="D:/github/HRA_product/TangCartMSX/RTL/modules/v9958/vdp_linebuf.v" type="file.verilog" enable="1"/>
+        <File path="D:/github/HRA_product/TangCartMSX/RTL/modules/v9958/vdp_palette_ram.v" type="file.verilog" enable="1"/>
+        <File path="D:/github/HRA_product/TangCartMSX/RTL/modules/v9958/vdp_ram256.v" type="file.verilog" enable="1"/>
+        <File path="D:/github/HRA_product/TangCartMSX/RTL/modules/v9958/vdp_register.v" type="file.verilog" enable="1"/>
+        <File path="D:/github/HRA_product/TangCartMSX/RTL/modules/v9958/vdp_spinforam.v" type="file.verilog" enable="1"/>
+        <File path="D:/github/HRA_product/TangCartMSX/RTL/modules/v9958/vdp_sprite.v" type="file.verilog" enable="1"/>
+        <File path="D:/github/HRA_product/TangCartMSX/RTL/modules/v9958/vdp_ssg.v" type="file.verilog" enable="1"/>
+        <File path="D:/github/HRA_product/TangCartMSX/RTL/modules/v9958/vdp_text12.v" type="file.verilog" enable="1"/>
+        <File path="D:/github/HRA_product/TangCartMSX/RTL/modules/v9958/vdp_wait_control.v" type="file.verilog" enable="1"/>
         <File path="src/Tang20kcartMSX.cst" type="file.cst" enable="1"/>
     </FileList>
 </Project>
