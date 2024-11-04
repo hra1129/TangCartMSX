@@ -58,8 +58,8 @@
 module vdp(
 	input					reset,
 	input					initial_busy,
-	input					clk,				//	21.47727MHz or over
-	input					enable,				//	21.47727MHz pulse
+	input					clk,				//	85.90908MHz
+	input					enable,
 	input					req,
 	output					ack,
 	input					wrt,
@@ -69,11 +69,11 @@ module vdp(
 
 	output					int_n,
 
-	output					pramoe_n,
-	output					pramwe_n,
-	output		[16:0]		pramadr,
-	input		[15:0]		pramdbi,
-	output reg	[7:0]		pramdbo,
+	output					p_vram_oe_n,
+	output					p_vram_we_n,
+	output		[16:0]		p_vram_address,
+	input		[15:0]		p_vram_rdata,
+	output		[7:0]		p_vram_wdata,
 
 	input					vdp_speed_mode,
 	input		[2:0]		ratio_mode,
@@ -95,15 +95,12 @@ module vdp(
 
 	// display resolution (0=15kHz, 1=31kHz)
 	input					dispreso,
-
-	input					ntsc_pal_type,
-	input					forced_v_mode,
 	input					legacy_vga,
 
 	input		[4:0]		vdp_id
 );
 	localparam		clocks_per_line		= 1368;
-	localparam		offset_x			= 7'b0110001;
+	localparam		offset_x			= 7'd49;
 	localparam		led_tv_x_ntsc		= -3;
 	localparam		led_tv_y_ntsc		= 1;
 	localparam		led_tv_x_pal		= -2;
@@ -154,19 +151,10 @@ module vdp(
 	// vdp register access
 	reg		[16:0]	ff_vram_access_address;
 	wire			w_disp_mode_vga;
-	reg				ff_vram_reading_req;
-	reg				ff_vram_reading_ack;
 	wire	[3:1]	w_vdpr0dispnum;
-	wire	[7:0]	w_vram_access_data;
-	wire	[16:0]	w_vram_access_address_tmp;
-	wire			w_vram_addr_set_req;
-	reg				ff_vram_addr_set_ack;
-	wire			w_vram_write_req;
-	reg				ff_vram_write_ack;
-	reg		[7:0]	ff_vram_read_data;
-	wire			w_vram_rd_req;
-	reg				ff_vram_rd_ack;
-	wire			w_r9_pal_mode;
+	wire	[7:0]	w_vram_wdata_cpu;
+	wire	[7:0]	w_vram_rdata_cpu;
+	wire	[16:0]	w_vram_address_cpu;
 
 	wire			reg_r0_hsync_int_en;
 	wire			reg_r1_sp_size;
@@ -198,7 +186,6 @@ module vdp(
 	wire	[8:3]	reg_r26_h_scroll;
 	wire	[2:0]	reg_r27_h_scroll;
 
-	wire			w_text_mode;						// text mode 1, 2 or 1q
 	wire			w_vdp_mode_text1;					// text mode 1		(screen0 width 40)
 	wire			w_vdp_mode_text1q;					// text mode 1		(??)
 	wire			w_vdp_mode_text2;					// text mode 2		(screen0 width 80)
@@ -212,7 +199,19 @@ module vdp(
 	wire			w_vdp_mode_graphic6;				// graphic mode 6	(screen7)
 	wire			w_vdp_mode_graphic7;				// graphic mode 7	(screen8,10,11,12)
 	wire			w_vdp_mode_is_highres;				// true when mode graphic5, 6
-	wire			w_vdp_mode_is_vram_interleave;		// true when mode graphic6, 7
+	wire			w_vram_interleave_mode;		// true when mode graphic6, 7
+
+	// for palette
+	wire	[7:0]	w_palette_wr_address;
+	wire	[7:0]	w_palette_rd_address;
+	wire	[7:0]	w_palette_address;
+	wire			w_palette_we;
+	wire	[4:0]	w_palette_wdata_r;
+	wire	[4:0]	w_palette_wdata_g;
+	wire	[4:0]	w_palette_wdata_b;
+	wire	[4:0]	w_palette_rdata_r;
+	wire	[4:0]	w_palette_rdata_g;
+	wire	[4:0]	w_palette_rdata_b;
 
 	// for text 1 and 2
 	wire	[16:0]	w_vram_address_text12;
@@ -236,7 +235,7 @@ module vdp(
 	// sprite
 	wire			w_sp_mode2;
 	wire			w_sp_vram_accessing;
-	wire	[16:0]	w_sprite_vram_address;
+	wire	[16:0]	w_vram_address_sprite;
 	wire			w_sp_color_code_en;
 	wire	[3:0]	w_sp_color_code;
 	wire			w_s0_sp_collision_incidence;
@@ -250,9 +249,9 @@ module vdp(
 	wire			w_s5_reset_ack;
 
 	// palette registers
-	wire	[3:0]	w_palette_address;
-	wire	[7:0]	w_palette_data_rb;
-	wire	[7:0]	w_palette_data_g;
+	wire	[4:0]	w_palette_data_r;
+	wire	[4:0]	w_palette_data_g;
+	wire	[4:0]	w_palette_data_b;
 
 	// vdp command signals - can be read & set by cpu
 	wire	[7:0]	w_vdpcmd_clr;					// r44, s#7
@@ -265,21 +264,11 @@ module vdp(
 	wire	[3:0]	w_vdpcmd_reg_num;
 	wire	[7:0]	w_vdpcmd_reg_data;
 	wire			w_vdpcmd_reg_write_ack;
+	wire			w_vdpcmd_reg_write_req;
 	wire			w_vdpcmd_tr_clr_ack;
-	reg				ff_vdpcmd_vram_write_ack;
-	reg				ff_vdpcmd_vram_read_ack;
-	reg				ff_vdpcmd_vram_reading_req;
-	reg				ff_vdpcmd_vram_reading_ack;
-	reg		[7:0]	ff_vdpcmd_vram_rdata;
-	wire			w_vdpcmd_reg_wr_req;
 	wire			w_vdpcmd_tr_clr_req;
-	wire			w_vdpcmd_vram_write_req;
-	wire			w_vdpcmd_vram_read_req;
-	wire	[16:0]	w_vdpcmd_vram_access_address;
 	wire	[7:0]	w_vdpcmd_vram_wdata;
 
-	reg				ff_vdp_command_drive;
-	wire			w_vdp_command_active;
 	wire	[7:4]	w_current_vdp_command;
 
 	// video output signals
@@ -298,11 +287,6 @@ module vdp(
 	wire			w_video_hs_n_lcd;
 	wire			w_video_vs_n_lcd;
 
-	reg		[16:0]	ff_vram_address;
-	wire	[7:0]	w_vram_data;
-	wire			w_vram_rdata_sel;
-	wire	[7:0]	w_vram_data_pair;
-
 	wire			w_hsync;
 	wire			w_hsync_en;
 
@@ -310,25 +294,22 @@ module vdp(
 	reg				ff_wrt;
 	wire			w_ack;
 
-	reg				ff_pramoe_n;
-	reg				ff_pramwe_n;
-
-	localparam	[2:0]	vram_access_idle	= 3'd0;
-	localparam	[2:0]	vram_access_draw	= 3'd1;
-	localparam	[2:0]	vram_access_cpuw	= 3'd2;
-	localparam	[2:0]	vram_access_cpur	= 3'd3;
-	localparam	[2:0]	vram_access_sprt	= 3'd4;
-	localparam	[2:0]	vram_access_vdpw	= 3'd5;
-	localparam	[2:0]	vram_access_vdpr	= 3'd6;
-	localparam	[2:0]	vram_access_vdps	= 3'd7;
-
-	// --------------------------------------------------------------------
-	assign pramadr			= ff_vram_address;
-	assign w_vram_rdata_sel	= ff_vram_address[16];
-	assign w_vram_data		= ( !w_vram_rdata_sel ) ? pramdbi[ 7:0] : pramdbi[15:8];
-	assign w_vram_data_pair	= (  w_vram_rdata_sel ) ? pramdbi[ 7:0] : pramdbi[15:8];
-	assign pramoe_n			= ff_pramoe_n;
-	assign pramwe_n			= ff_pramwe_n;
+	wire			w_vdp_command_active;
+	wire			w_vram_addr_set_req;
+	wire			w_vram_addr_set_ack;
+	wire			w_vram_write_req;
+	wire			w_vram_write_ack;
+	wire			w_vram_rd_req;
+	wire			w_vram_rd_ack;
+	wire			w_vdpcmd_vram_read_req;
+	wire			w_vdpcmd_vram_write_req;
+	wire			w_vdpcmd_vram_write_ack;
+	wire			w_vdpcmd_vram_read_ack;
+	wire	[16:0]	w_vdpcmd_vram_address;
+	wire	[7:0]	w_vdpcmd_vram_rdata;
+	wire	[7:0]	w_vram_data;
+	wire	[7:0]	w_vram_data_pair;
+	wire			w_vdp_command_drive;
 
 	//--------------------------------------------------------------
 	// request signal
@@ -356,8 +337,6 @@ module vdp(
 	// display components
 	//--------------------------------------------------------------
 	assign w_disp_mode_vga	= dispreso;			// display resolution (0=15khz, 1=31khz)
-
-	assign w_r9_pal_mode	= ( ntsc_pal_type ) ? reg_r9_pal_mode : forced_v_mode;
 
 	assign w_video_r		= ( !ff_bwindow ) ? 6'd0 : w_video_r_vdp;
 	assign w_video_g		= ( !ff_bwindow ) ? 6'd0 : w_video_g_vdp;
@@ -399,6 +378,7 @@ module vdp(
 		end
 	end
 
+	// --------------------------------------------------------------------
 	// generate ff_bwindow
 	always @( posedge clk ) begin
 		if( reset ) begin
@@ -426,12 +406,12 @@ module vdp(
 			// non-interlace
 			// 3+3+16 = 19
 			if( (w_v_count == 20*2) ||
-					((w_v_count == 524+20*2) && !w_r9_pal_mode) ||
-					((w_v_count == 626+20*2) &&  w_r9_pal_mode) ) begin
+					((w_v_count == 524+20*2) && !reg_r9_pal_mode) ||
+					((w_v_count == 626+20*2) &&  reg_r9_pal_mode) ) begin
 				ff_bwindow_y <= 1'b1;
 			end
-			else if(((w_v_count == 524) && !w_r9_pal_mode) ||
-					((w_v_count == 626) &&  w_r9_pal_mode) ||
+			else if(((w_v_count == 524) && !reg_r9_pal_mode) ||
+					((w_v_count == 626) &&  reg_r9_pal_mode) ||
 					 (w_v_count == 0) ) begin
 				ff_bwindow_y <= 1'b0;
 			end
@@ -443,12 +423,12 @@ module vdp(
 					// because odd field's start is delayed half line.
 					// so the start position of display time should be
 					// delayed more half line.
-					((w_v_count == 525+20*2 + 1) && !w_r9_pal_mode) ||
-					((w_v_count == 625+20*2 + 1) &&  w_r9_pal_mode) ) begin
+					((w_v_count == 525+20*2 + 1) && !reg_r9_pal_mode) ||
+					((w_v_count == 625+20*2 + 1) &&  reg_r9_pal_mode) ) begin
 				ff_bwindow_y <= 1'b1;
 			end
-			else if( ((w_v_count == 525) && !w_r9_pal_mode) ||
-					 ((w_v_count == 625) &&  w_r9_pal_mode) ||
+			else if( ((w_v_count == 525) && !reg_r9_pal_mode) ||
+					 ((w_v_count == 625) &&  reg_r9_pal_mode) ||
 					  (w_v_count == 0) ) begin
 				ff_bwindow_y <= 1'b0;
 			end
@@ -478,10 +458,10 @@ module vdp(
 		else if( !enable ) begin
 			// hold
 		end
-		else if((w_h_count == {2'b00, (offset_x + led_tv_x_ntsc - {(reg_r25_msk & ~centeryjk_r25_n), 2'b00} + 4), 2'b10} && ( reg_r25_yjk &&  centeryjk_r25_n) && !w_r9_pal_mode) ||
-				(w_h_count == {2'b00, (offset_x + led_tv_x_ntsc - {(reg_r25_msk & ~centeryjk_r25_n), 2'b00}    ), 2'b10} && (!reg_r25_yjk || !centeryjk_r25_n) && !w_r9_pal_mode) ||
-				(w_h_count == {2'b00, (offset_x + led_tv_x_pal  - {(reg_r25_msk & ~centeryjk_r25_n), 2'b00} + 4), 2'b10} && ( reg_r25_yjk &&  centeryjk_r25_n) &&  w_r9_pal_mode) ||
-				(w_h_count == {2'b00, (offset_x + led_tv_x_pal  - {(reg_r25_msk & ~centeryjk_r25_n), 2'b00}    ), 2'b10} && (!reg_r25_yjk || !centeryjk_r25_n) &&  w_r9_pal_mode) ) begin
+		else if((w_h_count == {2'b00, (offset_x + led_tv_x_ntsc - {(reg_r25_msk & ~centeryjk_r25_n), 2'b00} + 4), 2'b10} && ( reg_r25_yjk &&  centeryjk_r25_n) && !reg_r9_pal_mode) ||
+				(w_h_count == {2'b00, (offset_x + led_tv_x_ntsc - {(reg_r25_msk & ~centeryjk_r25_n), 2'b00}    ), 2'b10} && (!reg_r25_yjk || !centeryjk_r25_n) && !reg_r9_pal_mode) ||
+				(w_h_count == {2'b00, (offset_x + led_tv_x_pal  - {(reg_r25_msk & ~centeryjk_r25_n), 2'b00} + 4), 2'b10} && ( reg_r25_yjk &&  centeryjk_r25_n) &&  reg_r9_pal_mode) ||
+				(w_h_count == {2'b00, (offset_x + led_tv_x_pal  - {(reg_r25_msk & ~centeryjk_r25_n), 2'b00}    ), 2'b10} && (!reg_r25_yjk || !centeryjk_r25_n) &&  reg_r9_pal_mode) ) begin
 			// hold
 		end
 		else if( w_h_count[1:0] == 2'b10) begin
@@ -496,256 +476,62 @@ module vdp(
 	end
 
 	// --------------------------------------------------------------------
-	// main process
+	// color bus
 	// --------------------------------------------------------------------
-	always @( posedge clk ) begin
-		if( reset ) begin
-			ff_vram_read_data		<= 8'd0;
-			ff_vram_reading_ack		<= 1'b0;
-		end
-		else if( !enable ) begin
-			// hold
-		end
-		else if( w_dot_state == 2'b01 ) begin
-			if( ff_vram_reading_req != ff_vram_reading_ack ) begin
-				ff_vram_read_data		<= w_vram_data;
-				ff_vram_reading_ack		<= ~ff_vram_reading_ack;
-			end
-		end
-	end
-
-	always @( posedge clk ) begin
-		if( reset ) begin
-			ff_vdpcmd_vram_rdata		<= 8'd0;
-			ff_vdpcmd_vram_read_ack		<= 1'b0;
-			ff_vdpcmd_vram_reading_ack	<= 1'b0;
-		end
-		else if( !enable ) begin
-			// hold
-		end
-		else if( w_dot_state == 2'b01 ) begin
-			if( ff_vdpcmd_vram_reading_req != ff_vdpcmd_vram_reading_ack ) begin
-				ff_vdpcmd_vram_rdata		<= w_vram_data;
-				ff_vdpcmd_vram_read_ack		<= ~ff_vdpcmd_vram_read_ack;
-				ff_vdpcmd_vram_reading_ack	<= ~ff_vdpcmd_vram_reading_ack;
-			end
-		end
-	end
-
-	assign w_text_mode		= w_vdp_mode_text1 | w_vdp_mode_text1q | w_vdp_mode_text2;
-
-	always @( posedge clk ) begin: vram_access
-		reg		[16:0]	ff_vram_access_address_pre;
-		reg		[2:0]	ff_vram_access_state;
-
-		if( reset ) begin
-			ff_vram_address	<= 17'b11111111111111111;
-			pramdbo			<= 8'd0;
-			ff_pramoe_n		<= 1'b1;
-			ff_pramwe_n		<= 1'b1;
-
-			ff_vram_reading_req <= 1'b0;
-
-			ff_vram_rd_ack <= 1'b0;
-			ff_vram_write_ack <= 1'b0;
-			ff_vram_addr_set_ack <= 1'b0;
-			ff_vram_access_address <= 17'd0;
-
-			ff_vdpcmd_vram_write_ack <= 1'b0;
-			ff_vdpcmd_vram_reading_req <= 1'b0;
-			ff_vdp_command_drive <= 1'b0;
-		end
-		else if( !enable ) begin
-			// hold
-		end
-		else begin
-			//
-			// vram access arbiter.
-			//
-			// vramアクセスタイミングを、w_eight_dot_state によって制御している
-			if( w_dot_state == 2'b10 ) begin
-				if( w_prewindow && reg_r1_disp_on &&
-					((w_eight_dot_state == 3'd0) || (w_eight_dot_state == 3'd1) || (w_eight_dot_state == 3'd2) ||
-					 (w_eight_dot_state == 3'd3) || (w_eight_dot_state == 3'd4)) ) begin
-					//	w_eight_dot_state が 0～4 で、表示中の場合
-					ff_vram_access_state = vram_access_draw;
-				end
-				else if( w_prewindow && reg_r1_disp_on && w_tx_vram_read_en ) begin
-					//	w_eight_dot_state が 5～7 で、表示中で、テキストモードの場合
-					ff_vram_access_state = vram_access_draw;
-				end
-				else if( ff_prewindow_x && w_prewindow_y_sp && w_sp_vram_accessing && (w_eight_dot_state == 3'd5) && !w_text_mode ) begin
-					// for sprite y-testing
-					ff_vram_access_state = vram_access_sprt;
-				end
-				else if( !ff_prewindow_x && w_prewindow_y_sp && w_sp_vram_accessing && !w_text_mode && (
-							(w_eight_dot_state == 3'd0) || (w_eight_dot_state == 3'd1) || (w_eight_dot_state == 3'd2) ||
-							(w_eight_dot_state == 3'd3) || (w_eight_dot_state == 3'd4) || (w_eight_dot_state == 3'd5)) ) begin
-					// for sprite prepareing
-					ff_vram_access_state = vram_access_sprt;
-				end
-				else if( w_vram_write_req != ff_vram_write_ack ) begin
-					// vram write request by cpu
-					ff_vram_access_state = vram_access_cpuw;
-				end
-				else if( w_vram_rd_req != ff_vram_rd_ack ) begin
-					// vram read request by cpu
-					ff_vram_access_state = vram_access_cpur;
-				end
-				else begin
-					// vdp command
-					if( w_vdp_command_active ) begin
-						if( w_vdpcmd_vram_write_req != ff_vdpcmd_vram_write_ack ) begin
-							ff_vram_access_state = vram_access_vdpw;
-						end
-						else if( w_vdpcmd_vram_read_req != ff_vdpcmd_vram_read_ack ) begin
-							ff_vram_access_state = vram_access_vdpr;
-						end
-						else begin
-							ff_vram_access_state = vram_access_vdps;
-						end
-					end
-					else begin
-						ff_vram_access_state = vram_access_vdps;
-					end
-				end
-			end
-			else begin
-				ff_vram_access_state = vram_access_draw;
-			end
-
-			if( ff_vram_access_state == vram_access_vdpw ||
-				ff_vram_access_state == vram_access_vdpr ||
-				ff_vram_access_state == vram_access_vdps ) begin
-				ff_vdp_command_drive <= 1'b1;
-			end
-			else begin
-				ff_vdp_command_drive <= 1'b0;
-			end
-
-			//
-			// vram access address switch
-			//
-			if( ff_vram_access_state == vram_access_cpuw ) begin
-				// vram write by cpu
-				// jp: graphic6,7ではvram上のアドレスと ram上のアドレスの関係が
-				// jp: 他の画面モードと異るので注意
-				if( w_vdp_mode_graphic6 || w_vdp_mode_graphic7 ) begin
-					ff_vram_address <= { ff_vram_access_address[0], ff_vram_access_address[16:1] };
-				end
-				else begin
-					ff_vram_address <= ff_vram_access_address;
-				end
-				if( w_vdp_mode_text1 || w_vdp_mode_text1q || w_vdp_mode_multi || w_vdp_mode_multiq || w_vdp_mode_graphic1 || w_vdp_mode_graphic2 ) begin
-					ff_vram_access_address[13:0]	<= ff_vram_access_address[13:0] + 14'd1;
-				end
-				else begin
-					ff_vram_access_address		<= ff_vram_access_address + 1;
-				end
-				pramdbo			<= w_vram_access_data;
-				ff_pramoe_n		<= 1'b1;
-				ff_pramwe_n		<= 1'b0;
-				ff_vram_write_ack	<= ~ff_vram_write_ack;
-			end
-			else if( ff_vram_access_state == vram_access_cpur ) begin
-				// vram read by cpu
-				if( w_vram_addr_set_req != ff_vram_addr_set_ack ) begin
-					ff_vram_access_address_pre = w_vram_access_address_tmp;
-					// clear vram address set request signal
-					ff_vram_addr_set_ack <= ~ff_vram_addr_set_ack;
-				end
-				else begin
-					ff_vram_access_address_pre = ff_vram_access_address;
-				end
-
-				// jp: graphic6,7ではvram上のアドレスと ram上のアドレスの関係が
-				// jp: 他の画面モードと異るので注意
-				if( w_vdp_mode_graphic6 || w_vdp_mode_graphic7 ) begin
-					ff_vram_address <= { ff_vram_access_address_pre[0], ff_vram_access_address_pre[16:1] };
-				end
-				else begin
-					ff_vram_address <= ff_vram_access_address_pre;
-				end
-				if( w_vdp_mode_text1 || w_vdp_mode_text1q || w_vdp_mode_multi || w_vdp_mode_multiq || w_vdp_mode_graphic1 || w_vdp_mode_graphic2 ) begin
-					ff_vram_access_address[13:0] <= ff_vram_access_address_pre[13:0] + 1;
-				end
-				else begin
-					ff_vram_access_address <= ff_vram_access_address_pre + 1;
-				end
-				pramdbo				<= 8'd0;
-				ff_pramoe_n			<= 1'b0;
-				ff_pramwe_n			<= 1'b1;
-				ff_vram_rd_ack		<= ~ff_vram_rd_ack;
-				ff_vram_reading_req	<= ~ff_vram_reading_ack;
-			end
-			else if( ff_vram_access_state == vram_access_vdpw ) begin
-				// vram write by vdp command
-				// vdp command write vram.
-				// jp: Graphic6, 7 (Screen 7, 8) ではアドレスと ram上の位置が他の画面モードと
-				// jp: 異るので注意
-				if( w_vdp_mode_graphic6 || w_vdp_mode_graphic7 ) begin
-					ff_vram_address <= { w_vdpcmd_vram_access_address[0], w_vdpcmd_vram_access_address[16:1] };
-				end
-				else begin
-					ff_vram_address <= w_vdpcmd_vram_access_address;
-				end
-				pramdbo		<= w_vdpcmd_vram_wdata;
-				ff_pramoe_n	<= 1'b1;
-				ff_pramwe_n	<= 1'b0;
-				ff_vdpcmd_vram_write_ack	<= ~ff_vdpcmd_vram_write_ack;
-			end
-			else if( ff_vram_access_state == vram_access_vdpr ) begin
-				// vram read by vdp command
-				// jp: Graphic6, 7 (Screen 7, 8) ではアドレスと ram上の位置が他の画面モードと
-				// jp: 異るので注意
-				if( w_vdp_mode_graphic6 || w_vdp_mode_graphic7 ) begin
-					ff_vram_address <= { w_vdpcmd_vram_access_address[0], w_vdpcmd_vram_access_address[16:1] };
-				end
-				else begin
-					ff_vram_address <= w_vdpcmd_vram_access_address;
-				end
-				pramdbo		<= 8'd0;
-				ff_pramoe_n	<= 1'b0;
-				ff_pramwe_n	<= 1'b1;
-				ff_vdpcmd_vram_reading_req	<= ~ff_vdpcmd_vram_reading_ack;
-			end
-			else if( ff_vram_access_state == vram_access_sprt ) begin
-				// vram read by sprite module
-				ff_vram_address		<= w_sprite_vram_address;
-				ff_pramoe_n			<= 1'b0;
-				ff_pramwe_n			<= 1'b1;
-				pramdbo				<= 8'd0;
-			end
-			else begin
-				// vram_access_draw
-				// vram read for screen image building
-				if( w_dot_state == 2'b10 ) begin
-					pramdbo		<= 8'd0;
-					ff_pramoe_n	<= 1'b0;
-					ff_pramwe_n	<= 1'b1;
-					if( w_text_mode ) begin
-						ff_vram_address <= w_vram_address_text12;
-					end
-					else if( w_vdp_mode_graphic1 || w_vdp_mode_graphic2 || w_vdp_mode_graphic3 || w_vdp_mode_multi || w_vdp_mode_multiq ) begin
-						ff_vram_address <= w_vram_address_graphic123m;
-					end
-					else if( w_vdp_mode_graphic4 || w_vdp_mode_graphic5 || w_vdp_mode_graphic6 || w_vdp_mode_graphic7 ) begin
-						ff_vram_address <= w_vram_address_graphic4567;
-					end
-				end
-				else begin
-					pramdbo		<= 8'd0;
-					ff_pramoe_n	<= 1'b1;
-					ff_pramwe_n	<= 1'b1;
-				end
-
-				if( (w_dot_state == 2'b11) && (w_vram_addr_set_req != ff_vram_addr_set_ack) ) begin
-					ff_vram_access_address	<= w_vram_access_address_tmp;
-					ff_vram_addr_set_ack	<= ~ff_vram_addr_set_ack;
-				end
-			end
-		end
-	end
+	vdp_color_bus u_vdp_color_bus (
+		.reset							( reset							),
+		.clk							( clk							),
+		.enable							( enable						),
+		.dot_state						( w_dot_state					),
+		.eight_dot_state				( w_eight_dot_state				),
+		.p_vram_oe_n					( p_vram_oe_n					),
+		.p_vram_we_n					( p_vram_we_n					),
+		.p_vram_address					( p_vram_address				),
+		.p_vram_wdata					( p_vram_wdata					),
+		.p_vram_rdata					( p_vram_rdata					),
+		.p_vdp_mode_text1				( w_vdp_mode_text1				),
+		.p_vdp_mode_text1q				( w_vdp_mode_text1q				),
+		.p_vdp_mode_text2				( w_vdp_mode_text2				),
+		.p_vdp_mode_multi				( w_vdp_mode_multi				),
+		.p_vdp_mode_multiq				( w_vdp_mode_multiq				),
+		.p_vdp_mode_graphic1			( w_vdp_mode_graphic1			),
+		.p_vdp_mode_graphic2			( w_vdp_mode_graphic2			),
+		.p_vdp_mode_graphic3			( w_vdp_mode_graphic3			),
+		.p_vdp_mode_graphic4			( w_vdp_mode_graphic4			),
+		.p_vdp_mode_graphic5			( w_vdp_mode_graphic5			),
+		.p_vdp_mode_graphic6			( w_vdp_mode_graphic6			),
+		.p_vdp_mode_graphic7			( w_vdp_mode_graphic7			),
+		.p_vram_address_cpu				( w_vram_address_cpu			),
+		.p_vram_address_sprite			( w_vram_address_sprite			),
+		.p_vram_address_text12			( w_vram_address_text12			),
+		.p_vram_address_graphic123m		( w_vram_address_graphic123m	),
+		.p_vram_address_graphic4567		( w_vram_address_graphic4567	),
+		.p_vram_wdata_cpu				( w_vram_wdata_cpu				),
+		.p_vram_rdata_cpu				( w_vram_rdata_cpu				),
+		.p_vram_data					( w_vram_data					),
+		.p_vram_data_pair				( w_vram_data_pair				),
+		.p_prewindow					( w_prewindow					),
+		.p_prewindow_x					( ff_prewindow_x				),
+		.p_vdp_command_active			( w_vdp_command_active			),
+		.p_vdp_command_drive			( w_vdp_command_drive			),
+		.p_vram_addr_set_req			( w_vram_addr_set_req			),
+		.p_vram_addr_set_ack			( w_vram_addr_set_ack			),
+		.p_vram_write_req				( w_vram_write_req				),
+		.p_vram_write_ack				( w_vram_write_ack				),
+		.p_vram_rd_req					( w_vram_rd_req					),
+		.p_vram_rd_ack					( w_vram_rd_ack					),
+		.p_vdpcmd_vram_write_ack		( w_vdpcmd_vram_write_ack		),
+		.p_vdpcmd_vram_read_ack			( w_vdpcmd_vram_read_ack		),
+		.p_vdpcmd_vram_read_req			( w_vdpcmd_vram_read_req		),
+		.p_vdpcmd_vram_write_req		( w_vdpcmd_vram_write_req		),
+		.p_vdpcmd_vram_address			( w_vdpcmd_vram_address			),
+		.p_vdpcmd_vram_wdata			( w_vdpcmd_vram_wdata			),
+		.p_vdpcmd_vram_rdata			( w_vdpcmd_vram_rdata			),
+		.p_tx_vram_read_en				( w_tx_vram_read_en				),
+		.p_prewindow_y_sp				( w_prewindow_y_sp				),
+		.p_sp_vram_accessing			( w_sp_vram_accessing			),
+		.reg_r1_disp_on					( reg_r1_disp_on				)
+	);
 
 	// --------------------------------------------------------------------
 	//	Interrupt
@@ -795,7 +581,7 @@ module vdp(
 		.hsync_en						( w_hsync_en					),
 		.v_blanking_start				( w_v_blanking_start			),
 
-		.vdp_r9_pal_mode				( w_r9_pal_mode					),
+		.vdp_r9_pal_mode				( reg_r9_pal_mode				),
 		.reg_r9_interlace_mode			( reg_r9_interlace_mode			),
 		.reg_r9_y_dots					( reg_r9_y_dots					),
 		.reg_r18_adj					( reg_r18_adj					),
@@ -809,16 +595,17 @@ module vdp(
 	//---------------------------------------------------------------------
 	// color decoding
 	//-----------------------------------------------------------------------
-	vdp_colordec u_vdp_colordec(
+	vdp_color_decoder u_vdp_color_decoder(
 		.reset							( reset							),
 		.clk							( clk							),
 		.enable							( enable						),
 
 		.dot_state						( w_dot_state					),
 
-		.ppaletteaddr_out				( w_palette_address				),
-		.palettedatarb_out				( w_palette_data_rb				),
-		.palettedatag_out				( w_palette_data_g				),
+		.palette_address				( w_palette_rd_address			),
+		.palette_rdata_r				( w_palette_rdata_r				),
+		.palette_rdata_g				( w_palette_rdata_g				),
+		.palette_rdata_b				( w_palette_rdata_b				),
 
 		.vdp_mode_text1					( w_vdp_mode_text1				),
 		.vdp_mode_text1q				( w_vdp_mode_text1q				),
@@ -862,9 +649,9 @@ module vdp(
 		.reset							( reset							),
 		.enable							( enable						),
 		.dot_state						( w_dot_state					),
-		.dotcounterx					( w_pre_dot_counter_x			),
+		.dot_counter_x					( w_pre_dot_counter_x			),
 		.dotcountery					( w_pre_dot_counter_y			),
-		.dotcounteryp					( w_pre_dot_counter_yp			),
+		.dot_counter_yp					( w_pre_dot_counter_yp			),
 		.vdp_mode_text1					( w_vdp_mode_text1				),
 		.vdp_mode_text1q				( w_vdp_mode_text1q				),
 		.vdp_mode_text2					( w_vdp_mode_text2				),
@@ -875,8 +662,8 @@ module vdp(
 		.reg_r2_pattern_name			( reg_r2_pattern_name			),
 		.reg_r4_pattern_generator		( reg_r4_pattern_generator		),
 		.reg_r10r3_color				( reg_r10r3_color				),
-		.pramdat						( w_vram_data					),
-		.pramadr						( w_vram_address_text12			),
+		.p_vram_rdata					( w_vram_data					),
+		.p_vram_address					( w_vram_address_text12			),
 		.txvramreaden					( w_tx_vram_read_en				),
 		.pcolorcode						( w_color_code_text12			)
 	);
@@ -910,7 +697,7 @@ module vdp(
 		.enable							( enable						),
 		.dot_state						( w_dot_state					),
 		.eight_dot_state				( w_eight_dot_state				),
-		.dotcounterx					( w_pre_dot_counter_x			),
+		.dot_counter_x					( w_pre_dot_counter_x			),
 		.dotcountery					( w_pre_dot_counter_y			),
 		.vdp_mode_graphic4				( w_vdp_mode_graphic4			),
 		.vdp_mode_graphic5				( w_vdp_mode_graphic5			),
@@ -924,9 +711,9 @@ module vdp(
 		.reg_r25_yae					( reg_r25_yae					),
 		.reg_r25_yjk					( reg_r25_yjk					),
 		.reg_r25_sp2					( reg_r25_sp2					),
-		.pramdat						( w_vram_data					),
+		.p_vram_rdata					( w_vram_data					),
 		.pramdatpair					( w_vram_data_pair				),
-		.pramadr						( w_vram_address_graphic4567	),
+		.p_vram_address					( w_vram_address_graphic4567	),
 		.pcolorcode						( w_color_code_graphic4567		),
 		.p_yjk_r						( w_yjk_r						),
 		.p_yjk_g						( w_yjk_g						),
@@ -943,18 +730,18 @@ module vdp(
 		.enable							( enable						),
 		.dot_state						( w_dot_state					),
 		.eight_dot_state				( w_eight_dot_state				),
-		.dotcounterx					( w_pre_dot_counter_x			),
-		.dotcounteryp					( w_pre_dot_counter_yp			),
+		.dot_counter_x					( w_pre_dot_counter_x			),
+		.dot_counter_yp					( w_pre_dot_counter_yp			),
 		.bwindow_y						( ff_bwindow_y					),
-		.pvdps0spcollisionincidence		( w_s0_sp_collision_incidence	),
-		.pvdps0spovermapped				( w_s0_sp_overmapped			),
-		.pvdps0spovermappednum			( w_s0_sp_overmapped_num		),
-		.pvdps3s4spcollisionx			( w_s3s4_sp_collision_x			),
-		.pvdps5s6spcollisiony			( w_s5s6_sp_collision_y			),
-		.pvdps0resetreq					( w_s0_reset_req				),
-		.pvdps0resetack					( w_s0_reset_ack				),
-		.pvdps5resetreq					( w_s5_reset_req				),
-		.pvdps5resetack					( w_s5_reset_ack				),
+		.p_s0_sp_collision_incidence	( w_s0_sp_collision_incidence	),
+		.p_s0_sp_overmapped				( w_s0_sp_overmapped			),
+		.p_s0_sp_overmapped_num			( w_s0_sp_overmapped_num		),
+		.p_s3s4_sp_collision_x			( w_s3s4_sp_collision_x			),
+		.p_s5s6_sp_collision_y			( w_s5s6_sp_collision_y			),
+		.p_s0_reset_req					( w_s0_reset_req				),
+		.p_s0_reset_ack					( w_s0_reset_ack				),
+		.p_s5_reset_req					( w_s5_reset_req				),
+		.p_s5_reset_ack					( w_s5_reset_ack				),
 		.reg_r1_sp_size					( reg_r1_sp_size				),
 		.reg_r1_sp_zoom					( reg_r1_sp_zoom				),
 		.reg_r11r5_sp_atr_addr			( reg_r11r5_sp_atr_addr			),
@@ -963,14 +750,32 @@ module vdp(
 		.reg_r8_sp_off					( reg_r8_sp_off					),
 		.reg_r23_vstart_line			( reg_r23_vstart_line			),
 		.reg_r27_h_scroll				( reg_r27_h_scroll				),
-		.spmode2						( w_sp_mode2					),
-		.vraminterleavemode				( w_vdp_mode_is_vram_interleave	),
-		.spvramaccessing				( w_sp_vram_accessing			),
-		.pramdat						( w_vram_data					),
-		.pramadr						( w_sprite_vram_address			),
+		.p_sp_mode2						( w_sp_mode2					),
+		.vram_interleave_mode			( w_vram_interleave_mode		),
+		.sp_vram_accessing				( w_sp_vram_accessing			),
+		.p_vram_rdata					( w_vram_data					),
+		.p_vram_address					( w_vram_address_sprite			),
 		.sp_color_code_en				( w_sp_color_code_en			),
 		.sp_color_code					( w_sp_color_code				),
 		.reg_r9_y_dots					( reg_r9_y_dots					)
+	);
+
+	//---------------------------------------------------------------------------
+	// color palette
+	//---------------------------------------------------------------------------
+	assign w_palette_address	= w_palette_we ? w_palette_wr_address : w_palette_rd_address;
+
+	vdp_ram_palette u_palette_ram (
+		.clk		( clk					),
+		.enable		( enable				),
+		.address	( w_palette_address		),
+		.we			( w_palette_we			),
+		.d_r		( w_palette_wdata_r		),
+		.d_g		( w_palette_wdata_g		),
+		.d_b		( w_palette_wdata_b		),
+		.q_r		( w_palette_rdata_r		),
+		.q_g		( w_palette_rdata_g		),
+		.q_b		( w_palette_rdata_b		)
 	);
 
 	//---------------------------------------------------------------------------
@@ -1015,24 +820,26 @@ module vdp(
 		.vdp_cmd_clr					( w_vdpcmd_clr					),
 		.vdp_cmd_sx_tmp					( w_vdpcmd_sx_tmp				),
 
-		.vdp_vram_access_data			( w_vram_access_data			),
-		.vdp_vram_access_addr_tmp		( w_vram_access_address_tmp		),
+		.vdp_vram_wdata_cpu				( w_vram_wdata_cpu				),
+		.vdp_vram_address_cpu			( w_vram_address_cpu			),
 		.vdp_vram_addr_set_req			( w_vram_addr_set_req			),
-		.vdp_vram_addr_set_ack			( ff_vram_addr_set_ack			),
+		.vdp_vram_addr_set_ack			( w_vram_addr_set_ack			),
 		.vdp_vram_wr_req				( w_vram_write_req				),
-		.vdp_vram_wr_ack				( ff_vram_write_ack				),
-		.vdp_vram_rd_data				( ff_vram_read_data				),
+		.vdp_vram_wr_ack				( w_vram_write_ack				),
+		.vdp_vram_rd_data				( w_vram_rdata_cpu				),
 		.vdp_vram_rd_req				( w_vram_rd_req					),
-		.vdp_vram_rd_ack				( ff_vram_rd_ack				),
+		.vdp_vram_rd_ack				( w_vram_rd_ack					),
 
 		.vdp_cmd_reg_num				( w_vdpcmd_reg_num				),
 		.vdp_cmd_reg_data				( w_vdpcmd_reg_data				),
-		.vdp_cmd_reg_wr_req				( w_vdpcmd_reg_wr_req			),
+		.vdp_cmd_reg_wr_req				( w_vdpcmd_reg_write_req		),
 		.vdp_cmd_tr_clr_req				( w_vdpcmd_tr_clr_req			),
 
-		.palette_addr_out				( w_palette_address				),
-		.palette_data_rb_out			( w_palette_data_rb				),
-		.palette_data_g_out				( w_palette_data_g				),
+		.palette_address				( w_palette_wr_address			),
+		.palette_we						( w_palette_we					),
+		.palette_wdata_r				( w_palette_wdata_r				),
+		.palette_wdata_g				( w_palette_wdata_g				),
+		.palette_wdata_b				( w_palette_wdata_b				),
 
 		.clr_vsync_int					( w_clr_vsync_int				),
 		.clr_hsync_int					( w_clr_hsync_int				),
@@ -1083,9 +890,9 @@ module vdp(
 		.vdp_mode_graphic7				( w_vdp_mode_graphic7			),
 		.vdp_mode_is_high_res			( w_vdp_mode_is_highres			),
 		.sp_mode_2						( w_sp_mode2					),
-		.vdp_mode_is_vram_interleave	( w_vdp_mode_is_vram_interleave	),
+		.vdp_mode_is_vram_interleave	( w_vram_interleave_mode		),
 
-		.forced_v_mode					( forced_v_mode					),
+		.forced_v_mode					( 1'b0							),
 		.vdp_id							( vdp_id						)
 	);
 
@@ -1101,10 +908,10 @@ module vdp(
 		.vdp_mode_graphic6				( w_vdp_mode_graphic6			),
 		.vdp_mode_graphic7				( w_vdp_mode_graphic7			),
 		.vdp_mode_is_highres			( w_vdp_mode_is_highres			),
-		.vramwrack						( ff_vdpcmd_vram_write_ack		),
-		.vramrdack						( ff_vdpcmd_vram_read_ack		),
-		.vramrddata						( ff_vdpcmd_vram_rdata			),
-		.regwrreq						( w_vdpcmd_reg_wr_req			),
+		.vramwrack						( w_vdpcmd_vram_write_ack		),
+		.vramrdack						( w_vdpcmd_vram_read_ack		),
+		.vramrddata						( w_vdpcmd_vram_rdata			),
+		.regwrreq						( w_vdpcmd_reg_write_req		),
 		.trclrreq						( w_vdpcmd_tr_clr_req			),
 		.regnum							( w_vdpcmd_reg_num				),
 		.regdata						( w_vdpcmd_reg_data				),
@@ -1112,7 +919,7 @@ module vdp(
 		.ptrclrack						( w_vdpcmd_tr_clr_ack			),
 		.pvramwrreq						( w_vdpcmd_vram_write_req		),
 		.pvramrdreq						( w_vdpcmd_vram_read_req		),
-		.pvramaccessaddr				( w_vdpcmd_vram_access_address	) ,
+		.pvramaccessaddr				( w_vdpcmd_vram_address			) ,
 		.pvramwrdata					( w_vdpcmd_vram_wdata			),
 		.pclr							( w_vdpcmd_clr					),
 		.pce							( w_vdpcmd_ce					),
@@ -1133,13 +940,13 @@ module vdp(
 
 		.vdp_command					( w_current_vdp_command			),
 
-		.vdpr9palmode					( w_r9_pal_mode					),
+		.vdpr9palmode					( reg_r9_pal_mode				),
 		.reg_r1_disp_on					( reg_r1_disp_on				),
 		.reg_r8_sp_off					( reg_r8_sp_off					),
 		.reg_r9_y_dots					( reg_r9_y_dots					),
 
 		.vdp_speed_mode					( vdp_speed_mode				),
-		.drive							( ff_vdp_command_drive			),
+		.drive							( w_vdp_command_drive			),
 
 		.active							( w_vdp_command_active			)
 	);
@@ -1159,7 +966,7 @@ module vdp(
 		.videovsin_n					( w_video_vsync_n				),
 		.hcounterin						( w_h_count						),
 		.vcounterin						( w_v_count						),
-		.pal_mode						( w_r9_pal_mode					),
+		.pal_mode						( reg_r9_pal_mode				),
 		.interlace_mode					( reg_r9_interlace_mode			),
 		.legacy_vga						( legacy_vga					),
 		.videorout						( w_video_r_lcd					),

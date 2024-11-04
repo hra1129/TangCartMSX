@@ -32,41 +32,92 @@
 module vdp_ram_palette (
 	input			clk,
 	input			enable,
-	input	[3:0]	address,
+	input	[7:0]	address,
 	input			we,
-	input	[8:0]	d,
-	output	[8:0]	q
+	input	[4:0]	d_r,
+	input	[4:0]	d_g,
+	input	[4:0]	d_b,
+	output	[4:0]	q_r,
+	output	[4:0]	q_g,
+	output	[4:0]	q_b
 );
-	reg		[3:0]	ff_address;
+	reg		[7:0]	ff_address;
 	reg				ff_we;
-	reg		[8:0]	ff_d;
-	reg		[8:0]	ff_block_ram [0:15];
-	reg		[8:0]	ff_q;
-	reg		[8:0]	ff_q_out;
+	reg				ff_enable1;
+	reg				ff_enable2;
+	reg				ff_enable3;
+	reg		[4:0]	ff_d_r;
+	reg		[4:0]	ff_d_g;
+	reg		[4:0]	ff_d_b;
+	reg		[4:0]	ff_block_ram_r [0:255];
+	reg		[4:0]	ff_block_ram_g [0:255];
+	reg		[4:0]	ff_block_ram_b [0:255];
+	reg		[4:0]	ff_q_r;
+	reg		[4:0]	ff_q_g;
+	reg		[4:0]	ff_q_b;
+	reg		[4:0]	ff_q_r_out;
+	reg		[4:0]	ff_q_g_out;
+	reg		[4:0]	ff_q_b_out;
 
+	// --------------------------------------------------------------------
+	//		enable		1 0 0 0
+	//		ff_enable1	0 1 0 0
+	//		ff_enable2	0 0 1 0
+	//		ff_enable3	0 0 0 1
+	//		address		A A A A
+	//		ff_address	X A A A A
+	//		ff_q		X X q Q Q Q Q   © SRAM_Q
+	//		ff_q_out	X X X X Q Q Q Q © ff_enable3 ‚Å ff_q æ‚è‚İ
+	// --------------------------------------------------------------------
+	always @( posedge clk ) begin
+		ff_enable1		<= enable;
+		ff_enable2		<= ff_enable1;
+		ff_enable3		<= ff_enable2;
+	end
+
+	// --------------------------------------------------------------------
+	//	enable
+	// --------------------------------------------------------------------
 	always @( posedge clk ) begin
 		if( enable ) begin
 			ff_address	<= address;
 			ff_we		<= we;
-			ff_d		<= d;
+			ff_d_r		<= d_r;
+			ff_d_g		<= d_g;
+			ff_d_b		<= d_b;
 		end
 		else begin
 			ff_we		<= 1'b0;
 		end
 	end
 
+	// --------------------------------------------------------------------
+	//	ff_enable1
+	// --------------------------------------------------------------------
 	always @( posedge clk ) begin
-		if( ff_we ) begin
-			ff_block_ram[ ff_address ]	<= ff_d;
-		end
-		else begin
-			ff_q						<= ff_block_ram[ ff_address ];
+		if( ff_enable1 ) begin
+			if( ff_we ) begin
+				ff_block_ram_r[ ff_address ]	<= ff_d_r;
+				ff_block_ram_g[ ff_address ]	<= ff_d_g;
+				ff_block_ram_b[ ff_address ]	<= ff_d_b;
+			end
+			else begin
+				ff_q_r							<= ff_block_ram_r[ ff_address ];
+				ff_q_g							<= ff_block_ram_g[ ff_address ];
+				ff_q_b							<= ff_block_ram_b[ ff_address ];
+			end
 		end
 	end
 
 	always @( posedge clk ) begin
-		ff_q_out		<= ff_q;
+		if( ff_enable3 ) begin
+			ff_q_r_out <= ff_q_r;
+			ff_q_g_out <= ff_q_g;
+			ff_q_b_out <= ff_q_b;
+		end
 	end
 
-	assign q = ff_q_out;
+	assign q_r = ff_q_r_out;
+	assign q_g = ff_q_g_out;
+	assign q_b = ff_q_b_out;
 endmodule

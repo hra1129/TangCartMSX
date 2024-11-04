@@ -90,8 +90,8 @@ module vdp_register (
 	input		[7:0]	vdp_cmd_clr,				// r44,s#7
 	input		[10:0]	vdp_cmd_sx_tmp,				// s#8,s#9
 
-	output reg	[7:0]	vdp_vram_access_data,
-	output reg	[16:0]	vdp_vram_access_addr_tmp,
+	output reg	[7:0]	vdp_vram_wdata_cpu,
+	output reg	[16:0]	vdp_vram_address_cpu,
 	output reg			vdp_vram_addr_set_req,
 	input				vdp_vram_addr_set_ack,
 	output reg			vdp_vram_wr_req,
@@ -105,9 +105,11 @@ module vdp_register (
 	output reg			vdp_cmd_reg_wr_req,
 	output reg			vdp_cmd_tr_clr_req,
 
-	input		[3:0]	palette_addr_out,
-	output		[7:0]	palette_data_rb_out,
-	output		[7:0]	palette_data_g_out,
+	output		[7:0]	palette_address,
+	output				palette_we,
+	output		[4:0]	palette_wdata_r,
+	output		[4:0]	palette_wdata_g,
+	output		[4:0]	palette_wdata_b,
 
 		// interrupt
 	output reg			clr_vsync_int,
@@ -180,15 +182,15 @@ module vdp_register (
 	reg		[5:0]	vdp_r17_reg_num;
 	reg				vdp_r17_inc_reg_num;
 
-	wire	[3:0]	palette_addr;
-	wire			palette_we;
-	reg		[2:0]	ff_palette_data_r_in;
-	reg		[2:0]	ff_palette_data_g_in;
-	reg		[2:0]	ff_palette_data_b_in;
-	reg		[3:0]	ff_palette_wr_num;
+	wire	[7:0]	palette_addr;
+	wire			w_palette_we;
+	reg		[2:0]	ff_palette_data_r;
+	reg		[2:0]	ff_palette_data_g;
+	reg		[2:0]	ff_palette_data_b;
+	reg		[3:0]	ff_palette_address;
 	reg				ff_palette_wr_req;
 	reg				ff_palette_wr_ack;
-	reg				ff_palette_in;
+	reg				ff_palette_we;
 	reg		[6:0]	ff_r2_pt_nam_addr;
 	reg				ff_r9_2page_mode;
 	reg		[1:0]	reg_r1_disp_mode;
@@ -204,9 +206,6 @@ module vdp_register (
 
 	wire			w_even_dotstate;
 	wire			w_is_bitmap_mode;
-	wire			w_ram_we;
-	wire	[8:0]	w_palette_wdata;
-	wire	[8:0]	w_palette_rdata;
 
 	assign ack							= ff_ack;
 	assign sp_vdp_s0_reset_req			= ff_sp_vdp_s0_reset_req;
@@ -287,25 +286,24 @@ module vdp_register (
 	end
 
 	// --------------------------------------------------------------------
-	// palette register
-	// --------------------------------------------------------------------
-	assign palette_addr		= ( ff_palette_in ) ? ff_palette_wr_num : palette_addr_out;
-	assign palette_we		=   ff_palette_in;
 	assign w_even_dotstate	= ( dot_state == 2'b00 || dot_state == 2'b11 ) ? 1'b1: 1'b0;
 
+	// --------------------------------------------------------------------
+	// palette register
+	// --------------------------------------------------------------------
 	always @( posedge clk ) begin
 		if( reset ) begin
-			ff_palette_in <= 1'b0;
+			ff_palette_we <= 1'b0;
 		end
 		else if( !enable ) begin
 			//	hold
 		end
 		else if( w_even_dotstate ) begin
-			ff_palette_in <= 1'b0;
+			ff_palette_we <= 1'b0;
 		end
 		else begin
 			if( ff_palette_wr_req != ff_palette_wr_ack ) begin
-				ff_palette_in <= 1'b1;
+				ff_palette_we <= 1'b1;
 			end
 		end
 	end
@@ -324,20 +322,11 @@ module vdp_register (
 		end
 	end
 
-	assign w_ram_we			= palette_we;
-	assign w_palette_wdata	= { ff_palette_data_r_in, ff_palette_data_b_in, ff_palette_data_g_in };
-
-	vdp_ram_palette u_palette_ram (
-		.clk		( clk					),
-		.enable		( enable				),
-		.address		( palette_addr			),
-		.we			( w_ram_we				),
-		.d			( w_palette_wdata		),
-		.q			( w_palette_rdata		)
-	);
-
-	assign palette_data_rb_out	= { 1'd0, w_palette_rdata[8:6], 1'd0, w_palette_rdata[5:3] };
-	assign palette_data_g_out	= { 5'd0, w_palette_rdata[2:0] };
+	assign palette_address		= { 4'd0, ff_palette_address };
+	assign palette_we			= ff_palette_we;
+	assign palette_wdata_r		= { ff_palette_data_r, 2'b0 };
+	assign palette_wdata_g		= { ff_palette_data_g, 2'b0 };
+	assign palette_wdata_b		= { ff_palette_data_b, 2'b0 };
 
 	// --------------------------------------------------------------------
 	// process of cpu read request
@@ -459,8 +448,8 @@ module vdp_register (
 			vdp_vram_wr_req				<= 1'b0;
 			vdp_vram_rd_req				<= 1'b0;
 			vdp_vram_addr_set_req		<= 1'b0;
-			vdp_vram_access_addr_tmp	<= 'd0;
-			vdp_vram_access_data		<= 'd0;
+			vdp_vram_address_cpu	<= 'd0;
+			vdp_vram_wdata_cpu		<= 'd0;
 			ff_r0_disp_mode				<= 'd0;
 
 			reg_r0_hsync_int_en			<= 1'b0;
@@ -507,11 +496,11 @@ module vdp_register (
 			sp_vdp_s5_reset_req			<= 1'b0;
 
 			// palette
-			ff_palette_data_r_in		<= 3'd0;
-			ff_palette_data_b_in		<= 3'd0;
-			ff_palette_data_g_in		<= 3'd0;
+			ff_palette_data_r			<= 3'd0;
+			ff_palette_data_b			<= 3'd0;
+			ff_palette_data_g			<= 3'd0;
 			ff_palette_wr_req			<= 1'b0;
-			ff_palette_wr_num			<= 'd0;
+			ff_palette_address			<= 'd0;
 		end
 		else if( !enable ) begin
 			//	hold
@@ -548,7 +537,7 @@ module vdp_register (
 			case( address[1:0] )
 			2'b00: // port#0 (0x98):write vram
 				begin
-					vdp_vram_access_data	<= wdata;
+					vdp_vram_wdata_cpu	<= wdata;
 					vdp_vram_wr_req			<= ~vdp_vram_wr_ack;
 				end
 			2'b01: // port#1 (0x99):register write or vram addr setup
@@ -564,14 +553,14 @@ module vdp_register (
 						case( wdata[7:6] )
 						2'b01:	// set vram access address(write)
 							begin
-								vdp_vram_access_addr_tmp[7:0]	<= vdp_p1_data[7:0];
-								vdp_vram_access_addr_tmp[13:8]	<= wdata[5:0];
+								vdp_vram_address_cpu[7:0]	<= vdp_p1_data[7:0];
+								vdp_vram_address_cpu[13:8]	<= wdata[5:0];
 								vdp_vram_addr_set_req			<= ~vdp_vram_addr_set_ack;
 							end
 						2'b00:	// set vram access address(read)
 							begin
-								vdp_vram_access_addr_tmp[7:0]	<= vdp_p1_data[7:0];
-								vdp_vram_access_addr_tmp[13:8]	<= wdata[5:0];
+								vdp_vram_address_cpu[7:0]	<= vdp_p1_data[7:0];
+								vdp_vram_address_cpu[13:8]	<= wdata[5:0];
 								vdp_vram_addr_set_req			<= ~vdp_vram_addr_set_ack;
 								vdp_vram_rd_req					<= ~vdp_vram_rd_ack;
 							end
@@ -595,15 +584,15 @@ module vdp_register (
 			2'b10:	// port#2:palette write
 				begin
 					if( vdp_p2_is_1st_byte ) begin
-						ff_palette_data_r_in		<= wdata[6:4];
-						ff_palette_data_b_in		<= wdata[2:0];
+						ff_palette_data_r			<= wdata[6:4];
+						ff_palette_data_b			<= wdata[2:0];
 						vdp_p2_is_1st_byte			<= 1'b0;
 					end
 					else begin
 						// パレットはrgbのデータが揃った時に一度に書き換える。
 						// (実機で動作を確認した)
-						ff_palette_data_g_in		<= wdata[2:0];
-						ff_palette_wr_num			<= vdp_r16_pal_num;
+						ff_palette_data_g			<= wdata[2:0];
+						ff_palette_address			<= vdp_r16_pal_num;
 						ff_palette_wr_req			<= ~ff_palette_wr_ack;
 						vdp_p2_is_1st_byte			<= 1'b1;
 						vdp_r16_pal_num				<= vdp_r16_pal_num + 4'd1;
@@ -681,7 +670,7 @@ module vdp_register (
 					reg_r13_blink_period		<= vdp_p1_data;
 				5'b01110:		// #14
 					begin
-						vdp_vram_access_addr_tmp[16:14]	<= vdp_p1_data[2:0];
+						vdp_vram_address_cpu[16:14]	<= vdp_p1_data[2:0];
 						vdp_vram_addr_set_req			<= ~vdp_vram_addr_set_ack;
 					end
 				5'b01111:		// #15

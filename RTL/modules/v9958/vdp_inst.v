@@ -69,11 +69,11 @@ module vdp_inst(
 
 	output					int_n,
 
-	output					pramoe_n,
-	output					pramwe_n,
-	output		[16:0]		pramadr,
-	input		[15:0]		pramdbi,
-	output		[7:0]		pramdbo,
+	output					p_vram_oe_n,
+	output					p_vram_we_n,
+	output		[16:0]		p_vram_address,
+	input		[15:0]		p_vram_rdata,
+	output		[7:0]		p_vram_wdata,
 
 	// video output
 	output					pvideo_clk,
@@ -147,15 +147,15 @@ module vdp_inst(
 		.req				( req						),	// IN	STD_LOGIC;
 		.ack				( ack						),	// OUT	STD_LOGIC;
 		.wrt				( wrt						),	// IN	STD_LOGIC;
-		.address				( address						),	// IN	STD_LOGIC_VECTOR(  1 DOWNTO 0 );
+		.address			( address					),	// IN	STD_LOGIC_VECTOR(  1 DOWNTO 0 );
 		.rdata				( rdata						),	// OUT	STD_LOGIC_VECTOR(  7 DOWNTO 0 );
 		.wdata				( wdata						),	// IN	STD_LOGIC_VECTOR(  7 DOWNTO 0 );
 		.int_n				( int_n						),	// OUT	STD_LOGIC;
-		.pramoe_n			( pramoe_n					),	// OUT	STD_LOGIC;
-		.pramwe_n			( pramwe_n					),	// OUT	STD_LOGIC;
-		.pramadr			( pramadr					),	// OUT	STD_LOGIC_VECTOR( 16 DOWNTO 0 );
-		.pramdbi			( pramdbi					),	// IN	STD_LOGIC_VECTOR( 15 DOWNTO 0 );
-		.pramdbo			( pramdbo					),	// OUT	STD_LOGIC_VECTOR(  7 DOWNTO 0 );
+		.p_vram_oe_n		( p_vram_oe_n				),	// OUT	STD_LOGIC;
+		.p_vram_we_n		( p_vram_we_n				),	// OUT	STD_LOGIC;
+		.p_vram_address		( p_vram_address			),	// OUT	STD_LOGIC_VECTOR( 16 DOWNTO 0 );
+		.p_vram_rdata		( p_vram_rdata				),	// IN	STD_LOGIC_VECTOR( 15 DOWNTO 0 );
+		.p_vram_wdata		( p_vram_wdata				),	// OUT	STD_LOGIC_VECTOR(  7 DOWNTO 0 );
 		.vdp_speed_mode		( 1'b0						),	// IN	STD_LOGIC;
 		.ratio_mode			( 3'b000					),	// IN	STD_LOGIC_VECTOR(  2 DOWNTO 0 );
 		.centeryjk_r25_n	( 1'b1						),	// IN	STD_LOGIC;
@@ -169,8 +169,6 @@ module vdp_inst(
 		.p_video_dh_clk		( p_video_dh_clk			),	// OUT	STD_LOGIC;
 		.p_video_dl_clk		( p_video_dl_clk			),	// OUT	STD_LOGIC;
 		.dispreso			( 1'b1						),	// IN	STD_LOGIC;
-		.ntsc_pal_type		( 1'b0						),	// IN	STD_LOGIC;
-		.forced_v_mode		( 1'b0						),	// IN	STD_LOGIC;
 		.legacy_vga			( 1'b0						),	// IN	STD_LOGIC;
 		.vdp_id				( c_vdpid					)	// IN	STD_LOGIC_VECTOR(  4 DOWNTO 0 );
     );

@@ -10,7 +10,8 @@
         <File path="D:\github\HRA_product\TangCartMSX\RTL\1day_msx_maisonnette_2f_2plus_t20\src\tang20cart_msx.v" type="verilog"/>
         <File path="D:\github\HRA_product\TangCartMSX\RTL\modules\sdram\ip_sdram.v" type="verilog"/>
         <File path="D:\github\HRA_product\TangCartMSX\RTL\modules\v9958\vdp.v" type="verilog"/>
-        <File path="D:\github\HRA_product\TangCartMSX\RTL\modules\v9958\vdp_colordec.v" type="verilog"/>
+        <File path="D:\github\HRA_product\TangCartMSX\RTL\modules\v9958\vdp_color_bus.v" type="verilog"/>
+        <File path="D:\github\HRA_product\TangCartMSX\RTL\modules\v9958\vdp_color_decoder.v" type="verilog"/>
         <File path="D:\github\HRA_product\TangCartMSX\RTL\modules\v9958\vdp_command.v" type="verilog"/>
         <File path="D:\github\HRA_product\TangCartMSX\RTL\modules\v9958\vdp_double_buffer.v" type="verilog"/>
         <File path="D:\github\HRA_product\TangCartMSX\RTL\modules\v9958\vdp_graphic123m.v" type="verilog"/>
@@ -18,9 +19,9 @@
         <File path="D:\github\HRA_product\TangCartMSX\RTL\modules\v9958\vdp_inst.v" type="verilog"/>
         <File path="D:\github\HRA_product\TangCartMSX\RTL\modules\v9958\vdp_interrupt.v" type="verilog"/>
         <File path="D:\github\HRA_product\TangCartMSX\RTL\modules\v9958\vdp_lcd.v" type="verilog"/>
+        <File path="D:\github\HRA_product\TangCartMSX\RTL\modules\v9958\vdp_ram_256byte.v" type="verilog"/>
         <File path="D:\github\HRA_product\TangCartMSX\RTL\modules\v9958\vdp_ram_line_buffer.v" type="verilog"/>
         <File path="D:\github\HRA_product\TangCartMSX\RTL\modules\v9958\vdp_ram_palette.v" type="verilog"/>
-        <File path="D:\github\HRA_product\TangCartMSX\RTL\modules\v9958\vdp_ram_256byte.v" type="verilog"/>
         <File path="D:\github\HRA_product\TangCartMSX\RTL\modules\v9958\vdp_register.v" type="verilog"/>
         <File path="D:\github\HRA_product\TangCartMSX\RTL\modules\v9958\vdp_spinforam.v" type="verilog"/>
         <File path="D:\github\HRA_product\TangCartMSX\RTL\modules\v9958\vdp_sprite.v" type="verilog"/>

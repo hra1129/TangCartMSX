@@ -61,9 +61,9 @@ module vdp_text12 (
 	input			enable						,
 
 	input	[1:0]	dot_state					,
-	input	[8:0]	dotcounterx					,
+	input	[8:0]	dot_counter_x					,
 	input	[8:0]	dotcountery					,
-	input	[8:0]	dotcounteryp				,
+	input	[8:0]	dot_counter_yp				,
 
 	input			vdp_mode_text1				,
 	input			vdp_mode_text1q				,
@@ -79,8 +79,8 @@ module vdp_text12 (
 	input	[5:0]	reg_r4_pattern_generator			,
 	input	[10:0]	reg_r10r3_color			,
 	//
-	input	[7:0]	pramdat						,
-	output	[16:0]	pramadr						,
+	input	[7:0]	p_vram_rdata						,
+	output	[16:0]	p_vram_address						,
 	output			txvramreaden				,
 
 	output	[3:0]	pcolorcode					
@@ -151,7 +151,7 @@ module vdp_text12 (
 			// hold
 		end
 		else if( dot_state == 2'b10 ) begin
-			if( dotcounterx == 12 ) begin
+			if( dot_counter_x == 12 ) begin
 				// jp: dotcounterは 2'b10 のタイミングでは既にカウントアップしているので注意
 				ff_dot_counter24 <= 5'd0;
 			end
@@ -177,10 +177,10 @@ module vdp_text12 (
 			// hold
 		end
 		else if( dot_state == 2'b10 ) begin
-			if( dotcounterx == 12 ) begin
+			if( dot_counter_x == 12 ) begin
 				ff_tx_prewindow_x <= 1'b1;
 			end
-			else if( dotcounterx == 240+12 ) begin
+			else if( dot_counter_x == 240+12 ) begin
 				ff_tx_prewindow_x <= 1'b0;
 			end
 		end
@@ -194,10 +194,10 @@ module vdp_text12 (
 			// hold
 		end
 		else if( dot_state == 2'b01 ) begin
-			if( dotcounterx == 16 ) begin
+			if( dot_counter_x == 16 ) begin
 				ff_tx_window_x <= 1'b1;
 			end
-			else if( dotcounterx == 240+16 ) begin
+			else if( dot_counter_x == 240+16 ) begin
 				ff_tx_window_x <= 1'b0;
 			end
 		end
@@ -206,7 +206,7 @@ module vdp_text12 (
 	// --------------------------------------------------------------------
 	//
 	// --------------------------------------------------------------------
-	assign pramadr	= ff_ramadr;
+	assign p_vram_address	= ff_ramadr;
 
 	always @( posedge clk ) begin
 		if( reset ) begin
@@ -281,13 +281,13 @@ module vdp_text12 (
 				end
 			2'b00:
 				begin
-					if( dotcounterx == 11) begin
+					if( dot_counter_x == 11) begin
 						ff_tx_char_counter_x <= 7'd0;
-						if( dotcounteryp == 0 )	begin
+						if( dot_counter_yp == 0 )	begin
 							ff_tx_char_counter_start_of_line <= 12'd0;
 						end
 					end
-					else if( (dotcounterx == 240+11) && (dotcounteryp[2:0] == 3'b111) ) begin
+					else if( (dot_counter_x == 240+11) && (dot_counter_yp[2:0] == 3'b111) ) begin
 						ff_tx_char_counter_start_of_line <= ff_tx_char_counter_start_of_line + ff_tx_char_counter_x;
 					end
 				end
@@ -299,25 +299,25 @@ module vdp_text12 (
 							// read color table(text2 ff_blink)
 							// it is used only one time per 8 characters.
 							if( ff_dot_counter24[4:3] == 2'b00 ) begin
-								ff_preblink <= pramdat;
+								ff_preblink <= p_vram_rdata;
 							end
 						end
 					3'b010:
 						// read ff_pattern name table
-						ff_pattern_num <= pramdat;
+						ff_pattern_num <= p_vram_rdata;
 					3'b011:
 						// read ff_pattern generator table
-						ff_prepattern <= pramdat;
+						ff_prepattern <= p_vram_rdata;
 					3'b101:
 						// read ff_pattern name table
 						// it is used if vdpmode is test2.
-						ff_pattern_num <= pramdat;
+						ff_pattern_num <= p_vram_rdata;
 					3'b000:
 						begin
 							// read ff_pattern generator table
 							// it is used if vdpmode is test2.
 							if( vdp_mode_text2 ) begin
-								ff_prepattern <= pramdat;
+								ff_prepattern <= p_vram_rdata;
 							end
 						end
 					default:
@@ -411,8 +411,8 @@ module vdp_text12 (
 	// ff_blink timing generation fixed by caro and t.hara
 	// --------------------------------------------------------------------
 	assign w_blink_cnt_max	=	( !ff_blink_state ) ? reg_r13_blink_period[3:0]: reg_r13_blink_period[7:4];
-	assign w_blink_sync		=	( (dotcounterx == 0) && (dotcounteryp == 0) && (dot_state == 2'b00) && (!reg_r1_bl_clks) ) ? 1'b1:
-								( (dotcounterx == 0) &&                        (dot_state == 2'b00) &&   reg_r1_bl_clks  ) ? 1'b1: 1'b0;
+	assign w_blink_sync		=	( (dot_counter_x == 0) && (dot_counter_yp == 0) && (dot_state == 2'b00) && (!reg_r1_bl_clks) ) ? 1'b1:
+								( (dot_counter_x == 0) &&                        (dot_state == 2'b00) &&   reg_r1_bl_clks  ) ? 1'b1: 1'b0;
 
 	always @( posedge clk ) begin
 		if( reset ) begin

@@ -26,7 +26,11 @@
    "Type" : "verilog"
   },
   {
-   "Path" : "D:/github/HRA_product/TangCartMSX/RTL/modules/v9958/vdp_colordec.v",
+   "Path" : "D:/github/HRA_product/TangCartMSX/RTL/modules/v9958/vdp_color_bus.v",
+   "Type" : "verilog"
+  },
+  {
+   "Path" : "D:/github/HRA_product/TangCartMSX/RTL/modules/v9958/vdp_color_decoder.v",
    "Type" : "verilog"
   },
   {
@@ -58,15 +62,15 @@
    "Type" : "verilog"
   },
   {
+   "Path" : "D:/github/HRA_product/TangCartMSX/RTL/modules/v9958/vdp_ram_256byte.v",
+   "Type" : "verilog"
+  },
+  {
    "Path" : "D:/github/HRA_product/TangCartMSX/RTL/modules/v9958/vdp_ram_line_buffer.v",
    "Type" : "verilog"
   },
   {
    "Path" : "D:/github/HRA_product/TangCartMSX/RTL/modules/v9958/vdp_ram_palette.v",
-   "Type" : "verilog"
-  },
-  {
-   "Path" : "D:/github/HRA_product/TangCartMSX/RTL/modules/v9958/vdp_ram_256byte.v",
    "Type" : "verilog"
   },
   {

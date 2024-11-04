@@ -63,7 +63,7 @@ module vdp_graphic4567(
 
 	input		[1:0]	dot_state,
 	input		[2:0]	eight_dot_state,
-	input		[8:0]	dotcounterx,
+	input		[8:0]	dot_counter_x,
 	input		[8:0]	dotcountery,
 
 	input				vdp_mode_graphic4,
@@ -82,9 +82,9 @@ module vdp_graphic4567(
 	input				reg_r25_sp2,
 
 	//
-	input		[7:0]	pramdat,
+	input		[7:0]	p_vram_rdata,
 	input		[7:0]	pramdatpair,
-	output reg	[16:0]	pramadr,
+	output reg	[16:0]	p_vram_address,
 
 	output reg	[7:0]	pcolorcode,
 
@@ -145,7 +145,7 @@ module vdp_graphic4567(
 	// --------------------------------------------------------------------
 	assign w_fifo_address	=	( ff_fifo_write ) ? ff_fifo_write_address : ff_fifo_read_address;
 	assign w_fifo_we		=	ff_fifo_write;
-	assign w_fifo_wdata		=	( (dot_state == 2'b00) || (dot_state == 2'b01) ) ? pramdat : pramdatpair;
+	assign w_fifo_wdata		=	( (dot_state == 2'b00) || (dot_state == 2'b01) ) ? p_vram_rdata : pramdatpair;
 
 	assign w_ram_we			= w_fifo_we & enable;
 
@@ -213,7 +213,7 @@ module vdp_graphic4567(
 			//	hold
 		end
 		else if( dot_state == 2'b00 ) begin
-			if( eight_dot_state == 3'b000 && dotcounterx == 0 ) begin
+			if( eight_dot_state == 3'b000 && dot_counter_x == 0 ) begin
 				ff_fifo_write_address <= 8'd0;
 			end
 		end
@@ -251,7 +251,7 @@ module vdp_graphic4567(
 				end
 			2'b10:
 				begin
-					if( dotcounterx == 9'h004 ) begin
+					if( dot_counter_x == 9'h004 ) begin
 						ff_fifo_read_address <= 8'd0;
 					end
 				end
@@ -421,17 +421,17 @@ module vdp_graphic4567(
 	// vram read address
 	always @( posedge clk ) begin
 		if( reset ) begin
-			pramadr <= 17'd0;
+			p_vram_address <= 17'd0;
 		end
 		if( !enable ) begin
 			//	hold
 		end
 		else if( dot_state == 2'b11 ) begin
 			if( vdp_mode_graphic4 || vdp_mode_graphic5 ) begin
-				pramadr <= w_vram_address_g45[16:0];
+				p_vram_address <= w_vram_address_g45[16:0];
 			end
 			else begin
-				pramadr <= { w_vram_address_g67[0], w_vram_address_g67[16:1] };
+				p_vram_address <= { w_vram_address_g67[0], w_vram_address_g67[16:1] };
 			end
 		end
 	end
@@ -448,7 +448,7 @@ module vdp_graphic4567(
 		end
 	end
 
-	assign w_dot_counter_x	=	{ (dotcounterx[8:3] + reg_r26_h_scroll), 3'b000 };
+	assign w_dot_counter_x	=	{ (dot_counter_x[8:3] + reg_r26_h_scroll), 3'b000 };
 
 	always @( posedge clk ) begin
 		if( reset ) begin
@@ -472,8 +472,8 @@ module vdp_graphic4567(
 	end
 
 	assign w_blink_cnt_max	=	( ff_blink_state ) ? reg_r13_blink_period[3:0] : reg_r13_blink_period[7:4];
-	assign w_blink_sync		=	( (dotcounterx == 0) && (dotcountery == 0) && (dot_state == 2'b00) && !reg_r1_bl_clks ) ? 1'b1 :
-								( (dotcounterx == 0) &&                       (dot_state == 2'b00) &&  reg_r1_bl_clks ) ? 1'b1 : 1'b0;
+	assign w_blink_sync		=	( (dot_counter_x == 0) && (dotcountery == 0) && (dot_state == 2'b00) && !reg_r1_bl_clks ) ? 1'b1 :
+								( (dot_counter_x == 0) &&                       (dot_state == 2'b00) &&  reg_r1_bl_clks ) ? 1'b1 : 1'b0;
 
 	always @( posedge clk ) begin
 		if( reset ) begin

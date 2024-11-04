@@ -223,6 +223,7 @@ module vdp_command (
 			ff_r46_cmr			<= 8'd0;
 			ff_s8s9_sx_tmp		<= 11'd0;
 			ff_dx_tmp			<= 10'd0;
+			ff_nx_tmp			<= 10'd0;
 			ff_vdpcmd_start		<= 1'b0;
 			ff_reg_wr_ack		<= 1'b0;
 			ff_vram_wr_req		<= 1'b0;

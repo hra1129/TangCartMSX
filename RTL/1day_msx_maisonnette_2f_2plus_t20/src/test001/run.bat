@@ -6,13 +6,12 @@ vlog ..\debugger\vram_image_rom.v
 vlog MT48LC2M32B2.v
 
 vlog ..\..\..\modules\sdram\ip_sdram.v
-rem vlog ..\..\..\modules\sdram\ip_sdram_dummy.v
-rem vlog ..\..\..\modules\sdram\ip_sdram_dummy2.v
 
 vlog ..\..\..\modules\v9958\vdp_ram_256byte.v
 vlog ..\..\..\modules\v9958\vdp_ram_palette.v
 vlog ..\..\..\modules\v9958\vdp_ram_line_buffer.v
-vlog ..\..\..\modules\v9958\vdp_colordec.v
+vlog ..\..\..\modules\v9958\vdp_color_decoder.v
+vlog ..\..\..\modules\v9958\vdp_color_bus.v
 vlog ..\..\..\modules\v9958\vdp_command.v
 vlog ..\..\..\modules\v9958\vdp_double_buffer.v
 vlog ..\..\..\modules\v9958\vdp_graphic123m.v
