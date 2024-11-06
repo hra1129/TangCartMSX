@@ -61,11 +61,11 @@ module vdp_color_bus (
 	input	[1:0]	dot_state						,
 	input	[2:0]	eight_dot_state					,
 
-	output			p_vram_oe_n						,
-	output			p_vram_we_n						,
-	output	[16:0]	p_vram_address					,
-	output	[ 7:0]	p_vram_wdata					,
-	input	[15:0]	p_vram_rdata					,
+	output			p_dram_oe_n						,
+	output			p_dram_we_n						,
+	output	[16:0]	p_dram_address					,
+	output	[ 7:0]	p_dram_wdata					,
+	input	[15:0]	p_dram_rdata					,
 
 	input			p_vdp_mode_text1				,
 	input			p_vdp_mode_text1q				,
@@ -123,14 +123,16 @@ module vdp_color_bus (
 	localparam	[2:0]	state_vdpr	= 3'd6;
 	localparam	[2:0]	state_vdps	= 3'd7;
 
+	//	DRAM access latch
+	reg				ff_dram_oe_n;
+	reg				ff_dram_we_n;
+	reg		[16:0]	ff_dram_address;
+	reg		[7:0]	ff_dram_wdata;
+	reg		[7:0]	ff_dram_rdata;
+
 	reg		[16:0]	ff_vram_access_address;
-	reg		[16:0]	ff_vram_address;
-	reg				ff_vram_oe_n;
-	reg				ff_vram_we_n;
 	reg				ff_vram_address_set_ack;
 	reg				ff_vram_write_ack;
-	reg		[7:0]	ff_vram_wdata;
-	reg		[7:0]	ff_vram_rdata;
 	reg				ff_vram_rd_ack;
 	reg				ff_vdp_command_drive;
 	reg				ff_vdpcmd_vram_write_ack;
@@ -148,12 +150,12 @@ module vdp_color_bus (
 	// --------------------------------------------------------------------
 	//	port assignment
 	// --------------------------------------------------------------------
-	assign p_vram_oe_n				= ff_vram_oe_n;
-	assign p_vram_we_n				= ff_vram_we_n;
-	assign p_vram_address			= ff_vram_address;
-	assign p_vram_wdata				= ff_vram_wdata;
+	assign p_dram_oe_n				= ff_dram_oe_n;
+	assign p_dram_we_n				= ff_dram_we_n;
+	assign p_dram_address			= ff_dram_address;
+	assign p_dram_wdata				= ff_dram_wdata;
 	assign p_vdpcmd_vram_rdata		= ff_vdpcmd_vram_rdata;
-	assign p_vram_rdata_cpu			= ff_vram_rdata;
+	assign p_vram_rdata_cpu			= ff_dram_rdata;
 	assign p_vram_data				= w_vram_data;
 	assign p_vram_data_pair			= w_vram_data_pair;
 	assign p_vdpcmd_vram_write_ack	= ff_vdpcmd_vram_write_ack;
@@ -166,9 +168,9 @@ module vdp_color_bus (
 	// --------------------------------------------------------------------
 	//	internal signals
 	// --------------------------------------------------------------------
-	assign w_vram_rdata_sel		= ff_vram_address[16];
-	assign w_vram_data			= ( !w_vram_rdata_sel ) ? p_vram_rdata[ 7:0] : p_vram_rdata[15:8];
-	assign w_vram_data_pair		= (  w_vram_rdata_sel ) ? p_vram_rdata[ 7:0] : p_vram_rdata[15:8];
+	assign w_vram_rdata_sel		= ff_dram_address[16];
+	assign w_vram_data			= ( !w_vram_rdata_sel ) ? p_dram_rdata[ 7:0] : p_dram_rdata[15:8];
+	assign w_vram_data_pair		= (  w_vram_rdata_sel ) ? p_dram_rdata[ 7:0] : p_dram_rdata[15:8];
 	assign w_text_mode			= p_vdp_mode_text1 | p_vdp_mode_text1q | p_vdp_mode_text2;
 
 	// --------------------------------------------------------------------
@@ -176,7 +178,7 @@ module vdp_color_bus (
 	// --------------------------------------------------------------------
 	always @( posedge clk ) begin
 		if( reset ) begin
-			ff_vram_rdata			<= 8'd0;
+			ff_dram_rdata			<= 8'd0;
 			ff_vram_reading_ack		<= 1'b0;
 		end
 		else if( !enable ) begin
@@ -184,7 +186,7 @@ module vdp_color_bus (
 		end
 		else if( dot_state == 2'b01 ) begin
 			if( ff_vram_reading_req != ff_vram_reading_ack ) begin
-				ff_vram_rdata			<= w_vram_data;
+				ff_dram_rdata			<= w_vram_data;
 				ff_vram_reading_ack		<= ~ff_vram_reading_ack;
 			end
 		end
@@ -213,21 +215,21 @@ module vdp_color_bus (
 		reg		[2:0]	ff_color_bus_state;
 
 		if( reset ) begin
-			ff_vram_address		<= 17'b11111111111111111;
-			ff_vram_wdata		<= 8'd0;
-			ff_vram_oe_n		<= 1'b1;
-			ff_vram_we_n		<= 1'b1;
+			ff_dram_address				<= 17'b11111111111111111;
+			ff_dram_wdata				<= 8'd0;
+			ff_dram_oe_n				<= 1'b1;
+			ff_dram_we_n				<= 1'b1;
 
-			ff_vram_reading_req <= 1'b0;
+			ff_vram_reading_req			<= 1'b0;
 
-			ff_vram_rd_ack <= 1'b0;
-			ff_vram_write_ack <= 1'b0;
-			ff_vram_address_set_ack <= 1'b0;
-			ff_vram_access_address <= 17'd0;
+			ff_vram_rd_ack				<= 1'b0;
+			ff_vram_write_ack			<= 1'b0;
+			ff_vram_address_set_ack		<= 1'b0;
+			ff_vram_access_address		<= 17'd0;
 
-			ff_vdpcmd_vram_write_ack <= 1'b0;
-			ff_vdpcmd_vram_reading_req <= 1'b0;
-			ff_vdp_command_drive <= 1'b0;
+			ff_vdpcmd_vram_write_ack	<= 1'b0;
+			ff_vdpcmd_vram_reading_req	<= 1'b0;
+			ff_vdp_command_drive		<= 1'b0;
 		end
 		else if( !enable ) begin
 			// hold
@@ -305,10 +307,10 @@ module vdp_color_bus (
 				// jp: graphic6,7ではvram上のアドレスと ram上のアドレスの関係が
 				// jp: 他の画面モードと異るので注意
 				if( p_vdp_mode_graphic6 || p_vdp_mode_graphic7 ) begin
-					ff_vram_address <= { ff_vram_access_address[0], ff_vram_access_address[16:1] };
+					ff_dram_address <= { ff_vram_access_address[0], ff_vram_access_address[16:1] };
 				end
 				else begin
-					ff_vram_address <= ff_vram_access_address;
+					ff_dram_address <= ff_vram_access_address;
 				end
 				if( p_vdp_mode_text1 || p_vdp_mode_text1q || p_vdp_mode_multi || p_vdp_mode_multiq || p_vdp_mode_graphic1 || p_vdp_mode_graphic2 ) begin
 					ff_vram_access_address[13:0]	<= ff_vram_access_address[13:0] + 14'd1;
@@ -316,9 +318,9 @@ module vdp_color_bus (
 				else begin
 					ff_vram_access_address		<= ff_vram_access_address + 1;
 				end
-				ff_vram_wdata		<= p_vram_wdata_cpu;
-				ff_vram_oe_n		<= 1'b1;
-				ff_vram_we_n		<= 1'b0;
+				ff_dram_wdata		<= p_vram_wdata_cpu;
+				ff_dram_oe_n		<= 1'b1;
+				ff_dram_we_n		<= 1'b0;
 				ff_vram_write_ack	<= ~ff_vram_write_ack;
 			end
 			else if( ff_color_bus_state == state_cpur ) begin
@@ -335,10 +337,10 @@ module vdp_color_bus (
 				// jp: graphic6,7ではvram上のアドレスと ram上のアドレスの関係が
 				// jp: 他の画面モードと異るので注意
 				if( p_vdp_mode_graphic6 || p_vdp_mode_graphic7 ) begin
-					ff_vram_address <= { ff_vram_access_address_pre[0], ff_vram_access_address_pre[16:1] };
+					ff_dram_address <= { ff_vram_access_address_pre[0], ff_vram_access_address_pre[16:1] };
 				end
 				else begin
-					ff_vram_address <= ff_vram_access_address_pre;
+					ff_dram_address <= ff_vram_access_address_pre;
 				end
 				if( p_vdp_mode_text1 || p_vdp_mode_text1q || p_vdp_mode_multi || p_vdp_mode_multiq || p_vdp_mode_graphic1 || p_vdp_mode_graphic2 ) begin
 					ff_vram_access_address[13:0] <= ff_vram_access_address_pre[13:0] + 1;
@@ -346,9 +348,9 @@ module vdp_color_bus (
 				else begin
 					ff_vram_access_address <= ff_vram_access_address_pre + 1;
 				end
-				ff_vram_wdata			<= 8'd0;
-				ff_vram_oe_n			<= 1'b0;
-				ff_vram_we_n			<= 1'b1;
+				ff_dram_wdata			<= 8'd0;
+				ff_dram_oe_n			<= 1'b0;
+				ff_dram_we_n			<= 1'b1;
 				ff_vram_rd_ack			<= ~ff_vram_rd_ack;
 				ff_vram_reading_req		<= ~ff_vram_reading_ack;
 			end
@@ -358,14 +360,14 @@ module vdp_color_bus (
 				// jp: Graphic6, 7 (Screen 7, 8) ではアドレスと ram上の位置が他の画面モードと
 				// jp: 異るので注意
 				if( p_vdp_mode_graphic6 || p_vdp_mode_graphic7 ) begin
-					ff_vram_address	<= { p_vdpcmd_vram_address[0], p_vdpcmd_vram_address[16:1] };
+					ff_dram_address	<= { p_vdpcmd_vram_address[0], p_vdpcmd_vram_address[16:1] };
 				end
 				else begin
-					ff_vram_address	<= p_vdpcmd_vram_address;
+					ff_dram_address	<= p_vdpcmd_vram_address;
 				end
-				ff_vram_wdata				<= p_vdpcmd_vram_wdata;
-				ff_vram_oe_n				<= 1'b1;
-				ff_vram_we_n				<= 1'b0;
+				ff_dram_wdata				<= p_vdpcmd_vram_wdata;
+				ff_dram_oe_n				<= 1'b1;
+				ff_dram_we_n				<= 1'b0;
 				ff_vdpcmd_vram_write_ack	<= ~ff_vdpcmd_vram_write_ack;
 			end
 			else if( ff_color_bus_state == state_vdpr ) begin
@@ -373,44 +375,44 @@ module vdp_color_bus (
 				// jp: Graphic6, 7 (Screen 7, 8) ではアドレスと ram上の位置が他の画面モードと
 				// jp: 異るので注意
 				if( p_vdp_mode_graphic6 || p_vdp_mode_graphic7 ) begin
-					ff_vram_address	<= { p_vdpcmd_vram_address[0], p_vdpcmd_vram_address[16:1] };
+					ff_dram_address	<= { p_vdpcmd_vram_address[0], p_vdpcmd_vram_address[16:1] };
 				end
 				else begin
-					ff_vram_address	<= p_vdpcmd_vram_address;
+					ff_dram_address	<= p_vdpcmd_vram_address;
 				end
-				ff_vram_wdata				<= 8'd0;
-				ff_vram_oe_n				<= 1'b0;
-				ff_vram_we_n				<= 1'b1;
+				ff_dram_wdata				<= 8'd0;
+				ff_dram_oe_n				<= 1'b0;
+				ff_dram_we_n				<= 1'b1;
 				ff_vdpcmd_vram_reading_req	<= ~ff_vdpcmd_vram_reading_ack;
 			end
 			else if( ff_color_bus_state == state_sprt ) begin
 				// vram read by sprite module
-				ff_vram_address		<= p_vram_address_sprite;
-				ff_vram_oe_n		<= 1'b0;
-				ff_vram_we_n		<= 1'b1;
-				ff_vram_wdata		<= 8'd0;
+				ff_dram_address		<= p_vram_address_sprite;
+				ff_dram_oe_n		<= 1'b0;
+				ff_dram_we_n		<= 1'b1;
+				ff_dram_wdata		<= 8'd0;
 			end
 			else begin
 				// state_draw
 				// vram read for screen image building
 				if( dot_state == 2'b10 ) begin
-					ff_vram_wdata	<= 8'd0;
-					ff_vram_oe_n	<= 1'b0;
-					ff_vram_we_n	<= 1'b1;
+					ff_dram_wdata	<= 8'd0;
+					ff_dram_oe_n	<= 1'b0;
+					ff_dram_we_n	<= 1'b1;
 					if( w_text_mode ) begin
-						ff_vram_address <= p_vram_address_text12;
+						ff_dram_address <= p_vram_address_text12;
 					end
 					else if( p_vdp_mode_graphic1 || p_vdp_mode_graphic2 || p_vdp_mode_graphic3 || p_vdp_mode_multi || p_vdp_mode_multiq ) begin
-						ff_vram_address <= p_vram_address_graphic123m;
+						ff_dram_address <= p_vram_address_graphic123m;
 					end
 					else if( p_vdp_mode_graphic4 || p_vdp_mode_graphic5 || p_vdp_mode_graphic6 || p_vdp_mode_graphic7 ) begin
-						ff_vram_address <= p_vram_address_graphic4567;
+						ff_dram_address <= p_vram_address_graphic4567;
 					end
 				end
 				else begin
-					ff_vram_wdata	<= 8'd0;
-					ff_vram_oe_n	<= 1'b1;
-					ff_vram_we_n	<= 1'b1;
+					ff_dram_wdata	<= 8'd0;
+					ff_dram_oe_n	<= 1'b1;
+					ff_dram_we_n	<= 1'b1;
 				end
 
 				if( (dot_state == 2'b11) && (p_vram_addr_set_req != ff_vram_address_set_ack) ) begin

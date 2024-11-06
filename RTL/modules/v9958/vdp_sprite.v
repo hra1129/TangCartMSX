@@ -64,7 +64,7 @@ module vdp_sprite (
 	input		[1:0]	dot_state					,
 	input		[2:0]	eight_dot_state				,
 
-	input		[8:0]	dot_counter_x					,
+	input		[8:0]	dot_counter_x				,
 	input		[8:0]	dot_counter_yp				,
 	input				bwindow_y					,
 
@@ -87,13 +87,13 @@ module vdp_sprite (
 	input				reg_r8_sp_off				,
 	input		[7:0]	reg_r23_vstart_line			,
 	input		[2:0]	reg_r27_h_scroll			,
-	input				p_sp_mode2						,
-	input				vram_interleave_mode			,
+	input				p_sp_mode2					,
+	input				vram_interleave_mode		,
 
-	output reg			sp_vram_accessing				,
+	output reg			sp_vram_accessing			,
 
-	input		[7:0]	p_vram_rdata						,
-	output		[16:0]	p_vram_address						,
+	input		[7:0]	p_vram_rdata				,
+	output		[16:0]	p_vram_address				,
 
 	// jp: スプライトを描画した時に1'b1になる。カラーコード0で
 	// jp: 描画する事もできるので、このビットが必要
@@ -284,7 +284,7 @@ module vdp_sprite (
 
 	// jp: vramアクセスアドレスの出力
 	assign w_vram_address		= ( ff_main_state == c_state_ytest_draw ) ? ff_y_test_address : ff_preread_address;
-	assign p_vram_address				= ( vram_interleave_mode ) ? { w_vram_address[0], w_vram_address[16:1] } : w_vram_address[16:0];
+	assign p_vram_address		= ( vram_interleave_mode ) ? { w_vram_address[0], w_vram_address[16:1] } : w_vram_address[16:0];
 
 	//---------------------------------------------------------------------------
 	// state machine
@@ -651,7 +651,7 @@ module vdp_sprite (
 			2'b01:
 				begin
 					if( ff_main_state == c_state_prepare ) begin
-						if( eight_dot_state == 3'b110 ) begin
+						if( eight_dot_state == 3'd6 ) begin
 							ff_info_ram_we <= 1'b1;
 						end
 					end
@@ -679,7 +679,7 @@ module vdp_sprite (
 			if( dot_state == 2'b01 ) begin
 				if( ff_main_state == c_state_prepare ) begin
 					case( eight_dot_state )
-					3'b001:								// y read
+					3'd1:								// y read
 						begin
 							// jp: スプライトの何行目が該当したか覚えておく
 							if( !reg_r1_sp_zoom ) begin
@@ -689,13 +689,13 @@ module vdp_sprite (
 								ff_prepare_line_num	<= w_listup_y[4:1];
 							end
 						end
-					3'b010:								// x read
+					3'd2:								// x read
 						ff_info_x <= { 1'b0, p_vram_rdata };
-					3'b011:								// pattern num read
+					3'd3:								// pattern num read
 						ff_prepare_pattern_num <= p_vram_rdata;
-					3'b100:								// pattern read left
+					3'd4:								// pattern read left
 						ff_info_pattern[15:8] <= p_vram_rdata;
-					3'b101:								// pattern read right
+					3'd5:								// pattern read right
 						begin
 							if( !reg_r1_sp_size ) begin
 								// 8x8 mode
@@ -706,7 +706,7 @@ module vdp_sprite (
 								ff_info_pattern[7:0] <= p_vram_rdata;
 							end
 						end
-					3'b110:								// color read
+					3'd6:								// color read
 						begin
 							// color
 							ff_info_color <= p_vram_rdata[3:0];
@@ -730,7 +730,7 @@ module vdp_sprite (
 								ff_info_pattern <= 16'd0;
 							end
 						end
-					3'b111:
+					3'd7:
 						begin
 							ff_prepare_local_plane_num <= ff_prepare_local_plane_num + 1;
 							if( (ff_prepare_local_plane_num == 7) || (ff_prepare_local_plane_num == 3 && !p_sp_mode2) ) begin

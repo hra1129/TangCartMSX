@@ -69,11 +69,11 @@ module vdp_inst(
 
 	output					int_n,
 
-	output					p_vram_oe_n,
-	output					p_vram_we_n,
-	output		[16:0]		p_vram_address,
-	input		[15:0]		p_vram_rdata,
-	output		[7:0]		p_vram_wdata,
+	output					p_dram_oe_n,
+	output					p_dram_we_n,
+	output		[16:0]		p_dram_address,
+	input		[15:0]		p_dram_rdata,
+	output		[7:0]		p_dram_wdata,
 
 	// video output
 	output					pvideo_clk,
@@ -151,11 +151,11 @@ module vdp_inst(
 		.rdata				( rdata						),	// OUT	STD_LOGIC_VECTOR(  7 DOWNTO 0 );
 		.wdata				( wdata						),	// IN	STD_LOGIC_VECTOR(  7 DOWNTO 0 );
 		.int_n				( int_n						),	// OUT	STD_LOGIC;
-		.p_vram_oe_n		( p_vram_oe_n				),	// OUT	STD_LOGIC;
-		.p_vram_we_n		( p_vram_we_n				),	// OUT	STD_LOGIC;
-		.p_vram_address		( p_vram_address			),	// OUT	STD_LOGIC_VECTOR( 16 DOWNTO 0 );
-		.p_vram_rdata		( p_vram_rdata				),	// IN	STD_LOGIC_VECTOR( 15 DOWNTO 0 );
-		.p_vram_wdata		( p_vram_wdata				),	// OUT	STD_LOGIC_VECTOR(  7 DOWNTO 0 );
+		.p_dram_oe_n		( p_dram_oe_n				),	// OUT	STD_LOGIC;
+		.p_dram_we_n		( p_dram_we_n				),	// OUT	STD_LOGIC;
+		.p_dram_address		( p_dram_address			),	// OUT	STD_LOGIC_VECTOR( 16 DOWNTO 0 );
+		.p_dram_rdata		( p_dram_rdata				),	// IN	STD_LOGIC_VECTOR( 15 DOWNTO 0 );
+		.p_dram_wdata		( p_dram_wdata				),	// OUT	STD_LOGIC_VECTOR(  7 DOWNTO 0 );
 		.vdp_speed_mode		( 1'b0						),	// IN	STD_LOGIC;
 		.ratio_mode			( 3'b000					),	// IN	STD_LOGIC_VECTOR(  2 DOWNTO 0 );
 		.centeryjk_r25_n	( 1'b1						),	// IN	STD_LOGIC;

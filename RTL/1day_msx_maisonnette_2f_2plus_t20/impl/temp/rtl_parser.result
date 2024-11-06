@@ -68,7 +68,7 @@
        {
         "InstFile" : "D:/github/HRA_product/TangCartMSX/RTL/modules/v9958/vdp.v",
         "InstLine" : 539,
-        "InstName" : "u_interrupt",
+        "InstName" : "u_vdp_interrupt",
         "ModuleFile" : "D:/github/HRA_product/TangCartMSX/RTL/modules/v9958/vdp_interrupt.v",
         "ModuleLine" : 57,
         "ModuleName" : "vdp_interrupt"
@@ -76,7 +76,7 @@
        {
         "InstFile" : "D:/github/HRA_product/TangCartMSX/RTL/modules/v9958/vdp.v",
         "InstLine" : 558,
-        "InstName" : "u_ssg",
+        "InstName" : "u_vdp_ssg",
         "ModuleFile" : "D:/github/HRA_product/TangCartMSX/RTL/modules/v9958/vdp_ssg.v",
         "ModuleLine" : 58,
         "ModuleName" : "vdp_ssg"
@@ -126,7 +126,7 @@
        {
         "InstFile" : "D:/github/HRA_product/TangCartMSX/RTL/modules/v9958/vdp.v",
         "InstLine" : 727,
-        "InstName" : "u_sprite",
+        "InstName" : "u_vdp_sprite",
         "ModuleFile" : "D:/github/HRA_product/TangCartMSX/RTL/modules/v9958/vdp_sprite.v",
         "ModuleLine" : 58,
         "ModuleName" : "vdp_sprite",
@@ -160,7 +160,7 @@
        {
         "InstFile" : "D:/github/HRA_product/TangCartMSX/RTL/modules/v9958/vdp.v",
         "InstLine" : 768,
-        "InstName" : "u_palette_ram",
+        "InstName" : "u_vdp_palette_ram",
         "ModuleFile" : "D:/github/HRA_product/TangCartMSX/RTL/modules/v9958/vdp_ram_palette.v",
         "ModuleLine" : 32,
         "ModuleName" : "vdp_ram_palette"

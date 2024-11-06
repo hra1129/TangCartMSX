@@ -69,11 +69,11 @@ module vdp(
 
 	output					int_n,
 
-	output					p_vram_oe_n,
-	output					p_vram_we_n,
-	output		[16:0]		p_vram_address,
-	input		[15:0]		p_vram_rdata,
-	output		[7:0]		p_vram_wdata,
+	output					p_dram_oe_n,
+	output					p_dram_we_n,
+	output		[16:0]		p_dram_address,
+	input		[15:0]		p_dram_rdata,
+	output		[7:0]		p_dram_wdata,
 
 	input					vdp_speed_mode,
 	input		[2:0]		ratio_mode,
@@ -484,11 +484,11 @@ module vdp(
 		.enable							( enable						),
 		.dot_state						( w_dot_state					),
 		.eight_dot_state				( w_eight_dot_state				),
-		.p_vram_oe_n					( p_vram_oe_n					),
-		.p_vram_we_n					( p_vram_we_n					),
-		.p_vram_address					( p_vram_address				),
-		.p_vram_wdata					( p_vram_wdata					),
-		.p_vram_rdata					( p_vram_rdata					),
+		.p_dram_oe_n					( p_dram_oe_n					),
+		.p_dram_we_n					( p_dram_we_n					),
+		.p_dram_address					( p_dram_address				),
+		.p_dram_wdata					( p_dram_wdata					),
+		.p_dram_rdata					( p_dram_rdata					),
 		.p_vdp_mode_text1				( w_vdp_mode_text1				),
 		.p_vdp_mode_text1q				( w_vdp_mode_text1q				),
 		.p_vdp_mode_text2				( w_vdp_mode_text2				),
@@ -536,7 +536,7 @@ module vdp(
 	// --------------------------------------------------------------------
 	//	Interrupt
 	// --------------------------------------------------------------------
-	vdp_interrupt u_interrupt(
+	vdp_interrupt u_vdp_interrupt(
 		.reset							( reset							),
 		.clk							( clk							),
 		.enable							( enable						),
@@ -555,7 +555,7 @@ module vdp(
 	//---------------------------------------------------------------------------
 	// synchronous signal generator
 	//---------------------------------------------------------------------------
-	vdp_ssg u_ssg(
+	vdp_ssg u_vdp_ssg(
 		.reset							( reset							),
 		.clk							( clk							),
 		.enable							( enable						),
@@ -724,7 +724,7 @@ module vdp(
 	//---------------------------------------------------------------------------
 	// sprite module
 	//---------------------------------------------------------------------------
-	vdp_sprite u_sprite(
+	vdp_sprite u_vdp_sprite(
 		.clk							( clk							),
 		.reset							( reset							),
 		.enable							( enable						),
@@ -765,7 +765,7 @@ module vdp(
 	//---------------------------------------------------------------------------
 	assign w_palette_address	= w_palette_we ? w_palette_wr_address : w_palette_rd_address;
 
-	vdp_ram_palette u_palette_ram (
+	vdp_ram_palette u_vdp_palette_ram (
 		.clk		( clk					),
 		.enable		( enable				),
 		.address	( w_palette_address		),

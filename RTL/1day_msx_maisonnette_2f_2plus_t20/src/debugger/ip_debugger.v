@@ -145,7 +145,7 @@ module ip_debugger (
 				begin
 					//	R#5: Sprite Attribute Table is 0x1B00 = 17'b0_0001_1011_0000_0000
 					ff_vdp_reg		<= 5'h05;
-					ff_vdp_data		<= 8'b001_101_11;		//	[A14][A13][A12][A11][A10][A9][1][1]
+					ff_vdp_data		<= 8'b001_1011_0;		//	[A14][A13][A12][A11][A10][A9][A8][A7]
 					ff_next_state	<= ff_state + 'd1;
 					ff_state		<= c_st_write;
 				end
@@ -490,7 +490,7 @@ module ip_debugger (
 					if( ack == 1'b1 ) begin
 						ff_req			<= 1'b0;
 						ff_state		<= ff_state + 'd1;
-						ff_wait_count	<= 10'd1023;
+						ff_wait_count	<= 10'd64;
 						ff_rom_address	<= ff_rom_address + 14'd1;
 					end
 					else begin

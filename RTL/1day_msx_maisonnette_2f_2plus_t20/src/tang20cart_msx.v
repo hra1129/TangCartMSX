@@ -269,11 +269,11 @@ module tang20cart_msx (
 		.rdata				( w_rdata					),		//	[ 7: 0];
 		.wdata				( w_wdata					),		//	[ 7: 0];
 		.int_n				( 							),		
-		.p_vram_oe_n		( w_sdram_read_n			),		
-		.p_vram_we_n		( w_sdram_write_n			),		
-		.p_vram_address		( w_sdram_address[16:0]		),		//	[16: 0];
-		.p_vram_rdata		( w_sdram_rdata				),		//	[15: 0];
-		.p_vram_wdata		( w_sdram_wdata				),		//	[ 7: 0];
+		.p_dram_oe_n		( w_sdram_read_n			),		
+		.p_dram_we_n		( w_sdram_write_n			),		
+		.p_dram_address		( w_sdram_address[16:0]		),		//	[16: 0];
+		.p_dram_rdata		( w_sdram_rdata				),		//	[15: 0];
+		.p_dram_wdata		( w_sdram_wdata				),		//	[ 7: 0];
 		.pvideo_clk			( lcd_clk					),		
 		.pvideo_data_en		( lcd_de					),		
 		.pvideor			( w_lcd_red					),		//	[ 5: 0];
