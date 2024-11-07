@@ -44,8 +44,8 @@ module ip_msx50bus_cart (
 	output			bus_memory_req,
 	input			bus_ack,
 	output			bus_wrt,
-	output			bus_wdata,
-	input			bus_rdata,
+	output	[7:0]	bus_wdata,
+	input	[7:0]	bus_rdata,
 	input			bus_rdata_en
 );
 	//	Flip-flops for asynchronous switching
