@@ -1,6 +1,6 @@
 //
-//	ppi.v
-//	 PPI i82C55 top entity
+//	ppi_inst.v
+//	 PPI i82C55 instanece wrapper entity
 //
 //	Copyright (C) 2024 Takayuki Hara
 //
@@ -55,18 +55,17 @@
 //
 //-----------------------------------------------------------------------------
 
-module ppi(
+module ppi_inst (
 	input					reset,
 	input					clk,
 	input					req,
 	output					ack,
 	input					wrt,
-	input		[1:0]		address,
+	input		[15:0]		address,
 	input		[7:0]		wdata,
 	output		[7:0]		rdata,
 	output					rdata_en,
-	//	Primary slot
-	output		[7:0]		primary_slot,
+
 	//	keyboard I/F
 	output		[3:0]		matrix_y,
 	input		[7:0]		matrix_x,
@@ -74,83 +73,65 @@ module ppi(
 	output					cmt_motor_off,
 	output					cmt_write_signal,
 	output					keyboard_caps_led_off,
-	output					click_sound
+	output					click_sound,
+	//	Primary slot signals
+	output					sltsl0,
+	output					sltsl1,
+	output					sltsl2,
+	output					sltsl3
 );
-	reg			[7:0]		ff_port_a;
-	reg			[7:0]		ff_port_c;
-	reg						ff_rdata;
-	reg						ff_rdata_en;
+	localparam				c_port_number = 8'hA8;
+	wire					w_decode;
+	wire		[7:0]		w_primary_slot;
+	wire		[1:0]		w_current_page;
+	wire		[1:0]		w_current_slot;
+	reg						ff_sltsl0;
+	reg						ff_sltsl1;
+	reg						ff_sltsl2;
+	reg						ff_sltsl3;
 
 	// --------------------------------------------------------------------
-	//	PortA: Primary Slot Register
+	//	address decoder
 	// --------------------------------------------------------------------
-	always @( posedge clk ) begin
-		if( reset ) begin
-			ff_port_a <= 8'd0;
-		end
-		else if( req && wrt && (address == 2'b00) ) begin
-			ff_port_a <= wdata;
-		end
-		else begin
-			//	hold
-		end
-	end
+	assign w_decode			= ( { address[7:2], 2'b00 } == c_port_number ) ? req : 1'b0;
 
-	// --------------------------------------------------------------------
-	//	PortC: Keyboard and cassette interface Register
-	// --------------------------------------------------------------------
-	always @( posedge clk ) begin
-		if( reset ) begin
-			ff_port_c <= 8'd01110000;
-		end
-		else if( req && wrt && (address == 2'b10) ) begin
-			ff_port_c <= wdata;
-		end
-		else begin
-			//	hold
-		end
-	end
+	assign w_current_page	= address[15:14];
 
-	// --------------------------------------------------------------------
-	//	Read
-	// --------------------------------------------------------------------
-	always @( posedge clk ) begin
-		if( reset ) begin
-			ff_rdata <= 8'd0;
-		end
-		else if( req && !wrt ) begin
-			case( address )
-			2'd0:		ff_rdata <= ff_port_a;
-			2'd1:		ff_rdata <= matrix_x;
-			2'd2:		ff_rdata <= ff_port_c;
-			2'd3:		ff_rdata <= 8'd0;
-			default:	ff_rdata <= 8'd0;
-			endcase
-		end
-	end
+	assign w_current_slot	= (w_current_page == 2'd0) ? w_primary_slot[1:0] :
+							  (w_current_page == 2'd1) ? w_primary_slot[3:2] :
+							  (w_current_page == 2'd2) ? w_primary_slot[5:4] : w_primary_slot[7:6];
 
 	always @( posedge clk ) begin
-		if( reset ) begin
-			ff_rdata_en <= 1'b0;
-		end
-		else if( req && !wrt ) begin
-			ff_read_en <= 1'b1;
-		end
-		else begin
-			ff_rdata_en <= 1'b0;
-		end
+		ff_sltsl0			<= (w_current_slot == 2'd0) ? 1'b1 : 1'b0;
+		ff_sltsl1			<= (w_current_slot == 2'd1) ? 1'b1 : 1'b0;
+		ff_sltsl2			<= (w_current_slot == 2'd2) ? 1'b1 : 1'b0;
+		ff_sltsl3			<= (w_current_slot == 2'd3) ? 1'b1 : 1'b0;
 	end
 
-	// --------------------------------------------------------------------
-	//	Output assignment
-	// --------------------------------------------------------------------
-	assign rdata					= ff_rdata;
-	assign rdata_en					= ff_rdata_en;
+	assign sltsl0			= ff_sltsl0;
+	assign sltsl1			= ff_sltsl1;
+	assign sltsl2			= ff_sltsl2;
+	assign sltsl3			= ff_sltsl3;
 
-	assign primary_slot				= ff_port_a;
-	assign matrix_y					= ff_port_c[3:0];
-	assign cmt_motor_off			= ff_port_c[4];
-	assign cmt_write_signal			= ff_port_c[5];
-	assign keyboard_caps_led_off	= ff_port_c[6];
-	assign click_sound				= ff_port_c[7];
+	// --------------------------------------------------------------------
+	//	PPI body
+	// --------------------------------------------------------------------
+	ppi u_ppi (
+		.reset					( reset					),
+		.clk					( clk					),
+		.req					( w_decode				),
+		.ack					( ack					),
+		.wrt					( wrt					),
+		.address				( address[1:0]			),
+		.wdata					( wdata					),
+		.rdata					( rdata					),
+		.rdata_en				( rdata_en				),
+		.primary_slot			( w_primary_slot		),
+		.matrix_y				( matrix_y				),
+		.matrix_x				( matrix_x				),
+		.cmt_motor_off			( cmt_motor_off			),
+		.cmt_write_signal		( cmt_write_signal		),
+		.keyboard_caps_led_off	( keyboard_caps_led_off	),
+		.click_sound			( click_sound			)
+	);
 endmodule
