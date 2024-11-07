@@ -1,6 +1,6 @@
 //
-//	system_registers.v
-//	 System Registers top entity
+//	memory_mapper.v
+//	 Memory Mapper top entity
 //
 //	Copyright (C) 2024 Takayuki Hara
 //
@@ -55,20 +55,25 @@
 //
 //-----------------------------------------------------------------------------
 
-module system_registers(
+module memory_mapper(
 	input					reset,
 	input					clk,
 	input					req,
 	output					ack,
 	input					wrt,
-	input		[2:0]		address,
+	input		[1:0]		address,
 	input		[7:0]		wdata,
 	output		[7:0]		rdata,
-	output					rdata_en
+	output					rdata_en,
+	output		[7:0]		page0_segment,
+	output		[7:0]		page1_segment,
+	output		[7:0]		page2_segment,
+	output		[7:0]		page3_segment
 );
-	reg			[7:0]		ff_port_f3;
-	reg			[7:0]		ff_port_f4;
-	reg			[7:0]		ff_port_f5;
+	reg			[7:0]		ff_page0_segment;
+	reg			[7:0]		ff_page1_segment;
+	reg			[7:0]		ff_page2_segment;
+	reg			[7:0]		ff_page3_segment;
 	reg						ff_rdata;
 	reg						ff_rdata_en;
 	reg						ff_ack;
@@ -78,22 +83,10 @@ module system_registers(
 	// --------------------------------------------------------------------
 	always @( posedge clk ) begin
 		if( reset ) begin
-			ff_port_f3 <= 8'd0;
+			ff_page0_segment <= 8'd0;
 		end
-		else if( req && wrt && (address == 3'd3) ) begin
-			ff_port_f3 <= wdata;
-		end
-		else begin
-			//	hold
-		end
-	end
-
-	always @( posedge clk ) begin
-		if( reset ) begin
-			ff_port_f4 <= 8'd0;
-		end
-		else if( req && wrt && (address == 3'd4) ) begin
-			ff_port_f4 <= wdata;
+		else if( req && wrt && (address == 2'd0) ) begin
+			ff_page0_segment <= wdata;
 		end
 		else begin
 			//	hold
@@ -102,10 +95,34 @@ module system_registers(
 
 	always @( posedge clk ) begin
 		if( reset ) begin
-			ff_port_f5 <= 8'd0;
+			ff_page1_segment <= 8'd0;
 		end
-		else if( req && wrt && (address == 3'd5) ) begin
-			ff_port_f5 <= wdata;
+		else if( req && wrt && (address == 2'd1) ) begin
+			ff_page1_segment <= wdata;
+		end
+		else begin
+			//	hold
+		end
+	end
+
+	always @( posedge clk ) begin
+		if( reset ) begin
+			ff_page2_segment <= 8'd0;
+		end
+		else if( req && wrt && (address == 2'd2) ) begin
+			ff_page2_segment <= wdata;
+		end
+		else begin
+			//	hold
+		end
+	end
+
+	always @( posedge clk ) begin
+		if( reset ) begin
+			ff_page3_segment <= 8'd0;
+		end
+		else if( req && wrt && (address == 2'd3) ) begin
+			ff_page3_segment <= wdata;
 		end
 		else begin
 			//	hold
@@ -122,10 +139,11 @@ module system_registers(
 		end
 		else if( req && !wrt ) begin
 			case( address )
-			3'd3:		begin ff_rdata <= ff_port_f3;	ff_rdata_en	<= 1'b1;	end
-			3'd4:		begin ff_rdata <= ff_port_f4;	ff_rdata_en	<= 1'b1;	end
-			3'd5:		begin ff_rdata <= ff_port_f5;	ff_rdata_en	<= 1'b1;	end
-			default:	begin ff_rdata <= 8'd0;			ff_rdata_en	<= 1'b0;	end
+			2'd0:		begin ff_rdata <= ff_page0_segment;	ff_rdata_en	<= 1'b1;	end
+			2'd1:		begin ff_rdata <= ff_page0_segment;	ff_rdata_en	<= 1'b1;	end
+			2'd2:		begin ff_rdata <= ff_page0_segment;	ff_rdata_en	<= 1'b1;	end
+			2'd3:		begin ff_rdata <= ff_page0_segment;	ff_rdata_en	<= 1'b1;	end
+			default:	begin ff_rdata <= 8'd0;				ff_rdata_en	<= 1'b0;	end
 			endcase
 		end
 		else begin
@@ -142,12 +160,7 @@ module system_registers(
 			ff_ack <= 1'b0;
 		end
 		else begin
-			if( address == 3'd3 || address == 3'd4 || address == 3'd5 ) begin
-				ff_ack <= req;
-			end
-			else begin
-				ff_ack <= 1'b0;
-			end
+			ff_ack <= req;
 		end
 	end
 
@@ -158,4 +171,9 @@ module system_registers(
 	// --------------------------------------------------------------------
 	assign rdata					= ff_rdata;
 	assign rdata_en					= ff_rdata_en;
+
+	assign page0_segment			= ff_page0_segment;
+	assign page1_segment			= ff_page1_segment;
+	assign page2_segment			= ff_page2_segment;
+	assign page3_segment			= ff_page3_segment;
 endmodule

@@ -66,7 +66,7 @@ use IEEE.std_logic_1164.all;
 use IEEE.numeric_std.all;
 use work.T800_Pack.all;
 
-entity T800a is
+entity T800_inst is
 	generic(
 		Mode		: integer := 1;		-- 0 => Z80, 1 => Fast Z80, 2 => 8080, 3 => GB
 		R800_MULU	: integer := 1;		-- 0 => no MULU, 1=> R800 MULU
@@ -92,9 +92,9 @@ entity T800a is
 		D			: inout std_logic_vector(7 downto 0);
 		p_PC		: out std_logic_vector(15 downto 0)		   -- Added by t.hara 2020.07.28
 	);
-end T800a;
+end T800_inst;
 
-architecture rtl of T800a is
+architecture rtl of T800_inst is
 
 	signal CEN			: std_logic;
 	signal Reset_s		: std_logic;

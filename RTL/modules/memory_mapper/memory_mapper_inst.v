@@ -1,6 +1,6 @@
 //
-//	system_registers.v
-//	 System Registers top entity
+//	memory_mapper.v
+//	 Memory Mapper top entity
 //
 //	Copyright (C) 2024 Takayuki Hara
 //
@@ -55,107 +55,50 @@
 //
 //-----------------------------------------------------------------------------
 
-module system_registers(
+module memory_mapper_inst(
 	input					reset,
 	input					clk,
 	input					req,
 	output					ack,
 	input					wrt,
-	input		[2:0]		address,
+	input		[15:0]		address,
 	input		[7:0]		wdata,
 	output		[7:0]		rdata,
-	output					rdata_en
+	output					rdata_en,
+	output		[7:0]		mapper_segment
 );
-	reg			[7:0]		ff_port_f3;
-	reg			[7:0]		ff_port_f4;
-	reg			[7:0]		ff_port_f5;
-	reg						ff_rdata;
-	reg						ff_rdata_en;
-	reg						ff_ack;
+	localparam				c_port_number = 8'hFC;
+	wire					w_decode;
+	wire		[7:0]		w_page0_segment;
+	wire		[7:0]		w_page1_segment;
+	wire		[7:0]		w_page2_segment;
+	wire		[7:0]		w_page3_segment;
 
 	// --------------------------------------------------------------------
-	//	Latch
+	//	Address decode
 	// --------------------------------------------------------------------
-	always @( posedge clk ) begin
-		if( reset ) begin
-			ff_port_f3 <= 8'd0;
-		end
-		else if( req && wrt && (address == 3'd3) ) begin
-			ff_port_f3 <= wdata;
-		end
-		else begin
-			//	hold
-		end
-	end
+	assign w_decode			= ( { address[7:2], 2'b00 } == c_port_number ) ? req : 1'b0;
 
-	always @( posedge clk ) begin
-		if( reset ) begin
-			ff_port_f4 <= 8'd0;
-		end
-		else if( req && wrt && (address == 3'd4) ) begin
-			ff_port_f4 <= wdata;
-		end
-		else begin
-			//	hold
-		end
-	end
-
-	always @( posedge clk ) begin
-		if( reset ) begin
-			ff_port_f5 <= 8'd0;
-		end
-		else if( req && wrt && (address == 3'd5) ) begin
-			ff_port_f5 <= wdata;
-		end
-		else begin
-			//	hold
-		end
-	end
+	assign mapper_segment	= ( address[15:14] == 2'd0 ) ? w_page0_segment :
+							  ( address[15:14] == 2'd1 ) ? w_page1_segment :
+							  ( address[15:14] == 2'd2 ) ? w_page2_segment : w_page3_segment;
 
 	// --------------------------------------------------------------------
-	//	Read
+	//	System Register body
 	// --------------------------------------------------------------------
-	always @( posedge clk ) begin
-		if( reset ) begin
-			ff_rdata <= 8'd0;
-			ff_rdata_en <= 1'b0;
-		end
-		else if( req && !wrt ) begin
-			case( address )
-			3'd3:		begin ff_rdata <= ff_port_f3;	ff_rdata_en	<= 1'b1;	end
-			3'd4:		begin ff_rdata <= ff_port_f4;	ff_rdata_en	<= 1'b1;	end
-			3'd5:		begin ff_rdata <= ff_port_f5;	ff_rdata_en	<= 1'b1;	end
-			default:	begin ff_rdata <= 8'd0;			ff_rdata_en	<= 1'b0;	end
-			endcase
-		end
-		else begin
-			ff_rdata	<= 8'd0;
-			ff_rdata_en	<= 1'b0;
-		end
-	end
-
-	// --------------------------------------------------------------------
-	//	Ack
-	// --------------------------------------------------------------------
-	always @( posedge clk ) begin
-		if( reset ) begin
-			ff_ack <= 1'b0;
-		end
-		else begin
-			if( address == 3'd3 || address == 3'd4 || address == 3'd5 ) begin
-				ff_ack <= req;
-			end
-			else begin
-				ff_ack <= 1'b0;
-			end
-		end
-	end
-
-	assign ack						= ff_ack;
-
-	// --------------------------------------------------------------------
-	//	Output assignment
-	// --------------------------------------------------------------------
-	assign rdata					= ff_rdata;
-	assign rdata_en					= ff_rdata_en;
+	memory_mapper u_memory_mapper(
+		.reset				( reset				),
+		.clk				( clk				),
+		.req				( w_decode			),
+		.ack				( ack				),
+		.wrt				( wrt				),
+		.address			( address[1:0]		),
+		.wdata				( wdata				),
+		.rdata				( rdata				),
+		.rdata_en			( rdata_en			),
+		.page0_segment		( w_page0_segment	),
+		.page1_segment		( w_page1_segment	),
+		.page2_segment		( w_page2_segment	),
+		.page3_segment		( w_page3_segment	),
+	);
 endmodule

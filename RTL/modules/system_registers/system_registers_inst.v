@@ -55,7 +55,7 @@
 //
 //-----------------------------------------------------------------------------
 
-module system_registers(
+module system_registers_inst(
 	input					reset,
 	input					clk,
 	input					req,
@@ -72,7 +72,7 @@ module system_registers(
 	// --------------------------------------------------------------------
 	//	Address decode
 	// --------------------------------------------------------------------
-	assign w_decode		= ( { address[7:2], 2'b00 } == c_port_number ) ? req : 1'b0;
+	assign w_decode		= ( { address[7:3], 3'b000 } == c_port_number ) ? req : 1'b0;
 
 	// --------------------------------------------------------------------
 	//	System Register body
@@ -83,7 +83,7 @@ module system_registers(
 		.req				( w_decode			),
 		.ack				( ack				),
 		.wrt				( wrt				),
-		.address			( address			),
+		.address			( address[2:0]		),
 		.wdata				( wdata				),
 		.rdata				( rdata				),
 		.rdata_en			( rdata_en			)

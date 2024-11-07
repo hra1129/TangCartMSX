@@ -66,7 +66,7 @@ use IEEE.std_logic_1164.all;
 use IEEE.numeric_std.all;
 use work.T80_Pack.all;
 
-entity T80a is
+entity T80_inst is
     generic(
         Mode        : integer := 0;     -- 0 => Z80, 1 => Fast Z80, 2 => 8080, 3 => GB
         IOWait      : integer := 1      -- 0 => Single I/O cycle, 1 => Std I/O cycle
@@ -90,9 +90,9 @@ entity T80a is
         D           : inout std_logic_vector(7 downto 0);
         p_PC        : out std_logic_vector(15 downto 0)        -- Added by t.hara 2020.07.28
     );
-end T80a;
+end T80_inst;
 
-architecture rtl of T80a is
+architecture rtl of T80_inst is
 
     signal CEN          : std_logic;
     signal Reset_s      : std_logic;
