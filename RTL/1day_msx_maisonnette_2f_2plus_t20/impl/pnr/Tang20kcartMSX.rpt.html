@@ -79,7 +79,7 @@ table.detail_table th.label {  min-width: 8%; width: 8%; }
 </tr>
 <tr>
 <td class="label">Created Time</td>
-<td>Wed Nov  6 22:48:49 2024
+<td>Thu Nov  7 06:38:45 2024
 </td>
 </tr>
 <tr>
@@ -93,14 +93,14 @@ table.detail_table th.label {  min-width: 8%; width: 8%; }
 <tr>
 <td class="label">Place & Route Process</td>
 <td>Running placement:
-   Placement Phase 0: CPU time = 0h 0m 0.637s, Elapsed time = 0h 0m 0.637s
-   Placement Phase 1: CPU time = 0h 0m 0.335s, Elapsed time = 0h 0m 0.335s
+   Placement Phase 0: CPU time = 0h 0m 0.616s, Elapsed time = 0h 0m 0.616s
+   Placement Phase 1: CPU time = 0h 0m 0.326s, Elapsed time = 0h 0m 0.327s
    Placement Phase 2: CPU time = 0h 0m 1s, Elapsed time = 0h 0m 1s
    Placement Phase 3: CPU time = 0h 0m 2s, Elapsed time = 0h 0m 2s
    Total Placement: CPU time = 0h 0m 4s, Elapsed time = 0h 0m 4s
 Running routing:
-   Routing Phase 0: CPU time = 0h 0m 0.003s, Elapsed time = 0h 0m 0.003s
-   Routing Phase 1: CPU time = 0h 0m 0.249s, Elapsed time = 0h 0m 0.249s
+   Routing Phase 0: CPU time = 0h 0m 0.003s, Elapsed time = 0h 0m 0.002s
+   Routing Phase 1: CPU time = 0h 0m 0.232s, Elapsed time = 0h 0m 0.233s
    Routing Phase 2: CPU time = 0h 0m 3s, Elapsed time = 0h 0m 3s
    Routing Phase 3: CPU time = 0h 0m 0s, Elapsed time = 0h 0m 0s
    Total Routing: CPU time = 0h 0m 3s, Elapsed time = 0h 0m 3s
@@ -110,7 +110,7 @@ Generate output files:
 </tr>
 <tr>
 <td class="label">Total Time and Memory Usage</td>
-<td>CPU time = 0h 0m 10s, Elapsed time = 0h 0m 10s, Peak memory usage = 440MB</td>
+<td>CPU time = 0h 0m 9s, Elapsed time = 0h 0m 9s, Peak memory usage = 462MB</td>
 </tr>
 </table>
 <br/>
@@ -125,12 +125,12 @@ Generate output files:
 </tr>
 <tr>
 <td class="label">Logic</td>
-<td>3065/20736</td>
-<td>15%</td>
+<td>3160/20736</td>
+<td>16%</td>
 </tr>
 <tr>
 <td class="label">&nbsp &nbsp --LUT,ALU,ROM16</td>
-<td>3017(2645 LUT, 372 ALU, 0 ROM16)</td>
+<td>3112(2739 LUT, 373 ALU, 0 ROM16)</td>
 <td>-</td>
 </tr>
 <tr>
@@ -165,17 +165,17 @@ Generate output files:
 </tr>
 <tr>
 <td class="label">CLS</td>
-<td>2061/10368</td>
-<td>20%</td>
+<td>2136/10368</td>
+<td>21%</td>
 </tr>
 <tr>
 <td class="label">I/O Port</td>
-<td>42/66</td>
-<td>64%</td>
+<td>41/66</td>
+<td>63%</td>
 </tr>
 <tr>
 <td class="label">I/O Buf</td>
-<td>35</td>
+<td>33</td>
 <td>-</td>
 </tr>
 <tr>
@@ -185,7 +185,7 @@ Generate output files:
 </tr>
 <tr>
 <td class="label"> &nbsp &nbsp --Output Buf</td>
-<td>33</td>
+<td>31</td>
 <td>-</td>
 </tr>
 <tr>
@@ -207,7 +207,7 @@ Generate output files:
 </tr>
 <tr>
 <td class="label">bank 0</td>
-<td>3/8</td><td>38%</td>
+<td>2/8</td><td>25%</td>
 </tr>
 <tr>
 <td class="label">bank 1</td>
@@ -342,6 +342,24 @@ Generate output files:
 <td>Y</td>
 <td>in</td>
 <td>IOT4[B]</td>
+<td>LVTTL33</td>
+<td>NA</td>
+<td>UP</td>
+<td>ON</td>
+<td>NONE</td>
+<td>NA</td>
+<td>NA</td>
+<td>NA</td>
+<td>NA</td>
+<td>3.3</td>
+</tr>
+<tr>
+<td class="label">tclock</td>
+<td>-</td>
+<td>80/0</td>
+<td>Y</td>
+<td>in</td>
+<td>IOT27[A]</td>
 <td>LVTTL33</td>
 <td>NA</td>
 <td>UP</td>
@@ -512,42 +530,6 @@ Generate output files:
 <td>OFF</td>
 <td>NA</td>
 <td>OFF</td>
-<td>NA</td>
-<td>3.3</td>
-</tr>
-<tr>
-<td class="label">sd_dat2</td>
-<td>-</td>
-<td>80/0</td>
-<td>Y</td>
-<td>out</td>
-<td>IOT27[A]</td>
-<td>LVTTL33</td>
-<td>8</td>
-<td>UP</td>
-<td>NA</td>
-<td>NA</td>
-<td>OFF</td>
-<td>NA</td>
-<td>NA</td>
-<td>NA</td>
-<td>3.3</td>
-</tr>
-<tr>
-<td class="label">sd_dat3</td>
-<td>-</td>
-<td>81/0</td>
-<td>Y</td>
-<td>out</td>
-<td>IOT17[B]</td>
-<td>LVTTL33</td>
-<td>8</td>
-<td>UP</td>
-<td>NA</td>
-<td>NA</td>
-<td>OFF</td>
-<td>NA</td>
-<td>NA</td>
 <td>NA</td>
 <td>3.3</td>
 </tr>
@@ -1175,15 +1157,15 @@ Generate output files:
 </tr>
 <tr>
 <td class="label">81/0</td>
-<td>sd_dat3</td>
-<td>out</td>
+<td>-</td>
+<td>in</td>
 <td>IOT17[B]</td>
-<td>LVTTL33</td>
-<td>8</td>
+<td>LVCMOS18</td>
+<td>NA</td>
 <td>UP</td>
+<td>ON</td>
+<td>NONE</td>
 <td>NA</td>
-<td>NA</td>
-<td>OFF</td>
 <td>NA</td>
 <td>NA</td>
 <td>NA</td>
@@ -1191,15 +1173,15 @@ Generate output files:
 </tr>
 <tr>
 <td class="label">80/0</td>
-<td>sd_dat2</td>
-<td>out</td>
+<td>tclock</td>
+<td>in</td>
 <td>IOT27[A]</td>
 <td>LVTTL33</td>
-<td>8</td>
+<td>NA</td>
 <td>UP</td>
+<td>ON</td>
+<td>NONE</td>
 <td>NA</td>
-<td>NA</td>
-<td>OFF</td>
 <td>NA</td>
 <td>NA</td>
 <td>NA</td>

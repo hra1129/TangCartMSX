@@ -27,7 +27,7 @@ module tang20cart_msx (
 	//	MSX Cartridge connector
 	input			clk27m,			//	PIN04_SYS_CLK: 27MHz
 	input			n_treset,		//	PIN85_SDIO_D1
-//	input			tclock,			//	PIN80_SDIO_D2: 3.579454MHz from MSX Ç±Ç±Ç≈ó«Ç¢ÇÃÇ©ÅH
+	input			tclock,			//	PIN76_HSPI_DAT: 3.579454MHz
 	input			n_ce,			//	PIN55_I2S_LRCK
 	input			n_twr,			//	PIN56_I2S_BCLK
 	input			n_trd,			//	PIN54_I2S_DIN
@@ -44,14 +44,8 @@ module tang20cart_msx (
 									//	PIN52_EDIO_DAT: td[7]
 	input	[1:0]	keys,			//	PIN88_MODE0_KEY1: keys[0]
 									//	PIN87_MODE1_KEY2: keys[1]
-	output			twait,			//	PIN76_HSPI_DAT:
-
-//	//	UART
-//	output			uart_tx,		//	PIN69_SYS_TX
-
-	//	LED
-	output			sd_dat2,		//	PIN80_SDIO_D2
-	output			sd_dat3,		//	PIN81_SDIO_D3
+	output			twait,			//	PIN80_SDIO_D2:
+	output			tint,			//	PINxx
 
 	//	VGA Output
 	output			lcd_clk,		//	PIN77
@@ -123,13 +117,30 @@ module tang20cart_msx (
 	wire			w_dh_clk;
 	wire			w_dl_clk;
 
+	wire			n_reset;
+	wire			clk;
+	wire	[15:0]	adr;
+	wire	[7:0]	i_data;
+	wire	[7:0]	o_data;
+	wire			is_wire;
+	wire			n_sltsl;
+	wire			n_rd;
+	wire			n_wr;
+	wire			n_ioreq;
+	wire			n_mereq;
+	wire	[15:0]	bus_address;
+	wire			bus_read_ready;
+	wire	[7:0]	bus_read_data;
+	wire	[7:0]	bus_write_data;
+	wire			bus_io_read;
+	wire			bus_io_write;
+	wire			bus_memory_read;
+	wire			bus_memory_write;
+
 	// --------------------------------------------------------------------
 	//	OUTPUT Assignment
 	// --------------------------------------------------------------------
 	assign w_n_reset	= ff_reset[6];
-
-	assign sd_dat2		= ~ff_led[0];
-	assign sd_dat3		= ~ff_led[1];
 
 	assign w_is_output	= 1'd0;			// *************************
 //	assign w_o_data		= 8'd0;			// *************************
@@ -137,7 +148,7 @@ module tang20cart_msx (
 //	assign td			= w_is_output   ? w_o_data : 8'hZZ;
 	assign td			= { 4'd0, ff_led, ff_led };
 	assign tdir			= w_is_output;
-	assign twait		= ff_wait[4];	// | w_srom_busy;
+	assign twait		= ff_wait[4];
 
 	always @( posedge clk ) begin
 		ff_reset[5:0]	<= { ff_reset[4:0], 1'b1 };	//n_treset };
@@ -157,10 +168,14 @@ module tang20cart_msx (
 	// --------------------------------------------------------------------
 	//	PLL 3.579545MHz --> 42.95454MHz
 	// --------------------------------------------------------------------
+//	Gowin_PLL u_pll (
+//		.clkout				( clk						),		//	output		85.90908MHz
+//		.clkin				( tclock					)		//	input		3.579545MHz
+//	);
+
 	Gowin_PLL u_pll (
-		.clkout				( clk						),		//output		87.75MHz
-		.clkoutp			( clk_sdram					),		//output		87.75MHz (180deg phase shift)
-		.clkin				( clk27m					)		//input			27MHz
+		.clkout				( clk						),		//	output		86.4MHz
+		.clkin				( clk27m					)		//	input		27.0MHz
 	);
 
 	always @( posedge clk ) begin
@@ -187,49 +202,50 @@ module tang20cart_msx (
 	// --------------------------------------------------------------------
 	//	DEBUGGER
 	// --------------------------------------------------------------------
-	ip_debugger u_debugger (
+//	ip_debugger u_debugger (
+//		.n_reset			( w_n_reset					),
+//		.clk				( clk						),
+//		.keys				( keys						),
+//		.enable_state		( w_vdp_enable_state		),
+//		.dh_clk				( w_dh_clk					),
+//		.dl_clk				( w_dl_clk					),
+//		.req				( w_req						),
+//		.ack				( w_ack						),
+//		.wr					( w_wr						),
+//		.address			( w_a						),
+//		.wdata				( w_wdata					),
+//		.rdata				( w_rdata					),
+//		.sdram_busy			( w_sdram_busy				)
+//	);
+
+	// --------------------------------------------------------------------
+	//	DEBUGGER
+	// --------------------------------------------------------------------
+	ip_msxbus u_msxbus (
 		.n_reset			( w_n_reset					),
 		.clk				( clk						),
-		.keys				( keys						),
-		.enable_state		( w_vdp_enable_state		),
-		.dh_clk				( w_dh_clk					),
-		.dl_clk				( w_dl_clk					),
-		.req				( w_req						),
-		.ack				( w_ack						),
-		.wr					( w_wr						),
-		.address			( w_a						),
-		.wdata				( w_wdata					),
-		.rdata				( w_rdata					),
-		.sdram_busy			( w_sdram_busy				)
+		.adr				( w_adr						),
+		.i_data				( w_i_data					),
+		.o_data				( w_o_data					),
+		.is_output			( w_is_output				),
+		.n_sltsl			( 1'b1						),
+		.n_rd				( n_trd						),
+		.n_wr				( n_twr						),
+		.n_ioreq			( n_ce						),
+		.n_mereq			( 1'b1						),
+		.bus_address		( w_bus_address				),
+		.bus_read_ready		( w_bus_read_ready			),
+		.bus_read_data		( w_bus_read_data			),
+		.bus_write_data		( w_bus_write_data			),
+		.bus_io_read		( w_bus_io_read				),
+		.bus_io_write		( w_bus_io_write			),
+		.bus_memory_read	( 							),
+		.bus_memory_write	( 							)
 	);
 
 	// --------------------------------------------------------------------
 	//	SDRAM
 	// --------------------------------------------------------------------
-//	ip_sdram u_sdram (
-//		.n_reset			( w_n_reset					),
-//		.clk				( clk						),
-//		.clk_sdram			( clk_sdram					),
-//		.rd_n				( w_sdram_read_n			),
-//		.wr_n				( w_sdram_write_n			),
-//		.exec				( w_vdp_enable_state		),
-//		.busy				( w_sdram_busy				),
-//		.address			( w_sdram_address[16:0]		),
-//		.wdata				( w_sdram_wdata				),
-//		.rdata				( w_sdram_rdata				),
-//		.rdata_en			( w_sdram_rdata_en			),
-//		.O_sdram_clk		( O_sdram_clk				),
-//		.O_sdram_cke		( O_sdram_cke				),
-//		.O_sdram_cs_n		( O_sdram_cs_n				),
-//		.O_sdram_cas_n		( O_sdram_cas_n				),
-//		.O_sdram_ras_n		( O_sdram_ras_n				),
-//		.O_sdram_wen_n		( O_sdram_wen_n				),
-//		.IO_sdram_dq		( IO_sdram_dq				),
-//		.O_sdram_addr		( O_sdram_addr				),
-//		.O_sdram_ba			( O_sdram_ba				),
-//		.O_sdram_dqm		( O_sdram_dqm				)
-//	);
-
 	ip_sdram u_sdram (
 		.n_reset			( w_n_reset					),
 		.clk				( clk						),
@@ -265,9 +281,9 @@ module tang20cart_msx (
 		.req				( w_req						),
 		.ack				( w_ack						),
 		.wrt				( w_wr						),
-		.address			( w_a						),		//	[ 1: 0];
-		.rdata				( w_rdata					),		//	[ 7: 0];
-		.wdata				( w_wdata					),		//	[ 7: 0];
+		.address			( w_bus_address[1:0]		),		//	[ 1: 0];
+		.rdata				( w_bus_read_data			),		//	[ 7: 0];
+		.wdata				( w_bus_write_data			),		//	[ 7: 0];
 		.int_n				( 							),		
 		.p_dram_oe_n		( w_sdram_read_n			),		
 		.p_dram_we_n		( w_sdram_write_n			),		

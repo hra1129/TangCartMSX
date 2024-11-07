@@ -11,7 +11,7 @@
         <File path="src/lcd/ip_lcd.v" type="file.verilog" enable="0"/>
         <File path="src/msxbus/ip_msxbus.v" type="file.verilog" enable="0"/>
         <File path="src/tang20cart_msx.v" type="file.verilog" enable="1"/>
-        <File path="D:/github/HRA_product/TangCartMSX/RTL/modules/sdram/ip_sdram.v" type="file.verilog" enable="1"/>
+        <File path="D:/github/HRA_product/TangCartMSX/RTL/modules/sdram/ip_sdram_tangnano20k.v" type="file.verilog" enable="1"/>
         <File path="D:/github/HRA_product/TangCartMSX/RTL/modules/sdram/ip_sdram_dummy.v" type="file.verilog" enable="0"/>
         <File path="D:/github/HRA_product/TangCartMSX/RTL/modules/sdram/ip_sdram_dummy2.v" type="file.verilog" enable="0"/>
         <File path="D:/github/HRA_product/TangCartMSX/RTL/modules/sdram/ip_sdram_dummy3.v" type="file.verilog" enable="0"/>
