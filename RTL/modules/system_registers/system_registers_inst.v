@@ -1,6 +1,6 @@
 //
-//	ppi.v
-//	 PPI i82C55 top entity
+//	system_registers_inst.v
+//	 System Registers top entity
 //
 //	Copyright (C) 2024 Takayuki Hara
 //
@@ -55,119 +55,37 @@
 //
 //-----------------------------------------------------------------------------
 
-module ppi(
+module system_registers(
 	input					reset,
 	input					clk,
 	input					req,
 	output					ack,
 	input					wrt,
-	input		[1:0]		address,
+	input		[7:0]		address,
 	input		[7:0]		wdata,
 	output		[7:0]		rdata,
-	output					rdata_en,
-	//	Primary slot
-	output		[7:0]		primary_slot,
-	//	keyboard I/F
-	output		[3:0]		matrix_y,
-	input		[7:0]		matrix_x,
-	//	Misc I/F
-	output					cmt_motor_off,
-	output					cmt_write_signal,
-	output					keyboard_caps_led_off,
-	output					click_sound
+	output					rdata_en
 );
-	reg			[7:0]		ff_port_a;
-	reg			[7:0]		ff_port_c;
-	reg						ff_rdata;
-	reg						ff_rdata_en;
+	localparam				c_port_number = 8'hF0;
+	wire					w_decode;
 
 	// --------------------------------------------------------------------
-	//	PortA: Primary Slot Register
+	//	Address decode
 	// --------------------------------------------------------------------
-	always @( posedge clk ) begin
-		if( reset ) begin
-			ff_port_a <= 8'd0;
-		end
-		else if( req && wrt && (address == 2'b00) ) begin
-			ff_port_a <= wdata;
-		end
-		else begin
-			//	hold
-		end
-	end
+	assign w_decode		= ( { address[7:2], 2'b00 } == c_port_number ) ? req : 1'b0;
 
 	// --------------------------------------------------------------------
-	//	PortC: Keyboard and cassette interface Register
+	//	System Register body
 	// --------------------------------------------------------------------
-	always @( posedge clk ) begin
-		if( reset ) begin
-			ff_port_c <= 8'd01110000;
-		end
-		else if( req && wrt && (address == 2'b10) ) begin
-			ff_port_c <= wdata;
-		end
-		else begin
-			//	hold
-		end
-	end
-
-	// --------------------------------------------------------------------
-	//	Read
-	// --------------------------------------------------------------------
-	always @( posedge clk ) begin
-		if( reset ) begin
-			ff_rdata <= 8'd0;
-		end
-		else if( req && !wrt ) begin
-			case( address )
-			2'd0:		ff_rdata <= ff_port_a;
-			2'd1:		ff_rdata <= matrix_x;
-			2'd2:		ff_rdata <= ff_port_c;
-			2'd3:		ff_rdata <= 8'd0;
-			default:	ff_rdata <= 8'd0;
-			endcase
-		end
-		else begin
-			ff_rdata <= 8'd0;
-		end
-	end
-
-	always @( posedge clk ) begin
-		if( reset ) begin
-			ff_rdata_en <= 1'b0;
-		end
-		else if( req && !wrt ) begin
-			ff_read_en <= 1'b1;
-		end
-		else begin
-			ff_rdata_en <= 1'b0;
-		end
-	end
-
-	// --------------------------------------------------------------------
-	//	Ack
-	// --------------------------------------------------------------------
-	always @( posedge clk ) begin
-		if( reset ) begin
-			ff_ack <= 1'b0;
-		end
-		else begin
-			ff_ack <= req;
-		end
-	end
-
-	assign ack						= ff_ack;
-
-	// --------------------------------------------------------------------
-	//	Output assignment
-	// --------------------------------------------------------------------
-	assign rdata					= ff_rdata;
-	assign rdata_en					= ff_rdata_en;
-
-	assign primary_slot				= ff_port_a;
-	assign matrix_y					= ff_port_c[3:0];
-	assign cmt_motor_off			= ff_port_c[4];
-	assign cmt_write_signal			= ff_port_c[5];
-	assign keyboard_caps_led_off	= ff_port_c[6];
-	assign click_sound				= ff_port_c[7];
+	system_registers u_system_registers(
+		.reset				( reset				),
+		.clk				( clk				),
+		.req				( w_decode			),
+		.ack				( ack				),
+		.wrt				( wrt				),
+		.address			( address			),
+		.wdata				( wdata				),
+		.rdata				( rdata				),
+		.rdata_en			( rdata_en			)
+	);
 endmodule
