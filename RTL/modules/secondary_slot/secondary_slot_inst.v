@@ -58,7 +58,7 @@
 module secondary_slot_inst(
 	input					reset,
 	input					clk,
-	input					bus_slotsl,
+	input					bus_sltsl,
 	input					bus_memory_req,
 	output					bus_ack,
 	input					bus_wrt,
@@ -89,7 +89,7 @@ module secondary_slot_inst(
 		if( reset ) begin
 			ff_secondary_slot <= 8'd0;
 		end
-		else if( req && wrt && w_decode_secondary_slot_register ) begin
+		else if( bus_memory_req && bus_wrt && w_decode_secondary_slot_register ) begin
 			ff_secondary_slot <= wdata;
 		end
 		else begin
@@ -104,7 +104,7 @@ module secondary_slot_inst(
 		if( reset ) begin
 			ff_rdata <= 8'd0;
 		end
-		else if( req && !wrt && w_decode_secondary_slot_register ) begin
+		else if( bus_memory_req && !bus_wrt && w_decode_secondary_slot_register ) begin
 			ff_rdata <= ~ff_secondary_slot;
 		end
 		else begin
@@ -116,7 +116,7 @@ module secondary_slot_inst(
 		if( reset ) begin
 			ff_rdata_en <= 1'b0;
 		end
-		else if( req && !wrt ) begin
+		else if( bus_memory_req && !bus_wrt && w_decode_secondary_slot_register ) begin
 			ff_read_en <= 1'b1;
 		end
 		else begin
@@ -132,23 +132,23 @@ module secondary_slot_inst(
 			ff_ack <= 1'b0;
 		end
 		else begin
-			ff_ack <= req;
+			ff_ack <= bus_memory_req & w_decode_secondary_slot_register;
 		end
 	end
 
-	assign ack			= ff_ack;
+	assign bus_ack		= ff_ack;
 
 	// --------------------------------------------------------------------
 	//	Output assignment
 	// --------------------------------------------------------------------
-	assign rdata		= ff_rdata;
-	assign rdata_en		= ff_rdata_en;
+	assign bus_rdata	= ff_rdata;
+	assign bus_rdata_en	= ff_rdata_en;
 
 	assign w_page_slot	= (bus_address[15:14] == 2'd0) ? ff_secondary_slot[1:0] : 
 						  (bus_address[15:14] == 2'd1) ? ff_secondary_slot[3:2] : 
 						  (bus_address[15:14] == 2'd2) ? ff_secondary_slot[5:4] : ff_secondary_slot[7:6];
 
-	assign w_sltsl		= bus_slotsl & ~w_decode_secondary_slot_register;
+	assign w_sltsl		= bus_sltsl & ~w_decode_secondary_slot_register;
 
 	assign sltsl_ext0	= (w_page_slot == 2'd0) ? w_sltsl : 1'b0;
 	assign sltsl_ext1	= (w_page_slot == 2'd1) ? w_sltsl : 1'b0;
