@@ -58,13 +58,13 @@
 module memory_mapper_inst(
 	input					reset,
 	input					clk,
-	input					req,
-	output					ack,
-	input					wrt,
-	input		[15:0]		address,
-	input		[7:0]		wdata,
-	output		[7:0]		rdata,
-	output					rdata_en,
+	input					bus_io_req,
+	output					bus_ack,
+	input					bus_wrt,
+	input		[15:0]		bus_address,
+	input		[7:0]		bus_wdata,
+	output		[7:0]		bus_rdata,
+	output					bus_rdata_en,
 	output		[7:0]		mapper_segment
 );
 	localparam				c_port_number = 8'hFC;
@@ -77,7 +77,7 @@ module memory_mapper_inst(
 	// --------------------------------------------------------------------
 	//	Address decode
 	// --------------------------------------------------------------------
-	assign w_decode			= ( { address[7:2], 2'b00 } == c_port_number ) ? req : 1'b0;
+	assign w_decode			= ( { address[7:2], 2'b00 } == c_port_number ) ? bus_io_req : 1'b0;
 
 	assign mapper_segment	= ( address[15:14] == 2'd0 ) ? w_page0_segment :
 							  ( address[15:14] == 2'd1 ) ? w_page1_segment :
@@ -90,12 +90,12 @@ module memory_mapper_inst(
 		.reset				( reset				),
 		.clk				( clk				),
 		.req				( w_decode			),
-		.ack				( ack				),
-		.wrt				( wrt				),
-		.address			( address[1:0]		),
-		.wdata				( wdata				),
-		.rdata				( rdata				),
-		.rdata_en			( rdata_en			),
+		.ack				( bus_ack			),
+		.wrt				( bus_wrt			),
+		.address			( bus_address[1:0]	),
+		.wdata				( bus_wdata			),
+		.rdata				( bus_rdata			),
+		.rdata_en			( bus_rdata_en		),
 		.page0_segment		( w_page0_segment	),
 		.page1_segment		( w_page1_segment	),
 		.page2_segment		( w_page2_segment	),
