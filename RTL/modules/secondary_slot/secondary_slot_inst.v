@@ -75,6 +75,7 @@ module secondary_slot_inst(
 	reg			[7:0]		ff_secondary_slot;
 	wire					w_decode_secondary_slot_register;
 	wire		[1:0]		w_page_slot;
+	wire					w_sltsl;
 
 	// --------------------------------------------------------------------
 	//	Address decoder
@@ -147,8 +148,10 @@ module secondary_slot_inst(
 						  (bus_address[15:14] == 2'd1) ? ff_secondary_slot[3:2] : 
 						  (bus_address[15:14] == 2'd2) ? ff_secondary_slot[5:4] : ff_secondary_slot[7:6];
 
-	assign sltsl_ext0	= (w_page_slot == 2'd0) ? 1'b1 : 1'b0;
-	assign sltsl_ext1	= (w_page_slot == 2'd1) ? 1'b1 : 1'b0;
-	assign sltsl_ext2	= (w_page_slot == 2'd2) ? 1'b1 : 1'b0;
-	assign sltsl_ext3	= (w_page_slot == 2'd3) ? 1'b1 : 1'b0;
+	assign w_sltsl		= bus_slotsl & ~w_decode_secondary_slot_register;
+
+	assign sltsl_ext0	= (w_page_slot == 2'd0) ? w_sltsl : 1'b0;
+	assign sltsl_ext1	= (w_page_slot == 2'd1) ? w_sltsl : 1'b0;
+	assign sltsl_ext2	= (w_page_slot == 2'd2) ? w_sltsl : 1'b0;
+	assign sltsl_ext3	= (w_page_slot == 2'd3) ? w_sltsl : 1'b0;
 endmodule
