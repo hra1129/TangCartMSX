@@ -162,8 +162,8 @@ module kanji_rom(
 		else if( ff_ack ) begin
 			ff_ack <= 1'b0;
 		end
-		else if( address == 3'd3 || address == 3'd4 || address == 3'd5 ) begin
-			ff_ack <= req;
+		else if( req ) begin
+			ff_ack <= 1'b1;
 		end
 		else begin
 			//	hold

@@ -58,12 +58,12 @@
 module kanji_rom_inst(
 	input					reset,
 	input					clk,
-	input					req,
-	output					ack,
-	input					wrt,
-	input		[7:0]		address,
-	input		[7:0]		wdata,
-	output		[7:0]		kanji_rom_address,
+	input					bus_io_req,
+	output					bus_ack,
+	input					bus_wrt,
+	input		[15:0]		bus_address,
+	input		[7:0]		bus_wdata,
+	output		[17:0]		kanji_rom_address,
 	output					kanji_rom_address_en
 );
 	localparam				c_port_number = 8'hD8;
@@ -72,7 +72,7 @@ module kanji_rom_inst(
 	// --------------------------------------------------------------------
 	//	Address decode
 	// --------------------------------------------------------------------
-	assign w_decode		= ( { address[7:2], 2'b00 } == c_port_number ) ? req : 1'b0;
+	assign w_decode		= ( { bus_address[7:2], 2'b00 } == c_port_number ) ? bus_io_req : 1'b0;
 
 	// --------------------------------------------------------------------
 	//	System Register body
@@ -81,10 +81,10 @@ module kanji_rom_inst(
 		.reset					( reset					),
 		.clk					( clk					),
 		.req					( w_decode				),
-		.ack					( ack					),
-		.wrt					( wrt					),
-		.address				( address[1:0]			),
-		.wdata					( wdata					),
+		.ack					( bus_ack				),
+		.wrt					( bus_wrt				),
+		.address				( bus_address[1:0]		),
+		.wdata					( bus_wdata				),
 		.kanji_rom_address		( kanji_rom_address		),
 		.kanji_rom_address_en	( kanji_rom_address_en	)
 	);

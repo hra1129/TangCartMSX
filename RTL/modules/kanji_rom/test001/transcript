@@ -1,0 +1,2 @@
+# OpenFile D:/github/HRA_product/TangCartMSX/RTL/modules/kanji_rom/test001/vsim.wlf
+add wave -position end vsim:/tb/u_kanji_rom_inst/u_kanji_rom/*
