@@ -77,11 +77,11 @@ module memory_mapper_inst(
 	// --------------------------------------------------------------------
 	//	Address decode
 	// --------------------------------------------------------------------
-	assign w_decode			= ( { address[7:2], 2'b00 } == c_port_number ) ? bus_io_req : 1'b0;
+	assign w_decode			= ( { bus_address[7:2], 2'b00 } == c_port_number ) ? bus_io_req : 1'b0;
 
-	assign mapper_segment	= ( address[15:14] == 2'd0 ) ? w_page0_segment :
-							  ( address[15:14] == 2'd1 ) ? w_page1_segment :
-							  ( address[15:14] == 2'd2 ) ? w_page2_segment : w_page3_segment;
+	assign mapper_segment	= ( bus_address[15:14] == 2'd0 ) ? w_page0_segment :
+							  ( bus_address[15:14] == 2'd1 ) ? w_page1_segment :
+							  ( bus_address[15:14] == 2'd2 ) ? w_page2_segment : w_page3_segment;
 
 	// --------------------------------------------------------------------
 	//	System Register body
@@ -99,6 +99,6 @@ module memory_mapper_inst(
 		.page0_segment		( w_page0_segment	),
 		.page1_segment		( w_page1_segment	),
 		.page2_segment		( w_page2_segment	),
-		.page3_segment		( w_page3_segment	),
+		.page3_segment		( w_page3_segment	)
 	);
 endmodule

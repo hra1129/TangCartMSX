@@ -74,7 +74,7 @@ module memory_mapper(
 	reg			[7:0]		ff_page1_segment;
 	reg			[7:0]		ff_page2_segment;
 	reg			[7:0]		ff_page3_segment;
-	reg						ff_rdata;
+	reg			[7:0]		ff_rdata;
 	reg						ff_rdata_en;
 	reg						ff_ack;
 
@@ -85,7 +85,7 @@ module memory_mapper(
 		if( reset ) begin
 			ff_page0_segment <= 8'd0;
 		end
-		else if( req && wrt && (address == 2'd0) ) begin
+		else if( req && wrt && ff_ack && (address == 2'd0) ) begin
 			ff_page0_segment <= wdata;
 		end
 		else begin
@@ -97,7 +97,7 @@ module memory_mapper(
 		if( reset ) begin
 			ff_page1_segment <= 8'd0;
 		end
-		else if( req && wrt && (address == 2'd1) ) begin
+		else if( req && wrt && ff_ack && (address == 2'd1) ) begin
 			ff_page1_segment <= wdata;
 		end
 		else begin
@@ -109,7 +109,7 @@ module memory_mapper(
 		if( reset ) begin
 			ff_page2_segment <= 8'd0;
 		end
-		else if( req && wrt && (address == 2'd2) ) begin
+		else if( req && wrt && ff_ack && (address == 2'd2) ) begin
 			ff_page2_segment <= wdata;
 		end
 		else begin
@@ -121,7 +121,7 @@ module memory_mapper(
 		if( reset ) begin
 			ff_page3_segment <= 8'd0;
 		end
-		else if( req && wrt && (address == 2'd3) ) begin
+		else if( req && wrt && ff_ack && (address == 2'd3) ) begin
 			ff_page3_segment <= wdata;
 		end
 		else begin
@@ -137,12 +137,12 @@ module memory_mapper(
 			ff_rdata <= 8'd0;
 			ff_rdata_en <= 1'b0;
 		end
-		else if( req && !wrt ) begin
+		else if( req && !wrt && ff_ack ) begin
 			case( address )
 			2'd0:		begin ff_rdata <= ff_page0_segment;	ff_rdata_en	<= 1'b1;	end
-			2'd1:		begin ff_rdata <= ff_page0_segment;	ff_rdata_en	<= 1'b1;	end
-			2'd2:		begin ff_rdata <= ff_page0_segment;	ff_rdata_en	<= 1'b1;	end
-			2'd3:		begin ff_rdata <= ff_page0_segment;	ff_rdata_en	<= 1'b1;	end
+			2'd1:		begin ff_rdata <= ff_page1_segment;	ff_rdata_en	<= 1'b1;	end
+			2'd2:		begin ff_rdata <= ff_page2_segment;	ff_rdata_en	<= 1'b1;	end
+			2'd3:		begin ff_rdata <= ff_page3_segment;	ff_rdata_en	<= 1'b1;	end
 			default:	begin ff_rdata <= 8'd0;				ff_rdata_en	<= 1'b0;	end
 			endcase
 		end
@@ -157,6 +157,9 @@ module memory_mapper(
 	// --------------------------------------------------------------------
 	always @( posedge clk ) begin
 		if( reset ) begin
+			ff_ack <= 1'b0;
+		end
+		else if( ff_ack ) begin
 			ff_ack <= 1'b0;
 		end
 		else begin

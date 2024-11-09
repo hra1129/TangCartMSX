@@ -1,8 +1,5 @@
-//
-// ip_sdram_dummy.vhd
-//	 16384 bytes of block memory
-//	 Revision 1.00
-//
+// -----------------------------------------------------------------------------
+//	ip_s2024.v
 //	Copyright (C) 2024 Takayuki Hara
 //
 //	本ソフトウェアおよび本ソフトウェアに基づいて作成された派生物は、以下の条件を
@@ -56,64 +53,70 @@
 //
 //-----------------------------------------------------------------------------
 
-module ip_sdram (
-	input				n_reset			,
-	input				clk				,
-	input				clk_sdram		,
-	input				rd_n			,
-	input				wr_n			,
-	input				exec			,
-	output				busy			,
-	input	[16:0]		address			,
-	input	[7:0]		wdata			,
-	output	[15:0]		rdata			,
-	output				rdata_en		,
-	output				O_sdram_clk		,
-	output				O_sdram_cke		,
-	output				O_sdram_cs_n	,
-	output				O_sdram_ras_n	,
-	output				O_sdram_cas_n	,
-	output				O_sdram_wen_n	,
-	inout	[31:0]		IO_sdram_dq		,
-	output	[10:0]		O_sdram_addr	,
-	output	[1:0]		O_sdram_ba		,
-	output	[3:0]		O_sdram_dqm		
+module ip_s2024 (
+	//	internal signals
+	input			n_reset,
+	input			clk,				//	85.90908MHz
+	//	cartridge slot signals
+	output			slot_pin01_n_cs1,
+	output			slot_pin02_n_cs2,
+	output			slot_pin03_n_cs12,
+	output			slot_pin04_n_sltsl1,
+	output			slot_pin04_n_sltsl2,
+	output			slot_pin06_n_rfsh,
+	input			slot_pin07_n_wait,
+	input			slot_pin08_n_int,
+	output			slot_pin09_n_m1,
+	output			slot_pin11_n_iorq,
+	output			slot_pin12_n_merq,
+	output			slot_pin13_n_wr,
+	output			slot_pin14_n_rd,
+	inout			slot_pin15_n_reset,
+	output	[15:0]	slot_pin17_pin32_a,
+	inout	[7:0]	slot_pin33_pin40_d,
+	output			slot_pin42_clock,
+	output			slot_d_output,
+	//	internal signals
+	output	[15:0]	bus_address,
+	output			bus_io_req,
+	output			bus_memory_req,
+	input			bus_ack,
+	output			bus_wrt,
+	output	[7:0]	bus_wdata,
+	input	[7:0]	bus_rdata,
+	input			bus_rdata_en,
+	//	slot
+	input			sltsl1,
+	input			sltsl2,
+	//	CPU0
+	input			cpu0_reset_n,
+	output			cpu0_enable,
+	output			cpu0_wait_n,
+	output			cpu0_int_n,
+	input			cpu0_m1_n,
+	input			cpu0_mreq_n,
+	input			cpu0_iorq_n,
+	input			cpu0_rd_n,
+	input			cpu0_wr_n,
+	input			cpu0_rfsh_n,
+	input			cpu0_halt_n,
+	input			cpu0_busak_n,
+	input	[15:0]	cpu0_a,
+	inout	[7:0]	cou0_d,
+	//	CPU1
+	input			cpu1_reset_n,
+	output			cpu1_enable,
+	output			cpu1_wait_n,
+	output			cpu1_int_n,
+	input			cpu1_m1_n,
+	input			cpu1_mreq_n,
+	input			cpu1_iorq_n,
+	input			cpu1_rd_n,
+	input			cpu1_wr_n,
+	input			cpu1_rfsh_n,
+	input			cpu1_halt_n,
+	input			cpu1_busak_n,
+	input	[15:0]	cpu1_a,
+	inout	[7:0]	cou1_d,
 );
-	reg		[7:0]	ff_ram [0:16383];
-	reg		[7:0]	ff_rdata;
-	reg		[7:0]	ff_rdata_d1;
-	reg		[7:0]	ff_rdata_d2;
-	reg		[7:0]	ff_rdata_d3;
-
-	always @( posedge clk ) begin
-		ff_rdata_d1 <= ff_rdata;
-		ff_rdata_d2 <= ff_rdata_d1;
-		ff_rdata_d3 <= ff_rdata_d2;
-	end
-
-	always @( posedge clk ) begin
-		if( exec ) begin
-			if(      rd_n == 1'b0 ) begin
-				ff_rdata <= ff_ram[ address[13:0] ];
-			end
-			else if( wr_n == 1'b0 ) begin
-				ff_ram[ address[13:0] ] <= wdata;
-			end
-		end
-	end
-
-	assign O_sdram_clk		= 1'b0;
-	assign O_sdram_cke		= 1'b0;
-	assign O_sdram_cs_n		= 1'b0;
-	assign O_sdram_ras_n	= 1'b0;
-	assign O_sdram_cas_n	= 1'b0;
-	assign O_sdram_wen_n	= 1'b0;
-	assign IO_sdram_dq		= 32'hZ;
-	assign O_sdram_addr		= 11'd0;
-	assign O_sdram_ba		= 2'b00;
-	assign O_sdram_dqm		= 4'b0000;
-
-	assign busy				= 1'b0;
-	assign rdata			= { ff_rdata_d1, ff_rdata_d1 };
-	assign rdata_en			= 1'b0;
 endmodule
