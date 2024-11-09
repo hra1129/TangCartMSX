@@ -63,8 +63,8 @@ module kanji_rom_inst(
 	input					wrt,
 	input		[7:0]		address,
 	input		[7:0]		wdata,
-	output		[7:0]		rdata,
-	output					rdata_en
+	output		[7:0]		kanji_rom_address,
+	output					kanji_rom_address_en
 );
 	localparam				c_port_number = 8'hD8;
 	wire					w_decode;

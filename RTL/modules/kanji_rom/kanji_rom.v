@@ -69,6 +69,7 @@ module kanji_rom(
 	reg			[16:0]		ff_jis1_address;
 	reg			[16:0]		ff_jis2_address;
 	reg						ff_kanji_rom_address_en;
+	reg						ff_ack;
 
 	// --------------------------------------------------------------------
 	//	JIS1
