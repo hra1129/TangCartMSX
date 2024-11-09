@@ -1,6 +1,6 @@
 //
-//	system_registers.v
-//	 System Registers top entity
+//	kanji_rom.v
+//	 Kanji ROM top entity
 //
 //	Copyright (C) 2024 Takayuki Hara
 //
@@ -55,57 +55,81 @@
 //
 //-----------------------------------------------------------------------------
 
-module system_registers(
+module kanji_rom(
 	input					reset,
 	input					clk,
 	input					req,
 	output					ack,
 	input					wrt,
-	input		[2:0]		address,
+	input		[1:0]		address,			//	D8h, D9h, DAh, DBh
 	input		[7:0]		wdata,
-	output		[7:0]		rdata,
-	output					rdata_en
+	output		[17:0]		kanji_rom_address,
+	output					kanji_rom_address_en
 );
-	reg			[7:0]		ff_port_f3;
-	reg			[7:0]		ff_port_f4;
-	reg			[7:0]		ff_port_f5;
-	reg						ff_rdata;
-	reg						ff_rdata_en;
-	reg						ff_ack;
+	reg			[16:0]		ff_jis1_address;
+	reg			[16:0]		ff_jis2_address;
+	reg						ff_kanji_rom_address_en;
 
 	// --------------------------------------------------------------------
-	//	Latch
+	//	JIS1
 	// --------------------------------------------------------------------
 	always @( posedge clk ) begin
 		if( reset ) begin
-			ff_port_f3 <= 8'd0;
+			ff_jis1_address <= 17'd0;
 		end
-		else if( req && wrt && ff_ack && (address == 3'd3) ) begin
-			ff_port_f3 <= wdata;
+		else if( req && wrt && ff_ack ) begin
+			case( address )
+			2'd0:
+				begin
+					ff_jis1_address[4:0]	<= 5'd0;
+					ff_jis1_address[10: 5]	<= wdata[5:0];
+				end
+			2'd1:
+				begin
+					ff_jis1_address[4:0]	<= 5'd0;
+					ff_jis1_address[16:11]	<= wdata[5:0];
+				end
+			default:
+				begin
+					//	hold
+				end
+			endcase
+		end
+		else if( !address[1] && ff_kanji_rom_address_en ) begin
+			ff_jis1_address <= ff_jis1_address + 17'd1;
 		end
 		else begin
 			//	hold
 		end
 	end
 
+	// --------------------------------------------------------------------
+	//	JIS2
+	// --------------------------------------------------------------------
 	always @( posedge clk ) begin
 		if( reset ) begin
-			ff_port_f4 <= 8'd0;
+			ff_jis2_address <= 17'd0;
 		end
-		else if( req && wrt && ff_ack && (address == 3'd4) ) begin
-			ff_port_f4 <= wdata;
+		else if( req && wrt && ff_ack ) begin
+			case( address )
+			2'd2:
+				begin
+					ff_jis2_address[4:0]	<= 5'd0;
+					ff_jis2_address[10: 5]	<= wdata[5:0];
+				end
+			2'd3:
+				begin
+					ff_jis2_address[4:0]	<= 5'd0;
+					ff_jis2_address[16:11]	<= wdata[5:0];
+				end
+			default:
+				begin
+					//	hold
+				end
+			endcase
 		end
-		else begin
-			//	hold
-		end
-	end
-
-	always @( posedge clk ) begin
-		if( reset ) begin
-			ff_port_f5 <= 8'd0;
-		end
-		else if( req && wrt && ff_ack && (address == 3'd5) ) begin
-			ff_port_f5 <= wdata;
+		else if( address[1] && ff_kanji_rom_address_en ) begin
+			ff_jis2_address <= ff_jis2_address + 17'd1;
 		end
 		else begin
 			//	hold
@@ -117,20 +141,13 @@ module system_registers(
 	// --------------------------------------------------------------------
 	always @( posedge clk ) begin
 		if( reset ) begin
-			ff_rdata <= 8'd0;
-			ff_rdata_en <= 1'b0;
+			ff_kanji_rom_address_en <= 1'b0;
 		end
-		else if( req && !wrt && ff_ack ) begin
-			case( address )
-			3'd3:		begin ff_rdata <= ff_port_f3;	ff_rdata_en	<= 1'b1;	end
-			3'd4:		begin ff_rdata <= ff_port_f4;	ff_rdata_en	<= 1'b1;	end
-			3'd5:		begin ff_rdata <= ff_port_f5;	ff_rdata_en	<= 1'b1;	end
-			default:	begin ff_rdata <= 8'd0;			ff_rdata_en	<= 1'b0;	end
-			endcase
+		else if( req && !wrt && ff_ack && address[0] ) begin
+			ff_kanji_rom_address_en <= 1'b1;
 		end
 		else begin
-			ff_rdata	<= 8'd0;
-			ff_rdata_en	<= 1'b0;
+			ff_kanji_rom_address_en <= 1'b0;
 		end
 	end
 
@@ -157,6 +174,6 @@ module system_registers(
 	// --------------------------------------------------------------------
 	//	Output assignment
 	// --------------------------------------------------------------------
-	assign rdata					= ff_rdata;
-	assign rdata_en					= ff_rdata_en;
+	assign kanji_rom_address		= ( address[1] == 1'b0 ) ? { 1'b0, ff_jis1_address } : { 1'b1, ff_jis2_address };
+	assign kanji_rom_address_en		= ff_kanji_rom_address_en;
 endmodule

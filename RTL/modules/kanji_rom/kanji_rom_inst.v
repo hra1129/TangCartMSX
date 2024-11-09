@@ -1,6 +1,6 @@
 //
-//	system_registers.v
-//	 System Registers top entity
+//	kanji_rom_inst.v
+//	 Kanji ROM top entity
 //
 //	Copyright (C) 2024 Takayuki Hara
 //
@@ -55,108 +55,37 @@
 //
 //-----------------------------------------------------------------------------
 
-module system_registers(
+module kanji_rom_inst(
 	input					reset,
 	input					clk,
 	input					req,
 	output					ack,
 	input					wrt,
-	input		[2:0]		address,
+	input		[7:0]		address,
 	input		[7:0]		wdata,
 	output		[7:0]		rdata,
 	output					rdata_en
 );
-	reg			[7:0]		ff_port_f3;
-	reg			[7:0]		ff_port_f4;
-	reg			[7:0]		ff_port_f5;
-	reg						ff_rdata;
-	reg						ff_rdata_en;
-	reg						ff_ack;
+	localparam				c_port_number = 8'hD8;
+	wire					w_decode;
 
 	// --------------------------------------------------------------------
-	//	Latch
+	//	Address decode
 	// --------------------------------------------------------------------
-	always @( posedge clk ) begin
-		if( reset ) begin
-			ff_port_f3 <= 8'd0;
-		end
-		else if( req && wrt && ff_ack && (address == 3'd3) ) begin
-			ff_port_f3 <= wdata;
-		end
-		else begin
-			//	hold
-		end
-	end
-
-	always @( posedge clk ) begin
-		if( reset ) begin
-			ff_port_f4 <= 8'd0;
-		end
-		else if( req && wrt && ff_ack && (address == 3'd4) ) begin
-			ff_port_f4 <= wdata;
-		end
-		else begin
-			//	hold
-		end
-	end
-
-	always @( posedge clk ) begin
-		if( reset ) begin
-			ff_port_f5 <= 8'd0;
-		end
-		else if( req && wrt && ff_ack && (address == 3'd5) ) begin
-			ff_port_f5 <= wdata;
-		end
-		else begin
-			//	hold
-		end
-	end
+	assign w_decode		= ( { address[7:2], 2'b00 } == c_port_number ) ? req : 1'b0;
 
 	// --------------------------------------------------------------------
-	//	Read
+	//	System Register body
 	// --------------------------------------------------------------------
-	always @( posedge clk ) begin
-		if( reset ) begin
-			ff_rdata <= 8'd0;
-			ff_rdata_en <= 1'b0;
-		end
-		else if( req && !wrt && ff_ack ) begin
-			case( address )
-			3'd3:		begin ff_rdata <= ff_port_f3;	ff_rdata_en	<= 1'b1;	end
-			3'd4:		begin ff_rdata <= ff_port_f4;	ff_rdata_en	<= 1'b1;	end
-			3'd5:		begin ff_rdata <= ff_port_f5;	ff_rdata_en	<= 1'b1;	end
-			default:	begin ff_rdata <= 8'd0;			ff_rdata_en	<= 1'b0;	end
-			endcase
-		end
-		else begin
-			ff_rdata	<= 8'd0;
-			ff_rdata_en	<= 1'b0;
-		end
-	end
-
-	// --------------------------------------------------------------------
-	//	Ack
-	// --------------------------------------------------------------------
-	always @( posedge clk ) begin
-		if( reset ) begin
-			ff_ack <= 1'b0;
-		end
-		else if( ff_ack ) begin
-			ff_ack <= 1'b0;
-		end
-		else if( address == 3'd3 || address == 3'd4 || address == 3'd5 ) begin
-			ff_ack <= req;
-		end
-		else begin
-			//	hold
-		end
-	end
-
-	assign ack						= ff_ack;
-
-	// --------------------------------------------------------------------
-	//	Output assignment
-	// --------------------------------------------------------------------
-	assign rdata					= ff_rdata;
-	assign rdata_en					= ff_rdata_en;
+	kanji_rom u_kanji_rom(
+		.reset					( reset					),
+		.clk					( clk					),
+		.req					( w_decode				),
+		.ack					( ack					),
+		.wrt					( wrt					),
+		.address				( address[1:0]			),
+		.wdata					( wdata					),
+		.kanji_rom_address		( kanji_rom_address		),
+		.kanji_rom_address_en	( kanji_rom_address_en	)
+	);
 endmodule

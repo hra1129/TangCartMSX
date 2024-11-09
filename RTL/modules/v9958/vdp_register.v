@@ -233,14 +233,17 @@ module vdp_register (
 		if( reset ) begin
 			ff_ack <= 1'b0;
 		end
-		else if( req ) begin
-			ff_ack <= 1'b1;
+		else if( ff_ack ) begin
+			ff_ack <= 1'b0;
 		end
 		else if( !enable ) begin
 			//	hold
 		end
+		else if( req ) begin
+			ff_ack <= req;
+		end
 		else begin
-			ff_ack <= 1'b0;
+			//	hold
 		end
 	end
 

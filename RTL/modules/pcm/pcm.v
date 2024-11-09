@@ -111,7 +111,7 @@ module pcm(
 		if( reset ) begin
 			ff_da0 <= 8'd127;
 		end
-		else if( req && wrt && (address == 2'd0) ) begin
+		else if( req && wrt && ff_ack && (address == 2'd0) ) begin
 			//	port A4h (PCM)
 			ff_da0 <= wdata;
 		end
@@ -182,7 +182,7 @@ module pcm(
 			ff_adda		<= 1'b0;
 		end
 		else begin
-			if( req && wrt && (address == 2'd1) ) begin
+			if( req && wrt && ff_ack && (address == 2'd1) ) begin
 				//	port A5h (PCM)
 				ff_sample	<= wdata[4];
 				ff_sel		<= wdata[3];
@@ -230,7 +230,7 @@ module pcm(
 			ff_r800_mode_led	<= 1'b0;
 			ff_pause_led		<= 1'b0;
 		end
-		else if( req && wrt && (address == 2'd1) ) begin
+		else if( req && wrt && ff_ack && (address == 2'd1) ) begin
 			ff_r800_mode_led	<= wdata[7];
 			ff_pause_led		<= wdata[0];
 		end
@@ -254,7 +254,7 @@ module pcm(
 			ff_rdata	<= 8'd0;
 			ff_rdata_en	<= 1'b0;
 		end
-		else if( req && !wrt ) begin
+		else if( req && !wrt && ff_ack ) begin
 			ff_rdata_en	<= 1'b1;
 			case( address )
 			2'd0:		ff_rdata <= w_port_a4h;
