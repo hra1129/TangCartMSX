@@ -1,5 +1,5 @@
 // -----------------------------------------------------------------------------
-//	Test of system_registers_inst.v
+//	Test of secondary_slot_inst.v
 //	Copyright (C)2024 Takayuki Hara (HRA!)
 //	
 //	本ソフトウェアおよび本ソフトウェアに基づいて作成された派生物は、以下の条件を
@@ -57,27 +57,37 @@ module tb ();
 	localparam		clk_base	= 1_000_000_000/85_909;	//	ps
 	reg						reset;
 	reg						clk;
-	reg						bus_io_req;
+	reg						bus_sltsl;
+	reg						bus_memory_req;
 	wire					bus_ack;
 	reg						bus_wrt;
 	reg			[15:0]		bus_address;
 	reg			[7:0]		bus_wdata;
 	wire		[7:0]		bus_rdata;
 	wire					bus_rdata_en;
+	wire					sltsl_ext0;
+	wire					sltsl_ext1;
+	wire					sltsl_ext2;
+	wire					sltsl_ext3;
 
 	// --------------------------------------------------------------------
 	//	DUT
 	// --------------------------------------------------------------------
-	system_registers_inst u_system_registers_inst (
+	secondary_slot_inst u_secondary_slot_inst (
 		.reset				( reset				),
 		.clk				( clk				),
-		.bus_io_req			( bus_io_req		),
+		.bus_sltsl			( bus_sltsl			),
+		.bus_memory_req		( bus_memory_req	),
 		.bus_ack			( bus_ack			),
 		.bus_wrt			( bus_wrt			),
 		.bus_address		( bus_address		),
 		.bus_wdata			( bus_wdata			),
 		.bus_rdata			( bus_rdata			),
-		.bus_rdata_en		( bus_rdata_en		)
+		.bus_rdata_en		( bus_rdata_en		),
+		.sltsl_ext0			( sltsl_ext0		),
+		.sltsl_ext1			( sltsl_ext1		),
+		.sltsl_ext2			( sltsl_ext2		),
+		.sltsl_ext3			( sltsl_ext3		)
 	);
 
 	// --------------------------------------------------------------------
@@ -96,11 +106,12 @@ module tb ();
 	);
 		int count;
 
-		count		<= 0;
-		bus_io_req	<= 1'b1;
-		bus_wrt		<= 1'b1;
-		bus_address	<= p_address;
-		bus_wdata	<= p_data;
+		count			<= 0;
+		bus_sltsl		<= 1'b1;
+		bus_memory_req	<= 1'b1;
+		bus_wrt			<= 1'b1;
+		bus_address		<= p_address;
+		bus_wdata		<= p_data;
 		@( posedge clk );
 
 		while( !bus_ack && count < 5 ) begin
@@ -108,8 +119,9 @@ module tb ();
 			@( posedge clk );
 		end
 
-		bus_io_req	<= 1'b0;
-		bus_wrt		<= 1'b0;
+		bus_sltsl		<= 1'b0;
+		bus_memory_req	<= 1'b0;
+		bus_wrt			<= 1'b0;
 		@( posedge clk );
 	endtask : reg_write
 
@@ -120,11 +132,12 @@ module tb ();
 	);
 		int count;
 
-		count		<= 0;
-		bus_io_req	<= 1'b1;
-		bus_wrt		<= 1'b0;
-		bus_address	<= p_address;
-		bus_wdata	<= 8'd0;
+		count			<= 0;
+		bus_sltsl		<= 1'b1;
+		bus_memory_req	<= 1'b1;
+		bus_wrt			<= 1'b0;
+		bus_address		<= p_address;
+		bus_wdata		<= 8'd0;
 		@( posedge clk );
 
 		while( !bus_ack && count < 5 ) begin
@@ -132,7 +145,8 @@ module tb ();
 			@( posedge clk );
 		end
 
-		bus_io_req	<= 1'b0;
+		bus_sltsl		<= 1'b0;
+		bus_memory_req	<= 1'b0;
 
 		while( !bus_rdata_en ) begin
 			@( posedge clk );
@@ -148,12 +162,33 @@ module tb ();
 	endtask : reg_read
 
 	// --------------------------------------------------------------------
+	task check_sltsl(
+		input	[15:0]	p_address,
+		input	[3:0]	p_sltsl
+	);
+		bus_sltsl		<= 1'b1;
+		bus_memory_req	<= 1'b1;
+		bus_wrt			<= 1'b0;
+		bus_address		<= p_address;
+		@( posedge clk );
+
+		if( p_sltsl == { sltsl_ext3, sltsl_ext2, sltsl_ext1, sltsl_ext0 } ) begin
+			$display( "[OK] SLTSL == %02X", p_sltsl );
+		end
+		else begin
+			$display( "[NG] SLTSL == %02X != %02X", p_sltsl, { sltsl_ext3, sltsl_ext2, sltsl_ext1, sltsl_ext0 } );
+		end
+		@( posedge clk );
+	endtask : check_sltsl
+
+	// --------------------------------------------------------------------
 	//	Test bench
 	// --------------------------------------------------------------------
 	initial begin
 		reset				= 1;
 		clk					= 0;
-		bus_io_req			= 0;
+		bus_sltsl			= 0;
+		bus_memory_req		= 0;
 		bus_wrt				= 0;
 		bus_address			= 0;
 		bus_wdata			= 0;
@@ -166,48 +201,32 @@ module tb ();
 		@( posedge clk );
 		repeat( 10 ) @( posedge clk );
 
-		$display( "<<TEST001>> F3h register Test" );
-		reg_write( 16'h00F3, 8'h12 );
-		reg_read( 16'h00F3, 8'h12 );
-		reg_write( 16'h00F3, 8'h23 );
-		reg_read( 16'h00F3, 8'h23 );
-		reg_write( 16'h00F3, 8'h34 );
-		reg_read( 16'h00F3, 8'h34 );
-		reg_write( 16'h00F3, 8'h56 );
-		reg_read( 16'h00F3, 8'h56 );
-		reg_write( 16'h00F3, 8'haf );
-		reg_read( 16'h00F3, 8'haf );
-		reg_write( 16'h00F3, 8'h9a );
-		reg_read( 16'h00F3, 8'h9a );
+		$display( "<<TEST001>> FFFFh register Test" );
+		reg_write( 16'hFFFF, 8'h12 );
+		reg_read( 16'hFFFF, ~8'h12 );
+		reg_write( 16'hFFFF, 8'h23 );
+		reg_read( 16'hFFFF, ~8'h23 );
+		reg_write( 16'hFFFF, 8'h34 );
+		reg_read( 16'hFFFF, ~8'h34 );
+		reg_write( 16'hFFFF, 8'h56 );
+		reg_read( 16'hFFFF, ~8'h56 );
+		reg_write( 16'hFFFF, 8'haf );
+		reg_read( 16'hFFFF, ~8'haf );
+		reg_write( 16'hFFFF, 8'h9a );
+		reg_read( 16'hFFFF, ~8'h9a );
 
-		$display( "<<TEST001>> F4h register Test" );
-		reg_write( 16'h00F4, 8'h12 );
-		reg_read( 16'h00F4, 8'h12 );
-		reg_write( 16'h00F4, 8'h23 );
-		reg_read( 16'h00F4, 8'h23 );
-		reg_write( 16'h00F4, 8'h34 );
-		reg_read( 16'h00F4, 8'h34 );
-		reg_write( 16'h00F4, 8'h56 );
-		reg_read( 16'h00F4, 8'h56 );
-		reg_write( 16'h00F4, 8'haf );
-		reg_read( 16'h00F4, 8'haf );
-		reg_write( 16'h00F4, 8'h9a );
-		reg_read( 16'h00F4, 8'h9a );
+		$display( "<<TEST002>> SLTSL signals Test" );
+		reg_write( 16'hFFFF, { 2'd3, 2'd2, 2'd1, 2'd0 } );
+		check_sltsl( 16'h0000, 4'b0001 );
+		check_sltsl( 16'h4000, 4'b0010 );
+		check_sltsl( 16'h8000, 4'b0100 );
+		check_sltsl( 16'hC000, 4'b1000 );
 
-		$display( "<<TEST001>> F5h register Test" );
-		reg_write( 16'h00F5, 8'h12 );
-		reg_read( 16'h00F5, 8'h12 );
-		reg_write( 16'h00F5, 8'h23 );
-		reg_read( 16'h00F5, 8'h23 );
-		reg_write( 16'h00F5, 8'h34 );
-		reg_read( 16'h00F5, 8'h34 );
-		reg_write( 16'h00F5, 8'h56 );
-		reg_read( 16'h00F5, 8'h56 );
-		reg_write( 16'h00F5, 8'haf );
-		reg_read( 16'h00F5, 8'haf );
-		reg_write( 16'h00F5, 8'h9a );
-		reg_read( 16'h00F5, 8'h9a );
-
+		reg_write( 16'hFFFF, { 2'd0, 2'd1, 2'd2, 2'd3 } );
+		check_sltsl( 16'h0000, 4'b1000 );
+		check_sltsl( 16'h4000, 4'b0100 );
+		check_sltsl( 16'h8000, 4'b0010 );
+		check_sltsl( 16'hC000, 4'b0001 );
 		$finish;
 	end
 endmodule

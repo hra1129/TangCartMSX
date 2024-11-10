@@ -76,6 +76,9 @@ module secondary_slot_inst(
 	wire					w_decode_secondary_slot_register;
 	wire		[1:0]		w_page_slot;
 	wire					w_sltsl;
+	reg			[7:0]		ff_rdata;
+	reg						ff_rdata_en;
+	reg						ff_ack;
 
 	// --------------------------------------------------------------------
 	//	Address decoder
@@ -89,8 +92,8 @@ module secondary_slot_inst(
 		if( reset ) begin
 			ff_secondary_slot <= 8'd0;
 		end
-		else if( bus_memory_req && bus_wrt && w_decode_secondary_slot_register ) begin
-			ff_secondary_slot <= wdata;
+		else if( bus_sltsl && bus_memory_req && bus_wrt && ff_ack && w_decode_secondary_slot_register ) begin
+			ff_secondary_slot <= bus_wdata;
 		end
 		else begin
 			//	hold
@@ -104,7 +107,7 @@ module secondary_slot_inst(
 		if( reset ) begin
 			ff_rdata <= 8'd0;
 		end
-		else if( bus_memory_req && !bus_wrt && w_decode_secondary_slot_register ) begin
+		else if( bus_sltsl && bus_memory_req && !bus_wrt && ff_ack && w_decode_secondary_slot_register ) begin
 			ff_rdata <= ~ff_secondary_slot;
 		end
 		else begin
@@ -116,8 +119,8 @@ module secondary_slot_inst(
 		if( reset ) begin
 			ff_rdata_en <= 1'b0;
 		end
-		else if( bus_memory_req && !bus_wrt && w_decode_secondary_slot_register ) begin
-			ff_read_en <= 1'b1;
+		else if( bus_sltsl && bus_memory_req && !bus_wrt && ff_ack && w_decode_secondary_slot_register ) begin
+			ff_rdata_en <= 1'b1;
 		end
 		else begin
 			ff_rdata_en <= 1'b0;
@@ -131,8 +134,14 @@ module secondary_slot_inst(
 		if( reset ) begin
 			ff_ack <= 1'b0;
 		end
+		else if( ff_ack ) begin
+			ff_ack <= 1'b0;
+		end
+		else if( bus_sltsl && bus_memory_req & w_decode_secondary_slot_register ) begin
+			ff_ack <= 1'b1;
+		end
 		else begin
-			ff_ack <= bus_memory_req & w_decode_secondary_slot_register;
+			//	hold
 		end
 	end
 
