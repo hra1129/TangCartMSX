@@ -58,13 +58,13 @@
 module system_registers_inst(
 	input					reset,
 	input					clk,
-	input					req,
-	output					ack,
-	input					wrt,
-	input		[7:0]		address,
-	input		[7:0]		wdata,
-	output		[7:0]		rdata,
-	output					rdata_en
+	input					bus_io_req,
+	output					bus_ack,
+	input					bus_wrt,
+	input		[7:0]		bus_address,
+	input		[7:0]		bus_wdata,
+	output		[7:0]		bus_rdata,
+	output					bus_rdata_en
 );
 	localparam				c_port_number = 8'hF0;
 	wire					w_decode;
@@ -72,20 +72,20 @@ module system_registers_inst(
 	// --------------------------------------------------------------------
 	//	Address decode
 	// --------------------------------------------------------------------
-	assign w_decode		= ( { address[7:3], 3'b000 } == c_port_number ) ? req : 1'b0;
+	assign w_decode		= ( { bus_address[7:3], 3'b000 } == c_port_number ) ? bus_io_req : 1'b0;
 
 	// --------------------------------------------------------------------
 	//	System Register body
 	// --------------------------------------------------------------------
 	system_registers u_system_registers(
-		.reset				( reset				),
-		.clk				( clk				),
-		.req				( w_decode			),
-		.ack				( ack				),
-		.wrt				( wrt				),
-		.address			( address[2:0]		),
-		.wdata				( wdata				),
-		.rdata				( rdata				),
-		.rdata_en			( rdata_en			)
+		.reset				( reset					),
+		.clk				( clk					),
+		.req				( w_decode				),
+		.ack				( bus_ack				),
+		.wrt				( bus_wrt				),
+		.address			( bus_address[2:0]		),
+		.wdata				( bus_wdata				),
+		.rdata				( bus_rdata				),
+		.rdata_en			( bus_rdata_en			)
 	);
 endmodule

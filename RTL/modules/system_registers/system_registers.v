@@ -69,7 +69,7 @@ module system_registers(
 	reg			[7:0]		ff_port_f3;
 	reg			[7:0]		ff_port_f4;
 	reg			[7:0]		ff_port_f5;
-	reg						ff_rdata;
+	reg			[7:0]		ff_rdata;
 	reg						ff_rdata_en;
 	reg						ff_ack;
 
