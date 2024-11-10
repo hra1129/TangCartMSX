@@ -1,5 +1,5 @@
 // -----------------------------------------------------------------------------
-//	Test of ip_sdram.v
+//	Test of system_registers_inst.v
 //	Copyright (C)2024 Takayuki Hara (HRA!)
 //	
 //	本ソフトウェアおよび本ソフトウェアに基づいて作成された派生物は、以下の条件を
@@ -51,104 +51,33 @@
 //	ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 //	POSSIBILITY OF SUCH DAMAGE.
 //
-// --------------------------------------------------------------------
+// -----------------------------------------------------------------------------
 
 module tb ();
-	localparam		clk_base	= 1_000_000_000/108_000;	//	ps
-	reg				n_reset;
-	reg				clk;				// 108MHz
-	reg				clk_sdram;			// 108MHz with 180dgree delay
-	wire			rd;					// Set to 1 to read
-	wire			wr;					// Set to 1 to write
-	wire			busy;
-	wire	[22:0]	address;			// Byte address (8MBytes)
-	wire	[7:0]	wdata;
-	wire	[15:0]	rdata;
-	wire			rdata_en;
-	wire			O_sdram_clk;
-	wire			O_sdram_cke;
-	wire			O_sdram_cs_n;		// chip select
-	wire			O_sdram_cas_n;		// columns address select
-	wire			O_sdram_ras_n;		// row address select
-	wire			O_sdram_wen_n;		// write enable
-	wire	[31:0]	IO_sdram_dq;		// 32 bit bidirectional data bus
-	wire	[10:0]	O_sdram_addr;		// 11 bit multiplexed address bus
-	wire	[1:0]	O_sdram_ba;			// two banks
-	wire	[3:0]	O_sdram_dqm;		// data mask
-	reg		[1:0]	ff_keys;
-	wire	[7:0]	send_data;
-	wire			send_req;
-	wire			send_busy;
-	wire			w_uart_tx;
+	localparam		clk_base	= 1_000_000_000/85_909;	//	ps
+	reg						reset;
+	reg						clk;
+	reg						bus_io_req;
+	wire					bus_ack;
+	reg						bus_wrt;
+	reg			[15:0]		bus_address;
+	reg			[7:0]		bus_wdata;
+	wire		[7:0]		bus_rdata;
+	wire					bus_rdata_en;
 
 	// --------------------------------------------------------------------
 	//	DUT
 	// --------------------------------------------------------------------
-	ip_debugger #(
-		.TEST_ROWS			( 15'b000_0000_1111_1111)
-	) u_debugger (
-		.n_reset			( n_reset				),
-		.clk				( clk					),
-		.send_data			( send_data				),
-		.send_req			( send_req				),
-		.send_busy			( send_busy				),
-		.keys				( ff_keys				),
-		.sdram_rd			( rd					),
-		.sdram_wr			( wr					),
-		.sdram_busy			( busy					),
-		.sdram_address		( address				),
-		.sdram_wdata		( wdata					),
-		.sdram_rdata		( rdata[7:0]			),
-		.sdram_rdata_en		( rdata_en				)
-	);
-
-	ip_uart #(
-		.clk_freq			( 108000000				),
-		.uart_freq			( 115200				)
-	) u_uart (
-		.n_reset			( n_reset				),
-		.clk				( clk					),
-		.send_data			( send_data				),
-		.send_req			( send_req				),
-		.send_busy			( send_busy				),
-		.uart_tx			( w_uart_tx				)
-	);
-
-	ip_sdram u_sdram_controller (
-		.n_reset			( n_reset				),
-		.clk				( clk					),
-		.clk_sdram			( clk_sdram				),
-		.rd_n				( !rd					),
-		.wr_n				( !wr					),
-		.busy				( busy					),
-		.address			( address				),
-		.wdata				( wdata					),
-		.rdata				( rdata					),
-		.rdata_en			( rdata_en				),
-		.O_sdram_clk		( O_sdram_clk			),
-		.O_sdram_cke		( O_sdram_cke			),
-		.O_sdram_cs_n		( O_sdram_cs_n			),
-		.O_sdram_cas_n		( O_sdram_cas_n			),
-		.O_sdram_ras_n		( O_sdram_ras_n			),
-		.O_sdram_wen_n		( O_sdram_wen_n			),
-		.IO_sdram_dq		( IO_sdram_dq			),
-		.O_sdram_addr		( O_sdram_addr			),
-		.O_sdram_ba			( O_sdram_ba			),
-		.O_sdram_dqm		( O_sdram_dqm			)
-	);
-
-	// --------------------------------------------------------------------
-	mt48lc2m32b2 u_sdram (
-		.Dq					( IO_sdram_dq		), 
-		.Addr				( O_sdram_addr		), 
-		.Ba					( O_sdram_ba		), 
-		.Clk				( O_sdram_clk		), 
-		.Cke				( O_sdram_cke		), 
-		.Cs_n				( O_sdram_cs_n		), 
-		.Ras_n				( O_sdram_ras_n		), 
-		.Cas_n				( O_sdram_cas_n		), 
-		.We_n				( O_sdram_wen_n		), 
-		.Dqm				( O_sdram_dqm		)
+	system_registers_inst u_system_registers_inst (
+		.reset				( reset				),
+		.clk				( clk				),
+		.bus_io_req			( bus_io_req		),
+		.bus_ack			( bus_ack			),
+		.bus_wrt			( bus_wrt			),
+		.bus_address		( bus_address		),
+		.bus_wdata			( bus_wdata			),
+		.bus_rdata			( bus_rdata			),
+		.bus_rdata_en		( bus_rdata_en		)
 	);
 
 	// --------------------------------------------------------------------
@@ -156,32 +85,128 @@ module tb ();
 	// --------------------------------------------------------------------
 	always #(clk_base/2) begin
 		clk <= ~clk;
-		clk_sdram <= ~clk_sdram;
 	end
+
+	// --------------------------------------------------------------------
+	//	Tasks
+	// --------------------------------------------------------------------
+	task reg_write(
+		input	[15:0]	p_address,
+		input	[7:0]	p_data
+	);
+		int count;
+
+		count		<= 0;
+		bus_io_req	<= 1'b1;
+		bus_wrt		<= 1'b1;
+		bus_address	<= p_address;
+		bus_wdata	<= p_data;
+		@( posedge clk );
+
+		while( !bus_ack && count < 5 ) begin
+			count	<= count + 1;
+			@( posedge clk );
+		end
+
+		bus_io_req	<= 1'b0;
+		bus_wrt		<= 1'b0;
+		@( posedge clk );
+	endtask : reg_write
+
+	// --------------------------------------------------------------------
+	task reg_read(
+		input	[15:0]	p_address,
+		input	[7:0]	p_reference_data
+	);
+		int count;
+
+		count		<= 0;
+		bus_io_req	<= 1'b1;
+		bus_wrt		<= 1'b0;
+		bus_address	<= p_address;
+		bus_wdata	<= 8'd0;
+		@( posedge clk );
+
+		while( !bus_ack && count < 5 ) begin
+			count	<= count + 1;
+			@( posedge clk );
+		end
+
+		bus_io_req	<= 1'b0;
+
+		while( !bus_rdata_en ) begin
+			@( posedge clk );
+		end
+
+		if( bus_rdata == p_reference_data ) begin
+			$display( "[OK] read( %04X ) == %02X", p_address, p_reference_data );
+		end
+		else begin
+			$display( "[NG] read( %04X ) == %02X != %02X", p_address, p_reference_data, bus_rdata );
+		end
+		@( posedge clk );
+	endtask : reg_read
 
 	// --------------------------------------------------------------------
 	//	Test bench
 	// --------------------------------------------------------------------
 	initial begin
-		n_reset = 0;
-		clk = 0;
-		clk_sdram = 1;
-		ff_keys = 0;
+		reset				= 1;
+		clk					= 0;
+		bus_io_req			= 0;
+		bus_wrt				= 0;
+		bus_address			= 0;
+		bus_wdata			= 0;
 
 		@( negedge clk );
 		@( negedge clk );
 		@( posedge clk );
 
-		n_reset			= 1;
+		reset			= 1'b0;
+		@( posedge clk );
 		repeat( 10 ) @( posedge clk );
 
-		ff_keys <= 2'b01;
-		@( posedge clk );
+		$display( "<<TEST001>> F3h register Test" );
+		reg_write( 16'h00F3, 8'h12 );
+		reg_read( 16'h00F3, 8'h12 );
+		reg_write( 16'h00F3, 8'h23 );
+		reg_read( 16'h00F3, 8'h23 );
+		reg_write( 16'h00F3, 8'h34 );
+		reg_read( 16'h00F3, 8'h34 );
+		reg_write( 16'h00F3, 8'h56 );
+		reg_read( 16'h00F3, 8'h56 );
+		reg_write( 16'h00F3, 8'haf );
+		reg_read( 16'h00F3, 8'haf );
+		reg_write( 16'h00F3, 8'h9a );
+		reg_read( 16'h00F3, 8'h9a );
 
-		ff_keys <= 2'b00;
-		@( posedge clk );
+		$display( "<<TEST001>> F4h register Test" );
+		reg_write( 16'h00F4, 8'h12 );
+		reg_read( 16'h00F4, 8'h12 );
+		reg_write( 16'h00F4, 8'h23 );
+		reg_read( 16'h00F4, 8'h23 );
+		reg_write( 16'h00F4, 8'h34 );
+		reg_read( 16'h00F4, 8'h34 );
+		reg_write( 16'h00F4, 8'h56 );
+		reg_read( 16'h00F4, 8'h56 );
+		reg_write( 16'h00F4, 8'haf );
+		reg_read( 16'h00F4, 8'haf );
+		reg_write( 16'h00F4, 8'h9a );
+		reg_read( 16'h00F4, 8'h9a );
 
-		repeat( 2500000 ) @( posedge clk );
+		$display( "<<TEST001>> F5h register Test" );
+		reg_write( 16'h00F5, 8'h12 );
+		reg_read( 16'h00F5, 8'h12 );
+		reg_write( 16'h00F5, 8'h23 );
+		reg_read( 16'h00F5, 8'h23 );
+		reg_write( 16'h00F5, 8'h34 );
+		reg_read( 16'h00F5, 8'h34 );
+		reg_write( 16'h00F5, 8'h56 );
+		reg_read( 16'h00F5, 8'h56 );
+		reg_write( 16'h00F5, 8'haf );
+		reg_read( 16'h00F5, 8'haf );
+		reg_write( 16'h00F5, 8'h9a );
+		reg_read( 16'h00F5, 8'h9a );
 
 		$finish;
 	end
