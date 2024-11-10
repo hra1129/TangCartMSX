@@ -58,13 +58,13 @@
 module ppi_inst (
 	input					reset,
 	input					clk,
-	input					req,
-	output					ack,
-	input					wrt,
-	input		[15:0]		address,
-	input		[7:0]		wdata,
-	output		[7:0]		rdata,
-	output					rdata_en,
+	input					bus_io_req,
+	output					bus_ack,
+	input					bus_wrt,
+	input		[15:0]		bus_address,
+	input		[7:0]		bus_wdata,
+	output		[7:0]		bus_rdata,
+	output					bus_rdata_en,
 
 	//	keyboard I/F
 	output		[3:0]		matrix_y,
@@ -85,33 +85,22 @@ module ppi_inst (
 	wire		[7:0]		w_primary_slot;
 	wire		[1:0]		w_current_page;
 	wire		[1:0]		w_current_slot;
-	reg						ff_sltsl0;
-	reg						ff_sltsl1;
-	reg						ff_sltsl2;
-	reg						ff_sltsl3;
 
 	// --------------------------------------------------------------------
 	//	address decoder
 	// --------------------------------------------------------------------
-	assign w_decode			= ( { address[7:2], 2'b00 } == c_port_number ) ? req : 1'b0;
+	assign w_decode			= ( { bus_address[7:2], 2'b00 } == c_port_number ) ? bus_io_req : 1'b0;
 
-	assign w_current_page	= address[15:14];
+	assign w_current_page	= bus_address[15:14];
 
 	assign w_current_slot	= (w_current_page == 2'd0) ? w_primary_slot[1:0] :
 							  (w_current_page == 2'd1) ? w_primary_slot[3:2] :
 							  (w_current_page == 2'd2) ? w_primary_slot[5:4] : w_primary_slot[7:6];
 
-	always @( posedge clk ) begin
-		ff_sltsl0			<= (w_current_slot == 2'd0) ? 1'b1 : 1'b0;
-		ff_sltsl1			<= (w_current_slot == 2'd1) ? 1'b1 : 1'b0;
-		ff_sltsl2			<= (w_current_slot == 2'd2) ? 1'b1 : 1'b0;
-		ff_sltsl3			<= (w_current_slot == 2'd3) ? 1'b1 : 1'b0;
-	end
-
-	assign sltsl0			= ff_sltsl0;
-	assign sltsl1			= ff_sltsl1;
-	assign sltsl2			= ff_sltsl2;
-	assign sltsl3			= ff_sltsl3;
+	assign sltsl0			= (w_current_slot == 2'd0) ? 1'b1 : 1'b0;
+	assign sltsl1			= (w_current_slot == 2'd1) ? 1'b1 : 1'b0;
+	assign sltsl2			= (w_current_slot == 2'd2) ? 1'b1 : 1'b0;
+	assign sltsl3			= (w_current_slot == 2'd3) ? 1'b1 : 1'b0;
 
 	// --------------------------------------------------------------------
 	//	PPI body
@@ -120,12 +109,12 @@ module ppi_inst (
 		.reset					( reset					),
 		.clk					( clk					),
 		.req					( w_decode				),
-		.ack					( ack					),
-		.wrt					( wrt					),
-		.address				( address[1:0]			),
-		.wdata					( wdata					),
-		.rdata					( rdata					),
-		.rdata_en				( rdata_en				),
+		.ack					( bus_ack				),
+		.wrt					( bus_wrt				),
+		.address				( bus_address[1:0]		),
+		.wdata					( bus_wdata				),
+		.rdata					( bus_rdata				),
+		.rdata_en				( bus_rdata_en			),
 		.primary_slot			( w_primary_slot		),
 		.matrix_y				( matrix_y				),
 		.matrix_x				( matrix_x				),

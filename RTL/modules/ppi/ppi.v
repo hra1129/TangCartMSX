@@ -78,8 +78,9 @@ module ppi(
 );
 	reg			[7:0]		ff_port_a;
 	reg			[7:0]		ff_port_c;
-	reg						ff_rdata;
+	reg			[7:0]		ff_rdata;
 	reg						ff_rdata_en;
+	reg						ff_ack;
 
 	// --------------------------------------------------------------------
 	//	PortA: Primary Slot Register
@@ -88,7 +89,7 @@ module ppi(
 		if( reset ) begin
 			ff_port_a <= 8'd0;
 		end
-		else if( req && wrt && (address == 2'b00) ) begin
+		else if( req && wrt && ff_ack && (address == 2'b00) ) begin
 			ff_port_a <= wdata;
 		end
 		else begin
@@ -101,9 +102,9 @@ module ppi(
 	// --------------------------------------------------------------------
 	always @( posedge clk ) begin
 		if( reset ) begin
-			ff_port_c <= 8'd01110000;
+			ff_port_c <= 8'b01110000;
 		end
-		else if( req && wrt && (address == 2'b10) ) begin
+		else if( req && wrt && ff_ack && (address == 2'b10) ) begin
 			ff_port_c <= wdata;
 		end
 		else begin
@@ -118,7 +119,7 @@ module ppi(
 		if( reset ) begin
 			ff_rdata <= 8'd0;
 		end
-		else if( req && !wrt ) begin
+		else if( req && !wrt && ff_ack ) begin
 			case( address )
 			2'd0:		ff_rdata <= ff_port_a;
 			2'd1:		ff_rdata <= matrix_x;
@@ -136,8 +137,8 @@ module ppi(
 		if( reset ) begin
 			ff_rdata_en <= 1'b0;
 		end
-		else if( req && !wrt ) begin
-			ff_read_en <= 1'b1;
+		else if( req && !wrt && ff_ack ) begin
+			ff_rdata_en <= 1'b1;
 		end
 		else begin
 			ff_rdata_en <= 1'b0;
@@ -151,8 +152,14 @@ module ppi(
 		if( reset ) begin
 			ff_ack <= 1'b0;
 		end
+		else if( ff_ack ) begin
+			ff_ack <= 1'b0;
+		end
+		else if( req ) begin
+			ff_ack <= 1'b1;
+		end
 		else begin
-			ff_ack <= req;
+			//	hold
 		end
 	end
 
