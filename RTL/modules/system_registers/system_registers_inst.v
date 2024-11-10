@@ -61,7 +61,7 @@ module system_registers_inst(
 	input					bus_io_req,
 	output					bus_ack,
 	input					bus_wrt,
-	input		[7:0]		bus_address,
+	input		[15:0]		bus_address,
 	input		[7:0]		bus_wdata,
 	output		[7:0]		bus_rdata,
 	output					bus_rdata_en
