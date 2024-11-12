@@ -18,7 +18,7 @@
    "Type" : "verilog"
   },
   {
-   "Path" : "D:/github/HRA_product/TangCartMSX/RTL/modules/sdram/ip_sdram.v",
+   "Path" : "D:/github/HRA_product/TangCartMSX/RTL/modules/sdram/ip_sdram_tangnano20k.v",
    "Type" : "verilog"
   },
   {
