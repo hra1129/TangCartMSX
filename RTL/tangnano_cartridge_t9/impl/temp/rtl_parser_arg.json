@@ -2,87 +2,87 @@
  "Device" : "GW1NR-9C",
  "Files" : [
   {
-   "Path" : "D:/github/HRA_product/TangCartMSX/RTL/TangcartMSX/src/gowin_pll/gowin_pll.v",
+   "Path" : "D:/github/HRA_product/TangCartMSX/RTL/tangnano_cartridge_t9/src/gowin_pll/gowin_pll.v",
    "Type" : "verilog"
   },
   {
-   "Path" : "D:/github/HRA_product/TangCartMSX/RTL/TangcartMSX/src/ikaopll/IKAOPLL.v",
+   "Path" : "D:/github/HRA_product/TangCartMSX/RTL/tangnano_cartridge_t9/src/ikaopll/IKAOPLL.v",
    "Type" : "verilog"
   },
   {
-   "Path" : "D:/github/HRA_product/TangCartMSX/RTL/TangcartMSX/src/ikaopll/IKAOPLL_modules/IKAOPLL_dac.v",
+   "Path" : "D:/github/HRA_product/TangCartMSX/RTL/tangnano_cartridge_t9/src/ikaopll/IKAOPLL_modules/IKAOPLL_dac.v",
    "Type" : "verilog"
   },
   {
-   "Path" : "D:/github/HRA_product/TangCartMSX/RTL/TangcartMSX/src/ikaopll/IKAOPLL_modules/IKAOPLL_eg.v",
+   "Path" : "D:/github/HRA_product/TangCartMSX/RTL/tangnano_cartridge_t9/src/ikaopll/IKAOPLL_modules/IKAOPLL_eg.v",
    "Type" : "verilog"
   },
   {
-   "Path" : "D:/github/HRA_product/TangCartMSX/RTL/TangcartMSX/src/ikaopll/IKAOPLL_modules/IKAOPLL_lfo.v",
+   "Path" : "D:/github/HRA_product/TangCartMSX/RTL/tangnano_cartridge_t9/src/ikaopll/IKAOPLL_modules/IKAOPLL_lfo.v",
    "Type" : "verilog"
   },
   {
-   "Path" : "D:/github/HRA_product/TangCartMSX/RTL/TangcartMSX/src/ikaopll/IKAOPLL_modules/IKAOPLL_op.v",
+   "Path" : "D:/github/HRA_product/TangCartMSX/RTL/tangnano_cartridge_t9/src/ikaopll/IKAOPLL_modules/IKAOPLL_op.v",
    "Type" : "verilog"
   },
   {
-   "Path" : "D:/github/HRA_product/TangCartMSX/RTL/TangcartMSX/src/ikaopll/IKAOPLL_modules/IKAOPLL_pg.v",
+   "Path" : "D:/github/HRA_product/TangCartMSX/RTL/tangnano_cartridge_t9/src/ikaopll/IKAOPLL_modules/IKAOPLL_pg.v",
    "Type" : "verilog"
   },
   {
-   "Path" : "D:/github/HRA_product/TangCartMSX/RTL/TangcartMSX/src/ikaopll/IKAOPLL_modules/IKAOPLL_primitives.v",
+   "Path" : "D:/github/HRA_product/TangCartMSX/RTL/tangnano_cartridge_t9/src/ikaopll/IKAOPLL_modules/IKAOPLL_primitives.v",
    "Type" : "verilog"
   },
   {
-   "Path" : "D:/github/HRA_product/TangCartMSX/RTL/TangcartMSX/src/ikaopll/IKAOPLL_modules/IKAOPLL_reg.v",
+   "Path" : "D:/github/HRA_product/TangCartMSX/RTL/tangnano_cartridge_t9/src/ikaopll/IKAOPLL_modules/IKAOPLL_reg.v",
    "Type" : "verilog"
   },
   {
-   "Path" : "D:/github/HRA_product/TangCartMSX/RTL/TangcartMSX/src/ikaopll/IKAOPLL_modules/IKAOPLL_timinggen.v",
+   "Path" : "D:/github/HRA_product/TangCartMSX/RTL/tangnano_cartridge_t9/src/ikaopll/IKAOPLL_modules/IKAOPLL_timinggen.v",
    "Type" : "verilog"
   },
   {
-   "Path" : "D:/github/HRA_product/TangCartMSX/RTL/TangcartMSX/src/ikaopll_wrap/ikaopll_wrap.v",
+   "Path" : "D:/github/HRA_product/TangCartMSX/RTL/tangnano_cartridge_t9/src/ikaopll_wrap/ikaopll_wrap.v",
    "Type" : "verilog"
   },
   {
-   "Path" : "D:/github/HRA_product/TangCartMSX/RTL/TangcartMSX/src/ikaopll_wrap/ip_msxmusic_rom.v",
+   "Path" : "D:/github/HRA_product/TangCartMSX/RTL/tangnano_cartridge_t9/src/ikaopll_wrap/ip_msxmusic_rom.v",
    "Type" : "verilog"
   },
   {
-   "Path" : "D:/github/HRA_product/TangCartMSX/RTL/TangcartMSX/src/ikascc/IKASCC.v",
+   "Path" : "D:/github/HRA_product/TangCartMSX/RTL/tangnano_cartridge_t9/src/ikascc/IKASCC.v",
    "Type" : "verilog"
   },
   {
-   "Path" : "D:/github/HRA_product/TangCartMSX/RTL/TangcartMSX/src/ikascc/IKASCC_modules/IKASCC_player_a.v",
+   "Path" : "D:/github/HRA_product/TangCartMSX/RTL/tangnano_cartridge_t9/src/ikascc/IKASCC_modules/IKASCC_player_a.v",
    "Type" : "verilog"
   },
   {
-   "Path" : "D:/github/HRA_product/TangCartMSX/RTL/TangcartMSX/src/ikascc/IKASCC_modules/IKASCC_player_s.v",
+   "Path" : "D:/github/HRA_product/TangCartMSX/RTL/tangnano_cartridge_t9/src/ikascc/IKASCC_modules/IKASCC_player_s.v",
    "Type" : "verilog"
   },
   {
-   "Path" : "D:/github/HRA_product/TangCartMSX/RTL/TangcartMSX/src/ikascc/IKASCC_modules/IKASCC_primitives.v",
+   "Path" : "D:/github/HRA_product/TangCartMSX/RTL/tangnano_cartridge_t9/src/ikascc/IKASCC_modules/IKASCC_primitives.v",
    "Type" : "verilog"
   },
   {
-   "Path" : "D:/github/HRA_product/TangCartMSX/RTL/TangcartMSX/src/ikascc/IKASCC_modules/IKASCC_vrc_a.v",
+   "Path" : "D:/github/HRA_product/TangCartMSX/RTL/tangnano_cartridge_t9/src/ikascc/IKASCC_modules/IKASCC_vrc_a.v",
    "Type" : "verilog"
   },
   {
-   "Path" : "D:/github/HRA_product/TangCartMSX/RTL/TangcartMSX/src/ikascc/IKASCC_modules/IKASCC_vrc_s.v",
+   "Path" : "D:/github/HRA_product/TangCartMSX/RTL/tangnano_cartridge_t9/src/ikascc/IKASCC_modules/IKASCC_vrc_s.v",
    "Type" : "verilog"
   },
   {
-   "Path" : "D:/github/HRA_product/TangCartMSX/RTL/TangcartMSX/src/ikascc_wrap/ip_ikascc_wrap.v",
+   "Path" : "D:/github/HRA_product/TangCartMSX/RTL/tangnano_cartridge_t9/src/ikascc_wrap/ip_ikascc_wrap.v",
    "Type" : "verilog"
   },
   {
-   "Path" : "D:/github/HRA_product/TangCartMSX/RTL/TangcartMSX/src/pwm/ip_pwm.v",
+   "Path" : "D:/github/HRA_product/TangCartMSX/RTL/tangnano_cartridge_t9/src/pwm/ip_pwm.v",
    "Type" : "verilog"
   },
   {
-   "Path" : "D:/github/HRA_product/TangCartMSX/RTL/TangcartMSX/src/tangcart_msx.v",
+   "Path" : "D:/github/HRA_product/TangCartMSX/RTL/tangnano_cartridge_t9/src/tangcart_msx.v",
    "Type" : "verilog"
   }
  ],
@@ -90,7 +90,7 @@
 
  ],
  "LoopLimit" : 8000,
- "ResultFile" : "D:/github/HRA_product/TangCartMSX/RTL/TangcartMSX/impl/temp/rtl_parser.result",
+ "ResultFile" : "D:/github/HRA_product/TangCartMSX/RTL/tangnano_cartridge_t9/impl/temp/rtl_parser.result",
  "Top" : "",
  "VerilogStd" : "verilog_2001",
  "VhdlStd" : "vhdl_93"

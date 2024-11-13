@@ -37,7 +37,7 @@ table.detail_table th.label {  min-width: 8%; width: 8%; }
 <ul>
 <li><a href="#Resource_Usage_Summary" style=" font-size: 14px;">Resource Usage Summary</a></li>
 <li><a href="#I/O_Bank_Usage_Summary" style=" font-size: 14px;">I/O Bank Usage Summary</a></li>
-<li><a href="#Global_Clock_Usage_Summary" style=" font-size: 14px;">Global Clock Usage Summary</a></li>
+<li><a href="#Global_Clock_Usage_Summary" style=" font-size: 14px;">Clock Resource Usage Summary</a></li>
 <li><a href="#Global_Clock_Signals" style=" font-size: 14px;">Global Clock Signals</a></li>
 <li><a href="#Pinout_by_Port_Name" style=" font-size: 14px;">Pinout by Port Name</a></li>
 <li><a href="#All_Package_Pins" style=" font-size: 14px;">All Package Pins</a></li>
@@ -55,19 +55,19 @@ table.detail_table th.label {  min-width: 8%; width: 8%; }
 </tr>
 <tr>
 <td class="label">Design File</td>
-<td>D:\github\HRA_product\TangCartMSX\RTL\TangcartMSX\impl\gwsynthesis\TangcartMSX.vg</td>
+<td>D:\github\HRA_product\TangCartMSX\RTL\tangnano_cartridge_t9\impl\gwsynthesis\TangcartMSX.vg</td>
 </tr>
 <tr>
 <td class="label">Physical Constraints File</td>
-<td>D:\github\HRA_product\TangCartMSX\RTL\TangcartMSX\src\TangcartMSX.cst</td>
+<td>D:\github\HRA_product\TangCartMSX\RTL\tangnano_cartridge_t9\src\TangcartMSX.cst</td>
 </tr>
 <tr>
 <td class="label">Timing Constraints File</td>
-<td>D:\github\HRA_product\TangCartMSX\RTL\TangcartMSX\src\TangcartMSX.sdc</td>
+<td>D:\github\HRA_product\TangCartMSX\RTL\tangnano_cartridge_t9\src\TangcartMSX.sdc</td>
 </tr>
 <tr>
 <td class="label">Tool Version</td>
-<td>V1.9.9.03 (64-bit)</td>
+<td>V1.9.10.03 (64-bit)</td>
 </tr>
 <tr>
 <td class="label">Part Number</td>
@@ -83,7 +83,7 @@ table.detail_table th.label {  min-width: 8%; width: 8%; }
 </tr>
 <tr>
 <td class="label">Created Time</td>
-<td>Thu Sep 19 06:28:35 2024
+<td>Wed Nov 13 18:42:49 2024
 </td>
 </tr>
 <tr>
@@ -97,24 +97,24 @@ table.detail_table th.label {  min-width: 8%; width: 8%; }
 <tr>
 <td class="label">Place & Route Process</td>
 <td>Running placement:
-   Placement Phase 0: CPU time = 0h 0m 0.601s, Elapsed time = 0h 0m 0.602s
-   Placement Phase 1: CPU time = 0h 0m 0.133s, Elapsed time = 0h 0m 0.133s
-   Placement Phase 2: CPU time = 0h 0m 0.753s, Elapsed time = 0h 0m 0.753s
+   Placement Phase 0: CPU time = 0h 0m 0.594s, Elapsed time = 0h 0m 0.594s
+   Placement Phase 1: CPU time = 0h 0m 0.136s, Elapsed time = 0h 0m 0.135s
+   Placement Phase 2: CPU time = 0h 0m 0.736s, Elapsed time = 0h 0m 0.736s
    Placement Phase 3: CPU time = 0h 0m 2s, Elapsed time = 0h 0m 2s
    Total Placement: CPU time = 0h 0m 3s, Elapsed time = 0h 0m 3s
 Running routing:
-   Routing Phase 0: CPU time = 0h 0m 0.001s, Elapsed time = 0h 0m 0.001s
-   Routing Phase 1: CPU time = 0h 0m 0.928s, Elapsed time = 0h 0m 0.928s
-   Routing Phase 2: CPU time = 0h 0m 1s, Elapsed time = 0h 0m 1s
+   Routing Phase 0: CPU time = 0h 0m 0.002s, Elapsed time = 0h 0m 0.002s
+   Routing Phase 1: CPU time = 0h 0m 0.86s, Elapsed time = 0h 0m 0.86s
+   Routing Phase 2: CPU time = 0h 0m 2s, Elapsed time = 0h 0m 2s
    Routing Phase 3: CPU time = 0h 0m 0s, Elapsed time = 0h 0m 0s
-   Total Routing: CPU time = 0h 0m 2s, Elapsed time = 0h 0m 2s
+   Total Routing: CPU time = 0h 0m 3s, Elapsed time = 0h 0m 3s
 Generate output files:
-   CPU time = 0h 0m 1s, Elapsed time = 0h 0m 1s
+   CPU time = 0h 0m 2s, Elapsed time = 0h 0m 2s
 </td>
 </tr>
 <tr>
 <td class="label">Total Time and Memory Usage</td>
-<td>CPU time = 0h 0m 7s, Elapsed time = 0h 0m 7s, Peak memory usage = 297MB</td>
+<td>CPU time = 0h 0m 7s, Elapsed time = 0h 0m 7s, Peak memory usage = 307MB</td>
 </tr>
 </table>
 <br/>
@@ -129,12 +129,12 @@ Generate output files:
 </tr>
 <tr>
 <td class="label">Logic</td>
-<td>2322/8640</td>
-<td>27%</td>
+<td>2336/8640</td>
+<td>28%</td>
 </tr>
 <tr>
 <td class="label">&nbsp &nbsp --LUT,ALU,ROM16</td>
-<td>2016(1710 LUT, 306 ALU, 0 ROM16)</td>
+<td>2030(1724 LUT, 306 ALU, 0 ROM16)</td>
 <td>-</td>
 </tr>
 <tr>
@@ -144,8 +144,8 @@ Generate output files:
 </tr>
 <tr>
 <td class="label">Register</td>
-<td>1370/6693</td>
-<td>21%</td>
+<td>1314/6693</td>
+<td>20%</td>
 </tr>
 <tr>
 <td class="label">&nbsp &nbsp --Logic Register as Latch</td>
@@ -154,8 +154,8 @@ Generate output files:
 </tr>
 <tr>
 <td class="label">&nbsp &nbsp --Logic Register as FF</td>
-<td>1361/6480</td>
-<td>22%</td>
+<td>1305/6480</td>
+<td>21%</td>
 </tr>
 <tr>
 <td class="label">&nbsp &nbsp --I/O Register as Latch</td>
@@ -169,13 +169,13 @@ Generate output files:
 </tr>
 <tr>
 <td class="label">CLS</td>
-<td>1669/4320</td>
+<td>1666/4320</td>
 <td>39%</td>
 </tr>
 <tr>
 <td class="label">I/O Port</td>
-<td>49</td>
-<td>-</td>
+<td>49/71</td>
+<td>70%</td>
 </tr>
 <tr>
 <td class="label">I/O Buf</td>
@@ -198,11 +198,6 @@ Generate output files:
 <td>-</td>
 </tr>
 <tr>
-<td class="label">IOLOGIC</td>
-<td>0</td>
-<td>0%</td>
-</tr>
-<tr>
 <td class="label">BSRAM</td>
 <td>1 SDPB<br/>8 pROM<br/></td>
 <td>35%</td>
@@ -211,101 +206,53 @@ Generate output files:
 <td class="label">DSP</td>
 <td>1 MULT18X18<br/>1 MULTADDALU18X18<br/></td><td>15%</td>
 </tr>
-<tr>
-<td class="label">PLL</td>
-<td>1/2</td>
-<td>50%</td>
-</tr>
-<tr>
-<td class="label">DCS</td>
-<td>0/8</td>
-<td>0%</td>
-</tr>
-<tr>
-<td class="label">DQCE</td>
-<td>0/24</td>
-<td>0%</td>
-</tr>
-<tr>
-<td class="label">OSC</td>
-<td>0/1</td>
-<td>0%</td>
-</tr>
-<tr>
-<td class="label">User Flash</td>
-<td>0/1</td>
-<td>0%</td>
-</tr>
-<tr>
-<td class="label">CLKDIV</td>
-<td>0/8</td>
-<td>0%</td>
-</tr>
-<tr>
-<td class="label">DLLDLY</td>
-<td>0/8</td>
-<td>0%</td>
-</tr>
-<tr>
-<td class="label">DHCEN</td>
-<td>0/8</td>
-<td>0%</td>
-</tr>
-<tr>
-<td class="label">DHCENC</td>
-<td>0/4</td>
-<td>0%</td>
-</tr>
 </table>
 <h2><a name="I/O_Bank_Usage_Summary">I/O Bank Usage Summary:</a></h2>
 <table class="summary_table">
 <tr>
 <td class="label"><b>I/O Bank</b></td>
-<td><b>Usage</b></td>
+<td><b>Usage</b></td><td><b>Utilization</b></td>
 </tr>
 <tr>
 <td class="label">bank 1</td>
-<td>19/25(76%)</td>
+<td>19/25</td><td>76%</td>
 </tr>
 <tr>
 <td class="label">bank 2</td>
-<td>14/23(60%)</td>
+<td>14/23</td><td>61%</td>
 </tr>
 <tr>
 <td class="label">bank 3</td>
-<td>16/23(69%)</td>
+<td>16/23</td><td>70%</td>
 </tr>
 </table>
 <br/>
-<h2><a name="Global_Clock_Usage_Summary">Global Clock Usage Summary:</a></h2>
+<h2><a name="Global_Clock_Usage_Summary">Clock Resource Usage Summary:</a></h2>
 <table class="summary_table">
 <tr>
-<td class="label"><b>Global Clock</b></td>
+<td class="label"><b>Clock Resource</b></td>
 <td><b>Usage</b></td>
+<td><b>Utilization</b></td>
 </tr>
 <tr>
 <td class="label">PRIMARY</td>
-<td>2/8(25%)</td>
+<td>2/8</td>
+<td>25%</td>
 </tr>
 <tr>
 <td class="label">LW</td>
-<td>6/8(75%)</td>
+<td>6/8</td>
+<td>75%</td>
 </tr>
 <tr>
 <td class="label">GCLK_PIN</td>
-<td>2/3(67%)</td>
+<td>2/3</td>
+<td>67%</td>
 </tr>
 <tr>
 <td class="label">PLL</td>
-<td>1/2(50%)</td>
-</tr>
-<tr>
-<td class="label">CLKDIV</td>
-<td>0/8(0%)</td>
-</tr>
-<tr>
-<td class="label">DLLDLY</td>
-<td>0/8(0%)</td>
+<td>1/2</td>
+<td>50%</td>
 </tr>
 </table>
 <br/>
@@ -380,7 +327,7 @@ Generate output files:
 </tr>
 <tr>
 <td class="label">n_treset</td>
-<td></td>
+<td>-</td>
 <td>30/2</td>
 <td>Y</td>
 <td>in</td>
@@ -398,7 +345,7 @@ Generate output files:
 </tr>
 <tr>
 <td class="label">tclock</td>
-<td></td>
+<td>-</td>
 <td>51/1</td>
 <td>Y</td>
 <td>in</td>
@@ -416,7 +363,7 @@ Generate output files:
 </tr>
 <tr>
 <td class="label">n_tsltsl</td>
-<td></td>
+<td>-</td>
 <td>63/1</td>
 <td>Y</td>
 <td>in</td>
@@ -434,7 +381,7 @@ Generate output files:
 </tr>
 <tr>
 <td class="label">n_tmerq</td>
-<td></td>
+<td>-</td>
 <td>27/2</td>
 <td>Y</td>
 <td>in</td>
@@ -452,7 +399,7 @@ Generate output files:
 </tr>
 <tr>
 <td class="label">n_tiorq</td>
-<td></td>
+<td>-</td>
 <td>26/2</td>
 <td>Y</td>
 <td>in</td>
@@ -470,7 +417,7 @@ Generate output files:
 </tr>
 <tr>
 <td class="label">n_twr</td>
-<td></td>
+<td>-</td>
 <td>28/2</td>
 <td>Y</td>
 <td>in</td>
@@ -488,7 +435,7 @@ Generate output files:
 </tr>
 <tr>
 <td class="label">n_trd</td>
-<td></td>
+<td>-</td>
 <td>29/2</td>
 <td>Y</td>
 <td>in</td>
@@ -506,7 +453,7 @@ Generate output files:
 </tr>
 <tr>
 <td class="label">ta[0]</td>
-<td></td>
+<td>-</td>
 <td>34/2</td>
 <td>Y</td>
 <td>in</td>
@@ -524,7 +471,7 @@ Generate output files:
 </tr>
 <tr>
 <td class="label">ta[1]</td>
-<td></td>
+<td>-</td>
 <td>72/1</td>
 <td>Y</td>
 <td>in</td>
@@ -542,7 +489,7 @@ Generate output files:
 </tr>
 <tr>
 <td class="label">ta[2]</td>
-<td></td>
+<td>-</td>
 <td>40/2</td>
 <td>Y</td>
 <td>in</td>
@@ -560,7 +507,7 @@ Generate output files:
 </tr>
 <tr>
 <td class="label">ta[3]</td>
-<td></td>
+<td>-</td>
 <td>71/1</td>
 <td>Y</td>
 <td>in</td>
@@ -578,7 +525,7 @@ Generate output files:
 </tr>
 <tr>
 <td class="label">ta[4]</td>
-<td></td>
+<td>-</td>
 <td>35/2</td>
 <td>Y</td>
 <td>in</td>
@@ -596,7 +543,7 @@ Generate output files:
 </tr>
 <tr>
 <td class="label">ta[5]</td>
-<td></td>
+<td>-</td>
 <td>70/1</td>
 <td>Y</td>
 <td>in</td>
@@ -614,7 +561,7 @@ Generate output files:
 </tr>
 <tr>
 <td class="label">ta[6]</td>
-<td></td>
+<td>-</td>
 <td>68/1</td>
 <td>Y</td>
 <td>in</td>
@@ -632,7 +579,7 @@ Generate output files:
 </tr>
 <tr>
 <td class="label">ta[7]</td>
-<td></td>
+<td>-</td>
 <td>75/1</td>
 <td>Y</td>
 <td>in</td>
@@ -650,7 +597,7 @@ Generate output files:
 </tr>
 <tr>
 <td class="label">ta[8]</td>
-<td></td>
+<td>-</td>
 <td>69/1</td>
 <td>Y</td>
 <td>in</td>
@@ -668,7 +615,7 @@ Generate output files:
 </tr>
 <tr>
 <td class="label">ta[9]</td>
-<td></td>
+<td>-</td>
 <td>77/1</td>
 <td>Y</td>
 <td>in</td>
@@ -686,7 +633,7 @@ Generate output files:
 </tr>
 <tr>
 <td class="label">ta[10]</td>
-<td></td>
+<td>-</td>
 <td>42/2</td>
 <td>Y</td>
 <td>in</td>
@@ -704,7 +651,7 @@ Generate output files:
 </tr>
 <tr>
 <td class="label">ta[11]</td>
-<td></td>
+<td>-</td>
 <td>76/1</td>
 <td>Y</td>
 <td>in</td>
@@ -722,7 +669,7 @@ Generate output files:
 </tr>
 <tr>
 <td class="label">ta[12]</td>
-<td></td>
+<td>-</td>
 <td>74/1</td>
 <td>Y</td>
 <td>in</td>
@@ -740,7 +687,7 @@ Generate output files:
 </tr>
 <tr>
 <td class="label">ta[13]</td>
-<td></td>
+<td>-</td>
 <td>33/2</td>
 <td>Y</td>
 <td>in</td>
@@ -758,7 +705,7 @@ Generate output files:
 </tr>
 <tr>
 <td class="label">ta[14]</td>
-<td></td>
+<td>-</td>
 <td>73/1</td>
 <td>Y</td>
 <td>in</td>
@@ -776,7 +723,7 @@ Generate output files:
 </tr>
 <tr>
 <td class="label">ta[15]</td>
-<td></td>
+<td>-</td>
 <td>41/2</td>
 <td>Y</td>
 <td>in</td>
@@ -794,7 +741,7 @@ Generate output files:
 </tr>
 <tr>
 <td class="label">button[0]</td>
-<td></td>
+<td>-</td>
 <td>3/3</td>
 <td>Y</td>
 <td>in</td>
@@ -812,7 +759,7 @@ Generate output files:
 </tr>
 <tr>
 <td class="label">button[1]</td>
-<td></td>
+<td>-</td>
 <td>4/3</td>
 <td>Y</td>
 <td>in</td>
@@ -830,7 +777,7 @@ Generate output files:
 </tr>
 <tr>
 <td class="label">dip_sw[0]</td>
-<td></td>
+<td>-</td>
 <td>80/3</td>
 <td>Y</td>
 <td>in</td>
@@ -848,7 +795,7 @@ Generate output files:
 </tr>
 <tr>
 <td class="label">dip_sw[1]</td>
-<td></td>
+<td>-</td>
 <td>81/3</td>
 <td>Y</td>
 <td>in</td>
@@ -866,7 +813,7 @@ Generate output files:
 </tr>
 <tr>
 <td class="label">dip_sw[2]</td>
-<td></td>
+<td>-</td>
 <td>82/3</td>
 <td>Y</td>
 <td>in</td>
@@ -884,7 +831,7 @@ Generate output files:
 </tr>
 <tr>
 <td class="label">dip_sw[3]</td>
-<td></td>
+<td>-</td>
 <td>83/3</td>
 <td>Y</td>
 <td>in</td>
@@ -902,7 +849,7 @@ Generate output files:
 </tr>
 <tr>
 <td class="label">dip_sw[4]</td>
-<td></td>
+<td>-</td>
 <td>84/3</td>
 <td>Y</td>
 <td>in</td>
@@ -920,7 +867,7 @@ Generate output files:
 </tr>
 <tr>
 <td class="label">dip_sw[5]</td>
-<td></td>
+<td>-</td>
 <td>85/3</td>
 <td>Y</td>
 <td>in</td>
@@ -938,7 +885,7 @@ Generate output files:
 </tr>
 <tr>
 <td class="label">dip_sw[6]</td>
-<td></td>
+<td>-</td>
 <td>86/3</td>
 <td>Y</td>
 <td>in</td>
@@ -956,7 +903,7 @@ Generate output files:
 </tr>
 <tr>
 <td class="label">tdir</td>
-<td></td>
+<td>-</td>
 <td>25/2</td>
 <td>Y</td>
 <td>out</td>
@@ -974,7 +921,7 @@ Generate output files:
 </tr>
 <tr>
 <td class="label">tsnd</td>
-<td></td>
+<td>-</td>
 <td>57/1</td>
 <td>Y</td>
 <td>out</td>
@@ -992,7 +939,7 @@ Generate output files:
 </tr>
 <tr>
 <td class="label">n_led[0]</td>
-<td></td>
+<td>-</td>
 <td>10/3</td>
 <td>Y</td>
 <td>out</td>
@@ -1010,7 +957,7 @@ Generate output files:
 </tr>
 <tr>
 <td class="label">n_led[1]</td>
-<td></td>
+<td>-</td>
 <td>11/3</td>
 <td>Y</td>
 <td>out</td>
@@ -1028,7 +975,7 @@ Generate output files:
 </tr>
 <tr>
 <td class="label">n_led[2]</td>
-<td></td>
+<td>-</td>
 <td>13/3</td>
 <td>Y</td>
 <td>out</td>
@@ -1046,7 +993,7 @@ Generate output files:
 </tr>
 <tr>
 <td class="label">n_led[3]</td>
-<td></td>
+<td>-</td>
 <td>14/3</td>
 <td>Y</td>
 <td>out</td>
@@ -1064,7 +1011,7 @@ Generate output files:
 </tr>
 <tr>
 <td class="label">n_led[4]</td>
-<td></td>
+<td>-</td>
 <td>15/3</td>
 <td>Y</td>
 <td>out</td>
@@ -1082,7 +1029,7 @@ Generate output files:
 </tr>
 <tr>
 <td class="label">n_led[5]</td>
-<td></td>
+<td>-</td>
 <td>16/3</td>
 <td>Y</td>
 <td>out</td>
@@ -1100,7 +1047,7 @@ Generate output files:
 </tr>
 <tr>
 <td class="label">twait</td>
-<td></td>
+<td>-</td>
 <td>79/3</td>
 <td>Y</td>
 <td>out</td>
@@ -1118,7 +1065,7 @@ Generate output files:
 </tr>
 <tr>
 <td class="label">td[0]</td>
-<td></td>
+<td>-</td>
 <td>48/1</td>
 <td>Y</td>
 <td>io</td>
@@ -1136,7 +1083,7 @@ Generate output files:
 </tr>
 <tr>
 <td class="label">td[1]</td>
-<td></td>
+<td>-</td>
 <td>49/1</td>
 <td>Y</td>
 <td>io</td>
@@ -1154,7 +1101,7 @@ Generate output files:
 </tr>
 <tr>
 <td class="label">td[2]</td>
-<td></td>
+<td>-</td>
 <td>31/2</td>
 <td>Y</td>
 <td>io</td>
@@ -1172,7 +1119,7 @@ Generate output files:
 </tr>
 <tr>
 <td class="label">td[3]</td>
-<td></td>
+<td>-</td>
 <td>32/2</td>
 <td>Y</td>
 <td>io</td>
@@ -1190,7 +1137,7 @@ Generate output files:
 </tr>
 <tr>
 <td class="label">td[4]</td>
-<td></td>
+<td>-</td>
 <td>53/1</td>
 <td>Y</td>
 <td>io</td>
@@ -1208,7 +1155,7 @@ Generate output files:
 </tr>
 <tr>
 <td class="label">td[5]</td>
-<td></td>
+<td>-</td>
 <td>54/1</td>
 <td>Y</td>
 <td>io</td>
@@ -1226,7 +1173,7 @@ Generate output files:
 </tr>
 <tr>
 <td class="label">td[6]</td>
-<td></td>
+<td>-</td>
 <td>55/1</td>
 <td>Y</td>
 <td>io</td>
@@ -1244,7 +1191,7 @@ Generate output files:
 </tr>
 <tr>
 <td class="label">td[7]</td>
-<td></td>
+<td>-</td>
 <td>56/1</td>
 <td>Y</td>
 <td>io</td>

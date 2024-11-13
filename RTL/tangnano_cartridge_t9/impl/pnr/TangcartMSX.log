@@ -1,7 +1,7 @@
-Reading netlist file: "D:\github\HRA_product\TangCartMSX\RTL\TangcartMSX\impl\gwsynthesis\TangcartMSX.vg"
-Parsing netlist file "D:\github\HRA_product\TangCartMSX\RTL\TangcartMSX\impl\gwsynthesis\TangcartMSX.vg" completed
+Reading netlist file: "D:\github\HRA_product\TangCartMSX\RTL\tangnano_cartridge_t9\impl\gwsynthesis\TangcartMSX.vg"
+Parsing netlist file "D:\github\HRA_product\TangCartMSX\RTL\tangnano_cartridge_t9\impl\gwsynthesis\TangcartMSX.vg" completed
 Processing netlist completed
-Reading constraint file: "D:\github\HRA_product\TangCartMSX\RTL\TangcartMSX\src\TangcartMSX.cst"
+Reading constraint file: "D:\github\HRA_product\TangCartMSX\RTL\tangnano_cartridge_t9\src\TangcartMSX.cst"
 Physical Constraint parsed completed
 Running placement......
 [10%] Placement Phase 0 completed
@@ -21,10 +21,10 @@ Bitstream generation in progress......
 Bitstream generation completed
 Running power analysis......
 [100%] Power analysis completed
-Generate file "D:\github\HRA_product\TangCartMSX\RTL\TangcartMSX\impl\pnr\TangcartMSX.power.html" completed
-Generate file "D:\github\HRA_product\TangCartMSX\RTL\TangcartMSX\impl\pnr\TangcartMSX.pin.html" completed
-Generate file "D:\github\HRA_product\TangCartMSX\RTL\TangcartMSX\impl\pnr\TangcartMSX.rpt.html" completed
-Generate file "D:\github\HRA_product\TangCartMSX\RTL\TangcartMSX\impl\pnr\TangcartMSX.rpt.txt" completed
-Generate file "D:\github\HRA_product\TangCartMSX\RTL\TangcartMSX\impl\pnr\TangcartMSX.tr.html" completed
-Thu Sep 19 06:28:35 2024
+Generate file "D:\github\HRA_product\TangCartMSX\RTL\tangnano_cartridge_t9\impl\pnr\TangcartMSX.power.html" completed
+Generate file "D:\github\HRA_product\TangCartMSX\RTL\tangnano_cartridge_t9\impl\pnr\TangcartMSX.pin.html" completed
+Generate file "D:\github\HRA_product\TangCartMSX\RTL\tangnano_cartridge_t9\impl\pnr\TangcartMSX.rpt.html" completed
+Generate file "D:\github\HRA_product\TangCartMSX\RTL\tangnano_cartridge_t9\impl\pnr\TangcartMSX.rpt.txt" completed
+Generate file "D:\github\HRA_product\TangCartMSX\RTL\tangnano_cartridge_t9\impl\pnr\TangcartMSX.tr.html" completed
+Wed Nov 13 18:42:49 2024
 
