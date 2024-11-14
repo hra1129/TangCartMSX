@@ -27,6 +27,7 @@
 module tb ();
 	localparam	clk_base	= 1_000_000_000/85_909;	//	ps
 	int						test_no;
+	int						i;
 	reg						reset;
 	reg						clk;
 	wire					enable;			//	21.47727MHz pulse
@@ -152,20 +153,161 @@ module tb ();
 		reset		= 0;
 		@( posedge clk );
 
+		write_ssg_reg( 0, 2 );
+		write_ssg_reg( 1, 0 );
+		write_ssg_reg( 2, 2 );
+		write_ssg_reg( 3, 0 );
+		write_ssg_reg( 4, 2 );
+		write_ssg_reg( 5, 0 );
+		repeat( 12'hFFF * 4 ) @( posedge clk );
+
 		// --------------------------------------------------------------------
 		//	Envelope test
 		// --------------------------------------------------------------------
-		for( test_no = 0; test_no < 16; test_no = test_no + 1 ) begin
-			$display( "Envelope %d", test_no );
-			write_ssg_reg( 0, 0 );
+		test_no = 1;
+		for( i = 0; i < 16; i = i + 1 ) begin
+			$display( "Envelope %d (Port A)", i );
+			write_ssg_reg( 0, 2 );
 			write_ssg_reg( 1, 0 );
 			write_ssg_reg( 7, 8'b10111110 );
 			write_ssg_reg( 8, 16 );
 			write_ssg_reg( 11, 10 );
 			write_ssg_reg( 12, 0 );
-			write_ssg_reg( 13, test_no );
+			write_ssg_reg( 13, i );
 			repeat( 50000 ) @( posedge clk );
 		end
+		write_ssg_reg( 8, 0 );
+
+		test_no = 2;
+		for( i = 0; i < 16; i = i + 1 ) begin
+			$display( "Envelope %d (Port B)", i );
+			write_ssg_reg( 2, 2 );
+			write_ssg_reg( 3, 0 );
+			write_ssg_reg( 7, 8'b10111101 );
+			write_ssg_reg( 9, 16 );
+			write_ssg_reg( 11, 10 );
+			write_ssg_reg( 12, 0 );
+			write_ssg_reg( 13, i );
+			repeat( 50000 ) @( posedge clk );
+		end
+		write_ssg_reg( 9, 0 );
+
+		test_no = 3;
+		for( i = 0; i < 16; i = i + 1 ) begin
+			$display( "Envelope %d (Port C)", i );
+			write_ssg_reg( 4, 2 );
+			write_ssg_reg( 5, 0 );
+			write_ssg_reg( 7, 8'b10111011 );
+			write_ssg_reg( 10, 16 );
+			write_ssg_reg( 11, 10 );
+			write_ssg_reg( 12, 0 );
+			write_ssg_reg( 13, i );
+			repeat( 50000 ) @( posedge clk );
+		end
+		write_ssg_reg( 10, 0 );
+
+		// --------------------------------------------------------------------
+		//	Volume test
+		// --------------------------------------------------------------------
+		test_no = 4;
+		for( i = 0; i < 16; i = i + 1 ) begin
+			$display( "Volume %d (Port A)", i );
+			write_ssg_reg( 0, 2 );
+			write_ssg_reg( 1, 0 );
+			write_ssg_reg( 7, 8'b10111110 );
+			write_ssg_reg( 8, i );
+			write_ssg_reg( 11, 10 );
+			write_ssg_reg( 12, 0 );
+			repeat( 50000 ) @( posedge clk );
+		end
+		write_ssg_reg( 8, 0 );
+
+		test_no = 5;
+		for( i = 0; i < 16; i = i + 1 ) begin
+			$display( "Volume %d (Port B)", i );
+			write_ssg_reg( 2, 2 );
+			write_ssg_reg( 3, 0 );
+			write_ssg_reg( 7, 8'b10111101 );
+			write_ssg_reg( 9, i );
+			write_ssg_reg( 11, 10 );
+			write_ssg_reg( 12, 0 );
+			repeat( 50000 ) @( posedge clk );
+		end
+		write_ssg_reg( 9, 0 );
+
+		test_no = 6;
+		for( i = 0; i < 16; i = i + 1 ) begin
+			$display( "Volume %d (Port C)", i );
+			write_ssg_reg( 4, 2 );
+			write_ssg_reg( 5, 0 );
+			write_ssg_reg( 7, 8'b10111011 );
+			write_ssg_reg( 10, i );
+			write_ssg_reg( 11, 10 );
+			write_ssg_reg( 12, 0 );
+			repeat( 50000 ) @( posedge clk );
+		end
+		write_ssg_reg( 10, 0 );
+
+		// --------------------------------------------------------------------
+		//	Envelope frequency test
+		// --------------------------------------------------------------------
+		test_no = 7;
+		for( i = 0; i < 16; i = i + 1 ) begin
+			$display( "Envelope frequency %d (Port A)", (i * 256) + 127 );
+			write_ssg_reg( 0, 2 );
+			write_ssg_reg( 1, 0 );
+			write_ssg_reg( 7, 8'b10111110 );
+			write_ssg_reg( 8, 16 );
+			write_ssg_reg( 11, 127 );
+			write_ssg_reg( 12, i );
+			write_ssg_reg( 13, 0 );
+			repeat( 500000 ) @( posedge clk );
+		end
+		write_ssg_reg( 8, 0 );
+
+		// --------------------------------------------------------------------
+		//	Volume frequency test
+		// --------------------------------------------------------------------
+		test_no = 8;
+		for( i = 0; i < 16; i = i + 1 ) begin
+			$display( "Volume frequency %d (Port A)", (i * 256) + 127 );
+			write_ssg_reg( 0, 127 );
+			write_ssg_reg( 1, i );
+			write_ssg_reg( 7, 8'b10111110 );
+			write_ssg_reg( 8, 15 );
+			repeat( 500000 ) @( posedge clk );
+		end
+		write_ssg_reg( 8, 0 );
+
+		// --------------------------------------------------------------------
+		//	Noise frequency test
+		// --------------------------------------------------------------------
+		test_no = 9;
+		for( i = 0; i < 32; i = i + 1 ) begin
+			$display( "Noise frequency %d (Port A)", i );
+			write_ssg_reg( 0, 2 );
+			write_ssg_reg( 1, 0 );
+			write_ssg_reg( 6, i );
+			write_ssg_reg( 7, 8'b10110111 );
+			write_ssg_reg( 8, 15 );
+			repeat( 500000 ) @( posedge clk );
+		end
+		write_ssg_reg( 8, 0 );
+
+		// --------------------------------------------------------------------
+		//	Noise and tone frequency test
+		// --------------------------------------------------------------------
+		test_no = 10;
+		for( i = 0; i < 32; i = i + 1 ) begin
+			$display( "Noise frequency %d (Port A)", i );
+			write_ssg_reg( 0, 128 );
+			write_ssg_reg( 1, i / 2 );
+			write_ssg_reg( 6, i );
+			write_ssg_reg( 7, 8'b10110110 );
+			write_ssg_reg( 8, 15 );
+			repeat( 500000 ) @( posedge clk );
+		end
+		write_ssg_reg( 8, 0 );
 		$finish;
 	end
 endmodule

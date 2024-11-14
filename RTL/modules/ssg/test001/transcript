@@ -1,2 +1,2 @@
 # OpenFile D:/github/HRA_product/TangCartMSX/RTL/modules/ssg/test001/vsim.wlf
-add wave -position end vsim:/tb/u_ssg_inst/*
+do D:/github/HRA_product/TangCartMSX/RTL/modules/ssg/test001/wave.do
