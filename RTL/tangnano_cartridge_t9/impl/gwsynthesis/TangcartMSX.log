@@ -20,6 +20,8 @@ Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\tangnano_cartridge
 Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\tangnano_cartridge_t9\src\ikascc\IKASCC_modules\IKASCC_vrc_s.v'
 Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\tangnano_cartridge_t9\src\ikascc_wrap\ip_ikascc_wrap.v'
 Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\tangnano_cartridge_t9\src\pwm\ip_pwm.v'
+Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\tangnano_cartridge_t9\src\ssg\ssg.v'
+Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\tangnano_cartridge_t9\src\ssg\ssg_inst.v'
 Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\tangnano_cartridge_t9\src\tangcart_msx.v'
 Compiling module 'tangcart_msx'("D:\github\HRA_product\TangCartMSX\RTL\tangnano_cartridge_t9\src\tangcart_msx.v":26)
 Compiling module 'Gowin_PLL'("D:\github\HRA_product\TangCartMSX\RTL\tangnano_cartridge_t9\src\gowin_pll\gowin_pll.v":10)
@@ -63,6 +65,17 @@ Compiling module 'IKAOPLL_exprom'("D:\github\HRA_product\TangCartMSX\RTL\tangnan
 Compiling module 'IKAOPLL_sr(WIDTH=12,TAP0=6)'("D:\github\HRA_product\TangCartMSX\RTL\tangnano_cartridge_t9\src\ikaopll\IKAOPLL_modules\IKAOPLL_primitives.v":31)
 Compiling module 'IKAOPLL_dac'("D:\github\HRA_product\TangCartMSX\RTL\tangnano_cartridge_t9\src\ikaopll\IKAOPLL_modules\IKAOPLL_dac.v":1)
 Compiling module 'IKAOPLL_sr(WIDTH=9,LENGTH=5)'("D:\github\HRA_product\TangCartMSX\RTL\tangnano_cartridge_t9\src\ikaopll\IKAOPLL_modules\IKAOPLL_primitives.v":31)
+Compiling module 'ssg_inst'("D:\github\HRA_product\TangCartMSX\RTL\tangnano_cartridge_t9\src\ssg\ssg_inst.v":58)
+Compiling module 'ssg'("D:\github\HRA_product\TangCartMSX\RTL\tangnano_cartridge_t9\src\ssg\ssg.v":58)
+WARN  (EX3791) : Expression size 32 truncated to fit in target size 5("D:\github\HRA_product\TangCartMSX\RTL\tangnano_cartridge_t9\src\ssg\ssg.v":417)
+WARN  (EX3791) : Expression size 32 truncated to fit in target size 5("D:\github\HRA_product\TangCartMSX\RTL\tangnano_cartridge_t9\src\ssg\ssg.v":420)
+WARN  (EX3791) : Expression size 32 truncated to fit in target size 16("D:\github\HRA_product\TangCartMSX\RTL\tangnano_cartridge_t9\src\ssg\ssg.v":468)
+WARN  (EX3791) : Expression size 32 truncated to fit in target size 16("D:\github\HRA_product\TangCartMSX\RTL\tangnano_cartridge_t9\src\ssg\ssg.v":471)
+WARN  (EX3791) : Expression size 32 truncated to fit in target size 6("D:\github\HRA_product\TangCartMSX\RTL\tangnano_cartridge_t9\src\ssg\ssg.v":488)
+WARN  (EX3791) : Expression size 6 truncated to fit in target size 5("D:\github\HRA_product\TangCartMSX\RTL\tangnano_cartridge_t9\src\ssg\ssg.v":505)
+WARN  (EX3791) : Expression size 6 truncated to fit in target size 5("D:\github\HRA_product\TangCartMSX\RTL\tangnano_cartridge_t9\src\ssg\ssg.v":508)
+WARN  (EX2565) : Input 'keyboard_type' on this instance is undriven. Assigning to 0, simulation mismatch possible. Please assign the input or remove the declaration("D:\github\HRA_product\TangCartMSX\RTL\tangnano_cartridge_t9\src\ssg\ssg_inst.v":149)
+WARN  (EX2565) : Input 'cmt_read' on this instance is undriven. Assigning to 0, simulation mismatch possible. Please assign the input or remove the declaration("D:\github\HRA_product\TangCartMSX\RTL\tangnano_cartridge_t9\src\ssg\ssg_inst.v":149)
 Compiling module 'ip_pwm'("D:\github\HRA_product\TangCartMSX\RTL\tangnano_cartridge_t9\src\pwm\ip_pwm.v":27)
 NOTE  (EX0101) : Current top module is "tangcart_msx"
 [5%] Running netlist conversion ...

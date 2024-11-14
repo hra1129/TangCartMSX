@@ -24,6 +24,8 @@
         <File path="D:\github\HRA_product\TangCartMSX\RTL\tangnano_cartridge_t9\src\ikascc\IKASCC_modules\IKASCC_vrc_s.v" type="verilog"/>
         <File path="D:\github\HRA_product\TangCartMSX\RTL\tangnano_cartridge_t9\src\ikascc_wrap\ip_ikascc_wrap.v" type="verilog"/>
         <File path="D:\github\HRA_product\TangCartMSX\RTL\tangnano_cartridge_t9\src\pwm\ip_pwm.v" type="verilog"/>
+        <File path="D:\github\HRA_product\TangCartMSX\RTL\tangnano_cartridge_t9\src\ssg\ssg.v" type="verilog"/>
+        <File path="D:\github\HRA_product\TangCartMSX\RTL\tangnano_cartridge_t9\src\ssg\ssg_inst.v" type="verilog"/>
         <File path="D:\github\HRA_product\TangCartMSX\RTL\tangnano_cartridge_t9\src\tangcart_msx.v" type="verilog"/>
     </FileList>
     <OptionList>
@@ -33,8 +35,6 @@
         <Option type="output_file" value="D:\github\HRA_product\TangCartMSX\RTL\tangnano_cartridge_t9\impl\gwsynthesis\TangcartMSX.vg"/>
         <Option type="print_all_synthesis_warning" value="0"/>
         <Option type="ram_rw_check" value="0"/>
-        <Option type="vcc" value="1.2"/>
-        <Option type="vccx" value="3.3"/>
         <Option type="verilog_language" value="verilog-2001"/>
         <Option type="vhdl_language" value="vhdl-1993"/>
     </OptionList>

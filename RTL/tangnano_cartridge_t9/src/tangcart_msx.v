@@ -52,20 +52,27 @@ module tangcart_msx (
 	wire			w_mclk_pcen_n;
 	wire			w_n_reset;
 	wire			w_is_output;
+	wire	[7:0]	w_out_data;
 	//	SCC
 	wire	[7:0]	w_scc_data;
 	wire			w_scc_data_en;
 	wire	[10:0]	w_scc_out;
 	//	OPLL
 	wire	[15:0]	w_opll_out;
+	//	SSG
+	wire	[7:0]	w_ssg_data;
+	wire			w_ssg_data_en;
+	wire	[7:0]	w_ssg_out;
 	//	sound generator
 	reg		[16:0]	ff_sound;
 
 	// --------------------------------------------------------------------
 	//	OUTPUT Assignment
 	// --------------------------------------------------------------------
-	assign w_is_output	= w_scc_data_en;
-	assign td			= w_is_output   ? w_scc_data : 8'hZZ;
+	assign w_out_data	= w_scc_data_en ? w_scc_data : w_ssg_data;
+	assign w_is_output	= w_scc_data_en | w_ssg_data_en;
+
+	assign td			= w_is_output   ? w_out_data : 8'hZZ;
 	assign tdir			= w_is_output;
 	assign n_led		= 6'd0;
 
@@ -150,6 +157,22 @@ module tangcart_msx (
 	);
 
 	// --------------------------------------------------------------------
+	//	SSG
+	// --------------------------------------------------------------------
+	ssg_inst u_ssg (
+		.n_reset			( w_n_reset					),
+		.clk				( clk						),
+		.n_ioreq			( n_tiorq					),
+		.n_rd				( n_trd						),
+		.n_wr				( n_twr						),
+		.address			( ta						),
+		.wdata				( td						),
+		.rdata				( w_ssg_data				),
+		.rdata_en			( w_ssg_data_en				),
+		.sound_out			( w_ssg_out					)
+	);
+
+	// --------------------------------------------------------------------
 	//	Sound
 	// --------------------------------------------------------------------
 	always @( posedge clk ) begin
@@ -157,16 +180,16 @@ module tangcart_msx (
 			ff_sound <= 17'd0;
 		end
 		else begin
-			ff_sound <= { w_scc_out[10], w_scc_out, 5'd0 } + { w_opll_out[15], w_opll_out };
+			ff_sound <= { w_scc_out[10], w_scc_out, 5'd0 } + { w_opll_out[15], w_opll_out } + { {4{w_ssg_out[7]}}, w_ssg_out, 5'd0 };
 		end
 	end
 
 	ip_pwm u_pwm (
-		.n_reset			( w_n_reset									),
-		.clk				( clk										),		//	21.47727MHz
-		.enable				( 1'b1										),
-		.signal_level		( ff_sound									),
-		.pwm_wave			( tsnd										)
+		.n_reset			( w_n_reset					),
+		.clk				( clk						),		//	21.47727MHz
+		.enable				( 1'b1						),
+		.signal_level		( ff_sound					),
+		.pwm_wave			( tsnd						)
 	);
 endmodule
 

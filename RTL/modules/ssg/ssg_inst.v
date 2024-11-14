@@ -56,16 +56,16 @@
 //-----------------------------------------------------------------------------
 
 module ssg_inst (
-	input					reset,
-	input					clk,
-	input					enable,			//	21.47727MHz pulse
-	input					bus_io_req,
-	output					bus_ack,
-	input					bus_wrt,
-	input		[15:0]		bus_address,
-	input		[7:0]		bus_wdata,
-	output		[7:0]		bus_rdata,
-	output					bus_rdata_en,
+	input			reset,
+	input			clk,
+	input			enable,			//	21.47727MHz pulse
+	input			bus_io_req,
+	output			bus_ack,
+	input			bus_wrt,
+	input	[15:0]	bus_address,
+	input	[7:0]	bus_wdata,
+	output	[7:0]	bus_rdata,
+	output			bus_rdata_en,
 
 	inout	[5:0]	joystick_port1,
 	inout	[5:0]	joystick_port2,

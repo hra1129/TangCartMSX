@@ -142,7 +142,7 @@ module tang20cart_msx (
 	// --------------------------------------------------------------------
 	assign w_n_reset	= ff_reset[6];
 
-	assign w_is_output	= 1'd0;			// *************************
+//	assign w_is_output	= 1'd0;			// *************************
 //	assign w_o_data		= 8'd0;			// *************************
 
 //	assign td			= w_is_output   ? w_o_data : 8'hZZ;
@@ -232,7 +232,6 @@ module tang20cart_msx (
 		.n_rd				( n_trd						),
 		.n_wr				( n_twr						),
 		.n_ioreq			( n_ce						),
-		.n_mereq			( 1'b1						),
 		.bus_address		( w_bus_address				),
 		.bus_read_ready		( w_bus_read_ready			),
 		.bus_read_data		( w_bus_read_data			),

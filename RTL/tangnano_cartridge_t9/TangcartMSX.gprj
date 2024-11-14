@@ -25,6 +25,8 @@
         <File path="src/ikascc/IKASCC_modules/IKASCC_vrc_s.v" type="file.verilog" enable="1"/>
         <File path="src/ikascc_wrap/ip_ikascc_wrap.v" type="file.verilog" enable="1"/>
         <File path="src/pwm/ip_pwm.v" type="file.verilog" enable="1"/>
+        <File path="src/ssg/ssg.v" type="file.verilog" enable="1"/>
+        <File path="src/ssg/ssg_inst.v" type="file.verilog" enable="1"/>
         <File path="src/tangcart_msx.v" type="file.verilog" enable="1"/>
         <File path="src/TangcartMSX.cst" type="file.cst" enable="1"/>
         <File path="src/TangcartMSX.sdc" type="file.sdc" enable="1"/>

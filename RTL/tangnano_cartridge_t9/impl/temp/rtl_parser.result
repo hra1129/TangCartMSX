@@ -9,7 +9,7 @@
   "SubInsts" : [
    {
     "InstFile" : "D:/github/HRA_product/TangCartMSX/RTL/tangnano_cartridge_t9/src/tangcart_msx.v",
-    "InstLine" : 96,
+    "InstLine" : 103,
     "InstName" : "u_pll",
     "ModuleFile" : "D:/github/HRA_product/TangCartMSX/RTL/tangnano_cartridge_t9/src/gowin_pll/gowin_pll.v",
     "ModuleLine" : 10,
@@ -17,7 +17,7 @@
    },
    {
     "InstFile" : "D:/github/HRA_product/TangCartMSX/RTL/tangnano_cartridge_t9/src/tangcart_msx.v",
-    "InstLine" : 121,
+    "InstLine" : 128,
     "InstName" : "u_ikascc_wrapper",
     "ModuleFile" : "D:/github/HRA_product/TangCartMSX/RTL/tangnano_cartridge_t9/src/ikascc_wrap/ip_ikascc_wrap.v",
     "ModuleLine" : 24,
@@ -345,7 +345,7 @@
    },
    {
     "InstFile" : "D:/github/HRA_product/TangCartMSX/RTL/tangnano_cartridge_t9/src/tangcart_msx.v",
-    "InstLine" : 140,
+    "InstLine" : 147,
     "InstName" : "u_ikaopll_wrapper",
     "ModuleFile" : "D:/github/HRA_product/TangCartMSX/RTL/tangnano_cartridge_t9/src/ikaopll_wrap/ikaopll_wrap.v",
     "ModuleLine" : 7,
@@ -645,7 +645,25 @@
    },
    {
     "InstFile" : "D:/github/HRA_product/TangCartMSX/RTL/tangnano_cartridge_t9/src/tangcart_msx.v",
-    "InstLine" : 164,
+    "InstLine" : 162,
+    "InstName" : "u_ssg",
+    "ModuleFile" : "D:/github/HRA_product/TangCartMSX/RTL/tangnano_cartridge_t9/src/ssg/ssg_inst.v",
+    "ModuleLine" : 58,
+    "ModuleName" : "ssg_inst",
+    "SubInsts" : [
+     {
+      "InstFile" : "D:/github/HRA_product/TangCartMSX/RTL/tangnano_cartridge_t9/src/ssg/ssg_inst.v",
+      "InstLine" : 130,
+      "InstName" : "u_ssg",
+      "ModuleFile" : "D:/github/HRA_product/TangCartMSX/RTL/tangnano_cartridge_t9/src/ssg/ssg.v",
+      "ModuleLine" : 58,
+      "ModuleName" : "ssg"
+     }
+    ]
+   },
+   {
+    "InstFile" : "D:/github/HRA_product/TangCartMSX/RTL/tangnano_cartridge_t9/src/tangcart_msx.v",
+    "InstLine" : 187,
     "InstName" : "u_pwm",
     "ModuleFile" : "D:/github/HRA_product/TangCartMSX/RTL/tangnano_cartridge_t9/src/pwm/ip_pwm.v",
     "ModuleLine" : 27,

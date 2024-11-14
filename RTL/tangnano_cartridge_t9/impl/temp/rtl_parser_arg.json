@@ -82,6 +82,14 @@
    "Type" : "verilog"
   },
   {
+   "Path" : "D:/github/HRA_product/TangCartMSX/RTL/tangnano_cartridge_t9/src/ssg/ssg.v",
+   "Type" : "verilog"
+  },
+  {
+   "Path" : "D:/github/HRA_product/TangCartMSX/RTL/tangnano_cartridge_t9/src/ssg/ssg_inst.v",
+   "Type" : "verilog"
+  },
+  {
    "Path" : "D:/github/HRA_product/TangCartMSX/RTL/tangnano_cartridge_t9/src/tangcart_msx.v",
    "Type" : "verilog"
   }
