@@ -1,0 +1,3 @@
+# OpenFile D:/github/HRA_product/TangCartMSX/RTL/tangnano_cartridge_t9/src/dcsg_wrap/test001/vsim.wlf
+add wave -position end vsim:/tb/u_dcsg/*
+add wave -position end vsim:/tb/u_dcsg/u_sn76489_audio/*

@@ -92,6 +92,15 @@
   {
    "Path" : "D:/github/HRA_product/TangCartMSX/RTL/tangnano_cartridge_t9/src/tangcart_msx.v",
    "Type" : "verilog"
+  },
+  {
+   "Path" : "D:/github/HRA_product/TangCartMSX/RTL/tangnano_cartridge_t9/src/dcsg_wrap/dcsg_wrap.v",
+   "Type" : "verilog"
+  },
+  {
+   "Library" : "work",
+   "Path" : "D:/github/HRA_product/TangCartMSX/RTL/tangnano_cartridge_t9/src/dcsg/sn76489_audio.vhd",
+   "Type" : "vhdl"
   }
  ],
  "IncludePath" : [

@@ -27,6 +27,8 @@
         <File path="D:\github\HRA_product\TangCartMSX\RTL\tangnano_cartridge_t9\src\ssg\ssg.v" type="verilog"/>
         <File path="D:\github\HRA_product\TangCartMSX\RTL\tangnano_cartridge_t9\src\ssg\ssg_inst.v" type="verilog"/>
         <File path="D:\github\HRA_product\TangCartMSX\RTL\tangnano_cartridge_t9\src\tangcart_msx.v" type="verilog"/>
+        <File path="D:\github\HRA_product\TangCartMSX\RTL\tangnano_cartridge_t9\src\dcsg_wrap\dcsg_wrap.v" type="verilog"/>
+        <File path="D:\github\HRA_product\TangCartMSX\RTL\tangnano_cartridge_t9\src\dcsg\sn76489_audio.vhd" type="vhdl"/>
     </FileList>
     <OptionList>
         <Option type="disable_insert_pad" value="0"/>

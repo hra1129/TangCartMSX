@@ -4,11 +4,14 @@ TangNano9K用 OPLL/SCCカートリッジ。
 このディレクトリ階層に
 	ikaopll
 	ikascc
-の2つのディレクトリを作成する。
+	dcsg
+の3つのディレクトリを作成する。
 
 その中に、
-		:
-	gpio_mem
+	dcsg
+		sn76489_audio.vhd
+	dcsg_wrap
+	gowin_pll
 	ikaopll
 		IKAOPLL.v
 		IKAOPLL_tb.sv
@@ -20,9 +23,10 @@ TangNano9K用 OPLL/SCCカートリッジ。
 		IKASCC_modules
 			+------ IKASCC_*.v
 	ikascc_wrap
-	kanjirom
+	pwm
 		:
 のような配置になるように、下記リポジトリの src の内容をコピーして使う。
+	https://github.com/dnotq/sn76489_audio
 	https://github.com/ika-musume/IKAOPLL
 	https://github.com/ika-musume/IKASCC
 

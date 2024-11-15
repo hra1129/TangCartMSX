@@ -63,6 +63,8 @@ module tangcart_msx (
 	wire	[7:0]	w_ssg_data;
 	wire			w_ssg_data_en;
 	wire	[7:0]	w_ssg_out;
+	//	DCSG
+	wire	[13:0]	w_dcsg_out;
 	//	sound generator
 	reg		[16:0]	ff_sound;
 
@@ -173,6 +175,20 @@ module tangcart_msx (
 	);
 
 	// --------------------------------------------------------------------
+	//	DCSG
+	// --------------------------------------------------------------------
+	ip_dcsg_wrapper u_dcsg (
+		.n_reset			( w_n_reset					),
+		.clk				( clk						),
+		.en_clk_psg_i		( ~w_mclk_pcen_n			),
+		.n_ioreq			( n_tiorq					),
+		.n_wr				( n_twr						),
+		.address			( ta						),
+		.wdata				( td						),
+		.sound_out			( w_dcsg_out				)
+	);
+
+	// --------------------------------------------------------------------
 	//	Sound
 	// --------------------------------------------------------------------
 	always @( posedge clk ) begin
@@ -180,7 +196,9 @@ module tangcart_msx (
 			ff_sound <= 17'd0;
 		end
 		else begin
-			ff_sound <= { w_scc_out[10], w_scc_out, 5'd0 } + { w_opll_out[15], w_opll_out } + { {4{w_ssg_out[7]}}, w_ssg_out, 5'd0 };
+			//	w_scc_out, w_opll_out, w_dcsg_out ... unsigned
+			//	w_ssg_out ........................... unsigned
+			ff_sound <= { w_scc_out[10], w_scc_out, 5'd0 } + { w_opll_out[15], w_opll_out } + { 4'd0, w_ssg_out, 5'd0 } + { w_dcsg_out[13], w_dcsg_out, 2'd0 };
 		end
 	end
 

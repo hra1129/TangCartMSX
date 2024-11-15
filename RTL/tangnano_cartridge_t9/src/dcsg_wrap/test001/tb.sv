@@ -1,5 +1,5 @@
 // -----------------------------------------------------------------------------
-//	Test of ssg_inst.v
+//	Test of dcsg_wrapper.v
 //	Copyright (C)2024 Takayuki Hara (HRA!)
 //	
 //	 Permission is hereby granted, free of charge, to any person obtaining a 
@@ -29,32 +29,28 @@ module tb ();
 	int						test_no;
 	reg						n_reset;
 	reg						clk;
+	reg						en_clk_psg_i;
 	reg						n_ioreq;
 	reg						n_wr;
-	reg						n_rd;
-	reg			[15:0]		address;
-	reg			[7:0]		wdata;
-	wire		[7:0]		rdata;
-	wire					rdata_en;
-
-	wire		[7:0]		sound_out;
+	reg		[15:0]			address;
+	reg		[7:0]			wdata;
+	wire	[13:0]			sound_out;
 
 	int						counter;
+	reg		[1:0]			ff_clock_divider;
 
 	// --------------------------------------------------------------------
 	//	DUT
 	// --------------------------------------------------------------------
-	ssg_inst u_ssg_inst (
-	.n_reset			( n_reset			),
-	.clk				( clk				),
-	.n_ioreq			( n_ioreq			),
-	.n_wr				( n_wr				),
-	.n_rd				( n_rd				),
-	.address			( address			),
-	.wdata				( wdata				),
-	.rdata				( rdata				),
-	.rdata_en			( rdata_en			),
-	.sound_out			( sound_out			)
+	ip_dcsg_wrapper u_dcsg (
+		.n_reset			( n_reset			),
+		.clk				( clk				),
+		.en_clk_psg_i		( en_clk_psg_i		),
+		.n_ioreq			( n_ioreq			),
+		.n_wr				( n_wr				),
+		.address			( address			),
+		.wdata				( wdata				),
+		.sound_out			( sound_out			)
 	);
 
 	// --------------------------------------------------------------------
@@ -63,6 +59,17 @@ module tb ();
 	always #(clk_base/2) begin
 		clk <= ~clk;				//	21.47727MHz
 	end
+
+	always @( posedge clk ) begin
+		if( !n_reset ) begin
+			ff_clock_divider <= 2'b00;
+		end
+		else begin
+			ff_clock_divider <= ff_clock_divider + 2'b01;
+		end
+	end
+
+	assign en_clk_psg_i = (ff_clock_divider == 2'b11 );
 
 	// --------------------------------------------------------------------
 	//	Tasks
@@ -82,18 +89,8 @@ module tb ();
 		address			<= 0;
 		wdata			<= 0;
 		n_wr			<= 1'b1;
-		repeat( 12 ) @( posedge clk );
+		repeat( 256 ) @( posedge clk );
 	endtask: write_reg
-
-	// --------------------------------------------------------------------
-	task write_ssg_reg(
-		input	[3:0]	_ssg_register_num,
-		input	[7:0]	_ssg_wdata
-	);
-		$display( "Write SSG Register#%d <= 0x%02X;", _ssg_register_num, _ssg_wdata );
-		write_reg( 16'h0010, { 4'd0, _ssg_register_num } );
-		write_reg( 16'h0011, _ssg_wdata );
-	endtask: write_ssg_reg
 
 	// --------------------------------------------------------------------
 	//	Test bench
@@ -105,7 +102,6 @@ module tb ();
 
 		n_ioreq			= 1;
 		n_wr			= 1;
-		n_rd			= 1;
 		address			= 0;
 		wdata			= 0;
 
@@ -116,20 +112,12 @@ module tb ();
 		n_reset			= 1;
 		@( posedge clk );
 
-		// --------------------------------------------------------------------
-		//	Envelope test
-		// --------------------------------------------------------------------
-		for( test_no = 0; test_no < 16; test_no = test_no + 1 ) begin
-			$display( "Envelope %d", test_no );
-			write_ssg_reg( 0, 0 );
-			write_ssg_reg( 1, 0 );
-			write_ssg_reg( 7, 8'b10111110 );
-			write_ssg_reg( 8, 16 );
-			write_ssg_reg( 11, 10 );
-			write_ssg_reg( 12, 0 );
-			write_ssg_reg( 13, test_no );
-			repeat( 50000 ) @( posedge clk );
-		end
+		write_reg( 16'h003F, 8'h8F );
+		write_reg( 16'h003F, 8'h00 );
+		write_reg( 16'h003F, 8'h9F );
+
+		repeat( 100000 ) @( posedge clk );
+
 		$finish;
 	end
 endmodule

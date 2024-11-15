@@ -9,7 +9,7 @@
   "SubInsts" : [
    {
     "InstFile" : "D:/github/HRA_product/TangCartMSX/RTL/tangnano_cartridge_t9/src/tangcart_msx.v",
-    "InstLine" : 103,
+    "InstLine" : 105,
     "InstName" : "u_pll",
     "ModuleFile" : "D:/github/HRA_product/TangCartMSX/RTL/tangnano_cartridge_t9/src/gowin_pll/gowin_pll.v",
     "ModuleLine" : 10,
@@ -17,7 +17,7 @@
    },
    {
     "InstFile" : "D:/github/HRA_product/TangCartMSX/RTL/tangnano_cartridge_t9/src/tangcart_msx.v",
-    "InstLine" : 128,
+    "InstLine" : 130,
     "InstName" : "u_ikascc_wrapper",
     "ModuleFile" : "D:/github/HRA_product/TangCartMSX/RTL/tangnano_cartridge_t9/src/ikascc_wrap/ip_ikascc_wrap.v",
     "ModuleLine" : 24,
@@ -345,7 +345,7 @@
    },
    {
     "InstFile" : "D:/github/HRA_product/TangCartMSX/RTL/tangnano_cartridge_t9/src/tangcart_msx.v",
-    "InstLine" : 147,
+    "InstLine" : 149,
     "InstName" : "u_ikaopll_wrapper",
     "ModuleFile" : "D:/github/HRA_product/TangCartMSX/RTL/tangnano_cartridge_t9/src/ikaopll_wrap/ikaopll_wrap.v",
     "ModuleLine" : 7,
@@ -645,7 +645,7 @@
    },
    {
     "InstFile" : "D:/github/HRA_product/TangCartMSX/RTL/tangnano_cartridge_t9/src/tangcart_msx.v",
-    "InstLine" : 162,
+    "InstLine" : 164,
     "InstName" : "u_ssg",
     "ModuleFile" : "D:/github/HRA_product/TangCartMSX/RTL/tangnano_cartridge_t9/src/ssg/ssg_inst.v",
     "ModuleLine" : 58,
@@ -663,7 +663,25 @@
    },
    {
     "InstFile" : "D:/github/HRA_product/TangCartMSX/RTL/tangnano_cartridge_t9/src/tangcart_msx.v",
-    "InstLine" : 187,
+    "InstLine" : 180,
+    "InstName" : "u_dcsg",
+    "ModuleFile" : "D:/github/HRA_product/TangCartMSX/RTL/tangnano_cartridge_t9/src/dcsg_wrap/dcsg_wrap.v",
+    "ModuleLine" : 7,
+    "ModuleName" : "ip_dcsg_wrapper",
+    "SubInsts" : [
+     {
+      "InstFile" : "D:/github/HRA_product/TangCartMSX/RTL/tangnano_cartridge_t9/src/dcsg_wrap/dcsg_wrap.v",
+      "InstLine" : 81,
+      "InstName" : "u_sn76489_audio",
+      "ModuleFile" : "D:/github/HRA_product/TangCartMSX/RTL/tangnano_cartridge_t9/src/dcsg/sn76489_audio.vhd",
+      "ModuleLine" : 108,
+      "ModuleName" : "sn76489_audio"
+     }
+    ]
+   },
+   {
+    "InstFile" : "D:/github/HRA_product/TangCartMSX/RTL/tangnano_cartridge_t9/src/tangcart_msx.v",
+    "InstLine" : 205,
     "InstName" : "u_pwm",
     "ModuleFile" : "D:/github/HRA_product/TangCartMSX/RTL/tangnano_cartridge_t9/src/pwm/ip_pwm.v",
     "ModuleLine" : 27,
