@@ -28,11 +28,11 @@ module ip_pwm (
 	input				n_reset,
 	input				clk,
 	input				enable,
-	input	[16:0]		signal_level,	//	signed
+	input	[17:0]		signal_level,	//	signed
 	output				pwm_wave
 );
-	reg		[16:0]		ff_integ;		//	unsigned
-	wire	[17:0]		w_integ;		//	unsigned
+	reg		[17:0]		ff_integ;		//	unsigned
+	wire	[18:0]		w_integ;		//	unsigned
 	reg					ff_out;
 
 	// --------------------------------------------------------------------
@@ -43,20 +43,20 @@ module ip_pwm (
 			ff_integ <= 'd0;
 		end
 		else if( enable ) begin
-			ff_integ <= w_integ[16:0];
+			ff_integ <= w_integ[17:0];
 		end
 		else begin
 			//	hold
 		end
 	end
-	assign w_integ	= { 1'b0, ff_integ[16:0] } + { 1'b0, ~signal_level[16], signal_level[15:0] };
+	assign w_integ	= { 1'b0, ff_integ[17:0] } + { 1'b0, ~signal_level[17], signal_level[16:0] };
 
 	always @( posedge clk ) begin
 		if( !n_reset ) begin
 			ff_out <= 1'b0;
 		end
 		else begin
-			ff_out <= w_integ[17];
+			ff_out <= w_integ[18];
 		end
 	end
 

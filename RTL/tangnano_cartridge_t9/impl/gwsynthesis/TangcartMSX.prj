@@ -4,6 +4,7 @@
     <Version>beta</Version>
     <Device id="GW1NR-9C" package="QFN88P" speed="6" partNumber="GW1NR-LV9QN88PC6/I5"/>
     <FileList>
+        <File path="D:\github\HRA_product\TangCartMSX\RTL\tangnano_cartridge_t9\src\dcsg_wrap\dcsg_wrap.v" type="verilog"/>
         <File path="D:\github\HRA_product\TangCartMSX\RTL\tangnano_cartridge_t9\src\gowin_pll\gowin_pll.v" type="verilog"/>
         <File path="D:\github\HRA_product\TangCartMSX\RTL\tangnano_cartridge_t9\src\ikaopll\IKAOPLL.v" type="verilog"/>
         <File path="D:\github\HRA_product\TangCartMSX\RTL\tangnano_cartridge_t9\src\ikaopll\IKAOPLL_modules\IKAOPLL_dac.v" type="verilog"/>
@@ -27,7 +28,28 @@
         <File path="D:\github\HRA_product\TangCartMSX\RTL\tangnano_cartridge_t9\src\ssg\ssg.v" type="verilog"/>
         <File path="D:\github\HRA_product\TangCartMSX\RTL\tangnano_cartridge_t9\src\ssg\ssg_inst.v" type="verilog"/>
         <File path="D:\github\HRA_product\TangCartMSX\RTL\tangnano_cartridge_t9\src\tangcart_msx.v" type="verilog"/>
-        <File path="D:\github\HRA_product\TangCartMSX\RTL\tangnano_cartridge_t9\src\dcsg_wrap\dcsg_wrap.v" type="verilog"/>
+        <File path="D:\github\HRA_product\TangCartMSX\RTL\tangnano_cartridge_t9\src\ikaopm\IKAOPM.v" type="verilog"/>
+        <File path="D:\github\HRA_product\TangCartMSX\RTL\tangnano_cartridge_t9\src\ikaopm\IKAOPM_modules\IKAOPM_acc.v" type="verilog"/>
+        <File path="D:\github\HRA_product\TangCartMSX\RTL\tangnano_cartridge_t9\src\ikaopm\IKAOPM_modules\IKAOPM_eg.v" type="verilog"/>
+        <File path="D:\github\HRA_product\TangCartMSX\RTL\tangnano_cartridge_t9\src\ikaopm\IKAOPM_modules\IKAOPM_lfo.v" type="verilog"/>
+        <File path="D:\github\HRA_product\TangCartMSX\RTL\tangnano_cartridge_t9\src\ikaopm\IKAOPM_modules\IKAOPM_noise.v" type="verilog"/>
+        <File path="D:\github\HRA_product\TangCartMSX\RTL\tangnano_cartridge_t9\src\ikaopm\IKAOPM_modules\IKAOPM_op.v" type="verilog"/>
+        <File path="D:\github\HRA_product\TangCartMSX\RTL\tangnano_cartridge_t9\src\ikaopm\IKAOPM_modules\IKAOPM_pg.v" type="verilog"/>
+        <File path="D:\github\HRA_product\TangCartMSX\RTL\tangnano_cartridge_t9\src\ikaopm\IKAOPM_modules\IKAOPM_primitives.v" type="verilog"/>
+        <File path="D:\github\HRA_product\TangCartMSX\RTL\tangnano_cartridge_t9\src\ikaopm\IKAOPM_modules\IKAOPM_reg.v" type="verilog"/>
+        <File path="D:\github\HRA_product\TangCartMSX\RTL\tangnano_cartridge_t9\src\ikaopm\IKAOPM_modules\IKAOPM_timer.v" type="verilog"/>
+        <File path="D:\github\HRA_product\TangCartMSX\RTL\tangnano_cartridge_t9\src\ikaopm\IKAOPM_modules\IKAOPM_timinggen.v" type="verilog"/>
+        <File path="D:\github\HRA_product\TangCartMSX\RTL\tangnano_cartridge_t9\src\msx_midi\i8251.v" type="verilog"/>
+        <File path="D:\github\HRA_product\TangCartMSX\RTL\tangnano_cartridge_t9\src\msx_midi\i8251_clk_en.v" type="verilog"/>
+        <File path="D:\github\HRA_product\TangCartMSX\RTL\tangnano_cartridge_t9\src\msx_midi\i8251_receiver.v" type="verilog"/>
+        <File path="D:\github\HRA_product\TangCartMSX\RTL\tangnano_cartridge_t9\src\msx_midi\i8251_transmitter.v" type="verilog"/>
+        <File path="D:\github\HRA_product\TangCartMSX\RTL\tangnano_cartridge_t9\src\msx_midi\i8253.v" type="verilog"/>
+        <File path="D:\github\HRA_product\TangCartMSX\RTL\tangnano_cartridge_t9\src\msx_midi\i8253_clk_en.v" type="verilog"/>
+        <File path="D:\github\HRA_product\TangCartMSX\RTL\tangnano_cartridge_t9\src\msx_midi\i8253_control.v" type="verilog"/>
+        <File path="D:\github\HRA_product\TangCartMSX\RTL\tangnano_cartridge_t9\src\msx_midi\i8253_counter.v" type="verilog"/>
+        <File path="D:\github\HRA_product\TangCartMSX\RTL\tangnano_cartridge_t9\src\msx_midi\tr_midi.v" type="verilog"/>
+        <File path="D:\github\HRA_product\TangCartMSX\RTL\tangnano_cartridge_t9\src\msx_midi\tr_midi_inst.v" type="verilog"/>
+        <File path="D:\github\HRA_product\TangCartMSX\RTL\tangnano_cartridge_t9\src\ikaopm_wrap\ikaopm_wrap.v" type="verilog"/>
         <File path="D:\github\HRA_product\TangCartMSX\RTL\tangnano_cartridge_t9\src\dcsg\sn76489_audio.vhd" type="vhdl"/>
     </FileList>
     <OptionList>
@@ -37,6 +59,7 @@
         <Option type="output_file" value="D:\github\HRA_product\TangCartMSX\RTL\tangnano_cartridge_t9\impl\gwsynthesis\TangcartMSX.vg"/>
         <Option type="print_all_synthesis_warning" value="0"/>
         <Option type="ram_rw_check" value="0"/>
+        <Option type="top_module" value="tangcart_msx"/>
         <Option type="verilog_language" value="verilog-2001"/>
         <Option type="vhdl_language" value="vhdl-1993"/>
     </OptionList>

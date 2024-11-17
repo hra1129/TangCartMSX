@@ -1,6 +1,6 @@
 //
-//	ssg_inst.v
-//	 SSG instanece wrapper entity
+//	msx_midi_inst.v
+//	 MSX-MIDI instanece wrapper entity
 //
 //	Copyright (C) 2024 Takayuki Hara
 //
@@ -55,7 +55,9 @@
 //
 //-----------------------------------------------------------------------------
 
-module ssg_inst (
+module msx_midi_inst #(
+	parameter				BUILT_IN_MODE = 0		// 0: Cartridge mode, 1: Built in mode
+) (
 	input					n_reset,
 	input					clk,
 	input					n_ioreq,
@@ -66,10 +68,12 @@ module ssg_inst (
 	output		[7:0]		rdata,
 	output					rdata_en,
 
-	output		[11:0]		sound_out
+	output					midi_out,
+	input					midi_in,
+	output					midi_intr_n
 );
-//	localparam				c_port_number = 8'hA0;			//	Normal port
-	localparam				c_port_number = 8'h10;			//	2nd psg port
+	localparam				c_port_cartridge_number	= 8'hE0;		//	uPACK
+	localparam				c_port_built_in_number	= 8'hE8;		//	A1GT
 	wire					w_decode;
 	wire					w_ack;
 	reg			[7:0]		ff_rdata;
@@ -117,34 +121,37 @@ module ssg_inst (
 	end
 
 	assign rdata			= ff_rdata;
-	assign rdata_en			= (!n_rd && ff_ioreq_hold && ( { address[7:2], 2'b00 } == c_port_number ));
 
 	// --------------------------------------------------------------------
 	//	address decoder
 	// --------------------------------------------------------------------
-	assign w_decode			= ( { address[7:2], 2'b00 } == c_port_number ) ? ff_ioreq : 1'b0;
+	generate
+		if( BUILT_IN_MODE == 0 ) begin
+			assign rdata_en			= (!n_rd && ff_ioreq_hold && ( { address[7:2], 2'b00 } == c_port_cartridge_number ));
+			assign w_decode			= ( { address[7:3], 3'b000 } == c_port_cartridge_number ) ? ff_ioreq : 1'b0;
+		end
+		else begin
+			assign rdata_en			= (!n_rd && ff_ioreq_hold && ( { address[7:2], 2'b00 } == c_port_built_in_number ));
+			assign w_decode			= ( { address[7:3], 3'b000 } == c_port_built_in_number  ) ? ff_ioreq : 1'b0;
+		end
+	endgenerate
 
 	// --------------------------------------------------------------------
 	//	SSG body
 	// --------------------------------------------------------------------
-	ssg u_ssg (
-		.clk					( clk					),
-		.reset					( ~n_reset				),
-		.enable					( 1'b1					),
-		.bus_req				( w_decode				),
-		.bus_ack				( w_ack					),
-		.bus_wrt				( ~n_wr					),
-		.bus_address			( address				),
-		.bus_wdata				( wdata					),
-		.bus_rdata				( w_rdata				),
-		.bus_rdata_en			( w_rdata_en			),
-		.joystick_port1			( w_joystick_port1		),
-		.joystick_port2			( w_joystick_port2		),
-		.strobe_port1			( 						),
-		.strobe_port2			( 						),
-		.keyboard_type			( 1'b0					),
-		.cmt_read				( 1'b0					),
-		.kana_led				( 						),
-		.sound_out				( sound_out				)
+	tr_midi #(
+		.c_base_clk		( 22'd2147727	)	//	21.47727[MHz]
+	) u_tr_midi (
+		.clk21m			( clk			),
+		.reset			( ~n_reset		),
+		.req			( w_decode		),
+		.ack			( w_ack			),
+		.wrt			( ~n_wr			),
+		.adr			( address[2:0]	),
+		.dbi			( w_rdata		),
+		.dbo			( wdata			),
+		.pMidiTxD		( midi_out		),
+		.pMidiRxD		( midi_in		),
+		.pMidiIntr		( midi_intr_n	)
 	);
 endmodule

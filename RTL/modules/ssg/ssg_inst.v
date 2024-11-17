@@ -76,7 +76,7 @@ module ssg_inst (
 	input			cmt_read,				//	PortA bit7: CMT Read Signal
 	output			kana_led,				//	PortB bit7: KANA LED  0: ON, 1: OFF
 
-	output	[7:0]	sound_out
+	output	[11:0]	sound_out
 );
 	localparam				c_port_number = 8'hA0;
 	wire					w_decode;

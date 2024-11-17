@@ -11,6 +11,7 @@ work
 MT48LC2M32B2.v
 ikascc
 ikaopll
+ikaopm
 msxmusic.rom
 log.txt
 sn76489_audio.vhd

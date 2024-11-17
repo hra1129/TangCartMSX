@@ -9,7 +9,7 @@
   "SubInsts" : [
    {
     "InstFile" : "D:/github/HRA_product/TangCartMSX/RTL/tangnano_cartridge_t9/src/tangcart_msx.v",
-    "InstLine" : 105,
+    "InstLine" : 140,
     "InstName" : "u_pll",
     "ModuleFile" : "D:/github/HRA_product/TangCartMSX/RTL/tangnano_cartridge_t9/src/gowin_pll/gowin_pll.v",
     "ModuleLine" : 10,
@@ -17,8 +17,8 @@
    },
    {
     "InstFile" : "D:/github/HRA_product/TangCartMSX/RTL/tangnano_cartridge_t9/src/tangcart_msx.v",
-    "InstLine" : 130,
-    "InstName" : "u_ikascc_wrapper",
+    "InstLine" : 165,
+    "InstName" : "u_scc",
     "ModuleFile" : "D:/github/HRA_product/TangCartMSX/RTL/tangnano_cartridge_t9/src/ikascc_wrap/ip_ikascc_wrap.v",
     "ModuleLine" : 24,
     "ModuleName" : "ip_ikascc_wrapper",
@@ -345,8 +345,8 @@
    },
    {
     "InstFile" : "D:/github/HRA_product/TangCartMSX/RTL/tangnano_cartridge_t9/src/tangcart_msx.v",
-    "InstLine" : 149,
-    "InstName" : "u_ikaopll_wrapper",
+    "InstLine" : 184,
+    "InstName" : "u_opll",
     "ModuleFile" : "D:/github/HRA_product/TangCartMSX/RTL/tangnano_cartridge_t9/src/ikaopll_wrap/ikaopll_wrap.v",
     "ModuleLine" : 7,
     "ModuleName" : "ip_ikaopll_wrapper",
@@ -645,7 +645,7 @@
    },
    {
     "InstFile" : "D:/github/HRA_product/TangCartMSX/RTL/tangnano_cartridge_t9/src/tangcart_msx.v",
-    "InstLine" : 164,
+    "InstLine" : 199,
     "InstName" : "u_ssg",
     "ModuleFile" : "D:/github/HRA_product/TangCartMSX/RTL/tangnano_cartridge_t9/src/ssg/ssg_inst.v",
     "ModuleLine" : 58,
@@ -663,7 +663,7 @@
    },
    {
     "InstFile" : "D:/github/HRA_product/TangCartMSX/RTL/tangnano_cartridge_t9/src/tangcart_msx.v",
-    "InstLine" : 180,
+    "InstLine" : 215,
     "InstName" : "u_dcsg",
     "ModuleFile" : "D:/github/HRA_product/TangCartMSX/RTL/tangnano_cartridge_t9/src/dcsg_wrap/dcsg_wrap.v",
     "ModuleLine" : 7,
@@ -681,7 +681,673 @@
    },
    {
     "InstFile" : "D:/github/HRA_product/TangCartMSX/RTL/tangnano_cartridge_t9/src/tangcart_msx.v",
-    "InstLine" : 205,
+    "InstLine" : 229,
+    "InstName" : "u_opm",
+    "ModuleFile" : "D:/github/HRA_product/TangCartMSX/RTL/tangnano_cartridge_t9/src/ikaopm_wrap/ikaopm_wrap.v",
+    "ModuleLine" : 7,
+    "ModuleName" : "ip_ikaopm_wrapper",
+    "SubInsts" : [
+     {
+      "InstFile" : "D:/github/HRA_product/TangCartMSX/RTL/tangnano_cartridge_t9/src/ikaopm_wrap/ikaopm_wrap.v",
+      "InstLine" : 89,
+      "InstName" : "u_ym2151",
+      "ModuleFile" : "D:/github/HRA_product/TangCartMSX/RTL/tangnano_cartridge_t9/src/ikaopm/IKAOPM.v",
+      "ModuleLine" : 1,
+      "ModuleName" : "IKAOPM",
+      "SubInsts" : [
+       {
+        "InstFile" : "D:/github/HRA_product/TangCartMSX/RTL/tangnano_cartridge_t9/src/ikaopm/IKAOPM.v",
+        "InstLine" : 164,
+        "InstName" : "TIMINGGEN",
+        "ModuleFile" : "D:/github/HRA_product/TangCartMSX/RTL/tangnano_cartridge_t9/src/ikaopm/IKAOPM_modules/IKAOPM_timinggen.v",
+        "ModuleLine" : 1,
+        "ModuleName" : "IKAOPM_timinggen"
+       },
+       {
+        "InstFile" : "D:/github/HRA_product/TangCartMSX/RTL/tangnano_cartridge_t9/src/ikaopm/IKAOPM.v",
+        "InstLine" : 211,
+        "InstName" : "REG",
+        "ModuleFile" : "D:/github/HRA_product/TangCartMSX/RTL/tangnano_cartridge_t9/src/ikaopm/IKAOPM_modules/IKAOPM_reg.v",
+        "ModuleLine" : 1,
+        "ModuleName" : "IKAOPM_reg",
+        "SubInsts" : [
+         {
+          "InstFile" : "D:/github/HRA_product/TangCartMSX/RTL/tangnano_cartridge_t9/src/ikaopm/IKAOPM_modules/IKAOPM_reg.v",
+          "InstLine" : 237,
+          "InstName" : "FULLY_SYNCHRONOUS_1_busctrl.u_dbus_inlatch_temp",
+          "ModuleFile" : "D:/github/HRA_product/TangCartMSX/RTL/tangnano_cartridge_t9/src/ikaopm/IKAOPM_modules/IKAOPM_primitives.v",
+          "ModuleLine" : 58,
+          "ModuleName" : "primitive_syncdlatch"
+         },
+         {
+          "InstFile" : "D:/github/HRA_product/TangCartMSX/RTL/tangnano_cartridge_t9/src/ikaopm/IKAOPM_modules/IKAOPM_reg.v",
+          "InstLine" : 243,
+          "InstName" : "FULLY_SYNCHRONOUS_1_busctrl.u_dreg_req_inlatch",
+          "ModuleFile" : "D:/github/HRA_product/TangCartMSX/RTL/tangnano_cartridge_t9/src/ikaopm/IKAOPM_modules/IKAOPM_primitives.v",
+          "ModuleLine" : 34,
+          "ModuleName" : "primitive_syncsrlatch"
+         },
+         {
+          "InstFile" : "D:/github/HRA_product/TangCartMSX/RTL/tangnano_cartridge_t9/src/ikaopm/IKAOPM_modules/IKAOPM_reg.v",
+          "InstLine" : 247,
+          "InstName" : "FULLY_SYNCHRONOUS_1_busctrl.u_areg_req_inlatch",
+          "ModuleFile" : "D:/github/HRA_product/TangCartMSX/RTL/tangnano_cartridge_t9/src/ikaopm/IKAOPM_modules/IKAOPM_primitives.v",
+          "ModuleLine" : 34,
+          "ModuleName" : "primitive_syncsrlatch"
+         },
+         {
+          "InstFile" : "D:/github/HRA_product/TangCartMSX/RTL/tangnano_cartridge_t9/src/ikaopm/IKAOPM_modules/IKAOPM_reg.v",
+          "InstLine" : 269,
+          "InstName" : "u_reg10",
+          "ModuleFile" : "D:/github/HRA_product/TangCartMSX/RTL/tangnano_cartridge_t9/src/ikaopm/IKAOPM_modules/IKAOPM_reg.v",
+          "ModuleLine" : 784,
+          "ModuleName" : "reg_submdl_loreg_decoder"
+         },
+         {
+          "InstFile" : "D:/github/HRA_product/TangCartMSX/RTL/tangnano_cartridge_t9/src/ikaopm/IKAOPM_modules/IKAOPM_reg.v",
+          "InstLine" : 274,
+          "InstName" : "u_reg11",
+          "ModuleFile" : "D:/github/HRA_product/TangCartMSX/RTL/tangnano_cartridge_t9/src/ikaopm/IKAOPM_modules/IKAOPM_reg.v",
+          "ModuleLine" : 784,
+          "ModuleName" : "reg_submdl_loreg_decoder"
+         },
+         {
+          "InstFile" : "D:/github/HRA_product/TangCartMSX/RTL/tangnano_cartridge_t9/src/ikaopm/IKAOPM_modules/IKAOPM_reg.v",
+          "InstLine" : 279,
+          "InstName" : "u_reg12",
+          "ModuleFile" : "D:/github/HRA_product/TangCartMSX/RTL/tangnano_cartridge_t9/src/ikaopm/IKAOPM_modules/IKAOPM_reg.v",
+          "ModuleLine" : 784,
+          "ModuleName" : "reg_submdl_loreg_decoder"
+         },
+         {
+          "InstFile" : "D:/github/HRA_product/TangCartMSX/RTL/tangnano_cartridge_t9/src/ikaopm/IKAOPM_modules/IKAOPM_reg.v",
+          "InstLine" : 284,
+          "InstName" : "u_reg14",
+          "ModuleFile" : "D:/github/HRA_product/TangCartMSX/RTL/tangnano_cartridge_t9/src/ikaopm/IKAOPM_modules/IKAOPM_reg.v",
+          "ModuleLine" : 784,
+          "ModuleName" : "reg_submdl_loreg_decoder"
+         },
+         {
+          "InstFile" : "D:/github/HRA_product/TangCartMSX/RTL/tangnano_cartridge_t9/src/ikaopm/IKAOPM_modules/IKAOPM_reg.v",
+          "InstLine" : 289,
+          "InstName" : "u_reg01",
+          "ModuleFile" : "D:/github/HRA_product/TangCartMSX/RTL/tangnano_cartridge_t9/src/ikaopm/IKAOPM_modules/IKAOPM_reg.v",
+          "ModuleLine" : 784,
+          "ModuleName" : "reg_submdl_loreg_decoder"
+         },
+         {
+          "InstFile" : "D:/github/HRA_product/TangCartMSX/RTL/tangnano_cartridge_t9/src/ikaopm/IKAOPM_modules/IKAOPM_reg.v",
+          "InstLine" : 294,
+          "InstName" : "u_reg0f",
+          "ModuleFile" : "D:/github/HRA_product/TangCartMSX/RTL/tangnano_cartridge_t9/src/ikaopm/IKAOPM_modules/IKAOPM_reg.v",
+          "ModuleLine" : 784,
+          "ModuleName" : "reg_submdl_loreg_decoder"
+         },
+         {
+          "InstFile" : "D:/github/HRA_product/TangCartMSX/RTL/tangnano_cartridge_t9/src/ikaopm/IKAOPM_modules/IKAOPM_reg.v",
+          "InstLine" : 299,
+          "InstName" : "u_reg19",
+          "ModuleFile" : "D:/github/HRA_product/TangCartMSX/RTL/tangnano_cartridge_t9/src/ikaopm/IKAOPM_modules/IKAOPM_reg.v",
+          "ModuleLine" : 784,
+          "ModuleName" : "reg_submdl_loreg_decoder"
+         },
+         {
+          "InstFile" : "D:/github/HRA_product/TangCartMSX/RTL/tangnano_cartridge_t9/src/ikaopm/IKAOPM_modules/IKAOPM_reg.v",
+          "InstLine" : 304,
+          "InstName" : "u_reg18",
+          "ModuleFile" : "D:/github/HRA_product/TangCartMSX/RTL/tangnano_cartridge_t9/src/ikaopm/IKAOPM_modules/IKAOPM_reg.v",
+          "ModuleLine" : 784,
+          "ModuleName" : "reg_submdl_loreg_decoder"
+         },
+         {
+          "InstFile" : "D:/github/HRA_product/TangCartMSX/RTL/tangnano_cartridge_t9/src/ikaopm/IKAOPM_modules/IKAOPM_reg.v",
+          "InstLine" : 309,
+          "InstName" : "u_reg1b",
+          "ModuleFile" : "D:/github/HRA_product/TangCartMSX/RTL/tangnano_cartridge_t9/src/ikaopm/IKAOPM_modules/IKAOPM_reg.v",
+          "ModuleLine" : 784,
+          "ModuleName" : "reg_submdl_loreg_decoder"
+         },
+         {
+          "InstFile" : "D:/github/HRA_product/TangCartMSX/RTL/tangnano_cartridge_t9/src/ikaopm/IKAOPM_modules/IKAOPM_reg.v",
+          "InstLine" : 314,
+          "InstName" : "u_reg08",
+          "ModuleFile" : "D:/github/HRA_product/TangCartMSX/RTL/tangnano_cartridge_t9/src/ikaopm/IKAOPM_modules/IKAOPM_reg.v",
+          "ModuleLine" : 784,
+          "ModuleName" : "reg_submdl_loreg_decoder"
+         },
+         {
+          "InstFile" : "D:/github/HRA_product/TangCartMSX/RTL/tangnano_cartridge_t9/src/ikaopm/IKAOPM_modules/IKAOPM_reg.v",
+          "InstLine" : 388,
+          "InstName" : "u_hireg_addrcntr",
+          "ModuleFile" : "D:/github/HRA_product/TangCartMSX/RTL/tangnano_cartridge_t9/src/ikaopm/IKAOPM_modules/IKAOPM_primitives.v",
+          "ModuleLine" : 78,
+          "ModuleName" : "primitive_counter"
+         },
+         {
+          "InstFile" : "D:/github/HRA_product/TangCartMSX/RTL/tangnano_cartridge_t9/src/ikaopm/IKAOPM_modules/IKAOPM_reg.v",
+          "InstLine" : 594,
+          "InstName" : "u_pms_reg",
+          "ModuleFile" : "D:/github/HRA_product/TangCartMSX/RTL/tangnano_cartridge_t9/src/ikaopm/IKAOPM_modules/IKAOPM_primitives.v",
+          "ModuleLine" : 153,
+          "ModuleName" : "primitive_sr"
+         },
+         {
+          "InstFile" : "D:/github/HRA_product/TangCartMSX/RTL/tangnano_cartridge_t9/src/ikaopm/IKAOPM_modules/IKAOPM_reg.v",
+          "InstLine" : 597,
+          "InstName" : "u_ams_reg",
+          "ModuleFile" : "D:/github/HRA_product/TangCartMSX/RTL/tangnano_cartridge_t9/src/ikaopm/IKAOPM_modules/IKAOPM_primitives.v",
+          "ModuleLine" : 153,
+          "ModuleName" : "primitive_sr"
+         },
+         {
+          "InstFile" : "D:/github/HRA_product/TangCartMSX/RTL/tangnano_cartridge_t9/src/ikaopm/IKAOPM_modules/IKAOPM_reg.v",
+          "InstLine" : 600,
+          "InstName" : "u_kf_reg",
+          "ModuleFile" : "D:/github/HRA_product/TangCartMSX/RTL/tangnano_cartridge_t9/src/ikaopm/IKAOPM_modules/IKAOPM_primitives.v",
+          "ModuleLine" : 153,
+          "ModuleName" : "primitive_sr"
+         },
+         {
+          "InstFile" : "D:/github/HRA_product/TangCartMSX/RTL/tangnano_cartridge_t9/src/ikaopm/IKAOPM_modules/IKAOPM_reg.v",
+          "InstLine" : 603,
+          "InstName" : "u_kc_reg",
+          "ModuleFile" : "D:/github/HRA_product/TangCartMSX/RTL/tangnano_cartridge_t9/src/ikaopm/IKAOPM_modules/IKAOPM_primitives.v",
+          "ModuleLine" : 153,
+          "ModuleName" : "primitive_sr"
+         },
+         {
+          "InstFile" : "D:/github/HRA_product/TangCartMSX/RTL/tangnano_cartridge_t9/src/ikaopm/IKAOPM_modules/IKAOPM_reg.v",
+          "InstLine" : 606,
+          "InstName" : "u_fl_reg",
+          "ModuleFile" : "D:/github/HRA_product/TangCartMSX/RTL/tangnano_cartridge_t9/src/ikaopm/IKAOPM_modules/IKAOPM_primitives.v",
+          "ModuleLine" : 153,
+          "ModuleName" : "primitive_sr"
+         },
+         {
+          "InstFile" : "D:/github/HRA_product/TangCartMSX/RTL/tangnano_cartridge_t9/src/ikaopm/IKAOPM_modules/IKAOPM_reg.v",
+          "InstLine" : 609,
+          "InstName" : "u_alg_reg",
+          "ModuleFile" : "D:/github/HRA_product/TangCartMSX/RTL/tangnano_cartridge_t9/src/ikaopm/IKAOPM_modules/IKAOPM_primitives.v",
+          "ModuleLine" : 153,
+          "ModuleName" : "primitive_sr"
+         },
+         {
+          "InstFile" : "D:/github/HRA_product/TangCartMSX/RTL/tangnano_cartridge_t9/src/ikaopm/IKAOPM_modules/IKAOPM_reg.v",
+          "InstLine" : 612,
+          "InstName" : "u_rl_reg",
+          "ModuleFile" : "D:/github/HRA_product/TangCartMSX/RTL/tangnano_cartridge_t9/src/ikaopm/IKAOPM_modules/IKAOPM_primitives.v",
+          "ModuleLine" : 153,
+          "ModuleName" : "primitive_sr"
+         },
+         {
+          "InstFile" : "D:/github/HRA_product/TangCartMSX/RTL/tangnano_cartridge_t9/src/ikaopm/IKAOPM_modules/IKAOPM_reg.v",
+          "InstLine" : 710,
+          "InstName" : "d32reg_mode_bram.u_dt2_reg",
+          "ModuleFile" : "D:/github/HRA_product/TangCartMSX/RTL/tangnano_cartridge_t9/src/ikaopm/IKAOPM_modules/IKAOPM_primitives.v",
+          "ModuleLine" : 153,
+          "ModuleName" : "primitive_sr"
+         },
+         {
+          "InstFile" : "D:/github/HRA_product/TangCartMSX/RTL/tangnano_cartridge_t9/src/ikaopm/IKAOPM_modules/IKAOPM_reg.v",
+          "InstLine" : 713,
+          "InstName" : "d32reg_mode_bram.u_dt1_reg",
+          "ModuleFile" : "D:/github/HRA_product/TangCartMSX/RTL/tangnano_cartridge_t9/src/ikaopm/IKAOPM_modules/IKAOPM_primitives.v",
+          "ModuleLine" : 187,
+          "ModuleName" : "primitive_sr_bram"
+         },
+         {
+          "InstFile" : "D:/github/HRA_product/TangCartMSX/RTL/tangnano_cartridge_t9/src/ikaopm/IKAOPM_modules/IKAOPM_reg.v",
+          "InstLine" : 716,
+          "InstName" : "d32reg_mode_bram.u_mul_reg",
+          "ModuleFile" : "D:/github/HRA_product/TangCartMSX/RTL/tangnano_cartridge_t9/src/ikaopm/IKAOPM_modules/IKAOPM_primitives.v",
+          "ModuleLine" : 187,
+          "ModuleName" : "primitive_sr_bram"
+         },
+         {
+          "InstFile" : "D:/github/HRA_product/TangCartMSX/RTL/tangnano_cartridge_t9/src/ikaopm/IKAOPM_modules/IKAOPM_reg.v",
+          "InstLine" : 719,
+          "InstName" : "d32reg_mode_bram.u_ar_reg",
+          "ModuleFile" : "D:/github/HRA_product/TangCartMSX/RTL/tangnano_cartridge_t9/src/ikaopm/IKAOPM_modules/IKAOPM_primitives.v",
+          "ModuleLine" : 187,
+          "ModuleName" : "primitive_sr_bram"
+         },
+         {
+          "InstFile" : "D:/github/HRA_product/TangCartMSX/RTL/tangnano_cartridge_t9/src/ikaopm/IKAOPM_modules/IKAOPM_reg.v",
+          "InstLine" : 722,
+          "InstName" : "d32reg_mode_bram.u_d1r_reg",
+          "ModuleFile" : "D:/github/HRA_product/TangCartMSX/RTL/tangnano_cartridge_t9/src/ikaopm/IKAOPM_modules/IKAOPM_primitives.v",
+          "ModuleLine" : 187,
+          "ModuleName" : "primitive_sr_bram"
+         },
+         {
+          "InstFile" : "D:/github/HRA_product/TangCartMSX/RTL/tangnano_cartridge_t9/src/ikaopm/IKAOPM_modules/IKAOPM_reg.v",
+          "InstLine" : 725,
+          "InstName" : "d32reg_mode_bram.u_d2r_reg",
+          "ModuleFile" : "D:/github/HRA_product/TangCartMSX/RTL/tangnano_cartridge_t9/src/ikaopm/IKAOPM_modules/IKAOPM_primitives.v",
+          "ModuleLine" : 187,
+          "ModuleName" : "primitive_sr_bram"
+         },
+         {
+          "InstFile" : "D:/github/HRA_product/TangCartMSX/RTL/tangnano_cartridge_t9/src/ikaopm/IKAOPM_modules/IKAOPM_reg.v",
+          "InstLine" : 728,
+          "InstName" : "d32reg_mode_bram.u_rr_reg",
+          "ModuleFile" : "D:/github/HRA_product/TangCartMSX/RTL/tangnano_cartridge_t9/src/ikaopm/IKAOPM_modules/IKAOPM_primitives.v",
+          "ModuleLine" : 187,
+          "ModuleName" : "primitive_sr_bram"
+         },
+         {
+          "InstFile" : "D:/github/HRA_product/TangCartMSX/RTL/tangnano_cartridge_t9/src/ikaopm/IKAOPM_modules/IKAOPM_reg.v",
+          "InstLine" : 731,
+          "InstName" : "d32reg_mode_bram.u_d1l_reg",
+          "ModuleFile" : "D:/github/HRA_product/TangCartMSX/RTL/tangnano_cartridge_t9/src/ikaopm/IKAOPM_modules/IKAOPM_primitives.v",
+          "ModuleLine" : 187,
+          "ModuleName" : "primitive_sr_bram"
+         },
+         {
+          "InstFile" : "D:/github/HRA_product/TangCartMSX/RTL/tangnano_cartridge_t9/src/ikaopm/IKAOPM_modules/IKAOPM_reg.v",
+          "InstLine" : 734,
+          "InstName" : "d32reg_mode_bram.u_amen_reg",
+          "ModuleFile" : "D:/github/HRA_product/TangCartMSX/RTL/tangnano_cartridge_t9/src/ikaopm/IKAOPM_modules/IKAOPM_primitives.v",
+          "ModuleLine" : 187,
+          "ModuleName" : "primitive_sr_bram"
+         },
+         {
+          "InstFile" : "D:/github/HRA_product/TangCartMSX/RTL/tangnano_cartridge_t9/src/ikaopm/IKAOPM_modules/IKAOPM_reg.v",
+          "InstLine" : 737,
+          "InstName" : "d32reg_mode_bram.u_ks_reg",
+          "ModuleFile" : "D:/github/HRA_product/TangCartMSX/RTL/tangnano_cartridge_t9/src/ikaopm/IKAOPM_modules/IKAOPM_primitives.v",
+          "ModuleLine" : 187,
+          "ModuleName" : "primitive_sr_bram"
+         },
+         {
+          "InstFile" : "D:/github/HRA_product/TangCartMSX/RTL/tangnano_cartridge_t9/src/ikaopm/IKAOPM_modules/IKAOPM_reg.v",
+          "InstLine" : 740,
+          "InstName" : "d32reg_mode_bram.u_tl_reg",
+          "ModuleFile" : "D:/github/HRA_product/TangCartMSX/RTL/tangnano_cartridge_t9/src/ikaopm/IKAOPM_modules/IKAOPM_primitives.v",
+          "ModuleLine" : 187,
+          "ModuleName" : "primitive_sr_bram"
+         },
+         {
+          "InstFile" : "D:/github/HRA_product/TangCartMSX/RTL/tangnano_cartridge_t9/src/ikaopm/IKAOPM_modules/IKAOPM_reg.v",
+          "InstLine" : 756,
+          "InstName" : "u_busycntr",
+          "ModuleFile" : "D:/github/HRA_product/TangCartMSX/RTL/tangnano_cartridge_t9/src/ikaopm/IKAOPM_modules/IKAOPM_primitives.v",
+          "ModuleLine" : 78,
+          "ModuleName" : "primitive_counter"
+         }
+        ]
+       },
+       {
+        "InstFile" : "D:/github/HRA_product/TangCartMSX/RTL/tangnano_cartridge_t9/src/ikaopm/IKAOPM.v",
+        "InstLine" : 289,
+        "InstName" : "NOISE",
+        "ModuleFile" : "D:/github/HRA_product/TangCartMSX/RTL/tangnano_cartridge_t9/src/ikaopm/IKAOPM_modules/IKAOPM_noise.v",
+        "ModuleLine" : 1,
+        "ModuleName" : "IKAOPM_noise",
+        "SubInsts" : [
+         {
+          "InstFile" : "D:/github/HRA_product/TangCartMSX/RTL/tangnano_cartridge_t9/src/ikaopm/IKAOPM_modules/IKAOPM_noise.v",
+          "InstLine" : 50,
+          "InstName" : "u_noise_freqgen",
+          "ModuleFile" : "D:/github/HRA_product/TangCartMSX/RTL/tangnano_cartridge_t9/src/ikaopm/IKAOPM_modules/IKAOPM_primitives.v",
+          "ModuleLine" : 78,
+          "ModuleName" : "primitive_counter"
+         }
+        ]
+       },
+       {
+        "InstFile" : "D:/github/HRA_product/TangCartMSX/RTL/tangnano_cartridge_t9/src/ikaopm/IKAOPM.v",
+        "InstLine" : 310,
+        "InstName" : "LFO",
+        "ModuleFile" : "D:/github/HRA_product/TangCartMSX/RTL/tangnano_cartridge_t9/src/ikaopm/IKAOPM_modules/IKAOPM_lfo.v",
+        "ModuleLine" : 1,
+        "ModuleName" : "IKAOPM_lfo",
+        "SubInsts" : [
+         {
+          "InstFile" : "D:/github/HRA_product/TangCartMSX/RTL/tangnano_cartridge_t9/src/ikaopm/IKAOPM_modules/IKAOPM_lfo.v",
+          "InstLine" : 79,
+          "InstName" : "u_lfo_prescaler",
+          "ModuleFile" : "D:/github/HRA_product/TangCartMSX/RTL/tangnano_cartridge_t9/src/ikaopm/IKAOPM_modules/IKAOPM_primitives.v",
+          "ModuleLine" : 78,
+          "ModuleName" : "primitive_counter"
+         },
+         {
+          "InstFile" : "D:/github/HRA_product/TangCartMSX/RTL/tangnano_cartridge_t9/src/ikaopm/IKAOPM_modules/IKAOPM_lfo.v",
+          "InstLine" : 155,
+          "InstName" : "u_lfo_locntr",
+          "ModuleFile" : "D:/github/HRA_product/TangCartMSX/RTL/tangnano_cartridge_t9/src/ikaopm/IKAOPM_modules/IKAOPM_primitives.v",
+          "ModuleLine" : 78,
+          "ModuleName" : "primitive_counter"
+         },
+         {
+          "InstFile" : "D:/github/HRA_product/TangCartMSX/RTL/tangnano_cartridge_t9/src/ikaopm/IKAOPM_modules/IKAOPM_lfo.v",
+          "InstLine" : 184,
+          "InstName" : "u_lfo_hicntr",
+          "ModuleFile" : "D:/github/HRA_product/TangCartMSX/RTL/tangnano_cartridge_t9/src/ikaopm/IKAOPM_modules/IKAOPM_primitives.v",
+          "ModuleLine" : 78,
+          "ModuleName" : "primitive_counter"
+         },
+         {
+          "InstFile" : "D:/github/HRA_product/TangCartMSX/RTL/tangnano_cartridge_t9/src/ikaopm/IKAOPM_modules/IKAOPM_lfo.v",
+          "InstLine" : 324,
+          "InstName" : "u_lfo_multiplier_bitselcntr",
+          "ModuleFile" : "D:/github/HRA_product/TangCartMSX/RTL/tangnano_cartridge_t9/src/ikaopm/IKAOPM_modules/IKAOPM_primitives.v",
+          "ModuleLine" : 78,
+          "ModuleName" : "primitive_counter"
+         }
+        ]
+       },
+       {
+        "InstFile" : "D:/github/HRA_product/TangCartMSX/RTL/tangnano_cartridge_t9/src/ikaopm/IKAOPM.v",
+        "InstLine" : 343,
+        "InstName" : "PG",
+        "ModuleFile" : "D:/github/HRA_product/TangCartMSX/RTL/tangnano_cartridge_t9/src/ikaopm/IKAOPM_modules/IKAOPM_pg.v",
+        "ModuleLine" : 1,
+        "ModuleName" : "IKAOPM_pg",
+        "SubInsts" : [
+         {
+          "InstFile" : "D:/github/HRA_product/TangCartMSX/RTL/tangnano_cartridge_t9/src/ikaopm/IKAOPM_modules/IKAOPM_pg.v",
+          "InstLine" : 377,
+          "InstName" : "u_cyc6r_fnumrom",
+          "ModuleFile" : "D:/github/HRA_product/TangCartMSX/RTL/tangnano_cartridge_t9/src/ikaopm/IKAOPM_modules/IKAOPM_pg.v",
+          "ModuleLine" : 797,
+          "ModuleName" : "pg_submdl_fnumrom"
+         },
+         {
+          "InstFile" : "D:/github/HRA_product/TangCartMSX/RTL/tangnano_cartridge_t9/src/ikaopm/IKAOPM_modules/IKAOPM_pg.v",
+          "InstLine" : 748,
+          "InstName" : "phasesr_mode_bram.u_cyc19r_cyc40r_phase_sr",
+          "ModuleFile" : "D:/github/HRA_product/TangCartMSX/RTL/tangnano_cartridge_t9/src/ikaopm/IKAOPM_modules/IKAOPM_primitives.v",
+          "ModuleLine" : 187,
+          "ModuleName" : "primitive_sr_bram"
+         }
+        ]
+       },
+       {
+        "InstFile" : "D:/github/HRA_product/TangCartMSX/RTL/tangnano_cartridge_t9/src/ikaopm/IKAOPM.v",
+        "InstLine" : 372,
+        "InstName" : "EG",
+        "ModuleFile" : "D:/github/HRA_product/TangCartMSX/RTL/tangnano_cartridge_t9/src/ikaopm/IKAOPM_modules/IKAOPM_eg.v",
+        "ModuleLine" : 1,
+        "ModuleName" : "IKAOPM_eg",
+        "SubInsts" : [
+         {
+          "InstFile" : "D:/github/HRA_product/TangCartMSX/RTL/tangnano_cartridge_t9/src/ikaopm/IKAOPM_modules/IKAOPM_eg.v",
+          "InstLine" : 80,
+          "InstName" : "u_samplecntr",
+          "ModuleFile" : "D:/github/HRA_product/TangCartMSX/RTL/tangnano_cartridge_t9/src/ikaopm/IKAOPM_modules/IKAOPM_primitives.v",
+          "ModuleLine" : 78,
+          "ModuleName" : "primitive_counter"
+         },
+         {
+          "InstFile" : "D:/github/HRA_product/TangCartMSX/RTL/tangnano_cartridge_t9/src/ikaopm/IKAOPM_modules/IKAOPM_eg.v",
+          "InstLine" : 256,
+          "InstName" : "u_cyc11r_cyc37r_envstate_sr",
+          "ModuleFile" : "D:/github/HRA_product/TangCartMSX/RTL/tangnano_cartridge_t9/src/ikaopm/IKAOPM_modules/IKAOPM_primitives.v",
+          "ModuleLine" : 153,
+          "ModuleName" : "primitive_sr"
+         },
+         {
+          "InstFile" : "D:/github/HRA_product/TangCartMSX/RTL/tangnano_cartridge_t9/src/ikaopm/IKAOPM_modules/IKAOPM_eg.v",
+          "InstLine" : 693,
+          "InstName" : "u_cyc13r_cyc40r_attenlevel_sr",
+          "ModuleFile" : "D:/github/HRA_product/TangCartMSX/RTL/tangnano_cartridge_t9/src/ikaopm/IKAOPM_modules/IKAOPM_primitives.v",
+          "ModuleLine" : 153,
+          "ModuleName" : "primitive_sr"
+         }
+        ]
+       },
+       {
+        "InstFile" : "D:/github/HRA_product/TangCartMSX/RTL/tangnano_cartridge_t9/src/ikaopm/IKAOPM.v",
+        "InstLine" : 408,
+        "InstName" : "OP",
+        "ModuleFile" : "D:/github/HRA_product/TangCartMSX/RTL/tangnano_cartridge_t9/src/ikaopm/IKAOPM_modules/IKAOPM_op.v",
+        "ModuleLine" : 1,
+        "ModuleName" : "IKAOPM_op",
+        "SubInsts" : [
+         {
+          "InstFile" : "D:/github/HRA_product/TangCartMSX/RTL/tangnano_cartridge_t9/src/ikaopm/IKAOPM_modules/IKAOPM_op.v",
+          "InstLine" : 44,
+          "InstName" : "u_op_algst_cntr",
+          "ModuleFile" : "D:/github/HRA_product/TangCartMSX/RTL/tangnano_cartridge_t9/src/ikaopm/IKAOPM_modules/IKAOPM_primitives.v",
+          "ModuleLine" : 78,
+          "ModuleName" : "primitive_counter"
+         },
+         {
+          "InstFile" : "D:/github/HRA_product/TangCartMSX/RTL/tangnano_cartridge_t9/src/ikaopm/IKAOPM_modules/IKAOPM_op.v",
+          "InstLine" : 91,
+          "InstName" : "u_cyc42r_logsinrom",
+          "ModuleFile" : "D:/github/HRA_product/TangCartMSX/RTL/tangnano_cartridge_t9/src/ikaopm/IKAOPM_modules/IKAOPM_op.v",
+          "ModuleLine" : 559,
+          "ModuleName" : "op_submdl_logsinrom"
+         },
+         {
+          "InstFile" : "D:/github/HRA_product/TangCartMSX/RTL/tangnano_cartridge_t9/src/ikaopm/IKAOPM_modules/IKAOPM_op.v",
+          "InstLine" : 193,
+          "InstName" : "u_cyc46r_exprom",
+          "ModuleFile" : "D:/github/HRA_product/TangCartMSX/RTL/tangnano_cartridge_t9/src/ikaopm/IKAOPM_modules/IKAOPM_op.v",
+          "ModuleLine" : 613,
+          "ModuleName" : "op_submdl_exprom"
+         },
+         {
+          "InstFile" : "D:/github/HRA_product/TangCartMSX/RTL/tangnano_cartridge_t9/src/ikaopm/IKAOPM_modules/IKAOPM_op.v",
+          "InstLine" : 419,
+          "InstName" : "u_cyc46r_cyc53r_M1_z",
+          "ModuleFile" : "D:/github/HRA_product/TangCartMSX/RTL/tangnano_cartridge_t9/src/ikaopm/IKAOPM_modules/IKAOPM_primitives.v",
+          "ModuleLine" : 153,
+          "ModuleName" : "primitive_sr"
+         },
+         {
+          "InstFile" : "D:/github/HRA_product/TangCartMSX/RTL/tangnano_cartridge_t9/src/ikaopm/IKAOPM_modules/IKAOPM_op.v",
+          "InstLine" : 423,
+          "InstName" : "u_cyc46r_cyc53r_M1_zz",
+          "ModuleFile" : "D:/github/HRA_product/TangCartMSX/RTL/tangnano_cartridge_t9/src/ikaopm/IKAOPM_modules/IKAOPM_primitives.v",
+          "ModuleLine" : 153,
+          "ModuleName" : "primitive_sr"
+         },
+         {
+          "InstFile" : "D:/github/HRA_product/TangCartMSX/RTL/tangnano_cartridge_t9/src/ikaopm/IKAOPM_modules/IKAOPM_op.v",
+          "InstLine" : 427,
+          "InstName" : "u_cyc46r_cyc53r_C1_z",
+          "ModuleFile" : "D:/github/HRA_product/TangCartMSX/RTL/tangnano_cartridge_t9/src/ikaopm/IKAOPM_modules/IKAOPM_primitives.v",
+          "ModuleLine" : 153,
+          "ModuleName" : "primitive_sr"
+         }
+        ]
+       },
+       {
+        "InstFile" : "D:/github/HRA_product/TangCartMSX/RTL/tangnano_cartridge_t9/src/ikaopm/IKAOPM.v",
+        "InstLine" : 432,
+        "InstName" : "ACC",
+        "ModuleFile" : "D:/github/HRA_product/TangCartMSX/RTL/tangnano_cartridge_t9/src/ikaopm/IKAOPM_modules/IKAOPM_acc.v",
+        "ModuleLine" : 1,
+        "ModuleName" : "IKAOPM_acc"
+       },
+       {
+        "InstFile" : "D:/github/HRA_product/TangCartMSX/RTL/tangnano_cartridge_t9/src/ikaopm/IKAOPM.v",
+        "InstLine" : 466,
+        "InstName" : "TIMER",
+        "ModuleFile" : "D:/github/HRA_product/TangCartMSX/RTL/tangnano_cartridge_t9/src/ikaopm/IKAOPM_modules/IKAOPM_timer.v",
+        "ModuleLine" : 1,
+        "ModuleName" : "IKAOPM_timer",
+        "SubInsts" : [
+         {
+          "InstFile" : "D:/github/HRA_product/TangCartMSX/RTL/tangnano_cartridge_t9/src/ikaopm/IKAOPM_modules/IKAOPM_timer.v",
+          "InstLine" : 60,
+          "InstName" : "u_timera",
+          "ModuleFile" : "D:/github/HRA_product/TangCartMSX/RTL/tangnano_cartridge_t9/src/ikaopm/IKAOPM_modules/IKAOPM_primitives.v",
+          "ModuleLine" : 78,
+          "ModuleName" : "primitive_counter"
+         },
+         {
+          "InstFile" : "D:/github/HRA_product/TangCartMSX/RTL/tangnano_cartridge_t9/src/ikaopm/IKAOPM_modules/IKAOPM_timer.v",
+          "InstLine" : 83,
+          "InstName" : "u_timerb_prescaler",
+          "ModuleFile" : "D:/github/HRA_product/TangCartMSX/RTL/tangnano_cartridge_t9/src/ikaopm/IKAOPM_modules/IKAOPM_primitives.v",
+          "ModuleLine" : 78,
+          "ModuleName" : "primitive_counter"
+         },
+         {
+          "InstFile" : "D:/github/HRA_product/TangCartMSX/RTL/tangnano_cartridge_t9/src/ikaopm/IKAOPM_modules/IKAOPM_timer.v",
+          "InstLine" : 100,
+          "InstName" : "u_timerb",
+          "ModuleFile" : "D:/github/HRA_product/TangCartMSX/RTL/tangnano_cartridge_t9/src/ikaopm/IKAOPM_modules/IKAOPM_primitives.v",
+          "ModuleLine" : 78,
+          "ModuleName" : "primitive_counter"
+         }
+        ]
+       }
+      ]
+     }
+    ]
+   },
+   {
+    "InstFile" : "D:/github/HRA_product/TangCartMSX/RTL/tangnano_cartridge_t9/src/tangcart_msx.v",
+    "InstLine" : 250,
+    "InstName" : "u_msx_midi",
+    "ModuleFile" : "D:/github/HRA_product/TangCartMSX/RTL/tangnano_cartridge_t9/src/msx_midi/tr_midi_inst.v",
+    "ModuleLine" : 58,
+    "ModuleName" : "msx_midi_inst",
+    "SubInsts" : [
+     {
+      "InstFile" : "D:/github/HRA_product/TangCartMSX/RTL/tangnano_cartridge_t9/src/msx_midi/tr_midi_inst.v",
+      "InstLine" : 144,
+      "InstName" : "u_tr_midi",
+      "ModuleFile" : "D:/github/HRA_product/TangCartMSX/RTL/tangnano_cartridge_t9/src/msx_midi/tr_midi.v",
+      "ModuleLine" : 60,
+      "ModuleName" : "tr_midi",
+      "SubInsts" : [
+       {
+        "InstFile" : "D:/github/HRA_product/TangCartMSX/RTL/tangnano_cartridge_t9/src/msx_midi/tr_midi.v",
+        "InstLine" : 205,
+        "InstName" : "u_8251",
+        "ModuleFile" : "D:/github/HRA_product/TangCartMSX/RTL/tangnano_cartridge_t9/src/msx_midi/i8251.v",
+        "ModuleLine" : 64,
+        "ModuleName" : "i8251",
+        "SubInsts" : [
+         {
+          "InstFile" : "D:/github/HRA_product/TangCartMSX/RTL/tangnano_cartridge_t9/src/msx_midi/i8251.v",
+          "InstLine" : 375,
+          "InstName" : "u_txc",
+          "ModuleFile" : "D:/github/HRA_product/TangCartMSX/RTL/tangnano_cartridge_t9/src/msx_midi/i8251_clk_en.v",
+          "ModuleLine" : 64,
+          "ModuleName" : "i8251_clk_en"
+         },
+         {
+          "InstFile" : "D:/github/HRA_product/TangCartMSX/RTL/tangnano_cartridge_t9/src/msx_midi/i8251.v",
+          "InstLine" : 383,
+          "InstName" : "u_rxc",
+          "ModuleFile" : "D:/github/HRA_product/TangCartMSX/RTL/tangnano_cartridge_t9/src/msx_midi/i8251_clk_en.v",
+          "ModuleLine" : 64,
+          "ModuleName" : "i8251_clk_en"
+         },
+         {
+          "InstFile" : "D:/github/HRA_product/TangCartMSX/RTL/tangnano_cartridge_t9/src/msx_midi/i8251.v",
+          "InstLine" : 394,
+          "InstName" : "u_transmitter",
+          "ModuleFile" : "D:/github/HRA_product/TangCartMSX/RTL/tangnano_cartridge_t9/src/msx_midi/i8251_transmitter.v",
+          "ModuleLine" : 64,
+          "ModuleName" : "i8251_transmitter"
+         },
+         {
+          "InstFile" : "D:/github/HRA_product/TangCartMSX/RTL/tangnano_cartridge_t9/src/msx_midi/i8251.v",
+          "InstLine" : 418,
+          "InstName" : "u_receiver",
+          "ModuleFile" : "D:/github/HRA_product/TangCartMSX/RTL/tangnano_cartridge_t9/src/msx_midi/i8251_receiver.v",
+          "ModuleLine" : 64,
+          "ModuleName" : "i8251_receiver"
+         }
+        ]
+       },
+       {
+        "InstFile" : "D:/github/HRA_product/TangCartMSX/RTL/tangnano_cartridge_t9/src/msx_midi/tr_midi.v",
+        "InstLine" : 234,
+        "InstName" : "u_8253",
+        "ModuleFile" : "D:/github/HRA_product/TangCartMSX/RTL/tangnano_cartridge_t9/src/msx_midi/i8253.v",
+        "ModuleLine" : 64,
+        "ModuleName" : "i8253",
+        "SubInsts" : [
+         {
+          "InstFile" : "D:/github/HRA_product/TangCartMSX/RTL/tangnano_cartridge_t9/src/msx_midi/i8253.v",
+          "InstLine" : 150,
+          "InstName" : "u_clk0_en",
+          "ModuleFile" : "D:/github/HRA_product/TangCartMSX/RTL/tangnano_cartridge_t9/src/msx_midi/i8253_clk_en.v",
+          "ModuleLine" : 64,
+          "ModuleName" : "i8253_clk_en"
+         },
+         {
+          "InstFile" : "D:/github/HRA_product/TangCartMSX/RTL/tangnano_cartridge_t9/src/msx_midi/i8253.v",
+          "InstLine" : 160,
+          "InstName" : "u_control0",
+          "ModuleFile" : "D:/github/HRA_product/TangCartMSX/RTL/tangnano_cartridge_t9/src/msx_midi/i8253_control.v",
+          "ModuleLine" : 64,
+          "ModuleName" : "i8253_control"
+         },
+         {
+          "InstFile" : "D:/github/HRA_product/TangCartMSX/RTL/tangnano_cartridge_t9/src/msx_midi/i8253.v",
+          "InstLine" : 186,
+          "InstName" : "u_counter0",
+          "ModuleFile" : "D:/github/HRA_product/TangCartMSX/RTL/tangnano_cartridge_t9/src/msx_midi/i8253_counter.v",
+          "ModuleLine" : 64,
+          "ModuleName" : "i8253_counter"
+         },
+         {
+          "InstFile" : "D:/github/HRA_product/TangCartMSX/RTL/tangnano_cartridge_t9/src/msx_midi/i8253.v",
+          "InstLine" : 211,
+          "InstName" : "u_clk1_en",
+          "ModuleFile" : "D:/github/HRA_product/TangCartMSX/RTL/tangnano_cartridge_t9/src/msx_midi/i8253_clk_en.v",
+          "ModuleLine" : 64,
+          "ModuleName" : "i8253_clk_en"
+         },
+         {
+          "InstFile" : "D:/github/HRA_product/TangCartMSX/RTL/tangnano_cartridge_t9/src/msx_midi/i8253.v",
+          "InstLine" : 221,
+          "InstName" : "u_control1",
+          "ModuleFile" : "D:/github/HRA_product/TangCartMSX/RTL/tangnano_cartridge_t9/src/msx_midi/i8253_control.v",
+          "ModuleLine" : 64,
+          "ModuleName" : "i8253_control"
+         },
+         {
+          "InstFile" : "D:/github/HRA_product/TangCartMSX/RTL/tangnano_cartridge_t9/src/msx_midi/i8253.v",
+          "InstLine" : 247,
+          "InstName" : "u_counter1",
+          "ModuleFile" : "D:/github/HRA_product/TangCartMSX/RTL/tangnano_cartridge_t9/src/msx_midi/i8253_counter.v",
+          "ModuleLine" : 64,
+          "ModuleName" : "i8253_counter"
+         },
+         {
+          "InstFile" : "D:/github/HRA_product/TangCartMSX/RTL/tangnano_cartridge_t9/src/msx_midi/i8253.v",
+          "InstLine" : 272,
+          "InstName" : "u_clk2_en",
+          "ModuleFile" : "D:/github/HRA_product/TangCartMSX/RTL/tangnano_cartridge_t9/src/msx_midi/i8253_clk_en.v",
+          "ModuleLine" : 64,
+          "ModuleName" : "i8253_clk_en"
+         },
+         {
+          "InstFile" : "D:/github/HRA_product/TangCartMSX/RTL/tangnano_cartridge_t9/src/msx_midi/i8253.v",
+          "InstLine" : 282,
+          "InstName" : "u_control2",
+          "ModuleFile" : "D:/github/HRA_product/TangCartMSX/RTL/tangnano_cartridge_t9/src/msx_midi/i8253_control.v",
+          "ModuleLine" : 64,
+          "ModuleName" : "i8253_control"
+         },
+         {
+          "InstFile" : "D:/github/HRA_product/TangCartMSX/RTL/tangnano_cartridge_t9/src/msx_midi/i8253.v",
+          "InstLine" : 308,
+          "InstName" : "u_counter2",
+          "ModuleFile" : "D:/github/HRA_product/TangCartMSX/RTL/tangnano_cartridge_t9/src/msx_midi/i8253_counter.v",
+          "ModuleLine" : 64,
+          "ModuleName" : "i8253_counter"
+         }
+        ]
+       }
+      ]
+     }
+    ]
+   },
+   {
+    "InstFile" : "D:/github/HRA_product/TangCartMSX/RTL/tangnano_cartridge_t9/src/tangcart_msx.v",
+    "InstLine" : 282,
     "InstName" : "u_pwm",
     "ModuleFile" : "D:/github/HRA_product/TangCartMSX/RTL/tangnano_cartridge_t9/src/pwm/ip_pwm.v",
     "ModuleLine" : 27,

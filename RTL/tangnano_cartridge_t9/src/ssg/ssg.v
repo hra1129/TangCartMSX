@@ -76,7 +76,7 @@ module ssg (
 	input			cmt_read,			//	PortA bit7: CMT Read Signal
 	output			kana_led,			//	PortB bit7: KANA LED  0: ON, 1: OFF
 
-	output	[7:0]	sound_out
+	output	[11:0]	sound_out
 );
 	reg				ff_ack;
 	reg		[7:0]	ff_rdata;
@@ -127,7 +127,7 @@ module ssg (
 	reg				ff_continue;
 
 	reg		[11:0]	ff_ssg_mixer;
-	reg		[7:0]	ff_sound_out;
+	reg		[11:0]	ff_sound_out;
 
 	//--------------------------------------------------------------
 	// Miscellaneous control / clock enable (divider)
@@ -605,11 +605,11 @@ module ssg (
 
 	always @( posedge clk ) begin
 		if( reset ) begin
-			ff_sound_out	 <= 8'd0;
+			ff_sound_out	 <= 12'd0;
 		end
 		else if( enable ) begin
 			if( ff_ssg_state[1:0] == 2'd0 ) begin
-				ff_sound_out	<= ff_ssg_mixer[10:3];
+				ff_sound_out	<= ff_ssg_mixer;
 			end
 			else begin
 				//	hold

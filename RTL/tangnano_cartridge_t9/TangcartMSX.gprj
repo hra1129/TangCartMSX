@@ -18,6 +18,18 @@
         <File path="src/ikaopll/IKAOPLL_modules/IKAOPLL_timinggen.v" type="file.verilog" enable="1"/>
         <File path="src/ikaopll_wrap/ikaopll_wrap.v" type="file.verilog" enable="1"/>
         <File path="src/ikaopll_wrap/ip_msxmusic_rom.v" type="file.verilog" enable="1"/>
+        <File path="src/ikaopm/IKAOPM.v" type="file.verilog" enable="1"/>
+        <File path="src/ikaopm/IKAOPM_modules/IKAOPM_acc.v" type="file.verilog" enable="1"/>
+        <File path="src/ikaopm/IKAOPM_modules/IKAOPM_eg.v" type="file.verilog" enable="1"/>
+        <File path="src/ikaopm/IKAOPM_modules/IKAOPM_lfo.v" type="file.verilog" enable="1"/>
+        <File path="src/ikaopm/IKAOPM_modules/IKAOPM_noise.v" type="file.verilog" enable="1"/>
+        <File path="src/ikaopm/IKAOPM_modules/IKAOPM_op.v" type="file.verilog" enable="1"/>
+        <File path="src/ikaopm/IKAOPM_modules/IKAOPM_pg.v" type="file.verilog" enable="1"/>
+        <File path="src/ikaopm/IKAOPM_modules/IKAOPM_primitives.v" type="file.verilog" enable="1"/>
+        <File path="src/ikaopm/IKAOPM_modules/IKAOPM_reg.v" type="file.verilog" enable="1"/>
+        <File path="src/ikaopm/IKAOPM_modules/IKAOPM_timer.v" type="file.verilog" enable="1"/>
+        <File path="src/ikaopm/IKAOPM_modules/IKAOPM_timinggen.v" type="file.verilog" enable="1"/>
+        <File path="src/ikaopm_wrap/ikaopm_wrap.v" type="file.verilog" enable="1"/>
         <File path="src/ikascc/IKASCC.v" type="file.verilog" enable="1"/>
         <File path="src/ikascc/IKASCC_modules/IKASCC_player_a.v" type="file.verilog" enable="1"/>
         <File path="src/ikascc/IKASCC_modules/IKASCC_player_s.v" type="file.verilog" enable="1"/>
@@ -25,6 +37,16 @@
         <File path="src/ikascc/IKASCC_modules/IKASCC_vrc_a.v" type="file.verilog" enable="1"/>
         <File path="src/ikascc/IKASCC_modules/IKASCC_vrc_s.v" type="file.verilog" enable="1"/>
         <File path="src/ikascc_wrap/ip_ikascc_wrap.v" type="file.verilog" enable="1"/>
+        <File path="src/msx_midi/i8251.v" type="file.verilog" enable="1"/>
+        <File path="src/msx_midi/i8251_clk_en.v" type="file.verilog" enable="1"/>
+        <File path="src/msx_midi/i8251_receiver.v" type="file.verilog" enable="1"/>
+        <File path="src/msx_midi/i8251_transmitter.v" type="file.verilog" enable="1"/>
+        <File path="src/msx_midi/i8253.v" type="file.verilog" enable="1"/>
+        <File path="src/msx_midi/i8253_clk_en.v" type="file.verilog" enable="1"/>
+        <File path="src/msx_midi/i8253_control.v" type="file.verilog" enable="1"/>
+        <File path="src/msx_midi/i8253_counter.v" type="file.verilog" enable="1"/>
+        <File path="src/msx_midi/tr_midi.v" type="file.verilog" enable="1"/>
+        <File path="src/msx_midi/tr_midi_inst.v" type="file.verilog" enable="1"/>
         <File path="src/pwm/ip_pwm.v" type="file.verilog" enable="1"/>
         <File path="src/ssg/ssg.v" type="file.verilog" enable="1"/>
         <File path="src/ssg/ssg_inst.v" type="file.verilog" enable="1"/>
