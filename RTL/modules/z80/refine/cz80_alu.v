@@ -112,6 +112,7 @@ module cz80_alu #(
 	wire	[5:0]	w_addsub_l;
 	wire	[4:0]	w_addsub_m;
 	wire	[2:0]	w_addsub_h;
+	wire	[7:0]	w_q_t;
 
 	// addsub variables (temporary signals)
 	signal	usecarry		: std_logic;
@@ -169,10 +170,8 @@ module cz80_alu #(
 	assign overflow_v 	= carry_v ^ carry7_v;
 
 	process (arith16, alu_op, alu_cpi, f_in, busa, busb, ir, q_v, q_cpi, carry_v, halfcarry_v, overflow_v, bitmask, iset, z16)
-		variable q_t : std_logic_vector[7:0];
 		variable daa_q : unsigned[8:0];
 	begin
-		q_t := 8'dx;
 		f_out <= f_in;
 		daa_q := 8'dx;
 		case( alu_op )
@@ -182,14 +181,12 @@ module cz80_alu #(
 			case alu_op[2:0] is
 			3'd0, 3'd1:			// add, adc
 				begin
-					q_t				:= q_v;
 					f_out[flag_c]	<= carry_v;
 					f_out[flag_h]	<= halfcarry_v;
 					f_out[flag_p]	<= overflow_v;
 				end
 			3'd2, 3'd3, 3'd7:	// sub, sbc, cp
 				begin
-					q_t				:= q_v;
 					f_out[flag_n]	<= 1'b1;
 					f_out[flag_c]	<= ~carry_v;
 					f_out[flag_h]	<= ~halfcarry_v;
@@ -197,17 +194,14 @@ module cz80_alu #(
 				end
 			3'd4:	// and
 				begin
-					q_t[7:0]		:= busa & busb;
 					f_out[flag_h]	<= 1'b1;
 				end
 			3'd5:	// xor
 				begin
-					q_t[7:0]		:= busa ^ busb;
 					f_out[flag_h]	<= 1'b0;
 				end
 			default: // or "110"
 				begin
-					q_t[7:0]		:= busa | busb;
 					f_out[flag_h]	<= 1'b0;
 				end
 			endcase
@@ -285,7 +279,6 @@ module cz80_alu #(
 			f_out[flag_x] <= daa_q[3];
 			f_out[flag_y] <= daa_q(5);
 			f_out[flag_c] <= f_in[flag_c] or daa_q(8);
-			q_t := std_logic_vector(daa_q[7:0]);
 			if daa_q[7:0] = 8'd0 begin
 				f_out[flag_z] <= 1'b1;
 			else
@@ -296,12 +289,6 @@ module cz80_alu #(
 				daa_q[4] xor daa_q(5) xor daa_q(6) xor daa_q[7]);
 		4'd13, 4'd14:
 			// rld, rrd
-			q_t[7:4] := busa[7:4];
-			if alu_op[0] = 1'b1 begin
-				q_t[3:0] := busb[7:4];
-			else
-				q_t[3:0] := busb[3:0];
-			end
 			f_out[flag_h] <= 1'b0;
 			f_out[flag_n] <= 1'b0;
 			f_out[flag_x] <= q_t[3];
@@ -316,7 +303,6 @@ module cz80_alu #(
 				q_t[4] xor q_t(5) xor q_t(6) xor q_t[7]);
 		4'd9:
 			// bit
-			q_t[7:0] := busb and bitmask;
 			f_out[flag_s] <= q_t[7];
 			if q_t[7:0] = 8'd0 begin
 				f_out[flag_z] <= 1'b1;
@@ -334,51 +320,31 @@ module cz80_alu #(
 				f_out[flag_y] <= busb(5);
 			end
 		4'd10:
-			// set
-			q_t[7:0] := busb or bitmask;
 		4'd11:
-			// res
-			q_t[7:0] := busb and not bitmask;
 		4'd8:
 			// rot
 			case( ir[5:3] )
 			3'd0: // rlc
-				q_t[7:1] := busa[6:0];
-				q_t[0] := busa[7];
 				f_out[flag_c] <= busa[7];
 			3'd2: // rl
-				q_t[7:1] := busa[6:0];
-				q_t[0] := f_in[flag_c];
 				f_out[flag_c] <= busa[7];
 			3'd1: // rrc
-				q_t[6:0] := busa[7:1];
-				q_t[7] := busa[0];
 				f_out[flag_c] <= busa[0];
 			3'd3: // rr
-				q_t[6:0] := busa[7:1];
-				q_t[7] := f_in[flag_c];
 				f_out[flag_c] <= busa[0];
 			3'd4: // sla
-				q_t[7:1] := busa[6:0];
-				q_t[0] := 1'b0;
 				f_out[flag_c] <= busa[7];
 			3'd6: // sll (undocumented) / swap
-				q_t[7:1] := busa[6:0];
-				q_t[0] := 1'b1;
 				f_out[flag_c] <= busa[7];
 			3'd5: // sra
-				q_t[6:0] := busa[7:1];
-				q_t[7] := busa[7];
 				f_out[flag_c] <= busa[0];
 			default: // srl
-				q_t[6:0] := busa[7:1];
-				q_t[7] := 1'b0;
 				f_out[flag_c] <= busa[0];
 			endcase
 			f_out[flag_h] <= 1'b0;
 			f_out[flag_n] <= 1'b0;
 			f_out[flag_x] <= q_t[3];
-			f_out[flag_y] <= q_t(5);
+			f_out[flag_y] <= q_t[5];
 			f_out[flag_s] <= q_t[7];
 			if( q_t[7:0] == 8'd0 ) begin
 				f_out[flag_z] <= 1'b1;
@@ -397,7 +363,6 @@ module cz80_alu #(
 				//	hold
 			end
 		endcase
-		q <= q_t;
 	end
 
 
@@ -421,106 +386,36 @@ module cz80_alu #(
 
 
 
-
-
-
-
-
-
-
-
-	process (arith16, alu_op, alu_cpi, f_in, busa, busb, ir, q_v, q_cpi, carry_v, halfcarry_v, overflow_v, bitmask, iset, z16)
-		variable q_t : std_logic_vector[7:0];
-	begin
-		q_t := 8'dx;
+	function [7:0] func_q_t(
+		input	[3:0]	alu_op
+	);
 		case( alu_op )
-		4'd0, 4'd1, 4'd2, 4'd3, 4'd4, 4'd5, 4'd6, 4'd7:
-			case alu_op[2:0] is
-			3'd4:	// and
-				begin
-					q_t		:= busa & busb;
-				end
-			3'd5:	// xor
-				begin
-					q_t		:= busa ^ busb;
-				end
-			3'd6: // or
-				begin
-					q_t		:= busa | busb;
-				end
-			default:			// add, adc, sub, sbc, cp
-				begin
-					q_t		:= q_v;
-				end
-			endcase
-		4'd12:
-			q_t := daa_q[7:0];
-		4'd13, 4'd14:
-			// rld, rrd
-			q_t[7:4] := busa[7:4];
-			q_t[3:0] := alu_op[0] ? busb[7:4] : busb[3:0];
-		4'd9:
-			// bit
-			q_t := busb & bitmask;
-		4'd10:
-			// set
-			q_t := busb | bitmask;
-		4'd11:
-			// res
-			q_t := busb & ~bitmask;
+		4'd0, 4'd1, 4'd2, 4'd3:
+					func_q_t	= q_v;							//	add, adc, sub, sbc
+		4'd4:		func_q_t	= busa & busb;					//	and
+		4'd5:		func_q_t	= busa ^ busb;					//	xor
+		4'd6:		func_q_t	= busa | busb;					//	or
+		4'd7:		func_q_t	= q_v;							//	cp
 		4'd8:
-			begin
-				// rotate
-				case( ir[5:3] )
-				3'd0: // rlc
-					q_t[7:1] := busa[6:0];
-					q_t[0] := busa[7];
-				3'd2: // rl
-					q_t[7:1] := busa[6:0];
-					q_t[0] := f_in[flag_c];
-				3'd1: // rrc
-					q_t[6:0] := busa[7:1];
-					q_t[7] := busa[0];
-				3'd3: // rr
-					q_t[6:0] := busa[7:1];
-					q_t[7] := f_in[flag_c];
-				3'd4: // sla
-					q_t[7:1] := busa[6:0];
-					q_t[0] := 1'b0;
-				3'd6: // sll (undocumented) / swap
-					q_t[7:1] := busa[6:0];
-					q_t[0] := 1'b1;
-				3'd5: // sra
-					q_t[6:0] := busa[7:1];
-					q_t[7] := busa[7];
-				default: // srl
-					q_t[6:0] := busa[7:1];
-					q_t[7] := 1'b0;
-				endcase
-				f_out[flag_h] <= 1'b0;
-				f_out[flag_n] <= 1'b0;
-				f_out[flag_x] <= q_t[3];
-				f_out[flag_y] <= q_t(5);
-				f_out[flag_s] <= q_t[7];
-				if( q_t[7:0] == 8'd0 ) begin
-					f_out[flag_z] <= 1'b1;
-				end
-				else begin
-					f_out[flag_z] <= 1'b0;
-				end
-				f_out[flag_p] <= ~(q_t[0] ^ q_t[1] ^ q_t[2] ^ q_t[3] ^ q_t[4] ^ q_t(5) ^ q_t(6) ^ q_t[7]);
-				if( iset == 2'b00 ) begin
-					f_out[flag_p] <= f_in[flag_p];
-					f_out[flag_s] <= f_in[flag_s];
-					f_out[flag_z] <= f_in[flag_z];
-				end
-			end
-		default:
-			begin
-				//	hold
-			end
+			case( ir[5:3] )										//	rotate
+			3'd0:	func_q_t	= { busa[6:0], busa[7] };		//	rlc
+			3'd2:	func_q_t	= { busa[6:0], f_in[flag_c] };	//	rl
+			3'd1:	func_q_t	= { busa[0], busa[7:1] };		//	rrc
+			3'd3:	func_q_t	= { f_in[flag_c], busa[7:1] };	//	rr
+			3'd4:	func_q_t	= { busa[6:0], 1'b0 };			//	sla
+			3'd6:	func_q_t	= { busa[6:0], 1'b1 };			//	sll (undocumented)
+			3'd5:	func_q_t	= { busa[7], busa[7:1] };		//	sra
+			default:func_q_t	= { 1'b0, busa[7:1] };			//	srl
+			endcase
+		4'd9:		func_q_t	= busb & bitmask;				//	bit
+		4'd10:		func_q_t	= busb | bitmask;				//	set
+		4'd11:		func_q_t	= busb & ~bitmask;				//	res
+		4'd12:		func_q_t	= daa_q[7:0];					//	daa
+		4'd13:		func_q_t	= { busa[7:4], busb[7:4] };		//	rld
+		4'd14:		func_q_t	= { busa[7:4], busb[3:0] };		//	rrd
+		default:	func_q_t	= 8'dx;
 		endcase
-		q <= q_t;
-	end
+	endfunction
 
+	assign q		= func_3to8_decoder( alu_op );
 endmodule
