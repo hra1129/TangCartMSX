@@ -60,1670 +60,1889 @@
 //	-- Some minor bug fixes.
 //-----------------------------------------------------------------------------
 
-module T80_MCode (
+module t80_mcode (
 		generic(
-				Mode		: integer := 0;
-				Flag_C		: integer := 0;
-				Flag_N		: integer := 1;
-				Flag_P		: integer := 2;
-				Flag_X		: integer := 3;
-				Flag_H		: integer := 4;
-				Flag_Y		: integer := 5;
-				Flag_Z		: integer := 6;
-				Flag_S		: integer := 7
+				mode		: integer := 0;
+				flag_c		: integer := 0;
+				flag_n		: integer := 1;
+				flag_p		: integer := 2;
+				flag_x		: integer := 3;
+				flag_h		: integer := 4;
+				flag_y		: integer := 5;
+				flag_z		: integer := 6;
+				flag_s		: integer := 7
 		);
 		port(
-				IR			: in std_logic_vector(7 downto 0);
-				ISet		: in std_logic_vector(1 downto 0);
-				MCycle		: in std_logic_vector(2 downto 0);
-				F			: in std_logic_vector(7 downto 0);
-				NMICycle	: in std_logic;
-				IntCycle	: in std_logic;
-				XY_State	: in std_logic_vector(1 downto 0);
-				MCycles		: out std_logic_vector(2 downto 0);
-				TStates		: out std_logic_vector(2 downto 0);
-				Prefix		: out std_logic_vector(1 downto 0); // None,CB,ED,DD/FD
-				Inc_PC		: out std_logic;
-				Inc_WZ		: out std_logic;
-				IncDec_16	: out std_logic_vector(3 downto 0); // BC,DE,HL,SP	 0 is inc
-				Read_To_Reg : out std_logic;
-				Read_To_Acc : out std_logic;
-				Set_BusA_To : out std_logic_vector(3 downto 0); // B,C,D,E,H,L,DI/DB,A,SP(L),SP(M),0,F
-				Set_BusB_To : out std_logic_vector(3 downto 0); // B,C,D,E,H,L,DI,A,SP(L),SP(M),1,F,PC(L),PC(M),0
-				ALU_Op		: out std_logic_vector(3 downto 0);
-						// ADD, ADC, SUB, SBC, AND, XOR, OR, CP, ROT, BIT, SET, RES, DAA, RLD, RRD, None
-				ALU_cpi		: out std_logic;	//for undoc XY-Flags	   
-				Save_ALU	: out std_logic;
-				PreserveC	: out std_logic;
-				Arith16		: out std_logic;
-				Set_Addr_To : out std_logic_vector(2 downto 0); // aNone,aXY,aIOA,aSP,aBC,aDE,aZI
-				IORQ		: out std_logic;
-				Jump		: out std_logic;
-				JumpE		: out std_logic;
-				JumpXY		: out std_logic;
-				Call		: out std_logic;
-				RstP		: out std_logic;
-				LDZ			: out std_logic;
-				LDW			: out std_logic;
-				LDSPHL		: out std_logic;
-				Special_LD	: out std_logic_vector(2 downto 0); // A,I;A,R;I,A;R,A;None
-				ExchangeDH	: out std_logic;
-				ExchangeRp	: out std_logic;
-				ExchangeAF	: out std_logic;
-				ExchangeRS	: out std_logic;
-				I_DJNZ		: out std_logic;
-				I_CPL		: out std_logic;
-				I_CCF		: out std_logic;
-				I_SCF		: out std_logic;
-				I_RETN		: out std_logic;
-				I_BT		: out std_logic;
-				I_BC		: out std_logic;
-				I_BTR		: out std_logic;
-				I_RLD		: out std_logic;
-				I_RRD		: out std_logic;
-				I_INRC		: out std_logic;
-				SetDI		: out std_logic;
-				SetEI		: out std_logic;
-				IMode		: out std_logic_vector(1 downto 0);
-				Halt		: out std_logic;
-				NoRead		: out std_logic;
-				Write		: out std_logic;
-				XYbit_undoc : out std_logic
+				ir			: in std_logic_vector[7:0];
+				iset		: in std_logic_vector[1:0];
+				mcycle		: in std_logic_vector[2:0];
+				f			: in std_logic_vector[7:0];
+				nmicycle	: in std_logic;
+				intcycle	: in std_logic;
+				xy_state	: in std_logic_vector[1:0];
+				mcycles		: out std_logic_vector[2:0];
+				tstates		: out std_logic_vector[2:0];
+				prefix		: out std_logic_vector[1:0]; // none,cb,ed,dd/fd
+				inc_pc		: out std_logic;
+				inc_wz		: out std_logic;
+				incdec_16	: out std_logic_vector[3:0]; // bc,de,hl,sp	 0 is inc
+				read_to_reg : out std_logic;
+				read_to_acc : out std_logic;
+				set_busa_to : out std_logic_vector[3:0]; // b,c,d,e,h,l,di/db,a,sp(l),sp(m),0,f
+				set_busb_to : out std_logic_vector[3:0]; // b,c,d,e,h,l,di,a,sp(l),sp(m),1,f,pc(l),pc(m),0
+				alu_op		: out std_logic_vector[3:0];
+						// add, adc, sub, sbc, and, xor, or, cp, rot, bit, set, res, daa, rld, rrd, none
+				alu_cpi		: out std_logic;	//for undoc xy-flags	   
+				save_alu	: out std_logic;
+				preservec	: out std_logic;
+				arith16		: out std_logic;
+				set_addr_to : out std_logic_vector[2:0]; // anone,axy,aioa,asp,abc,ade,azi
+				iorq		: out std_logic;
+				jump		: out std_logic;
+				jumpe		: out std_logic;
+				jumpxy		: out std_logic;
+				call		: out std_logic;
+				rstp		: out std_logic;
+				ldz			: out std_logic;
+				ldw			: out std_logic;
+				ldsphl		: out std_logic;
+				special_ld	: out std_logic_vector[2:0]; // a,i;a,r;i,a;r,a;none
+				exchangedh	: out std_logic;
+				exchangerp	: out std_logic;
+				exchangeaf	: out std_logic;
+				exchangers	: out std_logic;
+				i_djnz		: out std_logic;
+				i_cpl		: out std_logic;
+				i_ccf		: out std_logic;
+				i_scf		: out std_logic;
+				i_retn		: out std_logic;
+				i_bt		: out std_logic;
+				i_bc		: out std_logic;
+				i_btr		: out std_logic;
+				i_rld		: out std_logic;
+				i_rrd		: out std_logic;
+				i_inrc		: out std_logic;
+				setdi		: out std_logic;
+				setei		: out std_logic;
+				imode		: out std_logic_vector[1:0];
+				halt		: out std_logic;
+				noread		: out std_logic;
+				write		: out std_logic;
+				xybit_undoc : out std_logic
 		);
-end T80_MCode;
+end t80_mcode;
 
-architecture rtl of T80_MCode is
+architecture rtl of t80_mcode is
 
-		constant aNone	: std_logic_vector(2 downto 0) := "111";
-		constant aBC	: std_logic_vector(2 downto 0) := "000";
-		constant aDE	: std_logic_vector(2 downto 0) := "001";
-		constant aXY	: std_logic_vector(2 downto 0) := "010";
-		constant aIOA	: std_logic_vector(2 downto 0) := "100";
-		constant aSP	: std_logic_vector(2 downto 0) := "101";
-		constant aZI	: std_logic_vector(2 downto 0) := "110";
+		constant anone	: std_logic_vector[2:0] := 3'b111;
+		constant abc	: std_logic_vector[2:0] := 3'b000;
+		constant ade	: std_logic_vector[2:0] := 3'b001;
+		constant axy	: std_logic_vector[2:0] := 3'b010;
+		constant aioa	: std_logic_vector[2:0] := 3'b100;
+		constant asp	: std_logic_vector[2:0] := 3'b101;
+		constant azi	: std_logic_vector[2:0] := 3'b110;
 
 		function is_cc_true(
-				F : std_logic_vector(7 downto 0);
-				cc : bit_vector(2 downto 0)
+				f : std_logic_vector[7:0];
+				cc : bit_vector[2:0]
 				) return boolean is
 		begin
 			case cc is
-			when "000" => return F(6) = 1'b0; // NZ
-			when "001" => return F(6) = 1'b1; // Z
-			when "010" => return F(0) = 1'b0; // NC
-			when "011" => return F(0) = 1'b1; // C
-			when "100" => return F(2) = 1'b0; // PO
-			when "101" => return F(2) = 1'b1; // PE
-			when "110" => return F(7) = 1'b0; // P
-			when "111" => return F(7) = 1'b1; // M
-			end case;
+			 3'b000 : return f[6] = 1'b0; // nz
+			 3'b001 : return f[6] = 1'b1; // z
+			 3'b010 : return f[0] = 1'b0; // nc
+			 3'b011 : return f[0] = 1'b1; // c
+			 3'b100 : return f[2] = 1'b0; // po
+			 3'b101 : return f[2] = 1'b1; // pe
+			 3'b110 : return f[7] = 1'b0; // p
+			 3'b111 : return f[7] = 1'b1; // m
+			endcase
 		end
 
 begin
 
-		process (IR, ISet, MCycle, F, NMICycle, IntCycle, XY_State)
-				variable DDD : std_logic_vector(2 downto 0);
-				variable SSS : std_logic_vector(2 downto 0);
-				variable DPair : std_logic_vector(1 downto 0);
-				variable IRB : bit_vector(7 downto 0);
-		begin
-				DDD := IR(5 downto 3);
-				SSS := IR(2 downto 0);
-				DPair := IR(5 downto 4);
-				IRB := to_bitvector(IR);
+	process (ir, iset, mcycle, f, nmicycle, intcycle, xy_state)
+			variable ddd : std_logic_vector[2:0];
+			variable sss : std_logic_vector[2:0];
+			variable dpair : std_logic_vector[1:0];
+			variable irb : bit_vector[7:0];
+	begin
+			ddd := ir[5:3];
+			sss := ir[2:0];
+			dpair := ir[5:4];
+			irb := to_bitvector(ir);
 
-				MCycles <= "001";
-				if MCycle = "001" begin
-						TStates <= "100";
-				else
-						TStates <= "011";
+			mcycles <= 3'b001;
+			if( mcycle = 3'b001 ) begin
+					tstates <= 3'b100;
+			else
+					tstates <= 3'b011;
+			end
+			prefix <= 2'b00;
+			inc_pc <= 1'b0;
+			inc_wz <= 1'b0;
+			incdec_16 <= 4'b0000;
+			read_to_acc <= 1'b0;
+			read_to_reg <= 1'b0;
+			set_busb_to <= 4'b0000;
+			set_busa_to <= 4'b0000;
+			alu_op <= 1'b0 & ir[5:3];
+			alu_cpi <= 1'b0;
+			save_alu <= 1'b0;
+			preservec <= 1'b0;
+			arith16 <= 1'b0;
+			iorq <= 1'b0;
+			set_addr_to <= anone;
+			jump <= 1'b0;
+			jumpe <= 1'b0;
+			jumpxy <= 1'b0;
+			call <= 1'b0;
+			rstp <= 1'b0;
+			ldz <= 1'b0;
+			ldw <= 1'b0;
+			ldsphl <= 1'b0;
+			special_ld <= 3'b000;
+			exchangedh <= 1'b0;
+			exchangerp <= 1'b0;
+			exchangeaf <= 1'b0;
+			exchangers <= 1'b0;
+			i_djnz <= 1'b0;
+			i_cpl <= 1'b0;
+			i_ccf <= 1'b0;
+			i_scf <= 1'b0;
+			i_retn <= 1'b0;
+			i_bt <= 1'b0;
+			i_bc <= 1'b0;
+			i_btr <= 1'b0;
+			i_rld <= 1'b0;
+			i_rrd <= 1'b0;
+			i_inrc <= 1'b0;
+			setdi <= 1'b0;
+			setei <= 1'b0;
+			imode <= 2'b11;
+			halt <= 1'b0;
+			noread <= 1'b0;
+			write <= 1'b0;
+			xybit_undoc <= 1'b0;
+
+			case( iset )
+			 2'b00 :
+				// --------------------------------------------------------------------
+				//  unprefixed instructions
+				// --------------------------------------------------------------------
+
+			case( irb )
+// 8 bit load group
+			8'b01000000, 8'b01000001, 8'b01000010, 8'b01000011, 8'b01000100, 8'b01000101, 8'b01000111, 
+			8'b01001000, 8'b01001001, 8'b01001010, 8'b01001011, 8'b01001100, 8'b01001101, 8'b01001111, 
+			8'b01010000, 8'b01010001, 8'b01010010, 8'b01010011, 8'b01010100, 8'b01010101, 8'b01010111, 
+			8'b01011000, 8'b01011001, 8'b01011010, 8'b01011011, 8'b01011100, 8'b01011101, 8'b01011111, 
+			8'b01100000, 8'b01100001, 8'b01100010, 8'b01100011, 8'b01100100, 8'b01100101, 8'b01100111, 
+			8'b01101000, 8'b01101001, 8'b01101010, 8'b01101011, 8'b01101100, 8'b01101101, 8'b01101111, 
+			8'b01111000, 8'b01111001, 8'b01111010, 8'b01111011, 8'b01111100, 8'b01111101, 8'b01111111:
+				begin
+					// ld r,r'
+					set_busb_to[2:0] <= sss;
+					exchangerp <= 1'b1;
+					set_busa_to[2:0] <= ddd;
+					read_to_reg <= 1'b1;
 				end
-				Prefix <= "00";
-				Inc_PC <= 1'b0;
-				Inc_WZ <= 1'b0;
-				IncDec_16 <= "0000";
-				Read_To_Acc <= 1'b0;
-				Read_To_Reg <= 1'b0;
-				Set_BusB_To <= "0000";
-				Set_BusA_To <= "0000";
-				ALU_Op <= "0" & IR(5 downto 3);
-				ALU_cpi <= 1'b0;
-				Save_ALU <= 1'b0;
-				PreserveC <= 1'b0;
-				Arith16 <= 1'b0;
-				IORQ <= 1'b0;
-				Set_Addr_To <= aNone;
-				Jump <= 1'b0;
-				JumpE <= 1'b0;
-				JumpXY <= 1'b0;
-				Call <= 1'b0;
-				RstP <= 1'b0;
-				LDZ <= 1'b0;
-				LDW <= 1'b0;
-				LDSPHL <= 1'b0;
-				Special_LD <= "000";
-				ExchangeDH <= 1'b0;
-				ExchangeRp <= 1'b0;
-				ExchangeAF <= 1'b0;
-				ExchangeRS <= 1'b0;
-				I_DJNZ <= 1'b0;
-				I_CPL <= 1'b0;
-				I_CCF <= 1'b0;
-				I_SCF <= 1'b0;
-				I_RETN <= 1'b0;
-				I_BT <= 1'b0;
-				I_BC <= 1'b0;
-				I_BTR <= 1'b0;
-				I_RLD <= 1'b0;
-				I_RRD <= 1'b0;
-				I_INRC <= 1'b0;
-				SetDI <= 1'b0;
-				SetEI <= 1'b0;
-				IMode <= "11";
-				Halt <= 1'b0;
-				NoRead <= 1'b0;
-				Write <= 1'b0;
-				XYbit_undoc <= 1'b0;
-
-				case ISet is
-				when "00" =>
-
-//////////////////////////////////////////////////////////////////////////////
-//
-//		Unprefixed instructions
-//
-//////////////////////////////////////////////////////////////////////////////
-
-				case IRB is
-// 8 BIT LOAD GROUP
-				when "01000000"|"01000001"|"01000010"|"01000011"|"01000100"|"01000101"|"01000111"
-						|"01001000"|"01001001"|"01001010"|"01001011"|"01001100"|"01001101"|"01001111"
-						|"01010000"|"01010001"|"01010010"|"01010011"|"01010100"|"01010101"|"01010111"
-						|"01011000"|"01011001"|"01011010"|"01011011"|"01011100"|"01011101"|"01011111"
-						|"01100000"|"01100001"|"01100010"|"01100011"|"01100100"|"01100101"|"01100111"
-						|"01101000"|"01101001"|"01101010"|"01101011"|"01101100"|"01101101"|"01101111"
-						|"01111000"|"01111001"|"01111010"|"01111011"|"01111100"|"01111101"|"01111111" =>
-						// LD r,r'
-						Set_BusB_To(2 downto 0) <= SSS;
-						ExchangeRp <= 1'b1;
-						Set_BusA_To(2 downto 0) <= DDD;
-						Read_To_Reg <= 1'b1;
-				when "00000110"|"00001110"|"00010110"|"00011110"|"00100110"|"00101110"|"00111110" =>
-						// LD r,n
-						MCycles <= "010";
-						case to_integer(unsigned(MCycle)) is
-						when 2 =>
-								Inc_PC <= 1'b1;
-								Set_BusA_To(2 downto 0) <= DDD;
-								Read_To_Reg <= 1'b1;
-						when others => null;
-						end case;
-				when "01000110"|"01001110"|"01010110"|"01011110"|"01100110"|"01101110"|"01111110" =>
-						// LD r,(HL)
-						MCycles <= "010";
-						case to_integer(unsigned(MCycle)) is
-						when 1 =>
-								Set_Addr_To <= aXY;
-						when 2 =>
-								Set_BusA_To(2 downto 0) <= DDD;
-								Read_To_Reg <= 1'b1;
-						when others => null;
-						end case;
-				when "01110000"|"01110001"|"01110010"|"01110011"|"01110100"|"01110101"|"01110111" =>
-						// LD (HL),r
-						MCycles <= "010";
-						case to_integer(unsigned(MCycle)) is
-						when 1 =>
-								Set_Addr_To <= aXY;
-								Set_BusB_To(2 downto 0) <= SSS;
-								Set_BusB_To(3) <= 1'b0;
-						when 2 =>
-								Write <= 1'b1;
-						when others => null;
-						end case;
-				when "00110110" =>
-						// LD (HL),n
-						MCycles <= "011";
-						case to_integer(unsigned(MCycle)) is
-						when 2 =>
-								Inc_PC <= 1'b1;
-								Set_Addr_To <= aXY;
-								Set_BusB_To(2 downto 0) <= SSS;
-								Set_BusB_To(3) <= 1'b0;
-						when 3 =>
-								Write <= 1'b1;
-						when others => null;
-						end case;
-				when "00001010" =>
-						// LD A,(BC)
-						MCycles <= "010";
-						case to_integer(unsigned(MCycle)) is
-						when 1 =>
-								Set_Addr_To <= aBC;
-						when 2 =>
-								Read_To_Acc <= 1'b1;
-						when others => null;
-						end case;
-				when "00011010" =>
-						// LD A,(DE)
-						MCycles <= "010";
-						case to_integer(unsigned(MCycle)) is
-						when 1 =>
-								Set_Addr_To <= aDE;
-						when 2 =>
-								Read_To_Acc <= 1'b1;
-						when others => null;
-						end case;
-				when "00111010" =>
-						// LD A,(nn)
-						MCycles <= "100";
-						case to_integer(unsigned(MCycle)) is
-						when 2 =>
-								Inc_PC <= 1'b1;
-								LDZ <= 1'b1;
-						when 3 =>
-								Set_Addr_To <= aZI;
-								Inc_PC <= 1'b1;
-						when 4 =>
-								Read_To_Acc <= 1'b1;
-						when others => null;
-						end case;
-				when "00000010" =>
-						// LD (BC),A
-						MCycles <= "010";
-						case to_integer(unsigned(MCycle)) is
-						when 1 =>
-								Set_Addr_To <= aBC;
-								Set_BusB_To <= "0111";
-						when 2 =>
-								Write <= 1'b1;
-						when others => null;
-						end case;
-				when "00010010" =>
-						// LD (DE),A
-						MCycles <= "010";
-						case to_integer(unsigned(MCycle)) is
-						when 1 =>
-								Set_Addr_To <= aDE;
-								Set_BusB_To <= "0111";
-						when 2 =>
-								Write <= 1'b1;
-						when others => null;
-						end case;
-				when "00110010" =>
-						// LD (nn),A
-						MCycles <= "100";
-						case to_integer(unsigned(MCycle)) is
-						when 2 =>
-								Inc_PC <= 1'b1;
-								LDZ <= 1'b1;
-						when 3 =>
-								Set_Addr_To <= aZI;
-								Inc_PC <= 1'b1;
-								Set_BusB_To <= "0111";
-						when 4 =>
-								Write <= 1'b1;
-						when others => null;
-						end case;
-
-// 16 BIT LOAD GROUP
-				when "00000001"|"00010001"|"00100001"|"00110001" =>
-						// LD dd,nn
-						MCycles <= "011";
-						case to_integer(unsigned(MCycle)) is
-						when 2 =>
-								Inc_PC <= 1'b1;
-								Read_To_Reg <= 1'b1;
-								if DPAIR = "11" begin
-										Set_BusA_To(3 downto 0) <= "1000";
-								else
-										Set_BusA_To(2 downto 1) <= DPAIR;
-										Set_BusA_To(0) <= 1'b1;
-								end
-						when 3 =>
-								Inc_PC <= 1'b1;
-								Read_To_Reg <= 1'b1;
-								if DPAIR = "11" begin
-										Set_BusA_To(3 downto 0) <= "1001";
-								else
-										Set_BusA_To(2 downto 1) <= DPAIR;
-										Set_BusA_To(0) <= 1'b0;
-								end
-						when others => null;
-						end case;
-				when "00101010" =>
-						// LD HL,(nn)
-						MCycles <= "101";
-						case to_integer(unsigned(MCycle)) is
-						when 2 =>
-								Inc_PC <= 1'b1;
-								LDZ <= 1'b1;
-						when 3 =>
-								Set_Addr_To <= aZI;
-								Inc_PC <= 1'b1;
-								LDW <= 1'b1;
-						when 4 =>
-								Set_BusA_To(2 downto 0) <= "101"; // L
-								Read_To_Reg <= 1'b1;
-								Inc_WZ <= 1'b1;
-								Set_Addr_To <= aZI;
-						when 5 =>
-								Set_BusA_To(2 downto 0) <= "100"; // H
-								Read_To_Reg <= 1'b1;
-						when others => null;
-						end case;
-				when "00100010" =>
-						// LD (nn),HL
-						MCycles <= "101";
-						case to_integer(unsigned(MCycle)) is
-						when 2 =>
-								Inc_PC <= 1'b1;
-								LDZ <= 1'b1;
-						when 3 =>
-								Set_Addr_To <= aZI;
-								Inc_PC <= 1'b1;
-								LDW <= 1'b1;
-								Set_BusB_To <= "0101"; // L
-						when 4 =>
-								Inc_WZ <= 1'b1;
-								Set_Addr_To <= aZI;
-								Write <= 1'b1;
-								Set_BusB_To <= "0100"; // H
-						when 5 =>
-								Write <= 1'b1;
-						when others => null;
-						end case;
-				when "11111001" =>
-						// LD SP,HL
-						TStates <= "110";
-						LDSPHL <= 1'b1;
-				when "11000101"|"11010101"|"11100101"|"11110101" =>
-						// PUSH qq
-						MCycles <= "011";
-						case to_integer(unsigned(MCycle)) is
-						when 1 =>
-								TStates <= "101";
-								IncDec_16 <= "1111";
-								Set_Addr_TO <= aSP;
-								if DPAIR = "11" begin
-										Set_BusB_To <= "0111";
-								else
-										Set_BusB_To(2 downto 1) <= DPAIR;
-										Set_BusB_To(0) <= 1'b0;
-										Set_BusB_To(3) <= 1'b0;
-								end
-						when 2 =>
-								IncDec_16 <= "1111";
-								Set_Addr_To <= aSP;
-								if DPAIR = "11" begin
-										Set_BusB_To <= "1011";
-								else
-										Set_BusB_To(2 downto 1) <= DPAIR;
-										Set_BusB_To(0) <= 1'b1;
-										Set_BusB_To(3) <= 1'b0;
-								end
-								Write <= 1'b1;
-						when 3 =>
-								Write <= 1'b1;
-						when others => null;
-						end case;
-				when "11000001"|"11010001"|"11100001"|"11110001" =>
-						// POP qq
-						MCycles <= "011";
-						case to_integer(unsigned(MCycle)) is
-						when 1 =>
-								Set_Addr_To <= aSP;
-						when 2 =>
-								IncDec_16 <= "0111";
-								Set_Addr_To <= aSP;
-								Read_To_Reg <= 1'b1;
-								if DPAIR = "11" begin
-										Set_BusA_To(3 downto 0) <= "1011";
-								else
-										Set_BusA_To(2 downto 1) <= DPAIR;
-										Set_BusA_To(0) <= 1'b1;
-								end
-						when 3 =>
-								IncDec_16 <= "0111";
-								Read_To_Reg <= 1'b1;
-								if DPAIR = "11" begin
-										Set_BusA_To(3 downto 0) <= "0111";
-								else
-										Set_BusA_To(2 downto 1) <= DPAIR;
-										Set_BusA_To(0) <= 1'b0;
-								end
-						when others => null;
-						end case;
-
-// EXCHANGE, BLOCK TRANSFER AND SEARCH GROUP
-				when "11101011" =>
-						// EX DE,HL
-						ExchangeDH <= 1'b1;
-				when "00001000" =>
-						// EX AF,AF'
-						ExchangeAF <= 1'b1;
-				when "11011001" =>
-						// EXX
-						ExchangeRS <= 1'b1;
-				when "11100011" =>
-						// EX (SP),HL
-						MCycles <= "101";
-						case to_integer(unsigned(MCycle)) is
-						when 1 =>
-								Set_Addr_To <= aSP;
-						when 2 =>
-								Read_To_Reg <= 1'b1;
-								Set_BusA_To <= "0101";
-								Set_BusB_To <= "0101";
-								Set_Addr_To <= aSP;
-						when 3 =>
-								IncDec_16 <= "0111";
-								Set_Addr_To <= aSP;
-								TStates <= "100";
-								Write <= 1'b1;
-						when 4 =>
-								Read_To_Reg <= 1'b1;
-								Set_BusA_To <= "0100";
-								Set_BusB_To <= "0100";
-								Set_Addr_To <= aSP;
-						when 5 =>
-								IncDec_16 <= "1111";
-								TStates <= "101";
-								Write <= 1'b1;
-						when others => null;
-						end case;
-
-// 8 BIT ARITHMETIC AND LOGICAL GROUP
-				when "10000000"|"10000001"|"10000010"|"10000011"|"10000100"|"10000101"|"10000111"
-						|"10001000"|"10001001"|"10001010"|"10001011"|"10001100"|"10001101"|"10001111"
-						|"10010000"|"10010001"|"10010010"|"10010011"|"10010100"|"10010101"|"10010111"
-						|"10011000"|"10011001"|"10011010"|"10011011"|"10011100"|"10011101"|"10011111"
-						|"10100000"|"10100001"|"10100010"|"10100011"|"10100100"|"10100101"|"10100111"
-						|"10101000"|"10101001"|"10101010"|"10101011"|"10101100"|"10101101"|"10101111"
-						|"10110000"|"10110001"|"10110010"|"10110011"|"10110100"|"10110101"|"10110111"
-						|"10111000"|"10111001"|"10111010"|"10111011"|"10111100"|"10111101"|"10111111" =>
-						// ADD A,r
-						// ADC A,r
-						// SUB A,r
-						// SBC A,r
-						// AND A,r
-						// OR A,r
-						// XOR A,r
-						// CP A,r
-						Set_BusB_To(2 downto 0) <= SSS;
-						Set_BusA_To(2 downto 0) <= "111";
-						Read_To_Reg <= 1'b1;
-						Save_ALU <= 1'b1;
-				when "10000110"|"10001110"|"10010110"|"10011110"|"10100110"|"10101110"|"10110110"|"10111110" =>
-						// ADD A,(HL)
-						// ADC A,(HL)
-						// SUB A,(HL)
-						// SBC A,(HL)
-						// AND A,(HL)
-						// OR A,(HL)
-						// XOR A,(HL)
-						// CP A,(HL)
-						MCycles <= "010";
-						case to_integer(unsigned(MCycle)) is
-						when 1 =>
-								Set_Addr_To <= aXY;
-						when 2 =>
-								Read_To_Reg <= 1'b1;
-								Save_ALU <= 1'b1;
-								Set_BusB_To(2 downto 0) <= SSS;
-								Set_BusA_To(2 downto 0) <= "111";
-						when others => null;
-						end case;
-				when "11000110"|"11001110"|"11010110"|"11011110"|"11100110"|"11101110"|"11110110"|"11111110" =>
-						// ADD A,n
-						// ADC A,n
-						// SUB A,n
-						// SBC A,n
-						// AND A,n
-						// OR A,n
-						// XOR A,n
-						// CP A,n
-						MCycles <= "010";
-						if MCycle = "010" begin
-								Inc_PC <= 1'b1;
-								Read_To_Reg <= 1'b1;
-								Save_ALU <= 1'b1;
-								Set_BusB_To(2 downto 0) <= SSS;
-								Set_BusA_To(2 downto 0) <= "111";
+			8'b00000110, 8'b00001110, 8'b00010110, 8'b00011110, 8'b00100110, 8'b00101110, 8'b00111110 :
+				begin
+					// ld r,n
+					mcycles <= 3'b010;
+					case( mcycle )
+					3'd2:
+							inc_pc <= 1'b1;
+							set_busa_to[2:0] <= ddd;
+							read_to_reg <= 1'b1;
+					 others : null;
+					endcase
+				end
+			8'b01000110, 8'b01001110, 8'b01010110, 8'b01011110, 8'b01100110, 8'b01101110, 8'b01111110 :
+				begin
+					// ld r,(hl)
+					mcycles <= 3'b010;
+					case( mcycle )
+					3'd1:
+							set_addr_to <= axy;
+					3'd2:
+							set_busa_to[2:0] <= ddd;
+							read_to_reg <= 1'b1;
+					 others : null;
+					endcase
+				end
+			 8'b01110000, 8'b01110001, 8'b01110010, 8'b01110011, 8'b01110100, 8'b01110101, 8'b01110111 :
+				begin
+					// ld (hl),r
+					mcycles <= 3'b010;
+					case( mcycle )
+					3'd1:
+							set_addr_to <= axy;
+							set_busb_to[2:0] <= sss;
+							set_busb_to[3] <= 1'b0;
+					3'd2:
+							write <= 1'b1;
+					 others : null;
+					endcase
+				end
+			 8'b00110110 :
+				begin
+					// ld (hl),n
+					mcycles <= 3'b011;
+					case( mcycle )
+					3'd2:
+						begin
+							inc_pc <= 1'b1;
+							set_addr_to <= axy;
+							set_busb_to[2:0] <= sss;
+							set_busb_to[3] <= 1'b0;
 						end
-				when "00000100"|"00001100"|"00010100"|"00011100"|"00100100"|"00101100"|"00111100" =>
-						// INC r
-						Set_BusB_To <= "1010";
-						Set_BusA_To(2 downto 0) <= DDD;
-						Read_To_Reg <= 1'b1;
-						Save_ALU <= 1'b1;
-						PreserveC <= 1'b1;
-						ALU_Op <= "0000";
-				when "00110100" =>
-						// INC (HL)
-						MCycles <= "011";
-						case to_integer(unsigned(MCycle)) is
-						when 1 =>
-								Set_Addr_To <= aXY;
-						when 2 =>
-								TStates <= "100";
-								Set_Addr_To <= aXY;
-								Read_To_Reg <= 1'b1;
-								Save_ALU <= 1'b1;
-								PreserveC <= 1'b1;
-								ALU_Op <= "0000";
-								Set_BusB_To <= "1010";
-								Set_BusA_To(2 downto 0) <= DDD;
-						when 3 =>
-								Write <= 1'b1;
-						when others => null;
-						end case;
-				when "00000101"|"00001101"|"00010101"|"00011101"|"00100101"|"00101101"|"00111101" =>
-						// DEC r
-						Set_BusB_To <= "1010";
-						Set_BusA_To(2 downto 0) <= DDD;
-						Read_To_Reg <= 1'b1;
-						Save_ALU <= 1'b1;
-						PreserveC <= 1'b1;
-						ALU_Op <= "0010";
-				when "00110101" =>
-						// DEC (HL)
-						MCycles <= "011";
-						case to_integer(unsigned(MCycle)) is
-						when 1 =>
-								Set_Addr_To <= aXY;
-						when 2 =>
-								TStates <= "100";
-								Set_Addr_To <= aXY;
-								ALU_Op <= "0010";
-								Read_To_Reg <= 1'b1;
-								Save_ALU <= 1'b1;
-								PreserveC <= 1'b1;
-								Set_BusB_To <= "1010";
-								Set_BusA_To(2 downto 0) <= DDD;
-						when 3 =>
-								Write <= 1'b1;
-						when others => null;
-						end case;
-
-// GENERAL PURPOSE ARITHMETIC AND CPU CONTROL GROUPS
-				when "00100111" =>
-						// DAA
-						Set_BusA_To(2 downto 0) <= "111";
-						Read_To_Reg <= 1'b1;
-						ALU_Op <= "1100";
-						Save_ALU <= 1'b1;
-				when "00101111" =>
-						// CPL
-						I_CPL <= 1'b1;
-				when "00111111" =>
-						// CCF
-						I_CCF <= 1'b1;
-				when "00110111" =>
-						// SCF
-						I_SCF <= 1'b1;
-				when "00000000" =>
-						if NMICycle = 1'b1 begin
-								// NMI
-								MCycles <= "011";
-								case to_integer(unsigned(MCycle)) is
-								when 1 =>
-										TStates <= "101";
-										IncDec_16 <= "1111";
-										Set_Addr_To <= aSP;
-										Set_BusB_To <= "1101";
-								when 2 =>
-										TStates <= "100";
-										Write <= 1'b1;
-										IncDec_16 <= "1111";
-										Set_Addr_To <= aSP;
-										Set_BusB_To <= "1100";
-								when 3 =>
-										TStates <= "100";
-										Write <= 1'b1;
-								when others => null;
-								end case;
-						else if IntCycle = 1'b1 begin
-								// INT (IM 2)
-								MCycles <= "101";
-								case to_integer(unsigned(MCycle)) is
-								when 1 =>
-										LDZ <= 1'b1;
-										TStates <= "101";
-										IncDec_16 <= "1111";
-										Set_Addr_To <= aSP;
-										Set_BusB_To <= "1101";
-								when 2 =>
-										TStates <= "100";
-										Write <= 1'b1;
-										IncDec_16 <= "1111";
-										Set_Addr_To <= aSP;
-										Set_BusB_To <= "1100";
-								when 3 =>
-										TStates <= "100";
-										Write <= 1'b1;
-								when 4 =>
-										Inc_PC <= 1'b1;
-										LDZ <= 1'b1;
-								when 5 =>
-										Jump <= 1'b1;
-								when others => null;
-								end case;
-						else
-								// NOP
+					3'd3:
+						begin
+							write <= 1'b1;
 						end
-				when "01110110" =>
-						// HALT
-						Halt <= 1'b1;
-				when "11110011" =>
-						// DI
-						SetDI <= 1'b1;
-				when "11111011" =>
-						// EI
-						SetEI <= 1'b1;
+					default:
+						begin
+							//	hold
+						end
+					endcase
+				end
+			 8'b00001010 :
+				begin
+					// ld a,(bc)
+					mcycles <= 3'b010;
+					case( mcycle )
+					3'd1:
+							set_addr_to <= abc;
+					3'd2:
+							read_to_acc <= 1'b1;
+					default:
+						begin
+							//	hold
+						end
+					endcase
+				end
+			 8'b00011010 :
+				begin
+					// ld a,(de)
+					mcycles <= 3'b010;
+					case( mcycle )
+					3'd1:
+							set_addr_to <= ade;
+					3'd2:
+							read_to_acc <= 1'b1;
+					default:
+						begin
+							//	hold
+						end
+					endcase
+				end
+			 8'b00111010 :
+				begin
+					// ld a,(nn)
+					mcycles <= 3'b100;
+					case( mcycle )
+					3'd2:
+							inc_pc <= 1'b1;
+							ldz <= 1'b1;
+					3'd3:
+							set_addr_to <= azi;
+							inc_pc <= 1'b1;
+					3'd4:
+							read_to_acc <= 1'b1;
+					default:
+						begin
+							//	hold
+						end
+					endcase
+				end
+			 8'b00000010 :
+				begin
+					// ld (bc),a
+					mcycles <= 3'b010;
+					case( mcycle )
+					3'd1:
+							set_addr_to <= abc;
+							set_busb_to <= 4'b0111;
+					3'd2:
+							write <= 1'b1;
+					default:
+						begin
+							//	hold
+						end
+					endcase
+				end
+			 8'b00010010 :
+				begin
+					// ld (de),a
+					mcycles <= 3'b010;
+					case( mcycle )
+					3'd1:
+							set_addr_to <= ade;
+							set_busb_to <= 4'b0111;
+					3'd2:
+							write <= 1'b1;
+					default:
+						begin
+							//	hold
+						end
+					endcase
+				end
+			 8'b00110010 :
+				begin
+					// ld (nn),a
+					mcycles <= 3'b100;
+					case( mcycle )
+					3'd2:
+							inc_pc <= 1'b1;
+							ldz <= 1'b1;
+					3'd3:
+							set_addr_to <= azi;
+							inc_pc <= 1'b1;
+							set_busb_to <= 4'b0111;
+					3'd4:
+							write <= 1'b1;
+					default:
+						begin
+							//	hold
+						end
+					endcase
+				end
+// 16 bit load group
+			 8'b00000001, 8'b00010001, 8'b00100001, 8'b00110001 :
+				begin
+					// ld dd,nn
+					mcycles <= 3'b011;
+					case( mcycle )
+					3'd2:
+						begin
+							inc_pc <= 1'b1;
+							read_to_reg <= 1'b1;
+							if( dpair == 2'b11 ) begin
+									set_busa_to[3:0] <= 4'b1000;
+							end
+							else begin
+									set_busa_to[2:1] <= dpair;
+									set_busa_to[0] <= 1'b1;
+							end
+					3'd3:
+						begin
+							inc_pc <= 1'b1;
+							read_to_reg <= 1'b1;
+							if( dpair == 2'b11 ) begin
+									set_busa_to[3:0] <= 4'b1001;
+							end
+							else begin
+									set_busa_to[2:1] <= dpair;
+									set_busa_to[0] <= 1'b0;
+							end
+					default:
+						begin
+							//	hold
+						end
+					endcase
+			 8'b00101010 :
+					// ld hl,(nn)
+					mcycles <= 3'b101;
+					case( mcycle )
+					3'd2:
+							inc_pc <= 1'b1;
+							ldz <= 1'b1;
+					3'd3:
+							set_addr_to <= azi;
+							inc_pc <= 1'b1;
+							ldw <= 1'b1;
+					3'd4:
+							set_busa_to[2:0] <= 3'b101; // l
+							read_to_reg <= 1'b1;
+							inc_wz <= 1'b1;
+							set_addr_to <= azi;
+					3'd5:
+							set_busa_to[2:0] <= 3'b100; // h
+							read_to_reg <= 1'b1;
+					default:
+						begin
+							//	hold
+						end
+					endcase
+			 8'b00100010 :
+					// ld (nn),hl
+					mcycles <= 3'b101;
+					case( mcycle )
+					3'd2:
+							inc_pc <= 1'b1;
+							ldz <= 1'b1;
+					3'd3:
+							set_addr_to <= azi;
+							inc_pc <= 1'b1;
+							ldw <= 1'b1;
+							set_busb_to <= 4'b0101; // l
+					3'd4:
+							inc_wz <= 1'b1;
+							set_addr_to <= azi;
+							write <= 1'b1;
+							set_busb_to <= 4'b0100; // h
+					3'd5:
+							write <= 1'b1;
+					default:
+						begin
+							//	hold
+						end
+					endcase
+			 8'b11111001 :
+					// ld sp,hl
+					tstates <= 3'b110;
+					ldsphl <= 1'b1;
+			 8'b11000101|8'b11010101|8'b11100101|8'b11110101 :
+					// push qq
+					mcycles <= 3'b011;
+					case( mcycle )
+					3'd1:
+							tstates <= 3'b101;
+							incdec_16 <= 4'b1111;
+							set_addr_to <= asp;
+							if( dpair = 2'b11 ) begin
+									set_busb_to <= 4'b0111;
+							else
+									set_busb_to[2:1] <= dpair;
+									set_busb_to[0] <= 1'b0;
+									set_busb_to[3] <= 1'b0;
+							end
+					3'd2:
+							incdec_16 <= 4'b1111;
+							set_addr_to <= asp;
+							if( dpair = 2'b11 ) begin
+									set_busb_to <= 4'b1011;
+							else
+									set_busb_to[2:1] <= dpair;
+									set_busb_to[0] <= 1'b1;
+									set_busb_to[3] <= 1'b0;
+							end
+							write <= 1'b1;
+					3'd3:
+							write <= 1'b1;
+					default:
+						begin
+							//	hold
+						end
+					endcase
+			 8'b11000001|8'b11010001|8'b11100001|8'b11110001 :
+					// pop qq
+					mcycles <= 3'b011;
+					case( mcycle )
+					3'd1:
+							set_addr_to <= asp;
+					3'd2:
+							incdec_16 <= 4'b0111;
+							set_addr_to <= asp;
+							read_to_reg <= 1'b1;
+							if( dpair = 2'b11 ) begin
+									set_busa_to[3:0] <= 4'b1011;
+							else
+									set_busa_to[2:1] <= dpair;
+									set_busa_to[0] <= 1'b1;
+							end
+					3'd3:
+							incdec_16 <= 4'b0111;
+							read_to_reg <= 1'b1;
+							if( dpair = 2'b11 ) begin
+									set_busa_to[3:0] <= 4'b0111;
+							else
+									set_busa_to[2:1] <= dpair;
+									set_busa_to[0] <= 1'b0;
+							end
+					default:
+						begin
+							//	hold
+						end
+					endcase
 
-// 16 BIT ARITHMETIC GROUP
-				when "00001001"|"00011001"|"00101001"|"00111001" =>
-						// ADD HL,ss
-						MCycles <= "011";
-						case to_integer(unsigned(MCycle)) is
-						when 2 =>
-								NoRead <= 1'b1;
-								ALU_Op <= "0000";
-								Read_To_Reg <= 1'b1;
-								Save_ALU <= 1'b1;
-								Set_BusA_To(2 downto 0) <= "101";
-								case to_integer(unsigned(IR(5 downto 4))) is
-								when 0|1|2 =>
-										Set_BusB_To(2 downto 1) <= IR(5 downto 4);
-										Set_BusB_To(0) <= 1'b1;
-								when others =>
-										Set_BusB_To <= "1000";
-								end case;
-								TStates <= "100";
-								Arith16 <= 1'b1;
-						when 3 =>
-								NoRead <= 1'b1;
-								Read_To_Reg <= 1'b1;
-								Save_ALU <= 1'b1;
-								ALU_Op <= "0001";
-								Set_BusA_To(2 downto 0) <= "100";
-								case to_integer(unsigned(IR(5 downto 4))) is
-								when 0|1|2 =>
-										Set_BusB_To(2 downto 1) <= IR(5 downto 4);
-								when others =>
-										Set_BusB_To <= "1001";
-								end case;
-								Arith16 <= 1'b1;
-						when others =>
-						end case;
-				when "00000011"|"00010011"|"00100011"|"00110011" =>
-						// INC ss
-						TStates <= "110";
-						IncDec_16(3 downto 2) <= "01";
-						IncDec_16(1 downto 0) <= DPair;
-				when "00001011"|"00011011"|"00101011"|"00111011" =>
-						// DEC ss
-						TStates <= "110";
-						IncDec_16(3 downto 2) <= "11";
-						IncDec_16(1 downto 0) <= DPair;
+// exchange, block transfer and search group
+			 8'b11101011 :
+					// ex de,hl
+					exchangedh <= 1'b1;
+			 8'b00001000 :
+					// ex af,af'
+					exchangeaf <= 1'b1;
+			 8'b11011001 :
+					// exx
+					exchangers <= 1'b1;
+			 8'b11100011 :
+					// ex (sp),hl
+					mcycles <= 3'b101;
+					case( mcycle )
+					3'd1:
+							set_addr_to <= asp;
+					3'd2:
+							read_to_reg <= 1'b1;
+							set_busa_to <= 4'b0101;
+							set_busb_to <= 4'b0101;
+							set_addr_to <= asp;
+					3'd3:
+							incdec_16 <= 4'b0111;
+							set_addr_to <= asp;
+							tstates <= 3'b100;
+							write <= 1'b1;
+					3'd4:
+							read_to_reg <= 1'b1;
+							set_busa_to <= 4'b0100;
+							set_busb_to <= 4'b0100;
+							set_addr_to <= asp;
+					3'd5:
+							incdec_16 <= 4'b1111;
+							tstates <= 3'b101;
+							write <= 1'b1;
+					default:
+						begin
+							//	hold
+						end
+					endcase
 
-// ROTATE AND SHIFT GROUP
-				when "00000111"
-						// RLCA
-						|"00010111"
-						// RLA
-						|"00001111"
-						// RRCA
-						|"00011111" =>
-						// RRA
-						Set_BusA_To(2 downto 0) <= "111";
-						ALU_Op <= "1000";
-						Read_To_Reg <= 1'b1;
-						Save_ALU <= 1'b1;
+// 8 bit arithmetic and logical group
+			when 8'b10000000|8'b10000001|8'b10000010|8'b10000011|8'b10000100|8'b10000101|8'b10000111
+					|8'b10001000|8'b10001001|8'b10001010|8'b10001011|8'b10001100|8'b10001101|8'b10001111
+					|8'b10010000|8'b10010001|8'b10010010|8'b10010011|8'b10010100|8'b10010101|8'b10010111
+					|8'b10011000|8'b10011001|8'b10011010|8'b10011011|8'b10011100|8'b10011101|8'b10011111
+					|8'b10100000|8'b10100001|8'b10100010|8'b10100011|8'b10100100|8'b10100101|8'b10100111
+					|8'b10101000|8'b10101001|8'b10101010|8'b10101011|8'b10101100|8'b10101101|8'b10101111
+					|8'b10110000|8'b10110001|8'b10110010|8'b10110011|8'b10110100|8'b10110101|8'b10110111
+					|8'b10111000|8'b10111001|8'b10111010|8'b10111011|8'b10111100|8'b10111101|8'b10111111 =>
+					// add a,r
+					// adc a,r
+					// sub a,r
+					// sbc a,r
+					// and a,r
+					// or a,r
+					// xor a,r
+					// cp a,r
+					set_busb_to[2:0] <= sss;
+					set_busa_to[2:0] <= 3'b111;
+					read_to_reg <= 1'b1;
+					save_alu <= 1'b1;
+			 8'b10000110|8'b10001110|8'b10010110|8'b10011110|8'b10100110|8'b10101110|8'b10110110|8'b10111110 :
+					// add a,(hl)
+					// adc a,(hl)
+					// sub a,(hl)
+					// sbc a,(hl)
+					// and a,(hl)
+					// or a,(hl)
+					// xor a,(hl)
+					// cp a,(hl)
+					mcycles <= 3'b010;
+					case( mcycle )
+					3'd1:
+							set_addr_to <= axy;
+					3'd2:
+							read_to_reg <= 1'b1;
+							save_alu <= 1'b1;
+							set_busb_to[2:0] <= sss;
+							set_busa_to[2:0] <= 3'b111;
+					default:
+						begin
+							//	hold
+						end
+					endcase
+			 8'b11000110|8'b11001110|8'b11010110|8'b11011110|8'b11100110|8'b11101110|8'b11110110|8'b11111110 :
+					// add a,n
+					// adc a,n
+					// sub a,n
+					// sbc a,n
+					// and a,n
+					// or a,n
+					// xor a,n
+					// cp a,n
+					mcycles <= 3'b010;
+					if( mcycle = 3'b010 ) begin
+							inc_pc <= 1'b1;
+							read_to_reg <= 1'b1;
+							save_alu <= 1'b1;
+							set_busb_to[2:0] <= sss;
+							set_busa_to[2:0] <= 3'b111;
+					end
+			 8'b00000100|8'b00001100|8'b00010100|8'b00011100|8'b00100100|8'b00101100|8'b00111100 :
+					// inc r
+					set_busb_to <= 4'b1010;
+					set_busa_to[2:0] <= ddd;
+					read_to_reg <= 1'b1;
+					save_alu <= 1'b1;
+					preservec <= 1'b1;
+					alu_op <= 4'b0000;
+			 8'b00110100 :
+					// inc (hl)
+					mcycles <= 3'b011;
+					case( mcycle )
+					3'd1:
+							set_addr_to <= axy;
+					3'd2:
+							tstates <= 3'b100;
+							set_addr_to <= axy;
+							read_to_reg <= 1'b1;
+							save_alu <= 1'b1;
+							preservec <= 1'b1;
+							alu_op <= 4'b0000;
+							set_busb_to <= 4'b1010;
+							set_busa_to[2:0] <= ddd;
+					3'd3:
+							write <= 1'b1;
+					default:
+						begin
+							//	hold
+						end
+					endcase
+			 8'b00000101|8'b00001101|8'b00010101|8'b00011101|8'b00100101|8'b00101101|8'b00111101 :
+					// dec r
+					set_busb_to <= 4'b1010;
+					set_busa_to[2:0] <= ddd;
+					read_to_reg <= 1'b1;
+					save_alu <= 1'b1;
+					preservec <= 1'b1;
+					alu_op <= 4'b0010;
+			 8'b00110101 :
+					// dec (hl)
+					mcycles <= 3'b011;
+					case( mcycle )
+					3'd1:
+							set_addr_to <= axy;
+					3'd2:
+							tstates <= 3'b100;
+							set_addr_to <= axy;
+							alu_op <= 4'b0010;
+							read_to_reg <= 1'b1;
+							save_alu <= 1'b1;
+							preservec <= 1'b1;
+							set_busb_to <= 4'b1010;
+							set_busa_to[2:0] <= ddd;
+					3'd3:
+							write <= 1'b1;
+					default:
+						begin
+							//	hold
+						end
+					endcase
 
-// JUMP GROUP
-				when "11000011" =>
-						// JP nn
-						MCycles <= "011";
-						case to_integer(unsigned(MCycle)) is
-						when 2 =>
-								Inc_PC <= 1'b1;
-								LDZ <= 1'b1;
-						when 3 =>
-								Inc_PC <= 1'b1;
-								Jump <= 1'b1;
-						when others => null;
-						end case;
-				when "11000010"|"11001010"|"11010010"|"11011010"|"11100010"|"11101010"|"11110010"|"11111010" =>
-						// JP cc,nn
-						MCycles <= "011";
-						case to_integer(unsigned(MCycle)) is
-						when 2 =>
-								Inc_PC <= 1'b1;
-								LDZ <= 1'b1;
-						when 3 =>
-								Inc_PC <= 1'b1;
-								if is_cc_true(F, to_bitvector(IR(5 downto 3))) begin
-										Jump <= 1'b1;
+// general purpose arithmetic and cpu control groups
+			 8'b00100111 :
+					// daa
+					set_busa_to[2:0] <= 3'b111;
+					read_to_reg <= 1'b1;
+					alu_op <= 4'b1100;
+					save_alu <= 1'b1;
+			 8'b00101111 :
+					// cpl
+					i_cpl <= 1'b1;
+			 8'b00111111 :
+					// ccf
+					i_ccf <= 1'b1;
+			 8'b00110111 :
+					// scf
+					i_scf <= 1'b1;
+			 8'b00000000 :
+					if( nmicycle = 1'b1 ) begin
+							// nmi
+							mcycles <= 3'b011;
+							case( mcycle )
+							3'd1:
+									tstates <= 3'b101;
+									incdec_16 <= 4'b1111;
+									set_addr_to <= asp;
+									set_busb_to <= 4'b1101;
+							3'd2:
+									tstates <= 3'b100;
+									write <= 1'b1;
+									incdec_16 <= 4'b1111;
+									set_addr_to <= asp;
+									set_busb_to <= 4'b1100;
+							3'd3:
+									tstates <= 3'b100;
+									write <= 1'b1;
+							default:
+								begin
+									//	hold
 								end
-						when others => null;
-						end case;
-				when "00011000" =>
-						// JR e
-						MCycles <= "011";
-						case to_integer(unsigned(MCycle)) is
-						when 2 =>
-								Inc_PC <= 1'b1;
-						when 3 =>
-								NoRead <= 1'b1;
-								JumpE <= 1'b1;
-								TStates <= "101";
-						when others => null;
-						end case;
-				when "00111000" =>
-						// JR C,e
-						MCycles <= "011";
-						case to_integer(unsigned(MCycle)) is
-						when 2 =>
-								Inc_PC <= 1'b1;
-								if F(Flag_C) = 1'b0 begin
-										MCycles <= "010";
+							endcase
+					else if( intcycle = 1'b1 ) begin
+							// int (im 2)
+							mcycles <= 3'b101;
+							case( mcycle )
+							3'd1:
+									ldz <= 1'b1;
+									tstates <= 3'b101;
+									incdec_16 <= 4'b1111;
+									set_addr_to <= asp;
+									set_busb_to <= 4'b1101;
+							3'd2:
+									tstates <= 3'b100;
+									write <= 1'b1;
+									incdec_16 <= 4'b1111;
+									set_addr_to <= asp;
+									set_busb_to <= 4'b1100;
+							3'd3:
+									tstates <= 3'b100;
+									write <= 1'b1;
+							3'd4:
+									inc_pc <= 1'b1;
+									ldz <= 1'b1;
+							3'd5:
+									jump <= 1'b1;
+							default:
+								begin
+									//	hold
 								end
-						when 3 =>
-								NoRead <= 1'b1;
-								JumpE <= 1'b1;
-								TStates <= "101";
-						when others => null;
-						end case;
-				when "00110000" =>
-						// JR NC,e
-						MCycles <= "011";
-						case to_integer(unsigned(MCycle)) is
-						when 2 =>
-								Inc_PC <= 1'b1;
-								if F(Flag_C) = 1'b1 begin
-										MCycles <= "010";
-								end
-						when 3 =>
-								NoRead <= 1'b1;
-								JumpE <= 1'b1;
-								TStates <= "101";
-						when others => null;
-						end case;
-				when "00101000" =>
-						// JR Z,e
-						MCycles <= "011";
-						case to_integer(unsigned(MCycle)) is
-						when 2 =>
-								Inc_PC <= 1'b1;
-								if F(Flag_Z) = 1'b0 begin
-										MCycles <= "010";
-								end
-						when 3 =>
-								NoRead <= 1'b1;
-								JumpE <= 1'b1;
-								TStates <= "101";
-						when others => null;
-						end case;
-				when "00100000" =>
-						// JR NZ,e
-						MCycles <= "011";
-						case to_integer(unsigned(MCycle)) is
-						when 2 =>
-								Inc_PC <= 1'b1;
-								if F(Flag_Z) = 1'b1 begin
-										MCycles <= "010";
-								end
-						when 3 =>
-								NoRead <= 1'b1;
-								JumpE <= 1'b1;
-								TStates <= "101";
-						when others => null;
-						end case;
-				when "11101001" =>
-						// JP (HL)
-						JumpXY <= 1'b1;
-				when "00010000" =>
-						// DJNZ,e
-						MCycles <= "011";
-						case to_integer(unsigned(MCycle)) is
-						when 1 =>
-								TStates <= "101";
-								I_DJNZ <= 1'b1;
-								Set_BusB_To <= "1010";
-								Set_BusA_To(2 downto 0) <= "000";
-								Read_To_Reg <= 1'b1;
-								Save_ALU <= 1'b1;
-								ALU_Op <= "0010";
-						when 2 =>
-								I_DJNZ <= 1'b1;
-								Inc_PC <= 1'b1;
-						when 3 =>
-								NoRead <= 1'b1;
-								JumpE <= 1'b1;
-								TStates <= "101";
-						when others => null;
-						end case;
+							endcase
+					else
+							// nop
+					end
+			 8'b01110110 :
+					// halt
+					halt <= 1'b1;
+			 8'b11110011 :
+					// di
+					setdi <= 1'b1;
+			 8'b11111011 :
+					// ei
+					setei <= 1'b1;
 
-// CALL AND RETURN GROUP
-				when "11001101" =>
-						// CALL nn
-						MCycles <= "101";
-						case to_integer(unsigned(MCycle)) is
-						when 2 =>
-								Inc_PC <= 1'b1;
-								LDZ <= 1'b1;
-						when 3 =>
-								IncDec_16 <= "1111";
-								Inc_PC <= 1'b1;
-								TStates <= "100";
-								Set_Addr_To <= aSP;
-								LDW <= 1'b1;
-								Set_BusB_To <= "1101";
-						when 4 =>
-								Write <= 1'b1;
-								IncDec_16 <= "1111";
-								Set_Addr_To <= aSP;
-								Set_BusB_To <= "1100";
-						when 5 =>
-								Write <= 1'b1;
-								Call <= 1'b1;
-						when others => null;
-						end case;
-				when "11000100"|"11001100"|"11010100"|"11011100"|"11100100"|"11101100"|"11110100"|"11111100" =>
-						// CALL cc,nn
-						MCycles <= "101";
-						case to_integer(unsigned(MCycle)) is
-						when 2 =>
-								Inc_PC <= 1'b1;
-								LDZ <= 1'b1;
-						when 3 =>
-								Inc_PC <= 1'b1;
-								LDW <= 1'b1;
-								if is_cc_true(F, to_bitvector(IR(5 downto 3))) begin
-										IncDec_16 <= "1111";
-										Set_Addr_TO <= aSP;
-										TStates <= "100";
-										Set_BusB_To <= "1101";
-								else
-										MCycles <= "011";
-								end
-						when 4 =>
-								Write <= 1'b1;
-								IncDec_16 <= "1111";
-								Set_Addr_To <= aSP;
-								Set_BusB_To <= "1100";
-						when 5 =>
-								Write <= 1'b1;
-								Call <= 1'b1;
-						when others => null;
-						end case;
-				when "11001001" =>
-						// RET
-						MCycles <= "011";
-						case to_integer(unsigned(MCycle)) is
-						when 1 =>
-								TStates <= "101";
-								Set_Addr_TO <= aSP;
-						when 2 =>
-								IncDec_16 <= "0111";
-								Set_Addr_To <= aSP;
-								LDZ <= 1'b1;
-						when 3 =>
-								Jump <= 1'b1;
-								IncDec_16 <= "0111";
-						when others => null;
-						end case;
-				when "11000000"|"11001000"|"11010000"|"11011000"|"11100000"|"11101000"|"11110000"|"11111000" =>
-						// RET cc
-						MCycles <= "011";
-						case to_integer(unsigned(MCycle)) is
-						when 1 =>
-								if is_cc_true(F, to_bitvector(IR(5 downto 3))) begin
-										Set_Addr_TO <= aSP;
-								else
-										MCycles <= "001";
-								end
-								TStates <= "101";
-						when 2 =>
-								IncDec_16 <= "0111";
-								Set_Addr_To <= aSP;
-								LDZ <= 1'b1;
-						when 3 =>
-								Jump <= 1'b1;
-								IncDec_16 <= "0111";
-						when others => null;
-						end case;
-				when "11000111"|"11001111"|"11010111"|"11011111"|"11100111"|"11101111"|"11110111"|"11111111" =>
-						// RST p
-						MCycles <= "011";
-						case to_integer(unsigned(MCycle)) is
-						when 1 =>
-								TStates <= "101";
-								IncDec_16 <= "1111";
-								Set_Addr_To <= aSP;
-								Set_BusB_To <= "1101";
-						when 2 =>
-								Write <= 1'b1;
-								IncDec_16 <= "1111";
-								Set_Addr_To <= aSP;
-								Set_BusB_To <= "1100";
-						when 3 =>
-								Write <= 1'b1;
-								RstP <= 1'b1;
-						when others => null;
-						end case;
+// 16 bit arithmetic group
+			 8'b00001001|8'b00011001|8'b00101001|8'b00111001 :
+					// add hl,ss
+					mcycles <= 3'b011;
+					case( mcycle )
+					3'd2:
+							noread <= 1'b1;
+							alu_op <= 4'b0000;
+							read_to_reg <= 1'b1;
+							save_alu <= 1'b1;
+							set_busa_to[2:0] <= 3'b101;
+							case to_integer(unsigned(ir[5:4])) is
+							 3'd0, 3'd1, 3'd2:
+									set_busb_to[2:1] <= ir[5:4];
+									set_busb_to[0] <= 1'b1;
+							 others :
+									set_busb_to <= 4'b1000;
+							endcase
+							tstates <= 3'b100;
+							arith16 <= 1'b1;
+					3'd3:
+							noread <= 1'b1;
+							read_to_reg <= 1'b1;
+							save_alu <= 1'b1;
+							alu_op <= 4'b0001;
+							set_busa_to[2:0] <= 3'b100;
+							case to_integer(unsigned(ir[5:4])) is
+							 3'd0, 3'd1, 3'd2:
+									set_busb_to[2:1] <= ir[5:4];
+							 others :
+									set_busb_to <= 4'b1001;
+							endcase
+							arith16 <= 1'b1;
+					default:
+						begin
+							//	hold
+						end
+					endcase
+			 8'b00000011|8'b00010011|8'b00100011|8'b00110011 :
+					// inc ss
+					tstates <= 3'b110;
+					incdec_16[3:2] <= 2'b01;
+					incdec_16[1:0] <= dpair;
+			 8'b00001011|8'b00011011|8'b00101011|8'b00111011 :
+					// dec ss
+					tstates <= 3'b110;
+					incdec_16[3:2] <= 2'b11;
+					incdec_16[1:0] <= dpair;
 
-// INPUT AND OUTPUT GROUP
-				when "11011011" =>
-						// IN A,(n)
-						MCycles <= "011";
-						case to_integer(unsigned(MCycle)) is
-						when 2 =>
-								Inc_PC <= 1'b1;
-								Set_Addr_To <= aIOA;
-						when 3 =>
-								Read_To_Acc <= 1'b1;
-								IORQ <= 1'b1;
-						when others => null;
-						end case;
-				when "11010011" =>
-						// OUT (n),A
-						MCycles <= "011";
-						case to_integer(unsigned(MCycle)) is
-						when 2 =>
-								Inc_PC <= 1'b1;
-								Set_Addr_To <= aIOA;
-								Set_BusB_To		<= "0111";
-						when 3 =>
-								Write <= 1'b1;
-								IORQ <= 1'b1;
-						when others => null;
-						end case;
+// rotate and shift group
+			when 8'b00000111
+					// rlca
+					|8'b00010111
+					// rla
+					|8'b00001111
+					// rrca
+					|8'b00011111 =>
+					// rra
+					set_busa_to[2:0] <= 3'b111;
+					alu_op <= 4'b1000;
+					read_to_reg <= 1'b1;
+					save_alu <= 1'b1;
+
+// jump group
+			 8'b11000011 :
+					// jp nn
+					mcycles <= 3'b011;
+					case( mcycle )
+					3'd2:
+							inc_pc <= 1'b1;
+							ldz <= 1'b1;
+					3'd3:
+							inc_pc <= 1'b1;
+							jump <= 1'b1;
+					default:
+						begin
+							//	hold
+						end
+					endcase
+			 8'b11000010|8'b11001010|8'b11010010|8'b11011010|8'b11100010|8'b11101010|8'b11110010|8'b11111010 :
+					// jp cc,nn
+					mcycles <= 3'b011;
+					case( mcycle )
+					3'd2:
+							inc_pc <= 1'b1;
+							ldz <= 1'b1;
+					3'd3:
+							inc_pc <= 1'b1;
+							if( is_cc_true(f, to_bitvector(ir[5:3])) ) begin
+									jump <= 1'b1;
+							end
+					default:
+						begin
+							//	hold
+						end
+					endcase
+			 8'b00011000 :
+					// jr e
+					mcycles <= 3'b011;
+					case( mcycle )
+					3'd2:
+							inc_pc <= 1'b1;
+					3'd3:
+							noread <= 1'b1;
+							jumpe <= 1'b1;
+							tstates <= 3'b101;
+					default:
+						begin
+							//	hold
+						end
+					endcase
+			 8'b00111000 :
+					// jr c,e
+					mcycles <= 3'b011;
+					case( mcycle )
+					3'd2:
+							inc_pc <= 1'b1;
+							if( f(flag_c) = 1'b0 ) begin
+									mcycles <= 3'b010;
+							end
+					3'd3:
+							noread <= 1'b1;
+							jumpe <= 1'b1;
+							tstates <= 3'b101;
+					default:
+						begin
+							//	hold
+						end
+					endcase
+			 8'b00110000 :
+					// jr nc,e
+					mcycles <= 3'b011;
+					case( mcycle )
+					3'd2:
+							inc_pc <= 1'b1;
+							if( f(flag_c) = 1'b1 ) begin
+									mcycles <= 3'b010;
+							end
+					3'd3:
+							noread <= 1'b1;
+							jumpe <= 1'b1;
+							tstates <= 3'b101;
+					default:
+						begin
+							//	hold
+						end
+					endcase
+			 8'b00101000 :
+					// jr z,e
+					mcycles <= 3'b011;
+					case( mcycle )
+					3'd2:
+							inc_pc <= 1'b1;
+							if( f(flag_z) = 1'b0 ) begin
+									mcycles <= 3'b010;
+							end
+					3'd3:
+							noread <= 1'b1;
+							jumpe <= 1'b1;
+							tstates <= 3'b101;
+					default:
+						begin
+							//	hold
+						end
+					endcase
+			 8'b00100000 :
+					// jr nz,e
+					mcycles <= 3'b011;
+					case( mcycle )
+					3'd2:
+							inc_pc <= 1'b1;
+							if( f(flag_z) = 1'b1 ) begin
+									mcycles <= 3'b010;
+							end
+					3'd3:
+							noread <= 1'b1;
+							jumpe <= 1'b1;
+							tstates <= 3'b101;
+					default:
+						begin
+							//	hold
+						end
+					endcase
+			 8'b11101001 :
+					// jp (hl)
+					jumpxy <= 1'b1;
+			 8'b00010000 :
+					// djnz,e
+					mcycles <= 3'b011;
+					case( mcycle )
+					3'd1:
+							tstates <= 3'b101;
+							i_djnz <= 1'b1;
+							set_busb_to <= 4'b1010;
+							set_busa_to[2:0] <= 3'b000;
+							read_to_reg <= 1'b1;
+							save_alu <= 1'b1;
+							alu_op <= 4'b0010;
+					3'd2:
+							i_djnz <= 1'b1;
+							inc_pc <= 1'b1;
+					3'd3:
+							noread <= 1'b1;
+							jumpe <= 1'b1;
+							tstates <= 3'b101;
+					default:
+						begin
+							//	hold
+						end
+					endcase
+
+// call and return group
+			 8'b11001101 :
+					// call nn
+					mcycles <= 3'b101;
+					case( mcycle )
+					3'd2:
+							inc_pc <= 1'b1;
+							ldz <= 1'b1;
+					3'd3:
+							incdec_16 <= 4'b1111;
+							inc_pc <= 1'b1;
+							tstates <= 3'b100;
+							set_addr_to <= asp;
+							ldw <= 1'b1;
+							set_busb_to <= 4'b1101;
+					3'd4:
+							write <= 1'b1;
+							incdec_16 <= 4'b1111;
+							set_addr_to <= asp;
+							set_busb_to <= 4'b1100;
+					3'd5:
+							write <= 1'b1;
+							call <= 1'b1;
+					default:
+						begin
+							//	hold
+						end
+					endcase
+			 8'b11000100|8'b11001100|8'b11010100|8'b11011100|8'b11100100|8'b11101100|8'b11110100|8'b11111100 :
+					// call cc,nn
+					mcycles <= 3'b101;
+					case( mcycle )
+					3'd2:
+							inc_pc <= 1'b1;
+							ldz <= 1'b1;
+					3'd3:
+							inc_pc <= 1'b1;
+							ldw <= 1'b1;
+							if( is_cc_true(f, to_bitvector(ir[5:3])) ) begin
+									incdec_16 <= 4'b1111;
+									set_addr_to <= asp;
+									tstates <= 3'b100;
+									set_busb_to <= 4'b1101;
+							else
+									mcycles <= 3'b011;
+							end
+					3'd4:
+							write <= 1'b1;
+							incdec_16 <= 4'b1111;
+							set_addr_to <= asp;
+							set_busb_to <= 4'b1100;
+					3'd5:
+							write <= 1'b1;
+							call <= 1'b1;
+					default:
+						begin
+							//	hold
+						end
+					endcase
+			 8'b11001001 :
+					// ret
+					mcycles <= 3'b011;
+					case( mcycle )
+					3'd1:
+							tstates <= 3'b101;
+							set_addr_to <= asp;
+					3'd2:
+							incdec_16 <= 4'b0111;
+							set_addr_to <= asp;
+							ldz <= 1'b1;
+					3'd3:
+							jump <= 1'b1;
+							incdec_16 <= 4'b0111;
+					default:
+						begin
+							//	hold
+						end
+					endcase
+			 8'b11000000|8'b11001000|8'b11010000|8'b11011000|8'b11100000|8'b11101000|8'b11110000|8'b11111000 :
+					// ret cc
+					mcycles <= 3'b011;
+					case( mcycle )
+					3'd1:
+							if( is_cc_true(f, to_bitvector(ir[5:3])) ) begin
+									set_addr_to <= asp;
+							else
+									mcycles <= 3'b001;
+							end
+							tstates <= 3'b101;
+					3'd2:
+							incdec_16 <= 4'b0111;
+							set_addr_to <= asp;
+							ldz <= 1'b1;
+					3'd3:
+							jump <= 1'b1;
+							incdec_16 <= 4'b0111;
+					default:
+						begin
+							//	hold
+						end
+					endcase
+			 8'b11000111|8'b11001111|8'b11010111|8'b11011111|8'b11100111|8'b11101111|8'b11110111|8'b11111111 :
+					// rst p
+					mcycles <= 3'b011;
+					case( mcycle )
+					3'd1:
+							tstates <= 3'b101;
+							incdec_16 <= 4'b1111;
+							set_addr_to <= asp;
+							set_busb_to <= 4'b1101;
+					3'd2:
+							write <= 1'b1;
+							incdec_16 <= 4'b1111;
+							set_addr_to <= asp;
+							set_busb_to <= 4'b1100;
+					3'd3:
+							write <= 1'b1;
+							rstp <= 1'b1;
+					default:
+						begin
+							//	hold
+						end
+					endcase
+
+// input and output group
+			 8'b11011011 :
+					// in a,(n)
+					mcycles <= 3'b011;
+					case( mcycle )
+					3'd2:
+							inc_pc <= 1'b1;
+							set_addr_to <= aioa;
+					3'd3:
+							read_to_acc <= 1'b1;
+							iorq <= 1'b1;
+					default:
+						begin
+							//	hold
+						end
+					endcase
+			 8'b11010011 :
+					// out (n),a
+					mcycles <= 3'b011;
+					case( mcycle )
+					3'd2:
+							inc_pc <= 1'b1;
+							set_addr_to <= aioa;
+							set_busb_to		<= 4'b0111;
+					3'd3:
+							write <= 1'b1;
+							iorq <= 1'b1;
+					default:
+						begin
+							//	hold
+						end
+					endcase
 
 // --------------------------------------------------------------------
-//  MULTIBYTE INSTRUCTIONS
+//  multibyte instructions
 // --------------------------------------------------------------------
 
-				when "11001011" =>
-						Prefix <= "01";
+			 8'b11001011 :
+					prefix <= 2'b01;
 
-				when "11101101" =>
-						Prefix <= "10";
+			 8'b11101101 :
+					prefix <= 2'b10;
 
-				when "11011101"|"11111101" =>
-						Prefix <= "11";
+			 8'b11011101|8'b11111101 :
+					prefix <= 2'b11;
 
-				end case;
+			endcase
 
-				when "01" =>
+			 2'b01 :
 
 // --------------------------------------------------------------------
-//  CB prefixed instructions
+//  cb prefixed instructions
 // --------------------------------------------------------------------
 
-			Set_BusA_To(2 downto 0) <= IR(2 downto 0);
-			Set_BusB_To(2 downto 0) <= IR(2 downto 0);
+		set_busa_to[2:0] <= ir[2:0];
+		set_busb_to[2:0] <= ir[2:0];
 
-			case IRB is
-			when "00000000"|"00000001"|"00000010"|"00000011"|"00000100"|"00000101"|"00000111"
-				|"00010000"|"00010001"|"00010010"|"00010011"|"00010100"|"00010101"|"00010111"
-				|"00001000"|"00001001"|"00001010"|"00001011"|"00001100"|"00001101"|"00001111"
-				|"00011000"|"00011001"|"00011010"|"00011011"|"00011100"|"00011101"|"00011111"
-				|"00100000"|"00100001"|"00100010"|"00100011"|"00100100"|"00100101"|"00100111"
-				|"00101000"|"00101001"|"00101010"|"00101011"|"00101100"|"00101101"|"00101111"
-				|"00110000"|"00110001"|"00110010"|"00110011"|"00110100"|"00110101"|"00110111"
-				|"00111000"|"00111001"|"00111010"|"00111011"|"00111100"|"00111101"|"00111111" =>
-				// RLC r
-				// RL r
-				// RRC r
-				// RR r
-				// SLA r
-				// SRA r
-				// SRL r
-				// SLL r (Undocumented) / SWAP r
-				if XY_State="00" begin
-					if MCycle = "001" begin
-					  ALU_Op <= "1000";
-					  Read_To_Reg <= 1'b1;
-					  Save_ALU <= 1'b1;
-					end
-				else
-				// R/S (IX+d),Reg, undocumented
-					MCycles <= "011";
-					XYbit_undoc <= 1'b1;
-					case to_integer(unsigned(MCycle)) is
-					when 1 | 7=>
-						Set_Addr_To <= aXY;
-					when 2 =>
-						ALU_Op <= "1000";
-						Read_To_Reg <= 1'b1;
-						Save_ALU <= 1'b1;
-						Set_Addr_To <= aXY;
-						TStates <= "100";
-					when 3 =>
-						Write <= 1'b1;
-					when others => null;
-					end case;
+		case irb is
+		when 8'b00000000|8'b00000001|8'b00000010|8'b00000011|8'b00000100|8'b00000101|8'b00000111
+			|8'b00010000|8'b00010001|8'b00010010|8'b00010011|8'b00010100|8'b00010101|8'b00010111
+			|8'b00001000|8'b00001001|8'b00001010|8'b00001011|8'b00001100|8'b00001101|8'b00001111
+			|8'b00011000|8'b00011001|8'b00011010|8'b00011011|8'b00011100|8'b00011101|8'b00011111
+			|8'b00100000|8'b00100001|8'b00100010|8'b00100011|8'b00100100|8'b00100101|8'b00100111
+			|8'b00101000|8'b00101001|8'b00101010|8'b00101011|8'b00101100|8'b00101101|8'b00101111
+			|8'b00110000|8'b00110001|8'b00110010|8'b00110011|8'b00110100|8'b00110101|8'b00110111
+			|8'b00111000|8'b00111001|8'b00111010|8'b00111011|8'b00111100|8'b00111101|8'b00111111 =>
+			// rlc r
+			// rl r
+			// rrc r
+			// rr r
+			// sla r
+			// sra r
+			// srl r
+			// sll r (undocumented) / swap r
+			if( xy_state=2'b00 ) begin
+				if( mcycle = 3'b001 ) begin
+				  alu_op <= 4'b1000;
+				  read_to_reg <= 1'b1;
+				  save_alu <= 1'b1;
 				end
-
-
-			when "00000110"|"00010110"|"00001110"|"00011110"|"00101110"|"00111110"|"00100110"|"00110110" =>
-				// RLC (HL)
-				// RL (HL)
-				// RRC (HL)
-				// RR (HL)
-				// SRA (HL)
-				// SRL (HL)
-				// SLA (HL)
-				// SLL (HL) (Undocumented) / SWAP (HL)
-				MCycles <= "011";
-				case to_integer(unsigned(MCycle)) is
-				when 1 | 7 =>
-					Set_Addr_To <= aXY;
-				when 2 =>
-					ALU_Op <= "1000";
-					Read_To_Reg <= 1'b1;
-					Save_ALU <= 1'b1;
-					Set_Addr_To <= aXY;
-					TStates <= "100";
-				when 3 =>
-					Write <= 1'b1;
-				when others =>
-				end case;
-			when "01000000"|"01000001"|"01000010"|"01000011"|"01000100"|"01000101"|"01000111"
-				|"01001000"|"01001001"|"01001010"|"01001011"|"01001100"|"01001101"|"01001111"
-				|"01010000"|"01010001"|"01010010"|"01010011"|"01010100"|"01010101"|"01010111"
-				|"01011000"|"01011001"|"01011010"|"01011011"|"01011100"|"01011101"|"01011111"
-				|"01100000"|"01100001"|"01100010"|"01100011"|"01100100"|"01100101"|"01100111"
-				|"01101000"|"01101001"|"01101010"|"01101011"|"01101100"|"01101101"|"01101111"
-				|"01110000"|"01110001"|"01110010"|"01110011"|"01110100"|"01110101"|"01110111"
-				|"01111000"|"01111001"|"01111010"|"01111011"|"01111100"|"01111101"|"01111111" =>
-				// BIT b,r
-				if XY_State="00" begin
-					if MCycle = "001" begin
-					  Set_BusB_To(2 downto 0) <= IR(2 downto 0);
-					  ALU_Op <= "1001";
+			else
+			// r/s (ix+d),reg, undocumented
+				mcycles <= 3'b011;
+				xybit_undoc <= 1'b1;
+				case( mcycle )
+				3'd1, 3'd7:
+					set_addr_to <= axy;
+				3'd2:
+					alu_op <= 4'b1000;
+					read_to_reg <= 1'b1;
+					save_alu <= 1'b1;
+					set_addr_to <= axy;
+					tstates <= 3'b100;
+				3'd3:
+					write <= 1'b1;
+				default:
+					begin
+						//	hold
 					end
-				else
-				// BIT b,(IX+d), undocumented
-					MCycles <= "010";
-					XYbit_undoc <= 1'b1;
-					case to_integer(unsigned(MCycle)) is
-					when 1 | 7=>
-						Set_Addr_To <= aXY;
-					when 2 =>
-						ALU_Op <= "1001";
-						TStates <= "100";
-					when others => null;
-					end case;
-				end
-			when "01000110"|"01001110"|"01010110"|"01011110"|"01100110"|"01101110"|"01110110"|"01111110" =>
-				// BIT b,(HL)
-				MCycles <= "010";
-				case to_integer(unsigned(MCycle)) is
-				when 1 | 7=>
-					Set_Addr_To <= aXY;
-				when 2 =>
-					ALU_Op <= "1001";
-					TStates <= "100";
-				when others => null;
-				end case;
-			when "11000000"|"11000001"|"11000010"|"11000011"|"11000100"|"11000101"|"11000111"
-				|"11001000"|"11001001"|"11001010"|"11001011"|"11001100"|"11001101"|"11001111"
-				|"11010000"|"11010001"|"11010010"|"11010011"|"11010100"|"11010101"|"11010111"
-				|"11011000"|"11011001"|"11011010"|"11011011"|"11011100"|"11011101"|"11011111"
-				|"11100000"|"11100001"|"11100010"|"11100011"|"11100100"|"11100101"|"11100111"
-				|"11101000"|"11101001"|"11101010"|"11101011"|"11101100"|"11101101"|"11101111"
-				|"11110000"|"11110001"|"11110010"|"11110011"|"11110100"|"11110101"|"11110111"
-				|"11111000"|"11111001"|"11111010"|"11111011"|"11111100"|"11111101"|"11111111" =>
-				// SET b,r
-				if XY_State="00" begin
-					if MCycle = "001" begin
-					  ALU_Op <= "1010";
-					  Read_To_Reg <= 1'b1;
-					  Save_ALU <= 1'b1;
-					end
-				else
-				// SET b,(IX+d),Reg, undocumented
-					MCycles <= "011";
-					XYbit_undoc <= 1'b1;
-					case to_integer(unsigned(MCycle)) is
-					when 1 | 7=>
-						Set_Addr_To <= aXY;
-					when 2 =>
-						ALU_Op <= "1010";
-						Read_To_Reg <= 1'b1;
-						Save_ALU <= 1'b1;
-						Set_Addr_To <= aXY;
-						TStates <= "100";
-					when 3 =>
-						Write <= 1'b1;
-					when others => null;
-					end case;
-				end
-			when "11000110"|"11001110"|"11010110"|"11011110"|"11100110"|"11101110"|"11110110"|"11111110" =>
-				// SET b,(HL)
-				MCycles <= "011";
-				case to_integer(unsigned(MCycle)) is
-				when 1 | 7=>
-					Set_Addr_To <= aXY;
-				when 2 =>
-					ALU_Op <= "1010";
-					Read_To_Reg <= 1'b1;
-					Save_ALU <= 1'b1;
-					Set_Addr_To <= aXY;
-					TStates <= "100";
-				when 3 =>
-					Write <= 1'b1;
-				when others => null;
-				end case;
-			when "10000000"|"10000001"|"10000010"|"10000011"|"10000100"|"10000101"|"10000111"
-				|"10001000"|"10001001"|"10001010"|"10001011"|"10001100"|"10001101"|"10001111"
-				|"10010000"|"10010001"|"10010010"|"10010011"|"10010100"|"10010101"|"10010111"
-				|"10011000"|"10011001"|"10011010"|"10011011"|"10011100"|"10011101"|"10011111"
-				|"10100000"|"10100001"|"10100010"|"10100011"|"10100100"|"10100101"|"10100111"
-				|"10101000"|"10101001"|"10101010"|"10101011"|"10101100"|"10101101"|"10101111"
-				|"10110000"|"10110001"|"10110010"|"10110011"|"10110100"|"10110101"|"10110111"
-				|"10111000"|"10111001"|"10111010"|"10111011"|"10111100"|"10111101"|"10111111" =>
-				// RES b,r
-				if XY_State="00" begin
-					if MCycle = "001" begin
-					  ALU_Op <= "1011";
-					  Read_To_Reg <= 1'b1;
-					  Save_ALU <= 1'b1;
-					end
-				else
-				// RES b,(IX+d),Reg, undocumented
-					MCycles <= "011";
-					XYbit_undoc <= 1'b1;
-					case to_integer(unsigned(MCycle)) is
-					when 1 | 7=>
-						Set_Addr_To <= aXY;
-					when 2 =>
-						ALU_Op <= "1011";
-						Read_To_Reg <= 1'b1;
-						Save_ALU <= 1'b1;
-						Set_Addr_To <= aXY;
-						TStates <= "100";
-					when 3 =>
-						Write <= 1'b1;
-					when others => null;
-					end case;
-				end
+				endcase
+			end
 
-			when "10000110"|"10001110"|"10010110"|"10011110"|"10100110"|"10101110"|"10110110"|"10111110" =>
-				// RES b,(HL)
-				MCycles <= "011";
-				case to_integer(unsigned(MCycle)) is
-				when 1 | 7 =>
-					Set_Addr_To <= aXY;
-				when 2 =>
-					ALU_Op <= "1011";
-					Read_To_Reg <= 1'b1;
-					Save_ALU <= 1'b1;
-					Set_Addr_To <= aXY;
-					TStates <= "100";
-				when 3 =>
-					Write <= 1'b1;
-				when others => null;
-				end case;
-			end case;
 
-		when others =>
+		 8'b00000110|8'b00010110|8'b00001110|8'b00011110|8'b00101110|8'b00111110|8'b00100110|8'b00110110 :
+			// rlc (hl)
+			// rl (hl)
+			// rrc (hl)
+			// rr (hl)
+			// sra (hl)
+			// srl (hl)
+			// sla (hl)
+			// sll (hl) (undocumented) / swap (hl)
+			mcycles <= 3'b011;
+			case( mcycle )
+			3'd1, 3'd7:
+				set_addr_to <= axy;
+			3'd2:
+				alu_op <= 4'b1000;
+				read_to_reg <= 1'b1;
+				save_alu <= 1'b1;
+				set_addr_to <= axy;
+				tstates <= 3'b100;
+			3'd3:
+				write <= 1'b1;
+			default:
+				begin
+					//	hold
+				end
+			endcase
+		when 8'b01000000|8'b01000001|8'b01000010|8'b01000011|8'b01000100|8'b01000101|8'b01000111
+			|8'b01001000|8'b01001001|8'b01001010|8'b01001011|8'b01001100|8'b01001101|8'b01001111
+			|8'b01010000|8'b01010001|8'b01010010|8'b01010011|8'b01010100|8'b01010101|8'b01010111
+			|8'b01011000|8'b01011001|8'b01011010|8'b01011011|8'b01011100|8'b01011101|8'b01011111
+			|8'b01100000|8'b01100001|8'b01100010|8'b01100011|8'b01100100|8'b01100101|8'b01100111
+			|8'b01101000|8'b01101001|8'b01101010|8'b01101011|8'b01101100|8'b01101101|8'b01101111
+			|8'b01110000|8'b01110001|8'b01110010|8'b01110011|8'b01110100|8'b01110101|8'b01110111
+			|8'b01111000|8'b01111001|8'b01111010|8'b01111011|8'b01111100|8'b01111101|8'b01111111 =>
+			// bit b,r
+			if( xy_state=2'b00 ) begin
+				if( mcycle = 3'b001 ) begin
+				  set_busb_to[2:0] <= ir[2:0];
+				  alu_op <= 4'b1001;
+				end
+			else
+			// bit b,(ix+d), undocumented
+				mcycles <= 3'b010;
+				xybit_undoc <= 1'b1;
+				case( mcycle )
+				3'd1, 3'd7:
+					set_addr_to <= axy;
+				3'd2:
+					alu_op <= 4'b1001;
+					tstates <= 3'b100;
+				default:
+					begin
+						//	hold
+					end
+				endcase
+			end
+		 8'b01000110|8'b01001110|8'b01010110|8'b01011110|8'b01100110|8'b01101110|8'b01110110|8'b01111110 :
+			// bit b,(hl)
+			mcycles <= 3'b010;
+			case( mcycle )
+			3'd1, 3'd7:
+				set_addr_to <= axy;
+			3'd2:
+				alu_op <= 4'b1001;
+				tstates <= 3'b100;
+			default:
+				begin
+					//	hold
+				end
+			endcase
+		when 8'b11000000|8'b11000001|8'b11000010|8'b11000011|8'b11000100|8'b11000101|8'b11000111
+			|8'b11001000|8'b11001001|8'b11001010|8'b11001011|8'b11001100|8'b11001101|8'b11001111
+			|8'b11010000|8'b11010001|8'b11010010|8'b11010011|8'b11010100|8'b11010101|8'b11010111
+			|8'b11011000|8'b11011001|8'b11011010|8'b11011011|8'b11011100|8'b11011101|8'b11011111
+			|8'b11100000|8'b11100001|8'b11100010|8'b11100011|8'b11100100|8'b11100101|8'b11100111
+			|8'b11101000|8'b11101001|8'b11101010|8'b11101011|8'b11101100|8'b11101101|8'b11101111
+			|8'b11110000|8'b11110001|8'b11110010|8'b11110011|8'b11110100|8'b11110101|8'b11110111
+			|8'b11111000|8'b11111001|8'b11111010|8'b11111011|8'b11111100|8'b11111101|8'b11111111 =>
+			// set b,r
+			if( xy_state=2'b00 ) begin
+				if( mcycle = 3'b001 ) begin
+				  alu_op <= 4'b1010;
+				  read_to_reg <= 1'b1;
+				  save_alu <= 1'b1;
+				end
+			else
+			// set b,(ix+d),reg, undocumented
+				mcycles <= 3'b011;
+				xybit_undoc <= 1'b1;
+				case( mcycle )
+				3'd1, 3'd7:
+					set_addr_to <= axy;
+				3'd2:
+					alu_op <= 4'b1010;
+					read_to_reg <= 1'b1;
+					save_alu <= 1'b1;
+					set_addr_to <= axy;
+					tstates <= 3'b100;
+				3'd3:
+					write <= 1'b1;
+				default:
+					begin
+						//	hold
+					end
+				endcase
+			end
+		 8'b11000110|8'b11001110|8'b11010110|8'b11011110|8'b11100110|8'b11101110|8'b11110110|8'b11111110 :
+			// set b,(hl)
+			mcycles <= 3'b011;
+			case( mcycle )
+			3'd1, 3'd7:
+				set_addr_to <= axy;
+			3'd2:
+				alu_op <= 4'b1010;
+				read_to_reg <= 1'b1;
+				save_alu <= 1'b1;
+				set_addr_to <= axy;
+				tstates <= 3'b100;
+			3'd3:
+				write <= 1'b1;
+			default:
+				begin
+					//	hold
+				end
+			endcase
+		when 8'b10000000|8'b10000001|8'b10000010|8'b10000011|8'b10000100|8'b10000101|8'b10000111
+			|8'b10001000|8'b10001001|8'b10001010|8'b10001011|8'b10001100|8'b10001101|8'b10001111
+			|8'b10010000|8'b10010001|8'b10010010|8'b10010011|8'b10010100|8'b10010101|8'b10010111
+			|8'b10011000|8'b10011001|8'b10011010|8'b10011011|8'b10011100|8'b10011101|8'b10011111
+			|8'b10100000|8'b10100001|8'b10100010|8'b10100011|8'b10100100|8'b10100101|8'b10100111
+			|8'b10101000|8'b10101001|8'b10101010|8'b10101011|8'b10101100|8'b10101101|8'b10101111
+			|8'b10110000|8'b10110001|8'b10110010|8'b10110011|8'b10110100|8'b10110101|8'b10110111
+			|8'b10111000|8'b10111001|8'b10111010|8'b10111011|8'b10111100|8'b10111101|8'b10111111 =>
+			// res b,r
+			if( xy_state=2'b00 ) begin
+				if( mcycle = 3'b001 ) begin
+				  alu_op <= 4'b1011;
+				  read_to_reg <= 1'b1;
+				  save_alu <= 1'b1;
+				end
+			else
+			// res b,(ix+d),reg, undocumented
+				mcycles <= 3'b011;
+				xybit_undoc <= 1'b1;
+				case( mcycle )
+				3'd1, 3'd7:
+					set_addr_to <= axy;
+				3'd2:
+					alu_op <= 4'b1011;
+					read_to_reg <= 1'b1;
+					save_alu <= 1'b1;
+					set_addr_to <= axy;
+					tstates <= 3'b100;
+				3'd3:
+					write <= 1'b1;
+				default:
+					begin
+						//	hold
+					end
+				endcase
+			end
+
+		 8'b10000110|8'b10001110|8'b10010110|8'b10011110|8'b10100110|8'b10101110|8'b10110110|8'b10111110 :
+			// res b,(hl)
+			mcycles <= 3'b011;
+			case( mcycle )
+			3'd1, 3'd7:
+				set_addr_to <= axy;
+			3'd2:
+				alu_op <= 4'b1011;
+				read_to_reg <= 1'b1;
+				save_alu <= 1'b1;
+				set_addr_to <= axy;
+				tstates <= 3'b100;
+			3'd3:
+				write <= 1'b1;
+			default:
+				begin
+					//	hold
+				end
+			endcase
+		endcase
+
+	default:
 
 //////////////////////////////////////////////////////////////////////////////
 //
-//		ED prefixed instructions
+//		ed prefixed instructions
 //
 //////////////////////////////////////////////////////////////////////////////
 
-						case IRB is
-						when "00000000"|"00000001"|"00000010"|"00000011"|"00000100"|"00000101"|"00000110"|"00000111"
-								|"00001000"|"00001001"|"00001010"|"00001011"|"00001100"|"00001101"|"00001110"|"00001111"
-								|"00010000"|"00010001"|"00010010"|"00010011"|"00010100"|"00010101"|"00010110"|"00010111"
-								|"00011000"|"00011001"|"00011010"|"00011011"|"00011100"|"00011101"|"00011110"|"00011111"
-								|"00100000"|"00100001"|"00100010"|"00100011"|"00100100"|"00100101"|"00100110"|"00100111"
-								|"00101000"|"00101001"|"00101010"|"00101011"|"00101100"|"00101101"|"00101110"|"00101111"
-								|"00110000"|"00110001"|"00110010"|"00110011"|"00110100"|"00110101"|"00110110"|"00110111"
-								|"00111000"|"00111001"|"00111010"|"00111011"|"00111100"|"00111101"|"00111110"|"00111111"
+			case( irb )
+			when 8'b00000000|8'b00000001|8'b00000010|8'b00000011|8'b00000100|8'b00000101|8'b00000110|8'b00000111
+					|8'b00001000|8'b00001001|8'b00001010|8'b00001011|8'b00001100|8'b00001101|8'b00001110|8'b00001111
+					|8'b00010000|8'b00010001|8'b00010010|8'b00010011|8'b00010100|8'b00010101|8'b00010110|8'b00010111
+					|8'b00011000|8'b00011001|8'b00011010|8'b00011011|8'b00011100|8'b00011101|8'b00011110|8'b00011111
+					|8'b00100000|8'b00100001|8'b00100010|8'b00100011|8'b00100100|8'b00100101|8'b00100110|8'b00100111
+					|8'b00101000|8'b00101001|8'b00101010|8'b00101011|8'b00101100|8'b00101101|8'b00101110|8'b00101111
+					|8'b00110000|8'b00110001|8'b00110010|8'b00110011|8'b00110100|8'b00110101|8'b00110110|8'b00110111
+					|8'b00111000|8'b00111001|8'b00111010|8'b00111011|8'b00111100|8'b00111101|8'b00111110|8'b00111111
 
 
-								|"10000000"|"10000001"|"10000010"|"10000011"|"10000100"|"10000101"|"10000110"|"10000111"
-								|"10001000"|"10001001"|"10001010"|"10001011"|"10001100"|"10001101"|"10001110"|"10001111"
-								|"10010000"|"10010001"|"10010010"|"10010011"|"10010100"|"10010101"|"10010110"|"10010111"
-								|"10011000"|"10011001"|"10011010"|"10011011"|"10011100"|"10011101"|"10011110"|"10011111"
-								|											 "10100100"|"10100101"|"10100110"|"10100111"
-								|											 "10101100"|"10101101"|"10101110"|"10101111"
-								|											 "10110100"|"10110101"|"10110110"|"10110111"
-								|											 "10111100"|"10111101"|"10111110"|"10111111"
-								|"11000000"|		   "11000010"|			 "11000100"|"11000101"|"11000110"|"11000111"
-								|"11001000"|		   "11001010"|"11001011"|"11001100"|"11001101"|"11001110"|"11001111"
-								|"11010000"|		   "11010010"|"11010011"|"11010100"|"11010101"|"11010110"|"11010111"
-								|"11011000"|		   "11011010"|"11011011"|"11011100"|"11011101"|"11011110"|"11011111"
-								|"11100000"|"11100001"|"11100010"|"11100011"|"11100100"|"11100101"|"11100110"|"11100111"
-								|"11101000"|"11101001"|"11101010"|"11101011"|"11101100"|"11101101"|"11101110"|"11101111"
-								|"11110000"|"11110001"|"11110010"|			 "11110100"|"11110101"|"11110110"|"11110111"
-								|"11111000"|"11111001"|"11111010"|"11111011"|"11111100"|"11111101"|"11111110"|"11111111" =>
-								null; // NOP, undocumented
-						when "01111110"|"01111111" =>
-								// NOP, undocumented
-								null;
-// 8 BIT LOAD GROUP
-						when "01010111" =>
-								// LD A,I
-								Special_LD <= "100";
-								TStates <= "101";
-						when "01011111" =>
-								// LD A,R
-								Special_LD <= "101";
-								TStates <= "101";
-						when "01000111" =>
-								// LD I,A
-								Special_LD <= "110";
-								TStates <= "101";
-						when "01001111" =>
-								// LD R,A
-								Special_LD <= "111";
-								TStates <= "101";
-// 16 BIT LOAD GROUP
-						when "01001011"|"01011011"|"01101011"|"01111011" =>
-								// LD dd,(nn)
-								MCycles <= "101";
-								case to_integer(unsigned(MCycle)) is
-								when 2 =>
-										Inc_PC <= 1'b1;
-										LDZ <= 1'b1;
-								when 3 =>
-										Set_Addr_To <= aZI;
-										Inc_PC <= 1'b1;
-										LDW <= 1'b1;
-								when 4 =>
-										Read_To_Reg <= 1'b1;
-										if IR(5 downto 4) = "11" begin
-												Set_BusA_To <= "1000";
-										else
-												Set_BusA_To(2 downto 1) <= IR(5 downto 4);
-												Set_BusA_To(0) <= 1'b1;
-										end
-										Inc_WZ <= 1'b1;
-										Set_Addr_To <= aZI;
-								when 5 =>
-										Read_To_Reg <= 1'b1;
-										if IR(5 downto 4) = "11" begin
-												Set_BusA_To <= "1001";
-										else
-												Set_BusA_To(2 downto 1) <= IR(5 downto 4);
-												Set_BusA_To(0) <= 1'b0;
-										end
-								when others => null;
-								end case;
-						when "01000011"|"01010011"|"01100011"|"01110011" =>
-								// LD (nn),dd
-								MCycles <= "101";
-								case to_integer(unsigned(MCycle)) is
-								when 2 =>
-										Inc_PC <= 1'b1;
-										LDZ <= 1'b1;
-								when 3 =>
-										Set_Addr_To <= aZI;
-										Inc_PC <= 1'b1;
-										LDW <= 1'b1;
-										if IR(5 downto 4) = "11" begin
-												Set_BusB_To <= "1000";
-										else
-												Set_BusB_To(2 downto 1) <= IR(5 downto 4);
-												Set_BusB_To(0) <= 1'b1;
-												Set_BusB_To(3) <= 1'b0;
-										end
-								when 4 =>
-										Inc_WZ <= 1'b1;
-										Set_Addr_To <= aZI;
-										Write <= 1'b1;
-										if IR(5 downto 4) = "11" begin
-												Set_BusB_To <= "1001";
-										else
-												Set_BusB_To(2 downto 1) <= IR(5 downto 4);
-												Set_BusB_To(0) <= 1'b0;
-												Set_BusB_To(3) <= 1'b0;
-										end
-								when 5 =>
-										Write <= 1'b1;
-								when others => null;
-								end case;
-						when "10100000" | "10101000" | "10110000" | "10111000" =>
-								// LDI, LDD, LDIR, LDDR
-								MCycles <= "100";
-								case to_integer(unsigned(MCycle)) is
-								when 1 =>
-										Set_Addr_To <= aXY;
-										IncDec_16 <= "1100"; // BC
-								when 2 =>
-										Set_BusB_To <= "0110";
-										Set_BusA_To(2 downto 0) <= "111";
-										ALU_Op <= "0000";
-										Set_Addr_To <= aDE;
-										if IR(3) = 1'b0 begin
-												IncDec_16 <= "0110"; // IX
-										else
-												IncDec_16 <= "1110";
-										end
-								when 3 =>
-										I_BT <= 1'b1;
-										TStates <= "101";
-										Write <= 1'b1;
-										if IR(3) = 1'b0 begin
-												IncDec_16 <= "0101"; // DE
-										else
-												IncDec_16 <= "1101";
-										end
-								when 4 =>
-										NoRead <= 1'b1;
-										TStates <= "101";
-								when others => null;
-								end case;
-						when "10100001" | "10101001" | "10110001" | "10111001" =>
-								// CPI, CPD, CPIR, CPDR
-								MCycles <= "100";
-								case to_integer(unsigned(MCycle)) is
-								when 1 =>
-										Set_Addr_To <= aXY;
-										IncDec_16 <= "1100"; // BC
-								when 2 =>
-										Set_BusB_To <= "0110";
-										Set_BusA_To(2 downto 0) <= "111";
-										ALU_Op <= "0111";
-										ALU_cpi <= 1'b1;
-										Save_ALU <= 1'b1;
-										PreserveC <= 1'b1;
-										if IR(3) = 1'b0 begin
-												IncDec_16 <= "0110";
-										else
-												IncDec_16 <= "1110";
-										end
-								when 3 =>
-										NoRead <= 1'b1;
-										I_BC <= 1'b1;
-										TStates <= "101";
-								when 4 =>
-										NoRead <= 1'b1;
-										TStates <= "101";
-								when others => null;
-								end case;
-						when "01000100"|"01001100"|"01010100"|"01011100"|"01100100"|"01101100"|"01110100"|"01111100" =>
-								// NEG
-								Alu_OP <= "0010";
-								Set_BusB_To <= "0111";
-								Set_BusA_To <= "1010";
-								Read_To_Acc <= 1'b1;
-								Save_ALU <= 1'b1;
-						when "01000110"|"01001110"|"01100110"|"01101110" =>
-								// IM 0
-								IMode <= "00";
-						when "01010110"|"01110110" =>
-								// IM 1
-								IMode <= "01";
-						when "01011110"|"01110111" =>
-								// IM 2
-								IMode <= "10";
+					|8'b10000000|8'b10000001|8'b10000010|8'b10000011|8'b10000100|8'b10000101|8'b10000110|8'b10000111
+					|8'b10001000|8'b10001001|8'b10001010|8'b10001011|8'b10001100|8'b10001101|8'b10001110|8'b10001111
+					|8'b10010000|8'b10010001|8'b10010010|8'b10010011|8'b10010100|8'b10010101|8'b10010110|8'b10010111
+					|8'b10011000|8'b10011001|8'b10011010|8'b10011011|8'b10011100|8'b10011101|8'b10011110|8'b10011111
+					|											 8'b10100100|8'b10100101|8'b10100110|8'b10100111
+					|											 8'b10101100|8'b10101101|8'b10101110|8'b10101111
+					|											 8'b10110100|8'b10110101|8'b10110110|8'b10110111
+					|											 8'b10111100|8'b10111101|8'b10111110|8'b10111111
+					|8'b11000000|		   8'b11000010|			 8'b11000100|8'b11000101|8'b11000110|8'b11000111
+					|8'b11001000|		   8'b11001010|8'b11001011|8'b11001100|8'b11001101|8'b11001110|8'b11001111
+					|8'b11010000|		   8'b11010010|8'b11010011|8'b11010100|8'b11010101|8'b11010110|8'b11010111
+					|8'b11011000|		   8'b11011010|8'b11011011|8'b11011100|8'b11011101|8'b11011110|8'b11011111
+					|8'b11100000|8'b11100001|8'b11100010|8'b11100011|8'b11100100|8'b11100101|8'b11100110|8'b11100111
+					|8'b11101000|8'b11101001|8'b11101010|8'b11101011|8'b11101100|8'b11101101|8'b11101110|8'b11101111
+					|8'b11110000|8'b11110001|8'b11110010|			 8'b11110100|8'b11110101|8'b11110110|8'b11110111
+					|8'b11111000|8'b11111001|8'b11111010|8'b11111011|8'b11111100|8'b11111101|8'b11111110|8'b11111111 =>
+					null; // nop, undocumented
+			 8'b01111110|8'b01111111 :
+					// nop, undocumented
+					null;
+// 8 bit load group
+			 8'b01010111 :
+					// ld a,i
+					special_ld <= 3'b100;
+					tstates <= 3'b101;
+			 8'b01011111 :
+					// ld a,r
+					special_ld <= 3'b101;
+					tstates <= 3'b101;
+			 8'b01000111 :
+					// ld i,a
+					special_ld <= 3'b110;
+					tstates <= 3'b101;
+			 8'b01001111 :
+					// ld r,a
+					special_ld <= 3'b111;
+					tstates <= 3'b101;
+// 16 bit load group
+			 8'b01001011|8'b01011011|8'b01101011|8'b01111011 :
+					// ld dd,(nn)
+					mcycles <= 3'b101;
+					case( mcycle )
+					3'd2:
+							inc_pc <= 1'b1;
+							ldz <= 1'b1;
+					3'd3:
+							set_addr_to <= azi;
+							inc_pc <= 1'b1;
+							ldw <= 1'b1;
+					3'd4:
+							read_to_reg <= 1'b1;
+							if( ir[5:4] = 2'b11 ) begin
+									set_busa_to <= 4'b1000;
+							else
+									set_busa_to[2:1] <= ir[5:4];
+									set_busa_to[0] <= 1'b1;
+							end
+							inc_wz <= 1'b1;
+							set_addr_to <= azi;
+					3'd5:
+							read_to_reg <= 1'b1;
+							if( ir[5:4] = 2'b11 ) begin
+									set_busa_to <= 4'b1001;
+							else
+									set_busa_to[2:1] <= ir[5:4];
+									set_busa_to[0] <= 1'b0;
+							end
+					default:
+						begin
+							//	hold
+						end
+					endcase
+			 8'b01000011|8'b01010011|8'b01100011|8'b01110011 :
+					// ld (nn),dd
+					mcycles <= 3'b101;
+					case( mcycle )
+					3'd2:
+							inc_pc <= 1'b1;
+							ldz <= 1'b1;
+					3'd3:
+							set_addr_to <= azi;
+							inc_pc <= 1'b1;
+							ldw <= 1'b1;
+							if( ir[5:4] = 2'b11 ) begin
+									set_busb_to <= 4'b1000;
+							else
+									set_busb_to[2:1] <= ir[5:4];
+									set_busb_to[0] <= 1'b1;
+									set_busb_to[3] <= 1'b0;
+							end
+					3'd4:
+							inc_wz <= 1'b1;
+							set_addr_to <= azi;
+							write <= 1'b1;
+							if( ir[5:4] = 2'b11 ) begin
+									set_busb_to <= 4'b1001;
+							else
+									set_busb_to[2:1] <= ir[5:4];
+									set_busb_to[0] <= 1'b0;
+									set_busb_to[3] <= 1'b0;
+							end
+					3'd5:
+							write <= 1'b1;
+					default:
+						begin
+							//	hold
+						end
+					endcase
+			 8'b10100000 | 8'b10101000 | 8'b10110000 | 8'b10111000 :
+					// ldi, ldd, ldir, lddr
+					mcycles <= 3'b100;
+					case( mcycle )
+					3'd1:
+							set_addr_to <= axy;
+							incdec_16 <= 4'b1100; // bc
+					3'd2:
+							set_busb_to <= 4'b0110;
+							set_busa_to[2:0] <= 3'b111;
+							alu_op <= 4'b0000;
+							set_addr_to <= ade;
+							if( ir[3] == 1'b0 ) begin
+									incdec_16 <= 4'b0110; // ix
+							else
+									incdec_16 <= 4'b1110;
+							end
+					3'd3:
+							i_bt <= 1'b1;
+							tstates <= 3'b101;
+							write <= 1'b1;
+							if( ir[3] == 1'b0 ) begin
+									incdec_16 <= 4'b0101; // de
+							else
+									incdec_16 <= 4'b1101;
+							end
+					3'd4:
+							noread <= 1'b1;
+							tstates <= 3'b101;
+					default:
+						begin
+							//	hold
+						end
+					endcase
+			 8'b10100001 | 8'b10101001 | 8'b10110001 | 8'b10111001 :
+					// cpi, cpd, cpir, cpdr
+					mcycles <= 3'b100;
+					case( mcycle )
+					3'd1:
+							set_addr_to <= axy;
+							incdec_16 <= 4'b1100; // bc
+					3'd2:
+							set_busb_to <= 4'b0110;
+							set_busa_to[2:0] <= 3'b111;
+							alu_op <= 4'b0111;
+							alu_cpi <= 1'b1;
+							save_alu <= 1'b1;
+							preservec <= 1'b1;
+							if( ir[3] = 1'b0 ) begin
+									incdec_16 <= 4'b0110;
+							else
+									incdec_16 <= 4'b1110;
+							end
+					3'd3:
+							noread <= 1'b1;
+							i_bc <= 1'b1;
+							tstates <= 3'b101;
+					3'd4:
+							noread <= 1'b1;
+							tstates <= 3'b101;
+					default:
+						begin
+							//	hold
+						end
+					endcase
+			 8'b01000100|8'b01001100|8'b01010100|8'b01011100|8'b01100100|8'b01101100|8'b01110100|8'b01111100 :
+					// neg
+					alu_op <= 4'b0010;
+					set_busb_to <= 4'b0111;
+					set_busa_to <= 4'b1010;
+					read_to_acc <= 1'b1;
+					save_alu <= 1'b1;
+			 8'b01000110|8'b01001110|8'b01100110|8'b01101110 :
+					// im 0
+					imode <= 2'b00;
+			 8'b01010110|8'b01110110 :
+					// im 1
+					imode <= 2'b01;
+			 8'b01011110|8'b01110111 :
+					// im 2
+					imode <= 2'b10;
 // 16 bit arithmetic
-						when "01001010"|"01011010"|"01101010"|"01111010" =>
-								// ADC HL,ss
-								MCycles <= "011";
-								case to_integer(unsigned(MCycle)) is
-								when 2 =>
-										NoRead <= 1'b1;
-										ALU_Op <= "0001";
-										Read_To_Reg <= 1'b1;
-										Save_ALU <= 1'b1;
-										Set_BusA_To(2 downto 0) <= "101";
-										case to_integer(unsigned(IR(5 downto 4))) is
-										when 0|1|2 =>
-												Set_BusB_To(2 downto 1) <= IR(5 downto 4);
-										Set_BusB_To(0) <= 1'b1;
-												when others =>
-												Set_BusB_To <= "1000";
-										end case;
-										TStates <= "100";
-								when 3 =>
-										NoRead <= 1'b1;
-										Read_To_Reg <= 1'b1;
-										Save_ALU <= 1'b1;
-										ALU_Op <= "0001";
-										Set_BusA_To(2 downto 0) <= "100";
-										case to_integer(unsigned(IR(5 downto 4))) is
-										when 0|1|2 =>
-												Set_BusB_To(2 downto 1) <= IR(5 downto 4);
-												Set_BusB_To(0) <= 1'b0;
-										when others =>
-												Set_BusB_To <= "1001";
-										end case;
-								when others =>
-								end case;
-						when "01000010"|"01010010"|"01100010"|"01110010" =>
-								// SBC HL,ss
-								MCycles <= "011";
-								case to_integer(unsigned(MCycle)) is
-								when 2 =>
-										NoRead <= 1'b1;
-										ALU_Op <= "0011";
-										Read_To_Reg <= 1'b1;
-										Save_ALU <= 1'b1;
-										Set_BusA_To(2 downto 0) <= "101";
-										case to_integer(unsigned(IR(5 downto 4))) is
-										when 0|1|2 =>
-												Set_BusB_To(2 downto 1) <= IR(5 downto 4);
-												Set_BusB_To(0) <= 1'b1;
-										when others =>
-												Set_BusB_To <= "1000";
-										end case;
-										TStates <= "100";
-								when 3 =>
-										NoRead <= 1'b1;
-										ALU_Op <= "0011";
-										Read_To_Reg <= 1'b1;
-										Save_ALU <= 1'b1;
-										Set_BusA_To(2 downto 0) <= "100";
-										case to_integer(unsigned(IR(5 downto 4))) is
-										when 0|1|2 =>
-												Set_BusB_To(2 downto 1) <= IR(5 downto 4);
-										when others =>
-														Set_BusB_To <= "1001";
-										end case;
-								when others =>
-								end case;
-						when "01101111" =>
-								// RLD
-								MCycles <= "100";
-								case to_integer(unsigned(MCycle)) is
-								when 2 =>
-										NoRead <= 1'b1;
-										Set_Addr_To <= aXY;
-								when 3 =>
-										Read_To_Reg <= 1'b1;
-										Set_BusB_To(2 downto 0) <= "110";
-										Set_BusA_To(2 downto 0) <= "111";
-										ALU_Op <= "1101";
-										TStates <= "100";
-										Set_Addr_To <= aXY;
-										Save_ALU <= 1'b1;
-								when 4 =>
-										I_RLD <= 1'b1;
-										Write <= 1'b1;
-								when others =>
-								end case;
-						when "01100111" =>
-								// RRD
-								MCycles <= "100";
-								case to_integer(unsigned(MCycle)) is
-								when 2 =>
-										Set_Addr_To <= aXY;
-								when 3 =>
-										Read_To_Reg <= 1'b1;
-										Set_BusB_To(2 downto 0) <= "110";
-										Set_BusA_To(2 downto 0) <= "111";
-										ALU_Op <= "1110";
-										TStates <= "100";
-										Set_Addr_To <= aXY;
-										Save_ALU <= 1'b1;
-								when 4 =>
-										I_RRD <= 1'b1;
-										Write <= 1'b1;
-								when others =>
-								end case;
-						when "01000101"|"01001101"|"01010101"|"01011101"|"01100101"|"01101101"|"01110101"|"01111101" =>
-								// RETI, RETN
-								MCycles <= "011";
-								case to_integer(unsigned(MCycle)) is
-								when 1 =>
-										Set_Addr_TO <= aSP;
-								when 2 =>
-										IncDec_16 <= "0111";
-										Set_Addr_To <= aSP;
-										LDZ <= 1'b1;
-								when 3 =>
-										Jump <= 1'b1;
-										IncDec_16 <= "0111";
-										I_RETN <= 1'b1;
-								when others => null;
-								end case;
-						when "01000000"|"01001000"|"01010000"|"01011000"|"01100000"|"01101000"|"01110000"|"01111000" =>
-								// IN r,(C)
-								MCycles <= "010";
-								case to_integer(unsigned(MCycle)) is
-								when 1 =>
-										Set_Addr_To <= aBC;
-								when 2 =>
-										IORQ <= 1'b1;
-										if IR(5 downto 3) != "110" begin
-												Read_To_Reg <= 1'b1;
-												Set_BusA_To(2 downto 0) <= IR(5 downto 3);
-										end
-										I_INRC <= 1'b1;
-								when others =>
-								end case;
-						when "01000001"|"01001001"|"01010001"|"01011001"|"01100001"|"01101001"|"01110001"|"01111001" =>
-								// OUT (C),r
-								// OUT (C),0
-								MCycles <= "010";
-								case to_integer(unsigned(MCycle)) is
-								when 1 =>
-										Set_Addr_To <= aBC;
-										Set_BusB_To(2 downto 0) <= IR(5 downto 3);
-										if IR(5 downto 3) = "110" begin
-												Set_BusB_To(3) <= 1'b1;
-										end
-								when 2 =>
-										Write <= 1'b1;
-										IORQ <= 1'b1;
-								when others =>
-								end case;
-						when "10100010" | "10101010" | "10110010" | "10111010" =>
-								// INI, IND, INIR, INDR
-								MCycles <= "100";
-								case to_integer(unsigned(MCycle)) is
-								when 1 =>
-										Set_Addr_To <= aBC;
-										Set_BusB_To <= "1010";
-										Set_BusA_To <= "0000";
-										Read_To_Reg <= 1'b1;
-										Save_ALU <= 1'b1;
-										ALU_Op <= "0010";
-								when 2 =>
-										IORQ <= 1'b1;
-										Set_BusB_To <= "0110";
-										Set_Addr_To <= aXY;
-								when 3 =>
-										if IR(3) = 1'b0 begin
-												IncDec_16 <= "0110";	// 0242a
-										else
-												IncDec_16 <= "1110";	// 0242a
-										end
-										TStates <= "100";
-										Write <= 1'b1;
-										I_BTR <= 1'b1;
-								when 4 =>
-										NoRead <= 1'b1;
-										TStates <= "101";
-								when others => null;
-								end case;
-						when "10100011" | "10101011" | "10110011" | "10111011" =>
-								// OUTI, OUTD, OTIR, OTDR
-								MCycles <= "100";
-								case to_integer(unsigned(MCycle)) is
-								when 1 =>
-										TStates <= "101";
-										Set_Addr_To <= aXY;
-										Set_BusB_To <= "1010";
-										Set_BusA_To <= "0000";
-										Read_To_Reg <= 1'b1;
-										Save_ALU <= 1'b1;
-										ALU_Op <= "0010";
-								when 2 =>
-										Set_BusB_To <= "0110";
-										Set_Addr_To <= aBC;
-								when 3 =>
-										if IR(3) = 1'b0 begin
-												IncDec_16 <= "0110";	// 0242a
-										else
-												IncDec_16 <= "1110";	// 0242a
-										end
-										IORQ <= 1'b1;
-										Write <= 1'b1;
-										I_BTR <= 1'b1;
-								when 4 =>
-										NoRead <= 1'b1;
-										TStates <= "101";
-								when others => null;
-								end case;
-						when "11000001"|"11001001"|"11010001"|"11011001" =>
-								//R800 MULUB
-								null;
-						when "11000011"|"11110011" =>
-								//R800 MULUW
-								null;
-						end case;
-
-				end case;
-
-				if Mode = 1 begin
-					if MCycle = "001" begin
-//						TStates <= "100";
-					end
-					else begin
-						TStates <= "011";
-					end
+			 8'b01001010|8'b01011010|8'b01101010|8'b01111010 :
+					// adc hl,ss
+					mcycles <= 3'b011;
+					case( mcycle )
+					3'd2:
+							noread <= 1'b1;
+							alu_op <= 4'b0001;
+							read_to_reg <= 1'b1;
+							save_alu <= 1'b1;
+							set_busa_to[2:0] <= 3'b101;
+							case to_integer(unsigned(ir[5:4])) is
+							 3'd0, 3'd1, 3'd2:
+									set_busb_to[2:1] <= ir[5:4];
+							set_busb_to[0] <= 1'b1;
+							default:
+									set_busb_to <= 4'b1000;
+							endcase
+							tstates <= 3'b100;
+					3'd3:
+							noread <= 1'b1;
+							read_to_reg <= 1'b1;
+							save_alu <= 1'b1;
+							alu_op <= 4'b0001;
+							set_busa_to[2:0] <= 3'b100;
+							case to_integer(unsigned(ir[5:4])) is
+							 3'd0, 3'd1, 3'd2:
+									set_busb_to[2:1] <= ir[5:4];
+									set_busb_to[0] <= 1'b0;
+							 default:
+									set_busb_to <= 4'b1001;
+							endcase
+					default:
+					endcase
+			 8'b01000010|8'b01010010|8'b01100010|8'b01110010 :
+					// sbc hl,ss
+					mcycles <= 3'b011;
+					case( mcycle )
+					3'd2:
+							noread <= 1'b1;
+							alu_op <= 4'b0011;
+							read_to_reg <= 1'b1;
+							save_alu <= 1'b1;
+							set_busa_to[2:0] <= 3'b101;
+							case( d[ ir[5:4] ] )
+							 3'd0, 3'd1, 3'd2:
+							 	begin
+									set_busb_to[2:1] <= ir[5:4];
+									set_busb_to[0] <= 1'b1;
+								end
+							 default:
+									set_busb_to <= 4'b1000;
+							endcase
+							tstates <= 3'b100;
+					3'd3:
+							noread <= 1'b1;
+							alu_op <= 4'b0011;
+							read_to_reg <= 1'b1;
+							save_alu <= 1'b1;
+							set_busa_to[2:0] <= 3'b100;
+							case to_integer(unsigned(ir[5:4])) is
+							 3'd0, 3'd1, 3'd2:
+									set_busb_to[2:1] <= ir[5:4];
+							 default:
+											set_busb_to <= 4'b1001;
+							endcase
+					default:
+						begin
+							//	hold
+						end
+					endcase
+			 8'b01101111 :
+					// rld
+					mcycles <= 3'b100;
+					case( mcycle )
+					 3'd2:
+							noread <= 1'b1;
+							set_addr_to <= axy;
+					 3'd3:
+							read_to_reg <= 1'b1;
+							set_busb_to[2:0] <= 3'b110;
+							set_busa_to[2:0] <= 3'b111;
+							alu_op <= 4'b1101;
+							tstates <= 3'b100;
+							set_addr_to <= axy;
+							save_alu <= 1'b1;
+					 3'd4:
+							i_rld <= 1'b1;
+							write <= 1'b1;
+					default:
+						begin
+							//	hold
+						end
+					endcase
+			 8'b01100111 :
+					// rrd
+					mcycles <= 3'b100;
+					case( mcycle )
+					 3'd2:
+							set_addr_to <= axy;
+					 3'd3:
+							read_to_reg <= 1'b1;
+							set_busb_to[2:0] <= 3'b110;
+							set_busa_to[2:0] <= 3'b111;
+							alu_op <= 4'b1110;
+							tstates <= 3'b100;
+							set_addr_to <= axy;
+							save_alu <= 1'b1;
+					 3'd4:
+							i_rrd <= 1'b1;
+							write <= 1'b1;
+					default:
+						begin
+							//	hold
+						end
+					endcase
+			 8'b01000101|8'b01001101|8'b01010101|8'b01011101|8'b01100101|8'b01101101|8'b01110101|8'b01111101 :
+					// reti, retn
+					mcycles <= 3'b011;
+					case( mcycle )
+					 3'd1:
+							set_addr_to <= asp;
+					 3'd2:
+							incdec_16 <= 4'b0111;
+							set_addr_to <= asp;
+							ldz <= 1'b1;
+					 3'd3:
+							jump <= 1'b1;
+							incdec_16 <= 4'b0111;
+							i_retn <= 1'b1;
+					default:
+						begin
+							//	hold
+						end
+					endcase
+			 8'b01000000, 8'b01001000, 8'b01010000, 8'b01011000, 8'b01100000, 8'b01101000, 8'b01110000, 8'b01111000:
+					// in r,(c)
+					mcycles <= 3'b010;
+					case( mcycle )
+					3'd1:
+						set_addr_to <= abc;
+					3'd2:
+						begin
+							iorq <= 1'b1;
+							if( ir[5:3] != 3'b110 ) begin
+									read_to_reg <= 1'b1;
+									set_busa_to[2:0] <= ir[5:3];
+							end
+							i_inrc <= 1'b1;
+						end
+					default:
+						begin
+							//	hold
+						end
+					endcase
+			 8'b01000001, 8'b01001001, 8'b01010001, 8'b01011001, 8'b01100001, 8'b01101001, 8'b01110001, 8'b01111001:
+					// out (c),r
+					// out (c),0
+					mcycles <= 3'b010;
+					case( mcycle )
+					3'd1:
+						begin
+							set_addr_to <= abc;
+							set_busb_to[2:0] <= ir[5:3];
+							if( ir[5:3] == 3'b110 ) begin
+									set_busb_to[3] <= 1'b1;
+							end
+						end
+					3'd2:
+						begin
+							write <= 1'b1;
+							iorq <= 1'b1;
+						end
+					default:
+						begin
+							//	hold
+						end
+					endcase
+			8'b10100010, 8'b10101010, 8'b10110010, 8'b10111010:
+					// ini, ind, inir, indr
+					mcycles <= 3'b100;
+					case( mcycle )
+					3'd1:
+						begin
+							set_addr_to <= abc;
+							set_busb_to <= 4'b1010;
+							set_busa_to <= 4'b0000;
+							read_to_reg <= 1'b1;
+							save_alu <= 1'b1;
+							alu_op <= 4'b0010;
+						end
+					3'd2:
+						begin
+							iorq <= 1'b1;
+							set_busb_to <= 4'b0110;
+							set_addr_to <= axy;
+						end
+					3'd3:
+						begin
+							if( ir[3] == 1'b0 ) begin
+									incdec_16 <= 4'b0110;
+							end
+							else begin
+									incdec_16 <= 4'b1110;
+							end
+							tstates <= 3'b100;
+							write <= 1'b1;
+							i_btr <= 1'b1;
+						end
+					 3'd4:
+						begin
+							noread <= 1'b1;
+							tstates <= 3'b101;
+						end
+					 default:
+					 	begin
+					 		//	hold
+					 	end
+					endcase
+			8'b10100011, 8'b10101011, 8'b10110011, 8'b10111011 :
+				begin
+					// outi, outd, otir, otdr
+					mcycles <= 3'd4;
+					case( mcycle )
+					 3'd1:
+					 	begin
+							tstates <= 3'd5;
+							set_addr_to <= axy;
+							set_busb_to <= 4'b1010;
+							set_busa_to <= 4'b0000;
+							read_to_reg <= 1'b1;
+							save_alu <= 1'b1;
+							alu_op <= 4'd2;
+						end
+					 3'd2:
+					 	begin
+							set_busb_to <= 4'b0110;
+							set_addr_to <= abc;
+						end
+					 3'd3:
+					 	begin
+							if( ir[3] == 1'b0 ) begin
+								incdec_16 <= 4'b0110;	// 0242a
+							end
+							else begin
+								incdec_16 <= 4'b1110;	// 0242a
+							end
+							iorq <= 1'b1;
+							write <= 1'b1;
+							i_btr <= 1'b1;
+						end
+					 3'd4:
+					 	begin
+							noread <= 1'b1;
+							tstates <= 3'b101;
+						end
+					 default:
+					 	begin
+					 		//	hold
+					 	end
+					endcase
 				end
-				else begin
-					if MCycle = "110" begin
-						Inc_PC <= 1'b1;
-						if Mode = 1 begin
-							Set_Addr_To <= aXY;
-							TStates <= "100";
-							Set_BusB_To(2 downto 0) <= SSS;
-							Set_BusB_To(3) <= 1'b0;
-						end
-						if IRB = "00110110" or IRB = "11001011" begin
-								Set_Addr_To <= aNone;
-						end
-					end
-					if MCycle = "111" begin
-						if Mode = 0 begin
-							TStates <= "101";
-						end
-						if ISet != "01" begin
-							Set_Addr_To <= aXY;
-						end
-						Set_BusB_To(2 downto 0) <= SSS;
-						Set_BusB_To(3) <= 1'b0;
-						if IRB = "00110110" or ISet = "01" begin
-							// LD (HL),n
-							Inc_PC <= 1'b1;
-						else
-							NoRead <= 1'b1;
-						end
-					end
+			 8'b11000001, 8'b11001001, 8'b11010001, 8'b11011001:
+			 	begin
+					//r800 mulub
+				end
+			 8'b11000011, 8'b11110011 :
+			 	begin
+					//r800 muluw
+				end
+			endcase
+
+		endcase
+
+		if( mode == 1 ) begin
+			if( mcycle == 3'b001 ) begin
+//						tstates <= 3'b100;
+			end
+			else begin
+				tstates <= 3'b011;
 			end
 		end
+		else begin
+			if( mcycle == 3'b110 ) begin
+				inc_pc <= 1'b1;
+				if( mode == 1 ) begin
+					set_addr_to <= axy;
+					tstates <= 3'b100;
+					set_busb_to[2:0] <= sss;
+					set_busb_to[3] <= 1'b0;
+				end
+				if( irb == 8'b00110110 || irb == 8'b11001011 ) begin
+					set_addr_to <= anone;
+				end
+			end
+			if( mcycle == 3'b111 ) begin
+				if( mode == 0 ) begin
+					tstates <= 3'b101;
+				end
+				if( iset != 2'b01 ) begin
+					set_addr_to <= axy;
+				end
+				set_busb_to[2:0] <= sss;
+				set_busb_to[3] <= 1'b0;
+				if( irb == 8'b00110110 || iset == 2'b01 ) begin
+					// ld (hl),n
+					inc_pc <= 1'b1;
+				else
+					noread <= 1'b1;
+				end
+			end
+		end
+	end
 endmodule
