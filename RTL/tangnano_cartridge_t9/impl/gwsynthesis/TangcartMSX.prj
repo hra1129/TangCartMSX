@@ -17,17 +17,6 @@
         <File path="D:\github\HRA_product\TangCartMSX\RTL\tangnano_cartridge_t9\src\ikaopll\IKAOPLL_modules\IKAOPLL_timinggen.v" type="verilog"/>
         <File path="D:\github\HRA_product\TangCartMSX\RTL\tangnano_cartridge_t9\src\ikaopll_wrap\ikaopll_wrap.v" type="verilog"/>
         <File path="D:\github\HRA_product\TangCartMSX\RTL\tangnano_cartridge_t9\src\ikaopll_wrap\ip_msxmusic_rom.v" type="verilog"/>
-        <File path="D:\github\HRA_product\TangCartMSX\RTL\tangnano_cartridge_t9\src\ikascc\IKASCC.v" type="verilog"/>
-        <File path="D:\github\HRA_product\TangCartMSX\RTL\tangnano_cartridge_t9\src\ikascc\IKASCC_modules\IKASCC_player_a.v" type="verilog"/>
-        <File path="D:\github\HRA_product\TangCartMSX\RTL\tangnano_cartridge_t9\src\ikascc\IKASCC_modules\IKASCC_player_s.v" type="verilog"/>
-        <File path="D:\github\HRA_product\TangCartMSX\RTL\tangnano_cartridge_t9\src\ikascc\IKASCC_modules\IKASCC_primitives.v" type="verilog"/>
-        <File path="D:\github\HRA_product\TangCartMSX\RTL\tangnano_cartridge_t9\src\ikascc\IKASCC_modules\IKASCC_vrc_a.v" type="verilog"/>
-        <File path="D:\github\HRA_product\TangCartMSX\RTL\tangnano_cartridge_t9\src\ikascc\IKASCC_modules\IKASCC_vrc_s.v" type="verilog"/>
-        <File path="D:\github\HRA_product\TangCartMSX\RTL\tangnano_cartridge_t9\src\ikascc_wrap\ip_ikascc_wrap.v" type="verilog"/>
-        <File path="D:\github\HRA_product\TangCartMSX\RTL\tangnano_cartridge_t9\src\pwm\ip_pwm.v" type="verilog"/>
-        <File path="D:\github\HRA_product\TangCartMSX\RTL\tangnano_cartridge_t9\src\ssg\ssg.v" type="verilog"/>
-        <File path="D:\github\HRA_product\TangCartMSX\RTL\tangnano_cartridge_t9\src\ssg\ssg_inst.v" type="verilog"/>
-        <File path="D:\github\HRA_product\TangCartMSX\RTL\tangnano_cartridge_t9\src\tangcart_msx.v" type="verilog"/>
         <File path="D:\github\HRA_product\TangCartMSX\RTL\tangnano_cartridge_t9\src\ikaopm\IKAOPM.v" type="verilog"/>
         <File path="D:\github\HRA_product\TangCartMSX\RTL\tangnano_cartridge_t9\src\ikaopm\IKAOPM_modules\IKAOPM_acc.v" type="verilog"/>
         <File path="D:\github\HRA_product\TangCartMSX\RTL\tangnano_cartridge_t9\src\ikaopm\IKAOPM_modules\IKAOPM_eg.v" type="verilog"/>
@@ -39,6 +28,15 @@
         <File path="D:\github\HRA_product\TangCartMSX\RTL\tangnano_cartridge_t9\src\ikaopm\IKAOPM_modules\IKAOPM_reg.v" type="verilog"/>
         <File path="D:\github\HRA_product\TangCartMSX\RTL\tangnano_cartridge_t9\src\ikaopm\IKAOPM_modules\IKAOPM_timer.v" type="verilog"/>
         <File path="D:\github\HRA_product\TangCartMSX\RTL\tangnano_cartridge_t9\src\ikaopm\IKAOPM_modules\IKAOPM_timinggen.v" type="verilog"/>
+        <File path="D:\github\HRA_product\TangCartMSX\RTL\tangnano_cartridge_t9\src\ikaopm_wrap\ikaopm_wrap.v" type="verilog"/>
+        <File path="D:\github\HRA_product\TangCartMSX\RTL\tangnano_cartridge_t9\src\ikascc\IKASCC.v" type="verilog"/>
+        <File path="D:\github\HRA_product\TangCartMSX\RTL\tangnano_cartridge_t9\src\ikascc\IKASCC_modules\IKASCC_player_a.v" type="verilog"/>
+        <File path="D:\github\HRA_product\TangCartMSX\RTL\tangnano_cartridge_t9\src\ikascc\IKASCC_modules\IKASCC_player_s.v" type="verilog"/>
+        <File path="D:\github\HRA_product\TangCartMSX\RTL\tangnano_cartridge_t9\src\ikascc\IKASCC_modules\IKASCC_primitives.v" type="verilog"/>
+        <File path="D:\github\HRA_product\TangCartMSX\RTL\tangnano_cartridge_t9\src\ikascc\IKASCC_modules\IKASCC_vrc_a.v" type="verilog"/>
+        <File path="D:\github\HRA_product\TangCartMSX\RTL\tangnano_cartridge_t9\src\ikascc\IKASCC_modules\IKASCC_vrc_s.v" type="verilog"/>
+        <File path="D:\github\HRA_product\TangCartMSX\RTL\tangnano_cartridge_t9\src\ikascc_wrap\ip_ikascc_wrap.v" type="verilog"/>
+        <File path="D:\github\HRA_product\TangCartMSX\RTL\tangnano_cartridge_t9\src\ikascc_wrap\ip_ram.v" type="verilog"/>
         <File path="D:\github\HRA_product\TangCartMSX\RTL\tangnano_cartridge_t9\src\msx_midi\i8251.v" type="verilog"/>
         <File path="D:\github\HRA_product\TangCartMSX\RTL\tangnano_cartridge_t9\src\msx_midi\i8251_clk_en.v" type="verilog"/>
         <File path="D:\github\HRA_product\TangCartMSX\RTL\tangnano_cartridge_t9\src\msx_midi\i8251_receiver.v" type="verilog"/>
@@ -49,7 +47,10 @@
         <File path="D:\github\HRA_product\TangCartMSX\RTL\tangnano_cartridge_t9\src\msx_midi\i8253_counter.v" type="verilog"/>
         <File path="D:\github\HRA_product\TangCartMSX\RTL\tangnano_cartridge_t9\src\msx_midi\tr_midi.v" type="verilog"/>
         <File path="D:\github\HRA_product\TangCartMSX\RTL\tangnano_cartridge_t9\src\msx_midi\tr_midi_inst.v" type="verilog"/>
-        <File path="D:\github\HRA_product\TangCartMSX\RTL\tangnano_cartridge_t9\src\ikaopm_wrap\ikaopm_wrap.v" type="verilog"/>
+        <File path="D:\github\HRA_product\TangCartMSX\RTL\tangnano_cartridge_t9\src\pwm\ip_pwm.v" type="verilog"/>
+        <File path="D:\github\HRA_product\TangCartMSX\RTL\tangnano_cartridge_t9\src\ssg\ssg.v" type="verilog"/>
+        <File path="D:\github\HRA_product\TangCartMSX\RTL\tangnano_cartridge_t9\src\ssg\ssg_inst.v" type="verilog"/>
+        <File path="D:\github\HRA_product\TangCartMSX\RTL\tangnano_cartridge_t9\src\tangcart_msx.v" type="verilog"/>
         <File path="D:\github\HRA_product\TangCartMSX\RTL\tangnano_cartridge_t9\src\dcsg\sn76489_audio.vhd" type="vhdl"/>
     </FileList>
     <OptionList>

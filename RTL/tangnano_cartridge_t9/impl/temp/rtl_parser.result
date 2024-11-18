@@ -25,7 +25,7 @@
     "SubInsts" : [
      {
       "InstFile" : "D:/github/HRA_product/TangCartMSX/RTL/tangnano_cartridge_t9/src/ikascc_wrap/ip_ikascc_wrap.v",
-      "InstLine" : 53,
+      "InstLine" : 59,
       "InstName" : "u_ikascc",
       "ModuleFile" : "D:/github/HRA_product/TangCartMSX/RTL/tangnano_cartridge_t9/src/ikascc/IKASCC.v",
       "ModuleLine" : 1,
@@ -335,11 +335,19 @@
      },
      {
       "InstFile" : "D:/github/HRA_product/TangCartMSX/RTL/tangnano_cartridge_t9/src/ikascc_wrap/ip_ikascc_wrap.v",
-      "InstLine" : 74,
+      "InstLine" : 80,
       "InstName" : "u_rom",
       "ModuleFile" : "D:/github/HRA_product/TangCartMSX/RTL/tangnano_cartridge_t9/src/ikaopll_wrap/ip_msxmusic_rom.v",
       "ModuleLine" : 5,
       "ModuleName" : "ip_msxmusic_rom"
+     },
+     {
+      "InstFile" : "D:/github/HRA_product/TangCartMSX/RTL/tangnano_cartridge_t9/src/ikascc_wrap/ip_ikascc_wrap.v",
+      "InstLine" : 92,
+      "InstName" : "u_ram",
+      "ModuleFile" : "D:/github/HRA_product/TangCartMSX/RTL/tangnano_cartridge_t9/src/ikascc_wrap/ip_ram.v",
+      "ModuleLine" : 5,
+      "ModuleName" : "ip_ram"
      }
     ]
    },

@@ -216,10 +216,10 @@ module cz80_alu #(
 				end
 			end
 			else begin
-				f_out[flag_x] <= q_t[3];
-				f_out[flag_y] <= q_t[5];
+				f_out[flag_x] <= w_q_t[3];
+				f_out[flag_y] <= w_q_t[5];
 			end
-			if( q_t[7:0] == 8'd0 ) begin
+			if( w_q_t[7:0] == 8'd0 ) begin
 				f_out[flag_z] <= 1'b1;
 				if( z16 ) begin
 					f_out[flag_z] <= f_in[flag_z];	// 16 bit adc,sbc
@@ -228,14 +228,14 @@ module cz80_alu #(
 			else begin
 				f_out[flag_z] <= 1'b0;
 			end
-			f_out[flag_s] <= q_t[7];
+			f_out[flag_s] <= w_q_t[7];
 			case alu_op[2:0] is
 			3'd0, 3'd1, 3'd2, 3'd3, 3'd7:	// add, adc, sub, sbc, cp
 				begin
 					//	hold
 				end
 			default:
-				f_out[flag_p] <= ~[ q_t[0] ^ q_t[1] ^ q_t[2] ^ q_t[3] ^ q_t[4] ^ q_t[5] ^ q_t[6] ^ q_t[7] ];
+				f_out[flag_p] <= ~[ w_q_t[0] ^ w_q_t[1] ^ w_q_t[2] ^ w_q_t[3] ^ w_q_t[4] ^ w_q_t[5] ^ w_q_t[6] ^ w_q_t[7] ];
 			endcase
 			if arith16 = 1'b1 begin
 				f_out[flag_s] <= f_in[flag_s];
@@ -291,20 +291,20 @@ module cz80_alu #(
 			// rld, rrd
 			f_out[flag_h] <= 1'b0;
 			f_out[flag_n] <= 1'b0;
-			f_out[flag_x] <= q_t[3];
-			f_out[flag_y] <= q_t(5);
-			if q_t[7:0] = 8'd0 begin
+			f_out[flag_x] <= w_q_t[3];
+			f_out[flag_y] <= w_q_t(5);
+			if w_q_t[7:0] = 8'd0 begin
 				f_out[flag_z] <= 1'b1;
 			else
 				f_out[flag_z] <= 1'b0;
 			end
-			f_out[flag_s] <= q_t[7];
-			f_out[flag_p] <= not (q_t[0] xor q_t[1] xor q_t[2] xor q_t[3] xor
-				q_t[4] xor q_t(5) xor q_t(6) xor q_t[7]);
+			f_out[flag_s] <= w_q_t[7];
+			f_out[flag_p] <= not (w_q_t[0] xor w_q_t[1] xor w_q_t[2] xor w_q_t[3] xor
+				w_q_t[4] xor w_q_t(5) xor w_q_t(6) xor w_q_t[7]);
 		4'd9:
 			// bit
-			f_out[flag_s] <= q_t[7];
-			if q_t[7:0] = 8'd0 begin
+			f_out[flag_s] <= w_q_t[7];
+			if w_q_t[7:0] = 8'd0 begin
 				f_out[flag_z] <= 1'b1;
 				f_out[flag_p] <= 1'b1;
 			else
@@ -343,16 +343,16 @@ module cz80_alu #(
 			endcase
 			f_out[flag_h] <= 1'b0;
 			f_out[flag_n] <= 1'b0;
-			f_out[flag_x] <= q_t[3];
-			f_out[flag_y] <= q_t[5];
-			f_out[flag_s] <= q_t[7];
-			if( q_t[7:0] == 8'd0 ) begin
+			f_out[flag_x] <= w_q_t[3];
+			f_out[flag_y] <= w_q_t[5];
+			f_out[flag_s] <= w_q_t[7];
+			if( w_q_t[7:0] == 8'd0 ) begin
 				f_out[flag_z] <= 1'b1;
-			else
+			end
+			else begin
 				f_out[flag_z] <= 1'b0;
 			end
-			f_out[flag_p] <= not (q_t[0] xor q_t[1] xor q_t[2] xor q_t[3] xor
-				q_t[4] xor q_t(5) xor q_t(6) xor q_t[7]);
+			f_out[flag_p] <= ~(w_q_t[0] ^ w_q_t[1] ^ w_q_t[2] ^ w_q_t[3] ^ w_q_t[4] ^ w_q_t[5] ^ w_q_t[6] ^ w_q_t[7]);
 			if( iset == 2'b00 ) begin
 				f_out[flag_p] <= f_in[flag_p];
 				f_out[flag_s] <= f_in[flag_s];
@@ -417,5 +417,6 @@ module cz80_alu #(
 		endcase
 	endfunction
 
+	assign w_q_t	= func_q_t( alu_op );
 	assign q		= func_3to8_decoder( alu_op );
 endmodule

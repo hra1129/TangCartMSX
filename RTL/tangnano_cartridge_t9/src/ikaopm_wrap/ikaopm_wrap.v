@@ -19,7 +19,7 @@ module ip_ikaopm_wrapper (
 	output	[16:0]	sound_out,
 	output			opm_int_n
 );
-	localparam		c_memory_mapped_io	= 16'h3FF0;
+	localparam		c_memory_mapped_io	= 16'h3FF0;		//	0x3FF0, 0x3FF1, 0x7FF0, 0x7FF1 (ignore bit0 and bit14)
 	localparam		c_memory_signature	= 16'h0080;
 	reg				ff_io_en;
 	wire			w_memio_dec_n;
@@ -36,7 +36,7 @@ module ip_ikaopm_wrapper (
 	// --------------------------------------------------------------------
 	//	Address decoder
 	// --------------------------------------------------------------------
-	assign w_cs_n			= ( { address[15:1], 1'b0 } == c_memory_mapped_io ) ? (n_sltsl | n_memreq ): 1'b1;
+	assign w_cs_n			= ( { address[15], 1'b0, address[13:1], 1'b0 } == c_memory_mapped_io ) ? (n_sltsl | n_memreq): 1'b1;
 	assign rdata			= ff_rom_rdata_en ? ff_rom_rdata : w_opm_rdata;
 	assign rdata_en			= ff_rdata_en;
 	assign sound_out		= { w_opm_out_r[15], w_opm_out_r } + { w_opm_out_l[15], w_opm_out_l };

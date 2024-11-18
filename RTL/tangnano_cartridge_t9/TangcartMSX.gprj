@@ -37,6 +37,7 @@
         <File path="src/ikascc/IKASCC_modules/IKASCC_vrc_a.v" type="file.verilog" enable="1"/>
         <File path="src/ikascc/IKASCC_modules/IKASCC_vrc_s.v" type="file.verilog" enable="1"/>
         <File path="src/ikascc_wrap/ip_ikascc_wrap.v" type="file.verilog" enable="1"/>
+        <File path="src/ikascc_wrap/ip_ram.v" type="file.verilog" enable="1"/>
         <File path="src/msx_midi/i8251.v" type="file.verilog" enable="1"/>
         <File path="src/msx_midi/i8251_clk_en.v" type="file.verilog" enable="1"/>
         <File path="src/msx_midi/i8251_receiver.v" type="file.verilog" enable="1"/>

@@ -54,50 +54,6 @@
    "Type" : "verilog"
   },
   {
-   "Path" : "D:/github/HRA_product/TangCartMSX/RTL/tangnano_cartridge_t9/src/ikascc/IKASCC.v",
-   "Type" : "verilog"
-  },
-  {
-   "Path" : "D:/github/HRA_product/TangCartMSX/RTL/tangnano_cartridge_t9/src/ikascc/IKASCC_modules/IKASCC_player_a.v",
-   "Type" : "verilog"
-  },
-  {
-   "Path" : "D:/github/HRA_product/TangCartMSX/RTL/tangnano_cartridge_t9/src/ikascc/IKASCC_modules/IKASCC_player_s.v",
-   "Type" : "verilog"
-  },
-  {
-   "Path" : "D:/github/HRA_product/TangCartMSX/RTL/tangnano_cartridge_t9/src/ikascc/IKASCC_modules/IKASCC_primitives.v",
-   "Type" : "verilog"
-  },
-  {
-   "Path" : "D:/github/HRA_product/TangCartMSX/RTL/tangnano_cartridge_t9/src/ikascc/IKASCC_modules/IKASCC_vrc_a.v",
-   "Type" : "verilog"
-  },
-  {
-   "Path" : "D:/github/HRA_product/TangCartMSX/RTL/tangnano_cartridge_t9/src/ikascc/IKASCC_modules/IKASCC_vrc_s.v",
-   "Type" : "verilog"
-  },
-  {
-   "Path" : "D:/github/HRA_product/TangCartMSX/RTL/tangnano_cartridge_t9/src/ikascc_wrap/ip_ikascc_wrap.v",
-   "Type" : "verilog"
-  },
-  {
-   "Path" : "D:/github/HRA_product/TangCartMSX/RTL/tangnano_cartridge_t9/src/pwm/ip_pwm.v",
-   "Type" : "verilog"
-  },
-  {
-   "Path" : "D:/github/HRA_product/TangCartMSX/RTL/tangnano_cartridge_t9/src/ssg/ssg.v",
-   "Type" : "verilog"
-  },
-  {
-   "Path" : "D:/github/HRA_product/TangCartMSX/RTL/tangnano_cartridge_t9/src/ssg/ssg_inst.v",
-   "Type" : "verilog"
-  },
-  {
-   "Path" : "D:/github/HRA_product/TangCartMSX/RTL/tangnano_cartridge_t9/src/tangcart_msx.v",
-   "Type" : "verilog"
-  },
-  {
    "Path" : "D:/github/HRA_product/TangCartMSX/RTL/tangnano_cartridge_t9/src/ikaopm/IKAOPM.v",
    "Type" : "verilog"
   },
@@ -142,6 +98,42 @@
    "Type" : "verilog"
   },
   {
+   "Path" : "D:/github/HRA_product/TangCartMSX/RTL/tangnano_cartridge_t9/src/ikaopm_wrap/ikaopm_wrap.v",
+   "Type" : "verilog"
+  },
+  {
+   "Path" : "D:/github/HRA_product/TangCartMSX/RTL/tangnano_cartridge_t9/src/ikascc/IKASCC.v",
+   "Type" : "verilog"
+  },
+  {
+   "Path" : "D:/github/HRA_product/TangCartMSX/RTL/tangnano_cartridge_t9/src/ikascc/IKASCC_modules/IKASCC_player_a.v",
+   "Type" : "verilog"
+  },
+  {
+   "Path" : "D:/github/HRA_product/TangCartMSX/RTL/tangnano_cartridge_t9/src/ikascc/IKASCC_modules/IKASCC_player_s.v",
+   "Type" : "verilog"
+  },
+  {
+   "Path" : "D:/github/HRA_product/TangCartMSX/RTL/tangnano_cartridge_t9/src/ikascc/IKASCC_modules/IKASCC_primitives.v",
+   "Type" : "verilog"
+  },
+  {
+   "Path" : "D:/github/HRA_product/TangCartMSX/RTL/tangnano_cartridge_t9/src/ikascc/IKASCC_modules/IKASCC_vrc_a.v",
+   "Type" : "verilog"
+  },
+  {
+   "Path" : "D:/github/HRA_product/TangCartMSX/RTL/tangnano_cartridge_t9/src/ikascc/IKASCC_modules/IKASCC_vrc_s.v",
+   "Type" : "verilog"
+  },
+  {
+   "Path" : "D:/github/HRA_product/TangCartMSX/RTL/tangnano_cartridge_t9/src/ikascc_wrap/ip_ikascc_wrap.v",
+   "Type" : "verilog"
+  },
+  {
+   "Path" : "D:/github/HRA_product/TangCartMSX/RTL/tangnano_cartridge_t9/src/ikascc_wrap/ip_ram.v",
+   "Type" : "verilog"
+  },
+  {
    "Path" : "D:/github/HRA_product/TangCartMSX/RTL/tangnano_cartridge_t9/src/msx_midi/i8251.v",
    "Type" : "verilog"
   },
@@ -182,7 +174,19 @@
    "Type" : "verilog"
   },
   {
-   "Path" : "D:/github/HRA_product/TangCartMSX/RTL/tangnano_cartridge_t9/src/ikaopm_wrap/ikaopm_wrap.v",
+   "Path" : "D:/github/HRA_product/TangCartMSX/RTL/tangnano_cartridge_t9/src/pwm/ip_pwm.v",
+   "Type" : "verilog"
+  },
+  {
+   "Path" : "D:/github/HRA_product/TangCartMSX/RTL/tangnano_cartridge_t9/src/ssg/ssg.v",
+   "Type" : "verilog"
+  },
+  {
+   "Path" : "D:/github/HRA_product/TangCartMSX/RTL/tangnano_cartridge_t9/src/ssg/ssg_inst.v",
+   "Type" : "verilog"
+  },
+  {
+   "Path" : "D:/github/HRA_product/TangCartMSX/RTL/tangnano_cartridge_t9/src/tangcart_msx.v",
    "Type" : "verilog"
   },
   {
@@ -196,7 +200,7 @@
  ],
  "LoopLimit" : 8000,
  "ResultFile" : "D:/github/HRA_product/TangCartMSX/RTL/tangnano_cartridge_t9/impl/temp/rtl_parser.result",
- "Top" : "",
+ "Top" : "tangcart_msx",
  "VerilogStd" : "verilog_2001",
  "VhdlStd" : "vhdl_93"
 }
