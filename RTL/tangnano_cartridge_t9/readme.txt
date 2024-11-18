@@ -115,3 +115,11 @@ A14 invert register = 1 のとき (初期状態)
 	A14 INV .... SCC に投入される A15-A0 の A14 が反転される。つまり BANK0,1 と BANK2,3 の配置が入れ替わる。
 	MASKx ...... SCC の BANKx に対するアクセスをマスクする。1 にすると SCC にアクセスしなくなる。
 				 RAMのBANKを出現させたときに、書き込みを行えるようにする機能である。
+
+SCC のバンク
+	BANK0～3 には、下記のバンクを出現させられる
+		BANK#0 .... MSX-MUSIC ROM 前半 8KB
+		BANK#1 .... MSX-MUSIC ROM 後半 8KB
+		BANK#2 .... RAM 前半 8KB
+		BANK#3 .... RAM 後半 8KB
+		BANK#63 ... SCC音源バンク (BANK2のみ選択可能)
