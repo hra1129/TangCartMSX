@@ -60,37 +60,7 @@
 //	-- Some minor bug fixes.
 //-----------------------------------------------------------------------------
 
-module cz80_addsub(
-	input			a : std_logic_vector;
-	input			b : std_logic_vector;
-	input			sub : std_logic;
-	input			carry_in : std_logic;
-	output			res : out std_logic_vector;
-	output			carry : out std_logic
-);
-	variable b_i		: unsigned(a'length - 1 downto 0);
-	variable res_i		: unsigned(a'length + 1 downto 0);
-
-	wire	[]		b_i;
-	wire	[]		res_i;
-
-	assign b_i		= sub ? ~b : b;
-	assign res_i	= { 1'b0, a, carry_in } + { 1'b0, b_i, 1'b1 };
-	assign carry	= res_i(a'length + 1);
-	res <= std_logic_vector(res_i(a'length downto 1));
-end
-
-//-----------------------------------------------------------------------------
-module cz80_alu #(
-	parameter			flag_c		= 0,
-	parameter			flag_n		= 1,
-	parameter			flag_p		= 2,
-	parameter			flag_x		= 3,
-	parameter			flag_h		= 4,
-	parameter			flag_y		= 5,
-	parameter			flag_z		= 6,
-	parameter			flag_s		= 7
-) (
+module cz80_alu (
 	input				arith16		,
 	input				z16			,
 	input				alu_cpi		,
@@ -103,6 +73,15 @@ module cz80_alu #(
 	output	[7:0]		q			,
 	output	[7:0]		f_out		
 );
+	localparam		flag_c = 0;
+	localparam		flag_n = 1;
+	localparam		flag_p = 2;
+	localparam		flag_x = 3;
+	localparam		flag_h = 4;
+	localparam		flag_y = 5;
+	localparam		flag_z = 6;
+	localparam		flag_s = 7;
+
 	wire	[3:0]	w_busb_l;
 	wire	[2:0]	w_busb_m;
 	wire			w_busb_h;
@@ -112,18 +91,20 @@ module cz80_alu #(
 	wire	[5:0]	w_addsub_l;
 	wire	[4:0]	w_addsub_m;
 	wire	[2:0]	w_addsub_h;
+	wire	[5:0]	w_addsub_s;
 	wire	[7:0]	w_q_t;
+	wire	[8:0]	w_daa_ql;
+	wire	[8:0]	w_daa_q;
 
 	// addsub variables (temporary signals)
-	signal	usecarry		: std_logic;
-	signal	carry7_v		: std_logic;
-	signal	overflow_v		: std_logic;
-	signal	halfcarry_v		: std_logic;
-	signal	carry_v			: std_logic;
-	signal	q_v				: std_logic_vector[7:0];
-	signal	q_cpi			: std_logic_vector[4:0];
-
-	signal	bitmask			: std_logic_vector[7:0];
+	wire			w_usecarry;
+	wire			w_carry7;
+	wire			w_overflow;
+	wire			w_halfcarry;
+	wire			w_carry;
+	wire	[7:0]	w_q;
+	wire	[4:0]	w_q_cpi;
+	wire	[7:0]	w_bitmask;
 
 	function [7:0] func_3to8_decoder(
 		input	[2:0]	sel
@@ -140,262 +121,238 @@ module cz80_alu #(
 		endcase
 	endfunction
 
-	assign bitmask		= func_3to8_decoder( ir[5:3] );
+	assign w_bitmask	= func_3to8_decoder( ir[5:3] );
 
-	assign usecarry		= ~alu_op[2] & alu_op[0];
+	assign w_usecarry	= ~alu_op[2] & alu_op[0];
 
 	assign w_busb_l		= alu_op[1] ? ~busb[3:0] : busb[3:0];
 	assign w_busb_m		= alu_op[1] ? ~busb[6:4] : busb[6:4];
 	assign w_busb_h		= alu_op[1] ? ~busb[7]   : busb[7];
 
-	assign w_carry_l	= alu_op[1] ^ ( usecarry & f_in[flag_c] );
-	assign w_carry_m	= halfcarry_v;
-	assign w_carry_h	= carry7_v;
+	assign w_carry_l	= alu_op[1] ^ ( w_usecarry & f_in[flag_c] );
+	assign w_carry_m	= w_halfcarry;
+	assign w_carry_h	= w_carry7;
 
-	assign w_addsub_l	= { 1'b0, busa[3:0], w_carry_l } + { 1'b0, w_busb_l  , 1'b1 }
-	assign w_addsub_m	= { 1'b0, busa[6:4], w_carry_m } + { 1'b0, w_busb_m  , 1'b1 }
-	assign w_addsub_h	= { 1'b0, busa[7]  , w_carry_h } + { 1'b0, w_busb_h  , 1'b1 }
-	assign w_addsub_s	= { 1'b0, busa[3:0], w_carry_m } + { 1'b0, ~busb[3:0], 1'b1 }
+	assign w_addsub_l	= { 1'b0, busa[3:0], w_carry_l } + { 1'b0, w_busb_l  , 1'b1 };
+	assign w_addsub_m	= { 1'b0, busa[6:4], w_carry_m } + { 1'b0, w_busb_m  , 1'b1 };
+	assign w_addsub_h	= { 1'b0, busa[7]  , w_carry_h } + { 1'b0, w_busb_h  , 1'b1 };
+	assign w_addsub_s	= { 1'b0, busa[3:0], w_carry_m } + { 1'b0, ~busb[3:0], 1'b1 };
 
-	assign q_v[3:0]		= w_addsub_l[4:1];
-	assign q_v[6:4]		= w_addsub_m[3:1];
-	assign q_v[7]		= w_addsub_h[1];
-	assign q_cpi[3:0]	= w_addsub_s[4:1];
+	assign w_q[3:0]		= w_addsub_l[4:1];
+	assign w_q[6:4]		= w_addsub_m[3:1];
+	assign w_q[7]		= w_addsub_h[1];
+	assign w_q_cpi[3:0]	= w_addsub_s[4:1];
 
-	assign halfcarry_v	= w_addsub_l[5];
-	assign carry7_v		= w_addsub_m[4];
-	assign carry_v		= w_addsub_h[2];
-	assign q_cpi[4]		= w_addsub_s[5];
+	assign w_halfcarry	= w_addsub_l[5];
+	assign w_carry7		= w_addsub_m[4];
+	assign w_carry		= w_addsub_h[2];
+	assign w_q_cpi[4]	= w_addsub_s[5];
 
-	assign overflow_v 	= carry_v ^ carry7_v;
+	assign w_overflow 	= w_carry ^ w_carry7;
 
-	process (arith16, alu_op, alu_cpi, f_in, busa, busb, ir, q_v, q_cpi, carry_v, halfcarry_v, overflow_v, bitmask, iset, z16)
-		variable daa_q : unsigned[8:0];
-	begin
-		f_out <= f_in;
-		daa_q := 8'dx;
+	assign w_daa_ql		= (!f_in[flag_n]) ? 
+			( ( (busa[3:0] > 4'd9) || f_in[flag_h] ) ? ({ 1'b0, busa } + 9'h06) : { 1'b0, busa } ) :	// after addition
+			( ( (busa[3:0] > 4'd9) || f_in[flag_h] ) ? ({ 1'b0, busa } - 9'h06) : { 1'b0, busa } );		// after subtraction
+
+	assign w_daa_q		= (!f_in[flag_n]) ?
+			( ( (w_daa_ql[8:4] > 4'h9  ) || f_in[flag_c]) ? (w_daa_ql + 9'h060) : w_daa_ql ) :			// after addition
+			( ( (w_daa_ql      > 9'h99 ) || f_in[flag_c]) ? (w_daa_ql - 9'h160) : w_daa_ql );			// after subtraction
+
+	// --------------------------------------------------------------------
+	//	Carry flag
+	// --------------------------------------------------------------------
+	function func_flag_c(
+		input	[3:0]	alu_op,
+		input			busa0,
+		input			busa7,
+		input			w_daa_q8,
+		input			f_in_c,
+		input			ir3,
+		input			w_carry
+	);
+		case( alu_op )
+		4'd0, 4'd1:
+			func_flag_c = w_carry;
+		4'd2, 4'd3, 4'd7:
+			func_flag_c = ~w_carry;
+		4'd4, 4'd5, 4'd6:
+			func_flag_c = 1'b0;
+		4'd8:
+			func_flag_c = ir3 ? busa0 : busa7;
+		4'd12:
+			func_flag_c = f_in_c | w_daa_q8;
+		default:
+			func_flag_c = f_in_c;
+		endcase
+	endfunction
+
+	assign f_out[flag_c] = func_flag_c( alu_op, busa[0], busa[7], w_daa_q[8], f_in[flag_c], ir[3], w_carry );
+
+	// --------------------------------------------------------------------
+	//	Negative flag
+	// --------------------------------------------------------------------
+	assign f_out[flag_n] = ( alu_op == 4'd2 || alu_op == 4'd3 || alu_op == 4'd7 );
+
+	// --------------------------------------------------------------------
+	//	Half carry flag
+	// --------------------------------------------------------------------
+	function func_flag_h(
+		input	[3:0]	alu_op,
+		input			w_halfcarry,
+		input	[3:0]	busa,
+		input			f_in_h,
+		input			f_in_n
+	);
+		case( alu_op )
+		4'd0, 4'd1:
+			func_flag_h	= w_halfcarry;
+		4'd2, 4'd3, 4'd7:
+			func_flag_h	= ~w_halfcarry;
+		4'd4, 4'd9:
+			func_flag_h	= 1'b1;
+		4'd5, 4'd6, 4'd8, 4'd13, 4'd14:
+			func_flag_h	= 1'b0;
+		4'd12:
+			func_flag_h	= ( !f_in_n     ) ? ( busa > 4'h9 ) :
+						  ( busa > 4'h5 ) ? 1'b0 : f_in_h;
+		default:
+			func_flag_h = f_in_h;
+		endcase
+	endfunction
+
+	assign f_out[flag_h] = func_flag_h( alu_op, w_halfcarry, busa[3:0], f_in[flag_h], f_in[flag_n] );
+
+	// --------------------------------------------------------------------
+	//	Parity/Overflow flag
+	// --------------------------------------------------------------------
+	function func_flag_p(
+		input	[3:0]	alu_op,
+		input	[2:0]	iset,
+		input			arith16,
+		input			f_in_p,
+		input			w_overflow,
+		input	[7:0]	w_q_t,
+		input	[7:0]	w_daa_q
+	);
+		case( alu_op )
+		4'd0, 4'd1, 4'd2, 4'd3, 4'd7:
+			func_flag_p	= ( arith16       ) ? f_in_p : w_overflow;
+		4'd4, 4'd5, 4'd6:
+			func_flag_p = ( arith16       ) ? f_in_p : ~( w_q_t[0] ^ w_q_t[1] ^ w_q_t[2] ^ w_q_t[3] ^ w_q_t[4] ^ w_q_t[5] ^ w_q_t[6] ^ w_q_t[7] );
+		4'd8:
+			func_flag_p = ( iset == 2'b00 ) ? f_in_p : ~( w_q_t[0] ^ w_q_t[1] ^ w_q_t[2] ^ w_q_t[3] ^ w_q_t[4] ^ w_q_t[5] ^ w_q_t[6] ^ w_q_t[7] );
+		4'd9:
+			func_flag_p = ( w_q_t[7:0] == 8'd0 );
+		4'd12:
+			func_flag_p = ~( w_daa_q[0] ^ w_daa_q[1] ^ w_daa_q[2] ^ w_daa_q[3] ^ w_daa_q[4] ^ w_daa_q[5] ^ w_daa_q[6] ^ w_daa_q[7] );
+		4'd13, 4'd14:
+			func_flag_p = ~( w_q_t[0] ^ w_q_t[1] ^ w_q_t[2] ^ w_q_t[3] ^ w_q_t[4] ^ w_q_t[5] ^ w_q_t[6] ^ w_q_t[7] );
+		default:
+			func_flag_p = f_in_p;
+		endcase
+	endfunction
+
+	assign f_out[flag_p] = func_flag_p( alu_op, iset, arith16, f_in[flag_p], w_overflow, w_q_t[7:0], w_daa_q[7:0] );
+
+	// --------------------------------------------------------------------
+	//	X flag, Y flag
+	// --------------------------------------------------------------------
+	function func_flag_xy(
+		input	[3:0]	alu_op,
+		input			f_in_xy,
+		input	[2:0]	ir,
+		input			alu_cpi,
+		input			w_q_cpi,
+		input			busb,
+		input			w_q_t,
+		input			w_daa_q
+	);
+		case( alu_op )
+		4'd0, 4'd1, 4'd2, 4'd3, 4'd4, 4'd5, 4'd6, 4'd8, 4'd13, 4'd14:
+			func_flag_xy	= w_q_t;
+		4'd7:
+			func_flag_xy	= ( alu_cpi ) ? w_q_cpi : busb;
+		4'd12:
+			func_flag_xy	= w_daa_q;
+		4'd9:
+			func_flag_xy	= ( ir == 3'd6 ) ? 1'b0 : busb;
+		default:
+			func_flag_xy	= f_in_xy;
+		endcase
+	endfunction
+
+	assign f_out[flag_x] = func_flag_xy( alu_op, f_in[flag_x], ir[2:0], alu_cpi, w_q_cpi[3], busb[3],w_q_t[3], w_daa_q[3] );
+	assign f_out[flag_y] = func_flag_xy( alu_op, f_in[flag_y], ir[2:0], alu_cpi, w_q_cpi[5], busb[5],w_q_t[5], w_daa_q[5] );
+
+	// --------------------------------------------------------------------
+	//	Zero flag
+	// --------------------------------------------------------------------
+	function func_flag_z(
+		input	[3:0]	alu_op,
+		input			f_in_z,
+		input	[7:0]	w_q_t,
+		input	[7:0]	w_daa_q,
+		input			arith16,
+		input			z16,
+		input	[1:0]	iset
+	);
 		case( alu_op )
 		4'd0, 4'd1, 4'd2, 4'd3, 4'd4, 4'd5, 4'd6, 4'd7:
-			f_out[flag_n]	<= 1'b0;
-			f_out[flag_c]	<= 1'b0;
-			case alu_op[2:0] is
-			3'd0, 3'd1:			// add, adc
-				begin
-					f_out[flag_c]	<= carry_v;
-					f_out[flag_h]	<= halfcarry_v;
-					f_out[flag_p]	<= overflow_v;
-				end
-			3'd2, 3'd3, 3'd7:	// sub, sbc, cp
-				begin
-					f_out[flag_n]	<= 1'b1;
-					f_out[flag_c]	<= ~carry_v;
-					f_out[flag_h]	<= ~halfcarry_v;
-					f_out[flag_p]	<= overflow_v;
-				end
-			3'd4:	// and
-				begin
-					f_out[flag_h]	<= 1'b1;
-				end
-			3'd5:	// xor
-				begin
-					f_out[flag_h]	<= 1'b0;
-				end
-			default: // or "110"
-				begin
-					f_out[flag_h]	<= 1'b0;
-				end
-			endcase
-			if( alu_op[2:0] == 3'b111 ) begin // cp
-				if( alu_cpi ) begin //cpi
-					f_out[flag_x] <= q_cpi[3];
-					f_out[flag_y] <= q_cpi[1];
-				end
-				else begin
-					f_out[flag_x] <= busb[3];
-					f_out[flag_y] <= busb(5);
-				end
-			end
-			else begin
-				f_out[flag_x] <= w_q_t[3];
-				f_out[flag_y] <= w_q_t[5];
-			end
-			if( w_q_t[7:0] == 8'd0 ) begin
-				f_out[flag_z] <= 1'b1;
-				if( z16 ) begin
-					f_out[flag_z] <= f_in[flag_z];	// 16 bit adc,sbc
-				end
-			end
-			else begin
-				f_out[flag_z] <= 1'b0;
-			end
-			f_out[flag_s] <= w_q_t[7];
-			case alu_op[2:0] is
-			3'd0, 3'd1, 3'd2, 3'd3, 3'd7:	// add, adc, sub, sbc, cp
-				begin
-					//	hold
-				end
-			default:
-				f_out[flag_p] <= ~[ w_q_t[0] ^ w_q_t[1] ^ w_q_t[2] ^ w_q_t[3] ^ w_q_t[4] ^ w_q_t[5] ^ w_q_t[6] ^ w_q_t[7] ];
-			endcase
-			if arith16 = 1'b1 begin
-				f_out[flag_s] <= f_in[flag_s];
-				f_out[flag_z] <= f_in[flag_z];
-				f_out[flag_p] <= f_in[flag_p];
-			end
-		4'b1100:
-			// daa
-			f_out[flag_h] <= f_in[flag_h];
-			f_out[flag_c] <= f_in[flag_c];
-			daa_q[7:0] := unsigned(busa);
-			daa_q(8) := 1'b0;
-			if f_in[flag_n] = 1'b0 begin
-				// after addition
-				// alow > 9 or h = 1
-				if daa_q[3:0] > 9 or f_in[flag_h] = 1'b1 begin
-					if (daa_q[3:0] > 9) begin
-						f_out[flag_h] <= 1'b1;
-					else
-						f_out[flag_h] <= 1'b0;
-					end
-					daa_q := daa_q + 6;
-				end
-				// new ahigh > 9 or c = 1
-				if daa_q[8:4] > 9 or f_in[flag_c] = 1'b1 begin
-					daa_q := daa_q + 96; // 0x60
-				end
-			end
-			else begin
-				// after subtraction
-				if daa_q[3:0] > 9 or f_in[flag_h] = 1'b1 begin
-					if daa_q[3:0] > 5 begin
-						f_out[flag_h] <= 1'b0;
-					end
-					daa_q[7:0] := daa_q[7:0] - 6;
-				end
-				if unsigned(busa) > 153 or f_in[flag_c] = 1'b1 begin
-					daa_q := daa_q - 352; // 0x160
-				end
-			end
-			f_out[flag_x] <= daa_q[3];
-			f_out[flag_y] <= daa_q(5);
-			f_out[flag_c] <= f_in[flag_c] or daa_q(8);
-			if daa_q[7:0] = 8'd0 begin
-				f_out[flag_z] <= 1'b1;
-			else
-				f_out[flag_z] <= 1'b0;
-			end
-			f_out[flag_s] <= daa_q[7];
-			f_out[flag_p] <= not (daa_q[0] xor daa_q[1] xor daa_q[2] xor daa_q[3] xor
-				daa_q[4] xor daa_q(5) xor daa_q(6) xor daa_q[7]);
-		4'd13, 4'd14:
-			// rld, rrd
-			f_out[flag_h] <= 1'b0;
-			f_out[flag_n] <= 1'b0;
-			f_out[flag_x] <= w_q_t[3];
-			f_out[flag_y] <= w_q_t(5);
-			if w_q_t[7:0] = 8'd0 begin
-				f_out[flag_z] <= 1'b1;
-			else
-				f_out[flag_z] <= 1'b0;
-			end
-			f_out[flag_s] <= w_q_t[7];
-			f_out[flag_p] <= not (w_q_t[0] xor w_q_t[1] xor w_q_t[2] xor w_q_t[3] xor
-				w_q_t[4] xor w_q_t(5) xor w_q_t(6) xor w_q_t[7]);
-		4'd9:
-			// bit
-			f_out[flag_s] <= w_q_t[7];
-			if w_q_t[7:0] = 8'd0 begin
-				f_out[flag_z] <= 1'b1;
-				f_out[flag_p] <= 1'b1;
-			else
-				f_out[flag_z] <= 1'b0;
-				f_out[flag_p] <= 1'b0;
-			end
-			f_out[flag_h] <= 1'b1;
-			f_out[flag_n] <= 1'b0;
-			f_out[flag_x] <= 1'b0;
-			f_out[flag_y] <= 1'b0;
-			if ir[2:0] != "110" begin
-				f_out[flag_x] <= busb[3];
-				f_out[flag_y] <= busb(5);
-			end
-		4'd10:
-		4'd11:
+			func_flag_z = ( arith16       ) ? f_in_z :
+						  ( w_q_t == 8'd0 ) ? ( ( z16 ) ? f_in_z : 1'b1 ) : 1'b0;
+		4'd12:
+			func_flag_z = ( w_daa_q == 8'd0 );
+		4'd9, 4'd13, 4'd14:
+			func_flag_z = ( w_q_t == 8'd0 );
 		4'd8:
-			// rot
-			case( ir[5:3] )
-			3'd0: // rlc
-				f_out[flag_c] <= busa[7];
-			3'd2: // rl
-				f_out[flag_c] <= busa[7];
-			3'd1: // rrc
-				f_out[flag_c] <= busa[0];
-			3'd3: // rr
-				f_out[flag_c] <= busa[0];
-			3'd4: // sla
-				f_out[flag_c] <= busa[7];
-			3'd6: // sll (undocumented) / swap
-				f_out[flag_c] <= busa[7];
-			3'd5: // sra
-				f_out[flag_c] <= busa[0];
-			default: // srl
-				f_out[flag_c] <= busa[0];
-			endcase
-			f_out[flag_h] <= 1'b0;
-			f_out[flag_n] <= 1'b0;
-			f_out[flag_x] <= w_q_t[3];
-			f_out[flag_y] <= w_q_t[5];
-			f_out[flag_s] <= w_q_t[7];
-			if( w_q_t[7:0] == 8'd0 ) begin
-				f_out[flag_z] <= 1'b1;
-			end
-			else begin
-				f_out[flag_z] <= 1'b0;
-			end
-			f_out[flag_p] <= ~(w_q_t[0] ^ w_q_t[1] ^ w_q_t[2] ^ w_q_t[3] ^ w_q_t[4] ^ w_q_t[5] ^ w_q_t[6] ^ w_q_t[7]);
-			if( iset == 2'b00 ) begin
-				f_out[flag_p] <= f_in[flag_p];
-				f_out[flag_s] <= f_in[flag_s];
-				f_out[flag_z] <= f_in[flag_z];
-			end
+			func_flag_z = ( iset == 2'b00 ) ? f_in_z : ( w_q_t == 8'd0 );
 		default:
-			begin
-				//	hold
-			end
+			func_flag_z = f_in_z;
 		endcase
-	end
+	endfunction
 
+	assign f_out[flag_z] = func_flag_z( alu_op, f_in[flag_z], w_q_t[7:0], w_daa_q[7:0], arith16, z16, iset );
 
+	// --------------------------------------------------------------------
+	//	Sign flag
+	// --------------------------------------------------------------------
+	function func_flag_s(
+		input	[3:0]	alu_op,
+		input	[2:0]	iset,
+		input			arith16,
+		input			w_q_t7,
+		input			w_daa_q7,
+		input			f_in_s
+	);
+		case( alu_op )
+		4'd0, 4'd1, 4'd2, 4'd3, 4'd4, 4'd5, 4'd6, 4'd7:
+			func_flag_s = arith16 ? f_in_s : w_q_t7;
+		4'd8:
+			func_flag_s = ( iset == 2'b00 ) ? f_in_s : w_q_t7;
+		4'd9, 4'd13, 4'd14:
+			func_flag_s = w_q_t7;
+		4'd12:
+			func_flag_s = w_daa_q7;
+		default:
+			func_flag_s = f_in_s;
+		endcase
+	endfunction
 
+	assign f_out[flag_s] = func_flag_s( alu_op, iset, arith16, w_q_t[7], w_daa_q[7], f_in[flag_s] );
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+	// --------------------------------------------------------------------
+	//	‰‰ŽZŒ‹‰Ê q
+	// --------------------------------------------------------------------
 	function [7:0] func_q_t(
 		input	[3:0]	alu_op
 	);
 		case( alu_op )
 		4'd0, 4'd1, 4'd2, 4'd3:
-					func_q_t	= q_v;							//	add, adc, sub, sbc
+					func_q_t	= w_q;							//	add, adc, sub, sbc
 		4'd4:		func_q_t	= busa & busb;					//	and
 		4'd5:		func_q_t	= busa ^ busb;					//	xor
 		4'd6:		func_q_t	= busa | busb;					//	or
-		4'd7:		func_q_t	= q_v;							//	cp
+		4'd7:		func_q_t	= w_q;							//	cp
 		4'd8:
 			case( ir[5:3] )										//	rotate
 			3'd0:	func_q_t	= { busa[6:0], busa[7] };		//	rlc
@@ -407,10 +364,10 @@ module cz80_alu #(
 			3'd5:	func_q_t	= { busa[7], busa[7:1] };		//	sra
 			default:func_q_t	= { 1'b0, busa[7:1] };			//	srl
 			endcase
-		4'd9:		func_q_t	= busb & bitmask;				//	bit
-		4'd10:		func_q_t	= busb | bitmask;				//	set
-		4'd11:		func_q_t	= busb & ~bitmask;				//	res
-		4'd12:		func_q_t	= daa_q[7:0];					//	daa
+		4'd9:		func_q_t	= busb & w_bitmask;				//	bit
+		4'd10:		func_q_t	= busb | w_bitmask;				//	set
+		4'd11:		func_q_t	= busb & ~w_bitmask;			//	res
+		4'd12:		func_q_t	= w_daa_q[7:0];					//	daa
 		4'd13:		func_q_t	= { busa[7:4], busb[7:4] };		//	rld
 		4'd14:		func_q_t	= { busa[7:4], busb[3:0] };		//	rrd
 		default:	func_q_t	= 8'dx;
