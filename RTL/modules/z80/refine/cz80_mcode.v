@@ -60,87 +60,82 @@
 //	-- Some minor bug fixes.
 //-----------------------------------------------------------------------------
 
-module t80_mcode (
-		generic(
-				mode		: integer := 0;
-				flag_c		: integer := 0;
-				flag_n		: integer := 1;
-				flag_p		: integer := 2;
-				flag_x		: integer := 3;
-				flag_h		: integer := 4;
-				flag_y		: integer := 5;
-				flag_z		: integer := 6;
-				flag_s		: integer := 7
-		);
-		port(
-				ir			: in std_logic_vector[7:0];
-				iset		: in std_logic_vector[1:0];
-				mcycle		: in std_logic_vector[2:0];
-				f			: in std_logic_vector[7:0];
-				nmicycle	: in std_logic;
-				intcycle	: in std_logic;
-				xy_state	: in std_logic_vector[1:0];
-				mcycles		: out std_logic_vector[2:0];
-				tstates		: out std_logic_vector[2:0];
-				prefix		: out std_logic_vector[1:0]; // none,cb,ed,dd/fd
-				inc_pc		: out std_logic;
-				inc_wz		: out std_logic;
-				incdec_16	: out std_logic_vector[3:0]; // bc,de,hl,sp	 0 is inc
-				read_to_reg : out std_logic;
-				read_to_acc : out std_logic;
-				set_busa_to : out std_logic_vector[3:0]; // b,c,d,e,h,l,di/db,a,sp(l),sp(m),0,f
-				set_busb_to : out std_logic_vector[3:0]; // b,c,d,e,h,l,di,a,sp(l),sp(m),1,f,pc(l),pc(m),0
-				alu_op		: out std_logic_vector[3:0];
-						// add, adc, sub, sbc, and, xor, or, cp, rot, bit, set, res, daa, rld, rrd, none
-				alu_cpi		: out std_logic;	//for undoc xy-flags	   
-				save_alu	: out std_logic;
-				preservec	: out std_logic;
-				arith16		: out std_logic;
-				set_addr_to : out std_logic_vector[2:0]; // anone,axy,aioa,asp,abc,ade,azi
-				iorq		: out std_logic;
-				jump		: out std_logic;
-				jumpe		: out std_logic;
-				jumpxy		: out std_logic;
-				call		: out std_logic;
-				rstp		: out std_logic;
-				ldz			: out std_logic;
-				ldw			: out std_logic;
-				ldsphl		: out std_logic;
-				special_ld	: out std_logic_vector[2:0]; // a,i;a,r;i,a;r,a;none
-				exchangedh	: out std_logic;
-				exchangerp	: out std_logic;
-				exchangeaf	: out std_logic;
-				exchangers	: out std_logic;
-				i_djnz		: out std_logic;
-				i_cpl		: out std_logic;
-				i_ccf		: out std_logic;
-				i_scf		: out std_logic;
-				i_retn		: out std_logic;
-				i_bt		: out std_logic;
-				i_bc		: out std_logic;
-				i_btr		: out std_logic;
-				i_rld		: out std_logic;
-				i_rrd		: out std_logic;
-				i_inrc		: out std_logic;
-				setdi		: out std_logic;
-				setei		: out std_logic;
-				imode		: out std_logic_vector[1:0];
-				halt		: out std_logic;
-				noread		: out std_logic;
-				write		: out std_logic;
-				xybit_undoc : out std_logic
-		);
-end t80_mcode;
+module t80_mcode #(
+	parameter			mode		= 0
+) (
+	input				ir			: in std_logic_vector[7:0];
+	input				iset		: in std_logic_vector[1:0];
+	input				mcycle		: in std_logic_vector[2:0];
+	input				f			: in std_logic_vector[7:0];
+	input				nmicycle	: in std_logic;
+	input				intcycle	: in std_logic;
+	input				xy_state	: in std_logic_vector[1:0];
+	output				mcycles		: out std_logic_vector[2:0];
+	output				tstates		: out std_logic_vector[2:0];
+	output				prefix		: out std_logic_vector[1:0]; // none,cb,ed,dd/fd
+	output				inc_pc		: out std_logic;
+	output				inc_wz		: out std_logic;
+	output				incdec_16	: out std_logic_vector[3:0]; // bc,de,hl,sp	 0 is inc
+	output				read_to_reg : out std_logic;
+	output				read_to_acc : out std_logic;
+	output				set_busa_to : out std_logic_vector[3:0]; // b,c,d,e,h,l,di/db,a,sp(l),sp(m),0,f
+	output				set_busb_to : out std_logic_vector[3:0]; // b,c,d,e,h,l,di,a,sp(l),sp(m),1,f,pc(l),pc(m),0
+	output				alu_op		: out std_logic_vector[3:0];
+			// add, adc, sub, sbc, and, xor, or, cp, rot, bit, set, res, daa, rld, rrd, none
+	output				alu_cpi		: out std_logic;	//for undoc xy-flags	   
+	output				save_alu	: out std_logic;
+	output				preservec	: out std_logic;
+	output				arith16		: out std_logic;
+	output				set_addr_to : out std_logic_vector[2:0]; // anone,axy,aioa,asp,abc,ade,azi
+	output				iorq		: out std_logic;
+	output				jump		: out std_logic;
+	output				jumpe		: out std_logic;
+	output				jumpxy		: out std_logic;
+	output				call		: out std_logic;
+	output				rstp		: out std_logic;
+	output				ldz			: out std_logic;
+	output				ldw			: out std_logic;
+	output				ldsphl		: out std_logic;
+	output				special_ld	: out std_logic_vector[2:0]; // a,i;a,r;i,a;r,a;none
+	output				exchangedh	: out std_logic;
+	output				exchangerp	: out std_logic;
+	output				exchangeaf	: out std_logic;
+	output				exchangers	: out std_logic;
+	output				i_djnz		: out std_logic;
+	output				i_cpl		: out std_logic;
+	output				i_ccf		: out std_logic;
+	output				i_scf		: out std_logic;
+	output				i_retn		: out std_logic;
+	output				i_bt		: out std_logic;
+	output				i_bc		: out std_logic;
+	output				i_btr		: out std_logic;
+	output				i_rld		: out std_logic;
+	output				i_rrd		: out std_logic;
+	output				i_inrc		: out std_logic;
+	output				setdi		: out std_logic;
+	output				setei		: out std_logic;
+	output				imode		: out std_logic_vector[1:0];
+	output				halt		: out std_logic;
+	output				noread		: out std_logic;
+	output				write		: out std_logic;
+	output				xybit_undoc : out std_logic
+);
+		localparam			flag_c	= 0;
+		localparam			flag_n	= 1;
+		localparam			flag_p	= 2;
+		localparam			flag_x	= 3;
+		localparam			flag_h	= 4;
+		localparam			flag_y	= 5;
+		localparam			flag_z	= 6;
+		localparam			flag_s	= 7
 
-architecture rtl of t80_mcode is
-
-		constant anone	: std_logic_vector[2:0] := 3'b111;
-		constant abc	: std_logic_vector[2:0] := 3'b000;
-		constant ade	: std_logic_vector[2:0] := 3'b001;
-		constant axy	: std_logic_vector[2:0] := 3'b010;
-		constant aioa	: std_logic_vector[2:0] := 3'b100;
-		constant asp	: std_logic_vector[2:0] := 3'b101;
-		constant azi	: std_logic_vector[2:0] := 3'b110;
+		localparam	[2:0]	anone	= 3'd7;
+		localparam	[2:0]	abc		= 3'd0;
+		localparam	[2:0]	ade		= 3'd1;
+		localparam	[2:0]	axy		= 3'd2;
+		localparam	[2:0]	aioa	= 3'd4;
+		localparam	[2:0]	asp		= 3'd5;
+		localparam	[2:0]	azi		= 3'd6;
 
 		function is_cc_true(
 				f : std_logic_vector[7:0];
@@ -148,14 +143,14 @@ architecture rtl of t80_mcode is
 				) return boolean is
 		begin
 			case cc is
-			 3'b000 : return f[6] = 1'b0; // nz
-			 3'b001 : return f[6] = 1'b1; // z
-			 3'b010 : return f[0] = 1'b0; // nc
-			 3'b011 : return f[0] = 1'b1; // c
-			 3'b100 : return f[2] = 1'b0; // po
-			 3'b101 : return f[2] = 1'b1; // pe
-			 3'b110 : return f[7] = 1'b0; // p
-			 3'b111 : return f[7] = 1'b1; // m
+			 3'd0 : return f[6] = 1'b0; // nz
+			 3'd1 : return f[6] = 1'b1; // z
+			 3'd2 : return f[0] = 1'b0; // nc
+			 3'd3 : return f[0] = 1'b1; // c
+			 3'd4 : return f[2] = 1'b0; // po
+			 3'd5 : return f[2] = 1'b1; // pe
+			 3'd6 : return f[7] = 1'b0; // p
+			 3'd7 : return f[7] = 1'b1; // m
 			endcase
 		end
 
@@ -172,20 +167,20 @@ begin
 			dpair := ir[5:4];
 			irb := to_bitvector(ir);
 
-			mcycles <= 3'b001;
-			if( mcycle = 3'b001 ) begin
-					tstates <= 3'b100;
+			mcycles <= 3'd1;
+			if( mcycle = 3'd1 ) begin
+					tstates <= 3'd4;
 			else
-					tstates <= 3'b011;
+					tstates <= 3'd3;
 			end
 			prefix <= 2'b00;
 			inc_pc <= 1'b0;
 			inc_wz <= 1'b0;
-			incdec_16 <= 4'b0000;
+			incdec_16 <= 4'h0;
 			read_to_acc <= 1'b0;
 			read_to_reg <= 1'b0;
-			set_busb_to <= 4'b0000;
-			set_busa_to <= 4'b0000;
+			set_busb_to <= 4'h0;
+			set_busa_to <= 4'h0;
 			alu_op <= 1'b0 & ir[5:3];
 			alu_cpi <= 1'b0;
 			save_alu <= 1'b0;
@@ -201,7 +196,7 @@ begin
 			ldz <= 1'b0;
 			ldw <= 1'b0;
 			ldsphl <= 1'b0;
-			special_ld <= 3'b000;
+			special_ld <= 3'd0;
 			exchangedh <= 1'b0;
 			exchangerp <= 1'b0;
 			exchangeaf <= 1'b0;
@@ -233,13 +228,13 @@ begin
 
 			case( irb )
 // 8 bit load group
-			8'b01000000, 8'b01000001, 8'b01000010, 8'b01000011, 8'b01000100, 8'b01000101, 8'b01000111, 
-			8'b01001000, 8'b01001001, 8'b01001010, 8'b01001011, 8'b01001100, 8'b01001101, 8'b01001111, 
-			8'b01010000, 8'b01010001, 8'b01010010, 8'b01010011, 8'b01010100, 8'b01010101, 8'b01010111, 
-			8'b01011000, 8'b01011001, 8'b01011010, 8'b01011011, 8'b01011100, 8'b01011101, 8'b01011111, 
-			8'b01100000, 8'b01100001, 8'b01100010, 8'b01100011, 8'b01100100, 8'b01100101, 8'b01100111, 
-			8'b01101000, 8'b01101001, 8'b01101010, 8'b01101011, 8'b01101100, 8'b01101101, 8'b01101111, 
-			8'b01111000, 8'b01111001, 8'b01111010, 8'b01111011, 8'b01111100, 8'b01111101, 8'b01111111:
+			8'h40, 8'h41, 8'h42, 8'h43, 8'h44, 8'h45, 8'h47, 
+			8'h48, 8'h49, 8'h4A, 8'h4B, 8'h4C, 8'h4D, 8'h4F, 
+			8'h50, 8'h51, 8'h52, 8'h53, 8'h54, 8'h55, 8'h57, 
+			8'h58, 8'h59, 8'h5A, 8'h5B, 8'h5C, 8'h5D, 8'h5F, 
+			8'h60, 8'h61, 8'h62, 8'h63, 8'h64, 8'h65, 8'h67, 
+			8'h68, 8'h69, 8'h6A, 8'h6B, 8'h6C, 8'h6D, 8'h6F, 
+			8'h78, 8'h79, 8'h7A, 8'h7B, 8'h7C, 8'h7D, 8'h7F:
 				begin
 					// ld r,r'
 					set_busb_to[2:0] <= sss;
@@ -247,10 +242,10 @@ begin
 					set_busa_to[2:0] <= ddd;
 					read_to_reg <= 1'b1;
 				end
-			8'b00000110, 8'b00001110, 8'b00010110, 8'b00011110, 8'b00100110, 8'b00101110, 8'b00111110 :
+			8'h06, 8'h0E, 8'h16, 8'h1E, 8'h26, 8'h2E, 8'h3E :
 				begin
 					// ld r,n
-					mcycles <= 3'b010;
+					mcycles <= 3'd2;
 					case( mcycle )
 					3'd2:
 							inc_pc <= 1'b1;
@@ -259,10 +254,10 @@ begin
 					 others : null;
 					endcase
 				end
-			8'b01000110, 8'b01001110, 8'b01010110, 8'b01011110, 8'b01100110, 8'b01101110, 8'b01111110 :
+			8'h46, 8'h4E, 8'h56, 8'h5E, 8'h66, 8'h6E, 8'h7E :
 				begin
 					// ld r,(hl)
-					mcycles <= 3'b010;
+					mcycles <= 3'd2;
 					case( mcycle )
 					3'd1:
 							set_addr_to <= axy;
@@ -272,10 +267,10 @@ begin
 					 others : null;
 					endcase
 				end
-			 8'b01110000, 8'b01110001, 8'b01110010, 8'b01110011, 8'b01110100, 8'b01110101, 8'b01110111 :
+			 8'h70, 8'h71, 8'h72, 8'h73, 8'h74, 8'h75, 8'h77 :
 				begin
 					// ld (hl),r
-					mcycles <= 3'b010;
+					mcycles <= 3'd2;
 					case( mcycle )
 					3'd1:
 							set_addr_to <= axy;
@@ -286,10 +281,10 @@ begin
 					 others : null;
 					endcase
 				end
-			 8'b00110110 :
+			 8'h36 :
 				begin
 					// ld (hl),n
-					mcycles <= 3'b011;
+					mcycles <= 3'd3;
 					case( mcycle )
 					3'd2:
 						begin
@@ -308,10 +303,10 @@ begin
 						end
 					endcase
 				end
-			 8'b00001010 :
+			 8'h0A :
 				begin
 					// ld a,(bc)
-					mcycles <= 3'b010;
+					mcycles <= 3'd2;
 					case( mcycle )
 					3'd1:
 							set_addr_to <= abc;
@@ -323,10 +318,10 @@ begin
 						end
 					endcase
 				end
-			 8'b00011010 :
+			 8'h1A :
 				begin
 					// ld a,(de)
-					mcycles <= 3'b010;
+					mcycles <= 3'd2;
 					case( mcycle )
 					3'd1:
 							set_addr_to <= ade;
@@ -338,10 +333,10 @@ begin
 						end
 					endcase
 				end
-			 8'b00111010 :
+			 8'h3A :
 				begin
 					// ld a,(nn)
-					mcycles <= 3'b100;
+					mcycles <= 3'd4;
 					case( mcycle )
 					3'd2:
 							inc_pc <= 1'b1;
@@ -357,14 +352,14 @@ begin
 						end
 					endcase
 				end
-			 8'b00000010 :
+			 8'h02 :
 				begin
 					// ld (bc),a
-					mcycles <= 3'b010;
+					mcycles <= 3'd2;
 					case( mcycle )
 					3'd1:
 							set_addr_to <= abc;
-							set_busb_to <= 4'b0111;
+							set_busb_to <= 4'h7;
 					3'd2:
 							write <= 1'b1;
 					default:
@@ -373,14 +368,14 @@ begin
 						end
 					endcase
 				end
-			 8'b00010010 :
+			 8'h12 :
 				begin
 					// ld (de),a
-					mcycles <= 3'b010;
+					mcycles <= 3'd2;
 					case( mcycle )
 					3'd1:
 							set_addr_to <= ade;
-							set_busb_to <= 4'b0111;
+							set_busb_to <= 4'h7;
 					3'd2:
 							write <= 1'b1;
 					default:
@@ -389,10 +384,10 @@ begin
 						end
 					endcase
 				end
-			 8'b00110010 :
+			 8'h32 :
 				begin
 					// ld (nn),a
-					mcycles <= 3'b100;
+					mcycles <= 3'd4;
 					case( mcycle )
 					3'd2:
 							inc_pc <= 1'b1;
@@ -400,7 +395,7 @@ begin
 					3'd3:
 							set_addr_to <= azi;
 							inc_pc <= 1'b1;
-							set_busb_to <= 4'b0111;
+							set_busb_to <= 4'h7;
 					3'd4:
 							write <= 1'b1;
 					default:
@@ -410,17 +405,17 @@ begin
 					endcase
 				end
 // 16 bit load group
-			 8'b00000001, 8'b00010001, 8'b00100001, 8'b00110001 :
+			 8'h01, 8'h11, 8'h21, 8'h31 :
 				begin
 					// ld dd,nn
-					mcycles <= 3'b011;
+					mcycles <= 3'd3;
 					case( mcycle )
 					3'd2:
 						begin
 							inc_pc <= 1'b1;
 							read_to_reg <= 1'b1;
 							if( dpair == 2'b11 ) begin
-									set_busa_to[3:0] <= 4'b1000;
+									set_busa_to[3:0] <= 4'h8;
 							end
 							else begin
 									set_busa_to[2:1] <= dpair;
@@ -431,7 +426,7 @@ begin
 							inc_pc <= 1'b1;
 							read_to_reg <= 1'b1;
 							if( dpair == 2'b11 ) begin
-									set_busa_to[3:0] <= 4'b1001;
+									set_busa_to[3:0] <= 4'h9;
 							end
 							else begin
 									set_busa_to[2:1] <= dpair;
@@ -442,9 +437,9 @@ begin
 							//	hold
 						end
 					endcase
-			 8'b00101010 :
+			 8'h2A :
 					// ld hl,(nn)
-					mcycles <= 3'b101;
+					mcycles <= 3'd5;
 					case( mcycle )
 					3'd2:
 							inc_pc <= 1'b1;
@@ -454,21 +449,21 @@ begin
 							inc_pc <= 1'b1;
 							ldw <= 1'b1;
 					3'd4:
-							set_busa_to[2:0] <= 3'b101; // l
+							set_busa_to[2:0] <= 3'd5; // l
 							read_to_reg <= 1'b1;
 							inc_wz <= 1'b1;
 							set_addr_to <= azi;
 					3'd5:
-							set_busa_to[2:0] <= 3'b100; // h
+							set_busa_to[2:0] <= 3'd4; // h
 							read_to_reg <= 1'b1;
 					default:
 						begin
 							//	hold
 						end
 					endcase
-			 8'b00100010 :
+			 8'h22 :
 					// ld (nn),hl
-					mcycles <= 3'b101;
+					mcycles <= 3'd5;
 					case( mcycle )
 					3'd2:
 							inc_pc <= 1'b1;
@@ -477,12 +472,12 @@ begin
 							set_addr_to <= azi;
 							inc_pc <= 1'b1;
 							ldw <= 1'b1;
-							set_busb_to <= 4'b0101; // l
+							set_busb_to <= 4'h5; // l
 					3'd4:
 							inc_wz <= 1'b1;
 							set_addr_to <= azi;
 							write <= 1'b1;
-							set_busb_to <= 4'b0100; // h
+							set_busb_to <= 4'h4; // h
 					3'd5:
 							write <= 1'b1;
 					default:
@@ -490,30 +485,30 @@ begin
 							//	hold
 						end
 					endcase
-			 8'b11111001 :
+			 8'hF9 :
 					// ld sp,hl
-					tstates <= 3'b110;
+					tstates <= 3'd6;
 					ldsphl <= 1'b1;
-			 8'b11000101|8'b11010101|8'b11100101|8'b11110101 :
+			 8'hC5, 8'hD5, 8'hE5, 8'hF5 :
 					// push qq
-					mcycles <= 3'b011;
+					mcycles <= 3'd3;
 					case( mcycle )
 					3'd1:
-							tstates <= 3'b101;
-							incdec_16 <= 4'b1111;
+							tstates <= 3'd5;
+							incdec_16 <= 4'hF;
 							set_addr_to <= asp;
 							if( dpair = 2'b11 ) begin
-									set_busb_to <= 4'b0111;
+									set_busb_to <= 4'h7;
 							else
 									set_busb_to[2:1] <= dpair;
 									set_busb_to[0] <= 1'b0;
 									set_busb_to[3] <= 1'b0;
 							end
 					3'd2:
-							incdec_16 <= 4'b1111;
+							incdec_16 <= 4'hF;
 							set_addr_to <= asp;
 							if( dpair = 2'b11 ) begin
-									set_busb_to <= 4'b1011;
+									set_busb_to <= 4'hB;
 							else
 									set_busb_to[2:1] <= dpair;
 									set_busb_to[0] <= 1'b1;
@@ -527,27 +522,27 @@ begin
 							//	hold
 						end
 					endcase
-			 8'b11000001|8'b11010001|8'b11100001|8'b11110001 :
+			 8'hC1, 8'hD1, 8'hE1, 8'hF1 :
 					// pop qq
-					mcycles <= 3'b011;
+					mcycles <= 3'd3;
 					case( mcycle )
 					3'd1:
 							set_addr_to <= asp;
 					3'd2:
-							incdec_16 <= 4'b0111;
+							incdec_16 <= 4'h7;
 							set_addr_to <= asp;
 							read_to_reg <= 1'b1;
 							if( dpair = 2'b11 ) begin
-									set_busa_to[3:0] <= 4'b1011;
+									set_busa_to[3:0] <= 4'hB;
 							else
 									set_busa_to[2:1] <= dpair;
 									set_busa_to[0] <= 1'b1;
 							end
 					3'd3:
-							incdec_16 <= 4'b0111;
+							incdec_16 <= 4'h7;
 							read_to_reg <= 1'b1;
 							if( dpair = 2'b11 ) begin
-									set_busa_to[3:0] <= 4'b0111;
+									set_busa_to[3:0] <= 4'h7;
 							else
 									set_busa_to[2:1] <= dpair;
 									set_busa_to[0] <= 1'b0;
@@ -559,39 +554,39 @@ begin
 					endcase
 
 // exchange, block transfer and search group
-			 8'b11101011 :
+			 8'hEB :
 					// ex de,hl
 					exchangedh <= 1'b1;
-			 8'b00001000 :
+			 8'h08 :
 					// ex af,af'
 					exchangeaf <= 1'b1;
-			 8'b11011001 :
+			 8'hD9 :
 					// exx
 					exchangers <= 1'b1;
-			 8'b11100011 :
+			 8'hE3 :
 					// ex (sp),hl
-					mcycles <= 3'b101;
+					mcycles <= 3'd5;
 					case( mcycle )
 					3'd1:
 							set_addr_to <= asp;
 					3'd2:
 							read_to_reg <= 1'b1;
-							set_busa_to <= 4'b0101;
-							set_busb_to <= 4'b0101;
+							set_busa_to <= 4'h5;
+							set_busb_to <= 4'h5;
 							set_addr_to <= asp;
 					3'd3:
-							incdec_16 <= 4'b0111;
+							incdec_16 <= 4'h7;
 							set_addr_to <= asp;
-							tstates <= 3'b100;
+							tstates <= 3'd4;
 							write <= 1'b1;
 					3'd4:
 							read_to_reg <= 1'b1;
-							set_busa_to <= 4'b0100;
-							set_busb_to <= 4'b0100;
+							set_busa_to <= 4'h4;
+							set_busb_to <= 4'h4;
 							set_addr_to <= asp;
 					3'd5:
-							incdec_16 <= 4'b1111;
-							tstates <= 3'b101;
+							incdec_16 <= 4'hF;
+							tstates <= 3'd5;
 							write <= 1'b1;
 					default:
 						begin
@@ -600,14 +595,14 @@ begin
 					endcase
 
 // 8 bit arithmetic and logical group
-			when 8'b10000000|8'b10000001|8'b10000010|8'b10000011|8'b10000100|8'b10000101|8'b10000111
-					|8'b10001000|8'b10001001|8'b10001010|8'b10001011|8'b10001100|8'b10001101|8'b10001111
-					|8'b10010000|8'b10010001|8'b10010010|8'b10010011|8'b10010100|8'b10010101|8'b10010111
-					|8'b10011000|8'b10011001|8'b10011010|8'b10011011|8'b10011100|8'b10011101|8'b10011111
-					|8'b10100000|8'b10100001|8'b10100010|8'b10100011|8'b10100100|8'b10100101|8'b10100111
-					|8'b10101000|8'b10101001|8'b10101010|8'b10101011|8'b10101100|8'b10101101|8'b10101111
-					|8'b10110000|8'b10110001|8'b10110010|8'b10110011|8'b10110100|8'b10110101|8'b10110111
-					|8'b10111000|8'b10111001|8'b10111010|8'b10111011|8'b10111100|8'b10111101|8'b10111111 =>
+			8'h80, 8'h81, 8'h82, 8'h83, 8'h84, 8'h85, 8'h87
+			, 8'h88, 8'h89, 8'h8A, 8'h8B, 8'h8C, 8'h8D, 8'h8F
+			, 8'h90, 8'h91, 8'h92, 8'h93, 8'h94, 8'h95, 8'h97
+			, 8'h98, 8'h99, 8'h9A, 8'h9B, 8'h9C, 8'h9D, 8'h9F
+			, 8'hA0, 8'hA1, 8'hA2, 8'hA3, 8'hA4, 8'hA5, 8'hA7
+			, 8'hA8, 8'hA9, 8'hAA, 8'hAB, 8'hAC, 8'hAD, 8'hAF
+			, 8'hB0, 8'hB1, 8'hB2, 8'hB3, 8'hB4, 8'hB5, 8'hB7
+			, 8'hB8, 8'hB9, 8'hBA, 8'hBB, 8'hBC, 8'hBD, 8'hBF:
 					// add a,r
 					// adc a,r
 					// sub a,r
@@ -617,10 +612,10 @@ begin
 					// xor a,r
 					// cp a,r
 					set_busb_to[2:0] <= sss;
-					set_busa_to[2:0] <= 3'b111;
+					set_busa_to[2:0] <= 3'd7;
 					read_to_reg <= 1'b1;
 					save_alu <= 1'b1;
-			 8'b10000110|8'b10001110|8'b10010110|8'b10011110|8'b10100110|8'b10101110|8'b10110110|8'b10111110 :
+			 8'h86, 8'h8E, 8'h96, 8'h9E, 8'hA6, 8'hAE, 8'hB6, 8'hBE :
 					// add a,(hl)
 					// adc a,(hl)
 					// sub a,(hl)
@@ -629,7 +624,7 @@ begin
 					// or a,(hl)
 					// xor a,(hl)
 					// cp a,(hl)
-					mcycles <= 3'b010;
+					mcycles <= 3'd2;
 					case( mcycle )
 					3'd1:
 							set_addr_to <= axy;
@@ -637,13 +632,13 @@ begin
 							read_to_reg <= 1'b1;
 							save_alu <= 1'b1;
 							set_busb_to[2:0] <= sss;
-							set_busa_to[2:0] <= 3'b111;
+							set_busa_to[2:0] <= 3'd7;
 					default:
 						begin
 							//	hold
 						end
 					endcase
-			 8'b11000110|8'b11001110|8'b11010110|8'b11011110|8'b11100110|8'b11101110|8'b11110110|8'b11111110 :
+			 8'hC6, 8'hCE, 8'hD6, 8'hDE, 8'hE6, 8'hEE, 8'hF6, 8'hFE :
 					// add a,n
 					// adc a,n
 					// sub a,n
@@ -652,36 +647,36 @@ begin
 					// or a,n
 					// xor a,n
 					// cp a,n
-					mcycles <= 3'b010;
-					if( mcycle = 3'b010 ) begin
+					mcycles <= 3'd2;
+					if( mcycle = 3'd2 ) begin
 							inc_pc <= 1'b1;
 							read_to_reg <= 1'b1;
 							save_alu <= 1'b1;
 							set_busb_to[2:0] <= sss;
-							set_busa_to[2:0] <= 3'b111;
+							set_busa_to[2:0] <= 3'd7;
 					end
-			 8'b00000100|8'b00001100|8'b00010100|8'b00011100|8'b00100100|8'b00101100|8'b00111100 :
+			 8'h04, 8'h0C, 8'h14, 8'h1C, 8'h24, 8'h2C, 8'h3C :
 					// inc r
-					set_busb_to <= 4'b1010;
+					set_busb_to <= 4'hA;
 					set_busa_to[2:0] <= ddd;
 					read_to_reg <= 1'b1;
 					save_alu <= 1'b1;
 					preservec <= 1'b1;
-					alu_op <= 4'b0000;
-			 8'b00110100 :
+					alu_op <= 4'h0;
+			 8'h34 :
 					// inc (hl)
-					mcycles <= 3'b011;
+					mcycles <= 3'd3;
 					case( mcycle )
 					3'd1:
 							set_addr_to <= axy;
 					3'd2:
-							tstates <= 3'b100;
+							tstates <= 3'd4;
 							set_addr_to <= axy;
 							read_to_reg <= 1'b1;
 							save_alu <= 1'b1;
 							preservec <= 1'b1;
-							alu_op <= 4'b0000;
-							set_busb_to <= 4'b1010;
+							alu_op <= 4'h0;
+							set_busb_to <= 4'hA;
 							set_busa_to[2:0] <= ddd;
 					3'd3:
 							write <= 1'b1;
@@ -690,28 +685,28 @@ begin
 							//	hold
 						end
 					endcase
-			 8'b00000101|8'b00001101|8'b00010101|8'b00011101|8'b00100101|8'b00101101|8'b00111101 :
+			 8'h05, 8'h0D, 8'h15, 8'h1D, 8'h25, 8'h2D, 8'h3D :
 					// dec r
-					set_busb_to <= 4'b1010;
+					set_busb_to <= 4'hA;
 					set_busa_to[2:0] <= ddd;
 					read_to_reg <= 1'b1;
 					save_alu <= 1'b1;
 					preservec <= 1'b1;
-					alu_op <= 4'b0010;
-			 8'b00110101 :
+					alu_op <= 4'h2;
+			 8'h35 :
 					// dec (hl)
-					mcycles <= 3'b011;
+					mcycles <= 3'd3;
 					case( mcycle )
 					3'd1:
 							set_addr_to <= axy;
 					3'd2:
-							tstates <= 3'b100;
+							tstates <= 3'd4;
 							set_addr_to <= axy;
-							alu_op <= 4'b0010;
+							alu_op <= 4'h2;
 							read_to_reg <= 1'b1;
 							save_alu <= 1'b1;
 							preservec <= 1'b1;
-							set_busb_to <= 4'b1010;
+							set_busb_to <= 4'hA;
 							set_busa_to[2:0] <= ddd;
 					3'd3:
 							write <= 1'b1;
@@ -722,39 +717,39 @@ begin
 					endcase
 
 // general purpose arithmetic and cpu control groups
-			 8'b00100111 :
+			 8'h27 :
 					// daa
-					set_busa_to[2:0] <= 3'b111;
+					set_busa_to[2:0] <= 3'd7;
 					read_to_reg <= 1'b1;
-					alu_op <= 4'b1100;
+					alu_op <= 4'hC;
 					save_alu <= 1'b1;
-			 8'b00101111 :
+			 8'h2F :
 					// cpl
 					i_cpl <= 1'b1;
-			 8'b00111111 :
+			 8'h3F :
 					// ccf
 					i_ccf <= 1'b1;
-			 8'b00110111 :
+			 8'h37 :
 					// scf
 					i_scf <= 1'b1;
-			 8'b00000000 :
+			 8'h00 :
 					if( nmicycle = 1'b1 ) begin
 							// nmi
-							mcycles <= 3'b011;
+							mcycles <= 3'd3;
 							case( mcycle )
 							3'd1:
-									tstates <= 3'b101;
-									incdec_16 <= 4'b1111;
+									tstates <= 3'd5;
+									incdec_16 <= 4'hF;
 									set_addr_to <= asp;
-									set_busb_to <= 4'b1101;
+									set_busb_to <= 4'hD;
 							3'd2:
-									tstates <= 3'b100;
+									tstates <= 3'd4;
 									write <= 1'b1;
-									incdec_16 <= 4'b1111;
+									incdec_16 <= 4'hF;
 									set_addr_to <= asp;
-									set_busb_to <= 4'b1100;
+									set_busb_to <= 4'hC;
 							3'd3:
-									tstates <= 3'b100;
+									tstates <= 3'd4;
 									write <= 1'b1;
 							default:
 								begin
@@ -763,22 +758,22 @@ begin
 							endcase
 					else if( intcycle = 1'b1 ) begin
 							// int (im 2)
-							mcycles <= 3'b101;
+							mcycles <= 3'd5;
 							case( mcycle )
 							3'd1:
 									ldz <= 1'b1;
-									tstates <= 3'b101;
-									incdec_16 <= 4'b1111;
+									tstates <= 3'd5;
+									incdec_16 <= 4'hF;
 									set_addr_to <= asp;
-									set_busb_to <= 4'b1101;
+									set_busb_to <= 4'hD;
 							3'd2:
-									tstates <= 3'b100;
+									tstates <= 3'd4;
 									write <= 1'b1;
-									incdec_16 <= 4'b1111;
+									incdec_16 <= 4'hF;
 									set_addr_to <= asp;
-									set_busb_to <= 4'b1100;
+									set_busb_to <= 4'hC;
 							3'd3:
-									tstates <= 3'b100;
+									tstates <= 3'd4;
 									write <= 1'b1;
 							3'd4:
 									inc_pc <= 1'b1;
@@ -793,47 +788,47 @@ begin
 					else
 							// nop
 					end
-			 8'b01110110 :
+			 8'h76 :
 					// halt
 					halt <= 1'b1;
-			 8'b11110011 :
+			 8'hF3 :
 					// di
 					setdi <= 1'b1;
-			 8'b11111011 :
+			 8'hFB :
 					// ei
 					setei <= 1'b1;
 
 // 16 bit arithmetic group
-			 8'b00001001|8'b00011001|8'b00101001|8'b00111001 :
+			 8'h09, 8'h19, 8'h29, 8'h39 :
 					// add hl,ss
-					mcycles <= 3'b011;
+					mcycles <= 3'd3;
 					case( mcycle )
 					3'd2:
 							noread <= 1'b1;
-							alu_op <= 4'b0000;
+							alu_op <= 4'h0;
 							read_to_reg <= 1'b1;
 							save_alu <= 1'b1;
-							set_busa_to[2:0] <= 3'b101;
+							set_busa_to[2:0] <= 3'd5;
 							case to_integer(unsigned(ir[5:4])) is
 							 3'd0, 3'd1, 3'd2:
 									set_busb_to[2:1] <= ir[5:4];
 									set_busb_to[0] <= 1'b1;
 							 others :
-									set_busb_to <= 4'b1000;
+									set_busb_to <= 4'h8;
 							endcase
-							tstates <= 3'b100;
+							tstates <= 3'd4;
 							arith16 <= 1'b1;
 					3'd3:
 							noread <= 1'b1;
 							read_to_reg <= 1'b1;
 							save_alu <= 1'b1;
-							alu_op <= 4'b0001;
-							set_busa_to[2:0] <= 3'b100;
+							alu_op <= 4'h1;
+							set_busa_to[2:0] <= 3'd4;
 							case to_integer(unsigned(ir[5:4])) is
 							 3'd0, 3'd1, 3'd2:
 									set_busb_to[2:1] <= ir[5:4];
 							 others :
-									set_busb_to <= 4'b1001;
+									set_busb_to <= 4'h9;
 							endcase
 							arith16 <= 1'b1;
 					default:
@@ -841,35 +836,35 @@ begin
 							//	hold
 						end
 					endcase
-			 8'b00000011|8'b00010011|8'b00100011|8'b00110011 :
+			 8'h03, 8'h13, 8'h23, 8'h33 :
 					// inc ss
-					tstates <= 3'b110;
+					tstates <= 3'd6;
 					incdec_16[3:2] <= 2'b01;
 					incdec_16[1:0] <= dpair;
-			 8'b00001011|8'b00011011|8'b00101011|8'b00111011 :
+			 8'h0B, 8'h1B, 8'h2B, 8'h3B :
 					// dec ss
-					tstates <= 3'b110;
+					tstates <= 3'd6;
 					incdec_16[3:2] <= 2'b11;
 					incdec_16[1:0] <= dpair;
 
 // rotate and shift group
-			when 8'b00000111
+			8'h07
 					// rlca
-					|8'b00010111
+					, 8'h17
 					// rla
-					|8'b00001111
+					, 8'h0F
 					// rrca
-					|8'b00011111 =>
+					, 8'h1F:
 					// rra
-					set_busa_to[2:0] <= 3'b111;
-					alu_op <= 4'b1000;
+					set_busa_to[2:0] <= 3'd7;
+					alu_op <= 4'h8;
 					read_to_reg <= 1'b1;
 					save_alu <= 1'b1;
 
 // jump group
-			 8'b11000011 :
+			 8'hC3 :
 					// jp nn
-					mcycles <= 3'b011;
+					mcycles <= 3'd3;
 					case( mcycle )
 					3'd2:
 							inc_pc <= 1'b1;
@@ -882,9 +877,9 @@ begin
 							//	hold
 						end
 					endcase
-			 8'b11000010|8'b11001010|8'b11010010|8'b11011010|8'b11100010|8'b11101010|8'b11110010|8'b11111010 :
+			 8'hC2, 8'hCA, 8'hD2, 8'hDA, 8'hE2, 8'hEA, 8'hF2, 8'hFA :
 					// jp cc,nn
-					mcycles <= 3'b011;
+					mcycles <= 3'd3;
 					case( mcycle )
 					3'd2:
 							inc_pc <= 1'b1;
@@ -899,115 +894,115 @@ begin
 							//	hold
 						end
 					endcase
-			 8'b00011000 :
+			 8'h18 :
 					// jr e
-					mcycles <= 3'b011;
+					mcycles <= 3'd3;
 					case( mcycle )
 					3'd2:
 							inc_pc <= 1'b1;
 					3'd3:
 							noread <= 1'b1;
 							jumpe <= 1'b1;
-							tstates <= 3'b101;
+							tstates <= 3'd5;
 					default:
 						begin
 							//	hold
 						end
 					endcase
-			 8'b00111000 :
+			 8'h38 :
 					// jr c,e
-					mcycles <= 3'b011;
+					mcycles <= 3'd3;
 					case( mcycle )
 					3'd2:
 							inc_pc <= 1'b1;
 							if( f(flag_c) = 1'b0 ) begin
-									mcycles <= 3'b010;
+									mcycles <= 3'd2;
 							end
 					3'd3:
 							noread <= 1'b1;
 							jumpe <= 1'b1;
-							tstates <= 3'b101;
+							tstates <= 3'd5;
 					default:
 						begin
 							//	hold
 						end
 					endcase
-			 8'b00110000 :
+			 8'h30 :
 					// jr nc,e
-					mcycles <= 3'b011;
+					mcycles <= 3'd3;
 					case( mcycle )
 					3'd2:
 							inc_pc <= 1'b1;
 							if( f(flag_c) = 1'b1 ) begin
-									mcycles <= 3'b010;
+									mcycles <= 3'd2;
 							end
 					3'd3:
 							noread <= 1'b1;
 							jumpe <= 1'b1;
-							tstates <= 3'b101;
+							tstates <= 3'd5;
 					default:
 						begin
 							//	hold
 						end
 					endcase
-			 8'b00101000 :
+			 8'h28 :
 					// jr z,e
-					mcycles <= 3'b011;
+					mcycles <= 3'd3;
 					case( mcycle )
 					3'd2:
 							inc_pc <= 1'b1;
 							if( f(flag_z) = 1'b0 ) begin
-									mcycles <= 3'b010;
+									mcycles <= 3'd2;
 							end
 					3'd3:
 							noread <= 1'b1;
 							jumpe <= 1'b1;
-							tstates <= 3'b101;
+							tstates <= 3'd5;
 					default:
 						begin
 							//	hold
 						end
 					endcase
-			 8'b00100000 :
+			 8'h20 :
 					// jr nz,e
-					mcycles <= 3'b011;
+					mcycles <= 3'd3;
 					case( mcycle )
 					3'd2:
 							inc_pc <= 1'b1;
 							if( f(flag_z) = 1'b1 ) begin
-									mcycles <= 3'b010;
+									mcycles <= 3'd2;
 							end
 					3'd3:
 							noread <= 1'b1;
 							jumpe <= 1'b1;
-							tstates <= 3'b101;
+							tstates <= 3'd5;
 					default:
 						begin
 							//	hold
 						end
 					endcase
-			 8'b11101001 :
+			 8'hE9 :
 					// jp (hl)
 					jumpxy <= 1'b1;
-			 8'b00010000 :
+			 8'h10 :
 					// djnz,e
-					mcycles <= 3'b011;
+					mcycles <= 3'd3;
 					case( mcycle )
 					3'd1:
-							tstates <= 3'b101;
+							tstates <= 3'd5;
 							i_djnz <= 1'b1;
-							set_busb_to <= 4'b1010;
-							set_busa_to[2:0] <= 3'b000;
+							set_busb_to <= 4'hA;
+							set_busa_to[2:0] <= 3'd0;
 							read_to_reg <= 1'b1;
 							save_alu <= 1'b1;
-							alu_op <= 4'b0010;
+							alu_op <= 4'h2;
 					3'd2:
 							i_djnz <= 1'b1;
 							inc_pc <= 1'b1;
 					3'd3:
 							noread <= 1'b1;
 							jumpe <= 1'b1;
-							tstates <= 3'b101;
+							tstates <= 3'd5;
 					default:
 						begin
 							//	hold
@@ -1015,25 +1010,25 @@ begin
 					endcase
 
 // call and return group
-			 8'b11001101 :
+			 8'hCD :
 					// call nn
-					mcycles <= 3'b101;
+					mcycles <= 3'd5;
 					case( mcycle )
 					3'd2:
 							inc_pc <= 1'b1;
 							ldz <= 1'b1;
 					3'd3:
-							incdec_16 <= 4'b1111;
+							incdec_16 <= 4'hF;
 							inc_pc <= 1'b1;
-							tstates <= 3'b100;
+							tstates <= 3'd4;
 							set_addr_to <= asp;
 							ldw <= 1'b1;
-							set_busb_to <= 4'b1101;
+							set_busb_to <= 4'hD;
 					3'd4:
 							write <= 1'b1;
-							incdec_16 <= 4'b1111;
+							incdec_16 <= 4'hF;
 							set_addr_to <= asp;
-							set_busb_to <= 4'b1100;
+							set_busb_to <= 4'hC;
 					3'd5:
 							write <= 1'b1;
 							call <= 1'b1;
@@ -1042,9 +1037,9 @@ begin
 							//	hold
 						end
 					endcase
-			 8'b11000100|8'b11001100|8'b11010100|8'b11011100|8'b11100100|8'b11101100|8'b11110100|8'b11111100 :
+			 8'hC4, 8'hCC, 8'hD4, 8'hDC, 8'hE4, 8'hEC, 8'hF4, 8'hFC :
 					// call cc,nn
-					mcycles <= 3'b101;
+					mcycles <= 3'd5;
 					case( mcycle )
 					3'd2:
 							inc_pc <= 1'b1;
@@ -1053,18 +1048,18 @@ begin
 							inc_pc <= 1'b1;
 							ldw <= 1'b1;
 							if( is_cc_true(f, to_bitvector(ir[5:3])) ) begin
-									incdec_16 <= 4'b1111;
+									incdec_16 <= 4'hF;
 									set_addr_to <= asp;
-									tstates <= 3'b100;
-									set_busb_to <= 4'b1101;
+									tstates <= 3'd4;
+									set_busb_to <= 4'hD;
 							else
-									mcycles <= 3'b011;
+									mcycles <= 3'd3;
 							end
 					3'd4:
 							write <= 1'b1;
-							incdec_16 <= 4'b1111;
+							incdec_16 <= 4'hF;
 							set_addr_to <= asp;
-							set_busb_to <= 4'b1100;
+							set_busb_to <= 4'hC;
 					3'd5:
 							write <= 1'b1;
 							call <= 1'b1;
@@ -1073,62 +1068,62 @@ begin
 							//	hold
 						end
 					endcase
-			 8'b11001001 :
+			 8'hC9 :
 					// ret
-					mcycles <= 3'b011;
+					mcycles <= 3'd3;
 					case( mcycle )
 					3'd1:
-							tstates <= 3'b101;
+							tstates <= 3'd5;
 							set_addr_to <= asp;
 					3'd2:
-							incdec_16 <= 4'b0111;
+							incdec_16 <= 4'h7;
 							set_addr_to <= asp;
 							ldz <= 1'b1;
 					3'd3:
 							jump <= 1'b1;
-							incdec_16 <= 4'b0111;
+							incdec_16 <= 4'h7;
 					default:
 						begin
 							//	hold
 						end
 					endcase
-			 8'b11000000|8'b11001000|8'b11010000|8'b11011000|8'b11100000|8'b11101000|8'b11110000|8'b11111000 :
+			 8'hC0, 8'hC8, 8'hD0, 8'hD8, 8'hE0, 8'hE8, 8'hF0, 8'hF8 :
 					// ret cc
-					mcycles <= 3'b011;
+					mcycles <= 3'd3;
 					case( mcycle )
 					3'd1:
 							if( is_cc_true(f, to_bitvector(ir[5:3])) ) begin
 									set_addr_to <= asp;
 							else
-									mcycles <= 3'b001;
+									mcycles <= 3'd1;
 							end
-							tstates <= 3'b101;
+							tstates <= 3'd5;
 					3'd2:
-							incdec_16 <= 4'b0111;
+							incdec_16 <= 4'h7;
 							set_addr_to <= asp;
 							ldz <= 1'b1;
 					3'd3:
 							jump <= 1'b1;
-							incdec_16 <= 4'b0111;
+							incdec_16 <= 4'h7;
 					default:
 						begin
 							//	hold
 						end
 					endcase
-			 8'b11000111|8'b11001111|8'b11010111|8'b11011111|8'b11100111|8'b11101111|8'b11110111|8'b11111111 :
+			 8'hC7, 8'hCF, 8'hD7, 8'hDF, 8'hE7, 8'hEF, 8'hF7, 8'hFF :
 					// rst p
-					mcycles <= 3'b011;
+					mcycles <= 3'd3;
 					case( mcycle )
 					3'd1:
-							tstates <= 3'b101;
-							incdec_16 <= 4'b1111;
+							tstates <= 3'd5;
+							incdec_16 <= 4'hF;
 							set_addr_to <= asp;
-							set_busb_to <= 4'b1101;
+							set_busb_to <= 4'hD;
 					3'd2:
 							write <= 1'b1;
-							incdec_16 <= 4'b1111;
+							incdec_16 <= 4'hF;
 							set_addr_to <= asp;
-							set_busb_to <= 4'b1100;
+							set_busb_to <= 4'hC;
 					3'd3:
 							write <= 1'b1;
 							rstp <= 1'b1;
@@ -1139,9 +1134,9 @@ begin
 					endcase
 
 // input and output group
-			 8'b11011011 :
+			 8'hDB :
 					// in a,(n)
-					mcycles <= 3'b011;
+					mcycles <= 3'd3;
 					case( mcycle )
 					3'd2:
 							inc_pc <= 1'b1;
@@ -1154,14 +1149,14 @@ begin
 							//	hold
 						end
 					endcase
-			 8'b11010011 :
+			 8'hD3 :
 					// out (n),a
-					mcycles <= 3'b011;
+					mcycles <= 3'd3;
 					case( mcycle )
 					3'd2:
 							inc_pc <= 1'b1;
 							set_addr_to <= aioa;
-							set_busb_to		<= 4'b0111;
+							set_busb_to		<= 4'h7;
 					3'd3:
 							write <= 1'b1;
 							iorq <= 1'b1;
@@ -1175,13 +1170,13 @@ begin
 //  multibyte instructions
 // --------------------------------------------------------------------
 
-			 8'b11001011 :
+			 8'hCB :
 					prefix <= 2'b01;
 
-			 8'b11101101 :
+			 8'hED :
 					prefix <= 2'b10;
 
-			 8'b11011101|8'b11111101 :
+			 8'hDD, 8'hFD :
 					prefix <= 2'b11;
 
 			endcase
@@ -1195,15 +1190,15 @@ begin
 		set_busa_to[2:0] <= ir[2:0];
 		set_busb_to[2:0] <= ir[2:0];
 
-		case irb is
-		when 8'b00000000|8'b00000001|8'b00000010|8'b00000011|8'b00000100|8'b00000101|8'b00000111
-			|8'b00010000|8'b00010001|8'b00010010|8'b00010011|8'b00010100|8'b00010101|8'b00010111
-			|8'b00001000|8'b00001001|8'b00001010|8'b00001011|8'b00001100|8'b00001101|8'b00001111
-			|8'b00011000|8'b00011001|8'b00011010|8'b00011011|8'b00011100|8'b00011101|8'b00011111
-			|8'b00100000|8'b00100001|8'b00100010|8'b00100011|8'b00100100|8'b00100101|8'b00100111
-			|8'b00101000|8'b00101001|8'b00101010|8'b00101011|8'b00101100|8'b00101101|8'b00101111
-			|8'b00110000|8'b00110001|8'b00110010|8'b00110011|8'b00110100|8'b00110101|8'b00110111
-			|8'b00111000|8'b00111001|8'b00111010|8'b00111011|8'b00111100|8'b00111101|8'b00111111 =>
+		case( irb )
+		8'h00, 8'h01, 8'h02, 8'h03, 8'h04, 8'h05, 8'h07
+		, 8'h10, 8'h11, 8'h12, 8'h13, 8'h14, 8'h15, 8'h17
+		, 8'h08, 8'h09, 8'h0A, 8'h0B, 8'h0C, 8'h0D, 8'h0F
+		, 8'h18, 8'h19, 8'h1A, 8'h1B, 8'h1C, 8'h1D, 8'h1F
+		, 8'h20, 8'h21, 8'h22, 8'h23, 8'h24, 8'h25, 8'h27
+		, 8'h28, 8'h29, 8'h2A, 8'h2B, 8'h2C, 8'h2D, 8'h2F
+		, 8'h30, 8'h31, 8'h32, 8'h33, 8'h34, 8'h35, 8'h37
+		, 8'h38, 8'h39, 8'h3A, 8'h3B, 8'h3C, 8'h3D, 8'h3F:
 			// rlc r
 			// rl r
 			// rrc r
@@ -1213,24 +1208,24 @@ begin
 			// srl r
 			// sll r (undocumented) / swap r
 			if( xy_state=2'b00 ) begin
-				if( mcycle = 3'b001 ) begin
-				  alu_op <= 4'b1000;
+				if( mcycle = 3'd1 ) begin
+				  alu_op <= 4'h8;
 				  read_to_reg <= 1'b1;
 				  save_alu <= 1'b1;
 				end
 			else
 			// r/s (ix+d),reg, undocumented
-				mcycles <= 3'b011;
+				mcycles <= 3'd3;
 				xybit_undoc <= 1'b1;
 				case( mcycle )
 				3'd1, 3'd7:
 					set_addr_to <= axy;
 				3'd2:
-					alu_op <= 4'b1000;
+					alu_op <= 4'h8;
 					read_to_reg <= 1'b1;
 					save_alu <= 1'b1;
 					set_addr_to <= axy;
-					tstates <= 3'b100;
+					tstates <= 3'd4;
 				3'd3:
 					write <= 1'b1;
 				default:
@@ -1241,7 +1236,7 @@ begin
 			end
 
 
-		 8'b00000110|8'b00010110|8'b00001110|8'b00011110|8'b00101110|8'b00111110|8'b00100110|8'b00110110 :
+		 8'h06, 8'h16, 8'h0E, 8'h1E, 8'h2E, 8'h3E, 8'h26, 8'h36 :
 			// rlc (hl)
 			// rl (hl)
 			// rrc (hl)
@@ -1250,16 +1245,16 @@ begin
 			// srl (hl)
 			// sla (hl)
 			// sll (hl) (undocumented) / swap (hl)
-			mcycles <= 3'b011;
+			mcycles <= 3'd3;
 			case( mcycle )
 			3'd1, 3'd7:
 				set_addr_to <= axy;
 			3'd2:
-				alu_op <= 4'b1000;
+				alu_op <= 4'h8;
 				read_to_reg <= 1'b1;
 				save_alu <= 1'b1;
 				set_addr_to <= axy;
-				tstates <= 3'b100;
+				tstates <= 3'd4;
 			3'd3:
 				write <= 1'b1;
 			default:
@@ -1267,78 +1262,78 @@ begin
 					//	hold
 				end
 			endcase
-		when 8'b01000000|8'b01000001|8'b01000010|8'b01000011|8'b01000100|8'b01000101|8'b01000111
-			|8'b01001000|8'b01001001|8'b01001010|8'b01001011|8'b01001100|8'b01001101|8'b01001111
-			|8'b01010000|8'b01010001|8'b01010010|8'b01010011|8'b01010100|8'b01010101|8'b01010111
-			|8'b01011000|8'b01011001|8'b01011010|8'b01011011|8'b01011100|8'b01011101|8'b01011111
-			|8'b01100000|8'b01100001|8'b01100010|8'b01100011|8'b01100100|8'b01100101|8'b01100111
-			|8'b01101000|8'b01101001|8'b01101010|8'b01101011|8'b01101100|8'b01101101|8'b01101111
-			|8'b01110000|8'b01110001|8'b01110010|8'b01110011|8'b01110100|8'b01110101|8'b01110111
-			|8'b01111000|8'b01111001|8'b01111010|8'b01111011|8'b01111100|8'b01111101|8'b01111111 =>
+		8'h40, 8'h41, 8'h42, 8'h43, 8'h44, 8'h45, 8'h47
+		, 8'h48, 8'h49, 8'h4A, 8'h4B, 8'h4C, 8'h4D, 8'h4F
+		, 8'h50, 8'h51, 8'h52, 8'h53, 8'h54, 8'h55, 8'h57
+		, 8'h58, 8'h59, 8'h5A, 8'h5B, 8'h5C, 8'h5D, 8'h5F
+		, 8'h60, 8'h61, 8'h62, 8'h63, 8'h64, 8'h65, 8'h67
+		, 8'h68, 8'h69, 8'h6A, 8'h6B, 8'h6C, 8'h6D, 8'h6F
+		, 8'h70, 8'h71, 8'h72, 8'h73, 8'h74, 8'h75, 8'h77
+		, 8'h78, 8'h79, 8'h7A, 8'h7B, 8'h7C, 8'h7D, 8'h7F:
 			// bit b,r
 			if( xy_state=2'b00 ) begin
-				if( mcycle = 3'b001 ) begin
+				if( mcycle = 3'd1 ) begin
 				  set_busb_to[2:0] <= ir[2:0];
-				  alu_op <= 4'b1001;
+				  alu_op <= 4'h9;
 				end
 			else
 			// bit b,(ix+d), undocumented
-				mcycles <= 3'b010;
+				mcycles <= 3'd2;
 				xybit_undoc <= 1'b1;
 				case( mcycle )
 				3'd1, 3'd7:
 					set_addr_to <= axy;
 				3'd2:
-					alu_op <= 4'b1001;
-					tstates <= 3'b100;
+					alu_op <= 4'h9;
+					tstates <= 3'd4;
 				default:
 					begin
 						//	hold
 					end
 				endcase
 			end
-		 8'b01000110|8'b01001110|8'b01010110|8'b01011110|8'b01100110|8'b01101110|8'b01110110|8'b01111110 :
+		 8'h46, 8'h4E, 8'h56, 8'h5E, 8'h66, 8'h6E, 8'h76, 8'h7E :
 			// bit b,(hl)
-			mcycles <= 3'b010;
+			mcycles <= 3'd2;
 			case( mcycle )
 			3'd1, 3'd7:
 				set_addr_to <= axy;
 			3'd2:
-				alu_op <= 4'b1001;
-				tstates <= 3'b100;
+				alu_op <= 4'h9;
+				tstates <= 3'd4;
 			default:
 				begin
 					//	hold
 				end
 			endcase
-		when 8'b11000000|8'b11000001|8'b11000010|8'b11000011|8'b11000100|8'b11000101|8'b11000111
-			|8'b11001000|8'b11001001|8'b11001010|8'b11001011|8'b11001100|8'b11001101|8'b11001111
-			|8'b11010000|8'b11010001|8'b11010010|8'b11010011|8'b11010100|8'b11010101|8'b11010111
-			|8'b11011000|8'b11011001|8'b11011010|8'b11011011|8'b11011100|8'b11011101|8'b11011111
-			|8'b11100000|8'b11100001|8'b11100010|8'b11100011|8'b11100100|8'b11100101|8'b11100111
-			|8'b11101000|8'b11101001|8'b11101010|8'b11101011|8'b11101100|8'b11101101|8'b11101111
-			|8'b11110000|8'b11110001|8'b11110010|8'b11110011|8'b11110100|8'b11110101|8'b11110111
-			|8'b11111000|8'b11111001|8'b11111010|8'b11111011|8'b11111100|8'b11111101|8'b11111111 =>
+		8'hC0, 8'hC1, 8'hC2, 8'hC3, 8'hC4, 8'hC5, 8'hC7
+		, 8'hC8, 8'hC9, 8'hCA, 8'hCB, 8'hCC, 8'hCD, 8'hCF
+		, 8'hD0, 8'hD1, 8'hD2, 8'hD3, 8'hD4, 8'hD5, 8'hD7
+		, 8'hD8, 8'hD9, 8'hDA, 8'hDB, 8'hDC, 8'hDD, 8'hDF
+		, 8'hE0, 8'hE1, 8'hE2, 8'hE3, 8'hE4, 8'hE5, 8'hE7
+		, 8'hE8, 8'hE9, 8'hEA, 8'hEB, 8'hEC, 8'hED, 8'hEF
+		, 8'hF0, 8'hF1, 8'hF2, 8'hF3, 8'hF4, 8'hF5, 8'hF7
+		, 8'hF8, 8'hF9, 8'hFA, 8'hFB, 8'hFC, 8'hFD, 8'hFF:
 			// set b,r
 			if( xy_state=2'b00 ) begin
-				if( mcycle = 3'b001 ) begin
-				  alu_op <= 4'b1010;
+				if( mcycle = 3'd1 ) begin
+				  alu_op <= 4'hA;
 				  read_to_reg <= 1'b1;
 				  save_alu <= 1'b1;
 				end
 			else
 			// set b,(ix+d),reg, undocumented
-				mcycles <= 3'b011;
+				mcycles <= 3'd3;
 				xybit_undoc <= 1'b1;
 				case( mcycle )
 				3'd1, 3'd7:
 					set_addr_to <= axy;
 				3'd2:
-					alu_op <= 4'b1010;
+					alu_op <= 4'hA;
 					read_to_reg <= 1'b1;
 					save_alu <= 1'b1;
 					set_addr_to <= axy;
-					tstates <= 3'b100;
+					tstates <= 3'd4;
 				3'd3:
 					write <= 1'b1;
 				default:
@@ -1347,18 +1342,18 @@ begin
 					end
 				endcase
 			end
-		 8'b11000110|8'b11001110|8'b11010110|8'b11011110|8'b11100110|8'b11101110|8'b11110110|8'b11111110 :
+		 8'hC6, 8'hCE, 8'hD6, 8'hDE, 8'hE6, 8'hEE, 8'hF6, 8'hFE :
 			// set b,(hl)
-			mcycles <= 3'b011;
+			mcycles <= 3'd3;
 			case( mcycle )
 			3'd1, 3'd7:
 				set_addr_to <= axy;
 			3'd2:
-				alu_op <= 4'b1010;
+				alu_op <= 4'hA;
 				read_to_reg <= 1'b1;
 				save_alu <= 1'b1;
 				set_addr_to <= axy;
-				tstates <= 3'b100;
+				tstates <= 3'd4;
 			3'd3:
 				write <= 1'b1;
 			default:
@@ -1366,34 +1361,34 @@ begin
 					//	hold
 				end
 			endcase
-		when 8'b10000000|8'b10000001|8'b10000010|8'b10000011|8'b10000100|8'b10000101|8'b10000111
-			|8'b10001000|8'b10001001|8'b10001010|8'b10001011|8'b10001100|8'b10001101|8'b10001111
-			|8'b10010000|8'b10010001|8'b10010010|8'b10010011|8'b10010100|8'b10010101|8'b10010111
-			|8'b10011000|8'b10011001|8'b10011010|8'b10011011|8'b10011100|8'b10011101|8'b10011111
-			|8'b10100000|8'b10100001|8'b10100010|8'b10100011|8'b10100100|8'b10100101|8'b10100111
-			|8'b10101000|8'b10101001|8'b10101010|8'b10101011|8'b10101100|8'b10101101|8'b10101111
-			|8'b10110000|8'b10110001|8'b10110010|8'b10110011|8'b10110100|8'b10110101|8'b10110111
-			|8'b10111000|8'b10111001|8'b10111010|8'b10111011|8'b10111100|8'b10111101|8'b10111111 =>
+		8'h80, 8'h81, 8'h82, 8'h83, 8'h84, 8'h85, 8'h87
+		, 8'h88, 8'h89, 8'h8A, 8'h8B, 8'h8C, 8'h8D, 8'h8F
+		, 8'h90, 8'h91, 8'h92, 8'h93, 8'h94, 8'h95, 8'h97
+		, 8'h98, 8'h99, 8'h9A, 8'h9B, 8'h9C, 8'h9D, 8'h9F
+		, 8'hA0, 8'hA1, 8'hA2, 8'hA3, 8'hA4, 8'hA5, 8'hA7
+		, 8'hA8, 8'hA9, 8'hAA, 8'hAB, 8'hAC, 8'hAD, 8'hAF
+		, 8'hB0, 8'hB1, 8'hB2, 8'hB3, 8'hB4, 8'hB5, 8'hB7
+		, 8'hB8, 8'hB9, 8'hBA, 8'hBB, 8'hBC, 8'hBD, 8'hBF:
 			// res b,r
 			if( xy_state=2'b00 ) begin
-				if( mcycle = 3'b001 ) begin
-				  alu_op <= 4'b1011;
+				if( mcycle = 3'd1 ) begin
+				  alu_op <= 4'hB;
 				  read_to_reg <= 1'b1;
 				  save_alu <= 1'b1;
 				end
 			else
 			// res b,(ix+d),reg, undocumented
-				mcycles <= 3'b011;
+				mcycles <= 3'd3;
 				xybit_undoc <= 1'b1;
 				case( mcycle )
 				3'd1, 3'd7:
 					set_addr_to <= axy;
 				3'd2:
-					alu_op <= 4'b1011;
+					alu_op <= 4'hB;
 					read_to_reg <= 1'b1;
 					save_alu <= 1'b1;
 					set_addr_to <= axy;
-					tstates <= 3'b100;
+					tstates <= 3'd4;
 				3'd3:
 					write <= 1'b1;
 				default:
@@ -1403,18 +1398,18 @@ begin
 				endcase
 			end
 
-		 8'b10000110|8'b10001110|8'b10010110|8'b10011110|8'b10100110|8'b10101110|8'b10110110|8'b10111110 :
+		 8'h86, 8'h8E, 8'h96, 8'h9E, 8'hA6, 8'hAE, 8'hB6, 8'hBE :
 			// res b,(hl)
-			mcycles <= 3'b011;
+			mcycles <= 3'd3;
 			case( mcycle )
 			3'd1, 3'd7:
 				set_addr_to <= axy;
 			3'd2:
-				alu_op <= 4'b1011;
+				alu_op <= 4'hB;
 				read_to_reg <= 1'b1;
 				save_alu <= 1'b1;
 				set_addr_to <= axy;
-				tstates <= 3'b100;
+				tstates <= 3'd4;
 			3'd3:
 				write <= 1'b1;
 			default:
@@ -1433,57 +1428,66 @@ begin
 //////////////////////////////////////////////////////////////////////////////
 
 			case( irb )
-			when 8'b00000000|8'b00000001|8'b00000010|8'b00000011|8'b00000100|8'b00000101|8'b00000110|8'b00000111
-					|8'b00001000|8'b00001001|8'b00001010|8'b00001011|8'b00001100|8'b00001101|8'b00001110|8'b00001111
-					|8'b00010000|8'b00010001|8'b00010010|8'b00010011|8'b00010100|8'b00010101|8'b00010110|8'b00010111
-					|8'b00011000|8'b00011001|8'b00011010|8'b00011011|8'b00011100|8'b00011101|8'b00011110|8'b00011111
-					|8'b00100000|8'b00100001|8'b00100010|8'b00100011|8'b00100100|8'b00100101|8'b00100110|8'b00100111
-					|8'b00101000|8'b00101001|8'b00101010|8'b00101011|8'b00101100|8'b00101101|8'b00101110|8'b00101111
-					|8'b00110000|8'b00110001|8'b00110010|8'b00110011|8'b00110100|8'b00110101|8'b00110110|8'b00110111
-					|8'b00111000|8'b00111001|8'b00111010|8'b00111011|8'b00111100|8'b00111101|8'b00111110|8'b00111111
-
-
-					|8'b10000000|8'b10000001|8'b10000010|8'b10000011|8'b10000100|8'b10000101|8'b10000110|8'b10000111
-					|8'b10001000|8'b10001001|8'b10001010|8'b10001011|8'b10001100|8'b10001101|8'b10001110|8'b10001111
-					|8'b10010000|8'b10010001|8'b10010010|8'b10010011|8'b10010100|8'b10010101|8'b10010110|8'b10010111
-					|8'b10011000|8'b10011001|8'b10011010|8'b10011011|8'b10011100|8'b10011101|8'b10011110|8'b10011111
-					|											 8'b10100100|8'b10100101|8'b10100110|8'b10100111
-					|											 8'b10101100|8'b10101101|8'b10101110|8'b10101111
-					|											 8'b10110100|8'b10110101|8'b10110110|8'b10110111
-					|											 8'b10111100|8'b10111101|8'b10111110|8'b10111111
-					|8'b11000000|		   8'b11000010|			 8'b11000100|8'b11000101|8'b11000110|8'b11000111
-					|8'b11001000|		   8'b11001010|8'b11001011|8'b11001100|8'b11001101|8'b11001110|8'b11001111
-					|8'b11010000|		   8'b11010010|8'b11010011|8'b11010100|8'b11010101|8'b11010110|8'b11010111
-					|8'b11011000|		   8'b11011010|8'b11011011|8'b11011100|8'b11011101|8'b11011110|8'b11011111
-					|8'b11100000|8'b11100001|8'b11100010|8'b11100011|8'b11100100|8'b11100101|8'b11100110|8'b11100111
-					|8'b11101000|8'b11101001|8'b11101010|8'b11101011|8'b11101100|8'b11101101|8'b11101110|8'b11101111
-					|8'b11110000|8'b11110001|8'b11110010|			 8'b11110100|8'b11110101|8'b11110110|8'b11110111
-					|8'b11111000|8'b11111001|8'b11111010|8'b11111011|8'b11111100|8'b11111101|8'b11111110|8'b11111111 =>
-					null; // nop, undocumented
-			 8'b01111110|8'b01111111 :
+			8'h00, 8'h01, 8'h02, 8'h03, 8'h04, 8'h05, 8'h06, 8'h07
+			, 8'h08, 8'h09, 8'h0A, 8'h0B, 8'h0C, 8'h0D, 8'h0E, 8'h0F
+			, 8'h10, 8'h11, 8'h12, 8'h13, 8'h14, 8'h15, 8'h16, 8'h17
+			, 8'h18, 8'h19, 8'h1A, 8'h1B, 8'h1C, 8'h1D, 8'h1E, 8'h1F
+			, 8'h20, 8'h21, 8'h22, 8'h23, 8'h24, 8'h25, 8'h26, 8'h27
+			, 8'h28, 8'h29, 8'h2A, 8'h2B, 8'h2C, 8'h2D, 8'h2E, 8'h2F
+			, 8'h30, 8'h31, 8'h32, 8'h33, 8'h34, 8'h35, 8'h36, 8'h37
+			, 8'h38, 8'h39, 8'h3A, 8'h3B, 8'h3C, 8'h3D, 8'h3E, 8'h3F
+			, 8'h80, 8'h81, 8'h82, 8'h83, 8'h84, 8'h85, 8'h86, 8'h87
+			, 8'h90, 8'h91, 8'h92, 8'h93, 8'h94, 8'h95, 8'h96, 8'h97
+			, 8'h98, 8'h99, 8'h9A, 8'h9B, 8'h9C, 8'h9D, 8'h9E, 8'h9F
+			, 											 8'hA4, 8'hA5, 8'hA6, 8'hA7
+			, 											 8'hAC, 8'hAD, 8'hAE, 8'hAF
+			, 											 8'hB4, 8'hB5, 8'hB6, 8'hB7
+			, 											 8'hBC, 8'hBD, 8'hBE, 8'hBF
+			, 8'hC0, 		   8'hC2, 			 8'hC4, 8'hC5, 8'hC6, 8'hC7
+			, 8'hC8, 		   8'hCA, 8'hCB, 8'hCC, 8'hCD, 8'hCE, 8'hCF
+			, 8'hD0, 		   8'hD2, 8'hD3, 8'hD4, 8'hD5, 8'hD6, 8'hD7
+			, 8'hD8, 		   8'hDA, 8'hDB, 8'hDC, 8'hDD, 8'hDE, 8'hDF
+			, 8'hE0, 8'hE1, 8'hE2, 8'hE3, 8'hE4, 8'hE5, 8'hE6, 8'hE7
+			, 8'hE8, 8'hE9, 8'hEA, 8'hEB, 8'hEC, 8'hED, 8'hEE, 8'hEF
+			, 8'hF0, 8'hF1, 8'hF2, 			 8'hF4, 8'hF5, 8'hF6, 8'hF7
+			, 8'hF8, 8'hF9, 8'hFA, 8'hFB, 8'hFC, 8'hFD, 8'hFE, 8'hFF:
+				begin
+					//	no operation
+				end
+			 8'h7E, 8'h7F :
+			 	begin
 					// nop, undocumented
-					null;
-// 8 bit load group
-			 8'b01010111 :
+				end
+			// 8 bit load group
+			 8'h57 :
+			 	begin
 					// ld a,i
-					special_ld <= 3'b100;
-					tstates <= 3'b101;
-			 8'b01011111 :
+					special_ld <= 3'd4;
+					tstates <= 3'd5;
+				end
+			 8'h5F :
+			 	begin
 					// ld a,r
-					special_ld <= 3'b101;
-					tstates <= 3'b101;
-			 8'b01000111 :
+					special_ld <= 3'd5;
+					tstates <= 3'd5;
+				end
+			 8'h47 :
+			 	begin
 					// ld i,a
-					special_ld <= 3'b110;
-					tstates <= 3'b101;
-			 8'b01001111 :
+					special_ld <= 3'd6;
+					tstates <= 3'd5;
+				end
+			 8'h4F :
+			 	begin
 					// ld r,a
-					special_ld <= 3'b111;
-					tstates <= 3'b101;
-// 16 bit load group
-			 8'b01001011|8'b01011011|8'b01101011|8'b01111011 :
+					special_ld <= 3'd7;
+					tstates <= 3'd5;
+				end
+			// 16 bit load group
+			 8'h4B, 8'h5B, 8'h6B, 8'h7B :
+			 	begin
 					// ld dd,(nn)
-					mcycles <= 3'b101;
+					mcycles <= 3'd5;
 					case( mcycle )
 					3'd2:
 							inc_pc <= 1'b1;
@@ -1495,7 +1499,7 @@ begin
 					3'd4:
 							read_to_reg <= 1'b1;
 							if( ir[5:4] = 2'b11 ) begin
-									set_busa_to <= 4'b1000;
+									set_busa_to <= 4'h8;
 							else
 									set_busa_to[2:1] <= ir[5:4];
 									set_busa_to[0] <= 1'b1;
@@ -1505,7 +1509,7 @@ begin
 					3'd5:
 							read_to_reg <= 1'b1;
 							if( ir[5:4] = 2'b11 ) begin
-									set_busa_to <= 4'b1001;
+									set_busa_to <= 4'h9;
 							else
 									set_busa_to[2:1] <= ir[5:4];
 									set_busa_to[0] <= 1'b0;
@@ -1515,9 +1519,11 @@ begin
 							//	hold
 						end
 					endcase
-			 8'b01000011|8'b01010011|8'b01100011|8'b01110011 :
+				end
+			 8'h43, 8'h53, 8'h63, 8'h73 :
+			 	begin
 					// ld (nn),dd
-					mcycles <= 3'b101;
+					mcycles <= 3'd5;
 					case( mcycle )
 					3'd2:
 							inc_pc <= 1'b1;
@@ -1527,7 +1533,7 @@ begin
 							inc_pc <= 1'b1;
 							ldw <= 1'b1;
 							if( ir[5:4] = 2'b11 ) begin
-									set_busb_to <= 4'b1000;
+									set_busb_to <= 4'h8;
 							else
 									set_busb_to[2:1] <= ir[5:4];
 									set_busb_to[0] <= 1'b1;
@@ -1538,7 +1544,7 @@ begin
 							set_addr_to <= azi;
 							write <= 1'b1;
 							if( ir[5:4] = 2'b11 ) begin
-									set_busb_to <= 4'b1001;
+									set_busb_to <= 4'h9;
 							else
 									set_busb_to[2:1] <= ir[5:4];
 									set_busb_to[0] <= 1'b0;
@@ -1551,131 +1557,146 @@ begin
 							//	hold
 						end
 					endcase
-			 8'b10100000 | 8'b10101000 | 8'b10110000 | 8'b10111000 :
+				end
+			 8'hA0 ,  8'hA8 ,  8'hB0 ,  8'hB8 :
+			 	begin
 					// ldi, ldd, ldir, lddr
-					mcycles <= 3'b100;
+					mcycles <= 3'd4;
 					case( mcycle )
 					3'd1:
 							set_addr_to <= axy;
-							incdec_16 <= 4'b1100; // bc
+							incdec_16 <= 4'hC; // bc
 					3'd2:
-							set_busb_to <= 4'b0110;
-							set_busa_to[2:0] <= 3'b111;
-							alu_op <= 4'b0000;
+							set_busb_to <= 4'h6;
+							set_busa_to[2:0] <= 3'd7;
+							alu_op <= 4'h0;
 							set_addr_to <= ade;
 							if( ir[3] == 1'b0 ) begin
-									incdec_16 <= 4'b0110; // ix
+									incdec_16 <= 4'h6; // ix
 							else
-									incdec_16 <= 4'b1110;
+									incdec_16 <= 4'hE;
 							end
 					3'd3:
 							i_bt <= 1'b1;
-							tstates <= 3'b101;
+							tstates <= 3'd5;
 							write <= 1'b1;
 							if( ir[3] == 1'b0 ) begin
-									incdec_16 <= 4'b0101; // de
+									incdec_16 <= 4'h5; // de
 							else
-									incdec_16 <= 4'b1101;
+									incdec_16 <= 4'hD;
 							end
 					3'd4:
 							noread <= 1'b1;
-							tstates <= 3'b101;
+							tstates <= 3'd5;
 					default:
 						begin
 							//	hold
 						end
 					endcase
-			 8'b10100001 | 8'b10101001 | 8'b10110001 | 8'b10111001 :
+				end
+			 8'hA1 ,  8'hA9 ,  8'hB1 ,  8'hB9 :
+			 	begin
 					// cpi, cpd, cpir, cpdr
-					mcycles <= 3'b100;
+					mcycles <= 3'd4;
 					case( mcycle )
 					3'd1:
 							set_addr_to <= axy;
-							incdec_16 <= 4'b1100; // bc
+							incdec_16 <= 4'hC; // bc
 					3'd2:
-							set_busb_to <= 4'b0110;
-							set_busa_to[2:0] <= 3'b111;
-							alu_op <= 4'b0111;
+							set_busb_to <= 4'h6;
+							set_busa_to[2:0] <= 3'd7;
+							alu_op <= 4'h7;
 							alu_cpi <= 1'b1;
 							save_alu <= 1'b1;
 							preservec <= 1'b1;
 							if( ir[3] = 1'b0 ) begin
-									incdec_16 <= 4'b0110;
+									incdec_16 <= 4'h6;
 							else
-									incdec_16 <= 4'b1110;
+									incdec_16 <= 4'hE;
 							end
 					3'd3:
 							noread <= 1'b1;
 							i_bc <= 1'b1;
-							tstates <= 3'b101;
+							tstates <= 3'd5;
 					3'd4:
 							noread <= 1'b1;
-							tstates <= 3'b101;
+							tstates <= 3'd5;
 					default:
 						begin
 							//	hold
 						end
 					endcase
-			 8'b01000100|8'b01001100|8'b01010100|8'b01011100|8'b01100100|8'b01101100|8'b01110100|8'b01111100 :
+				end
+			 8'h44, 8'h4C, 8'h54, 8'h5C, 8'h64, 8'h6C, 8'h74, 8'h7C :
+				begin
 					// neg
-					alu_op <= 4'b0010;
-					set_busb_to <= 4'b0111;
-					set_busa_to <= 4'b1010;
+					alu_op <= 4'h2;
+					set_busb_to <= 4'h7;
+					set_busa_to <= 4'hA;
 					read_to_acc <= 1'b1;
 					save_alu <= 1'b1;
-			 8'b01000110|8'b01001110|8'b01100110|8'b01101110 :
-					// im 0
-					imode <= 2'b00;
-			 8'b01010110|8'b01110110 :
-					// im 1
-					imode <= 2'b01;
-			 8'b01011110|8'b01110111 :
-					// im 2
-					imode <= 2'b10;
-// 16 bit arithmetic
-			 8'b01001010|8'b01011010|8'b01101010|8'b01111010 :
+				end
+			 8'h46, 8'h4E, 8'h66, 8'h6E :
+				// im 0
+				imode <= 2'b00;
+			 8'h56, 8'h76 :
+				// im 1
+				imode <= 2'b01;
+			 8'h5E, 8'h77 :
+				// im 2
+				imode <= 2'b10;
+			// 16 bit arithmetic
+			 8'h4A, 8'h5A, 8'h6A, 8'h7A:
+				begin
 					// adc hl,ss
-					mcycles <= 3'b011;
+					mcycles <= 3'd3;
 					case( mcycle )
 					3'd2:
+						begin
 							noread <= 1'b1;
-							alu_op <= 4'b0001;
+							alu_op <= 4'h1;
 							read_to_reg <= 1'b1;
 							save_alu <= 1'b1;
-							set_busa_to[2:0] <= 3'b101;
+							set_busa_to[2:0] <= 3'd5;
 							case to_integer(unsigned(ir[5:4])) is
 							 3'd0, 3'd1, 3'd2:
 									set_busb_to[2:1] <= ir[5:4];
 							set_busb_to[0] <= 1'b1;
 							default:
-									set_busb_to <= 4'b1000;
+									set_busb_to <= 4'h8;
 							endcase
-							tstates <= 3'b100;
+							tstates <= 3'd4;
+						end
 					3'd3:
+						begin
 							noread <= 1'b1;
 							read_to_reg <= 1'b1;
 							save_alu <= 1'b1;
-							alu_op <= 4'b0001;
-							set_busa_to[2:0] <= 3'b100;
+							alu_op <= 4'h1;
+							set_busa_to[2:0] <= 3'd4;
 							case to_integer(unsigned(ir[5:4])) is
 							 3'd0, 3'd1, 3'd2:
 									set_busb_to[2:1] <= ir[5:4];
 									set_busb_to[0] <= 1'b0;
 							 default:
-									set_busb_to <= 4'b1001;
+									set_busb_to <= 4'h9;
 							endcase
+						end
 					default:
 					endcase
-			 8'b01000010|8'b01010010|8'b01100010|8'b01110010 :
+				end
+			 8'h42, 8'h52, 8'h62, 8'h72 :
+				begin
 					// sbc hl,ss
-					mcycles <= 3'b011;
+					mcycles <= 3'd3;
 					case( mcycle )
 					3'd2:
+						begin
 							noread <= 1'b1;
-							alu_op <= 4'b0011;
+							alu_op <= 4'h3;
 							read_to_reg <= 1'b1;
 							save_alu <= 1'b1;
-							set_busa_to[2:0] <= 3'b101;
+							set_busa_to[2:0] <= 3'd5;
 							case( d[ ir[5:4] ] )
 							 3'd0, 3'd1, 3'd2:
 							 	begin
@@ -1683,100 +1704,122 @@ begin
 									set_busb_to[0] <= 1'b1;
 								end
 							 default:
-									set_busb_to <= 4'b1000;
+								set_busb_to <= 4'h8;
 							endcase
-							tstates <= 3'b100;
+							tstates <= 3'd4;
+						end
 					3'd3:
+						begin
 							noread <= 1'b1;
-							alu_op <= 4'b0011;
+							alu_op <= 4'h3;
 							read_to_reg <= 1'b1;
 							save_alu <= 1'b1;
-							set_busa_to[2:0] <= 3'b100;
-							case to_integer(unsigned(ir[5:4])) is
+							set_busa_to[2:0] <= 3'd4;
+							case( ir[5:4] )
 							 3'd0, 3'd1, 3'd2:
-									set_busb_to[2:1] <= ir[5:4];
+								set_busb_to[2:1] <= ir[5:4];
 							 default:
-											set_busb_to <= 4'b1001;
+								set_busb_to <= 4'h9;
 							endcase
+						end
 					default:
 						begin
 							//	hold
 						end
 					endcase
-			 8'b01101111 :
+				end
+			 8'h6F :
+				begin
 					// rld
-					mcycles <= 3'b100;
+					mcycles <= 3'd4;
 					case( mcycle )
 					 3'd2:
+					 	begin
 							noread <= 1'b1;
 							set_addr_to <= axy;
+						end
 					 3'd3:
+					 	begin
 							read_to_reg <= 1'b1;
-							set_busb_to[2:0] <= 3'b110;
-							set_busa_to[2:0] <= 3'b111;
-							alu_op <= 4'b1101;
-							tstates <= 3'b100;
+							set_busb_to[2:0] <= 3'd6;
+							set_busa_to[2:0] <= 3'd7;
+							alu_op <= 4'hD;
+							tstates <= 3'd4;
 							set_addr_to <= axy;
 							save_alu <= 1'b1;
+						end
 					 3'd4:
+					 	begin
 							i_rld <= 1'b1;
 							write <= 1'b1;
+						end
 					default:
 						begin
 							//	hold
 						end
 					endcase
-			 8'b01100111 :
+				end
+			 8'h67 :
+				begin
 					// rrd
-					mcycles <= 3'b100;
+					mcycles <= 3'd4;
 					case( mcycle )
 					 3'd2:
-							set_addr_to <= axy;
+						set_addr_to <= axy;
 					 3'd3:
+					 	begin
 							read_to_reg <= 1'b1;
-							set_busb_to[2:0] <= 3'b110;
-							set_busa_to[2:0] <= 3'b111;
-							alu_op <= 4'b1110;
-							tstates <= 3'b100;
+							set_busb_to[2:0] <= 3'd6;
+							set_busa_to[2:0] <= 3'd7;
+							alu_op <= 4'hE;
+							tstates <= 3'd4;
 							set_addr_to <= axy;
 							save_alu <= 1'b1;
+						end
 					 3'd4:
+					 	begin
 							i_rrd <= 1'b1;
 							write <= 1'b1;
+						end
 					default:
 						begin
 							//	hold
 						end
 					endcase
-			 8'b01000101|8'b01001101|8'b01010101|8'b01011101|8'b01100101|8'b01101101|8'b01110101|8'b01111101 :
+				end
+			 8'h45, 8'h4D, 8'h55, 8'h5D, 8'h65, 8'h6D, 8'h75, 8'h7D :
 					// reti, retn
-					mcycles <= 3'b011;
+					mcycles <= 3'd3;
 					case( mcycle )
 					 3'd1:
-							set_addr_to <= asp;
+						set_addr_to <= asp;
 					 3'd2:
-							incdec_16 <= 4'b0111;
+					 	begin
+							incdec_16 <= 4'h7;
 							set_addr_to <= asp;
 							ldz <= 1'b1;
+						end
 					 3'd3:
+					 	begin
 							jump <= 1'b1;
-							incdec_16 <= 4'b0111;
+							incdec_16 <= 4'h7;
 							i_retn <= 1'b1;
+						end
 					default:
 						begin
 							//	hold
 						end
 					endcase
-			 8'b01000000, 8'b01001000, 8'b01010000, 8'b01011000, 8'b01100000, 8'b01101000, 8'b01110000, 8'b01111000:
+			 8'h40, 8'h48, 8'h50, 8'h58, 8'h60, 8'h68, 8'h70, 8'h78:
 					// in r,(c)
-					mcycles <= 3'b010;
+					mcycles <= 3'd2;
 					case( mcycle )
 					3'd1:
 						set_addr_to <= abc;
 					3'd2:
 						begin
 							iorq <= 1'b1;
-							if( ir[5:3] != 3'b110 ) begin
+							if( ir[5:3] != 3'd6 ) begin
 									read_to_reg <= 1'b1;
 									set_busa_to[2:0] <= ir[5:3];
 							end
@@ -1787,16 +1830,16 @@ begin
 							//	hold
 						end
 					endcase
-			 8'b01000001, 8'b01001001, 8'b01010001, 8'b01011001, 8'b01100001, 8'b01101001, 8'b01110001, 8'b01111001:
+			 8'h41, 8'h49, 8'h51, 8'h59, 8'h61, 8'h69, 8'h71, 8'h79:
 					// out (c),r
 					// out (c),0
-					mcycles <= 3'b010;
+					mcycles <= 3'd2;
 					case( mcycle )
 					3'd1:
 						begin
 							set_addr_to <= abc;
 							set_busb_to[2:0] <= ir[5:3];
-							if( ir[5:3] == 3'b110 ) begin
+							if( ir[5:3] == 3'd6 ) begin
 									set_busb_to[3] <= 1'b1;
 							end
 						end
@@ -1810,48 +1853,48 @@ begin
 							//	hold
 						end
 					endcase
-			8'b10100010, 8'b10101010, 8'b10110010, 8'b10111010:
+			8'hA2, 8'hAA, 8'hB2, 8'hBA:
 					// ini, ind, inir, indr
-					mcycles <= 3'b100;
+					mcycles <= 3'd4;
 					case( mcycle )
 					3'd1:
 						begin
 							set_addr_to <= abc;
-							set_busb_to <= 4'b1010;
-							set_busa_to <= 4'b0000;
+							set_busb_to <= 4'hA;
+							set_busa_to <= 4'h0;
 							read_to_reg <= 1'b1;
 							save_alu <= 1'b1;
-							alu_op <= 4'b0010;
+							alu_op <= 4'h2;
 						end
 					3'd2:
 						begin
 							iorq <= 1'b1;
-							set_busb_to <= 4'b0110;
+							set_busb_to <= 4'h6;
 							set_addr_to <= axy;
 						end
 					3'd3:
 						begin
 							if( ir[3] == 1'b0 ) begin
-									incdec_16 <= 4'b0110;
+									incdec_16 <= 4'h6;
 							end
 							else begin
-									incdec_16 <= 4'b1110;
+									incdec_16 <= 4'hE;
 							end
-							tstates <= 3'b100;
+							tstates <= 3'd4;
 							write <= 1'b1;
 							i_btr <= 1'b1;
 						end
 					 3'd4:
 						begin
 							noread <= 1'b1;
-							tstates <= 3'b101;
+							tstates <= 3'd5;
 						end
 					 default:
 					 	begin
 					 		//	hold
 					 	end
 					endcase
-			8'b10100011, 8'b10101011, 8'b10110011, 8'b10111011 :
+			8'hA3, 8'hAB, 8'hB3, 8'hBB :
 				begin
 					// outi, outd, otir, otdr
 					mcycles <= 3'd4;
@@ -1860,24 +1903,24 @@ begin
 					 	begin
 							tstates <= 3'd5;
 							set_addr_to <= axy;
-							set_busb_to <= 4'b1010;
-							set_busa_to <= 4'b0000;
+							set_busb_to <= 4'hA;
+							set_busa_to <= 4'h0;
 							read_to_reg <= 1'b1;
 							save_alu <= 1'b1;
-							alu_op <= 4'd2;
+							alu_op <= 4'h2;
 						end
 					 3'd2:
 					 	begin
-							set_busb_to <= 4'b0110;
+							set_busb_to <= 4'h6;
 							set_addr_to <= abc;
 						end
 					 3'd3:
 					 	begin
 							if( ir[3] == 1'b0 ) begin
-								incdec_16 <= 4'b0110;	// 0242a
+								incdec_16 <= 4'h6;	// 0242a
 							end
 							else begin
-								incdec_16 <= 4'b1110;	// 0242a
+								incdec_16 <= 4'hE;	// 0242a
 							end
 							iorq <= 1'b1;
 							write <= 1'b1;
@@ -1886,7 +1929,7 @@ begin
 					 3'd4:
 					 	begin
 							noread <= 1'b1;
-							tstates <= 3'b101;
+							tstates <= 3'd5;
 						end
 					 default:
 					 	begin
@@ -1894,11 +1937,11 @@ begin
 					 	end
 					endcase
 				end
-			 8'b11000001, 8'b11001001, 8'b11010001, 8'b11011001:
+			 8'hC1, 8'hC9, 8'hD1, 8'hD9:
 			 	begin
 					//r800 mulub
 				end
-			 8'b11000011, 8'b11110011 :
+			 8'hC3, 8'hF3 :
 			 	begin
 					//r800 muluw
 				end
@@ -1907,36 +1950,36 @@ begin
 		endcase
 
 		if( mode == 1 ) begin
-			if( mcycle == 3'b001 ) begin
-//						tstates <= 3'b100;
+			if( mcycle == 3'd1 ) begin
+//						tstates <= 3'd4;
 			end
 			else begin
-				tstates <= 3'b011;
+				tstates <= 3'd3;
 			end
 		end
 		else begin
-			if( mcycle == 3'b110 ) begin
+			if( mcycle == 3'd6 ) begin
 				inc_pc <= 1'b1;
 				if( mode == 1 ) begin
 					set_addr_to <= axy;
-					tstates <= 3'b100;
+					tstates <= 3'd4;
 					set_busb_to[2:0] <= sss;
 					set_busb_to[3] <= 1'b0;
 				end
-				if( irb == 8'b00110110 || irb == 8'b11001011 ) begin
+				if( irb == 8'h36 || irb == 8'hCB ) begin
 					set_addr_to <= anone;
 				end
 			end
-			if( mcycle == 3'b111 ) begin
+			if( mcycle == 3'd7 ) begin
 				if( mode == 0 ) begin
-					tstates <= 3'b101;
+					tstates <= 3'd5;
 				end
 				if( iset != 2'b01 ) begin
 					set_addr_to <= axy;
 				end
 				set_busb_to[2:0] <= sss;
 				set_busb_to[3] <= 1'b0;
-				if( irb == 8'b00110110 || iset == 2'b01 ) begin
+				if( irb == 8'h36 || iset == 2'b01 ) begin
 					// ld (hl),n
 					inc_pc <= 1'b1;
 				else
