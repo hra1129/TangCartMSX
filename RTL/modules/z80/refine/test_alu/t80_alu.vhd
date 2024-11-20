@@ -120,7 +120,8 @@ architecture rtl of T80_ALU is
 	signal	Q_cpi			: std_logic_vector(4 downto 0);
 
 	signal	BitMask			: std_logic_vector(7 downto 0);
-
+	signal	ff_daa_q		: std_logic_vector(8 downto 0);
+	signal	ff_q_t			: std_logic_vector(7 downto 0);
 begin
 
 	with IR(5 downto 3) select BitMask <= "00000001" when "000",
@@ -140,13 +141,13 @@ begin
 
 	AddSub(BusA(3 downto 0), BusB(3 downto 0), '1', HalfCarry_v, Q_cpi(3 downto 0), Q_cpi(4));
 
-	process (Arith16, ALU_OP, ALU_cpi, F_In, BusA, BusB, IR, Q_v, Q_cpi, Carry_v, HalfCarry_v, OverFlow_v, BitMask, ISet, Z16)
+	u_alu_proc: process (Arith16, ALU_OP, ALU_cpi, F_In, BusA, BusB, IR, Q_v, Q_cpi, Carry_v, HalfCarry_v, OverFlow_v, BitMask, ISet, Z16)
 		variable Q_t : std_logic_vector(7 downto 0);
 		variable DAA_Q : unsigned(8 downto 0);
 	begin
-		Q_t := "--------";
+		Q_t := "00000000";
 		F_Out <= F_In;
-		DAA_Q := "---------";
+		DAA_Q := "000000000";
 		case ALU_Op is
 		when "0000" | "0001" |	"0010" | "0011" | "0100" | "0101" | "0110" | "0111" =>
 			F_Out(Flag_N) <= '0';
@@ -358,6 +359,8 @@ begin
 			null;
 		end case;
 		Q <= Q_t;
+		ff_daa_q <= std_logic_vector(DAA_Q);
+		ff_q_t <= std_logic_vector(Q_t);
 	end process;
 
 end;

@@ -42,6 +42,9 @@ module tb ();
 	wire	[7:0]	q			;
 	wire	[7:0]	f_out		;
 
+	reg				err;
+	int				i;
+
 	// --------------------------------------------------------------------
 	//	DUT
 	// --------------------------------------------------------------------
@@ -87,6 +90,28 @@ module tb ();
 		clk			= 0;
 		@( posedge clk );
 
+		// --------------------------------------------------------------------
+		//	random test
+		// --------------------------------------------------------------------
+		for( i = 0; i < 10000; i = i + 1 ) begin
+			arith16		= $urandom;
+			z16			= $urandom;
+			alu_cpi		= $urandom;
+			alu_op		= $urandom;
+			ir			= $urandom;
+			iset		= $urandom;
+			busa		= $urandom;
+			busb		= $urandom;
+			f_in		= $urandom;
+			@( posedge clk );
+
+			assert( q_ref == q );
+			assert( f_out_ref == f_out );
+			err			= (q_ref != q) || (f_out_ref != f_out);
+			@( posedge clk );
+		end
+
+		repeat( 100 ) @( posedge clk );
 
 		$finish;
 	end
