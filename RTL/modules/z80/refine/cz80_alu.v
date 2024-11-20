@@ -94,6 +94,7 @@ module cz80_alu (
 	wire	[5:0]	w_addsub_s;
 	wire	[7:0]	w_q_t;
 	wire	[8:0]	w_daa_ql;
+	wire	[7:0]	w_daa_sub;
 	wire	[8:0]	w_daa_q;
 
 	// addsub variables (temporary signals)
@@ -150,13 +151,14 @@ module cz80_alu (
 
 	assign w_overflow 	= w_carry ^ w_carry7;
 
+	assign w_daa_sub	= busa - 8'h06;
 	assign w_daa_ql		= (!f_in[flag_n]) ? 
 			( ( (busa[3:0] > 4'd9) || f_in[flag_h] ) ? ({ 1'b0, busa } + 9'h06) : { 1'b0, busa } ) :	// after addition
-			( ( (busa[3:0] > 4'd9) || f_in[flag_h] ) ? ({ 1'b0, busa } - 9'h06) : { 1'b0, busa } );		// after subtraction
+			( ( (busa[3:0] > 4'd9) || f_in[flag_h] ) ?  { 1'b0, w_daa_sub     } : { 1'b0, busa } );		// after subtraction
 
 	assign w_daa_q		= (!f_in[flag_n]) ?
 			( ( (w_daa_ql[8:4] > 4'h9  ) || f_in[flag_c]) ? (w_daa_ql + 9'h060) : w_daa_ql ) :			// after addition
-			( ( (w_daa_ql      > 9'h99 ) || f_in[flag_c]) ? (w_daa_ql - 9'h160) : w_daa_ql );			// after subtraction
+			( ( (busa          > 9'h99 ) || f_in[flag_c]) ? (w_daa_ql - 9'h160) : w_daa_ql );			// after subtraction
 
 	// --------------------------------------------------------------------
 	//	Carry flag
@@ -191,7 +193,9 @@ module cz80_alu (
 	// --------------------------------------------------------------------
 	//	Negative flag
 	// --------------------------------------------------------------------
-	assign f_out[flag_n] = ( alu_op == 4'd2 || alu_op == 4'd3 || alu_op == 4'd7 );
+	assign f_out[flag_n] =
+			( alu_op == 4'd2 || alu_op == 4'd3 || alu_op == 4'd7 ) ? 1'b1 :
+			( alu_op == 4'd10 || alu_op == 4'd11 || alu_op == 4'd12 || alu_op == 4'd15 ) ? f_in[flag_n] : 1'b0;
 
 	// --------------------------------------------------------------------
 	//	Half carry flag
@@ -281,8 +285,8 @@ module cz80_alu (
 		endcase
 	endfunction
 
-	assign f_out[flag_x] = func_flag_xy( alu_op, f_in[flag_x], ir[2:0], alu_cpi, w_q_cpi[3], busb[3],w_q_t[3], w_daa_q[3] );
-	assign f_out[flag_y] = func_flag_xy( alu_op, f_in[flag_y], ir[2:0], alu_cpi, w_q_cpi[5], busb[5],w_q_t[5], w_daa_q[5] );
+	assign f_out[flag_x] = func_flag_xy( alu_op, f_in[flag_x], ir[2:0], alu_cpi, w_q_cpi[3], busb[3], w_q_t[3], w_daa_q[3] );
+	assign f_out[flag_y] = func_flag_xy( alu_op, f_in[flag_y], ir[2:0], alu_cpi, w_q_cpi[1], busb[5], w_q_t[5], w_daa_q[5] );
 
 	// --------------------------------------------------------------------
 	//	Zero flag
@@ -344,21 +348,26 @@ module cz80_alu (
 	//	‰‰ŽZŒ‹‰Ê q
 	// --------------------------------------------------------------------
 	function [7:0] func_q_t(
-		input	[3:0]	alu_op
+		input	[3:0]	alu_op,
+		input	[7:0]	busa,
+		input	[7:0]	busb,
+		input			f_in_c,
+		input	[7:0]	w_bitmask,
+		input	[7:0]	w_q,
+		input	[7:0]	w_daa_q
 	);
 		case( alu_op )
-		4'd0, 4'd1, 4'd2, 4'd3:
-					func_q_t	= w_q;							//	add, adc, sub, sbc
+		4'd0, 4'd1, 4'd2, 4'd3, 4'd7:
+					func_q_t	= w_q;							//	add, adc, sub, sbc, cp
 		4'd4:		func_q_t	= busa & busb;					//	and
 		4'd5:		func_q_t	= busa ^ busb;					//	xor
 		4'd6:		func_q_t	= busa | busb;					//	or
-		4'd7:		func_q_t	= w_q;							//	cp
 		4'd8:
 			case( ir[5:3] )										//	rotate
 			3'd0:	func_q_t	= { busa[6:0], busa[7] };		//	rlc
-			3'd2:	func_q_t	= { busa[6:0], f_in[flag_c] };	//	rl
+			3'd2:	func_q_t	= { busa[6:0], f_in_c };		//	rl
 			3'd1:	func_q_t	= { busa[0], busa[7:1] };		//	rrc
-			3'd3:	func_q_t	= { f_in[flag_c], busa[7:1] };	//	rr
+			3'd3:	func_q_t	= { f_in_c, busa[7:1] };		//	rr
 			3'd4:	func_q_t	= { busa[6:0], 1'b0 };			//	sla
 			3'd6:	func_q_t	= { busa[6:0], 1'b1 };			//	sll (undocumented)
 			3'd5:	func_q_t	= { busa[7], busa[7:1] };		//	sra
@@ -370,10 +379,10 @@ module cz80_alu (
 		4'd12:		func_q_t	= w_daa_q[7:0];					//	daa
 		4'd13:		func_q_t	= { busa[7:4], busb[7:4] };		//	rld
 		4'd14:		func_q_t	= { busa[7:4], busb[3:0] };		//	rrd
-		default:	func_q_t	= 8'dx;
+		default:	func_q_t	= 8'd0;
 		endcase
 	endfunction
 
-	assign w_q_t	= func_q_t( alu_op );
-	assign q		= func_3to8_decoder( alu_op );
+	assign w_q_t	= func_q_t( alu_op, busa, busb, f_in[flag_c], w_bitmask, w_q, w_daa_q[7:0] );
+	assign q		= w_q_t;
 endmodule
