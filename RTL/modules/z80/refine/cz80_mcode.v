@@ -63,1929 +63,1337 @@
 module t80_mcode #(
 	parameter			mode		= 0
 ) (
-	input				ir			: in std_logic_vector[7:0];
-	input				iset		: in std_logic_vector[1:0];
-	input				mcycle		: in std_logic_vector[2:0];
-	input				f			: in std_logic_vector[7:0];
-	input				nmicycle	: in std_logic;
-	input				intcycle	: in std_logic;
-	input				xy_state	: in std_logic_vector[1:0];
-	output				mcycles		: out std_logic_vector[2:0];
-	output				tstates		: out std_logic_vector[2:0];
-	output				prefix		: out std_logic_vector[1:0]; // none,cb,ed,dd/fd
-	output				inc_pc		: out std_logic;
-	output				inc_wz		: out std_logic;
-	output				incdec_16	: out std_logic_vector[3:0]; // bc,de,hl,sp	 0 is inc
-	output				read_to_reg : out std_logic;
-	output				read_to_acc : out std_logic;
-	output				set_busa_to : out std_logic_vector[3:0]; // b,c,d,e,h,l,di/db,a,sp(l),sp(m),0,f
-	output				set_busb_to : out std_logic_vector[3:0]; // b,c,d,e,h,l,di,a,sp(l),sp(m),1,f,pc(l),pc(m),0
-	output				alu_op		: out std_logic_vector[3:0];
-			// add, adc, sub, sbc, and, xor, or, cp, rot, bit, set, res, daa, rld, rrd, none
-	output				alu_cpi		: out std_logic;	//for undoc xy-flags	   
-	output				save_alu	: out std_logic;
-	output				preservec	: out std_logic;
-	output				arith16		: out std_logic;
-	output				set_addr_to : out std_logic_vector[2:0]; // anone,axy,aioa,asp,abc,ade,azi
-	output				iorq		: out std_logic;
-	output				jump		: out std_logic;
-	output				jumpe		: out std_logic;
-	output				jumpxy		: out std_logic;
-	output				call		: out std_logic;
-	output				rstp		: out std_logic;
-	output				ldz			: out std_logic;
-	output				ldw			: out std_logic;
-	output				ldsphl		: out std_logic;
-	output				special_ld	: out std_logic_vector[2:0]; // a,i;a,r;i,a;r,a;none
-	output				exchangedh	: out std_logic;
-	output				exchangerp	: out std_logic;
-	output				exchangeaf	: out std_logic;
-	output				exchangers	: out std_logic;
-	output				i_djnz		: out std_logic;
-	output				i_cpl		: out std_logic;
-	output				i_ccf		: out std_logic;
-	output				i_scf		: out std_logic;
-	output				i_retn		: out std_logic;
-	output				i_bt		: out std_logic;
-	output				i_bc		: out std_logic;
-	output				i_btr		: out std_logic;
-	output				i_rld		: out std_logic;
-	output				i_rrd		: out std_logic;
-	output				i_inrc		: out std_logic;
-	output				setdi		: out std_logic;
-	output				setei		: out std_logic;
-	output				imode		: out std_logic_vector[1:0];
-	output				halt		: out std_logic;
-	output				noread		: out std_logic;
-	output				write		: out std_logic;
-	output				xybit_undoc : out std_logic
+	input	[7:0]		ir			,
+	input	[1:0]		iset		,
+	input	[2:0]		mcycle		,
+	input	[7:0]		f			,
+	input				nmicycle	,
+	input				intcycle	,
+	input	[1:0]		xy_state	,
+	output	[2:0]		mcycles		,
+	output	[2:0]		tstates		,
+	output	[1:0]		prefix		,	// none,cb,ed,dd/fd
+	output				inc_pc		,
+	output				inc_wz		,
+	output	[3:0]		incdec_16	,	// bc,de,hl,sp	 0 is inc
+	output				read_to_reg ,
+	output				read_to_acc ,
+	output	[3:0]		set_busa_to ,	// b,c,d,e,h,l,di/db,a,sp(l),sp(m),0,f
+	output	[3:0]		set_busb_to ,	// b,c,d,e,h,l,di,a,sp(l),sp(m),1,f,pc(l),pc(m),0
+	output	[3:0]		alu_op		,	// add, adc, sub, sbc, and, xor, or, cp, rot, bit, set, res, daa, rld, rrd, none
+	output				alu_cpi		,	//for undoc xy-flags
+	output				save_alu	,
+	output				preservec	,
+	output				arith16		,
+	output	[2:0]		set_addr_to ,	// anone,axy,aioa,asp,abc,ade,azi
+	output				iorq		,
+	output				jump		,
+	output				jumpe		,
+	output				jumpxy		,
+	output				call		,
+	output				rstp		,
+	output				ldz			,
+	output				ldw			,
+	output				ldsphl		,
+	output	[2:0]		special_ld	,	// a,i;a,r;i,a;r,a;none
+	output				exchangedh	,
+	output				exchangerp	,
+	output				exchangeaf	,
+	output				exchangers	,
+	output				i_djnz		,
+	output				i_cpl		,
+	output				i_ccf		,
+	output				i_scf		,
+	output				i_retn		,
+	output				i_bt		,
+	output				i_bc		,
+	output				i_btr		,
+	output				i_rld		,
+	output				i_rrd		,
+	output				i_inrc		,
+	output				setdi		,
+	output				setei		,
+	output	[1:0]		imode		,
+	output				halt		,
+	output				noread		,
+	output				write		,
+	output				xybit_undoc	
 );
-		localparam			flag_c	= 0;
-		localparam			flag_n	= 1;
-		localparam			flag_p	= 2;
-		localparam			flag_x	= 3;
-		localparam			flag_h	= 4;
-		localparam			flag_y	= 5;
-		localparam			flag_z	= 6;
-		localparam			flag_s	= 7
+	localparam			flag_c	= 0;
+	localparam			flag_n	= 1;
+	localparam			flag_p	= 2;
+	localparam			flag_x	= 3;
+	localparam			flag_h	= 4;
+	localparam			flag_y	= 5;
+	localparam			flag_z	= 6;
+	localparam			flag_s	= 7
 
-		localparam	[2:0]	anone	= 3'd7;
-		localparam	[2:0]	abc		= 3'd0;
-		localparam	[2:0]	ade		= 3'd1;
-		localparam	[2:0]	axy		= 3'd2;
-		localparam	[2:0]	aioa	= 3'd4;
-		localparam	[2:0]	asp		= 3'd5;
-		localparam	[2:0]	azi		= 3'd6;
+	localparam	[2:0]	anone	= 3'd7;
+	localparam	[2:0]	abc		= 3'd0;
+	localparam	[2:0]	ade		= 3'd1;
+	localparam	[2:0]	axy		= 3'd2;
+	localparam	[2:0]	aioa	= 3'd4;
+	localparam	[2:0]	asp		= 3'd5;
+	localparam	[2:0]	azi		= 3'd6;
 
-		function is_cc_true(
-				f : std_logic_vector[7:0];
-				cc : bit_vector[2:0]
-				) return boolean is
-		begin
-			case cc is
-			 3'd0 : return f[6] = 1'b0; // nz
-			 3'd1 : return f[6] = 1'b1; // z
-			 3'd2 : return f[0] = 1'b0; // nc
-			 3'd3 : return f[0] = 1'b1; // c
-			 3'd4 : return f[2] = 1'b0; // po
-			 3'd5 : return f[2] = 1'b1; // pe
-			 3'd6 : return f[7] = 1'b0; // p
-			 3'd7 : return f[7] = 1'b1; // m
+	wire	[7:0]	irb;
+	wire	[2:0]	ddd;
+	wire	[2:0]	sss;
+	wire	[1:0]	dpair;
+
+	function is_cc_true(
+		input	[7:0]	f,
+		input	[2:0]	cc
+	);
+		case( cc )
+		 3'd0: is_cc_true = !f[6];	// nz
+		 3'd1: is_cc_true =  f[6];	// z
+		 3'd2: is_cc_true = !f[0];	// nc
+		 3'd3: is_cc_true =  f[0];	// c
+		 3'd4: is_cc_true = !f[2];	// po
+		 3'd5: is_cc_true =  f[2];	// pe
+		 3'd6: is_cc_true = !f[7];	// p
+		 3'd7: is_cc_true =  f[7];	// m
+		endcase
+	endfunction
+
+	assign ddd		= ir[5:3];
+	assign sss		= ir[2:0];
+	assign dpair	= ir[5:4];
+	assign irb		= ir;
+
+	// --------------------------------------------------------------------
+	//	Prefix instruction
+	// --------------------------------------------------------------------
+	function [1:0] func_prefix(
+		input	[1:0]	iset,
+		input	[7:0]	irb
+	);
+		if( iset == 2'b00 ) begin
+			case( irb )
+			8'hCB:
+				prefix = 2'b01;
+			8'hED:
+				prefix = 2'b10;
+			8'hDD, 8'hFD:
+				prefix = 2'b11;
+			default:
+				prefix = 2'b00;
 			endcase
 		end
+		else begin
+			prefix = 2'b00;
+		end
+	endfunction
 
-begin
+	assign prefix	= func_prefix( iset, irb );
 
-	process (ir, iset, mcycle, f, nmicycle, intcycle, xy_state)
-			variable ddd : std_logic_vector[2:0];
-			variable sss : std_logic_vector[2:0];
-			variable dpair : std_logic_vector[1:0];
-			variable irb : bit_vector[7:0];
-	begin
-			ddd := ir[5:3];
-			sss := ir[2:0];
-			dpair := ir[5:4];
-			irb := to_bitvector(ir);
+	// --------------------------------------------------------------------
+	//	mcycles
+	// --------------------------------------------------------------------
+	function [2:0] func_mcycles(
+		input	[1:0]	iset,
+		input	[7:0]	irb,
+		input	[1:0]	xy_state,
+		input	[3:0]	mcycle,
+		input			f,
+		input	[5:3]	ir
+	);
+		case( iset )
+		2'b00 :
+			// --------------------------------------------------------------------
+			//  unprefixed instructions
+			// --------------------------------------------------------------------
+			case( irb )
+			8'h06, 8'h0E, 8'h16, 8'h1E, 8'h26, 8'h2E, 8'h3E:			//	ld r,n
+				mcycles = 3'd2;
+			8'h46, 8'h4E, 8'h56, 8'h5E, 8'h66, 8'h6E, 8'h7E:			//	ld r,(hl)
+				mcycles = 3'd2;
+			8'h70, 8'h71, 8'h72, 8'h73, 8'h74, 8'h75, 8'h77:			//	ld (hl),r
+				mcycles = 3'd2;
+			8'h36:														//	ld (hl),n
+				mcycles = 3'd3;
+			8'h0A:														//	ld a,(bc)
+				mcycles = 3'd2;
+			8'h1A:														//	ld a,(de)
+				mcycles = 3'd2;
+			8'h3A:														//	ld a,(nn)
+				mcycles = 3'd4;
+			8'h02:														//	ld (bc),a
+				mcycles = 3'd2;
+			8'h12:														//	ld (de),a
+				mcycles = 3'd2;
+			8'h32:														//	ld (nn),a
+				mcycles = 3'd4;
+			8'h01, 8'h11, 8'h21, 8'h31:									//	ld dd,nn
+				mcycles = 3'd3;
+			8'h2A:														//	ld hl,(nn)
+				mcycles = 3'd5;
+			8'h22:														//	ld (nn),hl
+				mcycles = 3'd5;
+			8'hC5, 8'hD5, 8'hE5, 8'hF5:									//	push qq
+				mcycles = 3'd3;
+			8'hC1, 8'hD1, 8'hE1, 8'hF1:									//	pop qq
+				mcycles = 3'd3;
+			8'hE3:														//	ex (sp),hl
+				mcycles = 3'd5;
+			8'h86, 8'h8E, 8'h96, 8'h9E, 8'hA6, 8'hAE, 8'hB6, 8'hBE:		// add/adc/sub/sbc/and/or/xor/cp a,(hl)
+				mcycles = 3'd2;
+			8'hC6, 8'hCE, 8'hD6, 8'hDE, 8'hE6, 8'hEE, 8'hF6, 8'hFE:		// add/adc/sub/sbc/and/or/xor/cp a,n
+				mcycles = 3'd2;
+			8'h34:														// inc (hl)
+				mcycles = 3'd3;
+			8'h35:														// dec (hl)
+				mcycles = 3'd3;
+			8'h00:
+				if( nmicycle == 1'b1 ) begin
+					// nmi
+					mcycles = 3'd3;
+				end
+				else if( intcycle == 1'b1 ) begin
+					// int (im 2)
+					mcycles = 3'd5;
+				end
+				else begin
+					// nop
+					mcycles = 3'd1;
+				end
+			8'h09, 8'h19, 8'h29, 8'h39:									// add hl,ss
+				mcycles = 3'd3;
+			8'hC3 :														// jp nn
+				mcycles = 3'd3;
+			8'hC2, 8'hCA, 8'hD2, 8'hDA, 8'hE2, 8'hEA, 8'hF2, 8'hFA :	// jp cc,nn
+				mcycles = 3'd3;
+			8'h18:														// jr e
+				mcycles = 3'd3;
+			8'h38:														// jr c,e
+				if( mcycle == 3'd2 ) begin
+					mcycles = ( !f[flag_c] ) ? 3'd2 : 3'd3;
+				end
+				else begin
+					mcycles = 3'd3;
+				end
+			8'h30:														// jr nc,e
+				if( mcycle == 3'd2 ) begin
+					mcycles = ( f[flag_c] ) ? 3'd2 : 3'd3;
+				end
+				else begin
+					mcycles = 3'd3;
+				end
+			8'h28:														// jr z,e
+				if( mcycle == 3'd2 ) begin
+					mcycles = ( !f[flag_z] ) ? 3'd2 : 3'd3;
+				end
+				else begin
+					mcycles = 3'd3;
+				end
+			8'h20:														// jr nz,e
+				if( mcycle == 3'd2 ) begin
+					mcycles = ( f[flag_z] ) ? 3'd2 : 3'd3;
+				end
+				else begin
+					mcycles = 3'd3;
+				end
+			8'h10:														// djnz,e
+				mcycles = 3'd3;
+			8'hCD:														// call nn
+				mcycles = 3'd5;
+			8'hC4, 8'hCC, 8'hD4, 8'hDC, 8'hE4, 8'hEC, 8'hF4, 8'hFC:		// call cc,nn
+				if( mcycle == 3'd3 ) begin
+					mcycles = ( is_cc_true( f, ir[5:3] ) ) ? 3'd5: 3'd3;
+				end
+				else begin
+					mcycles = 3'd5;
+				end
+			8'hC9 :														// ret
+				mcycles = 3'd3;
+			8'hC0, 8'hC8, 8'hD0, 8'hD8, 8'hE0, 8'hE8, 8'hF0, 8'hF8 :	// ret cc
+				if( mcycle == 3'd1 ) begin
+					mcycles = ( is_cc_true( f, ir[5:3] ) ) ? 3'd3: 3'd1;
+				end
+				else begin
+					mcycles = 3'd3;
+				end
+			8'hC7, 8'hCF, 8'hD7, 8'hDF, 8'hE7, 8'hEF, 8'hF7, 8'hFF :	// rst p
+				mcycles = 3'd3;
+			8'hDB:														// in a,(n)
+				mcycles = 3'd3;
+			8'hD3:														// out (n),a
+				mcycles = 3'd3;
+			endcase
 
-			mcycles <= 3'd1;
-			if( mcycle = 3'd1 ) begin
-					tstates <= 3'd4;
-			else
-					tstates <= 3'd3;
-			end
-			prefix <= 2'b00;
-			inc_pc <= 1'b0;
-			inc_wz <= 1'b0;
-			incdec_16 <= 4'h0;
-			read_to_acc <= 1'b0;
-			read_to_reg <= 1'b0;
-			set_busb_to <= 4'h0;
-			set_busa_to <= 4'h0;
-			alu_op <= 1'b0 & ir[5:3];
-			alu_cpi <= 1'b0;
-			save_alu <= 1'b0;
-			preservec <= 1'b0;
-			arith16 <= 1'b0;
-			iorq <= 1'b0;
-			set_addr_to <= anone;
-			jump <= 1'b0;
-			jumpe <= 1'b0;
-			jumpxy <= 1'b0;
-			call <= 1'b0;
-			rstp <= 1'b0;
-			ldz <= 1'b0;
-			ldw <= 1'b0;
-			ldsphl <= 1'b0;
-			special_ld <= 3'd0;
-			exchangedh <= 1'b0;
-			exchangerp <= 1'b0;
-			exchangeaf <= 1'b0;
-			exchangers <= 1'b0;
-			i_djnz <= 1'b0;
-			i_cpl <= 1'b0;
-			i_ccf <= 1'b0;
-			i_scf <= 1'b0;
-			i_retn <= 1'b0;
-			i_bt <= 1'b0;
-			i_bc <= 1'b0;
-			i_btr <= 1'b0;
-			i_rld <= 1'b0;
-			i_rrd <= 1'b0;
-			i_inrc <= 1'b0;
-			setdi <= 1'b0;
-			setei <= 1'b0;
-			imode <= 2'b11;
-			halt <= 1'b0;
-			noread <= 1'b0;
-			write <= 1'b0;
-			xybit_undoc <= 1'b0;
+		// --------------------------------------------------------------------
+		//  cb prefixed instructions
+		// --------------------------------------------------------------------
+		2'b01 :
+			case( irb )
+			8'h00, 8'h01, 8'h02, 8'h03, 8'h04, 8'h05, 8'h07,
+			8'h10, 8'h11, 8'h12, 8'h13, 8'h14, 8'h15, 8'h17,
+			8'h08, 8'h09, 8'h0A, 8'h0B, 8'h0C, 8'h0D, 8'h0F,
+			8'h18, 8'h19, 8'h1A, 8'h1B, 8'h1C, 8'h1D, 8'h1F,
+			8'h20, 8'h21, 8'h22, 8'h23, 8'h24, 8'h25, 8'h27,
+			8'h28, 8'h29, 8'h2A, 8'h2B, 8'h2C, 8'h2D, 8'h2F,
+			8'h30, 8'h31, 8'h32, 8'h33, 8'h34, 8'h35, 8'h37,
+			8'h38, 8'h39, 8'h3A, 8'h3B, 8'h3C, 8'h3D, 8'h3F,			// rlc r, rl r, rrc r, rr r, sla r, sra r, srl r, sll r (undocumented)
+			8'hC0, 8'hC1, 8'hC2, 8'hC3, 8'hC4, 8'hC5, 8'hC7,
+			8'hC8, 8'hC9, 8'hCA, 8'hCB, 8'hCC, 8'hCD, 8'hCF,
+			8'hD0, 8'hD1, 8'hD2, 8'hD3, 8'hD4, 8'hD5, 8'hD7,
+			8'hD8, 8'hD9, 8'hDA, 8'hDB, 8'hDC, 8'hDD, 8'hDF,
+			8'hE0, 8'hE1, 8'hE2, 8'hE3, 8'hE4, 8'hE5, 8'hE7,
+			8'hE8, 8'hE9, 8'hEA, 8'hEB, 8'hEC, 8'hED, 8'hEF,
+			8'hF0, 8'hF1, 8'hF2, 8'hF3, 8'hF4, 8'hF5, 8'hF7,
+			8'hF8, 8'hF9, 8'hFA, 8'hFB, 8'hFC, 8'hFD, 8'hFF:			// set b,r
+				mcycles = ( xy_state != 2'b00 ) ? 3'd3 : 3'd1;			// r/s (ix+d),reg, undocumented
+			8'h06, 8'h16, 8'h0E, 8'h1E, 8'h2E, 8'h3E, 8'h26, 8'h36,		// rlc (hl), rl (hl), rrc (hl), rr (hl), sra (hl), srl (hl), sla (hl), sll (hl) (undocumented) / swap (hl)
+			8'hC6, 8'hCE, 8'hD6, 8'hDE, 8'hE6, 8'hEE, 8'hF6, 8'hFE,		// set b,(hl)
+			8'h86, 8'h8E, 8'h96, 8'h9E, 8'hA6, 8'hAE, 8'hB6, 8'hBE:		// res b,(hl)
+				mcycles = 3'd3;
+			8'h40, 8'h41, 8'h42, 8'h43, 8'h44, 8'h45, 8'h47,
+			8'h48, 8'h49, 8'h4A, 8'h4B, 8'h4C, 8'h4D, 8'h4F,
+			8'h50, 8'h51, 8'h52, 8'h53, 8'h54, 8'h55, 8'h57,
+			8'h58, 8'h59, 8'h5A, 8'h5B, 8'h5C, 8'h5D, 8'h5F,
+			8'h60, 8'h61, 8'h62, 8'h63, 8'h64, 8'h65, 8'h67,
+			8'h68, 8'h69, 8'h6A, 8'h6B, 8'h6C, 8'h6D, 8'h6F,
+			8'h70, 8'h71, 8'h72, 8'h73, 8'h74, 8'h75, 8'h77,
+			8'h78, 8'h79, 8'h7A, 8'h7B, 8'h7C, 8'h7D, 8'h7F:			// bit b,r
+				mcycles = ( xy_state != 2'b00 ) ? 3'd2 : 3'd1;			// bit b,(ix+d), undocumented
+			8'h46, 8'h4E, 8'h56, 8'h5E, 8'h66, 8'h6E, 8'h76, 8'h7E:		// bit b,(hl)
+				mcycles = 3'd2;
+			8'h80, 8'h81, 8'h82, 8'h83, 8'h84, 8'h85, 8'h87, 
+			8'h88, 8'h89, 8'h8A, 8'h8B, 8'h8C, 8'h8D, 8'h8F, 
+			8'h90, 8'h91, 8'h92, 8'h93, 8'h94, 8'h95, 8'h97, 
+			8'h98, 8'h99, 8'h9A, 8'h9B, 8'h9C, 8'h9D, 8'h9F, 
+			8'hA0, 8'hA1, 8'hA2, 8'hA3, 8'hA4, 8'hA5, 8'hA7, 
+			8'hA8, 8'hA9, 8'hAA, 8'hAB, 8'hAC, 8'hAD, 8'hAF, 
+			8'hB0, 8'hB1, 8'hB2, 8'hB3, 8'hB4, 8'hB5, 8'hB7, 
+			8'hB8, 8'hB9, 8'hBA, 8'hBB, 8'hBC, 8'hBD, 8'hBF:			// res b,r
+				mcycles = (xy_state == 2'b00) ? 3'd1 : 3'd3;			// res b,(ix+d),reg, undocumented
+			endcase
 
+		// --------------------------------------------------------------------
+		//	ED prefixed instructions
+		// --------------------------------------------------------------------
+		default:
+			case( irb )
+			8'h4B, 8'h5B, 8'h6B, 8'h7B:									// ld dd,(nn)
+				mcycles = 3'd5;
+			8'h43, 8'h53, 8'h63, 8'h73:									// ld (nn),dd
+				mcycles = 3'd5;
+			8'hA0, 8'hA8, 8'hB0, 8'hB8:									// ldi, ldd, ldir, lddr
+				mcycles = 3'd4;
+			8'hA1, 8'hA9, 8'hB1, 8'hB9:									// cpi, cpd, cpir, cpdr
+				mcycles = 3'd4;
+			8'h4A, 8'h5A, 8'h6A, 8'h7A:									// adc hl,ss
+				mcycles = 3'd3;
+			8'h42, 8'h52, 8'h62, 8'h72:									// sbc hl,ss
+				mcycles = 3'd3;
+			8'h6F:														// rld
+				mcycles = 3'd4;
+			8'h67:														// rrd
+				mcycles = 3'd4;
+			8'h45, 8'h4D, 8'h55, 8'h5D, 8'h65, 8'h6D, 8'h75, 8'h7D :	// reti, retn
+				mcycles = 3'd3;
+			8'h40, 8'h48, 8'h50, 8'h58, 8'h60, 8'h68, 8'h70, 8'h78:		// in r,(c)
+				mcycles = 3'd2;
+			8'h41, 8'h49, 8'h51, 8'h59, 8'h61, 8'h69, 8'h71, 8'h79:		// out (c),r, out (c),0
+				mcycles = 3'd2;
+			8'hA2, 8'hAA, 8'hB2, 8'hBA:									// ini, ind, inir, indr
+				mcycles = 3'd4;
+			8'hA3, 8'hAB, 8'hB3, 8'hBB :								// outi, outd, otir, otdr
+				mcycles = 3'd4;
+			default:
+				mcycles = 3'd1;
+			endcase
+		endcase
+	endfunction
+
+	assign mcycles	= func_mcycles( iset, irb, xy_state, mcycle, f, ir );
+
+	// --------------------------------------------------------------------
+	//	tstates
+	// --------------------------------------------------------------------
+	function [2:0] func_tstates(
+		input	[2:0]	mcycle,
+		input	[1:0]	iset,
+		input	[7:0]	irb,
+		input	[7:0]	f,
+		input	[2:0]	cc,
+		input	[1:0]	xy_state
+	);
+		if( mcycle == 3'd7 ) begin
+			func_tstates = 3'd5;
+		end
+		else begin
 			case( iset )
-			 2'b00 :
+			2'b00 :
 				// --------------------------------------------------------------------
 				//  unprefixed instructions
 				// --------------------------------------------------------------------
+				case( irb )
+				 8'hF9:											// ld sp,hl
+					func_tstates = 3'd6;
+				 8'hC5, 8'hD5, 8'hE5, 8'hF5:					// push qq
+					if( mcycle == 3'd1 ) begin
+						func_tstates = 3'd5;
+					end
+					else begin
+						func_tstates = 3'd3;
+					end
+				 8'hE3:											// ex (sp),hl
+					if( mcycle == 3'd1 || mcycle == 3'd3 ) begin
+						func_tstates = 3'd4;
+					end
+					else if( mcycle == 3'd5 ) begin
+						func_tstates = 3'd5;
+					end
+					else begin
+						func_tstates = 3'd3;
+					end
+				8'h34,														// inc (hl)
+				8'h35:														// dec (hl)
+					if( mcycle == 3'd1 || mcycle == 3'd2 ) begin
+						func_tstates = 3'd4;
+					end
+					else begin
+						func_tstates = 3'd3;
+					end
+				 8'h00:
+					if( nmicycle || intcycle ) begin
+						if( mcycle == 3'd1 ) begin
+							func_tstates = 3'd5;
+						end
+						else if( mcycle == 3'd2 || mcycle == 3'd3 ) begin
+							func_tstates = 3'd4;
+						end
+						else begin
+							func_tstates = 3'd3;
+						end
+					end
+					else begin
+						if( mcycle == 3'd1 ) begin
+							func_tstates = 3'd4;
+						end
+						else begin
+							func_tstates = 3'd3;
+						end
+					end
+				 8'h09, 8'h19, 8'h29, 8'h39 :			// add hl,ss
+					if( mcycle == 3'd2 ) begin
+						func_tstates = 3'd4;
+					end
+					else if( mcycle == 3'd1 ) begin
+						func_tstates = 3'd4;
+					end
+					else begin
+						func_tstates = 3'd3;
+					end
+				8'h18, 8'h20, 8'h28, 8'h30, 8'h38:		// jr e, jr nz,e, jr z,e, jr c,e, jr nc,e
+					if( mcycle == 3'd3 ) begin
+						func_tstates = 3'd5;
+					end
+					else begin
+						func_tstates = 3'd3;
+					end
+				8'h10:									// djnz,e
+					if( mcycle == 3'd1 || mcycle == 3'd3 ) begin
+						func_tstates = 3'd5;
+					end
+					else begin
+						func_tstates = 3'd3;
+					end
+				8'hCD:									// call nn
+					if( mcycle == 3'd1 || mcycle == 3'd3 ) begin
+						func_tstates = 3'd4;
+					end
+					else begin
+						func_tstates = 3'd3;
+					end
+				 8'hC4, 8'hCC, 8'hD4, 8'hDC, 8'hE4, 8'hEC, 8'hF4, 8'hFC:		// call cc,nn
+					if( mcycle == 3'd1 ) begin
+						func_tstates = 3'd4;
+					end
+					else if( mcycle == 3'd3 ) begin
+						if( is_cc_true( f, ir[5:3] ) ) begin
+							func_tstates = 3'd4;
+						end
+						else begin
+							func_tstates = 3'd3;
+						end
+					end
+					else begin
+						func_tstates = 3'd3;
+					end
+				8'hC9,														// ret
+				8'hC0, 8'hC8, 8'hD0, 8'hD8, 8'hE0, 8'hE8, 8'hF0, 8'hF8,		// ret cc
+				8'hC7, 8'hCF, 8'hD7, 8'hDF, 8'hE7, 8'hEF, 8'hF7, 8'hFF:		// rst p
+					func_tstates = ( mcycle == 3'd1 ) ? 3'd5 : 3'd3;
+				default:
+					func_tstates = ( mcycle == 3'd1 ) ? 3'd4 : 3'd3;
+				endcase
 
+			2'b01 :
+				// --------------------------------------------------------------------
+				//  CB prefixed instructions
+				// --------------------------------------------------------------------
+				case( irb )
+				8'h00, 8'h01, 8'h02, 8'h03, 8'h04, 8'h05, 8'h07, 
+				8'h10, 8'h11, 8'h12, 8'h13, 8'h14, 8'h15, 8'h17, 
+				8'h08, 8'h09, 8'h0A, 8'h0B, 8'h0C, 8'h0D, 8'h0F, 
+				8'h18, 8'h19, 8'h1A, 8'h1B, 8'h1C, 8'h1D, 8'h1F, 
+				8'h20, 8'h21, 8'h22, 8'h23, 8'h24, 8'h25, 8'h27, 
+				8'h28, 8'h29, 8'h2A, 8'h2B, 8'h2C, 8'h2D, 8'h2F, 
+				8'h30, 8'h31, 8'h32, 8'h33, 8'h34, 8'h35, 8'h37, 
+				8'h38, 8'h39, 8'h3A, 8'h3B, 8'h3C, 8'h3D, 8'h3F,			// rlc r, rl r, rrc r, rr r, sla r, sra r, srl r, sll r (undocumented) / swap r
+				8'h40, 8'h41, 8'h42, 8'h43, 8'h44, 8'h45, 8'h46, 8'h47, 
+				8'h48, 8'h49, 8'h4A, 8'h4B, 8'h4C, 8'h4D, 8'h4E, 8'h4F, 
+				8'h50, 8'h51, 8'h52, 8'h53, 8'h54, 8'h55, 8'h56, 8'h57, 
+				8'h58, 8'h59, 8'h5A, 8'h5B, 8'h5C, 8'h5D, 8'h5E, 8'h5F, 
+				8'h60, 8'h61, 8'h62, 8'h63, 8'h64, 8'h65, 8'h66, 8'h67, 
+				8'h68, 8'h69, 8'h6A, 8'h6B, 8'h6C, 8'h6D, 8'h6E, 8'h6F, 
+				8'h70, 8'h71, 8'h72, 8'h73, 8'h74, 8'h75, 8'h76, 8'h77, 
+				8'h78, 8'h79, 8'h7A, 8'h7B, 8'h7C, 8'h7D, 8'h7E, 8'h7F,				// bit b,r
+				8'hC0, 8'hC1, 8'hC2, 8'hC3, 8'hC4, 8'hC5, 8'hC6, 8'hC7, 
+				8'hC8, 8'hC9, 8'hCA, 8'hCB, 8'hCC, 8'hCD, 8'hCE, 8'hCF, 
+				8'hD0, 8'hD1, 8'hD2, 8'hD3, 8'hD4, 8'hD5, 8'hD6, 8'hD7, 
+				8'hD8, 8'hD9, 8'hDA, 8'hDB, 8'hDC, 8'hDD, 8'hDE, 8'hDF, 
+				8'hE0, 8'hE1, 8'hE2, 8'hE3, 8'hE4, 8'hE5, 8'hE6, 8'hE7, 
+				8'hE8, 8'hE9, 8'hEA, 8'hEB, 8'hEC, 8'hED, 8'hEE, 8'hEF, 
+				8'hF0, 8'hF1, 8'hF2, 8'hF3, 8'hF4, 8'hF5, 8'hF6, 8'hF7, 
+				8'hF8, 8'hF9, 8'hFA, 8'hFB, 8'hFC, 8'hFD, 8'hFE, 8'hFF,				// set b,r
+				8'h80, 8'h81, 8'h82, 8'h83, 8'h84, 8'h85, 8'h86, 8'h87, 
+				8'h88, 8'h89, 8'h8A, 8'h8B, 8'h8C, 8'h8D, 8'h8E, 8'h8F, 
+				8'h90, 8'h91, 8'h92, 8'h93, 8'h94, 8'h95, 8'h96, 8'h97, 
+				8'h98, 8'h99, 8'h9A, 8'h9B, 8'h9C, 8'h9D, 8'h9E, 8'h9F, 
+				8'hA0, 8'hA1, 8'hA2, 8'hA3, 8'hA4, 8'hA5, 8'hA6, 8'hA7, 
+				8'hA8, 8'hA9, 8'hAA, 8'hAB, 8'hAC, 8'hAD, 8'hAE, 8'hAF, 
+				8'hB0, 8'hB1, 8'hB2, 8'hB3, 8'hB4, 8'hB5, 8'hB6, 8'hB7, 
+				8'hB8, 8'hB9, 8'hBA, 8'hBB, 8'hBC, 8'hBD, 8'hBE, 8'hBF:				// res b,r
+					if( xy_state == 2'b00 ) begin
+						if( mcycle == 3'd1 ) begin
+							func_tstates = 3'd4;
+						end
+						else begin
+							func_tstates = 3'd3;
+						end
+					end
+					else begin
+						if( mcycle == 3'd1 || mcycle == 3'd2 ) begin
+							func_tstates = 3'd4;
+						end
+						else begin
+							func_tstates = 3'd3;
+						end
+					end
+				8'h06, 8'h16, 8'h0E, 8'h1E, 8'h2E, 8'h3E, 8'h26, 8'h36:	// rlc (hl), rl (hl), rrc (hl), rr (hl), sra (hl), srl (hl), sla (hl), sll (hl) (undocumented) / swap (hl)
+					if( mcycle == 3'd1 || mcycle == 3'd2 ) begin
+						func_tstates = 3'd4;
+					end
+					else begin
+						func_tstates = 3'd3;
+					end
+				default:
+					if( mcycle == 3'd1 ) begin
+						func_tstates = 3'd4;
+					end
+					else begin
+						func_tstates = 3'd3;
+					end
+				endcase
+			default:
+				// --------------------------------------------------------------------
+				//	ED prefixed instructions
+				// --------------------------------------------------------------------
+				case( irb )
+				8'h57,								// ld a,i
+				8'h5F,								// ld a,r
+				8'h47,								// ld i,a
+				8'h4F:								// ld r,a
+					func_tstates = 3'd5;
+				8'hA0, 8'hA8, 8'hB0, 8'hB8,			// ldi, ldd, ldir, lddr
+				8'hA1, 8'hA9, 8'hB1, 8'hB9:			// cpi, cpd, cpir, cpdr
+					if( mcycle == 3'd1 ) begin
+						func_tstates = 3'd4;
+					end
+					else if( mcycle == 3'd3 || mcycle == 3'd4 ) begin
+						func_tstates = 3'd5;
+					end
+					else begin
+						func_tstates = 3'd3;
+					end
+				8'h4A, 8'h5A, 8'h6A, 8'h7A,
+				8'h42, 8'h52, 8'h62, 8'h72:
+					if( mcycle == 3'd1 || mcycle == 3'd2 ) begin
+						func_tstates = 3'd4;
+					end
+					else begin
+						func_tstates = 3'd3;
+					end
+				8'h6F, 8'h67:
+					if( mcycle == 3'd1 || mcycle == 3'd3 ) begin
+						func_tstates = 3'd4;
+					end
+					else begin
+						func_tstates = 3'd3;
+					end
+
+				8'hA2, 8'hAA, 8'hB2, 8'hBA:
+					if( mcycle == 3'd1 || mcycle == 3'd3 ) begin
+						func_tstates = 3'd4;
+					end
+					else if( mcycle == 3'd4 ) begin
+						func_tstates = 3'd5;
+					end
+					else begin
+						func_tstates = 3'd3;
+					end
+				8'hA3, 8'hAB, 8'hB3, 8'hBB:
+					if( mcycle == 3'd1 || mcycle == 3'd4 ) begin
+						func_tstates = 3'd5;
+					end
+					else begin
+						func_tstates = 3'd3;
+					end
+				default:
+					if( mcycle == 3'd1 ) begin
+						func_tstates = 3'd4;
+					end
+					else begin
+						func_tstates = 3'd3;
+					end
+				endcase
+			endcase
+		end
+	endfunction
+
+	// --------------------------------------------------------------------
+	//	Increment PC
+	// --------------------------------------------------------------------
+	function func_inc_pc(
+		input	[1:0]	iset,
+		input	[2:0]	mcycle,
+		input	[7:0]	irb,
+		input			nmicycle,
+		input			intcycle
+	);
+		if( mcycle == 3'd6 ) begin
+			func_inc_pc = 1'b1;
+		end
+		else if( mcycle == 3'd7 ) begin
+			func_inc_pc = ( irb == 8'h36 || iset == 2'b01 );
+		end
+		else begin
+			case( iset )
+			// --------------------------------------------------------------------
+			//  unprefixed instructions
+			// --------------------------------------------------------------------
+			 2'b00 :
+				case( irb )
+				8'h06, 8'h0E, 8'h16, 8'h1E, 8'h26, 8'h2E, 8'h3E,
+				8'h36, 8'hC6, 8'hCE, 8'hD6, 8'hDE, 8'hE6, 8'hEE,
+				8'hF6, 8'hFE, 8'h18, 8'h38, 8'h30, 8'h28, 8'h20,
+				8'h10, 8'hDB, 8'hD3:
+					func_inc_pc = ( mcycle == 3'd2 );
+				8'h3A, 8'h32, 8'h01, 8'h11, 8'h21, 8'h31, 8'h2A,
+				8'h22, 8'hC3, 8'hC2, 8'hCA, 8'hD2, 8'hDA, 8'hE2,
+				8'hEA, 8'hF2, 8'hFA, 8'hCD, 8'hC4, 8'hCC, 8'hD4,
+				8'hDC, 8'hE4, 8'hEC, 8'hF4, 8'hFC:
+				 	func_inc_pc = ( mcycle == 3'd2 || mcycle == 3'd3 );
+				8'h00 :
+					func_inc_pc = ( !nmicycle && intcycle && mcycle == 3'd4 );
+				default:
+					func_inc_pc = 1'b0;
+				endcase
+			// --------------------------------------------------------------------
+			//  CB prefixed instructions
+			// --------------------------------------------------------------------
+			 2'b01 :
+				func_inc_pc = 1'b0;
+			// --------------------------------------------------------------------
+			//	ED prefixed instructions
+			// --------------------------------------------------------------------
+			default:
+				case( irb )
+				8'h4B, 8'h5B, 8'h6B, 8'h7B,
+				8'h43, 8'h53, 8'h63, 8'h73:
+			 		func_inc_pc = ( mcycle == 3'd2 || mcycle == 3'd3 );
+				default:
+					func_inc_pc = 1'b0;
+				endcase
+			endcase
+		end
+	endfunction
+
+	assign inc_pc = func_inc_pc( iset, mcycle, irb, nmicycle, intcycle );
+
+	// --------------------------------------------------------------------
+	//	Increment WZ
+	// --------------------------------------------------------------------
+	function func_inc_wz(
+		input	[1:0]	iset,
+		input	[2:0]	mcycle,
+		input	[7:0]	irb
+	);
+		case( iset )
+		 2'b00 :
+			// --------------------------------------------------------------------
+			//  unprefixed instructions
+			// --------------------------------------------------------------------
 			case( irb )
-// 8 bit load group
+			8'h2A, 8'h22 :
+				inc_wz = ( mcycle == 3'd4 );
+			default:
+				inc_wz = 1'b0;
+			endcase
+		default:
+			// --------------------------------------------------------------------
+			//	ED prefixed instructions
+			// --------------------------------------------------------------------
+			case( irb )
+			8'h4B, 8'h5B, 8'h6B, 8'h7B, 8'h43, 8'h53, 8'h63, 8'h73 :
+				inc_wz = ( mcycle == 3'd4 );
+			default:
+				inc_wz = 1'b0;
+			endcase
+		endcase
+	endfunction
+
+	// --------------------------------------------------------------------
+	//	increment/decrement for 16bits
+	// --------------------------------------------------------------------
+	function func_incdec_16(
+		input	[2:0]	mcycle,
+		input	[1:0]	iset,
+		input			nmicycle,
+		input			intcycle,
+		input	[1:0]	dpair,
+		input	[7:0]	f,
+		input	[5:3]	ir
+	);
+		func_incdec_16 = 4'h0;
+
+		case( iset )
+		// --------------------------------------------------------------------
+		//  unprefixed instructions
+		// --------------------------------------------------------------------
+		 2'b00 :
+			case( irb )
+			8'hC5, 8'hD5, 8'hE5, 8'hF5, 
+			8'hC7, 8'hCF, 8'hD7, 8'hDF, 8'hE7, 8'hEF, 8'hF7, 8'hFF:
+				if( mcycle == 3'd1 || mcycle == 3'd2 ) begin
+					func_incdec_16 = 4'hF;
+				end
+				else begin
+					func_incdec_16 = 4'h0;
+				end
+			8'hC1, 8'hD1, 8'hE1, 8'hF1, 8'hC9,
+			8'hC0, 8'hC8, 8'hD0, 8'hD8, 8'hE0, 8'hE8, 8'hF0, 8'hF8:
+				if( mcycle == 3'd2 || mcycle == 3'd3 ) begin
+					func_incdec_16 = 4'h7;
+				end
+				else begin
+					func_incdec_16 = 4'h0;
+				end
+			8'hE3 :
+				if( mcycle == 3'd3 ) begin
+					func_incdec_16 = 4'h7;
+				end
+				else if( mcycle == 3'd5 ) begin
+					func_incdec_16 = 4'hF;
+				end
+				else begin
+					func_incdec_16 = 4'h0;
+				end
+			8'h00 :
+				if( nmicycle || intcycle ) begin
+					func_incdec_16 = ( mcycle == 3'd1 || mcycle == 3'd2 ) ? 4'hF: 4'h0;
+				end
+				else begin
+					func_incdec_16 = 4'h0;
+				end
+			8'h03, 8'h13, 8'h23, 8'h33 :
+				func_incdec_16[3:2] = 2'b01;
+				func_incdec_16[1:0] = dpair;
+			8'h0B, 8'h1B, 8'h2B, 8'h3B :
+				func_incdec_16[3:2] = 2'b11;
+				func_incdec_16[1:0] = dpair;
+			 8'hCD:
+				func_incdec_16 = ( mcycle == 3'd3 || mcycle == 3'd4 ) ? 4'hF: 4'h0;
+			 8'hC4, 8'hCC, 8'hD4, 8'hDC, 8'hE4, 8'hEC, 8'hF4, 8'hFC :
+				func_incdec_16 = ( mcycle == 3'd3 && is_cc_true( f, ir[5:3] ) ) ? 4'hF:
+							(( mcycle == 3'd4 ) ? 4'hF: 4'h0);
+			default:
+				func_incdec_16 = 4'h0;
+			endcase
+		// --------------------------------------------------------------------
+		//  cb prefixed instructions
+		// --------------------------------------------------------------------
+		2'b01:
+			func_incdec_16 = 4'h0;
+
+		// --------------------------------------------------------------------
+		//	ED prefixed instructions
+		// --------------------------------------------------------------------
+		default:
+			case( irb )
+			8'hA0, 8'hA8, 8'hB0, 8'hB8:
+				if( mcycle == 3'd1 ) begin
+					func_incdec_16 = 4'hC;
+				end
+				else if( mcycle == 3'd2 ) begin
+					if( ir[3] == 1'b0 ) begin
+							func_incdec_16 = 4'h6;
+					end
+					else begin
+							func_incdec_16 = 4'hE;
+					end
+				end
+				else if( mcycle == 3'd3 ) begin
+					if( ir[3] == 1'b0 ) begin
+							func_incdec_16 = 4'h5; // de
+					end
+					else begin
+							func_incdec_16 = 4'hD;
+					end
+				end
+				else begin
+					func_incdec_16 = 4'h0;
+				end
+			8'hA1, 8'hA9, 8'hB1, 8'hB9:
+				if( mcycle == 3'd1 ) begin
+					func_incdec_16 = 4'hC; // bc
+				end
+				else if( mcycle == 3'd2 ) begin
+					if( !ir[3] ) begin
+							func_incdec_16 = 4'h6;
+					end
+					else begin
+							func_incdec_16 = 4'hE;
+					end
+				end
+				else begin
+					func_incdec_16 = 4'h0;
+				end
+
+			8'h45, 8'h4D, 8'h55, 8'h5D, 8'h65, 8'h6D, 8'h75, 8'h7D :
+				if( mcycle == 3'd2 || mcycle == 3'd3 ) begin
+					func_incdec_16 = 4'h7;
+				end
+				else begin
+					func_incdec_16 = 4'h0;
+				end
+			8'hA2, 8'hAA, 8'hB2, 8'hBA, 8'hA3, 8'hAB, 8'hB3, 8'hBB :
+				if( mcycle == 3'd3 ) begin
+					if( !ir[3] ) begin
+							func_incdec_16 = 4'h6;
+					end
+					else begin
+							func_incdec_16 = 4'hE;
+					end
+				end
+				else begin
+					func_incdec_16 = 4'h0;
+				end
+			default:
+				func_incdec_16 = 4'h0;
+			endcase
+		endcase
+	endfunction
+
+	assign incdec_16	= func_incdec_16( mcycle, iset, nmicycle, intcycle, dpair, f, ir[5:3] );
+
+	// --------------------------------------------------------------------
+	//	I/O request
+	// --------------------------------------------------------------------
+	function func_iorq(
+		input	[2:0]	mcycle,
+		input	[1:0]	iset,
+		input	[7:0]	irb
+	);
+		case( iset )
+		// --------------------------------------------------------------------
+		//  unprefixed instructions
+		// --------------------------------------------------------------------
+		 2'b00:
+			func_iorq = ( (irb == 8'hD3 || irb == 8'hDB) mcycle == 3'd3 );
+		// --------------------------------------------------------------------
+		//  CD prefixed instructions
+		// --------------------------------------------------------------------
+		2'b01:
+			func_iorq = 1'b0;
+		// --------------------------------------------------------------------
+		//	ED prefixed instructions
+		// --------------------------------------------------------------------
+		default:
+			case( irb )
+			8'h40, 8'h48, 8'h50, 8'h58, 8'h60, 8'h68, 8'h70, 8'h78,
+			8'h41, 8'h49, 8'h51, 8'h59, 8'h61, 8'h69, 8'h71, 8'h79,
+			8'hA2, 8'hAA, 8'hB2, 8'hBA:
+				func_iorq = ( mcycle == 3'd2 );
+			8'hA3, 8'hAB, 8'hB3, 8'hBB:
+				func_iorq = ( mcycle == 3'd3 );
+			default:
+				func_iorq = 1'b0;
+			endcase
+		endcase
+	end
+
+	assign iorq	= func_iorq( mcycle, iset, irb );
+
+	// --------------------------------------------------------------------
+	//	read to accumulator flag
+	// --------------------------------------------------------------------
+	function func_read_to_acc(
+		input	[1:0]	iset,
+		input	[2:0]	mcycle,
+		input	[7:0]	irb
+	);
+		case( iset )
+		// --------------------------------------------------------------------
+		//  unprefixed instructions
+		// --------------------------------------------------------------------
+		 2'b00:
+			case( irb )
+			8'h0A, 8'h1A:
+				func_read_to_acc = ( mcycle == 3'd2 );
+			8'h3A:
+				func_read_to_acc = ( mcycle == 3'd4 );
+			8'hDB:
+				func_read_to_acc = ( mcycle == 3'd3 );
+			default:
+				func_read_to_acc = 1'b0;
+			endcase
+		// --------------------------------------------------------------------
+		//  CB prefixed instructions
+		// --------------------------------------------------------------------
+		2'b01:
+			func_read_to_acc = 1'b0;
+		// --------------------------------------------------------------------
+		//	ED prefixed instructions
+		// --------------------------------------------------------------------
+		default:
+			case( irb )
+			8'h44, 8'h4C, 8'h54, 8'h5C, 8'h64, 8'h6C, 8'h74, 8'h7C:
+				func_read_to_acc = 1'b1;
+			default:
+				func_read_to_acc = 1'b0;
+			endcase
+		endcase
+	end
+
+	assign read_to_acc = func_read_to_acc( iset, mcycle, irb );
+
+	// --------------------------------------------------------------------
+	//	read to register flag
+	// --------------------------------------------------------------------
+	function func_read_to_reg(
+		input	[1:0]	iset,
+		input	[2:0]	mcycle,
+		input	[7:0]	irb,
+		input	[1:0]	xy_state
+	);
+		case( iset )
+		// --------------------------------------------------------------------
+		//  unprefixed instructions
+		// --------------------------------------------------------------------
+		 2'b00 :
+			case( irb )
+			8'h06, 8'h0E, 8'h16, 8'h1E, 8'h26, 8'h2E, 8'h3E, 
+			8'h46, 8'h4E, 8'h56, 8'h5E, 8'h66, 8'h6E, 8'h7E, 
+			8'h86, 8'h8E, 8'h96, 8'h9E, 8'hA6, 8'hAE, 8'hB6, 8'hBE, 
+			8'hC6, 8'hCE, 8'hD6, 8'hDE, 8'hE6, 8'hEE, 8'hF6, 8'hFE, 
+			8'h34, 8'h35: 
+				func_read_to_reg = ( mcycle == 3'd2 );
+			8'h70, 8'h71, 8'h72, 8'h73, 8'h74, 8'h75, 8'h77, 
+			8'h36, 8'h0A, 8'h1A, 8'h3A, 8'h02, 8'h12, 8'h32, 
+			8'h22, 8'hF9, 8'hC5, 8'hD5, 8'hE5, 8'hF5, 8'h00, 
+			8'h03, 8'h13, 8'h23, 8'h33, 8'h0B, 8'h1B, 8'h2B, 8'h3B, 
+			8'hC3, 8'h18, 8'h38, 8'h30, 8'h28, 8'h20, 8'hE9, 8'hCD, 
+			8'hC4, 8'hCC, 8'hD4, 8'hDC, 8'hE4, 8'hEC, 8'hF4, 8'hFC, 
+			8'hC2, 8'hCA, 8'hD2, 8'hDA, 8'hE2, 8'hEA, 8'hF2, 8'hFA, 
+			8'hC0, 8'hC8, 8'hD0, 8'hD8, 8'hE0, 8'hE8, 8'hF0, 8'hF8, 
+			8'hC7, 8'hCF, 8'hD7, 8'hDF, 8'hE7, 8'hEF, 8'hF7, 8'hFF, 
+			8'hC9, 8'hDB, 8'hD3:
+				func_read_to_reg = 1'b0;
+			8'h01, 8'h11, 8'h21, 8'h31:
+				func_read_to_reg = ( mcycle == 3'd2 || mcycle == 3'd3 );
+			8'h2A:
+				func_read_to_reg = ( mcycle == 3'd4 || mcycle == 3'd5 );
+			8'hC1, 8'hD1, 8'hE1, 8'hF1, 8'h09, 8'h19, 8'h29, 8'h39:
+				func_read_to_reg = ( mcycle == 3'd2 || mcycle == 3'd3 );
+			8'hE3:
+				func_read_to_reg = ( mcycle == 3'd2 || mcycle == 3'd4 );
+			8'h10:
+				func_read_to_reg = ( mcycle == 3'd1 );
+			default:
+				func_read_to_reg = 1'b1;
+			endcase
+		// --------------------------------------------------------------------
+		//  cb prefixed instructions
+		// --------------------------------------------------------------------
+		2'b01 :
+			case( irb )
+			8'h06, 8'h16, 8'h0E, 8'h1E, 8'h2E, 8'h3E, 8'h26, 8'h36 :
+				func_read_to_reg = ( mcycle == 3'd2 );
 			8'h40, 8'h41, 8'h42, 8'h43, 8'h44, 8'h45, 8'h47, 
 			8'h48, 8'h49, 8'h4A, 8'h4B, 8'h4C, 8'h4D, 8'h4F, 
 			8'h50, 8'h51, 8'h52, 8'h53, 8'h54, 8'h55, 8'h57, 
 			8'h58, 8'h59, 8'h5A, 8'h5B, 8'h5C, 8'h5D, 8'h5F, 
 			8'h60, 8'h61, 8'h62, 8'h63, 8'h64, 8'h65, 8'h67, 
 			8'h68, 8'h69, 8'h6A, 8'h6B, 8'h6C, 8'h6D, 8'h6F, 
-			8'h78, 8'h79, 8'h7A, 8'h7B, 8'h7C, 8'h7D, 8'h7F:
-				begin
-					// ld r,r'
-					set_busb_to[2:0] <= sss;
-					exchangerp <= 1'b1;
-					set_busa_to[2:0] <= ddd;
-					read_to_reg <= 1'b1;
-				end
-			8'h06, 8'h0E, 8'h16, 8'h1E, 8'h26, 8'h2E, 8'h3E :
-				begin
-					// ld r,n
-					mcycles <= 3'd2;
-					case( mcycle )
-					3'd2:
-							inc_pc <= 1'b1;
-							set_busa_to[2:0] <= ddd;
-							read_to_reg <= 1'b1;
-					 others : null;
-					endcase
-				end
-			8'h46, 8'h4E, 8'h56, 8'h5E, 8'h66, 8'h6E, 8'h7E :
-				begin
-					// ld r,(hl)
-					mcycles <= 3'd2;
-					case( mcycle )
-					3'd1:
-							set_addr_to <= axy;
-					3'd2:
-							set_busa_to[2:0] <= ddd;
-							read_to_reg <= 1'b1;
-					 others : null;
-					endcase
-				end
-			 8'h70, 8'h71, 8'h72, 8'h73, 8'h74, 8'h75, 8'h77 :
-				begin
-					// ld (hl),r
-					mcycles <= 3'd2;
-					case( mcycle )
-					3'd1:
-							set_addr_to <= axy;
-							set_busb_to[2:0] <= sss;
-							set_busb_to[3] <= 1'b0;
-					3'd2:
-							write <= 1'b1;
-					 others : null;
-					endcase
-				end
-			 8'h36 :
-				begin
-					// ld (hl),n
-					mcycles <= 3'd3;
-					case( mcycle )
-					3'd2:
-						begin
-							inc_pc <= 1'b1;
-							set_addr_to <= axy;
-							set_busb_to[2:0] <= sss;
-							set_busb_to[3] <= 1'b0;
-						end
-					3'd3:
-						begin
-							write <= 1'b1;
-						end
-					default:
-						begin
-							//	hold
-						end
-					endcase
-				end
-			 8'h0A :
-				begin
-					// ld a,(bc)
-					mcycles <= 3'd2;
-					case( mcycle )
-					3'd1:
-							set_addr_to <= abc;
-					3'd2:
-							read_to_acc <= 1'b1;
-					default:
-						begin
-							//	hold
-						end
-					endcase
-				end
-			 8'h1A :
-				begin
-					// ld a,(de)
-					mcycles <= 3'd2;
-					case( mcycle )
-					3'd1:
-							set_addr_to <= ade;
-					3'd2:
-							read_to_acc <= 1'b1;
-					default:
-						begin
-							//	hold
-						end
-					endcase
-				end
-			 8'h3A :
-				begin
-					// ld a,(nn)
-					mcycles <= 3'd4;
-					case( mcycle )
-					3'd2:
-							inc_pc <= 1'b1;
-							ldz <= 1'b1;
-					3'd3:
-							set_addr_to <= azi;
-							inc_pc <= 1'b1;
-					3'd4:
-							read_to_acc <= 1'b1;
-					default:
-						begin
-							//	hold
-						end
-					endcase
-				end
-			 8'h02 :
-				begin
-					// ld (bc),a
-					mcycles <= 3'd2;
-					case( mcycle )
-					3'd1:
-							set_addr_to <= abc;
-							set_busb_to <= 4'h7;
-					3'd2:
-							write <= 1'b1;
-					default:
-						begin
-							//	hold
-						end
-					endcase
-				end
-			 8'h12 :
-				begin
-					// ld (de),a
-					mcycles <= 3'd2;
-					case( mcycle )
-					3'd1:
-							set_addr_to <= ade;
-							set_busb_to <= 4'h7;
-					3'd2:
-							write <= 1'b1;
-					default:
-						begin
-							//	hold
-						end
-					endcase
-				end
-			 8'h32 :
-				begin
-					// ld (nn),a
-					mcycles <= 3'd4;
-					case( mcycle )
-					3'd2:
-							inc_pc <= 1'b1;
-							ldz <= 1'b1;
-					3'd3:
-							set_addr_to <= azi;
-							inc_pc <= 1'b1;
-							set_busb_to <= 4'h7;
-					3'd4:
-							write <= 1'b1;
-					default:
-						begin
-							//	hold
-						end
-					endcase
-				end
-// 16 bit load group
-			 8'h01, 8'h11, 8'h21, 8'h31 :
-				begin
-					// ld dd,nn
-					mcycles <= 3'd3;
-					case( mcycle )
-					3'd2:
-						begin
-							inc_pc <= 1'b1;
-							read_to_reg <= 1'b1;
-							if( dpair == 2'b11 ) begin
-									set_busa_to[3:0] <= 4'h8;
-							end
-							else begin
-									set_busa_to[2:1] <= dpair;
-									set_busa_to[0] <= 1'b1;
-							end
-					3'd3:
-						begin
-							inc_pc <= 1'b1;
-							read_to_reg <= 1'b1;
-							if( dpair == 2'b11 ) begin
-									set_busa_to[3:0] <= 4'h9;
-							end
-							else begin
-									set_busa_to[2:1] <= dpair;
-									set_busa_to[0] <= 1'b0;
-							end
-					default:
-						begin
-							//	hold
-						end
-					endcase
-			 8'h2A :
-					// ld hl,(nn)
-					mcycles <= 3'd5;
-					case( mcycle )
-					3'd2:
-							inc_pc <= 1'b1;
-							ldz <= 1'b1;
-					3'd3:
-							set_addr_to <= azi;
-							inc_pc <= 1'b1;
-							ldw <= 1'b1;
-					3'd4:
-							set_busa_to[2:0] <= 3'd5; // l
-							read_to_reg <= 1'b1;
-							inc_wz <= 1'b1;
-							set_addr_to <= azi;
-					3'd5:
-							set_busa_to[2:0] <= 3'd4; // h
-							read_to_reg <= 1'b1;
-					default:
-						begin
-							//	hold
-						end
-					endcase
-			 8'h22 :
-					// ld (nn),hl
-					mcycles <= 3'd5;
-					case( mcycle )
-					3'd2:
-							inc_pc <= 1'b1;
-							ldz <= 1'b1;
-					3'd3:
-							set_addr_to <= azi;
-							inc_pc <= 1'b1;
-							ldw <= 1'b1;
-							set_busb_to <= 4'h5; // l
-					3'd4:
-							inc_wz <= 1'b1;
-							set_addr_to <= azi;
-							write <= 1'b1;
-							set_busb_to <= 4'h4; // h
-					3'd5:
-							write <= 1'b1;
-					default:
-						begin
-							//	hold
-						end
-					endcase
-			 8'hF9 :
-					// ld sp,hl
-					tstates <= 3'd6;
-					ldsphl <= 1'b1;
-			 8'hC5, 8'hD5, 8'hE5, 8'hF5 :
-					// push qq
-					mcycles <= 3'd3;
-					case( mcycle )
-					3'd1:
-							tstates <= 3'd5;
-							incdec_16 <= 4'hF;
-							set_addr_to <= asp;
-							if( dpair = 2'b11 ) begin
-									set_busb_to <= 4'h7;
-							else
-									set_busb_to[2:1] <= dpair;
-									set_busb_to[0] <= 1'b0;
-									set_busb_to[3] <= 1'b0;
-							end
-					3'd2:
-							incdec_16 <= 4'hF;
-							set_addr_to <= asp;
-							if( dpair = 2'b11 ) begin
-									set_busb_to <= 4'hB;
-							else
-									set_busb_to[2:1] <= dpair;
-									set_busb_to[0] <= 1'b1;
-									set_busb_to[3] <= 1'b0;
-							end
-							write <= 1'b1;
-					3'd3:
-							write <= 1'b1;
-					default:
-						begin
-							//	hold
-						end
-					endcase
-			 8'hC1, 8'hD1, 8'hE1, 8'hF1 :
-					// pop qq
-					mcycles <= 3'd3;
-					case( mcycle )
-					3'd1:
-							set_addr_to <= asp;
-					3'd2:
-							incdec_16 <= 4'h7;
-							set_addr_to <= asp;
-							read_to_reg <= 1'b1;
-							if( dpair = 2'b11 ) begin
-									set_busa_to[3:0] <= 4'hB;
-							else
-									set_busa_to[2:1] <= dpair;
-									set_busa_to[0] <= 1'b1;
-							end
-					3'd3:
-							incdec_16 <= 4'h7;
-							read_to_reg <= 1'b1;
-							if( dpair = 2'b11 ) begin
-									set_busa_to[3:0] <= 4'h7;
-							else
-									set_busa_to[2:1] <= dpair;
-									set_busa_to[0] <= 1'b0;
-							end
-					default:
-						begin
-							//	hold
-						end
-					endcase
-
-// exchange, block transfer and search group
-			 8'hEB :
-					// ex de,hl
-					exchangedh <= 1'b1;
-			 8'h08 :
-					// ex af,af'
-					exchangeaf <= 1'b1;
-			 8'hD9 :
-					// exx
-					exchangers <= 1'b1;
-			 8'hE3 :
-					// ex (sp),hl
-					mcycles <= 3'd5;
-					case( mcycle )
-					3'd1:
-							set_addr_to <= asp;
-					3'd2:
-							read_to_reg <= 1'b1;
-							set_busa_to <= 4'h5;
-							set_busb_to <= 4'h5;
-							set_addr_to <= asp;
-					3'd3:
-							incdec_16 <= 4'h7;
-							set_addr_to <= asp;
-							tstates <= 3'd4;
-							write <= 1'b1;
-					3'd4:
-							read_to_reg <= 1'b1;
-							set_busa_to <= 4'h4;
-							set_busb_to <= 4'h4;
-							set_addr_to <= asp;
-					3'd5:
-							incdec_16 <= 4'hF;
-							tstates <= 3'd5;
-							write <= 1'b1;
-					default:
-						begin
-							//	hold
-						end
-					endcase
-
-// 8 bit arithmetic and logical group
-			8'h80, 8'h81, 8'h82, 8'h83, 8'h84, 8'h85, 8'h87
-			, 8'h88, 8'h89, 8'h8A, 8'h8B, 8'h8C, 8'h8D, 8'h8F
-			, 8'h90, 8'h91, 8'h92, 8'h93, 8'h94, 8'h95, 8'h97
-			, 8'h98, 8'h99, 8'h9A, 8'h9B, 8'h9C, 8'h9D, 8'h9F
-			, 8'hA0, 8'hA1, 8'hA2, 8'hA3, 8'hA4, 8'hA5, 8'hA7
-			, 8'hA8, 8'hA9, 8'hAA, 8'hAB, 8'hAC, 8'hAD, 8'hAF
-			, 8'hB0, 8'hB1, 8'hB2, 8'hB3, 8'hB4, 8'hB5, 8'hB7
-			, 8'hB8, 8'hB9, 8'hBA, 8'hBB, 8'hBC, 8'hBD, 8'hBF:
-					// add a,r
-					// adc a,r
-					// sub a,r
-					// sbc a,r
-					// and a,r
-					// or a,r
-					// xor a,r
-					// cp a,r
-					set_busb_to[2:0] <= sss;
-					set_busa_to[2:0] <= 3'd7;
-					read_to_reg <= 1'b1;
-					save_alu <= 1'b1;
-			 8'h86, 8'h8E, 8'h96, 8'h9E, 8'hA6, 8'hAE, 8'hB6, 8'hBE :
-					// add a,(hl)
-					// adc a,(hl)
-					// sub a,(hl)
-					// sbc a,(hl)
-					// and a,(hl)
-					// or a,(hl)
-					// xor a,(hl)
-					// cp a,(hl)
-					mcycles <= 3'd2;
-					case( mcycle )
-					3'd1:
-							set_addr_to <= axy;
-					3'd2:
-							read_to_reg <= 1'b1;
-							save_alu <= 1'b1;
-							set_busb_to[2:0] <= sss;
-							set_busa_to[2:0] <= 3'd7;
-					default:
-						begin
-							//	hold
-						end
-					endcase
-			 8'hC6, 8'hCE, 8'hD6, 8'hDE, 8'hE6, 8'hEE, 8'hF6, 8'hFE :
-					// add a,n
-					// adc a,n
-					// sub a,n
-					// sbc a,n
-					// and a,n
-					// or a,n
-					// xor a,n
-					// cp a,n
-					mcycles <= 3'd2;
-					if( mcycle = 3'd2 ) begin
-							inc_pc <= 1'b1;
-							read_to_reg <= 1'b1;
-							save_alu <= 1'b1;
-							set_busb_to[2:0] <= sss;
-							set_busa_to[2:0] <= 3'd7;
-					end
-			 8'h04, 8'h0C, 8'h14, 8'h1C, 8'h24, 8'h2C, 8'h3C :
-					// inc r
-					set_busb_to <= 4'hA;
-					set_busa_to[2:0] <= ddd;
-					read_to_reg <= 1'b1;
-					save_alu <= 1'b1;
-					preservec <= 1'b1;
-					alu_op <= 4'h0;
-			 8'h34 :
-					// inc (hl)
-					mcycles <= 3'd3;
-					case( mcycle )
-					3'd1:
-							set_addr_to <= axy;
-					3'd2:
-							tstates <= 3'd4;
-							set_addr_to <= axy;
-							read_to_reg <= 1'b1;
-							save_alu <= 1'b1;
-							preservec <= 1'b1;
-							alu_op <= 4'h0;
-							set_busb_to <= 4'hA;
-							set_busa_to[2:0] <= ddd;
-					3'd3:
-							write <= 1'b1;
-					default:
-						begin
-							//	hold
-						end
-					endcase
-			 8'h05, 8'h0D, 8'h15, 8'h1D, 8'h25, 8'h2D, 8'h3D :
-					// dec r
-					set_busb_to <= 4'hA;
-					set_busa_to[2:0] <= ddd;
-					read_to_reg <= 1'b1;
-					save_alu <= 1'b1;
-					preservec <= 1'b1;
-					alu_op <= 4'h2;
-			 8'h35 :
-					// dec (hl)
-					mcycles <= 3'd3;
-					case( mcycle )
-					3'd1:
-							set_addr_to <= axy;
-					3'd2:
-							tstates <= 3'd4;
-							set_addr_to <= axy;
-							alu_op <= 4'h2;
-							read_to_reg <= 1'b1;
-							save_alu <= 1'b1;
-							preservec <= 1'b1;
-							set_busb_to <= 4'hA;
-							set_busa_to[2:0] <= ddd;
-					3'd3:
-							write <= 1'b1;
-					default:
-						begin
-							//	hold
-						end
-					endcase
-
-// general purpose arithmetic and cpu control groups
-			 8'h27 :
-					// daa
-					set_busa_to[2:0] <= 3'd7;
-					read_to_reg <= 1'b1;
-					alu_op <= 4'hC;
-					save_alu <= 1'b1;
-			 8'h2F :
-					// cpl
-					i_cpl <= 1'b1;
-			 8'h3F :
-					// ccf
-					i_ccf <= 1'b1;
-			 8'h37 :
-					// scf
-					i_scf <= 1'b1;
-			 8'h00 :
-					if( nmicycle = 1'b1 ) begin
-							// nmi
-							mcycles <= 3'd3;
-							case( mcycle )
-							3'd1:
-									tstates <= 3'd5;
-									incdec_16 <= 4'hF;
-									set_addr_to <= asp;
-									set_busb_to <= 4'hD;
-							3'd2:
-									tstates <= 3'd4;
-									write <= 1'b1;
-									incdec_16 <= 4'hF;
-									set_addr_to <= asp;
-									set_busb_to <= 4'hC;
-							3'd3:
-									tstates <= 3'd4;
-									write <= 1'b1;
-							default:
-								begin
-									//	hold
-								end
-							endcase
-					else if( intcycle = 1'b1 ) begin
-							// int (im 2)
-							mcycles <= 3'd5;
-							case( mcycle )
-							3'd1:
-									ldz <= 1'b1;
-									tstates <= 3'd5;
-									incdec_16 <= 4'hF;
-									set_addr_to <= asp;
-									set_busb_to <= 4'hD;
-							3'd2:
-									tstates <= 3'd4;
-									write <= 1'b1;
-									incdec_16 <= 4'hF;
-									set_addr_to <= asp;
-									set_busb_to <= 4'hC;
-							3'd3:
-									tstates <= 3'd4;
-									write <= 1'b1;
-							3'd4:
-									inc_pc <= 1'b1;
-									ldz <= 1'b1;
-							3'd5:
-									jump <= 1'b1;
-							default:
-								begin
-									//	hold
-								end
-							endcase
-					else
-							// nop
-					end
-			 8'h76 :
-					// halt
-					halt <= 1'b1;
-			 8'hF3 :
-					// di
-					setdi <= 1'b1;
-			 8'hFB :
-					// ei
-					setei <= 1'b1;
-
-// 16 bit arithmetic group
-			 8'h09, 8'h19, 8'h29, 8'h39 :
-					// add hl,ss
-					mcycles <= 3'd3;
-					case( mcycle )
-					3'd2:
-							noread <= 1'b1;
-							alu_op <= 4'h0;
-							read_to_reg <= 1'b1;
-							save_alu <= 1'b1;
-							set_busa_to[2:0] <= 3'd5;
-							case to_integer(unsigned(ir[5:4])) is
-							 3'd0, 3'd1, 3'd2:
-									set_busb_to[2:1] <= ir[5:4];
-									set_busb_to[0] <= 1'b1;
-							 others :
-									set_busb_to <= 4'h8;
-							endcase
-							tstates <= 3'd4;
-							arith16 <= 1'b1;
-					3'd3:
-							noread <= 1'b1;
-							read_to_reg <= 1'b1;
-							save_alu <= 1'b1;
-							alu_op <= 4'h1;
-							set_busa_to[2:0] <= 3'd4;
-							case to_integer(unsigned(ir[5:4])) is
-							 3'd0, 3'd1, 3'd2:
-									set_busb_to[2:1] <= ir[5:4];
-							 others :
-									set_busb_to <= 4'h9;
-							endcase
-							arith16 <= 1'b1;
-					default:
-						begin
-							//	hold
-						end
-					endcase
-			 8'h03, 8'h13, 8'h23, 8'h33 :
-					// inc ss
-					tstates <= 3'd6;
-					incdec_16[3:2] <= 2'b01;
-					incdec_16[1:0] <= dpair;
-			 8'h0B, 8'h1B, 8'h2B, 8'h3B :
-					// dec ss
-					tstates <= 3'd6;
-					incdec_16[3:2] <= 2'b11;
-					incdec_16[1:0] <= dpair;
-
-// rotate and shift group
-			8'h07
-					// rlca
-					, 8'h17
-					// rla
-					, 8'h0F
-					// rrca
-					, 8'h1F:
-					// rra
-					set_busa_to[2:0] <= 3'd7;
-					alu_op <= 4'h8;
-					read_to_reg <= 1'b1;
-					save_alu <= 1'b1;
-
-// jump group
-			 8'hC3 :
-					// jp nn
-					mcycles <= 3'd3;
-					case( mcycle )
-					3'd2:
-							inc_pc <= 1'b1;
-							ldz <= 1'b1;
-					3'd3:
-							inc_pc <= 1'b1;
-							jump <= 1'b1;
-					default:
-						begin
-							//	hold
-						end
-					endcase
-			 8'hC2, 8'hCA, 8'hD2, 8'hDA, 8'hE2, 8'hEA, 8'hF2, 8'hFA :
-					// jp cc,nn
-					mcycles <= 3'd3;
-					case( mcycle )
-					3'd2:
-							inc_pc <= 1'b1;
-							ldz <= 1'b1;
-					3'd3:
-							inc_pc <= 1'b1;
-							if( is_cc_true(f, to_bitvector(ir[5:3])) ) begin
-									jump <= 1'b1;
-							end
-					default:
-						begin
-							//	hold
-						end
-					endcase
-			 8'h18 :
-					// jr e
-					mcycles <= 3'd3;
-					case( mcycle )
-					3'd2:
-							inc_pc <= 1'b1;
-					3'd3:
-							noread <= 1'b1;
-							jumpe <= 1'b1;
-							tstates <= 3'd5;
-					default:
-						begin
-							//	hold
-						end
-					endcase
-			 8'h38 :
-					// jr c,e
-					mcycles <= 3'd3;
-					case( mcycle )
-					3'd2:
-							inc_pc <= 1'b1;
-							if( f(flag_c) = 1'b0 ) begin
-									mcycles <= 3'd2;
-							end
-					3'd3:
-							noread <= 1'b1;
-							jumpe <= 1'b1;
-							tstates <= 3'd5;
-					default:
-						begin
-							//	hold
-						end
-					endcase
-			 8'h30 :
-					// jr nc,e
-					mcycles <= 3'd3;
-					case( mcycle )
-					3'd2:
-							inc_pc <= 1'b1;
-							if( f(flag_c) = 1'b1 ) begin
-									mcycles <= 3'd2;
-							end
-					3'd3:
-							noread <= 1'b1;
-							jumpe <= 1'b1;
-							tstates <= 3'd5;
-					default:
-						begin
-							//	hold
-						end
-					endcase
-			 8'h28 :
-					// jr z,e
-					mcycles <= 3'd3;
-					case( mcycle )
-					3'd2:
-							inc_pc <= 1'b1;
-							if( f(flag_z) = 1'b0 ) begin
-									mcycles <= 3'd2;
-							end
-					3'd3:
-							noread <= 1'b1;
-							jumpe <= 1'b1;
-							tstates <= 3'd5;
-					default:
-						begin
-							//	hold
-						end
-					endcase
-			 8'h20 :
-					// jr nz,e
-					mcycles <= 3'd3;
-					case( mcycle )
-					3'd2:
-							inc_pc <= 1'b1;
-							if( f(flag_z) = 1'b1 ) begin
-									mcycles <= 3'd2;
-							end
-					3'd3:
-							noread <= 1'b1;
-							jumpe <= 1'b1;
-							tstates <= 3'd5;
-					default:
-						begin
-							//	hold
-						end
-					endcase
-			 8'hE9 :
-					// jp (hl)
-					jumpxy <= 1'b1;
-			 8'h10 :
-					// djnz,e
-					mcycles <= 3'd3;
-					case( mcycle )
-					3'd1:
-							tstates <= 3'd5;
-							i_djnz <= 1'b1;
-							set_busb_to <= 4'hA;
-							set_busa_to[2:0] <= 3'd0;
-							read_to_reg <= 1'b1;
-							save_alu <= 1'b1;
-							alu_op <= 4'h2;
-					3'd2:
-							i_djnz <= 1'b1;
-							inc_pc <= 1'b1;
-					3'd3:
-							noread <= 1'b1;
-							jumpe <= 1'b1;
-							tstates <= 3'd5;
-					default:
-						begin
-							//	hold
-						end
-					endcase
-
-// call and return group
-			 8'hCD :
-					// call nn
-					mcycles <= 3'd5;
-					case( mcycle )
-					3'd2:
-							inc_pc <= 1'b1;
-							ldz <= 1'b1;
-					3'd3:
-							incdec_16 <= 4'hF;
-							inc_pc <= 1'b1;
-							tstates <= 3'd4;
-							set_addr_to <= asp;
-							ldw <= 1'b1;
-							set_busb_to <= 4'hD;
-					3'd4:
-							write <= 1'b1;
-							incdec_16 <= 4'hF;
-							set_addr_to <= asp;
-							set_busb_to <= 4'hC;
-					3'd5:
-							write <= 1'b1;
-							call <= 1'b1;
-					default:
-						begin
-							//	hold
-						end
-					endcase
-			 8'hC4, 8'hCC, 8'hD4, 8'hDC, 8'hE4, 8'hEC, 8'hF4, 8'hFC :
-					// call cc,nn
-					mcycles <= 3'd5;
-					case( mcycle )
-					3'd2:
-							inc_pc <= 1'b1;
-							ldz <= 1'b1;
-					3'd3:
-							inc_pc <= 1'b1;
-							ldw <= 1'b1;
-							if( is_cc_true(f, to_bitvector(ir[5:3])) ) begin
-									incdec_16 <= 4'hF;
-									set_addr_to <= asp;
-									tstates <= 3'd4;
-									set_busb_to <= 4'hD;
-							else
-									mcycles <= 3'd3;
-							end
-					3'd4:
-							write <= 1'b1;
-							incdec_16 <= 4'hF;
-							set_addr_to <= asp;
-							set_busb_to <= 4'hC;
-					3'd5:
-							write <= 1'b1;
-							call <= 1'b1;
-					default:
-						begin
-							//	hold
-						end
-					endcase
-			 8'hC9 :
-					// ret
-					mcycles <= 3'd3;
-					case( mcycle )
-					3'd1:
-							tstates <= 3'd5;
-							set_addr_to <= asp;
-					3'd2:
-							incdec_16 <= 4'h7;
-							set_addr_to <= asp;
-							ldz <= 1'b1;
-					3'd3:
-							jump <= 1'b1;
-							incdec_16 <= 4'h7;
-					default:
-						begin
-							//	hold
-						end
-					endcase
-			 8'hC0, 8'hC8, 8'hD0, 8'hD8, 8'hE0, 8'hE8, 8'hF0, 8'hF8 :
-					// ret cc
-					mcycles <= 3'd3;
-					case( mcycle )
-					3'd1:
-							if( is_cc_true(f, to_bitvector(ir[5:3])) ) begin
-									set_addr_to <= asp;
-							else
-									mcycles <= 3'd1;
-							end
-							tstates <= 3'd5;
-					3'd2:
-							incdec_16 <= 4'h7;
-							set_addr_to <= asp;
-							ldz <= 1'b1;
-					3'd3:
-							jump <= 1'b1;
-							incdec_16 <= 4'h7;
-					default:
-						begin
-							//	hold
-						end
-					endcase
-			 8'hC7, 8'hCF, 8'hD7, 8'hDF, 8'hE7, 8'hEF, 8'hF7, 8'hFF :
-					// rst p
-					mcycles <= 3'd3;
-					case( mcycle )
-					3'd1:
-							tstates <= 3'd5;
-							incdec_16 <= 4'hF;
-							set_addr_to <= asp;
-							set_busb_to <= 4'hD;
-					3'd2:
-							write <= 1'b1;
-							incdec_16 <= 4'hF;
-							set_addr_to <= asp;
-							set_busb_to <= 4'hC;
-					3'd3:
-							write <= 1'b1;
-							rstp <= 1'b1;
-					default:
-						begin
-							//	hold
-						end
-					endcase
-
-// input and output group
-			 8'hDB :
-					// in a,(n)
-					mcycles <= 3'd3;
-					case( mcycle )
-					3'd2:
-							inc_pc <= 1'b1;
-							set_addr_to <= aioa;
-					3'd3:
-							read_to_acc <= 1'b1;
-							iorq <= 1'b1;
-					default:
-						begin
-							//	hold
-						end
-					endcase
-			 8'hD3 :
-					// out (n),a
-					mcycles <= 3'd3;
-					case( mcycle )
-					3'd2:
-							inc_pc <= 1'b1;
-							set_addr_to <= aioa;
-							set_busb_to		<= 4'h7;
-					3'd3:
-							write <= 1'b1;
-							iorq <= 1'b1;
-					default:
-						begin
-							//	hold
-						end
-					endcase
-
-// --------------------------------------------------------------------
-//  multibyte instructions
-// --------------------------------------------------------------------
-
-			 8'hCB :
-					prefix <= 2'b01;
-
-			 8'hED :
-					prefix <= 2'b10;
-
-			 8'hDD, 8'hFD :
-					prefix <= 2'b11;
-
-			endcase
-
-			 2'b01 :
-
-// --------------------------------------------------------------------
-//  cb prefixed instructions
-// --------------------------------------------------------------------
-
-		set_busa_to[2:0] <= ir[2:0];
-		set_busb_to[2:0] <= ir[2:0];
-
-		case( irb )
-		8'h00, 8'h01, 8'h02, 8'h03, 8'h04, 8'h05, 8'h07
-		, 8'h10, 8'h11, 8'h12, 8'h13, 8'h14, 8'h15, 8'h17
-		, 8'h08, 8'h09, 8'h0A, 8'h0B, 8'h0C, 8'h0D, 8'h0F
-		, 8'h18, 8'h19, 8'h1A, 8'h1B, 8'h1C, 8'h1D, 8'h1F
-		, 8'h20, 8'h21, 8'h22, 8'h23, 8'h24, 8'h25, 8'h27
-		, 8'h28, 8'h29, 8'h2A, 8'h2B, 8'h2C, 8'h2D, 8'h2F
-		, 8'h30, 8'h31, 8'h32, 8'h33, 8'h34, 8'h35, 8'h37
-		, 8'h38, 8'h39, 8'h3A, 8'h3B, 8'h3C, 8'h3D, 8'h3F:
-			// rlc r
-			// rl r
-			// rrc r
-			// rr r
-			// sla r
-			// sra r
-			// srl r
-			// sll r (undocumented) / swap r
-			if( xy_state=2'b00 ) begin
-				if( mcycle = 3'd1 ) begin
-				  alu_op <= 4'h8;
-				  read_to_reg <= 1'b1;
-				  save_alu <= 1'b1;
-				end
-			else
-			// r/s (ix+d),reg, undocumented
-				mcycles <= 3'd3;
-				xybit_undoc <= 1'b1;
-				case( mcycle )
-				3'd1, 3'd7:
-					set_addr_to <= axy;
-				3'd2:
-					alu_op <= 4'h8;
-					read_to_reg <= 1'b1;
-					save_alu <= 1'b1;
-					set_addr_to <= axy;
-					tstates <= 3'd4;
-				3'd3:
-					write <= 1'b1;
-				default:
-					begin
-						//	hold
-					end
-				endcase
-			end
-
-
-		 8'h06, 8'h16, 8'h0E, 8'h1E, 8'h2E, 8'h3E, 8'h26, 8'h36 :
-			// rlc (hl)
-			// rl (hl)
-			// rrc (hl)
-			// rr (hl)
-			// sra (hl)
-			// srl (hl)
-			// sla (hl)
-			// sll (hl) (undocumented) / swap (hl)
-			mcycles <= 3'd3;
-			case( mcycle )
-			3'd1, 3'd7:
-				set_addr_to <= axy;
-			3'd2:
-				alu_op <= 4'h8;
-				read_to_reg <= 1'b1;
-				save_alu <= 1'b1;
-				set_addr_to <= axy;
-				tstates <= 3'd4;
-			3'd3:
-				write <= 1'b1;
+			8'h70, 8'h71, 8'h72, 8'h73, 8'h74, 8'h75, 8'h77, 
+			8'h78, 8'h79, 8'h7A, 8'h7B, 8'h7C, 8'h7D, 8'h7F, 
+			8'h46, 8'h4E, 8'h56, 8'h5E, 8'h66, 8'h6E, 8'h76, 8'h7E: 
+				func_read_to_reg = 1'b0;
+			8'hC6, 8'hCE, 8'hD6, 8'hDE, 8'hE6, 8'hEE, 8'hF6, 8'hFE,
+			8'h86, 8'h8E, 8'h96, 8'h9E, 8'hA6, 8'hAE, 8'hB6, 8'hBE:
+				func_read_to_reg = ( mcycle == 3'd2 );
 			default:
-				begin
-					//	hold
+				if( xy_state == 2'b00 ) begin
+					func_read_to_reg = ( mcycle == 3'd1 );
+				end
+				else begin
+					func_read_to_reg = ( mcycle == 3'd2 );
 				end
 			endcase
-		8'h40, 8'h41, 8'h42, 8'h43, 8'h44, 8'h45, 8'h47
-		, 8'h48, 8'h49, 8'h4A, 8'h4B, 8'h4C, 8'h4D, 8'h4F
-		, 8'h50, 8'h51, 8'h52, 8'h53, 8'h54, 8'h55, 8'h57
-		, 8'h58, 8'h59, 8'h5A, 8'h5B, 8'h5C, 8'h5D, 8'h5F
-		, 8'h60, 8'h61, 8'h62, 8'h63, 8'h64, 8'h65, 8'h67
-		, 8'h68, 8'h69, 8'h6A, 8'h6B, 8'h6C, 8'h6D, 8'h6F
-		, 8'h70, 8'h71, 8'h72, 8'h73, 8'h74, 8'h75, 8'h77
-		, 8'h78, 8'h79, 8'h7A, 8'h7B, 8'h7C, 8'h7D, 8'h7F:
-			// bit b,r
-			if( xy_state=2'b00 ) begin
-				if( mcycle = 3'd1 ) begin
-				  set_busb_to[2:0] <= ir[2:0];
-				  alu_op <= 4'h9;
-				end
-			else
-			// bit b,(ix+d), undocumented
-				mcycles <= 3'd2;
-				xybit_undoc <= 1'b1;
-				case( mcycle )
-				3'd1, 3'd7:
-					set_addr_to <= axy;
-				3'd2:
-					alu_op <= 4'h9;
-					tstates <= 3'd4;
-				default:
-					begin
-						//	hold
-					end
-				endcase
-			end
-		 8'h46, 8'h4E, 8'h56, 8'h5E, 8'h66, 8'h6E, 8'h76, 8'h7E :
-			// bit b,(hl)
-			mcycles <= 3'd2;
-			case( mcycle )
-			3'd1, 3'd7:
-				set_addr_to <= axy;
-			3'd2:
-				alu_op <= 4'h9;
-				tstates <= 3'd4;
-			default:
-				begin
-					//	hold
-				end
-			endcase
-		8'hC0, 8'hC1, 8'hC2, 8'hC3, 8'hC4, 8'hC5, 8'hC7
-		, 8'hC8, 8'hC9, 8'hCA, 8'hCB, 8'hCC, 8'hCD, 8'hCF
-		, 8'hD0, 8'hD1, 8'hD2, 8'hD3, 8'hD4, 8'hD5, 8'hD7
-		, 8'hD8, 8'hD9, 8'hDA, 8'hDB, 8'hDC, 8'hDD, 8'hDF
-		, 8'hE0, 8'hE1, 8'hE2, 8'hE3, 8'hE4, 8'hE5, 8'hE7
-		, 8'hE8, 8'hE9, 8'hEA, 8'hEB, 8'hEC, 8'hED, 8'hEF
-		, 8'hF0, 8'hF1, 8'hF2, 8'hF3, 8'hF4, 8'hF5, 8'hF7
-		, 8'hF8, 8'hF9, 8'hFA, 8'hFB, 8'hFC, 8'hFD, 8'hFF:
-			// set b,r
-			if( xy_state=2'b00 ) begin
-				if( mcycle = 3'd1 ) begin
-				  alu_op <= 4'hA;
-				  read_to_reg <= 1'b1;
-				  save_alu <= 1'b1;
-				end
-			else
-			// set b,(ix+d),reg, undocumented
-				mcycles <= 3'd3;
-				xybit_undoc <= 1'b1;
-				case( mcycle )
-				3'd1, 3'd7:
-					set_addr_to <= axy;
-				3'd2:
-					alu_op <= 4'hA;
-					read_to_reg <= 1'b1;
-					save_alu <= 1'b1;
-					set_addr_to <= axy;
-					tstates <= 3'd4;
-				3'd3:
-					write <= 1'b1;
-				default:
-					begin
-						//	hold
-					end
-				endcase
-			end
-		 8'hC6, 8'hCE, 8'hD6, 8'hDE, 8'hE6, 8'hEE, 8'hF6, 8'hFE :
-			// set b,(hl)
-			mcycles <= 3'd3;
-			case( mcycle )
-			3'd1, 3'd7:
-				set_addr_to <= axy;
-			3'd2:
-				alu_op <= 4'hA;
-				read_to_reg <= 1'b1;
-				save_alu <= 1'b1;
-				set_addr_to <= axy;
-				tstates <= 3'd4;
-			3'd3:
-				write <= 1'b1;
-			default:
-				begin
-					//	hold
-				end
-			endcase
-		8'h80, 8'h81, 8'h82, 8'h83, 8'h84, 8'h85, 8'h87
-		, 8'h88, 8'h89, 8'h8A, 8'h8B, 8'h8C, 8'h8D, 8'h8F
-		, 8'h90, 8'h91, 8'h92, 8'h93, 8'h94, 8'h95, 8'h97
-		, 8'h98, 8'h99, 8'h9A, 8'h9B, 8'h9C, 8'h9D, 8'h9F
-		, 8'hA0, 8'hA1, 8'hA2, 8'hA3, 8'hA4, 8'hA5, 8'hA7
-		, 8'hA8, 8'hA9, 8'hAA, 8'hAB, 8'hAC, 8'hAD, 8'hAF
-		, 8'hB0, 8'hB1, 8'hB2, 8'hB3, 8'hB4, 8'hB5, 8'hB7
-		, 8'hB8, 8'hB9, 8'hBA, 8'hBB, 8'hBC, 8'hBD, 8'hBF:
-			// res b,r
-			if( xy_state=2'b00 ) begin
-				if( mcycle = 3'd1 ) begin
-				  alu_op <= 4'hB;
-				  read_to_reg <= 1'b1;
-				  save_alu <= 1'b1;
-				end
-			else
-			// res b,(ix+d),reg, undocumented
-				mcycles <= 3'd3;
-				xybit_undoc <= 1'b1;
-				case( mcycle )
-				3'd1, 3'd7:
-					set_addr_to <= axy;
-				3'd2:
-					alu_op <= 4'hB;
-					read_to_reg <= 1'b1;
-					save_alu <= 1'b1;
-					set_addr_to <= axy;
-					tstates <= 3'd4;
-				3'd3:
-					write <= 1'b1;
-				default:
-					begin
-						//	hold
-					end
-				endcase
-			end
-
-		 8'h86, 8'h8E, 8'h96, 8'h9E, 8'hA6, 8'hAE, 8'hB6, 8'hBE :
-			// res b,(hl)
-			mcycles <= 3'd3;
-			case( mcycle )
-			3'd1, 3'd7:
-				set_addr_to <= axy;
-			3'd2:
-				alu_op <= 4'hB;
-				read_to_reg <= 1'b1;
-				save_alu <= 1'b1;
-				set_addr_to <= axy;
-				tstates <= 3'd4;
-			3'd3:
-				write <= 1'b1;
-			default:
-				begin
-					//	hold
-				end
-			endcase
-		endcase
-
-	default:
-
-//////////////////////////////////////////////////////////////////////////////
-//
-//		ed prefixed instructions
-//
-//////////////////////////////////////////////////////////////////////////////
-
+		// --------------------------------------------------------------------
+		//	ED prefixed instructions
+		// --------------------------------------------------------------------
+		default:
 			case( irb )
-			8'h00, 8'h01, 8'h02, 8'h03, 8'h04, 8'h05, 8'h06, 8'h07
-			, 8'h08, 8'h09, 8'h0A, 8'h0B, 8'h0C, 8'h0D, 8'h0E, 8'h0F
-			, 8'h10, 8'h11, 8'h12, 8'h13, 8'h14, 8'h15, 8'h16, 8'h17
-			, 8'h18, 8'h19, 8'h1A, 8'h1B, 8'h1C, 8'h1D, 8'h1E, 8'h1F
-			, 8'h20, 8'h21, 8'h22, 8'h23, 8'h24, 8'h25, 8'h26, 8'h27
-			, 8'h28, 8'h29, 8'h2A, 8'h2B, 8'h2C, 8'h2D, 8'h2E, 8'h2F
-			, 8'h30, 8'h31, 8'h32, 8'h33, 8'h34, 8'h35, 8'h36, 8'h37
-			, 8'h38, 8'h39, 8'h3A, 8'h3B, 8'h3C, 8'h3D, 8'h3E, 8'h3F
-			, 8'h80, 8'h81, 8'h82, 8'h83, 8'h84, 8'h85, 8'h86, 8'h87
-			, 8'h90, 8'h91, 8'h92, 8'h93, 8'h94, 8'h95, 8'h96, 8'h97
-			, 8'h98, 8'h99, 8'h9A, 8'h9B, 8'h9C, 8'h9D, 8'h9E, 8'h9F
-			, 											 8'hA4, 8'hA5, 8'hA6, 8'hA7
-			, 											 8'hAC, 8'hAD, 8'hAE, 8'hAF
-			, 											 8'hB4, 8'hB5, 8'hB6, 8'hB7
-			, 											 8'hBC, 8'hBD, 8'hBE, 8'hBF
-			, 8'hC0, 		   8'hC2, 			 8'hC4, 8'hC5, 8'hC6, 8'hC7
-			, 8'hC8, 		   8'hCA, 8'hCB, 8'hCC, 8'hCD, 8'hCE, 8'hCF
-			, 8'hD0, 		   8'hD2, 8'hD3, 8'hD4, 8'hD5, 8'hD6, 8'hD7
-			, 8'hD8, 		   8'hDA, 8'hDB, 8'hDC, 8'hDD, 8'hDE, 8'hDF
-			, 8'hE0, 8'hE1, 8'hE2, 8'hE3, 8'hE4, 8'hE5, 8'hE6, 8'hE7
-			, 8'hE8, 8'hE9, 8'hEA, 8'hEB, 8'hEC, 8'hED, 8'hEE, 8'hEF
-			, 8'hF0, 8'hF1, 8'hF2, 			 8'hF4, 8'hF5, 8'hF6, 8'hF7
-			, 8'hF8, 8'hF9, 8'hFA, 8'hFB, 8'hFC, 8'hFD, 8'hFE, 8'hFF:
-				begin
-					//	no operation
-				end
-			 8'h7E, 8'h7F :
-			 	begin
-					// nop, undocumented
-				end
-			// 8 bit load group
-			 8'h57 :
-			 	begin
-					// ld a,i
-					special_ld <= 3'd4;
-					tstates <= 3'd5;
-				end
-			 8'h5F :
-			 	begin
-					// ld a,r
-					special_ld <= 3'd5;
-					tstates <= 3'd5;
-				end
-			 8'h47 :
-			 	begin
-					// ld i,a
-					special_ld <= 3'd6;
-					tstates <= 3'd5;
-				end
-			 8'h4F :
-			 	begin
-					// ld r,a
-					special_ld <= 3'd7;
-					tstates <= 3'd5;
-				end
-			// 16 bit load group
-			 8'h4B, 8'h5B, 8'h6B, 8'h7B :
-			 	begin
-					// ld dd,(nn)
-					mcycles <= 3'd5;
-					case( mcycle )
-					3'd2:
-							inc_pc <= 1'b1;
-							ldz <= 1'b1;
-					3'd3:
-							set_addr_to <= azi;
-							inc_pc <= 1'b1;
-							ldw <= 1'b1;
-					3'd4:
-							read_to_reg <= 1'b1;
-							if( ir[5:4] = 2'b11 ) begin
-									set_busa_to <= 4'h8;
-							else
-									set_busa_to[2:1] <= ir[5:4];
-									set_busa_to[0] <= 1'b1;
-							end
-							inc_wz <= 1'b1;
-							set_addr_to <= azi;
-					3'd5:
-							read_to_reg <= 1'b1;
-							if( ir[5:4] = 2'b11 ) begin
-									set_busa_to <= 4'h9;
-							else
-									set_busa_to[2:1] <= ir[5:4];
-									set_busa_to[0] <= 1'b0;
-							end
-					default:
-						begin
-							//	hold
-						end
-					endcase
-				end
-			 8'h43, 8'h53, 8'h63, 8'h73 :
-			 	begin
-					// ld (nn),dd
-					mcycles <= 3'd5;
-					case( mcycle )
-					3'd2:
-							inc_pc <= 1'b1;
-							ldz <= 1'b1;
-					3'd3:
-							set_addr_to <= azi;
-							inc_pc <= 1'b1;
-							ldw <= 1'b1;
-							if( ir[5:4] = 2'b11 ) begin
-									set_busb_to <= 4'h8;
-							else
-									set_busb_to[2:1] <= ir[5:4];
-									set_busb_to[0] <= 1'b1;
-									set_busb_to[3] <= 1'b0;
-							end
-					3'd4:
-							inc_wz <= 1'b1;
-							set_addr_to <= azi;
-							write <= 1'b1;
-							if( ir[5:4] = 2'b11 ) begin
-									set_busb_to <= 4'h9;
-							else
-									set_busb_to[2:1] <= ir[5:4];
-									set_busb_to[0] <= 1'b0;
-									set_busb_to[3] <= 1'b0;
-							end
-					3'd5:
-							write <= 1'b1;
-					default:
-						begin
-							//	hold
-						end
-					endcase
-				end
-			 8'hA0 ,  8'hA8 ,  8'hB0 ,  8'hB8 :
-			 	begin
-					// ldi, ldd, ldir, lddr
-					mcycles <= 3'd4;
-					case( mcycle )
-					3'd1:
-							set_addr_to <= axy;
-							incdec_16 <= 4'hC; // bc
-					3'd2:
-							set_busb_to <= 4'h6;
-							set_busa_to[2:0] <= 3'd7;
-							alu_op <= 4'h0;
-							set_addr_to <= ade;
-							if( ir[3] == 1'b0 ) begin
-									incdec_16 <= 4'h6; // ix
-							else
-									incdec_16 <= 4'hE;
-							end
-					3'd3:
-							i_bt <= 1'b1;
-							tstates <= 3'd5;
-							write <= 1'b1;
-							if( ir[3] == 1'b0 ) begin
-									incdec_16 <= 4'h5; // de
-							else
-									incdec_16 <= 4'hD;
-							end
-					3'd4:
-							noread <= 1'b1;
-							tstates <= 3'd5;
-					default:
-						begin
-							//	hold
-						end
-					endcase
-				end
-			 8'hA1 ,  8'hA9 ,  8'hB1 ,  8'hB9 :
-			 	begin
-					// cpi, cpd, cpir, cpdr
-					mcycles <= 3'd4;
-					case( mcycle )
-					3'd1:
-							set_addr_to <= axy;
-							incdec_16 <= 4'hC; // bc
-					3'd2:
-							set_busb_to <= 4'h6;
-							set_busa_to[2:0] <= 3'd7;
-							alu_op <= 4'h7;
-							alu_cpi <= 1'b1;
-							save_alu <= 1'b1;
-							preservec <= 1'b1;
-							if( ir[3] = 1'b0 ) begin
-									incdec_16 <= 4'h6;
-							else
-									incdec_16 <= 4'hE;
-							end
-					3'd3:
-							noread <= 1'b1;
-							i_bc <= 1'b1;
-							tstates <= 3'd5;
-					3'd4:
-							noread <= 1'b1;
-							tstates <= 3'd5;
-					default:
-						begin
-							//	hold
-						end
-					endcase
-				end
-			 8'h44, 8'h4C, 8'h54, 8'h5C, 8'h64, 8'h6C, 8'h74, 8'h7C :
-				begin
-					// neg
-					alu_op <= 4'h2;
-					set_busb_to <= 4'h7;
-					set_busa_to <= 4'hA;
-					read_to_acc <= 1'b1;
-					save_alu <= 1'b1;
-				end
-			 8'h46, 8'h4E, 8'h66, 8'h6E :
-				// im 0
-				imode <= 2'b00;
-			 8'h56, 8'h76 :
-				// im 1
-				imode <= 2'b01;
-			 8'h5E, 8'h77 :
-				// im 2
-				imode <= 2'b10;
-			// 16 bit arithmetic
-			 8'h4A, 8'h5A, 8'h6A, 8'h7A:
-				begin
-					// adc hl,ss
-					mcycles <= 3'd3;
-					case( mcycle )
-					3'd2:
-						begin
-							noread <= 1'b1;
-							alu_op <= 4'h1;
-							read_to_reg <= 1'b1;
-							save_alu <= 1'b1;
-							set_busa_to[2:0] <= 3'd5;
-							case to_integer(unsigned(ir[5:4])) is
-							 3'd0, 3'd1, 3'd2:
-									set_busb_to[2:1] <= ir[5:4];
-							set_busb_to[0] <= 1'b1;
-							default:
-									set_busb_to <= 4'h8;
-							endcase
-							tstates <= 3'd4;
-						end
-					3'd3:
-						begin
-							noread <= 1'b1;
-							read_to_reg <= 1'b1;
-							save_alu <= 1'b1;
-							alu_op <= 4'h1;
-							set_busa_to[2:0] <= 3'd4;
-							case to_integer(unsigned(ir[5:4])) is
-							 3'd0, 3'd1, 3'd2:
-									set_busb_to[2:1] <= ir[5:4];
-									set_busb_to[0] <= 1'b0;
-							 default:
-									set_busb_to <= 4'h9;
-							endcase
-						end
-					default:
-					endcase
-				end
-			 8'h42, 8'h52, 8'h62, 8'h72 :
-				begin
-					// sbc hl,ss
-					mcycles <= 3'd3;
-					case( mcycle )
-					3'd2:
-						begin
-							noread <= 1'b1;
-							alu_op <= 4'h3;
-							read_to_reg <= 1'b1;
-							save_alu <= 1'b1;
-							set_busa_to[2:0] <= 3'd5;
-							case( d[ ir[5:4] ] )
-							 3'd0, 3'd1, 3'd2:
-							 	begin
-									set_busb_to[2:1] <= ir[5:4];
-									set_busb_to[0] <= 1'b1;
-								end
-							 default:
-								set_busb_to <= 4'h8;
-							endcase
-							tstates <= 3'd4;
-						end
-					3'd3:
-						begin
-							noread <= 1'b1;
-							alu_op <= 4'h3;
-							read_to_reg <= 1'b1;
-							save_alu <= 1'b1;
-							set_busa_to[2:0] <= 3'd4;
-							case( ir[5:4] )
-							 3'd0, 3'd1, 3'd2:
-								set_busb_to[2:1] <= ir[5:4];
-							 default:
-								set_busb_to <= 4'h9;
-							endcase
-						end
-					default:
-						begin
-							//	hold
-						end
-					endcase
-				end
-			 8'h6F :
-				begin
-					// rld
-					mcycles <= 3'd4;
-					case( mcycle )
-					 3'd2:
-					 	begin
-							noread <= 1'b1;
-							set_addr_to <= axy;
-						end
-					 3'd3:
-					 	begin
-							read_to_reg <= 1'b1;
-							set_busb_to[2:0] <= 3'd6;
-							set_busa_to[2:0] <= 3'd7;
-							alu_op <= 4'hD;
-							tstates <= 3'd4;
-							set_addr_to <= axy;
-							save_alu <= 1'b1;
-						end
-					 3'd4:
-					 	begin
-							i_rld <= 1'b1;
-							write <= 1'b1;
-						end
-					default:
-						begin
-							//	hold
-						end
-					endcase
-				end
-			 8'h67 :
-				begin
-					// rrd
-					mcycles <= 3'd4;
-					case( mcycle )
-					 3'd2:
-						set_addr_to <= axy;
-					 3'd3:
-					 	begin
-							read_to_reg <= 1'b1;
-							set_busb_to[2:0] <= 3'd6;
-							set_busa_to[2:0] <= 3'd7;
-							alu_op <= 4'hE;
-							tstates <= 3'd4;
-							set_addr_to <= axy;
-							save_alu <= 1'b1;
-						end
-					 3'd4:
-					 	begin
-							i_rrd <= 1'b1;
-							write <= 1'b1;
-						end
-					default:
-						begin
-							//	hold
-						end
-					endcase
-				end
-			 8'h45, 8'h4D, 8'h55, 8'h5D, 8'h65, 8'h6D, 8'h75, 8'h7D :
-					// reti, retn
-					mcycles <= 3'd3;
-					case( mcycle )
-					 3'd1:
-						set_addr_to <= asp;
-					 3'd2:
-					 	begin
-							incdec_16 <= 4'h7;
-							set_addr_to <= asp;
-							ldz <= 1'b1;
-						end
-					 3'd3:
-					 	begin
-							jump <= 1'b1;
-							incdec_16 <= 4'h7;
-							i_retn <= 1'b1;
-						end
-					default:
-						begin
-							//	hold
-						end
-					endcase
-			 8'h40, 8'h48, 8'h50, 8'h58, 8'h60, 8'h68, 8'h70, 8'h78:
-					// in r,(c)
-					mcycles <= 3'd2;
-					case( mcycle )
-					3'd1:
-						set_addr_to <= abc;
-					3'd2:
-						begin
-							iorq <= 1'b1;
-							if( ir[5:3] != 3'd6 ) begin
-									read_to_reg <= 1'b1;
-									set_busa_to[2:0] <= ir[5:3];
-							end
-							i_inrc <= 1'b1;
-						end
-					default:
-						begin
-							//	hold
-						end
-					endcase
-			 8'h41, 8'h49, 8'h51, 8'h59, 8'h61, 8'h69, 8'h71, 8'h79:
-					// out (c),r
-					// out (c),0
-					mcycles <= 3'd2;
-					case( mcycle )
-					3'd1:
-						begin
-							set_addr_to <= abc;
-							set_busb_to[2:0] <= ir[5:3];
-							if( ir[5:3] == 3'd6 ) begin
-									set_busb_to[3] <= 1'b1;
-							end
-						end
-					3'd2:
-						begin
-							write <= 1'b1;
-							iorq <= 1'b1;
-						end
-					default:
-						begin
-							//	hold
-						end
-					endcase
-			8'hA2, 8'hAA, 8'hB2, 8'hBA:
-					// ini, ind, inir, indr
-					mcycles <= 3'd4;
-					case( mcycle )
-					3'd1:
-						begin
-							set_addr_to <= abc;
-							set_busb_to <= 4'hA;
-							set_busa_to <= 4'h0;
-							read_to_reg <= 1'b1;
-							save_alu <= 1'b1;
-							alu_op <= 4'h2;
-						end
-					3'd2:
-						begin
-							iorq <= 1'b1;
-							set_busb_to <= 4'h6;
-							set_addr_to <= axy;
-						end
-					3'd3:
-						begin
-							if( ir[3] == 1'b0 ) begin
-									incdec_16 <= 4'h6;
-							end
-							else begin
-									incdec_16 <= 4'hE;
-							end
-							tstates <= 3'd4;
-							write <= 1'b1;
-							i_btr <= 1'b1;
-						end
-					 3'd4:
-						begin
-							noread <= 1'b1;
-							tstates <= 3'd5;
-						end
-					 default:
-					 	begin
-					 		//	hold
-					 	end
-					endcase
-			8'hA3, 8'hAB, 8'hB3, 8'hBB :
-				begin
-					// outi, outd, otir, otdr
-					mcycles <= 3'd4;
-					case( mcycle )
-					 3'd1:
-					 	begin
-							tstates <= 3'd5;
-							set_addr_to <= axy;
-							set_busb_to <= 4'hA;
-							set_busa_to <= 4'h0;
-							read_to_reg <= 1'b1;
-							save_alu <= 1'b1;
-							alu_op <= 4'h2;
-						end
-					 3'd2:
-					 	begin
-							set_busb_to <= 4'h6;
-							set_addr_to <= abc;
-						end
-					 3'd3:
-					 	begin
-							if( ir[3] == 1'b0 ) begin
-								incdec_16 <= 4'h6;	// 0242a
-							end
-							else begin
-								incdec_16 <= 4'hE;	// 0242a
-							end
-							iorq <= 1'b1;
-							write <= 1'b1;
-							i_btr <= 1'b1;
-						end
-					 3'd4:
-					 	begin
-							noread <= 1'b1;
-							tstates <= 3'd5;
-						end
-					 default:
-					 	begin
-					 		//	hold
-					 	end
-					endcase
-				end
-			 8'hC1, 8'hC9, 8'hD1, 8'hD9:
-			 	begin
-					//r800 mulub
-				end
-			 8'hC3, 8'hF3 :
-			 	begin
-					//r800 muluw
-				end
+			8'h4B, 8'h5B, 8'h6B, 8'h7B :
+				func_read_to_reg = ( mcycle == 3'd4 || mcycle == 3'd5 );
+			8'h4A, 8'h5A, 8'h6A, 8'h7A, 8'h42, 8'h52, 8'h62, 8'h72 :
+				func_read_to_reg = ( mcycle == 3'd2 || mcycle == 3'd3 );
+			8'h6F, 8'h67 :
+				func_read_to_reg = ( mcycle == 3'd3 );
+			8'h40, 8'h48, 8'h50, 8'h58, 8'h60, 8'h68, 8'h70, 8'h78:
+				func_read_to_reg = ( mcycle == 3'd2 && ir[5:3] != 3'd6 );
+			8'hA2, 8'hAA, 8'hB2, 8'hBA, 8'hA3, 8'hAB, 8'hB3, 8'hBB:
+				func_read_to_reg = ( mcycle == 3'd1 );
+			default:
+				func_read_to_reg = 1'b0;
 			endcase
-
 		endcase
+	end
 
-		if( mode == 1 ) begin
-			if( mcycle == 3'd1 ) begin
-//						tstates <= 3'd4;
-			end
-			else begin
-				tstates <= 3'd3;
-			end
+	assign read_to_reg = func_read_to_reg( iset, mcycle, irb, xy_state );
+
+	// --------------------------------------------------------------------
+	//	BUSB
+	// --------------------------------------------------------------------
+	function func_set_busb_to(
+		input	[1:0]	iset,
+		input	[2:0]	mcycle,
+		input	[7:0]	irb
+	);
+		if( mcycle == 3'd7 ) begin
+			set_busb_to[2:0] = sss;
+			set_busb_to[3] = 1'b0;
 		end
 		else begin
-			if( mcycle == 3'd6 ) begin
-				inc_pc <= 1'b1;
-				if( mode == 1 ) begin
-					set_addr_to <= axy;
-					tstates <= 3'd4;
-					set_busb_to[2:0] <= sss;
-					set_busb_to[3] <= 1'b0;
-				end
-				if( irb == 8'h36 || irb == 8'hCB ) begin
-					set_addr_to <= anone;
-				end
-			end
-			if( mcycle == 3'd7 ) begin
-				if( mode == 0 ) begin
-					tstates <= 3'd5;
-				end
-				if( iset != 2'b01 ) begin
-					set_addr_to <= axy;
-				end
-				set_busb_to[2:0] <= sss;
-				set_busb_to[3] <= 1'b0;
-				if( irb == 8'h36 || iset == 2'b01 ) begin
-					// ld (hl),n
-					inc_pc <= 1'b1;
-				else
-					noread <= 1'b1;
-				end
-			end
+			case( iset )
+			// --------------------------------------------------------------------
+			//  unprefixed instructions
+			// --------------------------------------------------------------------
+			 2'b00 :
+				case( irb )
+				8'h40, 8'h41, 8'h42, 8'h43, 8'h44, 8'h45, 8'h47, 
+				8'h48, 8'h49, 8'h4A, 8'h4B, 8'h4C, 8'h4D, 8'h4F, 
+				8'h50, 8'h51, 8'h52, 8'h53, 8'h54, 8'h55, 8'h57, 
+				8'h58, 8'h59, 8'h5A, 8'h5B, 8'h5C, 8'h5D, 8'h5F, 
+				8'h60, 8'h61, 8'h62, 8'h63, 8'h64, 8'h65, 8'h67, 
+				8'h68, 8'h69, 8'h6A, 8'h6B, 8'h6C, 8'h6D, 8'h6F, 
+				8'h78, 8'h79, 8'h7A, 8'h7B, 8'h7C, 8'h7D, 8'h7F, 
+				8'h80, 8'h81, 8'h82, 8'h83, 8'h84, 8'h85, 8'h87, 
+				8'h88, 8'h89, 8'h8A, 8'h8B, 8'h8C, 8'h8D, 8'h8F, 
+				8'h90, 8'h91, 8'h92, 8'h93, 8'h94, 8'h95, 8'h97, 
+				8'h98, 8'h99, 8'h9A, 8'h9B, 8'h9C, 8'h9D, 8'h9F, 
+				8'hA0, 8'hA1, 8'hA2, 8'hA3, 8'hA4, 8'hA5, 8'hA7, 
+				8'hA8, 8'hA9, 8'hAA, 8'hAB, 8'hAC, 8'hAD, 8'hAF, 
+				8'hB0, 8'hB1, 8'hB2, 8'hB3, 8'hB4, 8'hB5, 8'hB7, 
+				8'hB8, 8'hB9, 8'hBA, 8'hBB, 8'hBC, 8'hBD, 8'hBF:
+					set_busb_to = { 1'b0, sss };
+				8'h70, 8'h71, 8'h72, 8'h73, 8'h74, 8'h75, 8'h77 :
+					set_busb_to = (mcycle == 3'd1) ? { 1'b0, sss } : 4'd0;
+				 8'h36,
+				 8'h86, 8'h8E, 8'h96, 8'h9E, 8'hA6, 8'hAE, 8'hB6, 8'hBE,
+				 8'hC6, 8'hCE, 8'hD6, 8'hDE, 8'hE6, 8'hEE, 8'hF6, 8'hFE:
+					set_busb_to = (mcycle == 3'd2) ? { 1'b0, sss } : 4'd0;
+				 8'h02 :
+					set_busb_to = (mcycle == 3'd1) ? 4'h7 : 4'd0;
+				 8'h12 :
+					set_busb_to = (mcycle == 3'd1) ? 4'h7 : 4'd0;
+				 8'h32 :
+					set_busb_to = (mcycle == 3'd3) ? 4'h7 : 4'd0;
+				 8'h22 :
+					set_busb_to = (mcycle == 3'd3 ) ? 4'h5 : (mcycle == 3'd4) : 4'h4 : 4'h0;
+				 8'hC5, 8'hD5, 8'hE5, 8'hF5 :
+					if( mcycle == 3'd1 ) begin
+						if( dpair == 2'b11 ) begin
+								set_busb_to = 4'h7;
+						end
+						else begin
+								set_busb_to = { 1'b0, dpair, 1'b0 };
+						end
+					end
+					else if( mcycle == 3'd2 ) begin
+						if( dpair == 2'b11 ) begin
+							set_busb_to = 4'hB;
+						end
+						else begin
+							set_busb_to = { 1'b1, dpair, 1'b0 };
+						end
+					end
+					else begin
+						set_busb_to = 4'h0;
+					end
+				 8'hE3 :
+					if( mcycle == 3'd2 ) begin
+						set_busb_to = 4'h5;
+					end
+					else if( mcycle == 3'd4 ) begin
+						set_busb_to = 4'h4;
+					end
+					else begin
+						set_busb_to = 4'h0;
+					end
+				8'h04, 8'h0C, 8'h14, 8'h1C, 8'h24, 8'h2C, 8'h3C :
+					set_busb_to = 4'hA;
+				8'h34, 8'h35 :
+					if( mcycle == 3'd2 ) begin
+						set_busb_to = 4'hA;
+					end
+					else begin
+						set_busb_to = 4'h0;
+					end
+				8'h05, 8'h0D, 8'h15, 8'h1D, 8'h25, 8'h2D, 8'h3D :
+					set_busb_to = 4'hA;
+				8'h27:
+					set_busb_to = 4'h0;
+				8'h00 :
+					if( nmicycle || intcycle ) begin
+						if( mcycle == 3'd1 ) begin
+							set_busb_to = 4'hD;
+						end
+						else if( mcycle == 3'd2 ) begin
+							set_busb_to = 4'hC;
+						end
+						else begin
+							set_busb_to = 4'h0;
+						end
+					end
+					else begin
+						set_busb_to = 4'h0;
+					end
+				8'h09, 8'h19, 8'h29, 8'h39 :
+					if( mcycle == 3'd2 ) begin
+						if( ir[5:4] == 0 || ir[5:4] == 1 || ir[5:4] == 2 ) begin
+							set_busb_to = { 1'b0, ir[5:4], 1'b1 };
+						end
+						else begin
+							set_busb_to = 4'h8;
+						end
+					end
+					else if( mcycle == 3'd3 ) begin
+						if( ir[5:4] == 0 || ir[5:4] == 1 || ir[5:4] == 2 ) begin
+							set_busb_to = { 1'b0, ir[5:4], 1'b0 };
+						end
+						else begin
+							set_busb_to = 4'h8;
+						end
+					end
+					else begin
+						set_busb_to = 4'h0;
+					end
+				8'h10 :
+					if( mcycle == 3'd1 ) begin
+						set_busb_to = 4'hA;
+					end
+					else begin
+						set_busb_to = 4'h0;
+					end
+				 8'hCD, 8'hC4, 8'hCC, 8'hD4, 8'hDC, 8'hE4, 8'hEC, 8'hF4, 8'hFC :
+					if( mcycle == 3'd3 ) begin
+						set_busb_to = 4'hD;
+					end
+					else if( mcycle == 3'd4 ) begin
+						set_busb_to = 4'hC;
+					end
+					else begin
+						set_busb_to = 4'h0;
+					end
+				 8'hC9 :
+					set_busb_to = 4'h0;
+				 8'hC0, 8'hC8, 8'hD0, 8'hD8, 8'hE0, 8'hE8, 8'hF0, 8'hF8 :
+					set_busb_to = 4'h0;
+				 8'hC7, 8'hCF, 8'hD7, 8'hDF, 8'hE7, 8'hEF, 8'hF7, 8'hFF :
+					if( mcycle == 3'd1 ) begin
+						set_busb_to = 4'hD;
+					end
+					else if( mcycle == 3'd2 ) begin
+						set_busb_to = 4'hC;
+					end
+					else begin
+						set_busb_to = 4'h0;
+					end
+				8'hD3 :
+					if( mcycle == 3'd2 ) begin
+						set_busb_to = 4'h7;
+					end
+					else begin
+						set_busb_to = 4'h0;
+					end
+				default:
+					set_busb_to = 4'h0;
+				endcase
+			// --------------------------------------------------------------------
+			//  CB prefixed instructions
+			// --------------------------------------------------------------------
+			2'b01 :
+				set_busb_to = { 1'b0, ir[2:0] };
+			// --------------------------------------------------------------------
+			//	ED prefixed instructions
+			// --------------------------------------------------------------------
+			default:
+				case( irb )
+				8'h43, 8'h53, 8'h63, 8'h73 :
+					if( mcycle == 3'd3 ) begin
+						if( ir[5:4] == 2'b11 ) begin
+							set_busb_to = 4'h8;
+						end
+						else begin
+							set_busb_to = { 1'b0, ir[5:4], 1'b1 };
+						end
+					end
+					else if( mcycle == 3'd4 ) begin
+						if( ir[5:4] == 2'b11 ) begin
+							set_busb_to = 4'h9;
+						end
+						else begin
+							set_busb_to = { 1'b0, ir[5:4], 1'b0 };
+						end
+					end
+				8'hA0, 8'hA8, 8'hB0, 8'hB8, 8'hA1, 8'hA9, 8'hB1, 8'hB9:
+					if( mcycle == 3'd2 ) begin
+						set_busb_to = 4'h6;
+					end
+					else begin
+						set_busb_to = 4'h0;
+					end
+				8'h44, 8'h4C, 8'h54, 8'h5C, 8'h64, 8'h6C, 8'h74, 8'h7C :
+					set_busb_to = 4'h7;
+				8'h4A, 8'h5A, 8'h6A, 8'h7A:
+					if( mcycle == 3'd2 ) begin
+						if( ir[5:4] == 3'd0 || ir[5:4] == 3'd1 || ir[5:4] == 3'd2 ) begin
+							set_busb_to = { 1'b0, ir[5:4], 1'b0 };
+						end
+						else begin
+							set_busb_to = 4'h8;
+						end
+					end
+					else if( mcycle == 3'd3 ) begin
+						if( ir[5:4] == 3'd0 || ir[5:4] == 3'd1 || ir[5:4] == 3'd2 ) begin
+							set_busb_to = { 1'b0, ir[5:4], 1'b0 };
+						end
+						else begin
+							set_busb_to = 4'h9;
+						end
+					end
+					else begin
+						set_busb_to = 4'h0;
+					end
+				 8'h42, 8'h52, 8'h62, 8'h72 :
+					if( mcycle == 3'd2 ) begin
+						if( ir[5:4] == 3'd0 || ir[5:4] == 3'd1 || ir[5:4] == 3'd2 ) begin
+							set_busb_to = { 1'b0, ir[5:4], 1'b1 };
+						end
+						else begin
+							set_busb_to = 4'h8;
+						end
+					end
+					else if( mcycle == 3'd3 ) begin
+						if( ir[5:4] == 3'd0 || ir[5:4] == 3'd1 || ir[5:4] == 3'd2 ) begin
+							set_busb_to = { 1'b0, ir[5:4], 1'b0 };
+						end
+						else begin
+							set_busb_to = 4'h9;
+						end
+					end
+					else begin
+						set_busb_to = 4'h0;
+					end
+				 8'h6F:
+					if( mcycle == 3'd3 ) begin
+						set_busb_to = 4'd6;
+					end
+					else begin
+						set_busb_to = 4'd0;
+					end
+				 8'h67:
+					if( mcycle == 3'd3 ) begin
+						set_busb_to = 4'd6;
+					end
+					else begin
+						set_busb_to = 4'd0;
+					end
+				 8'h41, 8'h49, 8'h51, 8'h59, 8'h61, 8'h69, 8'h71, 8'h79:
+					if( mcycle == 3'd1 ) begin
+						set_busb_to[2:0]	= ir[5:3];
+						set_busb_to[3]		= ( ir[5:3] == 3'd6 );
+					end
+					else begin
+						set_busb_to = 4'd0;
+					end
+				8'hA2, 8'hAA, 8'hB2, 8'hBA:
+					if( mcycle == 3'd1 ) begin
+						set_busb_to = 4'hA;
+					end
+					else if( mcycle == 3'd2 ) begin
+						set_busb_to = 4'h6;
+					end
+					else begin
+						set_busb_to = 4'h0;
+					end
+				8'hA3, 8'hAB, 8'hB3, 8'hBB :
+					if( mcycle == 3'd1 ) begin
+						set_busb_to = 4'hA;
+					end
+					else if( mcycle == 3'd2 ) begin
+						set_busb_to = 4'h6;
+					end
+					else begin
+						set_busb_to = 4'h0;
+					end
+				default:
+					set_busb_to = 4'h0;
+				endcase
+			endcase
 		end
 	end
+
+	// --------------------------------------------------------------------
+	//	CPL, SCF, CCF, LDI/LDIR/LDD/LDDR, CPI/CPIR/CPD/CPDR, EI, DI, HALT
+	// --------------------------------------------------------------------
+	assign i_cpl	= ( iset == 2'b00 && irb == 8'h2F );
+	assign i_scf	= ( iset == 2'b00 && irb == 8'h37 );
+	assign i_ccf	= ( iset == 2'b00 && irb == 8'h3F );
+	assign i_djnz	= ( iset == 2'b00 && irb == 8'h10 && (mcycle == 3'd1 || mcycle == 3'd2) );
+	assign i_bt		= ( iset == 2'b00 && (irb == 8'hA0 || irb == 8'hA8 || irb == 8'hB0 || irb == 8'hB8) && mcycle == 3'd3 );
+	assign i_bc		= ( iset == 2'b00 && (irb == 8'hA1 || irb == 8'hA9 || irb == 8'hB1 || irb == 8'hB9) && mcycle == 3'd3 );
+	assign i_rrd	= ( iset == 2'b00 && irb == 8'h67 && mcycle == 3'd4 );
+	assign i_rld	= ( iset == 2'b00 && irb == 8'h6F && mcycle == 3'd4 );
+	assign i_inrc	= ( iset == 2'b00 && 
+		(irb == 8'h40 || irb == 8'h48 || irb == 8'h50 || irb == 8'h58 || 
+		 irb == 8'h60 || irb == 8'h68 || irb == 8'h70 || irb == 8'h78 ) && mcycle == 3'd2 );
+	assign halt		= ( iset == 2'b00 && irb == 8'h76 );
+	assign setdi	= ( iset == 2'b00 && irb == 8'hF3 );
+	assign setei	= ( iset == 2'b00 && irb == 8'hFB );
+
+	// --------------------------------------------------------------------
+	//	ex
+	// --------------------------------------------------------------------
+	assign exchangedh	= ( iset == 2'b00 && irb == 8'hEB );
+	assign exchangeaf	= ( iset == 2'b00 && irb == 8'h08 );
+	assign exchangers	= ( iset == 2'b00 && irb == 8'hD9 );
+
 endmodule
