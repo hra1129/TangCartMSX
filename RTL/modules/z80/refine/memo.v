@@ -3,7 +3,6 @@
 		input	[2:0]	mcycle,
 		input	[7:0]	irb
 	);
-		set_busa_to = 4'h0;
 		alu_op = 1'b0 & ir[5:3];
 		alu_cpi = 1'b0;
 		save_alu = 1'b0;
@@ -43,14 +42,12 @@
 				begin
 					// ld r,r'
 					exchangerp = 1'b1;
-					set_busa_to[2:0] = ddd;
 				end
 			8'h06, 8'h0E, 8'h16, 8'h1E, 8'h26, 8'h2E, 8'h3E :
 				begin
 					// ld r,n
 					case( mcycle )
 					3'd2:
-							set_busa_to[2:0] = ddd;
 					others : null;
 					endcase
 				end
@@ -61,7 +58,6 @@
 					3'd1:
 							set_addr_to = axy;
 					3'd2:
-							set_busa_to[2:0] = ddd;
 					others : null;
 					endcase
 				end
@@ -181,32 +177,7 @@
 					endcase
 				end
 			8'h01, 8'h11, 8'h21, 8'h31 :
-				begin
-					// ld dd,nn
-					case( mcycle )
-					3'd2:
-						begin
-							if( dpair == 2'b11 ) begin
-									set_busa_to[3:0] = 4'h8;
-							end
-							else begin
-									set_busa_to[2:1] = dpair;
-									set_busa_to[0] = 1'b1;
-							end
-					3'd3:
-						begin
-							if( dpair == 2'b11 ) begin
-									set_busa_to[3:0] = 4'h9;
-							end
-							else begin
-									set_busa_to[2:1] = dpair;
-									set_busa_to[0] = 1'b0;
-							end
-					default:
-						begin
-							//	hold
-						end
-					endcase
+
 			8'h2A :
 					// ld hl,(nn)
 					case( mcycle )
@@ -216,10 +187,8 @@
 							set_addr_to = azi;
 							ldw = 1'b1;
 					3'd4:
-							set_busa_to[2:0] = 3'd5; // l
 							set_addr_to = azi;
 					3'd5:
-							set_busa_to[2:0] = 3'd4; // h
 					default:
 						begin
 							//	hold
@@ -268,19 +237,8 @@
 							set_addr_to = asp;
 					3'd2:
 							set_addr_to = asp;
-							if( dpair = 2'b11 ) begin
-									set_busa_to[3:0] = 4'hB;
-							else
-									set_busa_to[2:1] = dpair;
-									set_busa_to[0] = 1'b1;
-							end
 					3'd3:
-							if( dpair = 2'b11 ) begin
-									set_busa_to[3:0] = 4'h7;
-							else
-									set_busa_to[2:1] = dpair;
-									set_busa_to[0] = 1'b0;
-							end
+
 					default:
 						begin
 							//	hold
@@ -292,13 +250,11 @@
 					3'd1:
 							set_addr_to = asp;
 					3'd2:
-							set_busa_to = 4'h5;
 							set_addr_to = asp;
 					3'd3:
 							set_addr_to = asp;
 							write = 1'b1;
 					3'd4:
-							set_busa_to = 4'h4;
 							set_addr_to = asp;
 					3'd5:
 							write = 1'b1;
@@ -323,7 +279,6 @@
 					// or a,r
 					// xor a,r
 					// cp a,r
-					set_busa_to[2:0] = 3'd7;
 					save_alu = 1'b1;
 			8'h86, 8'h8E, 8'h96, 8'h9E, 8'hA6, 8'hAE, 8'hB6, 8'hBE :
 					// add a,(hl)
@@ -339,7 +294,6 @@
 							set_addr_to = axy;
 					3'd2:
 							save_alu = 1'b1;
-							set_busa_to[2:0] = 3'd7;
 					default:
 						begin
 							//	hold
@@ -356,11 +310,9 @@
 					// cp a,n
 					if( mcycle = 3'd2 ) begin
 							save_alu = 1'b1;
-							set_busa_to[2:0] = 3'd7;
 					end
 			8'h04, 8'h0C, 8'h14, 8'h1C, 8'h24, 8'h2C, 8'h3C :
 					// inc r
-					set_busa_to[2:0] = ddd;
 					save_alu = 1'b1;
 					preservec = 1'b1;
 					alu_op = 4'h0;
@@ -374,7 +326,6 @@
 							save_alu = 1'b1;
 							preservec = 1'b1;
 							alu_op = 4'h0;
-							set_busa_to[2:0] = ddd;
 					3'd3:
 							write = 1'b1;
 					default:
@@ -384,7 +335,6 @@
 					endcase
 			8'h05, 8'h0D, 8'h15, 8'h1D, 8'h25, 8'h2D, 8'h3D :
 					// dec r
-					set_busa_to[2:0] = ddd;
 					save_alu = 1'b1;
 					preservec = 1'b1;
 					alu_op = 4'h2;
@@ -398,7 +348,6 @@
 							alu_op = 4'h2;
 							save_alu = 1'b1;
 							preservec = 1'b1;
-							set_busa_to[2:0] = ddd;
 					3'd3:
 							write = 1'b1;
 					default:
@@ -408,7 +357,6 @@
 					endcase
 			8'h27 :
 					// daa
-					set_busa_to[2:0] = 3'd7;
 					alu_op = 4'hC;
 					save_alu = 1'b1;
 			8'h00 :
@@ -457,13 +405,11 @@
 							noread = 1'b1;
 							alu_op = 4'h0;
 							save_alu = 1'b1;
-							set_busa_to[2:0] = 3'd5;
 							arith16 = 1'b1;
 					3'd3:
 							noread = 1'b1;
 							save_alu = 1'b1;
 							alu_op = 4'h1;
-							set_busa_to[2:0] = 3'd4;
 							arith16 = 1'b1;
 					default:
 						begin
@@ -482,7 +428,6 @@
 					// rrca
 					, 8'h1F:
 					// rra
-					set_busa_to[2:0] = 3'd7;
 					alu_op = 4'h8;
 					save_alu = 1'b1;
 			8'hC3 :
@@ -573,7 +518,6 @@
 					// djnz,e
 					case( mcycle )
 					3'd1:
-							set_busa_to[2:0] = 3'd0;
 							save_alu = 1'b1;
 							alu_op = 4'h2;
 					3'd3:
@@ -700,7 +644,6 @@
 		//  cb prefixed instructions
 		// --------------------------------------------------------------------
 		2'b01 :
-			set_busa_to[2:0] = ir[2:0];
 
 			case( irb )
 			8'h00, 8'h01, 8'h02, 8'h03, 8'h04, 8'h05, 8'h07, 
@@ -972,20 +915,8 @@
 							set_addr_to = azi;
 							ldw = 1'b1;
 					3'd4:
-							if( ir[5:4] = 2'b11 ) begin
-									set_busa_to = 4'h8;
-							else
-									set_busa_to[2:1] = ir[5:4];
-									set_busa_to[0] = 1'b1;
-							end
 							set_addr_to = azi;
 					3'd5:
-							if( ir[5:4] = 2'b11 ) begin
-									set_busa_to = 4'h9;
-							else
-									set_busa_to[2:1] = ir[5:4];
-									set_busa_to[0] = 1'b0;
-							end
 					default:
 						begin
 							//	hold
@@ -1019,7 +950,6 @@
 					3'd1:
 							set_addr_to = axy;
 					3'd2:
-							set_busa_to[2:0] = 3'd7;
 							alu_op = 4'h0;
 							set_addr_to = ade;
 					3'd3:
@@ -1039,7 +969,6 @@
 					3'd1:
 							set_addr_to = axy;
 					3'd2:
-							set_busa_to[2:0] = 3'd7;
 							alu_op = 4'h7;
 							alu_cpi = 1'b1;
 							save_alu = 1'b1;
@@ -1058,7 +987,6 @@
 				begin
 					// neg
 					alu_op = 4'h2;
-					set_busa_to = 4'hA;
 					save_alu = 1'b1;
 				end
 			8'h46, 8'h4E, 8'h66, 8'h6E :
@@ -1080,14 +1008,12 @@
 							noread = 1'b1;
 							alu_op = 4'h1;
 							save_alu = 1'b1;
-							set_busa_to[2:0] = 3'd5;
 						end
 					3'd3:
 						begin
 							noread = 1'b1;
 							save_alu = 1'b1;
 							alu_op = 4'h1;
-							set_busa_to[2:0] = 3'd4;
 						end
 					default:
 					endcase
@@ -1101,14 +1027,12 @@
 							noread = 1'b1;
 							alu_op = 4'h3;
 							save_alu = 1'b1;
-							set_busa_to[2:0] = 3'd5;
 						end
 					3'd3:
 						begin
 							noread = 1'b1;
 							alu_op = 4'h3;
 							save_alu = 1'b1;
-							set_busa_to[2:0] = 3'd4;
 						end
 					default:
 						begin
@@ -1127,7 +1051,6 @@
 						end
 					3'd3:
 						begin
-							set_busa_to[2:0] = 3'd7;
 							alu_op = 4'hD;
 							set_addr_to = axy;
 							save_alu = 1'b1;
@@ -1150,7 +1073,6 @@
 						set_addr_to = axy;
 					3'd3:
 						begin
-							set_busa_to[2:0] = 3'd7;
 							alu_op = 4'hE;
 							set_addr_to = axy;
 							save_alu = 1'b1;
@@ -1191,11 +1113,6 @@
 					3'd1:
 						set_addr_to = abc;
 					3'd2:
-						begin
-							if( ir[5:3] != 3'd6 ) begin
-									set_busa_to[2:0] = ir[5:3];
-							end
-						end
 					default:
 						begin
 							//	hold
@@ -1224,7 +1141,6 @@
 					3'd1:
 						begin
 							set_addr_to = abc;
-							set_busa_to = 4'h0;
 							save_alu = 1'b1;
 							alu_op = 4'h2;
 						end
@@ -1253,7 +1169,6 @@
 					3'd1:
 						begin
 							set_addr_to = axy;
-							set_busa_to = 4'h0;
 							save_alu = 1'b1;
 							alu_op = 4'h2;
 						end
