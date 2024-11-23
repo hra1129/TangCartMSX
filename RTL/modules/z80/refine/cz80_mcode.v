@@ -1609,10 +1609,27 @@ module t80_mcode #(
 	assign setei	= ( iset == 2'b00 && irb == 8'hFB );
 
 	// --------------------------------------------------------------------
-	//	ex
+	//	ex, ld sp,(hl), ld r/i, jp (hl)
 	// --------------------------------------------------------------------
-	assign exchangedh	= ( iset == 2'b00 && irb == 8'hEB );
 	assign exchangeaf	= ( iset == 2'b00 && irb == 8'h08 );
+	assign exchangedh	= ( iset == 2'b00 && irb == 8'hEB );
 	assign exchangers	= ( iset == 2'b00 && irb == 8'hD9 );
+	assign jumpxy		= ( iset == 2'b00 && irb == 8'hE9 );
+	assign ldsphl		= ( iset == 2'b00 && irb == 8'hF9 );
+	assign special_ld	= ( iset == 2'b00 ) ?
+							( irb == 8'h57 ) ? 3'd4:
+							( irb == 8'h5F ) ? 3'd5:
+							( irb == 8'h47 ) ? 3'd6:
+							( irb == 8'h4F ) ? 3'd7: 3'd0;
+	assign rstp			= ( iset == 2'b00 && mcycle == 3'd3 &&
+			(irb == 8'hC7 || irb == 8'hCF || irb == 8'hD7 || irb == 8'hDF || 
+			 irb == 8'hE7 || irb == 8'hEF || irb == 8'hF7 || irb == 8'hFF) );
 
+	// --------------------------------------------------------------------
+	//	interrupt mode
+	// --------------------------------------------------------------------
+	assign imode		= ( iset == 2'b00 ) ?
+							( irb == 8'h46 || irb == 8'h4E || irb == 8'h66 || irb == 8'h6E ) ? 2'b00 :
+							( irb == 8'h56 || irb == 8'h76 ) ? 2'b01 :
+							( irb == 8'h5E || irb == 8'h77 ) ? 2'b10 : 2'b11;
 endmodule

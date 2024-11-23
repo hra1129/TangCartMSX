@@ -11,17 +11,12 @@
 		set_addr_to = anone;
 		jump = 1'b0;
 		jumpe = 1'b0;
-		jumpxy = 1'b0;
 		call = 1'b0;
-		rstp = 1'b0;
 		ldz = 1'b0;
 		ldw = 1'b0;
-		ldsphl = 1'b0;
-		special_ld = 3'd0;
 		exchangerp = 1'b0;
 		i_retn = 1'b0;
 		i_btr = 1'b0;
-		imode = 2'b11;
 		noread = 1'b0;
 		write = 1'b0;
 		xybit_undoc = 1'b0;
@@ -213,8 +208,7 @@
 						end
 					endcase
 			8'hF9 :
-					// ld sp,hl
-					ldsphl = 1'b1;
+
 			8'hC5, 8'hD5, 8'hE5, 8'hF5 :
 					// push qq
 					case( mcycle )
@@ -513,7 +507,6 @@
 					endcase
 			8'hE9 :
 					// jp (hl)
-					jumpxy = 1'b1;
 			8'h10 :
 					// djnz,e
 					case( mcycle )
@@ -610,7 +603,6 @@
 							set_addr_to = asp;
 					3'd3:
 							write = 1'b1;
-							rstp = 1'b1;
 					default:
 						begin
 							//	hold
@@ -887,22 +879,18 @@
 			8'h57 :
 				begin
 					// ld a,i
-					special_ld = 3'd4;
 				end
 			8'h5F :
 				begin
 					// ld a,r
-					special_ld = 3'd5;
 				end
 			8'h47 :
 				begin
 					// ld i,a
-					special_ld = 3'd6;
 				end
 			8'h4F :
 				begin
 					// ld r,a
-					special_ld = 3'd7;
 				end
 			// 16 bit load group
 			8'h4B, 8'h5B, 8'h6B, 8'h7B :
@@ -991,13 +979,10 @@
 				end
 			8'h46, 8'h4E, 8'h66, 8'h6E :
 				// im 0
-				imode = 2'b00;
 			8'h56, 8'h76 :
 				// im 1
-				imode = 2'b01;
 			8'h5E, 8'h77 :
 				// im 2
-				imode = 2'b10;
 			// 16 bit arithmetic
 			8'h4A, 8'h5A, 8'h6A, 8'h7A:
 				begin
