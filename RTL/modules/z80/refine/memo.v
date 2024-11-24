@@ -3,7 +3,6 @@
 		input	[2:0]	mcycle,
 		input	[7:0]	irb
 	);
-		alu_op = 1'b0 & ir[5:3];
 		alu_cpi = 1'b0;
 		save_alu = 1'b0;
 		preservec = 1'b0;
@@ -309,7 +308,6 @@
 					// inc r
 					save_alu = 1'b1;
 					preservec = 1'b1;
-					alu_op = 4'h0;
 			8'h34 :
 					// inc (hl)
 					case( mcycle )
@@ -319,7 +317,6 @@
 							set_addr_to = axy;
 							save_alu = 1'b1;
 							preservec = 1'b1;
-							alu_op = 4'h0;
 					3'd3:
 							write = 1'b1;
 					default:
@@ -331,7 +328,6 @@
 					// dec r
 					save_alu = 1'b1;
 					preservec = 1'b1;
-					alu_op = 4'h2;
 			8'h35 :
 					// dec (hl)
 					case( mcycle )
@@ -339,7 +335,6 @@
 							set_addr_to = axy;
 					3'd2:
 							set_addr_to = axy;
-							alu_op = 4'h2;
 							save_alu = 1'b1;
 							preservec = 1'b1;
 					3'd3:
@@ -351,7 +346,6 @@
 					endcase
 			8'h27 :
 					// daa
-					alu_op = 4'hC;
 					save_alu = 1'b1;
 			8'h00 :
 					if( nmicycle = 1'b1 ) begin
@@ -397,13 +391,11 @@
 					case( mcycle )
 					3'd2:
 							noread = 1'b1;
-							alu_op = 4'h0;
 							save_alu = 1'b1;
 							arith16 = 1'b1;
 					3'd3:
 							noread = 1'b1;
 							save_alu = 1'b1;
-							alu_op = 4'h1;
 							arith16 = 1'b1;
 					default:
 						begin
@@ -422,7 +414,6 @@
 					// rrca
 					, 8'h1F:
 					// rra
-					alu_op = 4'h8;
 					save_alu = 1'b1;
 			8'hC3 :
 					// jp nn
@@ -512,7 +503,6 @@
 					case( mcycle )
 					3'd1:
 							save_alu = 1'b1;
-							alu_op = 4'h2;
 					3'd3:
 							noread = 1'b1;
 							jumpe = 1'b1;
@@ -656,7 +646,6 @@
 				// sll r (undocumented) / swap r
 				if( xy_state=2'b00 ) begin
 					if( mcycle = 3'd1 ) begin
-					 alu_op = 4'h8;
 					 save_alu = 1'b1;
 					end
 				else
@@ -666,7 +655,6 @@
 					3'd1, 3'd7:
 						set_addr_to = axy;
 					3'd2:
-						alu_op = 4'h8;
 						save_alu = 1'b1;
 						set_addr_to = axy;
 					3'd3:
@@ -692,7 +680,6 @@
 				3'd1, 3'd7:
 					set_addr_to = axy;
 				3'd2:
-					alu_op = 4'h8;
 					save_alu = 1'b1;
 					set_addr_to = axy;
 				3'd3:
@@ -712,9 +699,6 @@
 			8'h78, 8'h79, 8'h7A, 8'h7B, 8'h7C, 8'h7D, 8'h7F:
 				// bit b,r
 				if( xy_state=2'b00 ) begin
-					if( mcycle = 3'd1 ) begin
-					 alu_op = 4'h9;
-					end
 				else
 				// bit b,(ix+d), undocumented
 					xybit_undoc = 1'b1;
@@ -722,7 +706,6 @@
 					3'd1, 3'd7:
 						set_addr_to = axy;
 					3'd2:
-						alu_op = 4'h9;
 					default:
 						begin
 							//	hold
@@ -735,7 +718,6 @@
 				3'd1, 3'd7:
 					set_addr_to = axy;
 				3'd2:
-					alu_op = 4'h9;
 				default:
 					begin
 						//	hold
@@ -752,7 +734,6 @@
 				// set b,r
 				if( xy_state=2'b00 ) begin
 					if( mcycle = 3'd1 ) begin
-					 alu_op = 4'hA;
 					 save_alu = 1'b1;
 					end
 				else
@@ -762,7 +743,6 @@
 					3'd1, 3'd7:
 						set_addr_to = axy;
 					3'd2:
-						alu_op = 4'hA;
 						save_alu = 1'b1;
 						set_addr_to = axy;
 					3'd3:
@@ -779,7 +759,6 @@
 				3'd1, 3'd7:
 					set_addr_to = axy;
 				3'd2:
-					alu_op = 4'hA;
 					save_alu = 1'b1;
 					set_addr_to = axy;
 				3'd3:
@@ -800,7 +779,6 @@
 				// res b,r
 				if( xy_state=2'b00 ) begin
 					if( mcycle = 3'd1 ) begin
-					 alu_op = 4'hB;
 					 save_alu = 1'b1;
 					end
 				else
@@ -810,7 +788,6 @@
 					3'd1, 3'd7:
 						set_addr_to = axy;
 					3'd2:
-						alu_op = 4'hB;
 						save_alu = 1'b1;
 						set_addr_to = axy;
 					3'd3:
@@ -828,7 +805,6 @@
 				3'd1, 3'd7:
 					set_addr_to = axy;
 				3'd2:
-					alu_op = 4'hB;
 					save_alu = 1'b1;
 					set_addr_to = axy;
 				3'd3:
@@ -938,7 +914,6 @@
 					3'd1:
 							set_addr_to = axy;
 					3'd2:
-							alu_op = 4'h0;
 							set_addr_to = ade;
 					3'd3:
 							write = 1'b1;
@@ -957,7 +932,6 @@
 					3'd1:
 							set_addr_to = axy;
 					3'd2:
-							alu_op = 4'h7;
 							alu_cpi = 1'b1;
 							save_alu = 1'b1;
 							preservec = 1'b1;
@@ -974,7 +948,6 @@
 			8'h44, 8'h4C, 8'h54, 8'h5C, 8'h64, 8'h6C, 8'h74, 8'h7C :
 				begin
 					// neg
-					alu_op = 4'h2;
 					save_alu = 1'b1;
 				end
 			8'h46, 8'h4E, 8'h66, 8'h6E :
@@ -991,14 +964,12 @@
 					3'd2:
 						begin
 							noread = 1'b1;
-							alu_op = 4'h1;
 							save_alu = 1'b1;
 						end
 					3'd3:
 						begin
 							noread = 1'b1;
 							save_alu = 1'b1;
-							alu_op = 4'h1;
 						end
 					default:
 					endcase
@@ -1010,13 +981,11 @@
 					3'd2:
 						begin
 							noread = 1'b1;
-							alu_op = 4'h3;
 							save_alu = 1'b1;
 						end
 					3'd3:
 						begin
 							noread = 1'b1;
-							alu_op = 4'h3;
 							save_alu = 1'b1;
 						end
 					default:
@@ -1036,7 +1005,6 @@
 						end
 					3'd3:
 						begin
-							alu_op = 4'hD;
 							set_addr_to = axy;
 							save_alu = 1'b1;
 						end
@@ -1058,7 +1026,6 @@
 						set_addr_to = axy;
 					3'd3:
 						begin
-							alu_op = 4'hE;
 							set_addr_to = axy;
 							save_alu = 1'b1;
 						end
@@ -1127,7 +1094,6 @@
 						begin
 							set_addr_to = abc;
 							save_alu = 1'b1;
-							alu_op = 4'h2;
 						end
 					3'd2:
 						begin
@@ -1155,7 +1121,6 @@
 						begin
 							set_addr_to = axy;
 							save_alu = 1'b1;
-							alu_op = 4'h2;
 						end
 					3'd2:
 						begin
