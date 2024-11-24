@@ -3,8 +3,6 @@
 		input	[2:0]	mcycle,
 		input	[7:0]	irb
 	);
-		arith16 = 1'b0;
-		set_addr_to = anone;
 		jump = 1'b0;
 		jumpe = 1'b0;
 		call = 1'b0;
@@ -13,7 +11,6 @@
 		exchangerp = 1'b0;
 		i_retn = 1'b0;
 		i_btr = 1'b0;
-		noread = 1'b0;
 		write = 1'b0;
 		xybit_undoc = 1'b0;
 
@@ -47,7 +44,6 @@
 					// ld r,(hl)
 					case( mcycle )
 					3'd1:
-							set_addr_to = axy;
 					3'd2:
 					others: null;
 					endcase
@@ -57,7 +53,6 @@
 					// ld (hl),r
 					case( mcycle )
 					3'd1:
-							set_addr_to = axy;
 					3'd2:
 							write = 1'b1;
 					others: null;
@@ -68,9 +63,6 @@
 					// ld (hl),n
 					case( mcycle )
 					3'd2:
-						begin
-							set_addr_to = axy;
-						end
 					3'd3:
 						begin
 							write = 1'b1;
@@ -86,7 +78,6 @@
 					// ld a,(bc)
 					case( mcycle )
 					3'd1:
-							set_addr_to = abc;
 					3'd2:
 					default:
 						begin
@@ -99,7 +90,6 @@
 					// ld a,(de)
 					case( mcycle )
 					3'd1:
-							set_addr_to = ade;
 					3'd2:
 					default:
 						begin
@@ -114,7 +104,6 @@
 					3'd2:
 							ldz = 1'b1;
 					3'd3:
-							set_addr_to = azi;
 					3'd4:
 					default:
 						begin
@@ -127,7 +116,6 @@
 					// ld (bc),a
 					case( mcycle )
 					3'd1:
-							set_addr_to = abc;
 					3'd2:
 							write = 1'b1;
 					default:
@@ -141,7 +129,6 @@
 					// ld (de),a
 					case( mcycle )
 					3'd1:
-							set_addr_to = ade;
 					3'd2:
 							write = 1'b1;
 					default:
@@ -158,7 +145,6 @@
 					3'd2:
 							ldz = 1'b1;
 					3'd3:
-							set_addr_to = azi;
 					3'd4:
 							write = 1'b1;
 					default:
@@ -175,10 +161,8 @@
 					3'd2:
 							ldz = 1'b1;
 					3'd3:
-							set_addr_to = azi;
 							ldw = 1'b1;
 					3'd4:
-							set_addr_to = azi;
 					3'd5:
 					default:
 						begin
@@ -191,10 +175,8 @@
 					3'd2:
 							ldz = 1'b1;
 					3'd3:
-							set_addr_to = azi;
 							ldw = 1'b1;
 					3'd4:
-							set_addr_to = azi;
 							write = 1'b1;
 					3'd5:
 							write = 1'b1;
@@ -209,9 +191,7 @@
 					// push qq
 					case( mcycle )
 					3'd1:
-							set_addr_to = asp;
 					3'd2:
-							set_addr_to = asp;
 							write = 1'b1;
 					3'd3:
 							write = 1'b1;
@@ -224,9 +204,7 @@
 					// pop qq
 					case( mcycle )
 					3'd1:
-							set_addr_to = asp;
 					3'd2:
-							set_addr_to = asp;
 					3'd3:
 
 					default:
@@ -238,14 +216,10 @@
 					// ex (sp),hl
 					case( mcycle )
 					3'd1:
-							set_addr_to = asp;
 					3'd2:
-							set_addr_to = asp;
 					3'd3:
-							set_addr_to = asp;
 							write = 1'b1;
 					3'd4:
-							set_addr_to = asp;
 					3'd5:
 							write = 1'b1;
 					default:
@@ -280,7 +254,6 @@
 					// cp a,(hl)
 					case( mcycle )
 					3'd1:
-							set_addr_to = axy;
 					3'd2:
 					default:
 						begin
@@ -294,9 +267,7 @@
 					// inc (hl)
 					case( mcycle )
 					3'd1:
-							set_addr_to = axy;
 					3'd2:
-							set_addr_to = axy;
 					3'd3:
 							write = 1'b1;
 					default:
@@ -310,9 +281,7 @@
 					// dec (hl)
 					case( mcycle )
 					3'd1:
-							set_addr_to = axy;
 					3'd2:
-							set_addr_to = axy;
 					3'd3:
 							write = 1'b1;
 					default:
@@ -327,10 +296,8 @@
 							// nmi
 							case( mcycle )
 							3'd1:
-									set_addr_to = asp;
 							3'd2:
 									write = 1'b1;
-									set_addr_to = asp;
 							3'd3:
 									write = 1'b1;
 							default:
@@ -343,10 +310,8 @@
 							case( mcycle )
 							3'd1:
 									ldz = 1'b1;
-									set_addr_to = asp;
 							3'd2:
 									write = 1'b1;
-									set_addr_to = asp;
 							3'd3:
 									write = 1'b1;
 							3'd4:
@@ -365,11 +330,7 @@
 					// add hl,ss
 					case( mcycle )
 					3'd2:
-							noread = 1'b1;
-							arith16 = 1'b1;
 					3'd3:
-							noread = 1'b1;
-							arith16 = 1'b1;
 					default:
 						begin
 							//	hold
@@ -417,7 +378,6 @@
 					// jr e
 					case( mcycle )
 					3'd3:
-							noread = 1'b1;
 							jumpe = 1'b1;
 					default:
 						begin
@@ -428,7 +388,6 @@
 					// jr c,e
 					case( mcycle )
 					3'd3:
-							noread = 1'b1;
 							jumpe = 1'b1;
 					default:
 						begin
@@ -439,7 +398,6 @@
 					// jr nc,e
 					case( mcycle )
 					3'd3:
-							noread = 1'b1;
 							jumpe = 1'b1;
 					default:
 						begin
@@ -450,7 +408,6 @@
 					// jr z,e
 					case( mcycle )
 					3'd3:
-							noread = 1'b1;
 							jumpe = 1'b1;
 					default:
 						begin
@@ -461,7 +418,6 @@
 					// jr nz,e
 					case( mcycle )
 					3'd3:
-							noread = 1'b1;
 							jumpe = 1'b1;
 					default:
 						begin
@@ -475,7 +431,6 @@
 					case( mcycle )
 					3'd1:
 					3'd3:
-							noread = 1'b1;
 							jumpe = 1'b1;
 					default:
 						begin
@@ -488,11 +443,9 @@
 					3'd2:
 							ldz = 1'b1;
 					3'd3:
-							set_addr_to = asp;
 							ldw = 1'b1;
 					3'd4:
 							write = 1'b1;
-							set_addr_to = asp;
 					3'd5:
 							write = 1'b1;
 							call = 1'b1;
@@ -508,12 +461,8 @@
 							ldz = 1'b1;
 					3'd3:
 							ldw = 1'b1;
-							if( is_cc_true(f, to_bitvector(ir[5:3])) ) begin
-									set_addr_to = asp;
-							end
 					3'd4:
 							write = 1'b1;
-							set_addr_to = asp;
 					3'd5:
 							write = 1'b1;
 							call = 1'b1;
@@ -526,9 +475,7 @@
 					// ret
 					case( mcycle )
 					3'd1:
-							set_addr_to = asp;
 					3'd2:
-							set_addr_to = asp;
 							ldz = 1'b1;
 					3'd3:
 							jump = 1'b1;
@@ -541,11 +488,7 @@
 					// ret cc
 					case( mcycle )
 					3'd1:
-							if( is_cc_true(f, to_bitvector(ir[5:3])) ) begin
-									set_addr_to = asp;
-							end
 					3'd2:
-							set_addr_to = asp;
 							ldz = 1'b1;
 					3'd3:
 							jump = 1'b1;
@@ -558,10 +501,8 @@
 					// rst p
 					case( mcycle )
 					3'd1:
-							set_addr_to = asp;
 					3'd2:
 							write = 1'b1;
-							set_addr_to = asp;
 					3'd3:
 							write = 1'b1;
 					default:
@@ -573,7 +514,6 @@
 					// in a,(n)
 					case( mcycle )
 					3'd2:
-							set_addr_to = aioa;
 					3'd3:
 					default:
 						begin
@@ -584,7 +524,6 @@
 					// out (n),a
 					case( mcycle )
 					3'd2:
-							set_addr_to = aioa;
 					3'd3:
 							write = 1'b1;
 					default:
@@ -621,9 +560,7 @@
 					xybit_undoc = 1'b1;
 					case( mcycle )
 					3'd1, 3'd7:
-						set_addr_to = axy;
 					3'd2:
-						set_addr_to = axy;
 					3'd3:
 						write = 1'b1;
 					default:
@@ -635,19 +572,9 @@
 
 
 			8'h06, 8'h16, 8'h0E, 8'h1E, 8'h2E, 8'h3E, 8'h26, 8'h36:
-				// rlc (hl)
-				// rl (hl)
-				// rrc (hl)
-				// rr (hl)
-				// sra (hl)
-				// srl (hl)
-				// sla (hl)
-				// sll (hl) (undocumented) / swap (hl)
 				case( mcycle )
 				3'd1, 3'd7:
-					set_addr_to = axy;
 				3'd2:
-					set_addr_to = axy;
 				3'd3:
 					write = 1'b1;
 				default:
@@ -670,7 +597,6 @@
 					xybit_undoc = 1'b1;
 					case( mcycle )
 					3'd1, 3'd7:
-						set_addr_to = axy;
 					3'd2:
 					default:
 						begin
@@ -682,7 +608,6 @@
 				// bit b,(hl)
 				case( mcycle )
 				3'd1, 3'd7:
-					set_addr_to = axy;
 				3'd2:
 				default:
 					begin
@@ -704,9 +629,7 @@
 					xybit_undoc = 1'b1;
 					case( mcycle )
 					3'd1, 3'd7:
-						set_addr_to = axy;
 					3'd2:
-						set_addr_to = axy;
 					3'd3:
 						write = 1'b1;
 					default:
@@ -719,9 +642,7 @@
 				// set b,(hl)
 				case( mcycle )
 				3'd1, 3'd7:
-					set_addr_to = axy;
 				3'd2:
-					set_addr_to = axy;
 				3'd3:
 					write = 1'b1;
 				default:
@@ -744,9 +665,7 @@
 					xybit_undoc = 1'b1;
 					case( mcycle )
 					3'd1, 3'd7:
-						set_addr_to = axy;
 					3'd2:
-						set_addr_to = axy;
 					3'd3:
 						write = 1'b1;
 					default:
@@ -760,9 +679,7 @@
 				// res b,(hl)
 				case( mcycle )
 				3'd1, 3'd7:
-					set_addr_to = axy;
 				3'd2:
-					set_addr_to = axy;
 				3'd3:
 					write = 1'b1;
 				default:
@@ -832,10 +749,8 @@
 					3'd2:
 							ldz = 1'b1;
 					3'd3:
-							set_addr_to = azi;
 							ldw = 1'b1;
 					3'd4:
-							set_addr_to = azi;
 					3'd5:
 					default:
 						begin
@@ -850,10 +765,8 @@
 					3'd2:
 							ldz = 1'b1;
 					3'd3:
-							set_addr_to = azi;
 							ldw = 1'b1;
 					3'd4:
-							set_addr_to = azi;
 							write = 1'b1;
 					3'd5:
 							write = 1'b1;
@@ -868,13 +781,10 @@
 					// ldi, ldd, ldir, lddr
 					case( mcycle )
 					3'd1:
-							set_addr_to = axy;
 					3'd2:
-							set_addr_to = ade;
 					3'd3:
 							write = 1'b1;
 					3'd4:
-							noread = 1'b1;
 					default:
 						begin
 							//	hold
@@ -886,13 +796,9 @@
 					// cpi, cpd, cpir, cpdr
 					case( mcycle )
 					3'd1:
-							set_addr_to = axy;
 					3'd2:
-
 					3'd3:
-							noread = 1'b1;
 					3'd4:
-							noread = 1'b1;
 					default:
 						begin
 							//	hold
@@ -909,51 +815,11 @@
 				// im 2
 			// 16 bit arithmetic
 			8'h4A, 8'h5A, 8'h6A, 8'h7A:
-				begin
-					// adc hl,ss
-					case( mcycle )
-					3'd2:
-						begin
-							noread = 1'b1;
-						end
-					3'd3:
-						begin
-							noread = 1'b1;
-						end
-					default:
-					endcase
-				end
 			8'h42, 8'h52, 8'h62, 8'h72:
-				begin
-					// sbc hl,ss
-					case( mcycle )
-					3'd2:
-						begin
-							noread = 1'b1;
-						end
-					3'd3:
-						begin
-							noread = 1'b1;
-						end
-					default:
-						begin
-							//	hold
-						end
-					endcase
-				end
 			8'h6F:
 				begin
 					// rld
 					case( mcycle )
-					3'd2:
-						begin
-							noread = 1'b1;
-							set_addr_to = axy;
-						end
-					3'd3:
-						begin
-							set_addr_to = axy;
-						end
 					3'd4:
 						begin
 							write = 1'b1;
@@ -968,12 +834,6 @@
 				begin
 					// rrd
 					case( mcycle )
-					3'd2:
-						set_addr_to = axy;
-					3'd3:
-						begin
-							set_addr_to = axy;
-						end
 					3'd4:
 						begin
 							write = 1'b1;
@@ -987,13 +847,8 @@
 			8'h45, 8'h4D, 8'h55, 8'h5D, 8'h65, 8'h6D, 8'h75, 8'h7D:
 					// reti, retn
 					case( mcycle )
-					3'd1:
-						set_addr_to = asp;
 					3'd2:
-						begin
-							set_addr_to = asp;
 							ldz = 1'b1;
-						end
 					3'd3:
 						begin
 							jump = 1'b1;
@@ -1005,24 +860,12 @@
 						end
 					endcase
 			8'h40, 8'h48, 8'h50, 8'h58, 8'h60, 8'h68, 8'h70, 8'h78:
-					// in r,(c)
-					case( mcycle )
-					3'd1:
-						set_addr_to = abc;
-					3'd2:
-					default:
-						begin
-							//	hold
-						end
-					endcase
+			
 			8'h41, 8'h49, 8'h51, 8'h59, 8'h61, 8'h69, 8'h71, 8'h79:
 					// out (c),r
 					// out (c),0
 					case( mcycle )
 					3'd1:
-						begin
-							set_addr_to = abc;
-						end
 					3'd2:
 						begin
 							write = 1'b1;
@@ -1036,13 +879,7 @@
 					// ini, ind, inir, indr
 					case( mcycle )
 					3'd1:
-						begin
-							set_addr_to = abc;
-						end
 					3'd2:
-						begin
-							set_addr_to = axy;
-						end
 					3'd3:
 						begin
 							write = 1'b1;
@@ -1050,7 +887,6 @@
 						end
 					3'd4:
 						begin
-							noread = 1'b1;
 						end
 					default:
 						begin
@@ -1062,13 +898,7 @@
 					// outi, outd, otir, otdr
 					case( mcycle )
 					3'd1:
-						begin
-							set_addr_to = axy;
-						end
 					3'd2:
-						begin
-							set_addr_to = abc;
-						end
 					3'd3:
 						begin
 							write = 1'b1;
@@ -1076,7 +906,6 @@
 						end
 					3'd4:
 						begin
-							noread = 1'b1;
 						end
 					default:
 						begin
@@ -1097,21 +926,13 @@
 		endcase
 
 		if( mcycle == 3'd6 ) begin
-			if( mode == 1 ) begin
-				set_addr_to = axy;
-			end
-			if( irb == 8'h36 || irb == 8'hCB ) begin
-				set_addr_to = anone;
-			end
 		end
 		if( mcycle == 3'd7 ) begin
 			if( iset != 2'b01 ) begin
-				set_addr_to = axy;
 			end
 			if( irb == 8'h36 || iset == 2'b01 ) begin
 				// ld (hl),n
 			else
-				noread = 1'b1;
 			end
 		end
 	end
