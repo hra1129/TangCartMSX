@@ -52,10 +52,13 @@ module ip_msxbus (
 	reg				ff_n_rd;
 	reg				ff_n_wr;
 	reg				ff_n_ioreq;
-	wire			w_io_req;
-	wire			w_memory_req;
+	wire			w_wr_req;
+	wire			w_rd_req;
+	wire			w_n_io_req;
+	wire			w_n_memory_req;
 	reg				ff_io_req;
 	reg				ff_memory_req;
+	reg				ff_access_hold;
 	//	Latch
 	reg		[15:0]	ff_bus_address;
 	reg		[7:0]	ff_bus_write_data;
@@ -80,8 +83,10 @@ module ip_msxbus (
 		end
 	end
 
-	assign w_io_req			= ff_n_ioreq & ~n_ioreq;
-	assign w_memory_req		= ff_n_sltsl & ~n_sltsl;
+	assign w_wr_req			= ff_n_wr & ~n_wr;
+	assign w_rd_req			= ff_n_rd & ~n_rd;
+	assign w_n_io_req		= n_ioreq | ~(w_wr_req | w_rd_req);
+	assign w_n_memory_req	= n_sltsl | ~(w_wr_req | w_rd_req);
 
 	// --------------------------------------------------------------------
 	//	Make up pulse
@@ -93,7 +98,7 @@ module ip_msxbus (
 		else if( bus_ack ) begin
 			ff_io_req <= 1'b0;
 		end
-		else if( w_io_req ) begin
+		else if( !w_n_io_req && !ff_access_hold ) begin
 			ff_io_req <= 1'b1;
 		end
 		else begin
@@ -108,8 +113,23 @@ module ip_msxbus (
 		else if( bus_ack ) begin
 			ff_memory_req <= 1'b0;
 		end
-		else if( w_memory_req ) begin
+		else if( !w_n_memory_req && !ff_access_hold ) begin
 			ff_memory_req <= 1'b1;
+		end
+		else begin
+			//	hold
+		end
+	end
+
+	always @( posedge clk ) begin
+		if( !n_reset ) begin
+			ff_access_hold <= 1'b0;
+		end
+		else if( !w_n_io_req || !w_n_memory_req ) begin
+			ff_access_hold <= 1'b1;
+		end
+		else if( ff_n_rd && ff_n_wr ) begin
+			ff_access_hold <= 1'b0;
 		end
 		else begin
 			//	hold
@@ -123,7 +143,7 @@ module ip_msxbus (
 		if( !n_reset ) begin
 			ff_bus_address		<= 'd0;
 		end
-		else if( ~ff_n_wr || ~ff_n_rd ) begin
+		else if( (!w_n_io_req || !w_n_memory_req) && !ff_access_hold ) begin
 			ff_bus_address		<= adr;
 		end
 		else begin
@@ -132,7 +152,7 @@ module ip_msxbus (
 	end
 
 	always @( posedge clk ) begin
-		if( ~ff_n_wr ) begin
+		if( w_wr_req ) begin
 			ff_bus_write_data	<= i_data;
 		end
 		else begin
