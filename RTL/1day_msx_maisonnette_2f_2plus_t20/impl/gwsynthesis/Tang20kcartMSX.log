@@ -5,13 +5,6 @@ Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\1day_msx_maisonnet
 Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\1day_msx_maisonnette_2f_2plus_t20\src\gowin_pll\gowin_pll.v'
 Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\1day_msx_maisonnette_2f_2plus_t20\src\msxbus\ip_msxbus.v'
 Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\1day_msx_maisonnette_2f_2plus_t20\src\tang20cart_msx.v'
-WARN  (EX2830) : Data object 'clk' is already declared("D:\github\HRA_product\TangCartMSX\RTL\1day_msx_maisonnette_2f_2plus_t20\src\tang20cart_msx.v":121)
-Previous declaration of 'clk' is from here("D:\github\HRA_product\TangCartMSX\RTL\1day_msx_maisonnette_2f_2plus_t20\src\tang20cart_msx.v":78)
-WARN  (EX3671) : Second declaration of 'clk' is ignored("D:\github\HRA_product\TangCartMSX\RTL\1day_msx_maisonnette_2f_2plus_t20\src\tang20cart_msx.v":121)
-Undeclared symbol 'w_adr', assumed default net type 'wire'("D:\github\HRA_product\TangCartMSX\RTL\1day_msx_maisonnette_2f_2plus_t20\src\tang20cart_msx.v":223)
-Undeclared symbol 'w_i_data', assumed default net type 'wire'("D:\github\HRA_product\TangCartMSX\RTL\1day_msx_maisonnette_2f_2plus_t20\src\tang20cart_msx.v":224)
-Undeclared symbol 'w_bus_read_ready', assumed default net type 'wire'("D:\github\HRA_product\TangCartMSX\RTL\1day_msx_maisonnette_2f_2plus_t20\src\tang20cart_msx.v":232)
-Undeclared symbol 'w_bus_read_data', assumed default net type 'wire'("D:\github\HRA_product\TangCartMSX\RTL\1day_msx_maisonnette_2f_2plus_t20\src\tang20cart_msx.v":233)
 Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\modules\sdram\ip_sdram_tangnano20k.v'
 Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\modules\v9958\vdp.v'
 Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\modules\v9958\vdp_color_bus.v'
@@ -35,12 +28,6 @@ Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\modules\v9958\vdp_
 Compiling module 'tang20cart_msx'("D:\github\HRA_product\TangCartMSX\RTL\1day_msx_maisonnette_2f_2plus_t20\src\tang20cart_msx.v":26)
 Compiling module 'Gowin_PLL'("D:\github\HRA_product\TangCartMSX\RTL\1day_msx_maisonnette_2f_2plus_t20\src\gowin_pll\gowin_pll.v":9)
 Compiling module 'ip_msxbus'("D:\github\HRA_product\TangCartMSX\RTL\1day_msx_maisonnette_2f_2plus_t20\src\msxbus\ip_msxbus.v":28)
-WARN  (EX3670) : Actual bit length 1 differs from formal bit length 16 for port 'adr'("D:\github\HRA_product\TangCartMSX\RTL\1day_msx_maisonnette_2f_2plus_t20\src\tang20cart_msx.v":223)
-WARN  (EX3670) : Actual bit length 1 differs from formal bit length 8 for port 'i_data'("D:\github\HRA_product\TangCartMSX\RTL\1day_msx_maisonnette_2f_2plus_t20\src\tang20cart_msx.v":224)
-WARN  (EX3670) : Actual bit length 1 differs from formal bit length 8 for port 'bus_read_data'("D:\github\HRA_product\TangCartMSX\RTL\1day_msx_maisonnette_2f_2plus_t20\src\tang20cart_msx.v":233)
-Compiling module 'ip_sdram'("D:\github\HRA_product\TangCartMSX\RTL\modules\sdram\ip_sdram_tangnano20k.v":57)
-WARN  (EX3791) : Expression size 12 truncated to fit in target size 11("D:\github\HRA_product\TangCartMSX\RTL\modules\sdram\ip_sdram_tangnano20k.v":157)
-WARN  (EX3791) : Expression size 32 truncated to fit in target size 14("D:\github\HRA_product\TangCartMSX\RTL\modules\sdram\ip_sdram_tangnano20k.v":264)
 Compiling module 'vdp_inst'("D:\github\HRA_product\TangCartMSX\RTL\modules\v9958\vdp_inst.v":58)
 Compiling module 'vdp'("D:\github\HRA_product\TangCartMSX\RTL\modules\v9958\vdp.v":58)
 Compiling module 'vdp_color_bus'("D:\github\HRA_product\TangCartMSX\RTL\modules\v9958\vdp_color_bus.v":56)
@@ -116,17 +103,12 @@ Compiling module 'vdp_double_buffer'("D:\github\HRA_product\TangCartMSX\RTL\modu
 Compiling module 'vdp_ram_line_buffer'("D:\github\HRA_product\TangCartMSX\RTL\modules\v9958\vdp_ram_line_buffer.v":58)
 Extracting RAM for identifier 'ff_imem'("D:\github\HRA_product\TangCartMSX\RTL\modules\v9958\vdp_ram_line_buffer.v":69)
 WARN  (EX3791) : Expression size 32 truncated to fit in target size 10("D:\github\HRA_product\TangCartMSX\RTL\modules\v9958\vdp_lcd.v":367)
-WARN  (EX3670) : Actual bit length 1 differs from formal bit length 8 for port 'rdata'("D:\github\HRA_product\TangCartMSX\RTL\1day_msx_maisonnette_2f_2plus_t20\src\tang20cart_msx.v":280)
-WARN  (EX1998) : Net 'w_req' does not have a driver("D:\github\HRA_product\TangCartMSX\RTL\1day_msx_maisonnette_2f_2plus_t20\src\tang20cart_msx.v":105)
-WARN  (EX1998) : Net 'w_wr' does not have a driver("D:\github\HRA_product\TangCartMSX\RTL\1day_msx_maisonnette_2f_2plus_t20\src\tang20cart_msx.v":107)
-WARN  (EX1998) : Net 'w_adr' does not have a driver("D:\github\HRA_product\TangCartMSX\RTL\1day_msx_maisonnette_2f_2plus_t20\src\tang20cart_msx.v":223)
-WARN  (EX1998) : Net 'w_i_data' does not have a driver("D:\github\HRA_product\TangCartMSX\RTL\1day_msx_maisonnette_2f_2plus_t20\src\tang20cart_msx.v":224)
-WARN  (EX1998) : Net 'w_bus_read_ready' does not have a driver("D:\github\HRA_product\TangCartMSX\RTL\1day_msx_maisonnette_2f_2plus_t20\src\tang20cart_msx.v":232)
+Compiling module 'ip_sdram'("D:\github\HRA_product\TangCartMSX\RTL\modules\sdram\ip_sdram_tangnano20k.v":57)
+WARN  (EX3791) : Expression size 12 truncated to fit in target size 11("D:\github\HRA_product\TangCartMSX\RTL\modules\sdram\ip_sdram_tangnano20k.v":157)
+WARN  (EX3791) : Expression size 32 truncated to fit in target size 14("D:\github\HRA_product\TangCartMSX\RTL\modules\sdram\ip_sdram_tangnano20k.v":264)
 NOTE  (EX0101) : Current top module is "tang20cart_msx"
-WARN  (EX0211) : The output port "tint" of module "tang20cart_msx" has no driver, assigning undriven bits to Z, simulation mismatch possible("D:\github\HRA_product\TangCartMSX\RTL\1day_msx_maisonnette_2f_2plus_t20\src\tang20cart_msx.v":48)
 [5%] Running netlist conversion ...
 WARN  (CV0016) : Input clk27m is unused("D:\github\HRA_product\TangCartMSX\RTL\1day_msx_maisonnette_2f_2plus_t20\src\tang20cart_msx.v":28)
-WARN  (CV0016) : Input ta is unused("D:\github\HRA_product\TangCartMSX\RTL\1day_msx_maisonnette_2f_2plus_t20\src\tang20cart_msx.v":34)
 WARN  (CV0016) : Input keys is unused("D:\github\HRA_product\TangCartMSX\RTL\1day_msx_maisonnette_2f_2plus_t20\src\tang20cart_msx.v":45)
 Running device independent optimization ...
 [10%] Optimizing Phase 0 completed
@@ -143,13 +125,6 @@ Running technical mapping ...
 [75%] Tech-Mapping Phase 2 completed
 [80%] Tech-Mapping Phase 3 completed
 [90%] Tech-Mapping Phase 4 completed
-WARN  (NL0002) : The module "vdp_color_decoder" instantiated to "u_vdp_color_decoder" is swept in optimizing("D:\github\HRA_product\TangCartMSX\RTL\modules\v9958\vdp.v":642)
-WARN  (NL0002) : The module "vdp_interrupt" instantiated to "u_vdp_interrupt" is swept in optimizing("D:\github\HRA_product\TangCartMSX\RTL\modules\v9958\vdp.v":553)
-WARN  (NL0002) : The module "vdp_ram_palette" instantiated to "u_vdp_palette_ram" is swept in optimizing("D:\github\HRA_product\TangCartMSX\RTL\modules\v9958\vdp.v":779)
-WARN  (NL0002) : The module "vdp_register" instantiated to "u_vdp_register" is swept in optimizing("D:\github\HRA_product\TangCartMSX\RTL\modules\v9958\vdp.v":897)
-WARN  (NL0002) : The module "vdp_ram_256byte" instantiated to "u_even_line_buf" is swept in optimizing("D:\github\HRA_product\TangCartMSX\RTL\modules\v9958\vdp_sprite.v":264)
-WARN  (NL0002) : The module "vdp_ram_256byte" instantiated to "u_odd_line_buf" is swept in optimizing("D:\github\HRA_product\TangCartMSX\RTL\modules\v9958\vdp_sprite.v":280)
-WARN  (NL0002) : The module "vdp_spinforam" instantiated to "u_sprite_info_ram" is swept in optimizing("D:\github\HRA_product\TangCartMSX\RTL\modules\v9958\vdp_sprite.v":236)
 [95%] Generate netlist file "D:\github\HRA_product\TangCartMSX\RTL\1day_msx_maisonnette_2f_2plus_t20\impl\gwsynthesis\Tang20kcartMSX.vg" completed
 [100%] Generate report file "D:\github\HRA_product\TangCartMSX\RTL\1day_msx_maisonnette_2f_2plus_t20\impl\gwsynthesis\Tang20kcartMSX_syn.rpt.html" completed
 GowinSynthesis finish

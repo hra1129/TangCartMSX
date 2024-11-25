@@ -28,7 +28,7 @@ module tang20cart_msx (
 	input			clk27m,			//	PIN04_SYS_CLK: 27MHz
 	input			n_treset,		//	PIN85_SDIO_D1
 	input			tclock,			//	PIN76_HSPI_DAT: 3.579454MHz
-	input			n_ce,			//	PIN55_I2S_LRCK
+	input			vdp_cs,			//	PIN55_I2S_LRCK
 	input			n_twr,			//	PIN56_I2S_BCLK
 	input			n_trd,			//	PIN54_I2S_DIN
 	input	[1:0]	ta,				//	PIN73_HSPI_DIN2: ta[0]
@@ -46,7 +46,7 @@ module tang20cart_msx (
 									//	PIN87_MODE1_KEY2: keys[1]
 	output			twait,			//	PIN80_SDIO_D2:
 	output			tint,			//	PIN16
-
+	output			led,			//	PIN79
 	//	VGA Output
 	output			lcd_clk,		//	PIN77
 	output			lcd_de,			//	PIN48
@@ -71,7 +71,7 @@ module tang20cart_msx (
 );
 
 	reg		[25:0]	ff_count = 26'd0;
-	reg		[1:0]	ff_led = 2'd0;
+	reg				ff_led;
 	wire	[15:0]	taddress;
 	reg		[6:0]	ff_reset = 7'd0;
 	reg		[4:0]	ff_wait = 5'b10000;
@@ -80,13 +80,11 @@ module tang20cart_msx (
 	wire			clk_half;
 	reg				ff_21mhz = 1'b0;
 	wire			w_n_reset;
-	wire	[7:0]	w_o_data;
 	wire	[15:0]	w_bus_address;
 	wire	[7:0]	w_bus_write_data;
-	wire			w_bus_io_read;
-	wire			w_bus_io_write;
-	wire			w_bus_memory_read;
-	wire			w_bus_memory_write;
+	wire	[7:0]	w_bus_read_data;
+	wire			w_bus_io_req;
+	wire			w_bus_write;
 	wire			w_is_output;
 	//	SDRAM
 	wire			w_sdram_read_n;
@@ -104,10 +102,7 @@ module tang20cart_msx (
 
 	wire			w_req;
 	wire			w_ack;
-	wire			w_wr;
-	wire	[1:0]	w_a;
-	wire	[7:0]	w_wdata;
-	wire	[7:0]	w_rdata;
+	wire			w_wrt;
 
 	wire	[5:0]	w_lcd_red;
 	wire	[5:0]	w_lcd_green;
@@ -118,24 +113,16 @@ module tang20cart_msx (
 	wire			w_dl_clk;
 
 	wire			n_reset;
-	wire			clk;
-	wire	[15:0]	adr;
-	wire	[7:0]	i_data;
-	wire	[7:0]	o_data;
+	wire	[15:0]	w_adr;
+	wire	[7:0]	w_i_data;
+	wire	[7:0]	w_o_data;
 	wire			is_wire;
 	wire			n_sltsl;
 	wire			n_rd;
 	wire			n_wr;
 	wire			n_ioreq;
 	wire			n_mereq;
-	wire	[15:0]	bus_address;
-	wire			bus_read_ready;
-	wire	[7:0]	bus_read_data;
-	wire	[7:0]	bus_write_data;
-	wire			bus_io_read;
-	wire			bus_io_write;
-	wire			bus_memory_read;
-	wire			bus_memory_write;
+	wire			w_int_n;
 
 	// --------------------------------------------------------------------
 	//	OUTPUT Assignment
@@ -160,6 +147,33 @@ module tang20cart_msx (
 			ff_wait[4] <= 1'b1;
 		end
 	end
+
+	always @( posedge clk ) begin
+		if( !w_n_reset ) begin
+			ff_count	<= 26'h3FFFFFF;
+		end
+		else begin
+			ff_count	<= ff_count - 26'd1;
+		end
+	end
+
+	always @( posedge clk ) begin
+		if( !w_n_reset ) begin
+			ff_led		<= 1'b0;
+		end
+		else if( ff_count == 26'd0 ) begin
+			ff_led	<= ~ff_led;
+		end
+		else begin
+			//	hold
+		end
+	end
+
+	assign led		= ff_led;
+
+	assign w_adr	= { 14'd0, ta };
+	assign w_i_data	= td;
+	assign tint		= ~w_int_n;
 
 	// --------------------------------------------------------------------
 	//	PLL 3.579545MHz --> 42.95454MHz
@@ -227,16 +241,47 @@ module tang20cart_msx (
 		.n_sltsl			( 1'b1						),
 		.n_rd				( n_trd						),
 		.n_wr				( n_twr						),
-		.n_ioreq			( n_ce						),
+		.n_ioreq			( ~vdp_cs					),
 		.bus_address		( w_bus_address				),
-		.bus_read_ready		( w_bus_read_ready			),
 		.bus_read_data		( w_bus_read_data			),
+		.bus_read_data_en	( w_ack						),
 		.bus_write_data		( w_bus_write_data			),
-		.bus_io_read		( w_bus_io_read				),
-		.bus_io_write		( w_bus_io_write			),
-		.bus_memory_read	( 							),
-		.bus_memory_write	( 							)
+		.bus_io_req			( w_req						),
+		.bus_memory_req		( 							),
+		.bus_ack			( w_ack						),
+		.bus_write			( w_wrt						)
 	);
+
+	// --------------------------------------------------------------------
+	//	V9958 clone
+	// --------------------------------------------------------------------
+	vdp_inst u_v9958 (
+		.clk				( clk						),
+		.enable_state		( w_vdp_enable_state		),
+		.reset_n			( w_n_reset					),
+		.initial_busy		( w_sdram_busy				),
+		.req				( w_req						),
+		.ack				( w_ack						),
+		.wrt				( w_wrt						),
+		.address			( w_bus_address[1:0]		),		//	[ 1: 0];
+		.rdata				( w_bus_read_data			),		//	[ 7: 0];
+		.wdata				( w_bus_write_data			),		//	[ 7: 0];
+		.int_n				( w_int_n					),		
+		.p_dram_oe_n		( w_sdram_read_n			),		
+		.p_dram_we_n		( w_sdram_write_n			),		
+		.p_dram_address		( w_sdram_address[16:0]		),		//	[16: 0];
+		.p_dram_rdata		( w_sdram_rdata				),		//	[15: 0];
+		.p_dram_wdata		( w_sdram_wdata				),		//	[ 7: 0];
+		.pvideo_clk			( lcd_clk					),		
+		.pvideo_data_en		( lcd_de					),		
+		.pvideor			( w_lcd_red					),		//	[ 5: 0];
+		.pvideog			( w_lcd_green				),		//	[ 5: 0];
+		.pvideob			( w_lcd_blue				),		//	[ 5: 0];
+		.pvideohs_n			( lcd_hsync					),
+		.pvideovs_n			( lcd_vsync					),
+		.p_video_dh_clk		( w_dh_clk					),
+		.p_video_dl_clk		( w_dl_clk					)
+    );
 
 	// --------------------------------------------------------------------
 	//	SDRAM
@@ -264,37 +309,6 @@ module tang20cart_msx (
 		.O_sdram_ba			( O_sdram_ba				),
 		.O_sdram_dqm		( O_sdram_dqm				)
 	);
-
-	// --------------------------------------------------------------------
-	//	V9958 clone
-	// --------------------------------------------------------------------
-	vdp_inst u_v9958 (
-		.clk				( clk						),
-		.enable_state		( w_vdp_enable_state		),
-		.reset_n			( w_n_reset					),
-		.initial_busy		( w_sdram_busy				),
-		.req				( w_req						),
-		.ack				( w_ack						),
-		.wrt				( w_wr						),
-		.address			( w_bus_address[1:0]		),		//	[ 1: 0];
-		.rdata				( w_bus_read_data			),		//	[ 7: 0];
-		.wdata				( w_bus_write_data			),		//	[ 7: 0];
-		.int_n				( 							),		
-		.p_dram_oe_n		( w_sdram_read_n			),		
-		.p_dram_we_n		( w_sdram_write_n			),		
-		.p_dram_address		( w_sdram_address[16:0]		),		//	[16: 0];
-		.p_dram_rdata		( w_sdram_rdata				),		//	[15: 0];
-		.p_dram_wdata		( w_sdram_wdata				),		//	[ 7: 0];
-		.pvideo_clk			( lcd_clk					),		
-		.pvideo_data_en		( lcd_de					),		
-		.pvideor			( w_lcd_red					),		//	[ 5: 0];
-		.pvideog			( w_lcd_green				),		//	[ 5: 0];
-		.pvideob			( w_lcd_blue				),		//	[ 5: 0];
-		.pvideohs_n			( lcd_hsync					),
-		.pvideovs_n			( lcd_vsync					),
-		.p_video_dh_clk		( w_dh_clk					),
-		.p_video_dl_clk		( w_dl_clk					)
-    );
 
 	assign w_sdram_address[22:17]	= 6'b000000;
 	assign lcd_red					= w_lcd_red[5:1];
