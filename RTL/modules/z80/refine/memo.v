@@ -3,7 +3,6 @@
 		input	[2:0]	mcycle,
 		input	[7:0]	irb
 	);
-		jumpe = 1'b0;
 		call = 1'b0;
 		ldz = 1'b0;
 		ldw = 1'b0;
@@ -224,66 +223,6 @@
 					case( mcycle )
 					3'd2:
 							ldz = 1'b1;
-					default:
-						begin
-							//	hold
-						end
-					endcase
-			8'h18:
-					// jr e
-					case( mcycle )
-					3'd3:
-							jumpe = 1'b1;
-					default:
-						begin
-							//	hold
-						end
-					endcase
-			8'h38:
-					// jr c,e
-					case( mcycle )
-					3'd3:
-							jumpe = 1'b1;
-					default:
-						begin
-							//	hold
-						end
-					endcase
-			8'h30:
-					// jr nc,e
-					case( mcycle )
-					3'd3:
-							jumpe = 1'b1;
-					default:
-						begin
-							//	hold
-						end
-					endcase
-			8'h28:
-					// jr z,e
-					case( mcycle )
-					3'd3:
-							jumpe = 1'b1;
-					default:
-						begin
-							//	hold
-						end
-					endcase
-			8'h20:
-					// jr nz,e
-					case( mcycle )
-					3'd3:
-							jumpe = 1'b1;
-					default:
-						begin
-							//	hold
-						end
-					endcase
-			8'h10:
-					// djnz,e
-					case( mcycle )
-					3'd3:
-							jumpe = 1'b1;
 					default:
 						begin
 							//	hold
