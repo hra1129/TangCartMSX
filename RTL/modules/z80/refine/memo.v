@@ -3,13 +3,11 @@
 		input	[2:0]	mcycle,
 		input	[7:0]	irb
 	);
-		call = 1'b0;
 		ldz = 1'b0;
 		ldw = 1'b0;
 		exchangerp = 1'b0;
 		i_retn = 1'b0;
 		i_btr = 1'b0;
-		write = 1'b0;
 		xybit_undoc = 1'b0;
 
 		case( iset )
@@ -28,28 +26,6 @@
 				begin
 					exchangerp = 1'b1;
 				end
-			8'h70, 8'h71, 8'h72, 8'h73, 8'h74, 8'h75, 8'h77:
-				begin
-					// ld (hl),r
-					case( mcycle )
-					3'd2:
-							write = 1'b1;
-					endcase
-				end
-			8'h36:
-				begin
-					// ld (hl),n
-					case( mcycle )
-					3'd3:
-						begin
-							write = 1'b1;
-						end
-					default:
-						begin
-							//	hold
-						end
-					endcase
-				end
 			8'h3A:
 				begin
 					// ld a,(nn)
@@ -62,37 +38,11 @@
 						end
 					endcase
 				end
-			8'h02:
-				begin
-					// ld (bc),a
-					case( mcycle )
-					3'd2:
-							write = 1'b1;
-					default:
-						begin
-							//	hold
-						end
-					endcase
-				end
-			8'h12:
-				begin
-					// ld (de),a
-					case( mcycle )
-					3'd2:
-							write = 1'b1;
-					default:
-						begin
-							//	hold
-						end
-					endcase
-				end
 			8'h32:
 				begin
 					case( mcycle )
 					3'd2:
 							ldz = 1'b1;
-					3'd4:
-							write = 1'b1;
 					default:
 						begin
 							//	hold
@@ -119,85 +69,18 @@
 							ldz = 1'b1;
 					3'd3:
 							ldw = 1'b1;
-					3'd4:
-							write = 1'b1;
-					3'd5:
-							write = 1'b1;
 					default:
 						begin
 							//	hold
 						end
 					endcase
-			8'hF9:
-
-			8'hC5, 8'hD5, 8'hE5, 8'hF5:
-					// push qq
-					case( mcycle )
-					3'd2:
-							write = 1'b1;
-					3'd3:
-							write = 1'b1;
-					default:
-						begin
-							//	hold
-						end
-					endcase
-			8'hE3:
-					// ex (sp),hl
-					case( mcycle )
-					3'd3:
-							write = 1'b1;
-					3'd5:
-							write = 1'b1;
-					default:
-						begin
-							//	hold
-						end
-					endcase
-			8'h34:
-					// inc (hl)
-					case( mcycle )
-					3'd3:
-							write = 1'b1;
-					default:
-						begin
-							//	hold
-						end
-					endcase
-			8'h35:
-					// dec (hl)
-					case( mcycle )
-					3'd3:
-							write = 1'b1;
-					default:
-						begin
-							//	hold
-						end
-					endcase
-			8'h27:
-					// daa
 			8'h00:
 					if( nmicycle = 1'b1 ) begin
-							// nmi
-							case( mcycle )
-							3'd2:
-									write = 1'b1;
-							3'd3:
-									write = 1'b1;
-							default:
-								begin
-									//	hold
-								end
-							endcase
 					else if( intcycle = 1'b1 ) begin
 							// int (im 2)
 							case( mcycle )
 							3'd1:
 									ldz = 1'b1;
-							3'd2:
-									write = 1'b1;
-							3'd3:
-									write = 1'b1;
 							3'd4:
 									ldz = 1'b1;
 							default:
@@ -229,34 +112,22 @@
 						end
 					endcase
 			8'hCD:
-					// call nn
 					case( mcycle )
 					3'd2:
 							ldz = 1'b1;
 					3'd3:
 							ldw = 1'b1;
-					3'd4:
-							write = 1'b1;
-					3'd5:
-							write = 1'b1;
-							call = 1'b1;
 					default:
 						begin
 							//	hold
 						end
 					endcase
 			8'hC4, 8'hCC, 8'hD4, 8'hDC, 8'hE4, 8'hEC, 8'hF4, 8'hFC:
-					// call cc,nn
 					case( mcycle )
 					3'd2:
 							ldz = 1'b1;
 					3'd3:
 							ldw = 1'b1;
-					3'd4:
-							write = 1'b1;
-					3'd5:
-							write = 1'b1;
-							call = 1'b1;
 					default:
 						begin
 							//	hold
@@ -280,27 +151,6 @@
 							//	hold
 						end
 					endcase
-			8'hC7, 8'hCF, 8'hD7, 8'hDF, 8'hE7, 8'hEF, 8'hF7, 8'hFF:
-					case( mcycle )
-					3'd2:
-							write = 1'b1;
-					3'd3:
-							write = 1'b1;
-					default:
-						begin
-							//	hold
-						end
-					endcase
-			8'hD3:
-					// out (n),a
-					case( mcycle )
-					3'd3:
-							write = 1'b1;
-					default:
-						begin
-							//	hold
-						end
-					endcase
 			endcase
 		// --------------------------------------------------------------------
 		//  cb prefixed instructions
@@ -319,24 +169,7 @@
 				if( xy_state=2'b00 ) begin
 				else
 					xybit_undoc = 1'b1;
-					case( mcycle )
-					3'd3:
-						write = 1'b1;
-					default:
-						begin
-							//	hold
-						end
-					endcase
 				end
-			8'h06, 8'h16, 8'h0E, 8'h1E, 8'h2E, 8'h3E, 8'h26, 8'h36:
-				case( mcycle )
-				3'd3:
-					write = 1'b1;
-				default:
-					begin
-						//	hold
-					end
-				endcase
 			8'h40, 8'h41, 8'h42, 8'h43, 8'h44, 8'h45, 8'h47, 
 			8'h48, 8'h49, 8'h4A, 8'h4B, 8'h4C, 8'h4D, 8'h4F, 
 			8'h50, 8'h51, 8'h52, 8'h53, 8'h54, 8'h55, 8'h57, 
@@ -364,25 +197,7 @@
 				else
 				// set b,(ix+d),reg, undocumented
 					xybit_undoc = 1'b1;
-					case( mcycle )
-					3'd3:
-						write = 1'b1;
-					default:
-						begin
-							//	hold
-						end
-					endcase
 				end
-			8'hC6, 8'hCE, 8'hD6, 8'hDE, 8'hE6, 8'hEE, 8'hF6, 8'hFE:
-				// set b,(hl)
-				case( mcycle )
-				3'd3:
-					write = 1'b1;
-				default:
-					begin
-						//	hold
-					end
-				endcase
 			8'h80, 8'h81, 8'h82, 8'h83, 8'h84, 8'h85, 8'h87, 
 			8'h88, 8'h89, 8'h8A, 8'h8B, 8'h8C, 8'h8D, 8'h8F, 
 			8'h90, 8'h91, 8'h92, 8'h93, 8'h94, 8'h95, 8'h97, 
@@ -396,26 +211,7 @@
 				else
 				// res b,(ix+d),reg, undocumented
 					xybit_undoc = 1'b1;
-					case( mcycle )
-					3'd3:
-						write = 1'b1;
-					default:
-						begin
-							//	hold
-						end
-					endcase
 				end
-
-			8'h86, 8'h8E, 8'h96, 8'h9E, 8'hA6, 8'hAE, 8'hB6, 8'hBE:
-				// res b,(hl)
-				case( mcycle )
-				3'd3:
-					write = 1'b1;
-				default:
-					begin
-						//	hold
-					end
-				endcase
 			endcase
 
 		// --------------------------------------------------------------------
@@ -446,50 +242,6 @@
 							ldz = 1'b1;
 					3'd3:
 							ldw = 1'b1;
-					3'd4:
-							write = 1'b1;
-					3'd5:
-							write = 1'b1;
-					default:
-						begin
-							//	hold
-						end
-					endcase
-				end
-			8'hA0, 8'hA8, 8'hB0, 8'hB8:
-				begin
-					// ldi, ldd, ldir, lddr
-					case( mcycle )
-					3'd3:
-							write = 1'b1;
-					default:
-						begin
-							//	hold
-						end
-					endcase
-				end
-			8'h6F:
-				begin
-					// rld
-					case( mcycle )
-					3'd4:
-						begin
-							write = 1'b1;
-						end
-					default:
-						begin
-							//	hold
-						end
-					endcase
-				end
-			8'h67:
-				begin
-					// rrd
-					case( mcycle )
-					3'd4:
-						begin
-							write = 1'b1;
-						end
 					default:
 						begin
 							//	hold
@@ -510,25 +262,11 @@
 							//	hold
 						end
 					endcase
-			8'h41, 8'h49, 8'h51, 8'h59, 8'h61, 8'h69, 8'h71, 8'h79:
-					// out (c),r
-					// out (c),0
-					case( mcycle )
-					3'd2:
-						begin
-							write = 1'b1;
-						end
-					default:
-						begin
-							//	hold
-						end
-					endcase
 			8'hA2, 8'hAA, 8'hB2, 8'hBA:
 					// ini, ind, inir, indr
 					case( mcycle )
 					3'd3:
 						begin
-							write = 1'b1;
 							i_btr = 1'b1;
 						end
 					default:
@@ -542,7 +280,6 @@
 					case( mcycle )
 					3'd3:
 						begin
-							write = 1'b1;
 							i_btr = 1'b1;
 						end
 					default:
