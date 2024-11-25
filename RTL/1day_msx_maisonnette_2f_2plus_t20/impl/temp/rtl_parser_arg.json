@@ -107,7 +107,7 @@
  ],
  "LoopLimit" : 2000,
  "ResultFile" : "D:/github/HRA_product/TangCartMSX/RTL/1day_msx_maisonnette_2f_2plus_t20/impl/temp/rtl_parser.result",
- "Top" : "",
+ "Top" : "tang20cart_msx",
  "VerilogStd" : "verilog_2001",
  "VhdlStd" : "vhdl_93"
 }

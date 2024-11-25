@@ -45,7 +45,7 @@ module tang20cart_msx (
 	input	[1:0]	keys,			//	PIN88_MODE0_KEY1: keys[0]
 									//	PIN87_MODE1_KEY2: keys[1]
 	output			twait,			//	PIN80_SDIO_D2:
-	output			tint,			//	PINxx
+	output			tint,			//	PIN16
 
 	//	VGA Output
 	output			lcd_clk,		//	PIN77
@@ -142,16 +142,12 @@ module tang20cart_msx (
 	// --------------------------------------------------------------------
 	assign w_n_reset	= ff_reset[6];
 
-//	assign w_is_output	= 1'd0;			// *************************
-//	assign w_o_data		= 8'd0;			// *************************
-
-//	assign td			= w_is_output   ? w_o_data : 8'hZZ;
-	assign td			= { 4'd0, ff_led, ff_led };
+	assign td			= w_is_output   ? w_o_data : 8'hZZ;
 	assign tdir			= w_is_output;
 	assign twait		= ff_wait[4];
 
 	always @( posedge clk ) begin
-		ff_reset[5:0]	<= { ff_reset[4:0], 1'b1 };	//n_treset };
+		ff_reset[5:0]	<= { ff_reset[4:0], n_treset };
 		ff_reset[6]		<= ( ff_reset[5:1] != 5'd0 ) ? 1'b1 : 1'b0;
 	end
 
@@ -168,36 +164,36 @@ module tang20cart_msx (
 	// --------------------------------------------------------------------
 	//	PLL 3.579545MHz --> 42.95454MHz
 	// --------------------------------------------------------------------
-//	Gowin_PLL u_pll (
-//		.clkout				( clk						),		//	output		85.90908MHz
-//		.clkin				( tclock					)		//	input		3.579545MHz
-//	);
-
 	Gowin_PLL u_pll (
-		.clkout				( clk						),		//	output		86.4MHz
-		.clkin				( clk27m					)		//	input		27.0MHz
+		.clkout				( clk						),		//	output		85.90908MHz
+		.clkin				( tclock					)		//	input		3.579545MHz
 	);
 
-	always @( posedge clk ) begin
-		if( !w_n_reset ) begin
-			ff_count <= 'd0;
-		end
-		else if( ff_count == 'd53999999 ) begin
-			ff_count <= 'd0;
-		end
-		else begin
-			ff_count <= ff_count + 'd1;
-		end
-	end
+//	Gowin_PLL u_pll (
+//		.clkout				( clk						),		//	output		86.4MHz
+//		.clkin				( clk27m					)		//	input		27.0MHz
+//	);
 
-	always @( posedge clk ) begin
-		if( !w_n_reset ) begin
-			ff_led <= 'd0;
-		end
-		else if( ff_count == 'd53999999 ) begin
-			ff_led <= ff_led + 'd1;
-		end
-	end
+//	always @( posedge clk ) begin
+//		if( !w_n_reset ) begin
+//			ff_count <= 'd0;
+//		end
+//		else if( ff_count == 'd53999999 ) begin
+//			ff_count <= 'd0;
+//		end
+//		else begin
+//			ff_count <= ff_count + 'd1;
+//		end
+//	end
+//
+//	always @( posedge clk ) begin
+//		if( !w_n_reset ) begin
+//			ff_led <= 'd0;
+//		end
+//		else if( ff_count == 'd53999999 ) begin
+//			ff_led <= ff_led + 'd1;
+//		end
+//	end
 
 	// --------------------------------------------------------------------
 	//	DEBUGGER
@@ -219,7 +215,7 @@ module tang20cart_msx (
 //	);
 
 	// --------------------------------------------------------------------
-	//	DEBUGGER
+	//	MSX50BUS for cartridge side
 	// --------------------------------------------------------------------
 	ip_msxbus u_msxbus (
 		.n_reset			( w_n_reset					),

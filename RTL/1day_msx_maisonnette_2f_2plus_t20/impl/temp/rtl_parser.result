@@ -27,7 +27,7 @@
   "SubInsts" : [
    {
     "InstFile" : "D:/github/HRA_product/TangCartMSX/RTL/1day_msx_maisonnette_2f_2plus_t20/src/tang20cart_msx.v",
-    "InstLine" : 176,
+    "InstLine" : 167,
     "InstName" : "u_pll",
     "ModuleFile" : "D:/github/HRA_product/TangCartMSX/RTL/1day_msx_maisonnette_2f_2plus_t20/src/gowin_pll/gowin_pll.v",
     "ModuleLine" : 9,
@@ -35,7 +35,7 @@
    },
    {
     "InstFile" : "D:/github/HRA_product/TangCartMSX/RTL/1day_msx_maisonnette_2f_2plus_t20/src/tang20cart_msx.v",
-    "InstLine" : 224,
+    "InstLine" : 220,
     "InstName" : "u_msxbus",
     "ModuleFile" : "D:/github/HRA_product/TangCartMSX/RTL/1day_msx_maisonnette_2f_2plus_t20/src/msxbus/ip_msxbus.v",
     "ModuleLine" : 28,
@@ -43,7 +43,7 @@
    },
    {
     "InstFile" : "D:/github/HRA_product/TangCartMSX/RTL/1day_msx_maisonnette_2f_2plus_t20/src/tang20cart_msx.v",
-    "InstLine" : 248,
+    "InstLine" : 244,
     "InstName" : "u_sdram",
     "ModuleFile" : "D:/github/HRA_product/TangCartMSX/RTL/modules/sdram/ip_sdram_tangnano20k.v",
     "ModuleLine" : 57,
@@ -51,7 +51,7 @@
    },
    {
     "InstFile" : "D:/github/HRA_product/TangCartMSX/RTL/1day_msx_maisonnette_2f_2plus_t20/src/tang20cart_msx.v",
-    "InstLine" : 275,
+    "InstLine" : 271,
     "InstName" : "u_v9958",
     "ModuleFile" : "D:/github/HRA_product/TangCartMSX/RTL/modules/v9958/vdp_inst.v",
     "ModuleLine" : 58,

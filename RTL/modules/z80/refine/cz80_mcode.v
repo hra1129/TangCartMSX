@@ -2183,6 +2183,54 @@ module t80_mcode #(
 	assign noread	= func_noread( iset, mcycle, irb );
 
 	// --------------------------------------------------------------------
+	//	JUMP
+	// --------------------------------------------------------------------
+	function func_jump(
+		input	[1:0]	iset,
+		input	[2:0]	mcycle,
+		input	[7:0]	irb,
+		input			f,
+		input	[5:3]	ir,
+		input			nmicycle,
+		input			intcycle
+	);
+		case( iset )
+		// --------------------------------------------------------------------
+		//  unprefixed instructions
+		// --------------------------------------------------------------------
+		2'b00:
+			case( irb )
+			8'h00:
+				jump = ( !nmicycle && intcycle && mcycle == 3'd5 );
+			8'hC3, 8'hC9,
+			8'hC0, 8'hC8, 8'hD0, 8'hD8, 8'hE0, 8'hE8, 8'hF0, 8'hF8:
+				jump = ( mcycle == 3'd3 );
+			8'hC2, 8'hCA, 8'hD2, 8'hDA, 8'hE2, 8'hEA, 8'hF2, 8'hFA:
+				jump = ( mcycle == 3'd3 && is_cc_true( f, ir[5:3] ) );
+			default:
+				jump = 1'b0;
+			endcase
+		// --------------------------------------------------------------------
+		//  cb prefixed instructions
+		// --------------------------------------------------------------------
+		2'b01:
+			jump = 1'b0;
+		// --------------------------------------------------------------------
+		//	ED prefixed instructions
+		// --------------------------------------------------------------------
+		default:
+			case( irb )
+			8'h45, 8'h4D, 8'h55, 8'h5D, 8'h65, 8'h6D, 8'h75, 8'h7D:
+				jump = ( mcycle == 3'd3 );
+			default:
+				jump = 1'b0;
+			endcase
+		endcase
+	endfunction
+
+	assign jump = func_jump( iset, mcycle, irb, f, ir, nmicycle, intcycle );
+
+	// --------------------------------------------------------------------
 	//	CPL, SCF, CCF, LDI/LDIR/LDD/LDDR, CPI/CPIR/CPD/CPDR, EI, DI, HALT
 	// --------------------------------------------------------------------
 	assign i_cpl	= ( iset == 2'b00 && irb == 8'h2F );

@@ -71,7 +71,7 @@ module ip_msxbus (
 	reg		[7:0]	ff_bus_write_data;
 	reg				ff_bus_read = 1'b0;
 	reg				ff_bus_write = 1'b0;
-	reg				ff_buf_read_data_en = 1'b0;
+	reg				ff_bus_read_data_en = 1'b0;
 
 	// --------------------------------------------------------------------
 	//	Asynchronous switching and low-pass
@@ -146,15 +146,15 @@ module ip_msxbus (
 	always @( posedge clk ) begin
 		if( !n_reset ) begin
 			ff_bus_read_data	<= 8'd0;
-			ff_buf_read_data_en	<= 1'b0;
+			ff_bus_read_data_en	<= 1'b0;
 		end
 		else if( ff_n_rd == 1'b1 ) begin
 			ff_bus_read_data	<= 8'd0;
-			ff_buf_read_data_en	<= 1'b0;
+			ff_bus_read_data_en	<= 1'b0;
 		end
-		else if( !ff_buf_read_data_en && bus_read_ready ) begin
+		else if( !ff_bus_read_data_en && bus_read_ready ) begin
 			ff_bus_read_data	<= bus_read_data;
-			ff_buf_read_data_en	<= 1'b1;
+			ff_bus_read_data_en	<= 1'b1;
 		end
 		else begin
 			//	hold
@@ -175,5 +175,5 @@ module ip_msxbus (
 	//	MSX BUS response
 	// --------------------------------------------------------------------
 	assign o_data			= ff_bus_read_data;
-	assign is_output		= ff_buf_read_data_en & ~n_rd;
+	assign is_output		= ff_bus_read_data_en & ~n_rd;
 endmodule

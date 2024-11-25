@@ -12,7 +12,7 @@ Running routing......
 [60%] Routing Phase 0 completed
 [70%] Routing Phase 1 completed
 [80%] Routing Phase 2 completed
-WARN  (PR1014) : Generic routing resource will be used to clock signal 'clk27m_d' by the specified constraint. And then it may lead to the excessive delay or skew
+WARN  (PR1014) : Generic routing resource will be used to clock signal 'tclock_d' by the specified constraint. And then it may lead to the excessive delay or skew
 [90%] Routing Phase 3 completed
 Running timing analysis......
 [95%] Timing analysis completed
@@ -26,5 +26,5 @@ Generate file "D:\github\HRA_product\TangCartMSX\RTL\1day_msx_maisonnette_2f_2pl
 Generate file "D:\github\HRA_product\TangCartMSX\RTL\1day_msx_maisonnette_2f_2plus_t20\impl\pnr\Tang20kcartMSX.rpt.html" completed
 Generate file "D:\github\HRA_product\TangCartMSX\RTL\1day_msx_maisonnette_2f_2plus_t20\impl\pnr\Tang20kcartMSX.rpt.txt" completed
 Generate file "D:\github\HRA_product\TangCartMSX\RTL\1day_msx_maisonnette_2f_2plus_t20\impl\pnr\Tang20kcartMSX.tr.html" completed
-Wed Nov 13 23:09:19 2024
+Mon Nov 25 06:29:32 2024
 

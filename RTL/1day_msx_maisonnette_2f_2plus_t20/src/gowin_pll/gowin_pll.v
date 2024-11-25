@@ -4,7 +4,7 @@
 //Tool Version: V1.9.10.03 (64-bit)
 //Part Number: GW2AR-LV18QN88C8/I7
 //Device: GW2AR-18
-//Created Time: Thu Nov  7 06:37:12 2024
+//Created Time: Mon Nov 25 06:22:12 2024
 
 module Gowin_PLL (clkout, clkin);
 
@@ -39,11 +39,11 @@ PLL pll_inst (
     .FDLY({gw_gnd,gw_gnd,gw_gnd,gw_gnd})
 );
 
-defparam pll_inst.FCLKIN = "27";
+defparam pll_inst.FCLKIN = "3.579";
 defparam pll_inst.DYN_IDIV_SEL = "false";
-defparam pll_inst.IDIV_SEL = 4;
+defparam pll_inst.IDIV_SEL = 0;
 defparam pll_inst.DYN_FBDIV_SEL = "false";
-defparam pll_inst.FBDIV_SEL = 15;
+defparam pll_inst.FBDIV_SEL = 23;
 defparam pll_inst.DYN_ODIV_SEL = "false";
 defparam pll_inst.ODIV_SEL = 8;
 defparam pll_inst.PSDA_SEL = "0000";
