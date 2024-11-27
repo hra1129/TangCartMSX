@@ -80,7 +80,7 @@ module msx_midi_inst #(
 	reg						ff_ioreq;
 	reg						ff_ioreq_hold;
 	wire		[7:0]		w_rdata;
-	wire					w_rdata_en;
+	reg						ff_rdata_en;
 	wire		[5:0]		w_joystick_port1;
 	wire		[5:0]		w_joystick_port2;
 
@@ -113,9 +113,18 @@ module msx_midi_inst #(
 
 	always @( posedge clk ) begin
 		if( !n_reset ) begin
+			ff_rdata_en <= 1'd0;
+		end
+		else begin
+			ff_rdata_en <= ff_ioreq & ~n_rd;
+		end
+	end
+
+	always @( posedge clk ) begin
+		if( !n_reset ) begin
 			ff_rdata <= 8'd0;
 		end
-		else if( w_rdata_en ) begin
+		else if( ff_rdata_en ) begin
 			ff_rdata <= w_rdata;
 		end
 	end

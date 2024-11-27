@@ -38,11 +38,14 @@ module ip_ikascc_wrapper (
 );
 	wire			w_rom_pre_cs_n;
 	wire			w_rom_cs_n;
+	wire			w_ram_cs_n;
 	wire	[5:0]	w_rom_ma;
 	wire	[7:0]	w_scc_rdata;
 	wire			w_scc_rdata_en;
 	wire	[7:0]	w_rom_rdata;
 	wire			w_rom_rdata_en;
+	wire	[7:0]	w_ram_rdata;
+	wire			w_ram_rdata_en;
 	reg				ff_a14_inv;
 	reg		[3:0]	ff_scc_mask;
 	wire	[15:11]	w_abhi;
@@ -89,16 +92,16 @@ module ip_ikascc_wrapper (
 	// --------------------------------------------------------------------
 	//	RAM (Bank#2, #3)
 	// --------------------------------------------------------------------
-	ip_ram u_ram (
-		.clk				( clk							),
-		.n_cs				( w_ram_cs_n					),
-		.n_wr				( n_twr							),
-		.n_rd				( n_trd							),
-		.address			( { w_rom_ma[0], ta[12:0] }		),
-		.wdata				( wdata							),
-		.rdata				( w_ram_rdata					),
-		.rdata_en			( w_ram_rdata_en				)
-	);
+//	ip_ram u_ram (
+//		.clk				( clk							),
+//		.n_cs				( w_ram_cs_n					),
+//		.n_wr				( n_twr							),
+//		.n_rd				( n_trd							),
+//		.address			( { w_rom_ma[0], ta[12:0] }		),
+//		.wdata				( wdata							),
+//		.rdata				( w_ram_rdata					),
+//		.rdata_en			( w_ram_rdata_en				)
+//	);
 
 	// --------------------------------------------------------------------
 	//	Address bit14 inverter
@@ -125,9 +128,12 @@ module ip_ikascc_wrapper (
 						  (w_abhi[14:13] == 2'b00) ? ff_scc_mask[2]: ff_scc_mask[3];
 	assign w_n_scc_trd	= w_n_scc_mask | n_trd;
 	assign w_n_scc_twr	= w_n_scc_mask | n_twr;
-	assign w_abhi		= { ta[15], ta[14] ^ ff_a14_inv, ta[13:11] };
+//	assign w_abhi		= { ta[15], ta[14] ^ ff_a14_inv, ta[13:11] };
+	assign w_abhi		= ta[15:11];
 	assign w_rom_cs_n	= (w_rom_ma[5:1] == 4'd0) ? w_rom_pre_cs_n: 1'b1;
-	assign w_ram_cs_n	= (w_rom_ma[5:1] == 4'd1) ? w_rom_pre_cs_n: 1'b1;
-	assign rdata		= w_scc_rdata | w_rom_rdata | w_ram_rdata;
-	assign rdata_en		= w_scc_rdata_en | w_rom_rdata_en | w_ram_rdata_en;
+//	assign w_ram_cs_n	= (w_rom_ma[5:1] == 4'd1) ? w_rom_pre_cs_n: 1'b1;
+//	assign rdata		= w_scc_rdata | w_rom_rdata | w_ram_rdata;
+//	assign rdata_en		= w_scc_rdata_en | w_rom_rdata_en | w_ram_rdata_en;
+	assign rdata		= w_scc_rdata | w_rom_rdata;
+	assign rdata_en		= w_scc_rdata_en | w_rom_rdata_en;
 endmodule

@@ -123,6 +123,7 @@ module tang20cart_msx (
 	wire			n_ioreq;
 	wire			n_mereq;
 	wire			w_int_n;
+	reg		[3:0]	ff_count2;
 
 	// --------------------------------------------------------------------
 	//	OUTPUT Assignment
@@ -150,19 +151,40 @@ module tang20cart_msx (
 
 	always @( posedge clk ) begin
 		if( !w_n_reset ) begin
+			ff_count	<= 26'h0;
+		end
+		else if( vdp_cs ) begin
 			ff_count	<= 26'h3FFFFFF;
 		end
-		else begin
+		else if( ff_count != 26'd0 ) begin
 			ff_count	<= ff_count - 26'd1;
+		end
+		else begin
+			//	hold
 		end
 	end
 
 	always @( posedge clk ) begin
 		if( !w_n_reset ) begin
-			ff_led		<= 1'b0;
+			ff_led	<= 1'b1;
+		end
+		else if( vdp_cs ) begin
+			ff_led	<= 1'b0;
 		end
 		else if( ff_count == 26'd0 ) begin
-			ff_led	<= ~ff_led;
+			ff_led	<= 1'b1;
+		end
+		else begin
+			//	hold
+		end
+	end
+
+	always @( posedge clk ) begin
+		if( !w_n_reset ) begin
+			ff_count2 <= 4'd0;
+		end
+		else if( ff_count == 26'd0 ) begin
+			ff_count2 <= ff_count2 + 4'd1;
 		end
 		else begin
 			//	hold
@@ -173,7 +195,8 @@ module tang20cart_msx (
 
 	assign w_adr	= { 14'd0, ta };
 	assign w_i_data	= td;
-	assign tint		= ~w_int_n;
+//	assign tint		= ~w_int_n;
+	assign tint		= (ff_count2 == 4'hF);
 
 	// --------------------------------------------------------------------
 	//	PLL 3.579545MHz --> 42.95454MHz
@@ -187,27 +210,6 @@ module tang20cart_msx (
 //		.clkout				( clk						),		//	output		86.4MHz
 //		.clkin				( clk27m					)		//	input		27.0MHz
 //	);
-
-//	always @( posedge clk ) begin
-//		if( !w_n_reset ) begin
-//			ff_count <= 'd0;
-//		end
-//		else if( ff_count == 'd53999999 ) begin
-//			ff_count <= 'd0;
-//		end
-//		else begin
-//			ff_count <= ff_count + 'd1;
-//		end
-//	end
-//
-//	always @( posedge clk ) begin
-//		if( !w_n_reset ) begin
-//			ff_led <= 'd0;
-//		end
-//		else if( ff_count == 'd53999999 ) begin
-//			ff_led <= ff_led + 'd1;
-//		end
-//	end
 
 	// --------------------------------------------------------------------
 	//	DEBUGGER

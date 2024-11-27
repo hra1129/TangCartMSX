@@ -72,7 +72,7 @@ module tr_midi #(
 	input			pMidiRxD,
 	output			pMidiIntr
 );
-	parameter		c_target_clk_x2	=  22'd800000;	//	 4.00000[MHz] * 2
+	localparam		c_target_clk_x2	=  22'd800000;	//	 4.00000[MHz] * 2
 
 	reg		[21:0]	ff_clk_generator;				//	22[bit] > log2( c_base_clk + c_target_clk_x2 )
 	wire	[21:0]	w_clk_generator;

@@ -32,9 +32,6 @@ Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\tangnano_cartridge
 Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\tangnano_cartridge_t9\src\ikascc\IKASCC_modules\IKASCC_vrc_a.v'
 Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\tangnano_cartridge_t9\src\ikascc\IKASCC_modules\IKASCC_vrc_s.v'
 Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\tangnano_cartridge_t9\src\ikascc_wrap\ip_ikascc_wrap.v'
-Undeclared symbol 'w_ram_cs_n', assumed default net type 'wire'("D:\github\HRA_product\TangCartMSX\RTL\tangnano_cartridge_t9\src\ikascc_wrap\ip_ikascc_wrap.v":94)
-Undeclared symbol 'w_ram_rdata', assumed default net type 'wire'("D:\github\HRA_product\TangCartMSX\RTL\tangnano_cartridge_t9\src\ikascc_wrap\ip_ikascc_wrap.v":99)
-Undeclared symbol 'w_ram_rdata_en', assumed default net type 'wire'("D:\github\HRA_product\TangCartMSX\RTL\tangnano_cartridge_t9\src\ikascc_wrap\ip_ikascc_wrap.v":100)
 Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\tangnano_cartridge_t9\src\ikascc_wrap\ip_ram.v'
 Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\tangnano_cartridge_t9\src\msx_midi\i8251.v'
 Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\tangnano_cartridge_t9\src\msx_midi\i8251_clk_en.v'
@@ -45,7 +42,6 @@ Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\tangnano_cartridge
 Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\tangnano_cartridge_t9\src\msx_midi\i8253_control.v'
 Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\tangnano_cartridge_t9\src\msx_midi\i8253_counter.v'
 Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\tangnano_cartridge_t9\src\msx_midi\tr_midi.v'
-WARN  (EX3801) : Parameter 'c_target_clk_x2' becomes localparam in 'tr_midi' with formal parameter declaration list("D:\github\HRA_product\TangCartMSX\RTL\tangnano_cartridge_t9\src\msx_midi\tr_midi.v":75)
 Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\tangnano_cartridge_t9\src\msx_midi\tr_midi_inst.v'
 Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\tangnano_cartridge_t9\src\pwm\ip_pwm.v'
 Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\tangnano_cartridge_t9\src\ssg\ssg.v'
@@ -70,9 +66,6 @@ Compiling module 'IKASCC_player_control_s(RAMCTRL_ASYNC=1,ADDR_RAM_BASE=8'h40,AD
 Compiling module 'IKASCC_player_control_s(RAMCTRL_ASYNC=1,ADDR_RAM_BASE=8'h60,ADDR_FREQ_BASE=8'h86,ADDR_VOL=8'h8D,ADDR_MUTE=8'h8F,BIT_MUTE=3)'("D:\github\HRA_product\TangCartMSX\RTL\tangnano_cartridge_t9\src\ikascc\IKASCC_modules\IKASCC_player_s.v":372)
 Compiling module 'IKASCC_player_control_s(RAMCTRL_ASYNC=1,ADDR_RAM_BASE=8'h60,ADDR_FREQ_BASE=8'h88,ADDR_VOL=8'h8E,ADDR_MUTE=8'h8F,BIT_MUTE=4)'("D:\github\HRA_product\TangCartMSX\RTL\tangnano_cartridge_t9\src\ikascc\IKASCC_modules\IKASCC_player_s.v":372)
 Compiling module 'ip_msxmusic_rom'("D:\github\HRA_product\TangCartMSX\RTL\tangnano_cartridge_t9\src\ikaopll_wrap\ip_msxmusic_rom.v":5)
-Compiling module 'ip_ram'("D:\github\HRA_product\TangCartMSX\RTL\tangnano_cartridge_t9\src\ikascc_wrap\ip_ram.v":5)
-Extracting RAM for identifier 'ff_ram'("D:\github\HRA_product\TangCartMSX\RTL\tangnano_cartridge_t9\src\ikascc_wrap\ip_ram.v":15)
-WARN  (EX3670) : Actual bit length 1 differs from formal bit length 8 for port 'rdata'("D:\github\HRA_product\TangCartMSX\RTL\tangnano_cartridge_t9\src\ikascc_wrap\ip_ikascc_wrap.v":99)
 Compiling module 'ip_ikaopll_wrapper(BUILT_IN_MODE=1)'("D:\github\HRA_product\TangCartMSX\RTL\tangnano_cartridge_t9\src\ikaopll_wrap\ikaopll_wrap.v":7)
 Compiling module 'IKAOPLL(FAST_RESET=1,USE_PIPELINED_MULTIPLIER=1)'("D:\github\HRA_product\TangCartMSX\RTL\tangnano_cartridge_t9\src\ikaopll\IKAOPLL.v":1)
 Compiling module 'IKAOPLL_timinggen(FAST_RESET=1)'("D:\github\HRA_product\TangCartMSX\RTL\tangnano_cartridge_t9\src\ikaopll\IKAOPLL_modules\IKAOPLL_timinggen.v":1)
@@ -191,7 +184,6 @@ Compiling module 'i8253_control'("D:\github\HRA_product\TangCartMSX\RTL\tangnano
 Compiling module 'i8253_counter'("D:\github\HRA_product\TangCartMSX\RTL\tangnano_cartridge_t9\src\msx_midi\i8253_counter.v":64)
 Compiling module 'i8253_control(p_id=2'd1)'("D:\github\HRA_product\TangCartMSX\RTL\tangnano_cartridge_t9\src\msx_midi\i8253_control.v":64)
 Compiling module 'i8253_control(p_id=2'd2)'("D:\github\HRA_product\TangCartMSX\RTL\tangnano_cartridge_t9\src\msx_midi\i8253_control.v":64)
-WARN  (EX1998) : Net 'w_rdata_en' does not have a driver("D:\github\HRA_product\TangCartMSX\RTL\tangnano_cartridge_t9\src\msx_midi\tr_midi_inst.v":83)
 Compiling module 'ip_pwm'("D:\github\HRA_product\TangCartMSX\RTL\tangnano_cartridge_t9\src\pwm\ip_pwm.v":27)
 NOTE  (EX0101) : Current top module is "tangcart_msx"
 [5%] Running netlist conversion ...
