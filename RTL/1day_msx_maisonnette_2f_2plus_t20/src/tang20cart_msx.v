@@ -124,6 +124,9 @@ module tang20cart_msx (
 	wire			n_mereq;
 	wire			w_int_n;
 	reg		[3:0]	ff_count2;
+	reg				ff_vdp_cs1;
+	reg				ff_vdp_cs2;
+	wire			w_vdp_cs;
 
 	// --------------------------------------------------------------------
 	//	OUTPUT Assignment
@@ -131,7 +134,7 @@ module tang20cart_msx (
 	assign w_n_reset	= ff_reset[6];
 
 	assign td			= w_is_output   ? w_o_data : 8'hZZ;
-	assign tdir			= w_is_output;
+	assign tdir			= ~w_is_output;
 	assign twait		= ff_wait[4];
 
 	always @( posedge clk ) begin
@@ -151,9 +154,22 @@ module tang20cart_msx (
 
 	always @( posedge clk ) begin
 		if( !w_n_reset ) begin
+			ff_vdp_cs1 <= 1'b0;
+			ff_vdp_cs2 <= 1'b0;
+		end
+		else begin
+			ff_vdp_cs1 <= vdp_cs;
+			ff_vdp_cs2 <= ff_vdp_cs1;
+		end
+	end
+
+	assign w_vdp_cs	= ff_vdp_cs1 & ff_vdp_cs2;
+
+	always @( posedge clk ) begin
+		if( !w_n_reset ) begin
 			ff_count	<= 26'h0;
 		end
-		else if( vdp_cs ) begin
+		else if( w_vdp_cs ) begin
 			ff_count	<= 26'h3FFFFFF;
 		end
 		else if( ff_count != 26'd0 ) begin
@@ -168,7 +184,7 @@ module tang20cart_msx (
 		if( !w_n_reset ) begin
 			ff_led	<= 1'b1;
 		end
-		else if( vdp_cs ) begin
+		else if( w_vdp_cs ) begin
 			ff_led	<= 1'b0;
 		end
 		else if( ff_count == 26'd0 ) begin
@@ -195,8 +211,7 @@ module tang20cart_msx (
 
 	assign w_adr	= { 14'd0, ta };
 	assign w_i_data	= td;
-//	assign tint		= ~w_int_n;
-	assign tint		= (ff_count2 == 4'hF);
+	assign tint		= ~w_int_n;
 
 	// --------------------------------------------------------------------
 	//	PLL 3.579545MHz --> 42.95454MHz
@@ -243,7 +258,7 @@ module tang20cart_msx (
 		.n_sltsl			( 1'b1						),
 		.n_rd				( n_trd						),
 		.n_wr				( n_twr						),
-		.n_ioreq			( ~vdp_cs					),
+		.n_ioreq			( ~w_vdp_cs					),
 		.bus_address		( w_bus_address				),
 		.bus_read_data		( w_bus_read_data			),
 		.bus_read_data_en	( w_ack						),

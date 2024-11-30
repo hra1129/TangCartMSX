@@ -60,9 +60,7 @@
 //	-- Some minor bug fixes.
 //-----------------------------------------------------------------------------
 
-module t80_mcode #(
-	parameter			mode		= 0
-) (
+module cz80_mcode (
 	input	[7:0]		ir			,
 	input	[1:0]		iset		,
 	input	[2:0]		mcycle		,
@@ -126,7 +124,7 @@ module t80_mcode #(
 	localparam			flag_h	= 4;
 	localparam			flag_y	= 5;
 	localparam			flag_z	= 6;
-	localparam			flag_s	= 7
+	localparam			flag_s	= 7;
 
 	localparam	[2:0]	anone	= 3'd7;
 	localparam	[2:0]	abc		= 3'd0;
@@ -172,17 +170,17 @@ module t80_mcode #(
 		if( iset == 2'b00 ) begin
 			case( irb )
 			8'hCB:
-				prefix = 2'b01;
+				func_prefix = 2'b01;
 			8'hED:
-				prefix = 2'b10;
+				func_prefix = 2'b10;
 			8'hDD, 8'hFD:
-				prefix = 2'b11;
+				func_prefix = 2'b11;
 			default:
-				prefix = 2'b00;
+				func_prefix = 2'b00;
 			endcase
 		end
 		else begin
-			prefix = 2'b00;
+			func_prefix = 2'b00;
 		end
 	endfunction
 
@@ -196,7 +194,7 @@ module t80_mcode #(
 		input	[7:0]	irb,
 		input	[1:0]	xy_state,
 		input	[3:0]	mcycle,
-		input			f,
+		input	[7:0]	f,
 		input	[5:3]	ir
 	);
 		case( iset )
@@ -211,72 +209,72 @@ module t80_mcode #(
 			8'h0A, 8'h1A, 8'h02, 8'h12,
 			8'h86, 8'h8E, 8'h96, 8'h9E, 8'hA6, 8'hAE, 8'hB6, 8'hBE,
 			8'hC6, 8'hCE, 8'hD6, 8'hDE, 8'hE6, 8'hEE, 8'hF6, 8'hFE:
-				mcycles = 3'd2;
+				func_mcycles = 3'd2;
 			8'h36, 8'h01, 8'h11, 8'h21, 8'h31, 8'hC5, 8'hD5, 
 			8'hE5, 8'hF5, 8'hC1, 8'hD1, 8'hE1, 8'hF1, 8'h34, 8'h35,
 			8'h09, 8'h19, 8'h29, 8'h39, 8'hC3, 8'h18, 8'h10,
 			8'hC2, 8'hCA, 8'hD2, 8'hDA, 8'hE2, 8'hEA, 8'hF2, 8'hFA,
-			8'hC9, 8'hDB, 8'hD3
+			8'hC9, 8'hDB, 8'hD3,
 			8'hC7, 8'hCF, 8'hD7, 8'hDF, 8'hE7, 8'hEF, 8'hF7, 8'hFF:
-				mcycles = 3'd3;
+				func_mcycles = 3'd3;
 			8'h32, 8'h3A:
-				mcycles = 3'd4;
+				func_mcycles = 3'd4;
 			8'h2A, 8'h22, 8'hE3, 8'hCD:
-				mcycles = 3'd5;
+				func_mcycles = 3'd5;
 			8'h00:
 				if( nmicycle == 1'b1 ) begin
 					// nmi
-					mcycles = 3'd3;
+					func_mcycles = 3'd3;
 				end
 				else if( intcycle == 1'b1 ) begin
 					// int (im 2)
-					mcycles = 3'd5;
+					func_mcycles = 3'd5;
 				end
 				else begin
 					// nop
-					mcycles = 3'd1;
+					func_mcycles = 3'd1;
 				end
 			8'h38:														// jr c,e
 				if( mcycle == 3'd2 ) begin
-					mcycles = ( !f[flag_c] ) ? 3'd2: 3'd3;
+					func_mcycles = ( !f[flag_c] ) ? 3'd2: 3'd3;
 				end
 				else begin
-					mcycles = 3'd3;
+					func_mcycles = 3'd3;
 				end
 			8'h30:														// jr nc,e
 				if( mcycle == 3'd2 ) begin
-					mcycles = ( f[flag_c] ) ? 3'd2: 3'd3;
+					func_mcycles = ( f[flag_c] ) ? 3'd2: 3'd3;
 				end
 				else begin
-					mcycles = 3'd3;
+					func_mcycles = 3'd3;
 				end
 			8'h28:														// jr z,e
 				if( mcycle == 3'd2 ) begin
-					mcycles = ( !f[flag_z] ) ? 3'd2: 3'd3;
+					func_mcycles = ( !f[flag_z] ) ? 3'd2: 3'd3;
 				end
 				else begin
-					mcycles = 3'd3;
+					func_mcycles = 3'd3;
 				end
 			8'h20:														// jr nz,e
 				if( mcycle == 3'd2 ) begin
-					mcycles = ( f[flag_z] ) ? 3'd2: 3'd3;
+					func_mcycles = ( f[flag_z] ) ? 3'd2: 3'd3;
 				end
 				else begin
-					mcycles = 3'd3;
+					func_mcycles = 3'd3;
 				end
 			8'hC4, 8'hCC, 8'hD4, 8'hDC, 8'hE4, 8'hEC, 8'hF4, 8'hFC:		// call cc,nn
 				if( mcycle == 3'd3 ) begin
-					mcycles = ( is_cc_true( f, ir[5:3] ) ) ? 3'd5: 3'd3;
+					func_mcycles = ( is_cc_true( f, ir[5:3] ) ) ? 3'd5: 3'd3;
 				end
 				else begin
-					mcycles = 3'd5;
+					func_mcycles = 3'd5;
 				end
 			8'hC0, 8'hC8, 8'hD0, 8'hD8, 8'hE0, 8'hE8, 8'hF0, 8'hF8:	// ret cc
 				if( mcycle == 3'd1 ) begin
-					mcycles = ( is_cc_true( f, ir[5:3] ) ) ? 3'd3: 3'd1;
+					func_mcycles = ( is_cc_true( f, ir[5:3] ) ) ? 3'd3: 3'd1;
 				end
 				else begin
-					mcycles = 3'd3;
+					func_mcycles = 3'd3;
 				end
 			endcase
 
@@ -301,11 +299,11 @@ module t80_mcode #(
 			8'hE8, 8'hE9, 8'hEA, 8'hEB, 8'hEC, 8'hED, 8'hEF,
 			8'hF0, 8'hF1, 8'hF2, 8'hF3, 8'hF4, 8'hF5, 8'hF7,
 			8'hF8, 8'hF9, 8'hFA, 8'hFB, 8'hFC, 8'hFD, 8'hFF:			// set b,r
-				mcycles = ( xy_state != 2'b00 ) ? 3'd3: 3'd1;			// r/s (ix+d),reg, undocumented
+				func_mcycles = ( xy_state != 2'b00 ) ? 3'd3: 3'd1;			// r/s (ix+d),reg, undocumented
 			8'h06, 8'h16, 8'h0E, 8'h1E, 8'h2E, 8'h3E, 8'h26, 8'h36,		// rlc (hl), rl (hl), rrc (hl), rr (hl), sra (hl), srl (hl), sla (hl), sll (hl) (undocumented) / swap (hl)
 			8'hC6, 8'hCE, 8'hD6, 8'hDE, 8'hE6, 8'hEE, 8'hF6, 8'hFE,		// set b,(hl)
 			8'h86, 8'h8E, 8'h96, 8'h9E, 8'hA6, 8'hAE, 8'hB6, 8'hBE:		// res b,(hl)
-				mcycles = 3'd3;
+				func_mcycles = 3'd3;
 			8'h40, 8'h41, 8'h42, 8'h43, 8'h44, 8'h45, 8'h47,
 			8'h48, 8'h49, 8'h4A, 8'h4B, 8'h4C, 8'h4D, 8'h4F,
 			8'h50, 8'h51, 8'h52, 8'h53, 8'h54, 8'h55, 8'h57,
@@ -314,9 +312,9 @@ module t80_mcode #(
 			8'h68, 8'h69, 8'h6A, 8'h6B, 8'h6C, 8'h6D, 8'h6F,
 			8'h70, 8'h71, 8'h72, 8'h73, 8'h74, 8'h75, 8'h77,
 			8'h78, 8'h79, 8'h7A, 8'h7B, 8'h7C, 8'h7D, 8'h7F:			// bit b,r
-				mcycles = ( xy_state != 2'b00 ) ? 3'd2: 3'd1;			// bit b,(ix+d), undocumented
+				func_mcycles = ( xy_state != 2'b00 ) ? 3'd2: 3'd1;			// bit b,(ix+d), undocumented
 			8'h46, 8'h4E, 8'h56, 8'h5E, 8'h66, 8'h6E, 8'h76, 8'h7E:		// bit b,(hl)
-				mcycles = 3'd2;
+				func_mcycles = 3'd2;
 			8'h80, 8'h81, 8'h82, 8'h83, 8'h84, 8'h85, 8'h87, 
 			8'h88, 8'h89, 8'h8A, 8'h8B, 8'h8C, 8'h8D, 8'h8F, 
 			8'h90, 8'h91, 8'h92, 8'h93, 8'h94, 8'h95, 8'h97, 
@@ -325,7 +323,7 @@ module t80_mcode #(
 			8'hA8, 8'hA9, 8'hAA, 8'hAB, 8'hAC, 8'hAD, 8'hAF, 
 			8'hB0, 8'hB1, 8'hB2, 8'hB3, 8'hB4, 8'hB5, 8'hB7, 
 			8'hB8, 8'hB9, 8'hBA, 8'hBB, 8'hBC, 8'hBD, 8'hBF:			// res b,r
-				mcycles = (xy_state == 2'b00) ? 3'd1: 3'd3;			// res b,(ix+d),reg, undocumented
+				func_mcycles = (xy_state == 2'b00) ? 3'd1: 3'd3;			// res b,(ix+d),reg, undocumented
 			endcase
 
 		// --------------------------------------------------------------------
@@ -334,33 +332,33 @@ module t80_mcode #(
 		default:
 			case( irb )
 			8'h4B, 8'h5B, 8'h6B, 8'h7B:									// ld dd,(nn)
-				mcycles = 3'd5;
+				func_mcycles = 3'd5;
 			8'h43, 8'h53, 8'h63, 8'h73:									// ld (nn),dd
-				mcycles = 3'd5;
+				func_mcycles = 3'd5;
 			8'hA0, 8'hA8, 8'hB0, 8'hB8:									// ldi, ldd, ldir, lddr
-				mcycles = 3'd4;
+				func_mcycles = 3'd4;
 			8'hA1, 8'hA9, 8'hB1, 8'hB9:									// cpi, cpd, cpir, cpdr
-				mcycles = 3'd4;
+				func_mcycles = 3'd4;
 			8'h4A, 8'h5A, 8'h6A, 8'h7A:									// adc hl,ss
-				mcycles = 3'd3;
+				func_mcycles = 3'd3;
 			8'h42, 8'h52, 8'h62, 8'h72:									// sbc hl,ss
-				mcycles = 3'd3;
+				func_mcycles = 3'd3;
 			8'h6F:														// rld
-				mcycles = 3'd4;
+				func_mcycles = 3'd4;
 			8'h67:														// rrd
-				mcycles = 3'd4;
+				func_mcycles = 3'd4;
 			8'h45, 8'h4D, 8'h55, 8'h5D, 8'h65, 8'h6D, 8'h75, 8'h7D:	// reti, retn
-				mcycles = 3'd3;
+				func_mcycles = 3'd3;
 			8'h40, 8'h48, 8'h50, 8'h58, 8'h60, 8'h68, 8'h70, 8'h78:		// in r,(c)
-				mcycles = 3'd2;
+				func_mcycles = 3'd2;
 			8'h41, 8'h49, 8'h51, 8'h59, 8'h61, 8'h69, 8'h71, 8'h79:		// out (c),r, out (c),0
-				mcycles = 3'd2;
+				func_mcycles = 3'd2;
 			8'hA2, 8'hAA, 8'hB2, 8'hBA:									// ini, ind, inir, indr
-				mcycles = 3'd4;
+				func_mcycles = 3'd4;
 			8'hA3, 8'hAB, 8'hB3, 8'hBB:								// outi, outd, otir, otdr
-				mcycles = 3'd4;
+				func_mcycles = 3'd4;
 			default:
-				mcycles = 3'd1;
+				func_mcycles = 3'd1;
 			endcase
 		endcase
 	endfunction
@@ -698,9 +696,9 @@ module t80_mcode #(
 			// --------------------------------------------------------------------
 			case( irb )
 			8'h2A, 8'h22:
-				inc_wz = ( mcycle == 3'd4 );
+				func_inc_wz = ( mcycle == 3'd4 );
 			default:
-				inc_wz = 1'b0;
+				func_inc_wz = 1'b0;
 			endcase
 		default:
 			// --------------------------------------------------------------------
@@ -708,12 +706,14 @@ module t80_mcode #(
 			// --------------------------------------------------------------------
 			case( irb )
 			8'h4B, 8'h5B, 8'h6B, 8'h7B, 8'h43, 8'h53, 8'h63, 8'h73:
-				inc_wz = ( mcycle == 3'd4 );
+				func_inc_wz = ( mcycle == 3'd4 );
 			default:
-				inc_wz = 1'b0;
+				func_inc_wz = 1'b0;
 			endcase
 		endcase
 	endfunction
+
+	assign inc_wz	= func_inc_wz( iset, mcycle, irb );
 
 	// --------------------------------------------------------------------
 	//	increment/decrement for 16bits
@@ -727,8 +727,6 @@ module t80_mcode #(
 		input	[7:0]	f,
 		input	[5:3]	ir
 	);
-		func_incdec_16 = 4'h0;
-
 		case( iset )
 		// --------------------------------------------------------------------
 		//  unprefixed instructions
@@ -769,11 +767,9 @@ module t80_mcode #(
 					func_incdec_16 = 4'h0;
 				end
 			8'h03, 8'h13, 8'h23, 8'h33:
-				func_incdec_16[3:2] = 2'b01;
-				func_incdec_16[1:0] = dpair;
+				func_incdec_16 = { 2'b01, dpair };
 			8'h0B, 8'h1B, 8'h2B, 8'h3B:
-				func_incdec_16[3:2] = 2'b11;
-				func_incdec_16[1:0] = dpair;
+				func_incdec_16 = { 2'b11, dpair };
 			 8'hCD:
 				func_incdec_16 = ( mcycle == 3'd3 || mcycle == 3'd4 ) ? 4'hF: 4'h0;
 			 8'hC4, 8'hCC, 8'hD4, 8'hDC, 8'hE4, 8'hEC, 8'hF4, 8'hFC:
@@ -831,7 +827,6 @@ module t80_mcode #(
 				else begin
 					func_incdec_16 = 4'h0;
 				end
-
 			8'h45, 8'h4D, 8'h55, 8'h5D, 8'h65, 8'h6D, 8'h75, 8'h7D:
 				if( mcycle == 3'd2 || mcycle == 3'd3 ) begin
 					func_incdec_16 = 4'h7;
@@ -872,7 +867,7 @@ module t80_mcode #(
 		//  unprefixed instructions
 		// --------------------------------------------------------------------
 		 2'b00:
-			func_iorq = ( (irb == 8'hD3 || irb == 8'hDB) mcycle == 3'd3 );
+			func_iorq = ( (irb == 8'hD3 || irb == 8'hDB) && mcycle == 3'd3 );
 		// --------------------------------------------------------------------
 		//  CD prefixed instructions
 		// --------------------------------------------------------------------
@@ -893,7 +888,7 @@ module t80_mcode #(
 				func_iorq = 1'b0;
 			endcase
 		endcase
-	end
+	endfunction
 
 	assign iorq	= func_iorq( mcycle, iset, irb );
 
@@ -936,7 +931,7 @@ module t80_mcode #(
 				func_read_to_acc = 1'b0;
 			endcase
 		endcase
-	end
+	endfunction
 
 	assign read_to_acc = func_read_to_acc( iset, mcycle, irb );
 
@@ -1032,14 +1027,14 @@ module t80_mcode #(
 				func_read_to_reg = 1'b0;
 			endcase
 		endcase
-	end
+	endfunction
 
 	assign read_to_reg = func_read_to_reg( iset, mcycle, irb, xy_state );
 
 	// --------------------------------------------------------------------
 	//	BUSB
 	// --------------------------------------------------------------------
-	function func_set_busb_to(
+	function [3:0] func_set_busb_to(
 		input	[1:0]	iset,
 		input	[2:0]	mcycle,
 		input	[7:0]	irb,
@@ -1047,8 +1042,7 @@ module t80_mcode #(
 		input	[1:0]	dpair
 	);
 		if( mcycle == 3'd7 ) begin
-			func_set_busb_to[2:0] = sss;
-			func_set_busb_to[3] = 1'b0;
+			func_set_busb_to = { 1'b0, sss };
 		end
 		else begin
 			case( iset )
@@ -1086,7 +1080,7 @@ module t80_mcode #(
 				 8'h32:
 					func_set_busb_to = (mcycle == 3'd3) ? 4'h7: 4'd0;
 				 8'h22:
-					func_set_busb_to = (mcycle == 3'd3 ) ? 4'h5: (mcycle == 3'd4): 4'h4: 4'h0;
+					func_set_busb_to = (mcycle == 3'd3 ) ? 4'h5: ((mcycle == 3'd4) ? 4'h4: 4'h0);
 				 8'hC5, 8'hD5, 8'hE5, 8'hF5:
 					if( mcycle == 3'd1 ) begin
 						if( dpair == 2'b11 ) begin
@@ -1298,8 +1292,7 @@ module t80_mcode #(
 					end
 				 8'h41, 8'h49, 8'h51, 8'h59, 8'h61, 8'h69, 8'h71, 8'h79:
 					if( mcycle == 3'd1 ) begin
-						func_set_busb_to[2:0]	= ir[5:3];
-						func_set_busb_to[3]		= ( ir[5:3] == 3'd6 );
+						func_set_busb_to	= { ( ir[5:3] == 3'd6 ), ir[5:3] };
 					end
 					else begin
 						func_set_busb_to = 4'd0;
@@ -1329,7 +1322,7 @@ module t80_mcode #(
 				endcase
 			endcase
 		end
-	end
+	endfunction
 
 	assign set_busb_to = func_set_busb_to( iset, mcycle, irb, ir, dpair );
 
@@ -1343,8 +1336,6 @@ module t80_mcode #(
 		input	[7:0]	ir,
 		input	[1:0]	dpair
 	);
-		set_busa_to = 4'h0;
-
 		case( iset )
 		// --------------------------------------------------------------------
 		//  unprefixed instructions
@@ -1544,7 +1535,7 @@ module t80_mcode #(
 				func_set_busa_to = 4'h0;
 			endcase
 		endcase
-	end
+	endfunction
 
 	assign set_busa_to = func_set_busa_to( iset, mcycle, irb, ir, dpair );
 
@@ -1734,6 +1725,7 @@ module t80_mcode #(
 		//	ED prefixed instructions
 		// --------------------------------------------------------------------
 		default:
+			case( irb )
 			8'hA0, 8'hA8, 8'hB0, 8'hB8:
 				if( mcycle == 3'd2 ) begin
 					func_alu_op = 4'h0;
@@ -1741,7 +1733,7 @@ module t80_mcode #(
 				else begin
 					func_alu_op = { 1'b0, ir[5:3] };
 				end
-			8'hA1 ,  8'hA9 ,  8'hB1 ,  8'hB9:
+			8'hA1, 8'hA9, 8'hB1, 8'hB9:
 				if( mcycle == 3'd2 ) begin
 					func_alu_op = 4'h7;
 				end
@@ -1921,11 +1913,11 @@ module t80_mcode #(
 			case( irb )
 			8'h04, 8'h0C, 8'h14, 8'h1C, 8'h24, 8'h2C, 8'h3C,
 			8'h05, 8'h0D, 8'h15, 8'h1D, 8'h25, 8'h2D, 8'h3D:
-				preservec = 1'b1;
+				func_preservec = 1'b1;
 			8'h34, 8'h35:
-				preservec = ( mcycle == 3'd2 );
+				func_preservec = ( mcycle == 3'd2 );
 			default:
-				preservec = 1'b0;
+				func_preservec = 1'b0;
 			endcase
 		// --------------------------------------------------------------------
 		//  cb prefixed instructions
@@ -1933,16 +1925,16 @@ module t80_mcode #(
 		2'b01:
 			case( irb )
 			8'hA1, 8'hA9, 8'hB1, 8'hB9:
-				preservec = ( mcycle == 3'd2 );
+				func_preservec = ( mcycle == 3'd2 );
 			default:
-				preservec = 1'b1;
+				func_preservec = 1'b1;
 			endcase
 		default:
-			preservec = 1'b1;
+			func_preservec = 1'b1;
 		endcase
 	endfunction
 
-	assign func_preservec( iset, mcycle, irb );
+	assign preservec = func_preservec( iset, mcycle, irb );
 
 	// --------------------------------------------------------------------
 	//	Set address
@@ -1960,7 +1952,7 @@ module t80_mcode #(
 		if( mcycle == 3'd6 ) begin
 			func_set_addr_to = anone;
 		end
-		if( mcycle == 3'd7 ) begin
+		else if( mcycle == 3'd7 ) begin
 			if( iset != 2'b01 ) begin
 				func_set_addr_to = axy;
 			end
@@ -2048,7 +2040,7 @@ module t80_mcode #(
 				8'h28, 8'h29, 8'h2A, 8'h2B, 8'h2C, 8'h2D, 8'h2F, 
 				8'h30, 8'h31, 8'h32, 8'h33, 8'h34, 8'h35, 8'h37, 
 				8'h38, 8'h39, 8'h3A, 8'h3B, 8'h3C, 8'h3D, 8'h3F,
-				8'h06, 8'h16, 8'h0E, 8'h1E, 8'h2E, 8'h3E, 8'h26, 8'h36
+				8'h06, 8'h16, 8'h0E, 8'h1E, 8'h2E, 8'h3E, 8'h26, 8'h36,
 				8'hC0, 8'hC1, 8'hC2, 8'hC3, 8'hC4, 8'hC5, 8'hC7, 
 				8'hC8, 8'hC9, 8'hCA, 8'hCB, 8'hCC, 8'hCD, 8'hCF, 
 				8'hD0, 8'hD1, 8'hD2, 8'hD3, 8'hD4, 8'hD5, 8'hD7, 
@@ -2102,28 +2094,28 @@ module t80_mcode #(
 					func_set_addr_to = ( mcycle == 3'd3 || mcycle == 3'd4 ) ? azi: anone;
 				8'hA0, 8'hA8, 8'hB0, 8'hB8:
 					func_set_addr_to = ( mcycle == 3'd3 ) ? axy:
-								  ( mcycle == 3'd4 ) ? ade: anone;
+									   ( mcycle == 3'd4 ) ? ade: anone;
 				8'hA1, 8'hA9, 8'hB1, 8'hB9:
 					func_set_addr_to = ( mcycle == 3'd1 ) ? axy: anone;
 				8'h6F, 8'h67:
 					func_set_addr_to = ( mcycle == 3'd2 || mcycle == 3'd3 ) ? axy: anone;
 				8'h45, 8'h4D, 8'h55, 8'h5D, 8'h65, 8'h6D, 8'h75, 8'h7D:
 					func_set_addr_to = ( mcycle == 3'd1 || mcycle == 3'd2 ) ? asp: anone;
-				8'h40, 8'h48, 8'h50, 8'h58, 8'h60, 8'h68, 8'h70, 8'h78
+				8'h40, 8'h48, 8'h50, 8'h58, 8'h60, 8'h68, 8'h70, 8'h78,
 				8'h41, 8'h49, 8'h51, 8'h59, 8'h61, 8'h69, 8'h71, 8'h79:
 					func_set_addr_to = ( mcycle == 3'd1 ) ? abc: anone;
 				8'hA2, 8'hAA, 8'hB2, 8'hBA:
 					func_set_addr_to = ( mcycle == 3'd1 ) ? abc:
-								  ( mcycle == 3'd2 ) ? axy: anone;
+									   ( mcycle == 3'd2 ) ? axy: anone;
 				8'hA3, 8'hAB, 8'hB3, 8'hBB:
 					func_set_addr_to = ( mcycle == 3'd1 ) ? axy:
-								  ( mcycle == 3'd2 ) ? abc: anone;
+									   ( mcycle == 3'd2 ) ? abc: anone;
 				default:
 					func_set_addr_to = anone;
 				endcase
 			endcase
 		end
-	end
+	endfunction
 
 	assign set_addr_to = func_set_addr_to( iset, mcycle, irb, f, ir, nmicycle, intcycle, xy_state );
 
@@ -2255,7 +2247,7 @@ module t80_mcode #(
 		default:
 			func_jumpe = 1'b0;
 		endcase
-	end
+	endfunction
 
 	assign jumpe = func_jumpe( iset, mcycle, irb );
 
@@ -2270,13 +2262,13 @@ module t80_mcode #(
 		if( iset == 2'b00 ) begin
 			case( irb )
 			8'hCD, 8'hC4, 8'hCC, 8'hD4, 8'hDC, 8'hE4, 8'hEC, 8'hF4, 8'hFC:
-				call = ( mcycle == 3'd5 );
+				func_call = ( mcycle == 3'd5 );
 			default:
-				call = 1'b0;
+				func_call = 1'b0;
 			endcase
 		end
 		else begin
-			call = 1'b0;
+			func_call = 1'b0;
 		end
 	endfunction
 
@@ -2299,26 +2291,26 @@ module t80_mcode #(
 			case( irb )
 			8'h70, 8'h71, 8'h72, 8'h73, 8'h74, 8'h75, 8'h77,
 			8'h02, 8'h12:
-				write = ( mcycle == 3'd2 );
+				func_write = ( mcycle == 3'd2 );
 			8'h36, 8'h34, 8'h35, 8'hD3:
-				write = ( mcycle == 3'd3 );
+				func_write = ( mcycle == 3'd3 );
 			8'h32:
-				write = ( mcycle == 3'd4 );
+				func_write = ( mcycle == 3'd4 );
 			8'h22, 8'hCD, 8'hC4, 8'hCC, 8'hD4, 8'hDC, 8'hE4, 8'hEC, 8'hF4, 8'hFC:
-				write = ( mcycle == 3'd4 || mcycle == 3'd5 );
+				func_write = ( mcycle == 3'd4 || mcycle == 3'd5 );
 			8'hC5, 8'hD5, 8'hE5, 8'hF5, 8'hC7, 8'hCF, 8'hD7, 8'hDF, 8'hE7, 8'hEF, 8'hF7, 8'hFF:
-				write = ( mcycle == 3'd2 || mcycle == 3'd3 );
+				func_write = ( mcycle == 3'd2 || mcycle == 3'd3 );
 			8'hE3:
-				write = ( mcycle == 3'd3 || mcycle == 3'd5 );
+				func_write = ( mcycle == 3'd3 || mcycle == 3'd5 );
 			8'h00:
 				if( nmicycle || intcycle ) begin
-					write = ( mcycle == 3'd2 || mcycle == 3'd3 );
+					func_write = ( mcycle == 3'd2 || mcycle == 3'd3 );
 				end
 				else begin
-					write = 1'b0;
+					func_write = 1'b0;
 				end
 			default:
-				write = 1'b0;
+				func_write = 1'b0;
 			endcase
 		// --------------------------------------------------------------------
 		//  cb prefixed instructions
@@ -2350,17 +2342,17 @@ module t80_mcode #(
 			8'hB0, 8'hB1, 8'hB2, 8'hB3, 8'hB4, 8'hB5, 8'hB7, 
 			8'hB8, 8'hB9, 8'hBA, 8'hBB, 8'hBC, 8'hBD, 8'hBF:
 				if( xy_state != 2'b00 ) begin
-					write = ( mcycle == 3'd3 );
+					func_write = ( mcycle == 3'd3 );
 				end
 				else begin
-					write = 1'b0;
+					func_write = 1'b0;
 				end
 			8'h06, 8'h16, 8'h0E, 8'h1E, 8'h2E, 8'h3E, 8'h26, 8'h36,
 			8'hC6, 8'hCE, 8'hD6, 8'hDE, 8'hE6, 8'hEE, 8'hF6, 8'hFE,
 			8'h86, 8'h8E, 8'h96, 8'h9E, 8'hA6, 8'hAE, 8'hB6, 8'hBE:
-				write = ( mcycle == 3'd3 );
+				func_write = ( mcycle == 3'd3 );
 			default:
-				write = 1'b0;
+				func_write = 1'b0;
 			endcase
 		// --------------------------------------------------------------------
 		//	ED prefixed instructions
@@ -2368,21 +2360,261 @@ module t80_mcode #(
 		default:
 			case( irb )
 			8'h43, 8'h53, 8'h63, 8'h73:
-				write = ( mcycle == 3'd4 || mcycle == 3'd5 );
+				func_write = ( mcycle == 3'd4 || mcycle == 3'd5 );
 			8'hA0, 8'hA8, 8'hB0, 8'hB8, 8'hA2, 8'hAA, 8'hB2, 8'hBA,
 			8'hA3, 8'hAB, 8'hB3, 8'hBB:
-				write = ( mcycle == 3'd3 );
+				func_write = ( mcycle == 3'd3 );
 			8'h6F, 8'h67:
-				write = ( mcycle == 3'd4 );
+				func_write = ( mcycle == 3'd4 );
 			8'h41, 8'h49, 8'h51, 8'h59, 8'h61, 8'h69, 8'h71, 8'h79:
-				write = ( mcycle == 3'd2 );
+				func_write = ( mcycle == 3'd2 );
 			default:
-				write = 1'b0;
+				func_write = 1'b0;
 			endcase
 		endcase
-	end
+	endfunction
 
 	assign write = func_write( iset, mcycle, irb, xy_state );
+
+	// --------------------------------------------------------------------
+	//	ldz
+	// --------------------------------------------------------------------
+	function func_ldz(
+		input	[1:0]	iset,
+		input	[2:0]	mcycle,
+		input	[7:0]	irb,
+		input			nmicycle,
+		input			intcycle
+	);
+		case( iset )
+		// --------------------------------------------------------------------
+		//  unprefixed instructions
+		// --------------------------------------------------------------------
+		2'b00:
+			case( irb )
+			8'h3A, 8'h32, 8'h2A, 8'h22, 8'hC3, 8'hC9, 8'hCD,
+			8'hC2, 8'hCA, 8'hD2, 8'hDA, 8'hE2, 8'hEA, 8'hF2, 8'hFA,
+			8'hC4, 8'hCC, 8'hD4, 8'hDC, 8'hE4, 8'hEC, 8'hF4, 8'hFC,
+			8'hC0, 8'hC8, 8'hD0, 8'hD8, 8'hE0, 8'hE8, 8'hF0, 8'hF8:
+				func_ldz = ( mcycle == 3'd2 );
+			8'h00:
+				func_ldz = ( !nmicycle && intcycle && (mcycle == 3'd1 || mcycle == 3'd4) );
+			default:
+				func_ldz = 1'b0;
+			endcase
+		// --------------------------------------------------------------------
+		//  CD prefixed instructions
+		// --------------------------------------------------------------------
+		2'b01:
+			func_ldz = 1'b0;
+		// --------------------------------------------------------------------
+		//	ED prefixed instructions
+		// --------------------------------------------------------------------
+		default:
+			case( irb )
+			8'h4B, 8'h5B, 8'h6B, 8'h7B, 8'h43, 8'h53, 8'h63, 8'h73,
+			8'h45, 8'h4D, 8'h55, 8'h5D, 8'h65, 8'h6D, 8'h75, 8'h7D:
+				func_ldz = ( mcycle == 3'd2 );
+			default:
+				func_ldz = 1'b0;
+			endcase
+		endcase
+	endfunction
+
+	assign ldz	= func_ldz( iset, mcycle, irb, nmicycle, intcycle );
+
+	// --------------------------------------------------------------------
+	//	retn
+	// --------------------------------------------------------------------
+	function func_i_retn(
+		input	[1:0]	iset,
+		input	[2:0]	mcycle,
+		input	[7:0]	irb
+	);
+		case( iset )
+		// --------------------------------------------------------------------
+		//  unprefixed/CB prefixed instructions
+		// --------------------------------------------------------------------
+		2'b00, 2'b01:
+			func_i_retn = 1'b0;
+		// --------------------------------------------------------------------
+		//	ED prefixed instructions
+		// --------------------------------------------------------------------
+		default:
+			case( irb )
+			8'h45, 8'h4D, 8'h55, 8'h5D, 8'h65, 8'h6D, 8'h75, 8'h7D:
+				func_i_retn = ( mcycle == 3'd3 );
+			default:
+				func_i_retn = 1'b0;
+			endcase
+		endcase
+	endfunction
+
+	assign i_retn = func_i_retn( iset, mcycle, irb );
+
+	// --------------------------------------------------------------------
+	//	ldw
+	// --------------------------------------------------------------------
+	function func_ldw(
+		input	[1:0]	iset,
+		input	[2:0]	mcycle,
+		input	[7:0]	irb
+	);
+		case( iset )
+		// --------------------------------------------------------------------
+		//  unprefixed instructions
+		// --------------------------------------------------------------------
+		2'b00:
+			case( irb )
+			8'h2A, 8'h22, 8'hCD, 8'hC4, 8'hCC, 8'hD4, 8'hDC, 8'hE4, 8'hEC, 8'hF4, 8'hFC:
+				func_ldw = ( mcycle == 3'd3 );
+			default:
+				func_ldw = 1'b0;
+			endcase
+		// --------------------------------------------------------------------
+		//  CB prefixed instructions
+		// --------------------------------------------------------------------
+		2'b01:
+			func_ldw = 1'b0;
+		// --------------------------------------------------------------------
+		//	ED prefixed instructions
+		// --------------------------------------------------------------------
+		default:
+			case( irb )
+			8'h4B, 8'h5B, 8'h6B, 8'h7B, 8'h43, 8'h53, 8'h63, 8'h73:
+				func_ldw = ( mcycle == 3'd3 );
+			default:
+				func_ldw = 1'b0;
+			endcase
+		endcase
+	endfunction
+
+	assign ldw	= func_ldw( iset, mcycle, irb );
+
+	// --------------------------------------------------------------------
+	//	exchangerp
+	// --------------------------------------------------------------------
+	function func_exchangerp(
+		input	[1:0]	iset,
+		input	[2:0]	mcycle,
+		input	[7:0]	irb
+	);
+		case( iset )
+		// --------------------------------------------------------------------
+		//  unprefixed instructions
+		// --------------------------------------------------------------------
+		2'b00:
+			case( irb )
+			8'h40, 8'h41, 8'h42, 8'h43, 8'h44, 8'h45, 8'h47, 
+			8'h48, 8'h49, 8'h4A, 8'h4B, 8'h4C, 8'h4D, 8'h4F, 
+			8'h50, 8'h51, 8'h52, 8'h53, 8'h54, 8'h55, 8'h57, 
+			8'h58, 8'h59, 8'h5A, 8'h5B, 8'h5C, 8'h5D, 8'h5F, 
+			8'h60, 8'h61, 8'h62, 8'h63, 8'h64, 8'h65, 8'h67, 
+			8'h68, 8'h69, 8'h6A, 8'h6B, 8'h6C, 8'h6D, 8'h6F, 
+			8'h78, 8'h79, 8'h7A, 8'h7B, 8'h7C, 8'h7D, 8'h7F:
+				begin
+					func_exchangerp = 1'b1;
+				end
+			default:
+				func_exchangerp = 1'b0;
+			endcase
+		// --------------------------------------------------------------------
+		//  ED/CB prefixed instructions
+		// --------------------------------------------------------------------
+		default:
+			func_exchangerp = 1'b0;
+		endcase
+	endfunction
+
+	assign exchangerp	= func_exchangerp( iset, mcycle, irb );
+
+	// --------------------------------------------------------------------
+	//	i_btr
+	// --------------------------------------------------------------------
+	function func_i_btr(
+		input	[1:0]	iset,
+		input	[2:0]	mcycle,
+		input	[7:0]	irb
+	);
+		case( iset )
+		// --------------------------------------------------------------------
+		//  cb prefixed instructions
+		// --------------------------------------------------------------------
+		2'b00, 2'b01:
+			func_i_btr = 1'b0;
+		// --------------------------------------------------------------------
+		//	ED prefixed instructions
+		// --------------------------------------------------------------------
+		default:
+			case( irb )
+			8'hA2, 8'hAA, 8'hB2, 8'hBA, 8'hA3, 8'hAB, 8'hB3, 8'hBB:
+				func_i_btr = ( mcycle == 3'd3 );
+			default:
+				func_i_btr = 1'b0;
+			endcase
+		endcase
+	endfunction
+
+	assign i_btr		= func_i_btr( iset, mcycle, irb );
+
+	// --------------------------------------------------------------------
+	//	xybit_undoc
+	// --------------------------------------------------------------------
+	function func_xybit_undoc(
+		input	[1:0]	iset,
+		input	[2:0]	mcycle,
+		input	[7:0]	irb,
+		input	[1:0]	xy_state
+	);
+		case( iset )
+		// --------------------------------------------------------------------
+		//  cb prefixed instructions
+		// --------------------------------------------------------------------
+		2'b01:
+			case( irb )
+			8'h00, 8'h01, 8'h02, 8'h03, 8'h04, 8'h05, 8'h07, 
+			8'h10, 8'h11, 8'h12, 8'h13, 8'h14, 8'h15, 8'h17, 
+			8'h08, 8'h09, 8'h0A, 8'h0B, 8'h0C, 8'h0D, 8'h0F, 
+			8'h18, 8'h19, 8'h1A, 8'h1B, 8'h1C, 8'h1D, 8'h1F, 
+			8'h20, 8'h21, 8'h22, 8'h23, 8'h24, 8'h25, 8'h27, 
+			8'h28, 8'h29, 8'h2A, 8'h2B, 8'h2C, 8'h2D, 8'h2F, 
+			8'h30, 8'h31, 8'h32, 8'h33, 8'h34, 8'h35, 8'h37, 
+			8'h38, 8'h39, 8'h3A, 8'h3B, 8'h3C, 8'h3D, 8'h3F, 
+			8'h40, 8'h41, 8'h42, 8'h43, 8'h44, 8'h45, 8'h47, 
+			8'h48, 8'h49, 8'h4A, 8'h4B, 8'h4C, 8'h4D, 8'h4F, 
+			8'h50, 8'h51, 8'h52, 8'h53, 8'h54, 8'h55, 8'h57, 
+			8'h58, 8'h59, 8'h5A, 8'h5B, 8'h5C, 8'h5D, 8'h5F, 
+			8'h60, 8'h61, 8'h62, 8'h63, 8'h64, 8'h65, 8'h67, 
+			8'h68, 8'h69, 8'h6A, 8'h6B, 8'h6C, 8'h6D, 8'h6F, 
+			8'h70, 8'h71, 8'h72, 8'h73, 8'h74, 8'h75, 8'h77, 
+			8'h78, 8'h79, 8'h7A, 8'h7B, 8'h7C, 8'h7D, 8'h7F, 
+			8'hC0, 8'hC1, 8'hC2, 8'hC3, 8'hC4, 8'hC5, 8'hC7, 
+			8'hC8, 8'hC9, 8'hCA, 8'hCB, 8'hCC, 8'hCD, 8'hCF, 
+			8'hD0, 8'hD1, 8'hD2, 8'hD3, 8'hD4, 8'hD5, 8'hD7, 
+			8'hD8, 8'hD9, 8'hDA, 8'hDB, 8'hDC, 8'hDD, 8'hDF, 
+			8'hE0, 8'hE1, 8'hE2, 8'hE3, 8'hE4, 8'hE5, 8'hE7, 
+			8'hE8, 8'hE9, 8'hEA, 8'hEB, 8'hEC, 8'hED, 8'hEF, 
+			8'hF0, 8'hF1, 8'hF2, 8'hF3, 8'hF4, 8'hF5, 8'hF7, 
+			8'hF8, 8'hF9, 8'hFA, 8'hFB, 8'hFC, 8'hFD, 8'hFF, 
+			8'h80, 8'h81, 8'h82, 8'h83, 8'h84, 8'h85, 8'h87, 
+			8'h88, 8'h89, 8'h8A, 8'h8B, 8'h8C, 8'h8D, 8'h8F, 
+			8'h90, 8'h91, 8'h92, 8'h93, 8'h94, 8'h95, 8'h97, 
+			8'h98, 8'h99, 8'h9A, 8'h9B, 8'h9C, 8'h9D, 8'h9F, 
+			8'hA0, 8'hA1, 8'hA2, 8'hA3, 8'hA4, 8'hA5, 8'hA7, 
+			8'hA8, 8'hA9, 8'hAA, 8'hAB, 8'hAC, 8'hAD, 8'hAF, 
+			8'hB0, 8'hB1, 8'hB2, 8'hB3, 8'hB4, 8'hB5, 8'hB7, 
+			8'hB8, 8'hB9, 8'hBA, 8'hBB, 8'hBC, 8'hBD, 8'hBF:
+				func_xybit_undoc = ( xy_state != 2'b00 );
+			default:
+				func_xybit_undoc = 1'b0;
+			endcase
+		// --------------------------------------------------------------------
+		//	ED prefixed instructions
+		// --------------------------------------------------------------------
+		default:
+			func_xybit_undoc = 1'b0;
+		endcase
+	endfunction
 
 	// --------------------------------------------------------------------
 	//	CPL, SCF, CCF, LDI/LDIR/LDD/LDDR, CPI/CPIR/CPD/CPDR, EI, DI, HALT
@@ -2412,11 +2644,11 @@ module t80_mcode #(
 	assign exchangers	= ( iset == 2'b00 && irb == 8'hD9 );
 	assign jumpxy		= ( iset == 2'b00 && irb == 8'hE9 );
 	assign ldsphl		= ( iset == 2'b00 && irb == 8'hF9 );
-	assign special_ld	= ( iset == 2'b00 ) ?
+	assign special_ld	= ( iset == 2'b00 ) ? (
 							( irb == 8'h57 ) ? 3'd4:
 							( irb == 8'h5F ) ? 3'd5:
 							( irb == 8'h47 ) ? 3'd6:
-							( irb == 8'h4F ) ? 3'd7: 3'd0;
+							( irb == 8'h4F ) ? 3'd7: 3'd0 ): 3'd0;
 	assign rstp			= ( iset == 2'b00 && mcycle == 3'd3 &&
 			(irb == 8'hC7 || irb == 8'hCF || irb == 8'hD7 || irb == 8'hDF || 
 			 irb == 8'hE7 || irb == 8'hEF || irb == 8'hF7 || irb == 8'hFF) );
@@ -2424,8 +2656,8 @@ module t80_mcode #(
 	// --------------------------------------------------------------------
 	//	interrupt mode
 	// --------------------------------------------------------------------
-	assign imode		= ( iset == 2'b00 ) ?
+	assign imode		= ( iset == 2'b00 ) ? (
 							( irb == 8'h46 || irb == 8'h4E || irb == 8'h66 || irb == 8'h6E ) ? 2'b00:
 							( irb == 8'h56 || irb == 8'h76 ) ? 2'b01:
-							( irb == 8'h5E || irb == 8'h77 ) ? 2'b10: 2'b11;
+							( irb == 8'h5E || irb == 8'h77 ) ? 2'b10: 2'b11 ): 2'b00;
 endmodule

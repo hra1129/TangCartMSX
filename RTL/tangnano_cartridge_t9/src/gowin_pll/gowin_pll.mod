@@ -7,7 +7,7 @@
 
 -mod_name Gowin_PLL
 -file_name gowin_pll
--path D:/github/HRA_product/TangCartMSX/RTL/TangcartMSX/src/gowin_pll/
+-path D:/github/HRA_product/TangCartMSX/RTL/tangnano_cartridge_t9/src/gowin_pll/
 -type PLL
 -file_type vlg
 -dev_type GW1NR-9C

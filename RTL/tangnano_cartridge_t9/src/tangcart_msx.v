@@ -44,13 +44,9 @@ module tangcart_msx (
 	input			midi_in
 );
 
-`default_nettype none
-
 	reg		[6:0]	ff_reset = 7'd0;
 	reg		[4:0]	ff_wait = 5'b10000;
 	wire			clk;
-	reg		[4:0]	ff_1mhz;
-	wire			w_1mhz;
 	reg		[2:0]	ff_4mhz;
 	wire			w_mclk_pcen_n;
 	wire			w_n_reset;
@@ -82,16 +78,50 @@ module tangcart_msx (
 	//	interrupt
 	reg				ff_int;				//	0: normal, 1: interrupt
 
+	reg		[19:0]	ff_count;
+	reg		[5:0]	ff_led;
+
+	always @( posedge clk ) begin
+		if( !w_n_reset ) begin
+			ff_count <= 20'd0;
+		end
+		else if( n_tsltsl == 1'b0 ) begin
+			ff_count <= 20'd0;
+		end
+		else if( ff_count == 20'hFFFFF ) begin
+			ff_count <= ff_count + 20'd1;
+		end
+	end
+
+	always @( posedge clk ) begin
+		if( !w_n_reset ) begin
+			ff_led[0] <= 1'd1;
+		end
+		else if( ff_count != 18'hFFFFF ) begin
+			ff_led[0] <= 6'd0;
+		end
+		else begin
+			ff_led[0] <= 6'd1;
+		end
+	end
+
+	always @( posedge clk ) begin
+		ff_led[5:1] <= ~ta[15:11];
+	end
+
 	// --------------------------------------------------------------------
 	//	OUTPUT Assignment
 	// --------------------------------------------------------------------
-	assign w_out_data	= w_scc_data_en ? w_scc_data : 
-						  w_opm_data_en ? w_opm_data : w_ssg_data;
-	assign w_is_output	= w_scc_data_en | w_ssg_data_en;
+//	assign w_out_data	= w_scc_data_en ? w_scc_data : 
+//						  w_opm_data_en ? w_opm_data : w_ssg_data;
+//	assign w_is_output	= w_scc_data_en | w_opm_data_en | w_ssg_data_en;
+
+	assign w_out_data	= w_scc_data_en ? w_scc_data : w_ssg_data;
+	assign w_is_output	= 1'b0;	//	w_scc_data_en | w_ssg_data_en;
 
 	assign td			= w_is_output   ? w_out_data : 8'hZZ;
 	assign tdir			= w_is_output;
-	assign n_led		= 6'd0;
+	assign n_led		= ff_led;
 
 	// --------------------------------------------------------------------
 	//	Reset and wait

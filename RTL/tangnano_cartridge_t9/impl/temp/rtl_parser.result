@@ -1,13 +1,5 @@
 [
  {
-  "InstFile" : "D:/github/HRA_product/TangCartMSX/RTL/tangnano_cartridge_t9/src/ikascc_wrap/ip_ram.v",
-  "InstLine" : 5,
-  "InstName" : "ip_ram",
-  "ModuleFile" : "D:/github/HRA_product/TangCartMSX/RTL/tangnano_cartridge_t9/src/ikascc_wrap/ip_ram.v",
-  "ModuleLine" : 5,
-  "ModuleName" : "ip_ram"
- },
- {
   "InstFile" : "D:/github/HRA_product/TangCartMSX/RTL/tangnano_cartridge_t9/src/tangcart_msx.v",
   "InstLine" : 26,
   "InstName" : "tangcart_msx",
@@ -17,7 +9,7 @@
   "SubInsts" : [
    {
     "InstFile" : "D:/github/HRA_product/TangCartMSX/RTL/tangnano_cartridge_t9/src/tangcart_msx.v",
-    "InstLine" : 140,
+    "InstLine" : 170,
     "InstName" : "u_pll",
     "ModuleFile" : "D:/github/HRA_product/TangCartMSX/RTL/tangnano_cartridge_t9/src/gowin_pll/gowin_pll.v",
     "ModuleLine" : 10,
@@ -25,7 +17,7 @@
    },
    {
     "InstFile" : "D:/github/HRA_product/TangCartMSX/RTL/tangnano_cartridge_t9/src/tangcart_msx.v",
-    "InstLine" : 165,
+    "InstLine" : 195,
     "InstName" : "u_scc",
     "ModuleFile" : "D:/github/HRA_product/TangCartMSX/RTL/tangnano_cartridge_t9/src/ikascc_wrap/ip_ikascc_wrap.v",
     "ModuleLine" : 24,
@@ -348,12 +340,20 @@
       "ModuleFile" : "D:/github/HRA_product/TangCartMSX/RTL/tangnano_cartridge_t9/src/ikaopll_wrap/ip_msxmusic_rom.v",
       "ModuleLine" : 5,
       "ModuleName" : "ip_msxmusic_rom"
+     },
+     {
+      "InstFile" : "D:/github/HRA_product/TangCartMSX/RTL/tangnano_cartridge_t9/src/ikascc_wrap/ip_ikascc_wrap.v",
+      "InstLine" : 95,
+      "InstName" : "u_ram",
+      "ModuleFile" : "D:/github/HRA_product/TangCartMSX/RTL/tangnano_cartridge_t9/src/ikascc_wrap/ip_ram.v",
+      "ModuleLine" : 5,
+      "ModuleName" : "ip_ram"
      }
     ]
    },
    {
     "InstFile" : "D:/github/HRA_product/TangCartMSX/RTL/tangnano_cartridge_t9/src/tangcart_msx.v",
-    "InstLine" : 184,
+    "InstLine" : 214,
     "InstName" : "u_opll",
     "ModuleFile" : "D:/github/HRA_product/TangCartMSX/RTL/tangnano_cartridge_t9/src/ikaopll_wrap/ikaopll_wrap.v",
     "ModuleLine" : 7,
@@ -653,7 +653,7 @@
    },
    {
     "InstFile" : "D:/github/HRA_product/TangCartMSX/RTL/tangnano_cartridge_t9/src/tangcart_msx.v",
-    "InstLine" : 199,
+    "InstLine" : 229,
     "InstName" : "u_ssg",
     "ModuleFile" : "D:/github/HRA_product/TangCartMSX/RTL/tangnano_cartridge_t9/src/ssg/ssg_inst.v",
     "ModuleLine" : 58,
@@ -671,7 +671,7 @@
    },
    {
     "InstFile" : "D:/github/HRA_product/TangCartMSX/RTL/tangnano_cartridge_t9/src/tangcart_msx.v",
-    "InstLine" : 215,
+    "InstLine" : 245,
     "InstName" : "u_dcsg",
     "ModuleFile" : "D:/github/HRA_product/TangCartMSX/RTL/tangnano_cartridge_t9/src/dcsg_wrap/dcsg_wrap.v",
     "ModuleLine" : 7,
@@ -689,7 +689,7 @@
    },
    {
     "InstFile" : "D:/github/HRA_product/TangCartMSX/RTL/tangnano_cartridge_t9/src/tangcart_msx.v",
-    "InstLine" : 229,
+    "InstLine" : 259,
     "InstName" : "u_opm",
     "ModuleFile" : "D:/github/HRA_product/TangCartMSX/RTL/tangnano_cartridge_t9/src/ikaopm_wrap/ikaopm_wrap.v",
     "ModuleLine" : 7,
@@ -1211,7 +1211,7 @@
    },
    {
     "InstFile" : "D:/github/HRA_product/TangCartMSX/RTL/tangnano_cartridge_t9/src/tangcart_msx.v",
-    "InstLine" : 250,
+    "InstLine" : 280,
     "InstName" : "u_msx_midi",
     "ModuleFile" : "D:/github/HRA_product/TangCartMSX/RTL/tangnano_cartridge_t9/src/msx_midi/tr_midi_inst.v",
     "ModuleLine" : 58,
@@ -1355,7 +1355,7 @@
    },
    {
     "InstFile" : "D:/github/HRA_product/TangCartMSX/RTL/tangnano_cartridge_t9/src/tangcart_msx.v",
-    "InstLine" : 282,
+    "InstLine" : 312,
     "InstName" : "u_pwm",
     "ModuleFile" : "D:/github/HRA_product/TangCartMSX/RTL/tangnano_cartridge_t9/src/pwm/ip_pwm.v",
     "ModuleLine" : 27,

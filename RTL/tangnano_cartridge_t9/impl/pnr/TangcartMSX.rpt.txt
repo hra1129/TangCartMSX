@@ -12,14 +12,14 @@
   <Part Number>: GW1NR-LV9QN88PC6/I5
   <Device>: GW1NR-9
   <Device Version>: C
-  <Created Time>:Thu Nov 28 06:34:33 2024
+  <Created Time>:Thu Nov 28 21:53:10 2024
 
 
 2. PnR Details
 
   Running placement:
     Placement Phase 0: CPU time = 0h 0m 2s, Elapsed time = 0h 0m 2s
-    Placement Phase 1: CPU time = 0h 0m 0.19s, Elapsed time = 0h 0m 0.189s
+    Placement Phase 1: CPU time = 0h 0m 0.221s, Elapsed time = 0h 0m 0.221s
     Placement Phase 2: CPU time = 0h 0m 2s, Elapsed time = 0h 0m 2s
     Placement Phase 3: CPU time = 0h 0m 3s, Elapsed time = 0h 0m 3s
     Total Placement: CPU time = 0h 0m 7s, Elapsed time = 0h 0m 7s
@@ -32,7 +32,7 @@
  Generate output files:
     CPU time = 0h 0m 2s, Elapsed time = 0h 0m 2s
 
- Total Time and Memory Usage: CPU time = 0h 0m 16s, Elapsed time = 0h 0m 16s, Peak memory usage = 366MB
+ Total Time and Memory Usage: CPU time = 0h 0m 17s, Elapsed time = 0h 0m 17s, Peak memory usage = 392MB
 
 
 3. Resource Usage Summary
@@ -40,24 +40,25 @@
   ----------------------------------------------------------
   Resources                   | Usage
   ----------------------------------------------------------
-  Logic                       | 5713/8640  67%
-    --LUT,ALU,ROM16           | 5077(4268 LUT, 809 ALU, 0 ROM16)
+  Logic                       | 5615/8640  65%
+    --LUT,ALU,ROM16           | 4979(4171 LUT, 808 ALU, 0 ROM16)
     --SSRAM(RAM16)            | 106
-  Register                    | 3732/6693  56%
+  Register                    | 3718/6693  56%
     --Logic Register as Latch | 0/6480  0%
-    --Logic Register as FF    | 3721/6480  58%
+    --Logic Register as FF    | 3702/6480  58%
     --I/O Register as Latch   | 0/213  0%
-    --I/O Register as FF      | 11/213  6%
-  CLS                         | 3763/4320  88%
+    --I/O Register as FF      | 16/213  8%
+  CLS                         | 3753/4320  87%
   I/O Port                    | 52
   I/O Buf                     | 42
     --Input Buf               | 23
     --Output Buf              | 11
     --Inout Buf               | 8
   IOLOGIC                     | 0%
-  BSRAM                       | 54%
+  BSRAM                       | 81%
+    --SP                      | 8
     --SDPB                    | 4
-    --pROM                    | 9
+    --pROM                    | 8
     --pROMX9                  | 1
   DSP                         | 20%
     --MULT18X18               | 2
@@ -91,7 +92,7 @@
   -------------------------------
   Global Clock  | Usage       
   -------------------------------
-  PRIMARY       | 4/8(50%)
+  PRIMARY       | 3/8(38%)
   LW            | 8/8(100%)
   GCLK_PIN      | 2/3(67%)
   PLL           | 1/2(50%)
@@ -107,12 +108,11 @@
   -------------------------------------------
   tclock_d       | PRIMARY        |  TR
   clk            | PRIMARY        |  TR TL BR BL
-  u_opll/u_ikaopll/m_nc_sel_z_6| PRIMARY        |  TR BR
-  u_opm/u_ym2151/synced_mrst_n_58| PRIMARY        |  TL BL
-  n105_11        | LW             |  -
+  u_opm/u_ym2151/synced_mrst_n_59| PRIMARY        |  TL BL
+  n236_11        | LW             |  -
   ff_reset[6]    | LW             |  -
-  u_scc/u_ikascc/IKASCC_SYNC_MODE.u_player_main/n25_7| LW             |  -
   u_opll/u_ikaopll/n86_4| LW             |  -
+  u_opll/u_ikaopll/m_nc_sel_z_6| LW             |  -
   u_opll/u_ikaopll/n672_5| LW             |  -
   u_opm/u_ym2151/n26_8| LW             |  -
   u_opm/u_ym2151/n360_10| LW             |  -
