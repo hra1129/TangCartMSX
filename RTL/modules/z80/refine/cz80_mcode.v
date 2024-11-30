@@ -367,7 +367,7 @@ module cz80_mcode (
 		endcase
 	endfunction
 
-	assign mcycles	= func_mcycles( iset, irb, xy_state, mcycle, f, ir );
+	assign mcycles	= func_mcycles( iset, irb, xy_state, mcycle, f, ir[5:3] );
 
 	// --------------------------------------------------------------------
 	//	tstates
@@ -377,6 +377,7 @@ module cz80_mcode (
 		input	[1:0]	iset,
 		input	[7:0]	irb,
 		input	[7:0]	f,
+		input	[5:3]	ir,
 		input	[1:0]	xy_state
 	);
 		if( mcycle == 3'd7 ) begin
@@ -437,17 +438,20 @@ module cz80_mcode (
 						end
 					end
 				 8'h09, 8'h19, 8'h29, 8'h39:			// add hl,ss
-					if( mcycle == 3'd2 ) begin
+					if( mcycle == 3'd1 ) begin
 						func_tstates = 3'd4;
 					end
-					else if( mcycle == 3'd1 ) begin
+					else if( mcycle == 3'd2 ) begin
 						func_tstates = 3'd4;
 					end
 					else begin
 						func_tstates = 3'd3;
 					end
 				8'h18, 8'h20, 8'h28, 8'h30, 8'h38:		// jr e, jr nz,e, jr z,e, jr c,e, jr nc,e
-					if( mcycle == 3'd3 ) begin
+					if( mcycle == 3'd1 ) begin
+						func_tstates = 3'd4;
+					end
+					else if( mcycle == 3'd3 ) begin
 						func_tstates = 3'd5;
 					end
 					else begin
@@ -627,7 +631,7 @@ module cz80_mcode (
 		end
 	endfunction
 
-	assign tstates = func_tstates( mcycle, iset, irb, f, xy_state );
+	assign tstates = func_tstates( mcycle, iset, irb, f, ir[5:3], xy_state );
 
 	// --------------------------------------------------------------------
 	//	Increment PC
@@ -951,6 +955,7 @@ module cz80_mcode (
 		input	[1:0]	iset,
 		input	[2:0]	mcycle,
 		input	[7:0]	irb,
+		input	[5:3]	ir,
 		input	[1:0]	xy_state
 	);
 		case( iset )
@@ -959,6 +964,25 @@ module cz80_mcode (
 		// --------------------------------------------------------------------
 		 2'b00:
 			case( irb )
+			8'h04, 8'h0C, 8'h14, 8'h1C, 8'h24, 8'h2C, 8'h3C,
+			8'h05, 8'h0D, 8'h15, 8'h1D, 8'h25, 8'h2D, 8'h3D,
+			8'h07, 8'h17, 8'h27, 8'h0F, 8'h1F,
+			8'h40, 8'h41, 8'h42, 8'h43, 8'h44, 8'h45, 8'h47,
+			8'h48, 8'h49, 8'h4A, 8'h4B, 8'h4C, 8'h4D, 8'h4F,
+			8'h50, 8'h51, 8'h52, 8'h53, 8'h54, 8'h55, 8'h57,
+			8'h58, 8'h59, 8'h5A, 8'h5B, 8'h5C, 8'h5D, 8'h5F,
+			8'h60, 8'h61, 8'h62, 8'h63, 8'h64, 8'h65, 8'h67,
+			8'h68, 8'h69, 8'h6A, 8'h6B, 8'h6C, 8'h6D, 8'h6F,
+			8'h78, 8'h79, 8'h7A, 8'h7B, 8'h7C, 8'h7D, 8'h7F,
+			8'h80, 8'h81, 8'h82, 8'h83, 8'h84, 8'h85, 8'h87,
+			8'h88, 8'h89, 8'h8A, 8'h8B, 8'h8C, 8'h8D, 8'h8F,
+			8'h90, 8'h91, 8'h92, 8'h93, 8'h94, 8'h95, 8'h97,
+			8'h98, 8'h99, 8'h9A, 8'h9B, 8'h9C, 8'h9D, 8'h9F,
+			8'hA0, 8'hA1, 8'hA2, 8'hA3, 8'hA4, 8'hA5, 8'hA7,
+			8'hA8, 8'hA9, 8'hAA, 8'hAB, 8'hAC, 8'hAD, 8'hAF,
+			8'hB0, 8'hB1, 8'hB2, 8'hB3, 8'hB4, 8'hB5, 8'hB7,
+			8'hB8, 8'hB9, 8'hBA, 8'hBB, 8'hBC, 8'hBD, 8'hBF:
+				func_read_to_reg = 1'b1;
 			8'h06, 8'h0E, 8'h16, 8'h1E, 8'h26, 8'h2E, 8'h3E, 
 			8'h46, 8'h4E, 8'h56, 8'h5E, 8'h66, 8'h6E, 8'h7E, 
 			8'h86, 8'h8E, 8'h96, 8'h9E, 8'hA6, 8'hAE, 8'hB6, 8'hBE, 
@@ -987,7 +1011,7 @@ module cz80_mcode (
 			8'h10:
 				func_read_to_reg = ( mcycle == 3'd1 );
 			default:
-				func_read_to_reg = 1'b1;
+				func_read_to_reg = 1'b0;
 			endcase
 		// --------------------------------------------------------------------
 		//  cb prefixed instructions
@@ -1038,7 +1062,7 @@ module cz80_mcode (
 		endcase
 	endfunction
 
-	assign read_to_reg = func_read_to_reg( iset, mcycle, irb, xy_state );
+	assign read_to_reg = func_read_to_reg( iset, mcycle, irb, ir[5:3], xy_state );
 
 	// --------------------------------------------------------------------
 	//	BUSB
@@ -1338,7 +1362,7 @@ module cz80_mcode (
 	// --------------------------------------------------------------------
 	//	BUSA
 	// --------------------------------------------------------------------
-	function func_set_busa_to(
+	function [3:0] func_set_busa_to(
 		input	[1:0]	iset,
 		input	[2:0]	mcycle,
 		input	[7:0]	irb,
@@ -1425,7 +1449,7 @@ module cz80_mcode (
 			8'hA0, 8'hA1, 8'hA2, 8'hA3, 8'hA4, 8'hA5, 8'hA7, 
 			8'hA8, 8'hA9, 8'hAA, 8'hAB, 8'hAC, 8'hAD, 8'hAF, 
 			8'hB0, 8'hB1, 8'hB2, 8'hB3, 8'hB4, 8'hB5, 8'hB7, 
-			8'hB8, 8'hB9, 8'hBA, 8'hBB, 8'hBC, 8'hBD, 8'hBF, 
+			8'hB8, 8'hB9, 8'hBA, 8'hBB, 8'hBC, 8'hBD, 8'hBF,
 			8'h07, 8'h17, 8'h0F, 8'h1F:
 				func_set_busa_to = 4'd7;
 			8'h86, 8'h8E, 8'h96, 8'h9E, 8'hA6, 8'hAE, 8'hB6, 8'hBE,
@@ -1555,6 +1579,7 @@ module cz80_mcode (
 		input	[1:0]	iset,
 		input	[2:0]	mcycle,
 		input	[7:0]	irb,
+		input	[5:3]	ir,
 		input	[1:0]	xy_state
 	);
 		case( iset )
@@ -1600,6 +1625,8 @@ module cz80_mcode (
 				else begin
 					func_alu_op = { 1'b0, ir[5:3] };
 				end
+			8'h07, 8'h17, 8'h0F, 8'h1F:
+				func_alu_op = 4'h8;
 			default:
 				func_alu_op = { 1'b0, ir[5:3] };
 			endcase
@@ -1799,7 +1826,7 @@ module cz80_mcode (
 		endcase
 	endfunction
 
-	assign alu_op	= func_alu_op( iset, mcycle, irb, xy_state );
+	assign alu_op	= func_alu_op( iset, mcycle, irb, ir[5:3], xy_state );
 	assign alu_cpi	= ( iset[1] == 1'b1 && mcycle == 3'd2 &&
 			(irb == 8'hA1 || irb == 8'hA9 || irb == 8'hB1 || irb == 8'hB9) );
 
@@ -2049,7 +2076,6 @@ module cz80_mcode (
 				8'h28, 8'h29, 8'h2A, 8'h2B, 8'h2C, 8'h2D, 8'h2F, 
 				8'h30, 8'h31, 8'h32, 8'h33, 8'h34, 8'h35, 8'h37, 
 				8'h38, 8'h39, 8'h3A, 8'h3B, 8'h3C, 8'h3D, 8'h3F,
-				8'h06, 8'h16, 8'h0E, 8'h1E, 8'h2E, 8'h3E, 8'h26, 8'h36,
 				8'hC0, 8'hC1, 8'hC2, 8'hC3, 8'hC4, 8'hC5, 8'hC7, 
 				8'hC8, 8'hC9, 8'hCA, 8'hCB, 8'hCC, 8'hCD, 8'hCF, 
 				8'hD0, 8'hD1, 8'hD2, 8'hD3, 8'hD4, 8'hD5, 8'hD7, 
@@ -2072,6 +2098,8 @@ module cz80_mcode (
 					else begin
 						func_set_addr_to = anone;
 					end
+				8'h06, 8'h16, 8'h26, 8'h36, 8'h0E, 8'h1E, 8'h2E, 8'h3E:
+					func_set_addr_to = ( mcycle == 3'd1 || mcycle == 3'd2 || mcycle == 3'd7 ) ? axy: anone;
 				8'h40, 8'h41, 8'h42, 8'h43, 8'h44, 8'h45, 8'h47, 
 				8'h48, 8'h49, 8'h4A, 8'h4B, 8'h4C, 8'h4D, 8'h4F, 
 				8'h50, 8'h51, 8'h52, 8'h53, 8'h54, 8'h55, 8'h57, 
@@ -2126,7 +2154,7 @@ module cz80_mcode (
 		end
 	endfunction
 
-	assign set_addr_to = func_set_addr_to( iset, mcycle, irb, f, ir, nmicycle, intcycle, xy_state );
+	assign set_addr_to = func_set_addr_to( iset, mcycle, irb, f, ir[5:3], nmicycle, intcycle, xy_state );
 
 	// --------------------------------------------------------------------
 	//	no read
@@ -2229,7 +2257,7 @@ module cz80_mcode (
 		endcase
 	endfunction
 
-	assign jump = func_jump( iset, mcycle, irb, f, ir, nmicycle, intcycle );
+	assign jump = func_jump( iset, mcycle, irb, f, ir[5:3], nmicycle, intcycle );
 
 	// --------------------------------------------------------------------
 	//	JUMPE
@@ -2655,7 +2683,7 @@ module cz80_mcode (
 	assign exchangers	= ( iset == 2'b00 && irb == 8'hD9 );
 	assign jumpxy		= ( iset == 2'b00 && irb == 8'hE9 );
 	assign ldsphl		= ( iset == 2'b00 && irb == 8'hF9 );
-	assign special_ld	= ( iset == 2'b00 ) ? (
+	assign special_ld	= ( iset[1] == 1'b1 ) ? (
 							( irb == 8'h57 ) ? 3'd4:
 							( irb == 8'h5F ) ? 3'd5:
 							( irb == 8'h47 ) ? 3'd6:
@@ -2667,7 +2695,7 @@ module cz80_mcode (
 	// --------------------------------------------------------------------
 	//	interrupt mode
 	// --------------------------------------------------------------------
-	assign imode		= ( iset == 2'b00 ) ? (
+	assign imode		= ( iset[1] == 1'b1 ) ? (
 							( irb == 8'h46 || irb == 8'h4E || irb == 8'h66 || irb == 8'h6E ) ? 2'b00:
 							( irb == 8'h56 || irb == 8'h76 ) ? 2'b01:
 							( irb == 8'h5E || irb == 8'h77 ) ? 2'b10: 2'b11 ): 2'b11;
