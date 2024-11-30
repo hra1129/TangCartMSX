@@ -1396,10 +1396,18 @@ module cz80_mcode (
 			8'h01, 8'h11, 8'h21, 8'h31:
 				if( mcycle == 3'd2 ) begin
 					if( dpair == 2'b11 ) begin
+							func_set_busa_to = 4'h8;
+					end
+					else begin
+							func_set_busa_to = { 1'b0, dpair, 1'b1 };
+					end
+				end
+				else if( mcycle == 3'd3 ) begin
+					if( dpair == 2'b11 ) begin
 							func_set_busa_to = 4'h9;
 					end
 					else begin
-							func_set_busa_to = { 1'b1, dpair, 1'b0 };
+							func_set_busa_to = { 1'b0, dpair, 1'b0 };
 					end
 				end
 			8'h2A:
@@ -2130,8 +2138,8 @@ module cz80_mcode (
 				8'h4B, 8'h5B, 8'h6B, 8'h7B, 8'h43, 8'h53, 8'h63, 8'h73:
 					func_set_addr_to = ( mcycle == 3'd3 || mcycle == 3'd4 ) ? azi: anone;
 				8'hA0, 8'hA8, 8'hB0, 8'hB8:
-					func_set_addr_to = ( mcycle == 3'd3 ) ? axy:
-									   ( mcycle == 3'd4 ) ? ade: anone;
+					func_set_addr_to = ( mcycle == 3'd1 ) ? axy:
+									   ( mcycle == 3'd2 ) ? ade: anone;
 				8'hA1, 8'hA9, 8'hB1, 8'hB9:
 					func_set_addr_to = ( mcycle == 3'd1 ) ? axy: anone;
 				8'h6F, 8'h67:
@@ -2666,7 +2674,7 @@ module cz80_mcode (
 	assign i_bc		= ( iset == 2'b00 && (irb == 8'hA1 || irb == 8'hA9 || irb == 8'hB1 || irb == 8'hB9) && mcycle == 3'd3 );
 	assign i_rrd	= ( iset == 2'b00 && irb == 8'h67 && mcycle == 3'd4 );
 	assign i_rld	= ( iset == 2'b00 && irb == 8'h6F && mcycle == 3'd4 );
-	assign i_inrc	= ( iset == 2'b00 && 
+	assign i_inrc	= ( iset[1] == 1'b1 && 
 		(irb == 8'h40 || irb == 8'h48 || irb == 8'h50 || irb == 8'h58 || 
 		 irb == 8'h60 || irb == 8'h68 || irb == 8'h70 || irb == 8'h78 ) && mcycle == 3'd2 );
 	assign halt		= ( iset == 2'b00 && irb == 8'h76 );
