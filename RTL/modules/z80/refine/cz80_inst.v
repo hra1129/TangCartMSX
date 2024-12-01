@@ -60,8 +60,7 @@
 //	-- Some minor bug fixes.
 //-----------------------------------------------------------------------------
 
-module t80_inst #(
-	parameter		mode		= 0,	//	0 => z80, 1 => fast z80
+module cz80_inst #(
 	parameter		iowait		= 1		//	0 => single i/o cycle, 1 => std i/o cycle
 ) (
 	input			reset_n		,
@@ -129,7 +128,6 @@ module t80_inst #(
 	end
 
 	cz80 #(
-		.mode			( mode				),
 		.iowait			( iowait			)
 	) u_cz80 (
 		.cen			( enable			),
