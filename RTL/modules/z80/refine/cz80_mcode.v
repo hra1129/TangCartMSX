@@ -1190,7 +1190,7 @@ module cz80_mcode (
 							func_set_busb_to = { 1'b0, ir[5:4], 1'b0 };
 						end
 						else begin
-							func_set_busb_to = 4'h8;
+							func_set_busb_to = 4'h9;
 						end
 					end
 					else begin
@@ -1203,9 +1203,24 @@ module cz80_mcode (
 					else begin
 						func_set_busb_to = 4'h0;
 					end
-				 8'hCD, 8'hC4, 8'hCC, 8'hD4, 8'hDC, 8'hE4, 8'hEC, 8'hF4, 8'hFC:
+				 8'hCD:
 					if( mcycle == 3'd3 ) begin
 						func_set_busb_to = 4'hD;
+					end
+					else if( mcycle == 3'd4 ) begin
+						func_set_busb_to = 4'hC;
+					end
+					else begin
+						func_set_busb_to = 4'h0;
+					end
+				 8'hC4, 8'hCC, 8'hD4, 8'hDC, 8'hE4, 8'hEC, 8'hF4, 8'hFC:
+					if( mcycle == 3'd3 ) begin
+						if( is_cc_true( f, ir[5:3] ) ) begin
+							func_set_busb_to = 4'hD;
+						end
+						else begin
+							func_set_busb_to = 4'h0;
+						end
 					end
 					else if( mcycle == 3'd4 ) begin
 						func_set_busb_to = 4'hC;
