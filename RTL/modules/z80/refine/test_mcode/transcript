@@ -1,4 +1,0 @@
-# OpenFile D:/github/HRA_product/TangCartMSX/RTL/modules/z80/refine/test_mcode/vsim.wlf
-do D:/github/HRA_product/TangCartMSX/RTL/modules/z80/refine/test_mcode/wave.do
-add wave -position end  vsim:/tb/t80_mcode/Set_Addr_To
-add wave -position end  vsim:/tb/u_cz80_mcode/set_addr_to

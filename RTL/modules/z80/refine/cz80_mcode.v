@@ -2695,10 +2695,10 @@ module cz80_mcode (
 	assign i_scf	= ( iset == 2'b00 && irb == 8'h37 );
 	assign i_ccf	= ( iset == 2'b00 && irb == 8'h3F );
 	assign i_djnz	= ( iset == 2'b00 && irb == 8'h10 && (mcycle == 3'd1 || mcycle == 3'd2) );
-	assign i_bt		= ( iset == 2'b00 && (irb == 8'hA0 || irb == 8'hA8 || irb == 8'hB0 || irb == 8'hB8) && mcycle == 3'd3 );
-	assign i_bc		= ( iset == 2'b00 && (irb == 8'hA1 || irb == 8'hA9 || irb == 8'hB1 || irb == 8'hB9) && mcycle == 3'd3 );
-	assign i_rrd	= ( iset == 2'b00 && irb == 8'h67 && mcycle == 3'd4 );
-	assign i_rld	= ( iset == 2'b00 && irb == 8'h6F && mcycle == 3'd4 );
+	assign i_bt		= ( iset[1] == 1'b1 && (irb == 8'hA0 || irb == 8'hA8 || irb == 8'hB0 || irb == 8'hB8) && mcycle == 3'd3 );
+	assign i_bc		= ( iset[1] == 1'b1 && (irb == 8'hA1 || irb == 8'hA9 || irb == 8'hB1 || irb == 8'hB9) && mcycle == 3'd3 );
+	assign i_rrd	= ( iset[1] == 1'b1 && irb == 8'h67 && mcycle == 3'd4 );
+	assign i_rld	= ( iset[1] == 1'b1 && irb == 8'h6F && mcycle == 3'd4 );
 	assign i_inrc	= ( iset[1] == 1'b1 && 
 		(irb == 8'h40 || irb == 8'h48 || irb == 8'h50 || irb == 8'h58 || 
 		 irb == 8'h60 || irb == 8'h68 || irb == 8'h70 || irb == 8'h78 ) && mcycle == 3'd2 );
