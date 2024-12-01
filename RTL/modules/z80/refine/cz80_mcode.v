@@ -1279,7 +1279,7 @@ module cz80_mcode (
 				8'h4A, 8'h5A, 8'h6A, 8'h7A:
 					if( mcycle == 3'd2 ) begin
 						if( ir[5:4] == 3'd0 || ir[5:4] == 3'd1 || ir[5:4] == 3'd2 ) begin
-							func_set_busb_to = { 1'b0, ir[5:4], 1'b0 };
+							func_set_busb_to = { 1'b0, ir[5:4], 1'b1 };
 						end
 						else begin
 							func_set_busb_to = 4'h8;
@@ -1970,11 +1970,18 @@ module cz80_mcode (
 			default:
 				func_preservec = 1'b0;
 			endcase
+		2'b01:
+			func_preservec = 1'b0;
+		default:
 		// --------------------------------------------------------------------
 		//  cb prefixed instructions
 		// --------------------------------------------------------------------
-		default:
-			func_preservec = 1'b0;
+			case( irb )
+			8'hA1, 8'hA9, 8'hB1, 8'hB9:
+				func_preservec = ( mcycle == 3'd2 );
+			default:
+				func_preservec = 1'b0;
+			endcase
 		endcase
 	endfunction
 
@@ -2209,8 +2216,10 @@ module cz80_mcode (
 				endcase
 			default:
 				case( irb )
-				8'h42, 8'h52, 8'h62, 8'h72:
+				8'h42, 8'h52, 8'h62, 8'h72, 8'h4A, 8'h5A, 8'h6A, 8'h7A:
 					func_noread = ( mcycle == 3'd2 || mcycle == 3'd3 );
+				8'h6F:
+					func_noread = ( mcycle == 3'd2 );
 				default:
 					func_noread = 1'b0;
 				endcase
