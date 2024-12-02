@@ -60,9 +60,7 @@
 //	-- Some minor bug fixes.
 //-----------------------------------------------------------------------------
 
-module cz80 #(
-	parameter		iowait	= 0;	 // 0 => single i/o cycle, 1 => std i/o cycle
-) (
+module cz80 (
 	input			reset_n		,
 	input			clk_n		,
 	input			cen			,
@@ -727,8 +725,7 @@ module cz80 #(
 			// bus b
 			regaddrb_r;
 
-	id16 <= signed(regbusa) - 1 when incdec_16(3) = 1'b1 else
-			signed(regbusa) + 1;
+	assign id16	= incdec_16[3] ? (regbusa - 16'd1) : (regbusa + 16'd1);
 
 	process (save_alu_r, auto_wait_t1, alu_op_r, read_to_reg_r,
 			exchangedh, incdec_16, mcycle, tstate, wait_n)
@@ -760,90 +757,66 @@ module cz80 #(
 		end
 	end
 
-	process (save_mux, regbusb, regbusa_r, id16,
-			exchangedh, incdec_16, mcycle, tstate, wait_n)
-	begin
-		regdih <= save_mux;
-		regdil <= save_mux;
-		
-		if exchangedh = 1'b1 and tstate = 3 begin
-			regdih <= regbusb(15 downto 8);
-			regdil <= regbusb(7 downto 0);
-		end
-		if exchangedh = 1'b1 and tstate = 4 begin
-			regdih <= regbusa_r(15 downto 8);
-			regdil <= regbusa_r(7 downto 0);
-		end
+	assign regdih	= ( exchangedh && tstate == 3'd3 ) ? regbusb[15:8]:
+					  ( exchangedh && tstate == 3'd4 ) ? regbusa_r[15:8]:
+					  ( incdec_16[2] && ((tstate == 3'd2 && mcycle != 3'd1) || (tstate == 3'd3 && mcycle == 3'd1)) ) ? id16[15:8] : save_mux;
+	assign regdil	= ( exchangedh && tstate == 3'd3 ) ? regbusb[7:0]:
+					  ( exchangedh && tstate == 3'd4 ) ? regbusa_r[7:0]:
+					  ( incdec_16[2] && ((tstate == 3'd2 && mcycle != 3'd1) || (tstate == 3'd3 && mcycle == 3'd1)) ) ? id16[ 7:0] : save_mux;
 
-		if incdec_16(2) = 1'b1 and ((tstate = 2 and mcycle != 3'b001) or (tstate = 3 and mcycle = 3'b001)) begin
-			regdih <= std_logic_vector(id16(15 downto 8));
-			regdil <= std_logic_vector(id16(7 downto 0));
-		end
-	end
-
-	regs : cz80_registers
-		port map(
-			clk => clk_n,
-			cen => clken,
-			we_h => regweh,
-			we_l => regwel,
-			address_a => regaddra,
-			address_b => regaddrb,
-			address_c => regaddrc,
-			wdata_h => regdih,
-			wdata_l => regdil,
-			rdata_ah => regbusa(15 downto 8),
-			rdata_al => regbusa(7 downto 0),
-			rdata_bh => regbusb(15 downto 8),
-			rdata_bl => regbusb(7 downto 0),
-			rdata_ch => regbusc(15 downto 8),
-			rdata_cl => regbusc(7 downto 0));
+	cz80_registers u_regs (
+		.clk			( clk_n				),
+		.cen			( clken				),
+		.we_h			( regweh			),
+		.we_l			( regwel			),
+		.address_a		( regaddra			),
+		.address_b		( regaddrb			),
+		.address_c		( regaddrc			),
+		.wdata_h		( regdih			),
+		.wdata_l		( regdil			),
+		.rdata_ah		( regbusa[15:8]		),
+		.rdata_al		( regbusa[ 7:0]		),
+		.rdata_bh		( regbusb[15:8]		),
+		.rdata_bl		( regbusb[ 7:0]		),
+		.rdata_ch		( regbusc[15:8]		),
+		.rdata_cl		( regbusc[ 7:0]		)
+	);
 
 	// --------------------------------------------------------------------
 	// buses
 	// --------------------------------------------------------------------
-	process (clk_n)
-	begin
-		if clk_n'event and clk_n = 1'b1 begin
-			if clken = 1'b1 begin
-			case set_busb_to is
+	always @( posedge clk_n ) begin
+		if( clken ) begin
+			case( set_busb_to )
 			4'b0111:
 				busb <= acc;
-			4'b0000 | 4'b0001 | 4'b0010 | 4'b0011 | 4'b0100 | 4'b0101:
-				if set_busb_to(0) = 1'b1 begin
-					busb <= regbusb(7 downto 0);
-				else
-					busb <= regbusb(15 downto 8);
-				end
+			4'b0000, 4'b0001, 4'b0010, 4'b0011, 4'b0100, 4'b0101:
+				busb <= set_busb_to[0] ? regbusb[ 7:0]: regbusb[15:8];
 			4'b0110:
 				busb <= di_reg;
 			4'b1000:
-				busb <= std_logic_vector(sp(7 downto 0));
+				busb <= sp[7:0];
 			4'b1001:
-				busb <= std_logic_vector(sp(15 downto 8));
+				busb <= sp[15:8];
 			4'b1010:
-				busb <= "00000001";
+				busb <= 8'h01;
 			4'b1011:
 				busb <= f;
 			4'b1100:
-				busb <= std_logic_vector(pc(7 downto 0));
+				busb <= pc[7:0];
 			4'b1101:
-				busb <= std_logic_vector(pc(15 downto 8));
+				busb <= pc[15:8];
 			4'b1110:
-				busb <= "00000000";
-			others:
-				busb <= "--------";
-			end case;
+				busb <= 8'h00;
+			default:
+				busb <= 8'hXX;
+			endcase
 
-			case set_busa_to is
+			case( set_busa_to )
 			4'b0111:
 				busa <= acc;
-			4'b0000 | 4'b0001 | 4'b0010 | 4'b0011 | 4'b0100 | 4'b0101:
-				if set_busa_to(0) = 1'b1 begin
-					busa <= regbusa(7 downto 0);
-				else
-					busa <= regbusa(15 downto 8);
-				end
+			4'b0000, 4'b0001, 4'b0010, 4'b0011, 4'b0100, 4'b0101:
+				busa <= set_busa_to[0] ? regbusa[7:0]: regbusa[15:8];
 			4'b0110:
 				busa <= di_reg;
 			4'b1000:
@@ -851,14 +824,14 @@ module cz80 #(
 			4'b1001:
 				busa <= std_logic_vector(sp(15 downto 8));
 			4'b1010:
-				busa <= "00000000";
-			others:
-				busb <= "--------";
-			end case;
-			if xybit_undoc=1'b1 begin
+				busa <= 8'h00;
+			default:
+				busa <= 8'hXX;
+			endcase
+
+			if( xybit_undoc ) begin
 				busa <= di_reg;
 				busb <= di_reg;
-			end
 			end
 		end
 	end
@@ -880,15 +853,15 @@ module cz80 #(
 		end
 	end
 
-	assign mc			<= mcycle;
-	assign ts			<= tstate;
-	assign di_reg		<= di;
-	assign halt_n		<= ~halt_ff;
-	assign busak_n		<= ~busack;
-	assign intcycle_n	<= ~intcycle;
-	assign inte			<= inte_ff1;
-	assign iorq			<= iorq_i;
-	assign stop			<= i_djnz;
+	assign mc			= mcycle;
+	assign ts			= tstate;
+	assign di_reg		= di;
+	assign halt_n		= ~halt_ff;
+	assign busak_n		= ~busack;
+	assign intcycle_n	= ~intcycle;
+	assign inte			= inte_ff1;
+	assign iorq			= iorq_i;
+	assign stop			= i_djnz;
 
 	// --------------------------------------------------------------------
 	// syncronise inputs
@@ -917,9 +890,8 @@ module cz80 #(
 	// --------------------------------------------------------------------
 	// main state machine
 	// --------------------------------------------------------------------
-	process (reset_n, clk_n)
-	begin
-		if reset_n = 1'b0 begin
+	always @( posedge clk_n ) begin
+		if( !reset_n ) begin
 			mcycle <= 3'b001;
 			tstate <= 3'b000;
 			pre_xy_f_m <= 3'b000;
@@ -933,88 +905,92 @@ module cz80 #(
 			auto_wait_t1 <= 1'b0;
 			auto_wait_t2 <= 1'b0;
 			m1_n <= 1'b1;
-		else if clk_n'event and clk_n = 1'b1 begin
-			if cen = 1'b1 begin
-			if t_res = 1'b1 begin
+		end
+		else if( cen ) begin
+			if( t_res ) begin
 				auto_wait_t1 <= 1'b0;
-			else
-				auto_wait_t1 <= auto_wait or iorq_i;
+			end
+			else begin
+				auto_wait_t1 <= auto_wait | iorq_i;
 			end
 			auto_wait_t2 <= auto_wait_t1;
-			no_btr <= (i_bt and (not ir(4) or not f(flag_p))) or
-					(i_bc and (not ir(4) or f(flag_z) or not f(flag_p))) or
-					(i_btr and (not ir(4) or f(flag_z)));
-			if tstate = 2 begin
-				if setei = 1'b1 begin
+			no_btr <= (i_bt  & (~ir[4] | ~f[flag_p])) |
+					  (i_bc  & (~ir[4] |  f[flag_z] | ~f[flag_p])) |
+					  (i_btr & (~ir[4] |  f[flag_z]));
+			if( tstate == 3'd2 ) begin
+				if( setei ) begin
 					inte_ff1 <= 1'b1;
 					inte_ff2 <= 1'b1;
 				end
-				if i_retn = 1'b1 begin
+				if( i_retn ) begin
 					inte_ff1 <= inte_ff2;
 				end
 			end
-			if tstate = 3 begin
-				if setdi = 1'b1 begin
+			if( tstate == 3'd3 ) begin
+				if( setdi ) begin
 					inte_ff1 <= 1'b0;
 					inte_ff2 <= 1'b0;
 				end
 			end
-			if intcycle = 1'b1 or nmicycle = 1'b1 begin
+			if( intcycle || nmicycle ) begin
 				halt_ff <= 1'b0;
 			end
-			if mcycle = 3'b001 and tstate = 2 and wait_n = 1'b1 begin
+			if( tstate == 3'd2 && mcycle == 3'd1 && wait_n ) begin
 				m1_n <= 1'b1;
 			end
-			if busreq_s = 1'b1 and busack = 1'b1 begin
-			else
+			if( busreq_s && busack ) begin
+				//	hold
+			end
+			else begin
 				busack <= 1'b0;
-				if tstate = 2 and wait_n = 1'b0 begin
+				if( tstate == 3'd2 && !wait_n ) begin
 				else if t_res = 1'b1 begin
-					if halt = 1'b1 begin
+					if( halt ) begin
 						halt_ff <= 1'b1;
 					end
-					if busreq_s = 1'b1 begin
+					if( busreq_s ) begin
 						busack <= 1'b1;
-					else
-						tstate <= 3'b001;
-						if nextis_xy_fetch = 1'b1 begin
+					end
+					else begin
+						tstate <= 3'd1;
+						if( nextis_xy_fetch ) begin
 							mcycle <= 3'b110;
 							pre_xy_f_m <= mcycle;
-							if ir = "00110110" and mode = 0 begin
-								pre_xy_f_m <= 3'b010;
+							if( ir == 8'h36 ) begin
+								pre_xy_f_m <= 3'd2;
 							end
-						else if (mcycle = 3'b111) or
-							(mcycle = 3'b110 and mode = 1 and iset != 2'b01) begin
-							mcycle <= std_logic_vector(unsigned(pre_xy_f_m) + 1);
-						else if (mcycle = mcycles) or
-							no_btr = 1'b1 or
-							(mcycle = 3'b010 and i_djnz = 1'b1 and incdecz = 1'b1) begin
+						end
+						else if( mcycle == 3'd7 ) begin
+							mcycle <= pre_xy_f_m + 3'd1;
+						end
+						else if( (mcycle == mcycles) || no_btr || (mcycle == 3'd2 && i_djnz && incdecz) ) begin
 							m1_n <= 1'b0;
 							mcycle <= 3'b001;
 							intcycle <= 1'b0;
 							nmicycle <= 1'b0;
-							if nmi_s = 1'b1 and prefix = 2'b00 begin
+							if( nmi_s && prefix == 2'd0 ) begin
 								nmicycle <= 1'b1;
 								inte_ff1 <= 1'b0;
-							else if (inte_ff1 = 1'b1 and int_s = 1'b1) and prefix = 2'b00 and setei = 1'b0 begin
+							end
+							else if( (inte_ff1 && int_s) && prefix == 2'd0 && !setei ) begin
 								intcycle <= 1'b1;
 								inte_ff1 <= 1'b0;
 								inte_ff2 <= 1'b0;
 							end
-						else
+						end
+						else begin
 							mcycle <= std_logic_vector(unsigned(mcycle) + 1);
 						end
 					end
-				else
-					if (auto_wait = 1'b1 and auto_wait_t2 = 1'b0) nor
-						(iowait = 1 and iorq_i = 1'b1 and auto_wait_t1 = 1'b0) begin
-						tstate <= tstate + 1;
+				end
+				else begin
+					if( ~( (auto_wait && !auto_wait_t2) || (iorq_i && !auto_wait_t1) ) ) begin
+						tstate <= tstate + 3'd1;
 					end
 				end
 			end
-			if tstate = 0 begin
+			if( tstate == 3'd0 ) begin
 				m1_n <= 1'b0;
-			end
 			end
 		end
 	end
