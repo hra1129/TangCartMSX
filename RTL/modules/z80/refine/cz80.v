@@ -665,63 +665,63 @@ module cz80 (
 	// --------------------------------------------------------------------
 	// bc('), de('), hl('), ix and iy
 	// --------------------------------------------------------------------
-	process (clk_n)
-	begin
-		if clk_n'event and clk_n = 1'b1 begin
-			if clken = 1'b1 begin
-				// bus a / write
-				regaddra_r <= alternate & set_busa_to(2 downto 1);
-				if xy_ind = 1'b0 and xy_state != 2'b00 and set_busa_to(2 downto 1) = 2'b10 begin
-					regaddra_r <= xy_state(1) & 2'b11;
-				end
-
-				// bus b
-				regaddrb_r <= alternate & set_busb_to(2 downto 1);
-				if xy_ind = 1'b0 and xy_state != 2'b00 and set_busb_to(2 downto 1) = 2'b10 begin
-					regaddrb_r <= xy_state(1) & 2'b11;
-				end
-
-				// address from register
-				regaddrc <= alternate & set_addr_to(1 downto 0);
-				// jump (hl), ld sp,hl
-				if (jumpxy = 1'b1 or ldsphl = 1'b1) begin
-					regaddrc <= alternate & 2'b10;
-				end
-				if ((jumpxy = 1'b1 or ldsphl = 1'b1) and xy_state != 2'b00) or (mcycle = 3'b110) begin
-					regaddrc <= xy_state(1) & 2'b11;
-				end
-
-				if( i_djnz = 1'b1 and save_alu_r = 1'b1 ) begin
-					incdecz <= f_out(flag_z);
-				end
-				if (tstate = 2 or (tstate = 3 and mcycle = 3'b001)) and incdec_16(2 downto 0) = 3'b100 begin
-					if id16 = 0 begin
-						incdecz <= 1'b0;
-					else
-						incdecz <= 1'b1;
-					end
-				end
-
-				regbusa_r <= regbusa;
+	always @( posedge clk_n ) begin
+		if( clken ) begin
+			// bus a / write
+			if( !xy_ind && xy_state != 2'b00 && set_busa_to[2:1] == 2'b10 ) begin
+				regaddra_r <= { xy_state[1], 2'b11 };
 			end
+			else begin
+				regaddra_r <= { alternate, set_busa_to[2:1] };
+			end
+
+			// bus b
+			if( !xy_ind && xy_state != 2'b00 && set_busb_to[2:1] == 2'b10 ) begin
+				regaddrb_r <= { xy_state[1], 2'b11 };
+			end
+			else begin
+				regaddrb_r <= { alternate, set_busb_to[2:1] };
+			end
+
+			// address from register
+			regaddrc <= { alternate, set_addr_to[1:0] };
+			// jump (hl), ld sp,hl
+			if( jumpxy || ldsphl ) begin
+				regaddrc <= { alternate, 2'b10 };
+			end
+			if( ((jumpxy || ldsphl) && xy_state != 2'b00) || (mcycle == 3'd6) ) begin
+				regaddrc <= { xy_state[1], 2'b11 };
+			end
+
+			if( (tstate == 3'd2 || (tstate == 3'd3 && mcycle = 3'd1)) && incdec_16[2:0] == 3'd4 ) begin
+				if( id16 == 16'd0 ) begin
+					incdecz <= 1'b0;
+				end
+				else begin
+					incdecz <= 1'b1;
+				end
+			end
+			else if( i_djnz && save_alu_r ) begin
+				incdecz <= f_out[flag_z];
+			end
+
+			regbusa_r <= regbusa;
 		end
 	end
 
-	regaddra <=
+	assign regaddra	=
 			// 16 bit increment/decrement
-			alternate & incdec_16(1 downto 0) when (tstate = 2 or
-				(tstate = 3 and mcycle = 3'b001 and incdec_16(2) = 1'b1)) and xy_state = 2'b00 else
-			xy_state(1) & 2'b11 when (tstate = 2 or
-				(tstate = 3 and mcycle = 3'b001 and incdec_16(2) = 1'b1)) and incdec_16(1 downto 0) = 2'b10 else
+			( (tstate == 3'd2 || (tstate == 3'd3 && mcycle == 3'd1 && incdec_16[2])) && xy_state       == 2'd0 ) ? { alternate, incdec_16[1:0] }:
+			( (tstate == 3'd2 || (tstate == 3'd3 && mcycle == 3'd1 && incdec_16[2])) && incdec_16[1:0] == 2'd2 ) ? { xy_state[1], 2'b11 }:
 			// ex hl,dl
-			alternate & 2'b10 when exchangedh = 1'b1 and tstate = 3 else
-			alternate & 2'b01 when exchangedh = 1'b1 and tstate = 4 else
+			( exchangedh && tstate == 3'd3 ) ? { alternate, 2'b10 }:
+			( exchangedh && tstate == 3'd4 ) ? { alternate, 2'b01 }:
 			// bus a / write
 			regaddra_r;
 
-	regaddrb <=
+	assign regaddrb	=
 			// ex hl,dl
-			alternate & 2'b01 when exchangedh = 1'b1 and tstate = 3 else
+			( exchangedh && tstate == 3'd3 ) ? { alternate, 2'b01 }:
 			// bus b
 			regaddrb_r;
 
