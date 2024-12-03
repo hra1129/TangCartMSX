@@ -26,72 +26,66 @@
 
 module tb ();
 	localparam		clk_base	= 1_000_000_000/85_909;	//	ps
-	reg				RESET_n		;
-	reg				CLK_n		;
-	reg				ENABLE		;
-	reg				WAIT_n		;
-	reg				INT_n		;
-	reg				NMI_n		;
-	reg				BUSRQ_n		;
-	wire			M1_n		;
-	wire			MREQ_n		;
-	wire			IORQ_n		;
-	wire			RD_n		;
-	wire			WR_n		;
-	wire			RFSH_n		;
-	wire			HALT_n		;
-	wire			BUSAK_n		;
-	wire	[15:0]	A			;
-	wire	[7:0]	D			;
-	wire	[15:0]	p_PC		;
+	reg				reset_n		;
+	reg				clk_n		;
+	reg				enable		;
+	reg				wait_n		;
+	reg				int_n		;
+	reg				nmi_n		;
+	reg				busrq_n		;
+	wire			m1_n		;
+	wire			mreq_n		;
+	wire			iorq_n		;
+	wire			rd_n		;
+	wire			wr_n		;
+	wire			rfsh_n		;
+	wire			halt_n		;
+	wire			busak_n		;
+	wire	[15:0]	a			;
+	wire	[7:0]	d			;
 	reg		[7:0]	ff_d		;
 
 	reg		[4:0]	ff_clock;
 	reg		[4:0]	ff_clock_speed;
 
 	// --------------------------------------------------------------------
-	//	DUT
+	//	dut
 	// --------------------------------------------------------------------
-	T80_inst #(
-		.Mode		( 0				),		// 0 => Z80, 1 => Fast Z80, 2 => 8080, 3 => GB
-		.R800_MULU	( 0				),		// 0 => no MULU, 1=> R800 MULU
-		.IOWait		( 1				)		// 0 => Single I/O cycle, 1 => Std I/O cycle
-	) u_z80 (
-		.RESET_n	( RESET_n		),
-		.CLK_n		( CLK_n			),
-		.ENABLE		( ENABLE		),
-		.WAIT_n		( WAIT_n		),
-		.INT_n		( INT_n			),
-		.NMI_n		( NMI_n			),
-		.BUSRQ_n	( BUSRQ_n		),
-		.M1_n		( M1_n			),
-		.MREQ_n		( MREQ_n		),
-		.IORQ_n		( IORQ_n		),
-		.RD_n		( RD_n			),
-		.WR_n		( WR_n			),
-		.RFSH_n		( RFSH_n		),
-		.HALT_n		( HALT_n		),
-		.BUSAK_n	( BUSAK_n		),
-		.A			( A				),
-		.D			( D				),
-		.p_PC		( p_PC			)
+	cz80_inst u_z80 (
+		.reset_n	( reset_n		),
+		.clk_n		( clk_n			),
+		.enable		( enable		),
+		.wait_n		( wait_n		),
+		.int_n		( int_n			),
+		.nmi_n		( nmi_n			),
+		.busrq_n	( busrq_n		),
+		.m1_n		( m1_n			),
+		.mreq_n		( mreq_n		),
+		.iorq_n		( iorq_n		),
+		.rd_n		( rd_n			),
+		.wr_n		( wr_n			),
+		.rfsh_n		( rfsh_n		),
+		.halt_n		( halt_n		),
+		.busak_n	( busak_n		),
+		.a			( a				),
+		.d			( d				)
 	);
 
 	//				         write  read
-	assign D		= RD_n ? 8'dz : ff_d;
+	assign d		= rd_n ? 8'dz : ff_d;
 
 	// --------------------------------------------------------------------
 	//	clock
 	// --------------------------------------------------------------------
 	always #(clk_base/2) begin
-		CLK_n <= ~CLK_n;
+		clk_n <= ~clk_n;
 	end
 
 	// --------------------------------------------------------------------
 	//	clock divider
 	// --------------------------------------------------------------------
-	always @( posedge CLK_n ) begin
-		if( !RESET_n ) begin
+	always @( posedge clk_n ) begin
+		if( !reset_n ) begin
 			ff_clock <= 5'd1;
 		end
 		else if( ff_clock == 5'd0 ) begin
@@ -102,22 +96,22 @@ module tb ();
 		end
 	end
 
-	assign ENABLE = (ff_clock == 5'd0 );
+	assign enable = (ff_clock == 5'd0 );
 
 	// --------------------------------------------------------------------
-	//	Tasks
+	//	tasks
 	// --------------------------------------------------------------------
-	always @( posedge CLK_n ) begin
-		if( !RESET_n ) begin
+	always @( posedge clk_n ) begin
+		if( !reset_n ) begin
 			ff_d <= 8'd0;
 		end
 		else begin
-			case( A[3:0] )
-			4'd0:		ff_d <= 8'hDD;	//	LD  IX, 3423h
+			case( a[3:0] )
+			4'd0:		ff_d <= 8'hdd;	//	ld  ix, 3423h
 			4'd1:		ff_d <= 8'h21;
 			4'd2:		ff_d <= 8'h23;
 			4'd3:		ff_d <= 8'h34;
-			4'd4:		ff_d <= 8'h21;	//	LD  HL, 5645h
+			4'd4:		ff_d <= 8'h21;	//	ld  hl, 5645h
 			4'd5:		ff_d <= 8'h45;
 			4'd6:		ff_d <= 8'h56;
 			4'd7:		ff_d <= 8'h00;
@@ -135,47 +129,47 @@ module tb ();
 	end
 
 	// --------------------------------------------------------------------
-	//	Test bench
+	//	test bench
 	// --------------------------------------------------------------------
 	initial begin
-		RESET_n		= 0;
-		CLK_n		= 1;
-		WAIT_n		= 1;
-		INT_n		= 1;
-		NMI_n		= 1;
-		BUSRQ_n		= 1;
+		reset_n		= 0;
+		clk_n		= 1;
+		wait_n		= 1;
+		int_n		= 1;
+		nmi_n		= 1;
+		busrq_n		= 1;
 		ff_clock_speed	= 5'd24;
 
-		@( negedge CLK_n );
-		@( negedge CLK_n );
-		@( posedge CLK_n );
+		@( negedge clk_n );
+		@( negedge clk_n );
+		@( posedge clk_n );
 
-		RESET_n		= 1;
-		@( posedge CLK_n );
+		reset_n		= 1;
+		@( posedge clk_n );
 
 		// --------------------------------------------------------------------
-		//	3.579545MHz‘Š“– 
+		//	3.579545mhz‘Š“– 
 		// --------------------------------------------------------------------
 		ff_clock_speed	= 5'd24;
-		repeat( 1000 ) @( posedge CLK_n );
+		repeat( 1000 ) @( posedge clk_n );
 
 		// --------------------------------------------------------------------
-		//	7.15909MHz‘Š“– 
+		//	7.15909mhz‘Š“– 
 		// --------------------------------------------------------------------
 		ff_clock_speed	= 5'd12;
-		repeat( 1000 ) @( posedge CLK_n );
+		repeat( 1000 ) @( posedge clk_n );
 
 		// --------------------------------------------------------------------
-		//	14.31818MHz‘Š“– 
+		//	14.31818mhz‘Š“– 
 		// --------------------------------------------------------------------
 		ff_clock_speed	= 5'd6;
-		repeat( 1000 ) @( posedge CLK_n );
+		repeat( 1000 ) @( posedge clk_n );
 
 		// --------------------------------------------------------------------
-		//	21.47727MHz‘Š“– 
+		//	21.47727mhz‘Š“– 
 		// --------------------------------------------------------------------
 		ff_clock_speed	= 5'd4;
-		repeat( 1000 ) @( posedge CLK_n );
+		repeat( 1000 ) @( posedge clk_n );
 
 		$finish;
 	end

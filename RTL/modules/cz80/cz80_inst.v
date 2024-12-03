@@ -60,9 +60,7 @@
 //	-- Some minor bug fixes.
 //-----------------------------------------------------------------------------
 
-module cz80_inst #(
-	parameter		iowait		= 1		//	0 => single i/o cycle, 1 => std i/o cycle
-) (
+module cz80_inst (
 	input			reset_n		,
 	input			clk_n		,
 	input			enable		,
@@ -127,30 +125,30 @@ module cz80_inst #(
 		end
 	end
 
-	cz80 #(
-		.iowait			( iowait			)
-	) u_cz80 (
+	cz80 u_cz80 (
+		.reset_n		( reset_n			),
+		.clk_n			( clk_n				),
 		.cen			( enable			),
+		.wait_n			( ff_wait_n			),
+		.int_n			( int_n				),
+		.nmi_n			( nmi_n				),
+		.busrq_n		( busrq_n			),
 		.m1_n			( m1_n				),
 		.iorq			( w_iorq			),
 		.noread			( w_noread			),
 		.write			( w_write			),
 		.rfsh_n			( w_rfsh_n_i		),
 		.halt_n			( halt_n			),
-		.wait_n			( ff_wait_n			),
-		.int_n			( int_n				),
-		.nmi_n			( nmi_n				),
-		.reset_n		( ff_reset_n		),
-		.busrq_n		( busrq_n			),
 		.busak_n		( w_busak_n_i		),
-		.clk_n			( clk_n				),
 		.a				( w_a_i				),
 		.dinst			( d					),
 		.di				( ff_di_reg			),
 		.do				( w_do				),
 		.mc				( w_m_cycle			),
 		.ts				( w_t_state			),
-		.intcycle_n		( w_intcycle_n		)
+		.intcycle_n		( w_intcycle_n		),
+		.inte			( 					),
+		.stop			( 					)
 	);
 
 	always @( posedge clk_n ) begin
@@ -160,7 +158,7 @@ module cz80_inst #(
 
 	always @( posedge clk_n ) begin
 		if( w_t_state == 3'd3 && w_busak_n_i ) begin
-			ff_di_reg <= to_x01[d];
+			ff_di_reg <= d;
 		end
 	end
 
@@ -235,7 +233,7 @@ module cz80_inst #(
 			if( w_t_state == 3'd1 && !w_noread ) begin
 				ff_iorq_n_i <= ~w_iorq;
 				ff_mreq <= ~w_iorq;
-				if !w_iorq ) begin
+				if( !w_iorq ) begin
 					ff_rd <= ~w_write;
 				end
 				else if( !ff_iorq_n_i ) begin

@@ -96,10 +96,10 @@ module cz80_registers (
 		end
 	end
 
-	assign rdata_ah <= register_h[ address_a ];
-	assign rdata_al <= register_l[ address_a ];
-	assign rdata_bh <= register_h[ address_b ];
-	assign rdata_bl <= register_l[ address_b ];
-	assign rdata_ch <= register_h[ address_c ];
-	assign rdata_cl <= register_l[ address_c ];
+	assign rdata_ah = register_h[ address_a ];
+	assign rdata_al = register_l[ address_a ];
+	assign rdata_bh = register_h[ address_b ];
+	assign rdata_bl = register_l[ address_b ];
+	assign rdata_ch = register_h[ address_c ];
+	assign rdata_cl = register_l[ address_c ];
 endmodule

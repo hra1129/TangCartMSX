@@ -1,5 +1,4 @@
 vlib work
-vlog ..\cz80_pack.v
 vlog ..\cz80_reg.v
 vlog ..\cz80_mcode.v
 vlog ..\cz80_alu.v
