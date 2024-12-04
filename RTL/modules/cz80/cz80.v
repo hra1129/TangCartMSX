@@ -118,9 +118,9 @@ module cz80 (
 	reg		[15:0]	pc;
 	wire	[7:0]	regdih;
 	wire	[7:0]	regdil;
-	reg		[15:0]	regbusa;
-	reg		[15:0]	regbusb;
-	reg		[15:0]	regbusc;
+	wire	[15:0]	regbusa;
+	wire	[15:0]	regbusb;
+	wire	[15:0]	regbusc;
 	reg		[2:0]	regaddra_r;
 	wire	[2:0]	regaddra;
 	reg		[2:0]	regaddrb_r;
@@ -168,8 +168,8 @@ module cz80 (
 	// alu signals
 	reg		[7:0]	busb;
 	reg		[7:0]	busa;
-	reg		[7:0]	alu_q;
-	reg		[7:0]	f_out;
+	wire	[7:0]	alu_q;
+	wire	[7:0]	f_out;
 
 	// registered micro code outputs
 	reg		[4:0]	read_to_reg_r;
@@ -182,54 +182,54 @@ module cz80 (
 	reg		[2:0]	mcycles;
 
 	// micro code outputs
-	reg		[2:0]	mcycles_d;
-	reg		[2:0]	tstates;
+	wire	[2:0]	mcycles_d;
+	wire	[2:0]	tstates;
 	reg				intcycle;
 	reg				nmicycle;
-	reg				inc_pc;
-	reg				inc_wz;
-	reg		[3:0]	incdec_16;
-	reg		[1:0]	prefix;
-	reg				read_to_acc;
-	reg				read_to_reg;
-	reg		[3:0]	set_busb_to;
-	reg		[3:0]	set_busa_to;
-	reg		[3:0]	alu_op;
-	reg				alu_cpi;
-	reg				save_alu;
-	reg				preservec;
-	reg				arith16;
-	reg		[2:0]	set_addr_to;
-	reg				jump;
-	reg				jumpe;
-	reg				jumpxy;
-	reg				call;
-	reg				rstp;
-	reg				ldz;
-	reg				ldw;
-	reg				ldsphl;
-	reg				iorq_i;
-	reg		[2:0]	special_ld;
-	reg				exchangedh;
-	reg				exchangerp;
-	reg				exchangeaf;
-	reg				exchangers;
-	reg				i_djnz;
-	reg				i_cpl;
-	reg				i_ccf;
-	reg				i_scf;
-	reg				i_retn;
-	reg				i_bt;
-	reg				i_bc;
-	reg				i_btr;
-	reg				i_rld;
-	reg				i_rrd;
-	reg				i_inrc;
-	reg				setdi;
-	reg				setei;
-	reg		[1:0]	imode;
-	reg				halt;
-	reg				xybit_undoc;
+	wire			inc_pc;
+	wire			inc_wz;
+	wire	[3:0]	incdec_16;
+	wire	[1:0]	prefix;
+	wire			read_to_acc;
+	wire			read_to_reg;
+	wire	[3:0]	set_busb_to;
+	wire	[3:0]	set_busa_to;
+	wire	[3:0]	alu_op;
+	wire			alu_cpi;
+	wire			save_alu;
+	wire			preservec;
+	wire			arith16;
+	wire	[2:0]	set_addr_to;
+	wire			jump;
+	wire			jumpe;
+	wire			jumpxy;
+	wire			call;
+	wire			rstp;
+	wire			ldz;
+	wire			ldw;
+	wire			ldsphl;
+	wire			iorq_i;
+	wire	[2:0]	special_ld;
+	wire			exchangedh;
+	wire			exchangerp;
+	wire			exchangeaf;
+	wire			exchangers;
+	wire			i_djnz;
+	wire			i_cpl;
+	wire			i_ccf;
+	wire			i_scf;
+	wire			i_retn;
+	wire			i_bt;
+	wire			i_bc;
+	wire			i_btr;
+	wire			i_rld;
+	wire			i_rrd;
+	wire			i_inrc;
+	wire			setdi;
+	wire			setei;
+	wire	[1:0]	imode;
+	wire			halt;
+	wire			xybit_undoc;
 
 	// --------------------------------------------------------------------
 	//	Sub module instances
@@ -376,7 +376,7 @@ module cz80 (
 				if( tstate == 2 && wait_n == 1'b1 ) begin
 					ff_a[7:0] <= r;
 					ff_a[15:8] <= i;
-					r[6:0] <= r[6:0] + 1;
+					r[6:0] <= r[6:0] + 7'd1;
 
 					if( jump == 1'b0 && call == 1'b0 && nmicycle == 1'b0 && intcycle == 1'b0 && ~(halt_ff == 1'b1 || halt == 1'b1) ) begin
 						pc <= pc + 1;
@@ -679,7 +679,7 @@ module cz80 (
 	// --------------------------------------------------------------------
 	always @( posedge clk_n ) begin
 		if( clken ) begin
-			// bus ff_a / write
+			// bus a / write
 			if( !xy_ind && xy_state != 2'b00 && set_busa_to[2:1] == 2'b10 ) begin
 				regaddra_r <= { xy_state[1], 2'b11 };
 			end
@@ -728,7 +728,7 @@ module cz80 (
 			// ex hl,dl
 			( exchangedh && tstate == 3'd3 ) ? { alternate, 2'b10 }:
 			( exchangedh && tstate == 3'd4 ) ? { alternate, 2'b01 }:
-			// bus ff_a / write
+			// bus a / write
 			regaddra_r;
 
 	assign regaddrb	=

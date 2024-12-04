@@ -97,6 +97,7 @@ module cz80_inst (
 	wire				w_rfsh_n_i;
 	wire				w_busak_n_i;
 	wire	[15:0]		w_a_i;
+	wire	[7:0]		w_di;
 	wire	[7:0]		w_do;
 	reg		[7:0]		ff_di_reg;
 	reg					ff_wait_n;
@@ -107,6 +108,7 @@ module cz80_inst (
 	assign w_mreq_n_i	= ~ff_mreq | (ff_req_inhibit & ff_mreq_inhibit);
 	assign w_rd_n_i		= ~ff_rd | ff_req_inhibit;
 	assign w_wr_n_j		= ff_wr_n_i;
+	assign w_di			= (w_rd_n_i || !w_busak_n_i) ? 8'h00 : d;
 
 	assign mreq_n		= w_busak_n_i ? w_mreq_n_i							: 1'bz;
 	assign iorq_n		= w_busak_n_i ? (ff_iorq_n_i | ff_ireq_inhibit)		: 1'bz;
@@ -141,7 +143,7 @@ module cz80_inst (
 		.halt_n			( halt_n			),
 		.busak_n		( w_busak_n_i		),
 		.a				( w_a_i				),
-		.dinst			( d					),
+		.dinst			( w_di				),
 		.di				( ff_di_reg			),
 		.do				( w_do				),
 		.mc				( w_m_cycle			),
@@ -151,18 +153,18 @@ module cz80_inst (
 		.stop			( 					)
 	);
 
-	always @( posedge clk_n ) begin
+	always @( negedge clk_n ) begin
 		ff_wait_n			<= wait_n;
-		ff_ireq_inhibit		<= ~w_iorq;
-	end
-
-	always @( posedge clk_n ) begin
 		if( w_t_state == 3'd3 && w_busak_n_i ) begin
 			ff_di_reg <= d;
 		end
 	end
 
 	always @( posedge clk_n ) begin
+		ff_ireq_inhibit		<= ~w_iorq;
+	end
+
+	always @( negedge clk_n ) begin
 		if( !ff_reset_n ) begin
 			ff_wr_n_i <= 1'b1;
 		end
@@ -196,7 +198,7 @@ module cz80_inst (
 		end
 	end
 
-	always @( posedge clk_n ) begin
+	always @( negedge clk_n ) begin
 		if( !ff_reset_n ) begin
 			ff_mreq_inhibit <= 1'b0;
 		end
@@ -208,7 +210,7 @@ module cz80_inst (
 		end
 	end
 
-	always @( posedge clk_n ) begin
+	always @( negedge clk_n ) begin
 		if( !ff_reset_n ) begin
 			ff_rd <= 1'b0;
 			ff_iorq_n_i <= 1'b1;

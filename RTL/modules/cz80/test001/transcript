@@ -1,2 +1,2 @@
-# OpenFile D:/github/HRA_product/TangCartMSX/RTL/modules/z80/refine/test001/vsim.wlf
+# OpenFile D:/github/HRA_product/TangCartMSX/RTL/modules/cz80/test001/vsim.wlf
 add wave -position end vsim:/tb/u_z80/*
