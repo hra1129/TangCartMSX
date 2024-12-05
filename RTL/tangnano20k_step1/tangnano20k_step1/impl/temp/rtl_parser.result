@@ -1,54 +1,90 @@
 [
  {
-  "InstFile" : "D:/github/HRA_product/TangCartMSX/RTL/modules/cz80/cz80_inst.v",
-  "InstLine" : 63,
-  "InstName" : "cz80_inst",
-  "ModuleFile" : "D:/github/HRA_product/TangCartMSX/RTL/modules/cz80/cz80_inst.v",
-  "ModuleLine" : 63,
-  "ModuleName" : "cz80_inst",
+  "InstFile" : "D:/github/HRA_product/TangCartMSX/RTL/tangnano20k_step1/tangnano20k_step1/src/tangnano20k_step1.v",
+  "InstLine" : 24,
+  "InstName" : "tangnano20k_step1",
+  "ModuleFile" : "D:/github/HRA_product/TangCartMSX/RTL/tangnano20k_step1/tangnano20k_step1/src/tangnano20k_step1.v",
+  "ModuleLine" : 24,
+  "ModuleName" : "tangnano20k_step1",
   "SubInsts" : [
    {
-    "InstFile" : "D:/github/HRA_product/TangCartMSX/RTL/modules/cz80/cz80_inst.v",
-    "InstLine" : 128,
-    "InstName" : "u_cz80",
-    "ModuleFile" : "D:/github/HRA_product/TangCartMSX/RTL/modules/cz80/cz80.v",
+    "InstFile" : "D:/github/HRA_product/TangCartMSX/RTL/tangnano20k_step1/tangnano20k_step1/src/tangnano20k_step1.v",
+    "InstLine" : 82,
+    "InstName" : "u_z80",
+    "ModuleFile" : "D:/github/HRA_product/TangCartMSX/RTL/modules/cz80/cz80_inst.v",
     "ModuleLine" : 63,
-    "ModuleName" : "cz80",
+    "ModuleName" : "cz80_inst",
     "SubInsts" : [
      {
-      "InstFile" : "D:/github/HRA_product/TangCartMSX/RTL/modules/cz80/cz80.v",
-      "InstLine" : 237,
-      "InstName" : "u_mcode",
-      "ModuleFile" : "D:/github/HRA_product/TangCartMSX/RTL/modules/cz80/cz80_mcode.v",
+      "InstFile" : "D:/github/HRA_product/TangCartMSX/RTL/modules/cz80/cz80_inst.v",
+      "InstLine" : 132,
+      "InstName" : "u_cz80",
+      "ModuleFile" : "D:/github/HRA_product/TangCartMSX/RTL/modules/cz80/cz80.v",
       "ModuleLine" : 63,
-      "ModuleName" : "cz80_mcode"
-     },
-     {
-      "InstFile" : "D:/github/HRA_product/TangCartMSX/RTL/modules/cz80/cz80.v",
-      "InstLine" : 296,
-      "InstName" : "u_alu",
-      "ModuleFile" : "D:/github/HRA_product/TangCartMSX/RTL/modules/cz80/cz80_alu.v",
-      "ModuleLine" : 63,
-      "ModuleName" : "cz80_alu"
-     },
-     {
-      "InstFile" : "D:/github/HRA_product/TangCartMSX/RTL/modules/cz80/cz80.v",
-      "InstLine" : 788,
-      "InstName" : "u_regs",
-      "ModuleFile" : "D:/github/HRA_product/TangCartMSX/RTL/modules/cz80/cz80_reg.v",
-      "ModuleLine" : 63,
-      "ModuleName" : "cz80_registers"
+      "ModuleName" : "cz80",
+      "SubInsts" : [
+       {
+        "InstFile" : "D:/github/HRA_product/TangCartMSX/RTL/modules/cz80/cz80.v",
+        "InstLine" : 237,
+        "InstName" : "u_mcode",
+        "ModuleFile" : "D:/github/HRA_product/TangCartMSX/RTL/modules/cz80/cz80_mcode.v",
+        "ModuleLine" : 63,
+        "ModuleName" : "cz80_mcode"
+       },
+       {
+        "InstFile" : "D:/github/HRA_product/TangCartMSX/RTL/modules/cz80/cz80.v",
+        "InstLine" : 296,
+        "InstName" : "u_alu",
+        "ModuleFile" : "D:/github/HRA_product/TangCartMSX/RTL/modules/cz80/cz80_alu.v",
+        "ModuleLine" : 63,
+        "ModuleName" : "cz80_alu"
+       },
+       {
+        "InstFile" : "D:/github/HRA_product/TangCartMSX/RTL/modules/cz80/cz80.v",
+        "InstLine" : 788,
+        "InstName" : "u_regs",
+        "ModuleFile" : "D:/github/HRA_product/TangCartMSX/RTL/modules/cz80/cz80_reg.v",
+        "ModuleLine" : 63,
+        "ModuleName" : "cz80_registers"
+       }
+      ]
      }
     ]
+   },
+   {
+    "InstFile" : "D:/github/HRA_product/TangCartMSX/RTL/tangnano20k_step1/tangnano20k_step1/src/tangnano20k_step1.v",
+    "InstLine" : 116,
+    "InstName" : "u_uart",
+    "ModuleFile" : "D:/github/HRA_product/TangCartMSX/RTL/tangnano20k_step1/tangnano20k_step1/src/uart/ip_uart_inst.v",
+    "ModuleLine" : 27,
+    "ModuleName" : "ip_uart_inst",
+    "SubInsts" : [
+     {
+      "InstFile" : "D:/github/HRA_product/TangCartMSX/RTL/tangnano20k_step1/tangnano20k_step1/src/uart/ip_uart_inst.v",
+      "InstLine" : 116,
+      "InstName" : "u_uart",
+      "ModuleFile" : "D:/github/HRA_product/TangCartMSX/RTL/tangnano20k_step1/tangnano20k_step1/src/uart/ip_uart.v",
+      "ModuleLine" : 27,
+      "ModuleName" : "ip_uart"
+     }
+    ]
+   },
+   {
+    "InstFile" : "D:/github/HRA_product/TangCartMSX/RTL/tangnano20k_step1/tangnano20k_step1/src/tangnano20k_step1.v",
+    "InstLine" : 133,
+    "InstName" : "u_rom",
+    "ModuleFile" : "D:/github/HRA_product/TangCartMSX/RTL/tangnano20k_step1/tangnano20k_step1/src/rom/ip_hello_world_rom.v",
+    "ModuleLine" : 5,
+    "ModuleName" : "ip_hello_world_rom"
+   },
+   {
+    "InstFile" : "D:/github/HRA_product/TangCartMSX/RTL/tangnano20k_step1/tangnano20k_step1/src/tangnano20k_step1.v",
+    "InstLine" : 147,
+    "InstName" : "u_ram",
+    "ModuleFile" : "D:/github/HRA_product/TangCartMSX/RTL/tangnano20k_step1/tangnano20k_step1/src/ram/ip_ram.v",
+    "ModuleLine" : 5,
+    "ModuleName" : "ip_ram"
    }
   ]
- },
- {
-  "InstFile" : "D:/github/HRA_product/TangCartMSX/RTL/tangnano20k_step1/tangnano20k_step1/src/uart/ip_uart.v",
-  "InstLine" : 27,
-  "InstName" : "ip_uart",
-  "ModuleFile" : "D:/github/HRA_product/TangCartMSX/RTL/tangnano20k_step1/tangnano20k_step1/src/uart/ip_uart.v",
-  "ModuleLine" : 27,
-  "ModuleName" : "ip_uart"
  }
 ]

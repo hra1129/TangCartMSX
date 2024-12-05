@@ -22,7 +22,23 @@
    "Type" : "verilog"
   },
   {
+   "Path" : "D:/github/HRA_product/TangCartMSX/RTL/tangnano20k_step1/tangnano20k_step1/src/ram/ip_ram.v",
+   "Type" : "verilog"
+  },
+  {
+   "Path" : "D:/github/HRA_product/TangCartMSX/RTL/tangnano20k_step1/tangnano20k_step1/src/rom/ip_hello_world_rom.v",
+   "Type" : "verilog"
+  },
+  {
+   "Path" : "D:/github/HRA_product/TangCartMSX/RTL/tangnano20k_step1/tangnano20k_step1/src/tangnano20k_step1.v",
+   "Type" : "verilog"
+  },
+  {
    "Path" : "D:/github/HRA_product/TangCartMSX/RTL/tangnano20k_step1/tangnano20k_step1/src/uart/ip_uart.v",
+   "Type" : "verilog"
+  },
+  {
+   "Path" : "D:/github/HRA_product/TangCartMSX/RTL/tangnano20k_step1/tangnano20k_step1/src/uart/ip_uart_inst.v",
    "Type" : "verilog"
   }
  ],
@@ -31,7 +47,7 @@
  ],
  "LoopLimit" : 2000,
  "ResultFile" : "D:/github/HRA_product/TangCartMSX/RTL/tangnano20k_step1/tangnano20k_step1/impl/temp/rtl_parser.result",
- "Top" : "",
+ "Top" : "tangnano20k_step1",
  "VerilogStd" : "verilog_2001",
  "VhdlStd" : "vhdl_93"
 }

@@ -1,0 +1,5 @@
+PUTC equ 0bh
+PUTC:WAIT_LOOP equ 0dh
+PUTS equ 016h
+S_HELLO_WORLD equ 01fh
+UART equ 010h

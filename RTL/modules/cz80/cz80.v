@@ -95,13 +95,13 @@ module cz80 (
 	localparam		flag_z		= 6;
 	localparam		flag_s		= 7;
 
-	localparam		anone		= 3'd7;
-	localparam		abc			= 3'd0;
-	localparam		ade			= 3'd1;
-	localparam		axy			= 3'd2;
-	localparam		aioa		= 3'd3;
-	localparam		asp			= 3'd4;
-	localparam		azi			= 3'd5;
+	localparam	[2:0]	anone	= 3'd7;
+	localparam	[2:0]	abc		= 3'd0;
+	localparam	[2:0]	ade		= 3'd1;
+	localparam	[2:0]	axy		= 3'd2;
+	localparam	[2:0]	aioa	= 3'd4;
+	localparam	[2:0]	asp		= 3'd5;
+	localparam	[2:0]	azi		= 3'd6;
 
 	// registers
 	reg		[15:0]	ff_a;
@@ -370,7 +370,7 @@ module cz80 (
 				z16_r <= 1'b0;
 			end
 
-			if( mcycle  == 3'b001 && tstate[2] == 1'b0 ) begin
+			if( mcycle  == 3'd1 && tstate[2] == 1'b0 ) begin
 			// mcycle == 1 && tstate == 1, 2, || 3
 
 				if( tstate == 2 && wait_n == 1'b1 ) begin
@@ -419,7 +419,7 @@ module cz80 (
 			else begin
 			// either (mcycle > 1) || (mcycle == 1 && tstate > 3)
 
-				if( mcycle == 3'b110 ) begin
+				if( mcycle == 3'd6 ) begin
 					xy_ind <= 1'b1;
 					if( prefix == 2'b01 ) begin
 						iset <= 2'b01;
@@ -446,7 +446,7 @@ module cz80 (
 						ff_a  <= 16'h0066;
 						pc <= 16'h0066;
 					end
-					else if( mcycle == 3'b011 && intcycle == 1'b1 && istatus == 2'b10 ) begin
+					else if( mcycle == 3'd3 && intcycle == 1'b1 && istatus == 2'b10 ) begin
 						ff_a[15:8] <= i;
 						ff_a[7:0] <= tmpaddr[7:0];
 						pc[15:8] <= i;
@@ -521,7 +521,7 @@ module cz80 (
 						ir <= dinst;
 					end
 					if( jumpe == 1'b1 ) begin
-						pc <= pc + di_reg;
+						pc <= pc + { { 8 { di_reg[7] } }, di_reg };
 					end
 					else if( inc_pc == 1'b1 ) begin
 						pc <= pc + 1;
@@ -534,7 +534,7 @@ module cz80 (
 					end
 				end
 				if( tstate == 3'd3 && mcycle == 3'b110 ) begin
-					tmpaddr <= regbusc + di_reg;
+					tmpaddr <= regbusc + { { 8 { di_reg[7] } }, di_reg };
 				end
 
 				if( (tstate == 3'd2 && wait_n == 1'b1) || (tstate == 4 && mcycle == 3'b001) ) begin
@@ -619,14 +619,14 @@ module cz80 (
 			end
 
 			if( tstate == 1 && auto_wait_t1 == 1'b0 ) begin
-				ff_do <= busb;
 				if( i_rld == 1'b1 ) begin
-					ff_do[3:0] <= busa[3:0];
-					ff_do[7:4] <= busb[3:0];
+					ff_do <= { busb[3:0], busa[3:0] };
 				end
-				if( i_rrd == 1'b1 ) begin
-					ff_do[3:0] <= busb[7:4];
-					ff_do[7:4] <= busa[3:0];
+				else if( i_rrd == 1'b1 ) begin
+					ff_do <= { busa[3:0], busb[7:4] };
+				end
+				else begin
+					ff_do <= busb;
 				end
 			end
 
@@ -811,8 +811,10 @@ module cz80 (
 			case( set_busb_to )
 			4'b0111:
 				busb <= acc;
-			4'b0000, 4'b0001, 4'b0010, 4'b0011, 4'b0100, 4'b0101:
-				busb <= set_busb_to[0] ? regbusb[ 7:0]: regbusb[15:8];
+			4'b0000, 4'b0010, 4'b0100: 
+				busb <= regbusb[15:8];
+			4'b0001, 4'b0011, 4'b0101:
+				busb <= regbusb[ 7:0];
 			4'b0110:
 				busb <= di_reg;
 			4'b1000:

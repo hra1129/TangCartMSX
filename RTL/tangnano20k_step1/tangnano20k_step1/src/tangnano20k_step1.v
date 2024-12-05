@@ -22,9 +22,10 @@
 // -----------------------------------------------------------------------------
 
 module tangnano20k_step1 (
-	input			clk,			//	27MHz
-	input	[1:0]	button,
-	output			uart_tx
+	input			clk,			//	clk			PIN04_SYS_CLK		(27MHz)
+	input	[1:0]	button,			//	button[0]	PIN88_MODE0_KEY1
+									//	button[1]	PIN87_MODE1_KEY2
+	output			uart_tx			//	uart_tx		PIN69_SYS_TX
 );
 	reg				ff_reset_n = 1'b0;
 	reg		[1:0]	ff_clock_div = 2'd0;
@@ -44,6 +45,14 @@ module tangnano20k_step1 (
 	wire			busak_n;
 	wire	[15:0]	a;
 	wire	[7:0]	d;
+	wire			w_rom_cs_n;
+	wire	[7:0]	w_rom_q;
+	wire			w_rom_q_en;
+	wire			w_ram_cs_n;
+	wire	[7:0]	w_ram_q;
+	wire			w_ram_q_en;
+	wire	[7:0]	w_uart_q;
+	wire			w_uart_q_en;
 
 	// --------------------------------------------------------------------
 	//	clock
@@ -62,7 +71,7 @@ module tangnano20k_step1 (
 	//	reset
 	// --------------------------------------------------------------------
 	always @( posedge clk ) begin
-		if( button[0] == 1'b0 ) begin
+		if( button[0] == 1'b1 ) begin
 			ff_reset_n <= 1'b1;
 		end
 	end
@@ -90,19 +99,62 @@ module tangnano20k_step1 (
 		.d				( d				)
 	);
 
+	assign wait_n	= 1'b1;
+	assign int_n	= 1'b1;
+	assign nmi_n	= 1'b1;
+	assign busrq_n	= 1'b1;
+	assign d		= ( w_uart_q_en ) ? w_uart_q:
+					  ( w_rom_q_en  ) ? w_rom_q :
+					  ( w_ram_q_en  ) ? w_ram_q : 8'hzz;
+
 	// --------------------------------------------------------------------
 	//	UART
 	// --------------------------------------------------------------------
-	ip_uart #(
+	ip_uart_inst #(
 		.clk_freq		( 27000000		),
 		.uart_freq		( 115200		)
 	) u_uart (
-		n_reset			( ff_reset_n	),
-		clk				( clk			),
-		send_data		( w_send_data	),
-		send_req		( w_send_req	),
-		send_busy		( w_send_ack	),
-		uart_tx			( uart_tx		)
+		.reset_n		( ff_reset_n	),
+		.clk			( clk			),
+		.enable			( w_enable		),
+		.iorq_n			( iorq_n		),
+		.wr_n			( wr_n			),
+		.rd_n			( rd_n			),
+		.a				( a[7:0]		),
+		.d				( d				),
+		.q				( w_uart_q		),
+		.q_en			( w_uart_q_en	),
+		.uart_tx		( uart_tx		)
 	);
+
+	// --------------------------------------------------------------------
+	//	ROM
+	// --------------------------------------------------------------------
+	ip_hello_world_rom u_rom (
+		.clk			( clk			),
+		.n_cs			( w_rom_cs_n	),
+		.n_rd			( rd_n			),
+		.address		( a[13:0]		),
+		.rdata			( w_rom_q		),
+		.rdata_en		( w_rom_q_en	)
+	);
+
+	assign w_rom_cs_n	= ( a[15:14] == 2'b00 ) ? mreq_n : 1'b1;
+
+	// --------------------------------------------------------------------
+	//	RAM
+	// --------------------------------------------------------------------
+	ip_ram u_ram (
+		.clk			( clk			),
+		.n_cs			( w_ram_cs_n	),
+		.n_wr			( wr_n			),
+		.n_rd			( rd_n			),
+		.address		( a[13:0]		),
+		.wdata			( d				),
+		.rdata			( w_ram_q		),
+		.rdata_en		( w_ram_q_en	)
+	);
+
+	assign w_ram_cs_n	= ( a[15:14] == 2'b01 ) ? mreq_n : 1'b1;
 
 endmodule

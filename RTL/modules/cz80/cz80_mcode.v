@@ -1420,19 +1420,22 @@ module cz80_mcode (
 			8'h01, 8'h11, 8'h21, 8'h31:
 				if( mcycle == 3'd2 ) begin
 					if( dpair == 2'b11 ) begin
-							func_set_busa_to = 4'h8;
+						func_set_busa_to = 4'h8;
 					end
 					else begin
-							func_set_busa_to = { 1'b0, dpair, 1'b1 };
+						func_set_busa_to = { 1'b0, dpair, 1'b1 };
 					end
 				end
 				else if( mcycle == 3'd3 ) begin
 					if( dpair == 2'b11 ) begin
-							func_set_busa_to = 4'h9;
+						func_set_busa_to = 4'h9;
 					end
 					else begin
-							func_set_busa_to = { 1'b0, dpair, 1'b0 };
+						func_set_busa_to = { 1'b0, dpair, 1'b0 };
 					end
+				end
+				else begin
+					func_set_busa_to = 4'h0;
 				end
 			8'h2A:
 				if( mcycle == 3'd4 ) begin
@@ -1447,18 +1450,18 @@ module cz80_mcode (
 			8'hC1, 8'hD1, 8'hE1, 8'hF1:
 				if( mcycle == 3'd2 ) begin
 					if( dpair == 2'b11 ) begin
-							func_set_busa_to = 4'hB;
+						func_set_busa_to = 4'hB;
 					end
 					else begin
-							func_set_busa_to = { 1'b0, dpair, 1'b1 };
+						func_set_busa_to = { 1'b0, dpair, 1'b1 };
 					end
 				end
 				else if( mcycle == 3'd3 ) begin
 					if( dpair == 2'b11 ) begin
-							func_set_busa_to = 4'h7;
+						func_set_busa_to = 4'h7;
 					end
 					else begin
-							func_set_busa_to = { 1'b0, dpair, 1'b0 };
+						func_set_busa_to = { 1'b0, dpair, 1'b0 };
 					end
 				end
 				else begin
@@ -1534,18 +1537,18 @@ module cz80_mcode (
 			8'h4B, 8'h5B, 8'h6B, 8'h7B:
 				if( mcycle == 3'd4 ) begin
 					if( ir[5:4] == 2'b11 ) begin
-							func_set_busa_to = 4'h8;
+						func_set_busa_to = 4'h8;
 					end
 					else begin
-							func_set_busa_to = { 1'b0, ir[5:4], 1'b1 };
+						func_set_busa_to = { 1'b0, ir[5:4], 1'b1 };
 					end
 				end
 				else if( mcycle == 3'd5 ) begin
 					if( ir[5:4] == 2'b11 ) begin
-							func_set_busa_to = 4'h9;
+						func_set_busa_to = 4'h9;
 					end
 					else begin
-							func_set_busa_to = { 1'b0, ir[5:4], 1'b0 };
+						func_set_busa_to = { 1'b0, ir[5:4], 1'b0 };
 					end
 				end
 				else begin
