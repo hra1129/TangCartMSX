@@ -291,10 +291,6 @@ module vdp(
 	wire			w_hsync;
 	wire			w_hsync_en;
 
-	reg				ff_wr_req;
-	reg				ff_rd_req;
-	reg				ff_req_hold;
-
 	wire			w_vdp_command_active;
 	wire			w_vram_addr_set_req;
 	wire			w_vram_addr_set_ack;
@@ -312,46 +308,14 @@ module vdp(
 	wire	[7:0]	w_vram_data_pair;
 	wire			w_vdp_command_drive;
 
+	wire			w_wr_n;
+	wire			w_rd_n;
+
 	//--------------------------------------------------------------
 	// request signal
 	//--------------------------------------------------------------
-	always @( posedge clk ) begin
-		if( reset ) begin
-			ff_req_hold <= 1'b0;
-		end
-		else if( enable ) begin
-			if( !iorq_n && (!rd_n || !wr_n) ) begin
-				ff_req_hold <= 1'b1;
-			end
-			else if( iorq_n ) begin
-				ff_req_hold <= 1'b0;
-			end
-			else begin
-				//	hold
-			end
-		end
-	end
-
-	always @( posedge clk ) begin
-		if( reset ) begin
-			ff_wr_req <= 1'b0;
-			ff_rd_req <= 1'b0;
-		end
-		else if( enable ) begin
-			if( !ff_req_hold ) begin
-				ff_wr_req <= !wr_n;
-				ff_rd_req <= !rd_n;
-			end
-			else begin
-				ff_wr_req <= 1'b0;
-				ff_rd_req <= 1'b0;
-			end
-		end
-		else begin
-			ff_wr_req <= 1'b0;
-			ff_rd_req <= 1'b0;
-		end
-	end
+	assign w_wr_n			= wr_n | iorq_n;
+	assign w_rd_n			= rd_n | iorq_n;
 
 	//--------------------------------------------------------------
 	// display components
@@ -806,8 +770,8 @@ module vdp(
 		.clk							( clk							),
 		.enable							( enable						),
 
-		.wr_req							( ff_wr_req						),
-		.rd_req							( ff_rd_req						),
+		.wr_req							( ~w_wr_n						),
+		.rd_req							( ~w_rd_n						),
 		.address						( address						),
 		.rdata							( rdata							),
 		.rdata_en						( rdata_en						),

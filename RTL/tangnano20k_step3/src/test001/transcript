@@ -1,2 +1,3 @@
 # OpenFile D:/github/HRA_product/TangCartMSX/RTL/tangnano20k_step3/src/test001/vsim.wlf
 add wave -position end vsim:/tb/u_dut/u_v9958/*
+add wave -position end vsim:/tb/u_dut/u_v9958/u_v9958_core/u_vdp_palette_ram/*

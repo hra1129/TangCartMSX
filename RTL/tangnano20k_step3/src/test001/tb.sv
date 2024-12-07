@@ -104,7 +104,7 @@ module tb ();
 	initial begin
 		clk				= 1;
 		button			= 0;
-		repeat( 50 ) @( posedge clk );
+		repeat( 1000 ) @( posedge clk );
 
 		button[0]		= 1;
 		repeat( 50 ) @( posedge clk );

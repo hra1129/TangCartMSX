@@ -262,8 +262,10 @@ setwrt::
 ; -----------------------------------------------------------------------------
 			scope	filvrm
 filvrm::
-			push	hl
+			push	af
 			call	setwrt
+			pop		af
+			push	hl
 			ld		l, a
 	loop:
 			ld		a, l
