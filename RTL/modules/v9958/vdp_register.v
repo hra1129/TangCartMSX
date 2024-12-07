@@ -58,11 +58,11 @@ module vdp_register (
 	input				clk,
 	input				enable,
 
-	input				req,
-	output				ack,
-	input				wrt,
+	input				wr_req,
+	input				rd_req,
 	input		[1:0]	address,
 	output reg	[7:0]	rdata,
+	output				rdata_en,
 	input		[7:0]	wdata,
 
 	input		[1:0]	dot_state,
@@ -170,6 +170,7 @@ module vdp_register (
 	input		[4:0]	vdp_id
 );
 	reg				ff_ack;
+	reg				ff_rdata_en;
 
 	reg				vdp_p1_is_1st_byte;
 	reg				vdp_p2_is_1st_byte;
@@ -207,7 +208,6 @@ module vdp_register (
 	wire			w_even_dotstate;
 	wire			w_is_bitmap_mode;
 
-	assign ack							= ff_ack;
 	assign sp_vdp_s0_reset_req			= ff_sp_vdp_s0_reset_req;
 
 	assign vdp_mode_graphic1			=	( { reg_r0_disp_mode, reg_r1_disp_mode[0], reg_r1_disp_mode[1] } == 5'b00000 ) ? 1'b1: 1'b0;
@@ -232,20 +232,25 @@ module vdp_register (
 	always @( posedge clk ) begin
 		if( reset ) begin
 			ff_ack <= 1'b0;
+			ff_rdata_en <= 1'b0;
 		end
 		else if( ff_ack ) begin
 			ff_ack <= 1'b0;
+			ff_rdata_en <= 1'b0;
 		end
 		else if( !enable ) begin
 			//	hold
 		end
-		else if( req ) begin
-			ff_ack <= req;
+		else if( wr_req || rd_req ) begin
+			ff_ack <= 1'b1;
+			ff_rdata_en <= rd_req;
 		end
 		else begin
 			//	hold
 		end
 	end
+
+	assign rdata_en		= ff_rdata_en;
 
 	// --------------------------------------------------------------------
 	always @( posedge clk ) begin
@@ -341,7 +346,7 @@ module vdp_register (
 		else if( !enable ) begin
 			//	hold
 		end
-		else if( req && !ff_ack && !wrt ) begin
+		else if( rd_req && !ff_ack ) begin
 			// read request
 			case( address[1:0] )
 			2'b00: // port#0 (0x98):read vram
@@ -387,7 +392,7 @@ module vdp_register (
 		else if( !enable ) begin
 			//	hold
 		end
-		else if( req && !ff_ack && !wrt ) begin
+		else if( rd_req && !ff_ack ) begin
 			// case of read request
 			if( address[1:0] == 2'b01 && vdp_r15_status_reg_num == 4'b0001 ) begin
 				// clear hsync interrupt by read s#1
@@ -421,7 +426,7 @@ module vdp_register (
 		else if( !enable ) begin
 			//	hold
 		end
-		else if( req && !ff_ack && !wrt ) begin
+		else if( rd_req && !ff_ack ) begin
 			// case of read request
 			if( address[1:0] == 2'b01 && vdp_r15_status_reg_num == 4'b0000 ) begin
 				// clear vsync interrupt by read s#0
@@ -508,7 +513,7 @@ module vdp_register (
 		else if( !enable ) begin
 			//	hold
 		end
-		else if( req && !ff_ack && !wrt ) begin
+		else if( rd_req && !ff_ack ) begin
 			// read request
 			case( address[1:0] )
 			2'b00: // port#0 (0x98):read vram
@@ -535,13 +540,13 @@ module vdp_register (
 				end
 			endcase
 		end
-		else if( req && !ff_ack && wrt ) begin
+		else if( wr_req && !ff_ack ) begin
 			// write request
 			case( address[1:0] )
 			2'b00: // port#0 (0x98):write vram
 				begin
 					vdp_vram_wdata_cpu	<= wdata;
-					vdp_vram_wr_req			<= ~vdp_vram_wr_ack;
+					vdp_vram_wr_req		<= ~vdp_vram_wr_ack;
 				end
 			2'b01: // port#1 (0x99):register write or vram addr setup
 				begin

@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Module name="tangnano20k_step2" Register="4" Lut="3" T_Register="284(4)" T_Alu="81(0)" T_Lut="1708(3)" T_Bsram="8(0)" T_Ssram="12(0)">
+ <SubModule name="u_pll"/>
+ <SubModule name="u_z80" Register="24" Lut="72" T_Register="232(24)" T_Alu="81(0)" T_Lut="1469(72)" T_Ssram="12(0)">
+  <SubModule name="u_cz80" Register="208" Alu="70" Lut="1132" T_Register="208(208)" T_Alu="81(70)" T_Lut="1397(1132)" T_Ssram="12(0)">
+   <SubModule name="u_mcode" Lut="248" T_Lut="248(248)"/>
+   <SubModule name="u_alu" Alu="11" Lut="11" T_Alu="11(11)" T_Lut="11(11)"/>
+   <SubModule name="u_regs" Lut="6" Ssram="12" T_Lut="6(6)" T_Ssram="12(12)"/>
+  </SubModule>
+ </SubModule>
+ <SubModule name="u_uart" Register="11" Lut="7" T_Register="37(11)" T_Lut="42(7)">
+  <SubModule name="u_uart" Register="26" Lut="35" T_Register="26(26)" T_Lut="35(35)"/>
+ </SubModule>
+ <SubModule name="u_rom" Register="9" Lut="191" T_Register="9(9)" T_Lut="191(191)"/>
+ <SubModule name="u_ram" Register="2" Lut="3" Bsram="8" T_Register="2(2)" T_Lut="3(3)" T_Bsram="8(8)"/>
+</Module>

@@ -44,6 +44,7 @@ module tb ();
 	wire	[15:0]	a			;
 	wire	[7:0]	d			;
 	reg		[7:0]	ff_d		;
+	reg		[7:0]	ff_ram [0:15];
 
 	reg		[4:0]	ff_clock;
 	reg		[4:0]	ff_clock_speed;
@@ -106,25 +107,31 @@ module tb ();
 			ff_d <= 8'd0;
 		end
 		else begin
-			case( a[3:0] )
-			4'd0:		ff_d <= 8'hdd;	//	ld  ix, 3423h
+			case( a[4:0] )
+			4'd0:		ff_d <= 8'hdd;	//	ld  ix, 0010h
 			4'd1:		ff_d <= 8'h21;
-			4'd2:		ff_d <= 8'h23;
-			4'd3:		ff_d <= 8'h34;
-			4'd4:		ff_d <= 8'h21;	//	ld  hl, 5645h
-			4'd5:		ff_d <= 8'h45;
-			4'd6:		ff_d <= 8'h56;
-			4'd7:		ff_d <= 8'h32;	//	ld	(1234h), a
-			4'd8:		ff_d <= 8'h34;
-			4'd9:		ff_d <= 8'h12;
-			4'd10:		ff_d <= 8'h00;
+			4'd2:		ff_d <= 8'h10;
+			4'd3:		ff_d <= 8'h00;
+			4'd4:		ff_d <= 8'h3e;	//	ld  a, 12h
+			4'd5:		ff_d <= 8'h12;
+			4'd6:		ff_d <= 8'h32;	//	ld  (0010h), a
+			4'd7:		ff_d <= 8'h10;
+			4'd8:		ff_d <= 8'h00;
+			4'd9:		ff_d <= 8'hdd;	//	bit 0, (ix + 0)
+			4'd10:		ff_d <= 8'hcb;
 			4'd11:		ff_d <= 8'h00;
-			4'd12:		ff_d <= 8'h00;
-			4'd13:		ff_d <= 8'h00;
+			4'd12:		ff_d <= 8'h46;
+			4'd13:		ff_d <= 8'hc3;	//	jp  0000h
 			4'd14:		ff_d <= 8'h00;
 			4'd15:		ff_d <= 8'h00;
-			default:	ff_d <= 8'h00;
+			default:	ff_d <= ff_ram[ a[3:0] ];
 			endcase
+		end
+	end
+
+	always @( posedge clk_n ) begin
+		if( !mreq_n && !wr_n && a[4] == 1'b1 ) begin
+			ff_ram[ a[3:0] ] <= d;
 		end
 	end
 

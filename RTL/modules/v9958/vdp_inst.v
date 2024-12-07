@@ -60,11 +60,12 @@ module vdp_inst(
 	output		[1:0]		enable_state,	//	00, 01, 10, 11, 00, ...
 	input					reset_n,
 	input					initial_busy,
-	input					req,
-	output					ack,
-	input					wrt,
+	input					iorq_n,
+	input					wr_n,
+	input					rd_n,
 	input		[1:0]		address,
 	output		[7:0]		rdata,
+	output					rdata_en,
 	input		[7:0]		wdata,
 
 	output					int_n,
@@ -140,36 +141,37 @@ module vdp_inst(
 	assign enable_state		= ff_enable_cnt;
 
 	vdp u_v9958_core (
-		.reset				( !reset_n					),	// IN	STD_LOGIC;
-		.initial_busy		( ff_initial_busy			),	// IN	STD_LOGIC;
-		.clk				( clk						),	// IN	STD_LOGIC;
-		.enable				( ff_enable					),	// OUT	STD_LOGIC;
-		.req				( req						),	// IN	STD_LOGIC;
-		.ack				( ack						),	// OUT	STD_LOGIC;
-		.wrt				( wrt						),	// IN	STD_LOGIC;
-		.address			( address					),	// IN	STD_LOGIC_VECTOR(  1 DOWNTO 0 );
-		.rdata				( rdata						),	// OUT	STD_LOGIC_VECTOR(  7 DOWNTO 0 );
-		.wdata				( wdata						),	// IN	STD_LOGIC_VECTOR(  7 DOWNTO 0 );
-		.int_n				( int_n						),	// OUT	STD_LOGIC;
-		.p_dram_oe_n		( p_dram_oe_n				),	// OUT	STD_LOGIC;
-		.p_dram_we_n		( p_dram_we_n				),	// OUT	STD_LOGIC;
-		.p_dram_address		( p_dram_address			),	// OUT	STD_LOGIC_VECTOR( 16 DOWNTO 0 );
-		.p_dram_rdata		( p_dram_rdata				),	// IN	STD_LOGIC_VECTOR( 15 DOWNTO 0 );
-		.p_dram_wdata		( p_dram_wdata				),	// OUT	STD_LOGIC_VECTOR(  7 DOWNTO 0 );
-		.vdp_speed_mode		( 1'b0						),	// IN	STD_LOGIC;
-		.ratio_mode			( 3'b000					),	// IN	STD_LOGIC_VECTOR(  2 DOWNTO 0 );
-		.centeryjk_r25_n	( 1'b1						),	// IN	STD_LOGIC;
-		.pvideo_clk			( pvideo_clk				),	// OUT	STD_LOGIC;
-		.pvideo_data_en		( pvideo_data_en			),	// OUT	STD_LOGIC;
-		.pvideor			( pvideor					),	// OUT	STD_LOGIC_VECTOR(  5 DOWNTO 0 );
-		.pvideog			( pvideog					),	// OUT	STD_LOGIC_VECTOR(  5 DOWNTO 0 );
-		.pvideob			( pvideob					),	// OUT	STD_LOGIC_VECTOR(  5 DOWNTO 0 );
-		.pvideohs_n			( pvideohs_n				),	// OUT	STD_LOGIC;
-		.pvideovs_n			( pvideovs_n				),	// OUT	STD_LOGIC;
-		.p_video_dh_clk		( p_video_dh_clk			),	// OUT	STD_LOGIC;
-		.p_video_dl_clk		( p_video_dl_clk			),	// OUT	STD_LOGIC;
-		.dispreso			( 1'b1						),	// IN	STD_LOGIC;
-		.legacy_vga			( 1'b0						),	// IN	STD_LOGIC;
-		.vdp_id				( c_vdpid					)	// IN	STD_LOGIC_VECTOR(  4 DOWNTO 0 );
+		.reset				( !reset_n					),	// IN	
+		.initial_busy		( ff_initial_busy			),	// IN	
+		.clk				( clk						),	// IN	
+		.enable				( ff_enable					),	// OUT	
+		.iorq_n				( iorq_n					),	// IN	
+		.wr_n				( wr_n						),	// IN	
+		.rd_n				( rd_n						),	// IN	
+		.address			( address					),	// IN	[ 1: 0 ];
+		.rdata				( rdata						),	// OUT	[ 7: 0 ];
+		.rdata_en			( rdata_en					),	// OUT
+		.wdata				( wdata						),	// IN	[ 7: 0 ];
+		.int_n				( int_n						),	// OUT	
+		.p_dram_oe_n		( p_dram_oe_n				),	// OUT	
+		.p_dram_we_n		( p_dram_we_n				),	// OUT	
+		.p_dram_address		( p_dram_address			),	// OUT	[16: 0 ];
+		.p_dram_rdata		( p_dram_rdata				),	// IN	[15: 0 ];
+		.p_dram_wdata		( p_dram_wdata				),	// OUT	[ 7: 0 ];
+		.vdp_speed_mode		( 1'b0						),	// IN	
+		.ratio_mode			( 3'b000					),	// IN	[ 2: 0 ];
+		.centeryjk_r25_n	( 1'b1						),	// IN	
+		.pvideo_clk			( pvideo_clk				),	// OUT	
+		.pvideo_data_en		( pvideo_data_en			),	// OUT	
+		.pvideor			( pvideor					),	// OUT	[ 5: 0 ];
+		.pvideog			( pvideog					),	// OUT	[ 5: 0 ];
+		.pvideob			( pvideob					),	// OUT	[ 5: 0 ];
+		.pvideohs_n			( pvideohs_n				),	// OUT	
+		.pvideovs_n			( pvideovs_n				),	// OUT	
+		.p_video_dh_clk		( p_video_dh_clk			),	// OUT	
+		.p_video_dl_clk		( p_video_dl_clk			),	// OUT	
+		.dispreso			( 1'b1						),	// IN	
+		.legacy_vga			( 1'b0						),	// IN	
+		.vdp_id				( c_vdpid					)	// IN	[ 4: 0 ];
     );
 endmodule

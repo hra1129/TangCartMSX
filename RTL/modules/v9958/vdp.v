@@ -60,11 +60,12 @@ module vdp(
 	input					initial_busy,
 	input					clk,				//	85.90908MHz
 	input					enable,
-	input					req,
-	output					ack,
-	input					wrt,
+	input					iorq_n,
+	input					wr_n,
+	input					rd_n,
 	input		[1:0]		address,
 	output		[7:0]		rdata,
+	output					rdata_en,
 	input		[7:0]		wdata,
 
 	output					int_n,
@@ -290,9 +291,9 @@ module vdp(
 	wire			w_hsync;
 	wire			w_hsync_en;
 
-	reg				ff_req;
-	reg				ff_wrt;
-	wire			w_ack;
+	reg				ff_wr_req;
+	reg				ff_rd_req;
+	reg				ff_req_hold;
 
 	wire			w_vdp_command_active;
 	wire			w_vram_addr_set_req;
@@ -316,20 +317,39 @@ module vdp(
 	//--------------------------------------------------------------
 	always @( posedge clk ) begin
 		if( reset ) begin
-			ff_req <= 1'b0;
-			ff_wrt <= 1'b0;
+			ff_req_hold <= 1'b0;
 		end
 		else if( enable ) begin
-			if( w_ack ) begin
-				ff_req <= 1'b0;
+			if( !iorq_n && (!rd_n || !wr_n) ) begin
+				ff_req_hold <= 1'b1;
+			end
+			else if( iorq_n ) begin
+				ff_req_hold <= 1'b0;
 			end
 			else begin
-				ff_req <= req;
-				ff_wrt <= wrt;
+				//	hold
+			end
+		end
+	end
+
+	always @( posedge clk ) begin
+		if( reset ) begin
+			ff_wr_req <= 1'b0;
+			ff_rd_req <= 1'b0;
+		end
+		else if( enable ) begin
+			if( !ff_req_hold ) begin
+				ff_wr_req <= !wr_n;
+				ff_rd_req <= !rd_n;
+			end
+			else begin
+				ff_wr_req <= 1'b0;
+				ff_rd_req <= 1'b0;
 			end
 		end
 		else begin
-			// hold
+			ff_wr_req <= 1'b0;
+			ff_rd_req <= 1'b0;
 		end
 	end
 
@@ -781,18 +801,16 @@ module vdp(
 	//---------------------------------------------------------------------------
 	// vdp register access
 	//---------------------------------------------------------------------------
-	assign ack	= w_ack;
-
 	vdp_register u_vdp_register(
 		.reset							( reset							),
 		.clk							( clk							),
 		.enable							( enable						),
 
-		.req							( ff_req						),
-		.ack							( w_ack							),
-		.wrt							( ff_wrt						),
+		.wr_req							( ff_wr_req						),
+		.rd_req							( ff_rd_req						),
 		.address						( address						),
 		.rdata							( rdata							),
+		.rdata_en						( rdata_en						),
 		.wdata							( wdata							),
 
 		.dot_state						( w_dot_state					),
