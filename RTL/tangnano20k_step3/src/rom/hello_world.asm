@@ -57,78 +57,9 @@ wait_key:
 			; VDP R#9 : Mode Register 3
 			ld		bc, 0x0009
 			call	wrtvdp
-			; VDP R#16: Palette Register
-			ld		bc, 0x0010
-			call	wrtvdp
 			; 開始メッセージ
 			ld		hl, s_set_color_palette
 			call	puts
-			; Palette
-			ld		c, VDP_PORT2
-			ld		a, 0x00			; Palette #0
-			out		[c], a
-			ld		a, 0x00
-			out		[c], a
-			ld		a, 0x00			; Palette #1
-			out		[c], a
-			ld		a, 0x00
-			out		[c], a
-			ld		a, 0x11			; Palette #2
-			out		[c], a
-			ld		a, 0x06
-			out		[c], a
-			ld		a, 0x33			; Palette #3
-			out		[c], a
-			ld		a, 0x07
-			out		[c], a
-			ld		a, 0x17			; Palette #4
-			out		[c], a
-			ld		a, 0x01
-			out		[c], a
-			ld		a, 0x27			; Palette #5
-			out		[c], a
-			ld		a, 0x03
-			out		[c], a
-			ld		a, 0x51			; Palette #6
-			out		[c], a
-			ld		a, 0x01
-			out		[c], a
-			ld		a, 0x27			; Palette #7
-			out		[c], a
-			ld		a, 0x06
-			out		[c], a
-			ld		a, 0x71			; Palette #8
-			out		[c], a
-			ld		a, 0x01
-			out		[c], a
-			ld		a, 0x73			; Palette #9
-			out		[c], a
-			ld		a, 0x03
-			out		[c], a
-			ld		a, 0x61			; Palette #10
-			out		[c], a
-			ld		a, 0x06
-			out		[c], a
-			ld		a, 0x64			; Palette #11
-			out		[c], a
-			ld		a, 0x06
-			out		[c], a
-			ld		a, 0x11			; Palette #12
-			out		[c], a
-			ld		a, 0x04
-			out		[c], a
-			ld		a, 0x65			; Palette #13
-			out		[c], a
-			ld		a, 0x02
-			out		[c], a
-			ld		a, 0x55			; Palette #14
-			out		[c], a
-			ld		a, 0x05
-			out		[c], a
-			ld		a, 0x77			; Palette #15
-			out		[c], a
-			ld		a, 0x07
-			out		[c], a
 			; メッセージ
 			ld		hl, s_clear_vram
 			call	puts

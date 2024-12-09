@@ -42,6 +42,16 @@ module tb ();
 	wire	[7:0]	q			;
 	wire	[7:0]	f_out		;
 
+	int				i_arith16	;
+	int				i_z16		;
+	int				i_alu_cpi	;
+	int				i_alu_op	;
+	int				i_ir		;
+	int				i_iset		;
+	int				i_busa		;
+	int				i_busb		;
+	int				i_f_in		;
+
 	reg				err;
 	int				i;
 
@@ -93,24 +103,39 @@ module tb ();
 		// --------------------------------------------------------------------
 		//	random test
 		// --------------------------------------------------------------------
-		for( i = 0; i < 10000; i = i + 1 ) begin
-			arith16		= $urandom;
-			z16			= $urandom;
-			alu_cpi		= $urandom;
-			alu_op		= $urandom;
-			ir			= $urandom;
-			iset		= $urandom;
-			busa		= $urandom;
-			busb		= $urandom;
-			f_in		= $urandom;
-			@( posedge clk );
+		for( i_arith16	= 0; i_arith16	< 2;	i_arith16	= i_arith16	+1 ) begin
+			for( i_z16		= 0; i_z16		< 2;	i_z16		= i_z16		+1 ) begin
+				for( i_alu_cpi	= 0; i_alu_cpi	< 2;	i_alu_cpi	= i_alu_cpi	+1 ) begin
+					for( i_alu_op	= 0; i_alu_op	< 16;	i_alu_op	= i_alu_op	+1 ) begin
+						for( i_ir		= 0; i_ir		< 64;	i_ir		= i_ir		+1 ) begin
+							for( i_iset		= 0; i_iset		< 4;	i_iset		= i_iset	+1 ) begin
+								for( i_busa		= 0; i_busa		< 256;	i_busa		= i_busa	+1 ) begin
+									for( i_busb		= 0; i_busb		< 256;	i_busb		= i_busb	+1 ) begin
+										for( i_f_in		= 0; i_f_in		< 256;	i_f_in		= i_f_in	+1 ) begin
+											arith16		= i_arith16		;
+											z16			= i_z16			;
+											alu_cpi		= i_alu_cpi		;
+											alu_op		= i_alu_op		;
+											ir			= i_ir			;
+											iset		= i_iset		;
+											busa		= i_busa		;
+											busb		= i_busb		;
+											f_in		= i_f_in		;
+											@( posedge clk );
 
-			assert( q_ref == q );
-			assert( f_out_ref == f_out );
-			err			= (q_ref != q) || (f_out_ref != f_out);
-			@( posedge clk );
+											assert( q_ref == q );
+											assert( f_out_ref == f_out );
+											err			= (q_ref != q) || (f_out_ref != f_out);
+											@( posedge clk );
+										end
+									end
+								end
+							end
+						end
+					end
+				end
+			end
 		end
-
 		repeat( 100 ) @( posedge clk );
 
 		$finish;

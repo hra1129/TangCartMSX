@@ -981,9 +981,11 @@ module cz80 (
 						tstate <= 3'd1;
 						if( nextis_xy_fetch ) begin
 							mcycle <= 3'b110;
-							pre_xy_f_m <= mcycle;
 							if( ir == 8'h36 ) begin
 								pre_xy_f_m <= 3'd2;
+							end
+							else begin
+								pre_xy_f_m <= mcycle;
 							end
 						end
 						else if( mcycle == 3'd7 ) begin
@@ -992,16 +994,20 @@ module cz80 (
 						else if( (mcycle == mcycles) || no_btr || (mcycle == 3'd2 && i_djnz && incdecz) ) begin
 							ff_m1_n <= 1'b0;
 							mcycle <= 3'b001;
-							intcycle <= 1'b0;
-							nmicycle <= 1'b0;
 							if( nmi_s && prefix == 2'd0 ) begin
+								intcycle <= 1'b0;
 								nmicycle <= 1'b1;
 								inte_ff1 <= 1'b0;
 							end
 							else if( (inte_ff1 && int_s) && prefix == 2'd0 && !setei ) begin
 								intcycle <= 1'b1;
+								nmicycle <= 1'b0;
 								inte_ff1 <= 1'b0;
 								inte_ff2 <= 1'b0;
+							end
+							else begin
+								intcycle <= 1'b0;
+								nmicycle <= 1'b0;
 							end
 						end
 						else begin
