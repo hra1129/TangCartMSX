@@ -203,12 +203,6 @@ module vdp(
 	wire			w_vram_interleave_mode;		// true when mode graphic6, 7
 
 	// for palette
-	reg		[4:0]	ff_palette_initial_state;
-	reg		[4:0]	ff_palette_r;
-	reg		[4:0]	ff_palette_g;
-	reg		[4:0]	ff_palette_b;
-	reg		[7:0]	ff_palette_address;
-	reg				ff_palette_we;
 	wire	[7:0]	w_palette_wr_address;
 	wire	[7:0]	w_palette_rd_address;
 	wire	[7:0]	w_palette_address;
@@ -219,9 +213,6 @@ module vdp(
 	wire	[4:0]	w_palette_rdata_r;
 	wire	[4:0]	w_palette_rdata_g;
 	wire	[4:0]	w_palette_rdata_b;
-	wire	[2:0]	w_initial_palette_r;
-	wire	[2:0]	w_initial_palette_g;
-	wire	[2:0]	w_initial_palette_b;
 
 	// for text 1 and 2
 	wire	[16:0]	w_vram_address_text12;
@@ -467,72 +458,6 @@ module vdp(
 			end
 		end
 	end
-
-	//---------------------------------------------------------------------------
-	// palette initializer
-	//---------------------------------------------------------------------------
-	always @( posedge clk ) begin
-		if( reset ) begin
-			ff_palette_initial_state <= 5'd0;
-		end
-		else if( !ff_palette_initial_state[4] ) begin
-			ff_palette_initial_state <= ff_palette_initial_state + 5'd1;
-		end
-		else begin
-			//	hold
-		end
-	end
-
-	assign w_initial_palette_r	=
-		( ff_palette_initial_state[3:0] == 4'd0  ) ? 3'd0 :
-		( ff_palette_initial_state[3:0] == 4'd1  ) ? 3'd0 :
-		( ff_palette_initial_state[3:0] == 4'd2  ) ? 3'd1 :
-		( ff_palette_initial_state[3:0] == 4'd3  ) ? 3'd3 :
-		( ff_palette_initial_state[3:0] == 4'd4  ) ? 3'd1 :
-		( ff_palette_initial_state[3:0] == 4'd5  ) ? 3'd2 :
-		( ff_palette_initial_state[3:0] == 4'd6  ) ? 3'd5 :
-		( ff_palette_initial_state[3:0] == 4'd7  ) ? 3'd2 :
-		( ff_palette_initial_state[3:0] == 4'd8  ) ? 3'd7 :
-		( ff_palette_initial_state[3:0] == 4'd9  ) ? 3'd7 :
-		( ff_palette_initial_state[3:0] == 4'd10 ) ? 3'd6 :
-		( ff_palette_initial_state[3:0] == 4'd11 ) ? 3'd6 :
-		( ff_palette_initial_state[3:0] == 4'd12 ) ? 3'd1 :
-		( ff_palette_initial_state[3:0] == 4'd13 ) ? 3'd6 :
-		( ff_palette_initial_state[3:0] == 4'd14 ) ? 3'd5 : 3'd7;
-
-	assign w_initial_palette_g	=
-		( ff_palette_initial_state[3:0] == 4'd0  ) ? 3'd0 :
-		( ff_palette_initial_state[3:0] == 4'd1  ) ? 3'd0 :
-		( ff_palette_initial_state[3:0] == 4'd2  ) ? 3'd6 :
-		( ff_palette_initial_state[3:0] == 4'd3  ) ? 3'd7 :
-		( ff_palette_initial_state[3:0] == 4'd4  ) ? 3'd1 :
-		( ff_palette_initial_state[3:0] == 4'd5  ) ? 3'd3 :
-		( ff_palette_initial_state[3:0] == 4'd6  ) ? 3'd1 :
-		( ff_palette_initial_state[3:0] == 4'd7  ) ? 3'd6 :
-		( ff_palette_initial_state[3:0] == 4'd8  ) ? 3'd1 :
-		( ff_palette_initial_state[3:0] == 4'd9  ) ? 3'd3 :
-		( ff_palette_initial_state[3:0] == 4'd10 ) ? 3'd6 :
-		( ff_palette_initial_state[3:0] == 4'd11 ) ? 3'd6 :
-		( ff_palette_initial_state[3:0] == 4'd12 ) ? 3'd4 :
-		( ff_palette_initial_state[3:0] == 4'd13 ) ? 3'd2 :
-		( ff_palette_initial_state[3:0] == 4'd14 ) ? 3'd5 : 3'd7;
-
-	assign w_initial_palette_b	=
-		( ff_palette_initial_state[3:0] == 4'd0  ) ? 3'd0 :
-		( ff_palette_initial_state[3:0] == 4'd1  ) ? 3'd0 :
-		( ff_palette_initial_state[3:0] == 4'd2  ) ? 3'd1 :
-		( ff_palette_initial_state[3:0] == 4'd3  ) ? 3'd3 :
-		( ff_palette_initial_state[3:0] == 4'd4  ) ? 3'd7 :
-		( ff_palette_initial_state[3:0] == 4'd5  ) ? 3'd7 :
-		( ff_palette_initial_state[3:0] == 4'd6  ) ? 3'd1 :
-		( ff_palette_initial_state[3:0] == 4'd7  ) ? 3'd7 :
-		( ff_palette_initial_state[3:0] == 4'd8  ) ? 3'd1 :
-		( ff_palette_initial_state[3:0] == 4'd9  ) ? 3'd3 :
-		( ff_palette_initial_state[3:0] == 4'd10 ) ? 3'd1 :
-		( ff_palette_initial_state[3:0] == 4'd11 ) ? 3'd4 :
-		( ff_palette_initial_state[3:0] == 4'd12 ) ? 3'd1 :
-		( ff_palette_initial_state[3:0] == 4'd13 ) ? 3'd5 :
-		( ff_palette_initial_state[3:0] == 4'd14 ) ? 3'd5 : 3'd7;
 
 	// --------------------------------------------------------------------
 	// color bus
@@ -822,33 +747,17 @@ module vdp(
 	//---------------------------------------------------------------------------
 	// color palette
 	//---------------------------------------------------------------------------
-	always @( posedge clk ) begin
-		if( reset ) begin
-			ff_palette_r		<= 5'd0;
-			ff_palette_g		<= 5'd0;
-			ff_palette_b		<= 5'd0;
-			ff_palette_address	<= 8'd0;
-			ff_palette_we		<= 1'b0;
-		end
-		else begin
-			ff_palette_r		<= !ff_palette_initial_state[4] ? { w_initial_palette_r, w_initial_palette_r[2:1] }: w_palette_wdata_r;
-			ff_palette_g		<= !ff_palette_initial_state[4] ? { w_initial_palette_g, w_initial_palette_g[2:1] }: w_palette_wdata_g;
-			ff_palette_b		<= !ff_palette_initial_state[4] ? { w_initial_palette_b, w_initial_palette_b[2:1] }: w_palette_wdata_b;
-			ff_palette_address	<= !ff_palette_initial_state[4] ? { 4'd0, ff_palette_initial_state[3:0] } : w_palette_wr_address;
-			ff_palette_we		<= (enable & w_palette_we) | ~ff_palette_initial_state[4];
-		end
-	end
-
-	assign w_palette_address	= ff_palette_we ? ff_palette_address : w_palette_rd_address;
+	assign w_palette_address	= w_palette_we ? w_palette_wr_address : w_palette_rd_address;
 
 	vdp_ram_palette u_vdp_palette_ram (
 		.clk		( clk										),
-		.enable		( 1'b1										),
+		.reset		( reset										),
+		.enable		( enable									),
 		.address	( w_palette_address							),
-		.we			( ff_palette_we								),
-		.d_r		( ff_palette_r								),
-		.d_g		( ff_palette_g								),
-		.d_b		( ff_palette_b								),
+		.we			( w_palette_we								),
+		.d_r		( w_palette_wdata_r							),
+		.d_g		( w_palette_wdata_g							),
+		.d_b		( w_palette_wdata_b							),
 		.q_r		( w_palette_rdata_r							),
 		.q_g		( w_palette_rdata_g							),
 		.q_b		( w_palette_rdata_b							)

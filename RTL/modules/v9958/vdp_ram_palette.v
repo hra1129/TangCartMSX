@@ -31,6 +31,7 @@
 
 module vdp_ram_palette (
 	input			clk,
+	input			reset,
 	input			enable,
 	input	[7:0]	address,
 	input			we,
@@ -41,6 +42,13 @@ module vdp_ram_palette (
 	output	[4:0]	q_g,
 	output	[4:0]	q_b
 );
+	reg		[4:0]	ff_palette_initial_state;
+	reg		[4:0]	ff_delay_state;
+	reg		[4:0]	ff_palette_r;
+	reg		[4:0]	ff_palette_g;
+	reg		[4:0]	ff_palette_b;
+	reg		[7:0]	ff_palette_address;
+	reg				ff_palette_we;
 	reg		[7:0]	ff_address;
 	reg				ff_we;
 	reg				ff_enable1;
@@ -59,6 +67,58 @@ module vdp_ram_palette (
 	reg		[4:0]	ff_q_g_out;
 	reg		[4:0]	ff_q_b_out;
 
+	//---------------------------------------------------------------------------
+	// palette initializer
+	//---------------------------------------------------------------------------
+	always @( posedge clk ) begin
+		if( reset ) begin
+			ff_palette_initial_state <= 5'd0;
+		end
+		else if( !ff_palette_initial_state[4] ) begin
+			ff_palette_initial_state <= ff_palette_initial_state + 5'd1;
+		end
+		else begin
+			//	hold
+		end
+	end
+
+	always @( posedge clk ) begin
+		if( reset ) begin
+			ff_palette_r <= 3'd0;
+			ff_palette_g <= 3'd0;
+			ff_palette_b <= 3'd0;
+		end
+		else if( !ff_palette_initial_state[4] ) begin
+			case( ff_palette_initial_state[3:0] )
+			4'd0:		begin ff_palette_r <= 3'd0; ff_palette_g <= 3'd0; ff_palette_b <= 3'd0; end
+			4'd1:		begin ff_palette_r <= 3'd0; ff_palette_g <= 3'd0; ff_palette_b <= 3'd0; end
+			4'd2:		begin ff_palette_r <= 3'd1; ff_palette_g <= 3'd6; ff_palette_b <= 3'd1; end
+			4'd3:		begin ff_palette_r <= 3'd3; ff_palette_g <= 3'd7; ff_palette_b <= 3'd3; end
+			4'd4:		begin ff_palette_r <= 3'd1; ff_palette_g <= 3'd1; ff_palette_b <= 3'd7; end
+			4'd5:		begin ff_palette_r <= 3'd2; ff_palette_g <= 3'd3; ff_palette_b <= 3'd7; end
+			4'd6:		begin ff_palette_r <= 3'd5; ff_palette_g <= 3'd1; ff_palette_b <= 3'd1; end
+			4'd7:		begin ff_palette_r <= 3'd2; ff_palette_g <= 3'd6; ff_palette_b <= 3'd7; end
+			4'd8:		begin ff_palette_r <= 3'd7; ff_palette_g <= 3'd1; ff_palette_b <= 3'd1; end
+			4'd9:		begin ff_palette_r <= 3'd7; ff_palette_g <= 3'd3; ff_palette_b <= 3'd3; end
+			4'd10:		begin ff_palette_r <= 3'd6; ff_palette_g <= 3'd6; ff_palette_b <= 3'd1; end
+			4'd11:		begin ff_palette_r <= 3'd6; ff_palette_g <= 3'd6; ff_palette_b <= 3'd4; end
+			4'd12:		begin ff_palette_r <= 3'd1; ff_palette_g <= 3'd4; ff_palette_b <= 3'd1; end
+			4'd13:		begin ff_palette_r <= 3'd6; ff_palette_g <= 3'd2; ff_palette_b <= 3'd5; end
+			4'd14:		begin ff_palette_r <= 3'd5; ff_palette_g <= 3'd5; ff_palette_b <= 3'd5; end
+			default:	begin ff_palette_r <= 3'd7; ff_palette_g <= 3'd7; ff_palette_b <= 3'd7; end
+			endcase
+		end
+	end
+
+	always @( posedge clk ) begin
+		if( reset ) begin
+			ff_delay_state <= 5'b0;
+		end
+		else begin
+			ff_delay_state <= ff_palette_initial_state;
+		end
+	end
+
 	// --------------------------------------------------------------------
 	//		enable		1 0 0 0
 	//		ff_enable1	0 1 0 0
@@ -70,7 +130,7 @@ module vdp_ram_palette (
 	//		ff_q_out	X X X X Q Q Q Q © ff_enable3 ‚Å ff_q Žæ‚èž‚Ý
 	// --------------------------------------------------------------------
 	always @( posedge clk ) begin
-		ff_enable1		<= enable;
+		ff_enable1		<= enable | ~ff_delay_state[4];
 		ff_enable2		<= ff_enable1;
 		ff_enable3		<= ff_enable2;
 	end
@@ -79,7 +139,14 @@ module vdp_ram_palette (
 	//	enable
 	// --------------------------------------------------------------------
 	always @( posedge clk ) begin
-		if( enable ) begin
+		if( !ff_delay_state[4] ) begin
+			ff_address	<= { 4'd0, ff_delay_state[3:0] };
+			ff_we		<= 1'b1;
+			ff_d_r		<= { ff_palette_r, ff_palette_r[2:1] };
+			ff_d_g		<= { ff_palette_g, ff_palette_g[2:1] };
+			ff_d_b		<= { ff_palette_b, ff_palette_b[2:1] };
+		end
+		else if( enable ) begin
 			ff_address	<= address;
 			ff_we		<= we;
 			ff_d_r		<= d_r;

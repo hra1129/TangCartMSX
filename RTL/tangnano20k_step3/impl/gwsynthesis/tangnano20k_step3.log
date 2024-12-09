@@ -101,9 +101,12 @@ WARN  (EX3791) : Expression size 10 truncated to fit in target size 9("D:\github
 WARN  (EX3791) : Expression size 4 truncated to fit in target size 3("D:\github\HRA_product\TangCartMSX\RTL\modules\v9958\vdp_sprite.v":873)
 WARN  (EX3791) : Expression size 9 truncated to fit in target size 8("D:\github\HRA_product\TangCartMSX\RTL\modules\v9958\vdp_sprite.v":931)
 Compiling module 'vdp_ram_palette'("D:\github\HRA_product\TangCartMSX\RTL\modules\v9958\vdp_ram_palette.v":32)
-Extracting RAM for identifier 'ff_block_ram_r'("D:\github\HRA_product\TangCartMSX\RTL\modules\v9958\vdp_ram_palette.v":52)
-Extracting RAM for identifier 'ff_block_ram_g'("D:\github\HRA_product\TangCartMSX\RTL\modules\v9958\vdp_ram_palette.v":53)
-Extracting RAM for identifier 'ff_block_ram_b'("D:\github\HRA_product\TangCartMSX\RTL\modules\v9958\vdp_ram_palette.v":54)
+Extracting RAM for identifier 'ff_block_ram_r'("D:\github\HRA_product\TangCartMSX\RTL\modules\v9958\vdp_ram_palette.v":60)
+Extracting RAM for identifier 'ff_block_ram_g'("D:\github\HRA_product\TangCartMSX\RTL\modules\v9958\vdp_ram_palette.v":61)
+Extracting RAM for identifier 'ff_block_ram_b'("D:\github\HRA_product\TangCartMSX\RTL\modules\v9958\vdp_ram_palette.v":62)
+WARN  (EX3791) : Expression size 7 truncated to fit in target size 5("D:\github\HRA_product\TangCartMSX\RTL\modules\v9958\vdp_ram_palette.v":145)
+WARN  (EX3791) : Expression size 7 truncated to fit in target size 5("D:\github\HRA_product\TangCartMSX\RTL\modules\v9958\vdp_ram_palette.v":146)
+WARN  (EX3791) : Expression size 7 truncated to fit in target size 5("D:\github\HRA_product\TangCartMSX\RTL\modules\v9958\vdp_ram_palette.v":147)
 Compiling module 'vdp_register'("D:\github\HRA_product\TangCartMSX\RTL\modules\v9958\vdp_register.v":56)
 Compiling module 'vdp_command'("D:\github\HRA_product\TangCartMSX\RTL\modules\v9958\vdp_command.v":56)
 WARN  (EX3791) : Expression size 32 truncated to fit in target size 10("D:\github\HRA_product\TangCartMSX\RTL\modules\v9958\vdp_command.v":515)
@@ -149,7 +152,7 @@ Running technical mapping ...
 [75%] Tech-Mapping Phase 2 completed
 [80%] Tech-Mapping Phase 3 completed
 [90%] Tech-Mapping Phase 4 completed
-WARN  (NL0002) : The module "vdp_interrupt" instantiated to "u_vdp_interrupt" is swept in optimizing("D:\github\HRA_product\TangCartMSX\RTL\modules\v9958\vdp.v":612)
+WARN  (NL0002) : The module "vdp_interrupt" instantiated to "u_vdp_interrupt" is swept in optimizing("D:\github\HRA_product\TangCartMSX\RTL\modules\v9958\vdp.v":537)
 [95%] Generate netlist file "D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_step3\impl\gwsynthesis\tangnano20k_step3.vg" completed
 [100%] Generate report file "D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_step3\impl\gwsynthesis\tangnano20k_step3_syn.rpt.html" completed
 GowinSynthesis finish

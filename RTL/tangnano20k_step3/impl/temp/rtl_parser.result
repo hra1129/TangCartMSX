@@ -111,7 +111,7 @@
       "SubInsts" : [
        {
         "InstFile" : "D:/github/HRA_product/TangCartMSX/RTL/modules/v9958/vdp.v",
-        "InstLine" : 540,
+        "InstLine" : 465,
         "InstName" : "u_vdp_color_bus",
         "ModuleFile" : "D:/github/HRA_product/TangCartMSX/RTL/modules/v9958/vdp_color_bus.v",
         "ModuleLine" : 56,
@@ -119,7 +119,7 @@
        },
        {
         "InstFile" : "D:/github/HRA_product/TangCartMSX/RTL/modules/v9958/vdp.v",
-        "InstLine" : 598,
+        "InstLine" : 523,
         "InstName" : "u_vdp_interrupt",
         "ModuleFile" : "D:/github/HRA_product/TangCartMSX/RTL/modules/v9958/vdp_interrupt.v",
         "ModuleLine" : 57,
@@ -127,7 +127,7 @@
        },
        {
         "InstFile" : "D:/github/HRA_product/TangCartMSX/RTL/modules/v9958/vdp.v",
-        "InstLine" : 617,
+        "InstLine" : 542,
         "InstName" : "u_vdp_ssg",
         "ModuleFile" : "D:/github/HRA_product/TangCartMSX/RTL/modules/v9958/vdp_ssg.v",
         "ModuleLine" : 58,
@@ -135,7 +135,7 @@
        },
        {
         "InstFile" : "D:/github/HRA_product/TangCartMSX/RTL/modules/v9958/vdp.v",
-        "InstLine" : 657,
+        "InstLine" : 582,
         "InstName" : "u_vdp_color_decoder",
         "ModuleFile" : "D:/github/HRA_product/TangCartMSX/RTL/modules/v9958/vdp_color_decoder.v",
         "ModuleLine" : 56,
@@ -143,7 +143,7 @@
        },
        {
         "InstFile" : "D:/github/HRA_product/TangCartMSX/RTL/modules/v9958/vdp.v",
-        "InstLine" : 706,
+        "InstLine" : 631,
         "InstName" : "u_vdp_text12",
         "ModuleFile" : "D:/github/HRA_product/TangCartMSX/RTL/modules/v9958/vdp_text12.v",
         "ModuleLine" : 58,
@@ -151,7 +151,7 @@
        },
        {
         "InstFile" : "D:/github/HRA_product/TangCartMSX/RTL/modules/v9958/vdp.v",
-        "InstLine" : 730,
+        "InstLine" : 655,
         "InstName" : "u_vdp_graphic123m",
         "ModuleFile" : "D:/github/HRA_product/TangCartMSX/RTL/modules/v9958/vdp_graphic123m.v",
         "ModuleLine" : 62,
@@ -159,7 +159,7 @@
        },
        {
         "InstFile" : "D:/github/HRA_product/TangCartMSX/RTL/modules/v9958/vdp.v",
-        "InstLine" : 753,
+        "InstLine" : 678,
         "InstName" : "u_vdp_graphic4567",
         "ModuleFile" : "D:/github/HRA_product/TangCartMSX/RTL/modules/v9958/vdp_graphic4567.v",
         "ModuleLine" : 58,
@@ -177,7 +177,7 @@
        },
        {
         "InstFile" : "D:/github/HRA_product/TangCartMSX/RTL/modules/v9958/vdp.v",
-        "InstLine" : 786,
+        "InstLine" : 711,
         "InstName" : "u_vdp_sprite",
         "ModuleFile" : "D:/github/HRA_product/TangCartMSX/RTL/modules/v9958/vdp_sprite.v",
         "ModuleLine" : 58,
@@ -211,7 +211,7 @@
        },
        {
         "InstFile" : "D:/github/HRA_product/TangCartMSX/RTL/modules/v9958/vdp.v",
-        "InstLine" : 844,
+        "InstLine" : 752,
         "InstName" : "u_vdp_palette_ram",
         "ModuleFile" : "D:/github/HRA_product/TangCartMSX/RTL/modules/v9958/vdp_ram_palette.v",
         "ModuleLine" : 32,
@@ -219,7 +219,7 @@
        },
        {
         "InstFile" : "D:/github/HRA_product/TangCartMSX/RTL/modules/v9958/vdp.v",
-        "InstLine" : 860,
+        "InstLine" : 769,
         "InstName" : "u_vdp_register",
         "ModuleFile" : "D:/github/HRA_product/TangCartMSX/RTL/modules/v9958/vdp_register.v",
         "ModuleLine" : 56,
@@ -227,7 +227,7 @@
        },
        {
         "InstFile" : "D:/github/HRA_product/TangCartMSX/RTL/modules/v9958/vdp.v",
-        "InstLine" : 976,
+        "InstLine" : 885,
         "InstName" : "u_vdp_command",
         "ModuleFile" : "D:/github/HRA_product/TangCartMSX/RTL/modules/v9958/vdp_command.v",
         "ModuleLine" : 56,
@@ -235,7 +235,7 @@
        },
        {
         "InstFile" : "D:/github/HRA_product/TangCartMSX/RTL/modules/v9958/vdp.v",
-        "InstLine" : 1010,
+        "InstLine" : 919,
         "InstName" : "u_vdp_wait_control",
         "ModuleFile" : "D:/github/HRA_product/TangCartMSX/RTL/modules/v9958/vdp_wait_control.v",
         "ModuleLine" : 31,
@@ -243,7 +243,7 @@
        },
        {
         "InstFile" : "D:/github/HRA_product/TangCartMSX/RTL/modules/v9958/vdp.v",
-        "InstLine" : 1031,
+        "InstLine" : 940,
         "InstName" : "u_vdp_lcd",
         "ModuleFile" : "D:/github/HRA_product/TangCartMSX/RTL/modules/v9958/vdp_lcd.v",
         "ModuleLine" : 60,

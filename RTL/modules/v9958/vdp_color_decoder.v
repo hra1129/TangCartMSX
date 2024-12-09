@@ -109,11 +109,16 @@ module vdp_color_decoder (
 	reg		[5:0]	ff_yjk_b;
 	reg				ff_yjk_en;
 	reg				ff_sprite_color_out;
+	reg		[4:0]	ff_palette_rdata_r;
+	reg		[4:0]	ff_palette_rdata_g;
+	reg		[4:0]	ff_palette_rdata_b;
 	// wire
 	wire			w_even_dotstate;
 	wire	[7:0]	w_grp7_sprite_color;
 	wire	[3:0]	w_fore_color;
 	wire	[3:0]	w_back_color;
+	wire	[3:0]	w_fore_color_g5;
+	wire	[3:0]	w_back_color_g5;
 	wire	[7:0]	w_grp7_color;
 	wire	[3:0]	w_palette_addr;
 
@@ -126,6 +131,12 @@ module vdp_color_decoder (
 	assign w_even_dotstate		= ( dot_state == 2'b00 || dot_state == 2'b11 ) ? 1'b1 : 1'b0;
 
 	// output data latch
+	always @( posedge clk ) begin
+		ff_palette_rdata_r <= palette_rdata_r;
+		ff_palette_rdata_g <= palette_rdata_g;
+		ff_palette_rdata_b <= palette_rdata_b;
+	end
+
 	always @( posedge clk ) begin
 		if( reset ) begin
 			ff_video_r <= 6'd0;
@@ -144,9 +155,9 @@ module vdp_color_decoder (
 			end
 			else if( !vdp_mode_graphic7 || reg_r25_yjk ) begin
 				//	palette color (not graphic7, sprite on yjk mode, yae color on yjk mode)
-				ff_video_r <= { palette_rdata_r, palette_rdata_r[4] };
-				ff_video_g <= { palette_rdata_g, palette_rdata_g[4] };
-				ff_video_b <= { palette_rdata_b, palette_rdata_b[4] };
+				ff_video_r <= { ff_palette_rdata_r, ff_palette_rdata_r[4] };
+				ff_video_g <= { ff_palette_rdata_g, ff_palette_rdata_g[4] };
+				ff_video_b <= { ff_palette_rdata_b, ff_palette_rdata_b[4] };
 			end
 			else begin
 				//	graphic7
@@ -185,11 +196,13 @@ module vdp_color_decoder (
 	assign w_grp7_sprite_color	= func_grp7_sprite_color( colorcodesprite );
 
 	// for others
-	assign w_fore_color			=	( vdp_mode_text1 || vdp_mode_text1q || vdp_mode_text2 ) ? colorcodet12 :
-									( sp_color_code_en ) ? colorcodesprite :
+	assign w_fore_color			=	( vdp_mode_text1 || vdp_mode_text1q || vdp_mode_text2 ) ? colorcodet12    :
+									( sp_color_code_en                                    ) ? colorcodesprite :
 									( vdp_mode_graphic1 || vdp_mode_graphic2 || vdp_mode_graphic3 || vdp_mode_multi || vdp_mode_multiq ) ? colorcodeg123m :
 									colorcodeg4567[3:0];
 	assign w_back_color			=	reg_r7_frame_col[3:0];
+	assign w_fore_color_g5		=	dot_state[1] ? { 2'd0, w_fore_color[3:2] }: { 2'd0, w_fore_color[1:0] };
+	assign w_back_color_g5		=	dot_state[1] ? { 2'd0, w_back_color[3:2] }: { 2'd0, w_back_color[1:0] };
 
 	always @( posedge clk ) begin
 		if( reset ) begin
@@ -201,23 +214,11 @@ module vdp_color_decoder (
 		else if( w_even_dotstate ) begin
 			if( vdp_mode_graphic5 ) begin
 				//	Graphic 5 (Screen 6)
-				if( !window || !reg_r1_disp_on ||
-						(!dot_state[1] && w_fore_color[1:0] == 2'b00 && !reg_r8_col0_on) ||
-						( dot_state[1] && w_fore_color[3:2] == 2'b00 && !reg_r8_col0_on) ) begin
-					if( !dot_state[1] ) begin
-						ff_palette_address	<= { 2'b00, w_back_color[1:0] };
-					end
-					else begin
-						ff_palette_address	<= { 2'b00, w_back_color[3:2] };
-					end
+				if( !window || !reg_r1_disp_on || (w_fore_color_g5[1:0] == 2'd0 && !reg_r8_col0_on) ) begin
+					ff_palette_address	<= w_back_color_g5;
 				end
 				else begin
-					if( !dot_state[1] ) begin
-						ff_palette_address	<= { 2'b00, w_fore_color[1:0] };
-					end
-					else begin
-						ff_palette_address	<= { 2'b00, w_fore_color[3:2] };
-					end
+					ff_palette_address	<= w_fore_color_g5;
 				end
 			end
 			else begin
