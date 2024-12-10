@@ -1,0 +1,137 @@
+{
+ "Device" : "GW2AR-18C",
+ "Files" : [
+  {
+   "Path" : "D:/github/HRA_product/TangCartMSX/RTL/modules/cz80/cz80.v",
+   "Type" : "verilog"
+  },
+  {
+   "Path" : "D:/github/HRA_product/TangCartMSX/RTL/modules/cz80/cz80_alu.v",
+   "Type" : "verilog"
+  },
+  {
+   "Path" : "D:/github/HRA_product/TangCartMSX/RTL/modules/cz80/cz80_inst.v",
+   "Type" : "verilog"
+  },
+  {
+   "Path" : "D:/github/HRA_product/TangCartMSX/RTL/modules/cz80/cz80_mcode.v",
+   "Type" : "verilog"
+  },
+  {
+   "Path" : "D:/github/HRA_product/TangCartMSX/RTL/modules/cz80/cz80_reg.v",
+   "Type" : "verilog"
+  },
+  {
+   "Path" : "D:/github/HRA_product/TangCartMSX/RTL/modules/sdram/ip_sdram_tangnano20k.v",
+   "Type" : "verilog"
+  },
+  {
+   "Path" : "D:/github/HRA_product/TangCartMSX/RTL/modules/v9958/vdp.v",
+   "Type" : "verilog"
+  },
+  {
+   "Path" : "D:/github/HRA_product/TangCartMSX/RTL/modules/v9958/vdp_color_bus.v",
+   "Type" : "verilog"
+  },
+  {
+   "Path" : "D:/github/HRA_product/TangCartMSX/RTL/modules/v9958/vdp_color_decoder.v",
+   "Type" : "verilog"
+  },
+  {
+   "Path" : "D:/github/HRA_product/TangCartMSX/RTL/modules/v9958/vdp_command.v",
+   "Type" : "verilog"
+  },
+  {
+   "Path" : "D:/github/HRA_product/TangCartMSX/RTL/modules/v9958/vdp_double_buffer.v",
+   "Type" : "verilog"
+  },
+  {
+   "Path" : "D:/github/HRA_product/TangCartMSX/RTL/modules/v9958/vdp_graphic123m.v",
+   "Type" : "verilog"
+  },
+  {
+   "Path" : "D:/github/HRA_product/TangCartMSX/RTL/modules/v9958/vdp_graphic4567.v",
+   "Type" : "verilog"
+  },
+  {
+   "Path" : "D:/github/HRA_product/TangCartMSX/RTL/modules/v9958/vdp_inst.v",
+   "Type" : "verilog"
+  },
+  {
+   "Path" : "D:/github/HRA_product/TangCartMSX/RTL/modules/v9958/vdp_interrupt.v",
+   "Type" : "verilog"
+  },
+  {
+   "Path" : "D:/github/HRA_product/TangCartMSX/RTL/modules/v9958/vdp_lcd.v",
+   "Type" : "verilog"
+  },
+  {
+   "Path" : "D:/github/HRA_product/TangCartMSX/RTL/modules/v9958/vdp_ram_256byte.v",
+   "Type" : "verilog"
+  },
+  {
+   "Path" : "D:/github/HRA_product/TangCartMSX/RTL/modules/v9958/vdp_ram_line_buffer.v",
+   "Type" : "verilog"
+  },
+  {
+   "Path" : "D:/github/HRA_product/TangCartMSX/RTL/modules/v9958/vdp_ram_palette.v",
+   "Type" : "verilog"
+  },
+  {
+   "Path" : "D:/github/HRA_product/TangCartMSX/RTL/modules/v9958/vdp_register.v",
+   "Type" : "verilog"
+  },
+  {
+   "Path" : "D:/github/HRA_product/TangCartMSX/RTL/modules/v9958/vdp_spinforam.v",
+   "Type" : "verilog"
+  },
+  {
+   "Path" : "D:/github/HRA_product/TangCartMSX/RTL/modules/v9958/vdp_sprite.v",
+   "Type" : "verilog"
+  },
+  {
+   "Path" : "D:/github/HRA_product/TangCartMSX/RTL/modules/v9958/vdp_ssg.v",
+   "Type" : "verilog"
+  },
+  {
+   "Path" : "D:/github/HRA_product/TangCartMSX/RTL/modules/v9958/vdp_text12.v",
+   "Type" : "verilog"
+  },
+  {
+   "Path" : "D:/github/HRA_product/TangCartMSX/RTL/modules/v9958/vdp_wait_control.v",
+   "Type" : "verilog"
+  },
+  {
+   "Path" : "D:/github/HRA_product/TangCartMSX/RTL/tangnano20k_step3/src/gowin_pll/gowin_pll.v",
+   "Type" : "verilog"
+  },
+  {
+   "Path" : "D:/github/HRA_product/TangCartMSX/RTL/tangnano20k_step3/src/ram/ip_ram.v",
+   "Type" : "verilog"
+  },
+  {
+   "Path" : "D:/github/HRA_product/TangCartMSX/RTL/tangnano20k_step3/src/rom/ip_hello_world_rom.v",
+   "Type" : "verilog"
+  },
+  {
+   "Path" : "D:/github/HRA_product/TangCartMSX/RTL/tangnano20k_step3/src/tangnano20k_step3.v",
+   "Type" : "verilog"
+  },
+  {
+   "Path" : "D:/github/HRA_product/TangCartMSX/RTL/tangnano20k_step3/src/uart/ip_uart.v",
+   "Type" : "verilog"
+  },
+  {
+   "Path" : "D:/github/HRA_product/TangCartMSX/RTL/tangnano20k_step3/src/uart/ip_uart_inst.v",
+   "Type" : "verilog"
+  }
+ ],
+ "IncludePath" : [
+
+ ],
+ "LoopLimit" : 2000,
+ "ResultFile" : "D:/github/HRA_product/TangCartMSX/RTL/tangnano20k_step3/impl/temp/rtl_parser.result",
+ "Top" : "",
+ "VerilogStd" : "verilog_2001",
+ "VhdlStd" : "vhdl_93"
+}

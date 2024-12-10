@@ -1,0 +1,158 @@
+GowinSynthesis start
+Running parser ...
+Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\modules\cz80\cz80.v'
+Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\modules\cz80\cz80_alu.v'
+Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\modules\cz80\cz80_inst.v'
+Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\modules\cz80\cz80_mcode.v'
+Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\modules\cz80\cz80_reg.v'
+Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\modules\sdram\ip_sdram_tangnano20k.v'
+Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\modules\v9958\vdp.v'
+Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\modules\v9958\vdp_color_bus.v'
+Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\modules\v9958\vdp_color_decoder.v'
+Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\modules\v9958\vdp_command.v'
+Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\modules\v9958\vdp_double_buffer.v'
+Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\modules\v9958\vdp_graphic123m.v'
+Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\modules\v9958\vdp_graphic4567.v'
+Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\modules\v9958\vdp_inst.v'
+Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\modules\v9958\vdp_interrupt.v'
+Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\modules\v9958\vdp_lcd.v'
+Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\modules\v9958\vdp_ram_256byte.v'
+Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\modules\v9958\vdp_ram_line_buffer.v'
+Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\modules\v9958\vdp_ram_palette.v'
+Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\modules\v9958\vdp_register.v'
+Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\modules\v9958\vdp_spinforam.v'
+Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\modules\v9958\vdp_sprite.v'
+Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\modules\v9958\vdp_ssg.v'
+Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\modules\v9958\vdp_text12.v'
+Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\modules\v9958\vdp_wait_control.v'
+Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_step3\src\gowin_pll\gowin_pll.v'
+Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_step3\src\ram\ip_ram.v'
+Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_step3\src\rom\ip_hello_world_rom.v'
+Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_step3\src\tangnano20k_step3.v'
+Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_step3\src\uart\ip_uart.v'
+Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_step3\src\uart\ip_uart_inst.v'
+Compiling module 'tangnano20k_step3'("D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_step3\src\tangnano20k_step3.v":24)
+WARN  (EX3791) : Expression size 3 truncated to fit in target size 1("D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_step3\src\tangnano20k_step3.v":53)
+Compiling module 'Gowin_PLL'("D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_step3\src\gowin_pll\gowin_pll.v":10)
+WARN  (EX3791) : Expression size 3 truncated to fit in target size 1("D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_step3\src\tangnano20k_step3.v":141)
+Compiling module 'cz80_inst'("D:\github\HRA_product\TangCartMSX\RTL\modules\cz80\cz80_inst.v":63)
+Compiling module 'cz80'("D:\github\HRA_product\TangCartMSX\RTL\modules\cz80\cz80.v":63)
+Compiling module 'cz80_mcode'("D:\github\HRA_product\TangCartMSX\RTL\modules\cz80\cz80_mcode.v":63)
+Compiling module 'cz80_alu'("D:\github\HRA_product\TangCartMSX\RTL\modules\cz80\cz80_alu.v":63)
+WARN  (EX3791) : Expression size 17 truncated to fit in target size 16("D:\github\HRA_product\TangCartMSX\RTL\modules\cz80\cz80.v":382)
+WARN  (EX3791) : Expression size 17 truncated to fit in target size 16("D:\github\HRA_product\TangCartMSX\RTL\modules\cz80\cz80.v":527)
+WARN  (EX3791) : Expression size 32 truncated to fit in target size 16("D:\github\HRA_product\TangCartMSX\RTL\modules\cz80\cz80.v":530)
+WARN  (EX3791) : Expression size 32 truncated to fit in target size 16("D:\github\HRA_product\TangCartMSX\RTL\modules\cz80\cz80.v":543)
+WARN  (EX3791) : Expression size 17 truncated to fit in target size 16("D:\github\HRA_product\TangCartMSX\RTL\modules\cz80\cz80.v":546)
+Compiling module 'cz80_registers'("D:\github\HRA_product\TangCartMSX\RTL\modules\cz80\cz80_reg.v":63)
+Extracting RAM for identifier 'register_h'("D:\github\HRA_product\TangCartMSX\RTL\modules\cz80\cz80_reg.v":80)
+Extracting RAM for identifier 'register_l'("D:\github\HRA_product\TangCartMSX\RTL\modules\cz80\cz80_reg.v":81)
+WARN  (EX3791) : Expression size 4 truncated to fit in target size 3("D:\github\HRA_product\TangCartMSX\RTL\modules\cz80\cz80.v":1014)
+Compiling module 'ip_uart_inst(clk_freq=43200000)'("D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_step3\src\uart\ip_uart_inst.v":27)
+Compiling module 'ip_uart(clk_freq=43200000)'("D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_step3\src\uart\ip_uart.v":27)
+WARN  (EX3791) : Expression size 32 truncated to fit in target size 11("D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_step3\src\uart\ip_uart.v":68)
+Compiling module 'ip_hello_world_rom'("D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_step3\src\rom\ip_hello_world_rom.v":5)
+Compiling module 'ip_ram'("D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_step3\src\ram\ip_ram.v":5)
+Extracting RAM for identifier 'ff_ram'("D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_step3\src\ram\ip_ram.v":15)
+Compiling module 'vdp_inst'("D:\github\HRA_product\TangCartMSX\RTL\modules\v9958\vdp_inst.v":58)
+Compiling module 'vdp'("D:\github\HRA_product\TangCartMSX\RTL\modules\v9958\vdp.v":58)
+Compiling module 'vdp_color_bus'("D:\github\HRA_product\TangCartMSX\RTL\modules\v9958\vdp_color_bus.v":56)
+WARN  (EX3791) : Expression size 18 truncated to fit in target size 17("D:\github\HRA_product\TangCartMSX\RTL\modules\v9958\vdp_color_bus.v":319)
+WARN  (EX3791) : Expression size 15 truncated to fit in target size 14("D:\github\HRA_product\TangCartMSX\RTL\modules\v9958\vdp_color_bus.v":346)
+WARN  (EX3791) : Expression size 18 truncated to fit in target size 17("D:\github\HRA_product\TangCartMSX\RTL\modules\v9958\vdp_color_bus.v":349)
+Compiling module 'vdp_interrupt'("D:\github\HRA_product\TangCartMSX\RTL\modules\v9958\vdp_interrupt.v":57)
+Compiling module 'vdp_ssg'("D:\github\HRA_product\TangCartMSX\RTL\modules\v9958\vdp_ssg.v":58)
+WARN  (EX3791) : Expression size 12 truncated to fit in target size 11("D:\github\HRA_product\TangCartMSX\RTL\modules\v9958\vdp_ssg.v":170)
+WARN  (EX3791) : Expression size 11 truncated to fit in target size 10("D:\github\HRA_product\TangCartMSX\RTL\modules\v9958\vdp_ssg.v":205)
+WARN  (EX3791) : Expression size 12 truncated to fit in target size 11("D:\github\HRA_product\TangCartMSX\RTL\modules\v9958\vdp_ssg.v":225)
+WARN  (EX3791) : Expression size 4 truncated to fit in target size 3("D:\github\HRA_product\TangCartMSX\RTL\modules\v9958\vdp_ssg.v":394)
+WARN  (EX3791) : Expression size 10 truncated to fit in target size 9("D:\github\HRA_product\TangCartMSX\RTL\modules\v9958\vdp_ssg.v":434)
+WARN  (EX3791) : Expression size 10 truncated to fit in target size 9("D:\github\HRA_product\TangCartMSX\RTL\modules\v9958\vdp_ssg.v":457)
+WARN  (EX3791) : Expression size 10 truncated to fit in target size 9("D:\github\HRA_product\TangCartMSX\RTL\modules\v9958\vdp_ssg.v":571)
+Compiling module 'vdp_color_decoder'("D:\github\HRA_product\TangCartMSX\RTL\modules\v9958\vdp_color_decoder.v":56)
+Compiling module 'vdp_text12'("D:\github\HRA_product\TangCartMSX\RTL\modules\v9958\vdp_text12.v":58)
+WARN  (EX3791) : Expression size 3 truncated to fit in target size 2("D:\github\HRA_product\TangCartMSX\RTL\modules\v9958\vdp_text12.v":162)
+WARN  (EX3791) : Expression size 4 truncated to fit in target size 3("D:\github\HRA_product\TangCartMSX\RTL\modules\v9958\vdp_text12.v":166)
+WARN  (EX3791) : Expression size 8 truncated to fit in target size 7("D:\github\HRA_product\TangCartMSX\RTL\modules\v9958\vdp_text12.v":245)
+WARN  (EX3791) : Expression size 8 truncated to fit in target size 7("D:\github\HRA_product\TangCartMSX\RTL\modules\v9958\vdp_text12.v":260)
+WARN  (EX3791) : Expression size 5 truncated to fit in target size 4("D:\github\HRA_product\TangCartMSX\RTL\modules\v9958\vdp_text12.v":454)
+WARN  (EX3791) : Expression size 5 truncated to fit in target size 4("D:\github\HRA_product\TangCartMSX\RTL\modules\v9958\vdp_text12.v":471)
+Compiling module 'vdp_graphic123m'("D:\github\HRA_product\TangCartMSX\RTL\modules\v9958\vdp_graphic123m.v":62)
+Compiling module 'vdp_graphic4567'("D:\github\HRA_product\TangCartMSX\RTL\modules\v9958\vdp_graphic4567.v":58)
+Compiling module 'vdp_ram_256byte'("D:\github\HRA_product\TangCartMSX\RTL\modules\v9958\vdp_ram_256byte.v":32)
+Extracting RAM for identifier 'ff_block_ram'("D:\github\HRA_product\TangCartMSX\RTL\modules\v9958\vdp_ram_256byte.v":43)
+WARN  (EX3791) : Expression size 9 truncated to fit in target size 8("D:\github\HRA_product\TangCartMSX\RTL\modules\v9958\vdp_graphic4567.v":221)
+WARN  (EX3791) : Expression size 9 truncated to fit in target size 8("D:\github\HRA_product\TangCartMSX\RTL\modules\v9958\vdp_graphic4567.v":241)
+WARN  (EX3791) : Expression size 9 truncated to fit in target size 8("D:\github\HRA_product\TangCartMSX\RTL\modules\v9958\vdp_graphic4567.v":245)
+WARN  (EX3791) : Expression size 10 truncated to fit in target size 9("D:\github\HRA_product\TangCartMSX\RTL\modules\v9958\vdp_graphic4567.v":465)
+WARN  (EX3791) : Expression size 5 truncated to fit in target size 4("D:\github\HRA_product\TangCartMSX\RTL\modules\v9958\vdp_graphic4567.v":491)
+WARN  (EX3791) : Expression size 5 truncated to fit in target size 4("D:\github\HRA_product\TangCartMSX\RTL\modules\v9958\vdp_graphic4567.v":494)
+Compiling module 'vdp_sprite'("D:\github\HRA_product\TangCartMSX\RTL\modules\v9958\vdp_sprite.v":58)
+Compiling module 'vdp_spinforam'("D:\github\HRA_product\TangCartMSX\RTL\modules\v9958\vdp_spinforam.v":58)
+Extracting RAM for identifier 'ff_memory'("D:\github\HRA_product\TangCartMSX\RTL\modules\v9958\vdp_spinforam.v":66)
+WARN  (EX3791) : Expression size 11 truncated to fit in target size 9("D:\github\HRA_product\TangCartMSX\RTL\modules\v9958\vdp_sprite.v":328)
+WARN  (EX3791) : Expression size 6 truncated to fit in target size 5("D:\github\HRA_product\TangCartMSX\RTL\modules\v9958\vdp_sprite.v":479)
+WARN  (EX3791) : Expression size 5 truncated to fit in target size 4("D:\github\HRA_product\TangCartMSX\RTL\modules\v9958\vdp_sprite.v":503)
+WARN  (EX3791) : Expression size 32 truncated to fit in target size 9("D:\github\HRA_product\TangCartMSX\RTL\modules\v9958\vdp_sprite.v":724)
+WARN  (EX3791) : Expression size 4 truncated to fit in target size 3("D:\github\HRA_product\TangCartMSX\RTL\modules\v9958\vdp_sprite.v":735)
+WARN  (EX3791) : Expression size 10 truncated to fit in target size 9("D:\github\HRA_product\TangCartMSX\RTL\modules\v9958\vdp_sprite.v":822)
+WARN  (EX3791) : Expression size 10 truncated to fit in target size 9("D:\github\HRA_product\TangCartMSX\RTL\modules\v9958\vdp_sprite.v":860)
+WARN  (EX3791) : Expression size 10 truncated to fit in target size 9("D:\github\HRA_product\TangCartMSX\RTL\modules\v9958\vdp_sprite.v":862)
+WARN  (EX3791) : Expression size 4 truncated to fit in target size 3("D:\github\HRA_product\TangCartMSX\RTL\modules\v9958\vdp_sprite.v":873)
+WARN  (EX3791) : Expression size 9 truncated to fit in target size 8("D:\github\HRA_product\TangCartMSX\RTL\modules\v9958\vdp_sprite.v":931)
+Compiling module 'vdp_ram_palette'("D:\github\HRA_product\TangCartMSX\RTL\modules\v9958\vdp_ram_palette.v":32)
+Extracting RAM for identifier 'ff_block_ram_r'("D:\github\HRA_product\TangCartMSX\RTL\modules\v9958\vdp_ram_palette.v":60)
+Extracting RAM for identifier 'ff_block_ram_g'("D:\github\HRA_product\TangCartMSX\RTL\modules\v9958\vdp_ram_palette.v":61)
+Extracting RAM for identifier 'ff_block_ram_b'("D:\github\HRA_product\TangCartMSX\RTL\modules\v9958\vdp_ram_palette.v":62)
+WARN  (EX3791) : Expression size 7 truncated to fit in target size 5("D:\github\HRA_product\TangCartMSX\RTL\modules\v9958\vdp_ram_palette.v":152)
+WARN  (EX3791) : Expression size 7 truncated to fit in target size 5("D:\github\HRA_product\TangCartMSX\RTL\modules\v9958\vdp_ram_palette.v":153)
+WARN  (EX3791) : Expression size 7 truncated to fit in target size 5("D:\github\HRA_product\TangCartMSX\RTL\modules\v9958\vdp_ram_palette.v":154)
+Compiling module 'vdp_register'("D:\github\HRA_product\TangCartMSX\RTL\modules\v9958\vdp_register.v":56)
+Compiling module 'vdp_command'("D:\github\HRA_product\TangCartMSX\RTL\modules\v9958\vdp_command.v":56)
+WARN  (EX3791) : Expression size 32 truncated to fit in target size 10("D:\github\HRA_product\TangCartMSX\RTL\modules\v9958\vdp_command.v":515)
+WARN  (EX3791) : Expression size 32 truncated to fit in target size 10("D:\github\HRA_product\TangCartMSX\RTL\modules\v9958\vdp_command.v":621)
+WARN  (EX3791) : Expression size 32 truncated to fit in target size 10("D:\github\HRA_product\TangCartMSX\RTL\modules\v9958\vdp_command.v":703)
+WARN  (EX3791) : Expression size 11 truncated to fit in target size 10("D:\github\HRA_product\TangCartMSX\RTL\modules\v9958\vdp_command.v":735)
+WARN  (EX3791) : Expression size 32 truncated to fit in target size 10("D:\github\HRA_product\TangCartMSX\RTL\modules\v9958\vdp_command.v":822)
+Compiling module 'vdp_wait_control'("D:\github\HRA_product\TangCartMSX\RTL\modules\v9958\vdp_wait_control.v":31)
+Extracting RAM for identifier 'c_wait_table_501'("D:\github\HRA_product\TangCartMSX\RTL\modules\v9958\vdp_wait_control.v":50)
+Extracting RAM for identifier 'c_wait_table_502'("D:\github\HRA_product\TangCartMSX\RTL\modules\v9958\vdp_wait_control.v":52)
+Extracting RAM for identifier 'c_wait_table_503'("D:\github\HRA_product\TangCartMSX\RTL\modules\v9958\vdp_wait_control.v":54)
+Extracting RAM for identifier 'c_wait_table_504'("D:\github\HRA_product\TangCartMSX\RTL\modules\v9958\vdp_wait_control.v":56)
+Extracting RAM for identifier 'c_wait_table_505'("D:\github\HRA_product\TangCartMSX\RTL\modules\v9958\vdp_wait_control.v":58)
+Extracting RAM for identifier 'c_wait_table_601'("D:\github\HRA_product\TangCartMSX\RTL\modules\v9958\vdp_wait_control.v":60)
+Extracting RAM for identifier 'c_wait_table_602'("D:\github\HRA_product\TangCartMSX\RTL\modules\v9958\vdp_wait_control.v":62)
+Extracting RAM for identifier 'c_wait_table_603'("D:\github\HRA_product\TangCartMSX\RTL\modules\v9958\vdp_wait_control.v":64)
+Extracting RAM for identifier 'c_wait_table_604'("D:\github\HRA_product\TangCartMSX\RTL\modules\v9958\vdp_wait_control.v":66)
+Extracting RAM for identifier 'c_wait_table_605'("D:\github\HRA_product\TangCartMSX\RTL\modules\v9958\vdp_wait_control.v":68)
+Compiling module 'vdp_lcd'("D:\github\HRA_product\TangCartMSX\RTL\modules\v9958\vdp_lcd.v":60)
+WARN  (EX3791) : Expression size 32 truncated to fit in target size 10("D:\github\HRA_product\TangCartMSX\RTL\modules\v9958\vdp_lcd.v":182)
+WARN  (EX3791) : Expression size 32 truncated to fit in target size 10("D:\github\HRA_product\TangCartMSX\RTL\modules\v9958\vdp_lcd.v":252)
+Compiling module 'vdp_double_buffer'("D:\github\HRA_product\TangCartMSX\RTL\modules\v9958\vdp_double_buffer.v":58)
+Compiling module 'vdp_ram_line_buffer'("D:\github\HRA_product\TangCartMSX\RTL\modules\v9958\vdp_ram_line_buffer.v":58)
+Extracting RAM for identifier 'ff_imem'("D:\github\HRA_product\TangCartMSX\RTL\modules\v9958\vdp_ram_line_buffer.v":69)
+WARN  (EX3791) : Expression size 32 truncated to fit in target size 10("D:\github\HRA_product\TangCartMSX\RTL\modules\v9958\vdp_lcd.v":328)
+Compiling module 'ip_sdram'("D:\github\HRA_product\TangCartMSX\RTL\modules\sdram\ip_sdram_tangnano20k.v":57)
+WARN  (EX3791) : Expression size 12 truncated to fit in target size 11("D:\github\HRA_product\TangCartMSX\RTL\modules\sdram\ip_sdram_tangnano20k.v":156)
+WARN  (EX3791) : Expression size 32 truncated to fit in target size 14("D:\github\HRA_product\TangCartMSX\RTL\modules\sdram\ip_sdram_tangnano20k.v":263)
+NOTE  (EX0101) : Current top module is "tangnano20k_step3"
+[5%] Running netlist conversion ...
+Running device independent optimization ...
+[10%] Optimizing Phase 0 completed
+[15%] Optimizing Phase 1 completed
+[25%] Optimizing Phase 2 completed
+Running inference ...
+[30%] Inferring Phase 0 completed
+[40%] Inferring Phase 1 completed
+[50%] Inferring Phase 2 completed
+[55%] Inferring Phase 3 completed
+Running technical mapping ...
+[60%] Tech-Mapping Phase 0 completed
+[65%] Tech-Mapping Phase 1 completed
+[75%] Tech-Mapping Phase 2 completed
+[80%] Tech-Mapping Phase 3 completed
+[90%] Tech-Mapping Phase 4 completed
+WARN  (NL0002) : The module "vdp_interrupt" instantiated to "u_vdp_interrupt" is swept in optimizing("D:\github\HRA_product\TangCartMSX\RTL\modules\v9958\vdp.v":537)
+[95%] Generate netlist file "D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_step3\impl\gwsynthesis\tangnano20k_step3.vg" completed
+[100%] Generate report file "D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_step3\impl\gwsynthesis\tangnano20k_step3_syn.rpt.html" completed
+GowinSynthesis finish

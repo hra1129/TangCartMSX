@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE gowin-synthesis-project>
+<Project>
+    <Version>beta</Version>
+    <Device id="GW2AR-18C" package="QFN88" speed="8" partNumber="GW2AR-LV18QN88C8/I7"/>
+    <FileList>
+        <File path="D:\github\HRA_product\TangCartMSX\RTL\modules\cz80\cz80.v" type="verilog"/>
+        <File path="D:\github\HRA_product\TangCartMSX\RTL\modules\cz80\cz80_alu.v" type="verilog"/>
+        <File path="D:\github\HRA_product\TangCartMSX\RTL\modules\cz80\cz80_inst.v" type="verilog"/>
+        <File path="D:\github\HRA_product\TangCartMSX\RTL\modules\cz80\cz80_mcode.v" type="verilog"/>
+        <File path="D:\github\HRA_product\TangCartMSX\RTL\modules\cz80\cz80_reg.v" type="verilog"/>
+        <File path="D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_step1\tangnano20k_step1\src\ram\ip_ram.v" type="verilog"/>
+        <File path="D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_step1\tangnano20k_step1\src\rom\ip_hello_world_rom.v" type="verilog"/>
+        <File path="D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_step1\tangnano20k_step1\src\tangnano20k_step1.v" type="verilog"/>
+        <File path="D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_step1\tangnano20k_step1\src\uart\ip_uart.v" type="verilog"/>
+        <File path="D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_step1\tangnano20k_step1\src\uart\ip_uart_inst.v" type="verilog"/>
+    </FileList>
+    <OptionList>
+        <Option type="disable_insert_pad" value="0"/>
+        <Option type="global_freq" value="100.000"/>
+        <Option type="looplimit" value="2000"/>
+        <Option type="output_file" value="D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_step1\tangnano20k_step1\impl\gwsynthesis\tangnano20k_step1.vg"/>
+        <Option type="print_all_synthesis_warning" value="0"/>
+        <Option type="ram_rw_check" value="0"/>
+        <Option type="top_module" value="tangnano20k_step1"/>
+        <Option type="vcc" value="1.0"/>
+        <Option type="vccx" value="3.3"/>
+        <Option type="verilog_language" value="verilog-2001"/>
+        <Option type="vhdl_language" value="vhdl-1993"/>
+    </OptionList>
+</Project>
