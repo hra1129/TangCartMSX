@@ -105,7 +105,7 @@ module vdp_register (
 	output reg			vdp_cmd_reg_wr_req,
 	output reg			vdp_cmd_tr_clr_req,
 
-	output		[7:0]	palette_address,
+	output		[3:0]	palette_address,
 	output				palette_we,
 	output		[4:0]	palette_wdata_r,
 	output		[4:0]	palette_wdata_g,
@@ -336,7 +336,7 @@ module vdp_register (
 		end
 	end
 
-	assign palette_address		= { 4'd0, ff_palette_address };
+	assign palette_address		= ff_palette_address;
 	assign palette_we			= ff_palette_we;
 	assign palette_wdata_r		= { ff_palette_data_r, 2'b0 };
 	assign palette_wdata_g		= { ff_palette_data_g, 2'b0 };
@@ -520,7 +520,7 @@ module vdp_register (
 			ff_palette_data_b			<= 3'd0;
 			ff_palette_data_g			<= 3'd0;
 			ff_palette_wr_req			<= 1'b0;
-			ff_palette_address			<= 'd0;
+			ff_palette_address			<= 4'd0;
 		end
 		else if( !ff_rd_req && rd_req ) begin
 			// read request

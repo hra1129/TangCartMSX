@@ -57,6 +57,7 @@
 
 module vdp_double_buffer (
 	input			clk,
+	input			reset,
 	input			enable,
 	input	[9:0]	x_position_w,
 	input	[9:0]	x_position_r,
@@ -69,43 +70,61 @@ module vdp_double_buffer (
 	output	[4:0]	rdata_g,
 	output	[4:0]	rdata_b
 );
-	wire			we_e;
-	wire			we_o;
-	wire	[9:0]	addr_e;
-	wire	[9:0]	addr_o;
 	wire	[14:0]	out_e;
 	wire	[14:0]	out_o;
-	wire	[14:0]	w_d;
-
-	assign w_d		= { wdata_r, wdata_g, wdata_b };
+	reg				ff_enable;
+	reg				ff_we_e;
+	reg				ff_we_o;
+	reg		[9:0]	ff_addr_e;
+	reg		[9:0]	ff_addr_o;
+	reg		[14:0]	ff_d;
+	reg		[4:0]	ff_rdata_r;
+	reg		[4:0]	ff_rdata_g;
+	reg		[4:0]	ff_rdata_b;
 
 	// even line
 	vdp_ram_line_buffer u_buf_even (
 		.clk		( clk			),
-		.enable		( enable		),
-		.address	( addr_e		),
-		.we			( we_e			),
-		.d			( w_d			),
+		.enable		( !enable		),
+		.address	( ff_addr_e		),
+		.we			( ff_we_e		),
+		.d			( ff_d			),
 		.q			( out_e			)
 	);
 
 	// odd line
 	vdp_ram_line_buffer u_buf_odd (
 		.clk		( clk			),
-		.enable		( enable		),
-		.address	( addr_o		),
-		.we			( we_o			),
-		.d			( w_d			),
+		.enable		( !enable		),
+		.address	( ff_addr_o		),
+		.we			( ff_we_o		),
+		.d			( ff_d			),
 		.q			( out_o			)
 	);
 
-	assign we_e			= ( !is_odd ) ? we : 1'b0;
-	assign we_o			= (  is_odd ) ? we : 1'b0;
+	assign rdata_r		= ff_rdata_r;
+	assign rdata_g		= ff_rdata_g;
+	assign rdata_b		= ff_rdata_b;
 
-	assign addr_e		= ( !is_odd ) ? x_position_w : x_position_r;
-	assign addr_o		= (  is_odd ) ? x_position_w : x_position_r;
+	always @( posedge clk ) begin
+		if( reset ) begin
+			ff_enable <= 1'b0;
+		end
+		else begin
+			ff_enable <= enable;
+		end
+	end
 
-	assign rdata_r		= (  is_odd ) ? out_e[14:10] : out_o[14:10];
-	assign rdata_g		= (  is_odd ) ? out_e[ 9: 5] : out_o[ 9: 5];
-	assign rdata_b		= (  is_odd ) ? out_e[ 4: 0] : out_o[ 4: 0];
+	always @( posedge clk ) begin
+		if( enable ) begin
+			ff_we_e		<= ( !is_odd ) ? we : 1'b0;
+			ff_we_o		<= (  is_odd ) ? we : 1'b0;
+			ff_addr_e	<= ( !is_odd ) ? x_position_w : x_position_r;
+			ff_addr_o	<= (  is_odd ) ? x_position_w : x_position_r;
+			ff_d		<= { wdata_r, wdata_g, wdata_b };
+			ff_rdata_r	<= (  is_odd ) ? out_e[14:10] : out_o[14:10];
+			ff_rdata_g	<= (  is_odd ) ? out_e[ 9: 5] : out_o[ 9: 5];
+			ff_rdata_b	<= (  is_odd ) ? out_e[ 4: 0] : out_o[ 4: 0];
+		end
+	end
 endmodule

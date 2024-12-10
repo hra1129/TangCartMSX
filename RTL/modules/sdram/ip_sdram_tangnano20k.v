@@ -60,7 +60,6 @@ module ip_sdram #(
 	input				n_reset,
 	input				clk,				//	85.90908MHz
 	input				clk_sdram,
-	input	[1:0]		enable_state,
 	output				sdram_busy,
 
 	input				dh_clk,				//	10.738635MHz: VideoDHClk

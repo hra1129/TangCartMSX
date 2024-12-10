@@ -203,9 +203,9 @@ module vdp(
 	wire			w_vram_interleave_mode;		// true when mode graphic6, 7
 
 	// for palette
-	wire	[7:0]	w_palette_wr_address;
-	wire	[7:0]	w_palette_rd_address;
-	wire	[7:0]	w_palette_address;
+	wire	[3:0]	w_palette_wr_address;
+	wire	[3:0]	w_palette_rd_address;
+	wire	[3:0]	w_palette_address;
 	wire			w_palette_we;
 	wire	[4:0]	w_palette_wdata_r;
 	wire	[4:0]	w_palette_wdata_g;

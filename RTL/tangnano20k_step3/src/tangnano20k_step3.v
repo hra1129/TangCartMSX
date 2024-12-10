@@ -49,10 +49,13 @@ module tangnano20k_step3 (
 	output	[3:0]	O_sdram_dqm		//	Internal
 );
 	wire			clk;
+	wire			clk42m;
 	reg				ff_delay = 3'd7;
 	reg				ff_reset_n = 1'b0;
-	reg		[1:0]	ff_clock_div = 2'd0;
+	reg				ff_clock_div = 1'b0;
+	reg		[2:0]	ff_cpu_clock_div = 3'b0;
 	wire			w_enable;
+	wire			w_cpu_enable;
 
 	wire			wait_n;
 	wire			int_n;
@@ -100,24 +103,40 @@ module tangnano20k_step3 (
 	//	clock
 	// --------------------------------------------------------------------
 	Gowin_PLL u_pll (
-		.clkout			( clk			),		//output clkout		86.4MHz
-		.clkin			( clk27m		)		//input clkin		27MHz
+		.clkout			( clk			),		//	output clkout	86.4MHz
+		.clkoutd		( clk42m		),		//	output clkoutd	43.2MHz
+		.clkin			( clk27m		)		//	input clkin		27MHz
 	);
 
 	always @( posedge clk ) begin
 		if( !ff_reset_n ) begin
-			ff_clock_div <= 3'd0;
+			ff_clock_div <= 1'd0;
 		end
 		else begin
-			ff_clock_div <= ff_clock_div + 2'd1;
+			ff_clock_div <= ~ff_clock_div;
 		end
 	end
-	assign w_enable		= (ff_clock_div == 2'd3);
+	assign w_enable		= (ff_clock_div == 1'b1);
+
+	always @( posedge clk ) begin
+		if( !ff_reset_n ) begin
+			ff_cpu_clock_div <= 3'd0;
+		end
+		else begin
+			if( ff_cpu_clock_div == 3'd5 ) begin
+				ff_cpu_clock_div <= 3'd0;
+			end
+			else begin
+				ff_cpu_clock_div <= ff_cpu_clock_div + 3'd1;
+			end
+		end
+	end
+	assign w_cpu_enable		= (ff_cpu_clock_div == 3'd5);
 
 	// --------------------------------------------------------------------
 	//	reset
 	// --------------------------------------------------------------------
-	always @( posedge clk ) begin
+	always @( posedge clk42m ) begin
 		if( ff_delay != 3'd0 ) begin
 			ff_delay <= ff_delay - 3'd1;
 		end
@@ -126,7 +145,7 @@ module tangnano20k_step3 (
 		end
 	end
 
-	always @( posedge clk ) begin
+	always @( posedge clk42m ) begin
 		if( ff_delay == 3'd0 ) begin
 			ff_reset_n <= 1'b1;
 		end
@@ -137,8 +156,8 @@ module tangnano20k_step3 (
 	// --------------------------------------------------------------------
 	cz80_inst u_z80 (
 		.reset_n		( ff_reset_n	),
-		.clk_n			( clk			),
-		.enable			( w_enable		),
+		.clk_n			( clk42m		),
+		.enable			( w_cpu_enable	),
 		.wait_n			( wait_n		),
 		.int_n			( int_n			),
 		.nmi_n			( nmi_n			),
@@ -167,11 +186,11 @@ module tangnano20k_step3 (
 	//	UART
 	// --------------------------------------------------------------------
 	ip_uart_inst #(
-		.clk_freq		( 86400000		),
+		.clk_freq		( 43200000		),
 		.uart_freq		( 115200		)
 	) u_uart (
 		.reset_n		( ff_reset_n	),
-		.clk			( clk			),
+		.clk			( clk42m		),
 		.enable			( w_enable		),
 		.iorq_n			( iorq_n		),
 		.wr_n			( wr_n			),
@@ -188,7 +207,7 @@ module tangnano20k_step3 (
 	//	ROM
 	// --------------------------------------------------------------------
 	ip_hello_world_rom u_rom (
-		.clk				( clk						),
+		.clk				( clk42m					),
 		.n_cs				( w_rom_cs_n				),
 		.n_rd				( rd_n						),
 		.address			( a[13:0]					),
@@ -202,7 +221,7 @@ module tangnano20k_step3 (
 	//	RAM
 	// --------------------------------------------------------------------
 	ip_ram u_ram (
-		.clk				( clk						),
+		.clk				( clk42m					),
 		.n_cs				( w_ram_cs_n				),
 		.n_wr				( wr_n						),
 		.n_rd				( rd_n						),
@@ -218,8 +237,7 @@ module tangnano20k_step3 (
 	//	V9958 clone
 	// --------------------------------------------------------------------
 	vdp_inst u_v9958 (
-		.clk				( clk						),
-		.enable_state		( w_vdp_enable_state		),
+		.clk				( clk42m					),
 		.reset_n			( ff_reset_n				),
 		.initial_busy		( w_sdram_busy				),
 		.iorq_n				( w_vdp_cs_n				),
@@ -260,7 +278,6 @@ module tangnano20k_step3 (
 		.n_reset			( ff_reset_n				),
 		.clk				( clk						),
 		.clk_sdram			( clk						),
-		.enable_state		( w_vdp_enable_state		),
 		.sdram_busy			( w_sdram_busy				),
 		.dh_clk				( w_dh_clk					),
 		.dl_clk				( w_dl_clk					),

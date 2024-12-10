@@ -58,7 +58,7 @@
 // -----------------------------------------------------------------------------
 
 module vdp_lcd(
-	// vdp clock ... 21.477mhz
+	// vdp clock ... 42.95454MHz
 	input			clk,
 	input			reset,
 	input			enable,
@@ -73,7 +73,7 @@ module vdp_lcd(
 	input	[10:0]	hcounterin,
 	input	[10:0]	vcounterin,
 	// mode
-	input			pal_mode,			// added by caro
+	input			pal_mode,
 	input			interlace_mode,
 	input			legacy_vga,
 	// video output
@@ -110,23 +110,16 @@ module vdp_lcd(
 	localparam		center_x		= right_x - 32 - 2;					// 72
 	localparam		base_left_x		= center_x - 32 - 2 - 3;			// 35
 
-//	reg				ff_hsync_n;
 	reg				ff_vsync_n;
-
-	// video output enable
-//	reg				ff_video_out_x;
 
 	// double buffer signal
 	wire	[9:0]	w_x_position_w;
-//	reg		[9:0]	ff_x_position_r;
 	wire			w_is_odd;
 	wire			w_we_buf;
 	wire	[4:0]	w_data_r_out;
 	wire	[4:0]	w_data_g_out;
 	wire	[4:0]	w_data_b_out;
-//	reg		[10:0]	ff_disp_start_x;
 
-	reg				ff_lcd_clk;
 	reg		[10:0]	ff_h_cnt;
 	reg				ff_h_sync;
 	reg				ff_h_active;
@@ -170,15 +163,7 @@ module vdp_lcd(
 	// --------------------------------------------------------------------
 	//	LCD clock
 	// --------------------------------------------------------------------
-	always @( posedge clk ) begin
-		if( reset ) begin
-			ff_lcd_clk <= 1'b0;
-		end
-		else begin
-			ff_lcd_clk <= ~ff_lcd_clk;
-		end
-	end
-	assign lcd_clk	= ff_lcd_clk;
+	assign lcd_clk	= clk;
 
 	// --------------------------------------------------------------------
 	//	H Counter
@@ -187,16 +172,11 @@ module vdp_lcd(
 		if( reset ) begin
 			ff_h_cnt <= 11'd0;
 		end
-		else if( !ff_lcd_clk ) begin
-			if( w_h_front_porch_end ) begin
-				ff_h_cnt <= 11'd0;
-			end
-			else begin
-				ff_h_cnt <= ff_h_cnt + 11'd1;
-			end
+		else if( w_h_front_porch_end ) begin
+			ff_h_cnt <= 11'd0;
 		end
 		else begin
-			//	hold
+			ff_h_cnt <= ff_h_cnt + 11'd1;
 		end
 	end
 	assign w_x_position_r		= ff_h_cnt - (h_vdp_active_start + 1);
@@ -208,16 +188,11 @@ module vdp_lcd(
 		if( reset ) begin
 			ff_h_sync <= 1'b0;
 		end
-		else if( !ff_lcd_clk ) begin
-			if( w_h_front_porch_end ) begin
-				ff_h_sync <= 1'b0;
-			end
-			else if( w_h_pulse_end ) begin
-				ff_h_sync <= 1'b1;
-			end
-			else begin
-				//	hold
-			end
+		else if( w_h_front_porch_end ) begin
+			ff_h_sync <= 1'b0;
+		end
+		else if( w_h_pulse_end ) begin
+			ff_h_sync <= 1'b1;
 		end
 		else begin
 			//	hold
@@ -231,16 +206,11 @@ module vdp_lcd(
 		if( reset ) begin
 			ff_h_active <= 1'b0;
 		end
-		else if( !ff_lcd_clk ) begin
-			if( w_h_active_end ) begin
-				ff_h_active <= 1'b0;
-			end
-			else if( w_h_back_porch_end ) begin
-				ff_h_active <= 1'b1;
-			end
-			else begin
-				//	hold
-			end
+		else if( w_h_active_end ) begin
+			ff_h_active <= 1'b0;
+		end
+		else if( w_h_back_porch_end ) begin
+			ff_h_active <= 1'b1;
 		end
 		else begin
 			//	hold
@@ -254,16 +224,11 @@ module vdp_lcd(
 		if( reset ) begin
 			ff_h_vdp_active <= 1'b0;
 		end
-		else if( !ff_lcd_clk ) begin
-			if( w_h_vdp_active_start ) begin
-				ff_h_vdp_active <= 1'b1;
-			end
-			else if( w_h_vdp_active_end ) begin
-				ff_h_vdp_active <= 1'b0;
-			end
-			else begin
-				//	hold
-			end
+		else if( w_h_vdp_active_start ) begin
+			ff_h_vdp_active <= 1'b1;
+		end
+		else if( w_h_vdp_active_end ) begin
+			ff_h_vdp_active <= 1'b0;
 		end
 		else begin
 			//	hold
@@ -277,16 +242,11 @@ module vdp_lcd(
 		if( reset ) begin
 			ff_v_cnt <= 10'd0;
 		end
-		else if( !ff_lcd_clk ) begin
-			if( w_v_front_porch_end && w_h_front_porch_end ) begin
-				ff_v_cnt <= 10'd0;
-			end
-			else begin
-				ff_v_cnt <= ff_v_cnt + 10'd1;
-			end
+		else if( w_v_front_porch_end && w_h_front_porch_end ) begin
+			ff_v_cnt <= 10'd0;
 		end
 		else begin
-			//	hold
+			ff_v_cnt <= ff_v_cnt + 10'd1;
 		end
 	end
 	assign w_x_position_r		= ff_h_cnt - (h_vdp_active_start + 1);
@@ -351,6 +311,7 @@ module vdp_lcd(
 
 	vdp_double_buffer dbuf (
 		.clk			( clk				),
+		.reset			( reset				),
 		.enable			( enable			),
 		.x_position_w	( w_x_position_w	),
 		.x_position_r	( w_x_position_r	),
@@ -366,7 +327,7 @@ module vdp_lcd(
 
 	assign w_x_position_w	= hcounterin[10:1] - (clocks_per_line/2 - disp_width - 10);
 	assign w_is_odd			= vcounterin[1];
-	assign w_we_buf			= ( w_x_position_w < disp_width );
+	assign w_we_buf			= 1'b1;
 
 	// generate v-sync signal
 	// the videovsin_n signal is not used

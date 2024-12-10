@@ -135,6 +135,7 @@ module vdp_ssg (
 	wire	[8:0]	w_pre_x_cnt_start2;
 	wire			w_hsync;
 	wire	[8:0]	w_left_mask;
+	wire	[3:0]	w_left_msak_pre;
 	wire	[8:0]	w_y_adj;
 	wire	[1:0]	w_line_mode;
 	wire			w_v_blanking_start;
@@ -491,7 +492,8 @@ module vdp_ssg (
 	// h_scroll = 5 --> 3
 	// h_scroll = 6 --> 2
 	// h_scroll = 7 --> 1
-	assign w_left_mask		=	( !reg_r25_msk ) ? 'd0: { 5'b00000, ( { 1'b0, (~reg_r27_h_scroll) } + 1) };
+	assign w_left_msak_pre	= { 1'b0, ~reg_r27_h_scroll } + 4'd1;
+	assign w_left_mask		=	( !reg_r25_msk ) ? 'd0: { 5'b00000, w_left_msak_pre };
 
 	always @( posedge clk ) begin
 		// main window

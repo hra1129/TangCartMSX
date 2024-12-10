@@ -57,7 +57,6 @@
 
 module vdp_inst(
 	input					clk,			//	85.90908MHz
-	output		[1:0]		enable_state,	//	00, 01, 10, 11, 00, ...
 	input					reset_n,
 	input					initial_busy,
 	input					iorq_n,
@@ -95,7 +94,6 @@ module vdp_inst(
 
 	reg				ff_initial_busy;
 	reg				ff_enable;
-	reg		[1:0]	ff_enable_cnt;
 
 	//--------------------------------------------------------------
 	// wait
@@ -117,28 +115,12 @@ module vdp_inst(
 	//--------------------------------------------------------------
 	always @( posedge clk ) begin
 		if( !reset_n || ff_initial_busy ) begin
-			ff_enable_cnt	<= 2'b00;
+			ff_enable	<= 1'b0;
 		end
 		else begin
-			ff_enable_cnt	<= ff_enable_cnt + 2'b01;
+			ff_enable	<= ~ff_enable;
 		end
 	end
-
-	always @( posedge clk ) begin
-		if( !reset_n || ff_initial_busy ) begin
-			ff_enable			<= 1'b0;
-		end
-		else begin
-			if( ff_enable_cnt == 2'b11 ) begin
-				ff_enable		<= 1'b1;
-			end
-			else begin
-				ff_enable		<= 1'b0;
-			end
-		end
-	end
-
-	assign enable_state		= ff_enable_cnt;
 
 	vdp u_v9958_core (
 		.reset				( !reset_n					),	// IN	

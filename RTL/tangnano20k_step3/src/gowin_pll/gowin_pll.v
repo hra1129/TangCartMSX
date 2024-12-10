@@ -5,16 +5,16 @@
 //Part Number: GW2AR-LV18QN88C8/I7
 //Device: GW2AR-18
 //Device Version: C
-//Created Time: Fri Dec  6 06:25:24 2024
+//Created Time: Tue Dec 10 20:29:20 2024
 
-module Gowin_PLL (clkout, clkin);
+module Gowin_PLL (clkout, clkoutd, clkin);
 
 output clkout;
+output clkoutd;
 input clkin;
 
 wire lock_o;
 wire clkoutp_o;
-wire clkoutd_o;
 wire clkoutd3_o;
 wire gw_gnd;
 
@@ -24,7 +24,7 @@ PLL pll_inst (
     .CLKOUT(clkout),
     .LOCK(lock_o),
     .CLKOUTP(clkoutp_o),
-    .CLKOUTD(clkoutd_o),
+    .CLKOUTD(clkoutd),
     .CLKOUTD3(clkoutd3_o),
     .RESET(gw_gnd),
     .RESET_P(gw_gnd),

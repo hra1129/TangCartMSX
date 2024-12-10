@@ -60,7 +60,7 @@ module vdp_color_decoder (
 
 	input	[1:0]	dot_state			,
 
-	output	[7:0]	palette_address		,
+	output	[3:0]	palette_address		,
 	input	[4:0]	palette_rdata_r		,
 	input	[4:0]	palette_rdata_g		,
 	input	[4:0]	palette_rdata_b		,
@@ -122,7 +122,7 @@ module vdp_color_decoder (
 	wire	[7:0]	w_grp7_color;
 	wire	[3:0]	w_palette_addr;
 
-	assign palette_address		= { 4'd0, ff_palette_address };
+	assign palette_address		= ff_palette_address;
 
 	assign pvideor_vdp			= ff_video_r;
 	assign pvideog_vdp			= ff_video_g;
