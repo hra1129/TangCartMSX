@@ -7,21 +7,21 @@
 
 -mod_name Gowin_PLL
 -file_name gowin_pll
--path D:/github/HRA_product/TangCartMSX/RTL/tangnano20k_step3/src/gowin_pll/
+-path D:/github/HRA_product/TangCartMSX/RTL/tangnano20k_step4/src/gowin_pll/
 -type PLL
 -file_type vlg
 -dev_type GW2AR-18C
 -dyn_idiv_sel false
--idiv_sel 5
+-idiv_sel 1
 -dyn_fbdiv_sel false
--fbdiv_sel 16
+-fbdiv_sel 24
 -dyn_odiv_sel false
 -odiv_sel 8
 -dyn_sdiv_sel 2
 -dyn_da_en true
 -rst_sig false
 -rst_sig_p false
--fclkin 27
+-fclkin 3.579
 -rst_sig_i false
 -clkfb_sel 0
 -en_lock false

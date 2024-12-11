@@ -1,8 +1,8 @@
--d D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_step3\impl\gwsynthesis\tangnano20k_step3.vg
+-d D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_step4\impl\gwsynthesis\tangnano20k_step4.vg
 -p GW2AR-18C-QFN88-8
 -pn GW2AR-LV18QN88C8/I7
--cst D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_step3\src\tangnano20k_step3.cst
--cfg D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_step3\impl\pnr\device.cfg
+-cst D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_step4\src\tangnano20k_step4.cst
+-cfg D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_step4\impl\pnr\device.cfg
 -bit
 -tr
 -ph

@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Module name="tangnano20k_step4" Register="6" Lut="7" T_Register="1785(6)" T_Alu="394(0)" T_Lut="3832(7)" T_Bsram="25(0)" T_Ssram="24(0)">
+ <SubModule name="u_pll"/>
+ <SubModule name="u_z80" Register="24" Lut="78" T_Register="232(24)" T_Alu="81(0)" T_Lut="1435(78)" T_Ssram="12(0)">
+  <SubModule name="u_cz80" Register="208" Alu="70" Lut="1104" T_Register="208(208)" T_Alu="81(70)" T_Lut="1357(1104)" T_Ssram="12(0)">
+   <SubModule name="u_mcode" Lut="236" T_Lut="236(236)"/>
+   <SubModule name="u_alu" Alu="11" Lut="11" T_Alu="11(11)" T_Lut="11(11)"/>
+   <SubModule name="u_regs" Lut="6" Ssram="12" T_Lut="6(6)" T_Ssram="12(12)"/>
+  </SubModule>
+ </SubModule>
+ <SubModule name="u_uart" Register="11" Lut="6" T_Register="37(11)" T_Lut="40(6)">
+  <SubModule name="u_uart" Register="26" Lut="34" T_Register="26(26)" T_Lut="34(34)"/>
+ </SubModule>
+ <SubModule name="u_rom" Register="1" Lut="3" Bsram="8" T_Register="1(1)" T_Lut="3(3)" T_Bsram="8(8)"/>
+ <SubModule name="u_ram" Register="2" Lut="3" Bsram="8" T_Register="2(2)" T_Lut="3(3)" T_Bsram="8(8)"/>
+ <SubModule name="u_v9958" Register="2" Lut="1" T_Register="1432(2)" T_Alu="313(0)" T_Lut="2206(1)" T_Bsram="9(0)" T_Ssram="12(0)">
+  <SubModule name="u_v9958_core" Register="4" Lut="33" T_Register="1430(4)" T_Alu="313(0)" T_Lut="2205(33)" T_Bsram="9(0)" T_Ssram="12(0)">
+   <SubModule name="u_vdp_color_bus" Register="58" Lut="290" T_Register="58(58)" T_Lut="290(290)"/>
+   <SubModule name="u_vdp_ssg" Register="101" Alu="30" Lut="172" T_Register="101(101)" T_Alu="30(30)" T_Lut="172(172)"/>
+   <SubModule name="u_vdp_color_decoder" Register="59" Lut="92" T_Register="59(59)" T_Lut="92(92)"/>
+   <SubModule name="u_vdp_text12" Register="95" Alu="12" Lut="155" T_Register="95(95)" T_Alu="12(12)" T_Lut="155(155)"/>
+   <SubModule name="u_vdp_graphic123m" Register="69" Alu="5" Lut="80" T_Register="69(69)" T_Alu="5(5)" T_Lut="80(80)"/>
+   <SubModule name="u_vdp_graphic4567" Register="150" Alu="41" Lut="169" T_Register="167(150)" T_Alu="41(41)" T_Lut="170(169)" T_Bsram="1(0)">
+    <SubModule name="u_fifo_ram" Register="17" Lut="1" Bsram="1" T_Register="17(17)" T_Lut="1(1)" T_Bsram="1(1)"/>
+   </SubModule>
+   <SubModule name="u_vdp_sprite" Register="242" Alu="13" Lut="312" T_Register="279(242)" T_Alu="13(13)" T_Lut="313(312)" T_Bsram="2(0)" T_Ssram="8(0)">
+    <SubModule name="u_sprite_info_ram" Register="3" Lut="1" Ssram="8" T_Register="3(3)" T_Lut="1(1)" T_Ssram="8(8)"/>
+    <SubModule name="u_even_line_buf" Register="17" Bsram="1" T_Register="17(17)" T_Bsram="1(1)"/>
+    <SubModule name="u_odd_line_buf" Register="17" Bsram="1" T_Register="17(17)" T_Bsram="1(1)"/>
+   </SubModule>
+   <SubModule name="u_vdp_palette_ram" Register="72" Alu="4" Lut="39" Ssram="4" T_Register="72(72)" T_Alu="4(4)" T_Lut="39(39)" T_Ssram="4(4)"/>
+   <SubModule name="u_vdp_register" Register="221" Lut="107" T_Register="221(221)" T_Lut="107(107)"/>
+   <SubModule name="u_vdp_command" Register="186" Alu="80" Lut="545" T_Register="186(186)" T_Alu="80(80)" T_Lut="545(545)"/>
+   <SubModule name="u_vdp_wait_control" Register="14" Alu="118" Lut="93" Bsram="4" T_Register="14(14)" T_Alu="118(118)" T_Lut="93(93)" T_Bsram="4(4)"/>
+   <SubModule name="u_vdp_lcd" Register="16" Alu="10" Lut="64" T_Register="105(16)" T_Alu="10(10)" T_Lut="116(64)" T_Bsram="2(0)">
+    <SubModule name="dbuf" Register="52" Lut="52" T_Register="89(52)" T_Lut="52(52)" T_Bsram="2(0)">
+     <SubModule name="u_buf_even" Register="26" Bsram="1" T_Register="26(26)" T_Bsram="1(1)"/>
+     <SubModule name="u_buf_odd" Register="11" Bsram="1" T_Register="11(11)" T_Bsram="1(1)"/>
+    </SubModule>
+   </SubModule>
+  </SubModule>
+ </SubModule>
+ <SubModule name="u_sdram" Register="75" Lut="138" T_Register="75(75)" T_Lut="138(138)"/>
+</Module>

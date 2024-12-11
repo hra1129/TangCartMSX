@@ -23,6 +23,7 @@
 
 module tangnano20k_step4 (
 	input			clk27m,			//	clk27m		PIN04_SYS_CLK		(27MHz)
+	input			clk3_579m,		//	clk3_579m	PIN76				(3.579545MHz)
 	input	[1:0]	button,			//	button[0]	PIN88_MODE0_KEY1
 									//	button[1]	PIN87_MODE1_KEY2
 	//	VGA Output
@@ -103,9 +104,9 @@ module tangnano20k_step4 (
 	//	clock
 	// --------------------------------------------------------------------
 	Gowin_PLL u_pll (
-		.clkout			( clk			),		//	output clkout	86.4MHz
-		.clkoutd		( clk42m		),		//	output clkoutd	43.2MHz
-		.clkin			( clk27m		)		//	input clkin		27MHz
+		.clkout			( clk			),		//	output clkout	85.90908MHz
+		.clkoutd		( clk42m		),		//	output clkoutd	42.95454MHz
+		.clkin			( clk3_579m		)		//	input clkin		3.579545MHz
 	);
 
 	always @( posedge clk ) begin
