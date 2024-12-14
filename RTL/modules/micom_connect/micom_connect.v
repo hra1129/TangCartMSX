@@ -64,7 +64,17 @@ module micom_connect (
 	input			spi_clk,
 	input			spi_mosi,
 	output			spi_miso,
-	output			msx_reset_n
+	//	Reset
+	output			msx_reset_n,
+	//	keyboard I/F
+	input	[3:0]	matrix_y,
+	output	[7:0]	matrix_x,
+	//	Memory write I/F
+	output	[21:0]	address,
+	output			req,
+	output	[7:0]	wdata,
+	//	Status
+	input			sdram_busy
 );
 	localparam		st_initial		= 4'd0;
 	localparam		st_idle			= 4'd1;
@@ -89,7 +99,13 @@ module micom_connect (
 	wire			w_command_req;
 	reg				ff_command_end;
 	reg		[14:0]	ff_address;
+	wire	[14:0]	w_address;
 	reg				ff_msx_reset_n;
+	reg		[7:0]	ff_key_matrix [0:15];
+	reg		[3:0]	ff_y;
+	reg		[7:0]	ff_bank;
+	reg		[7:0]	ff_wdata;
+	reg				ff_req;
 
 	// --------------------------------------------------------------------
 	//	State
@@ -107,20 +123,25 @@ module micom_connect (
 			case( ff_state )
 			st_initial:
 				begin
-					//	hold
+					ff_data			<= dt_signature;
 				end
 			st_idle:
 				begin
 					ff_state		<= st_command;
-					ff_data			<= dt_signature;
 					ff_bit			<= 3'd0;
 					ff_connect_req	<= 1'b1;
 				end
 			st_command:
 				begin
 					ff_connect_req	<= 1'b0;
-					if( ff_serial_state == sst_byte_end ) begin
+					if( w_command_req ) begin
 						ff_state	<= st_idle;
+						if( !ff_do_command && ff_recv_data == 8'h05 ) begin
+							ff_data			<= { 7'd0, sdram_busy };
+						end
+						else begin
+							ff_data			<= dt_signature;
+						end
 					end
 				end
 			default:
@@ -174,24 +195,38 @@ module micom_connect (
 
 	always @( posedge clk ) begin
 		if( !reset_n ) begin
+			ff_address		<= 15'd0;
+		end
+		else if( spi_cs_n ) begin
+			ff_address		<= 15'd0;
+		end
+		else if( ff_command_end ) begin
+			ff_address		<= 15'd0;
+		end
+		else if( w_command_req ) begin
+			ff_address		<= ff_address + 15'd1;
+		end
+		else begin
+			//	hold
+		end
+	end
+
+	always @( posedge clk ) begin
+		if( !reset_n ) begin
 			ff_command		<= 8'd0;
 			ff_do_command	<= 1'b0;
-			ff_address		<= 15'd0;
 		end
 		else if( spi_cs_n ) begin
 			ff_command		<= 8'd0;
 			ff_do_command	<= 1'b0;
-			ff_address		<= 15'd0;
 		end
 		else if( ff_command_end ) begin
 			ff_command		<= 8'd0;
 			ff_do_command	<= 1'b0;
-			ff_address		<= 15'd0;
 		end
 		else if( !ff_do_command && w_command_req ) begin
 			ff_command		<= ff_recv_data;
 			ff_do_command	<= 1'b1;
-			ff_address		<= ff_address + 15'd1;
 		end
 		else begin
 			//	hold
@@ -202,13 +237,26 @@ module micom_connect (
 		if( !reset_n ) begin
 			ff_command_end <= 1'b0;
 		end
-		else begin
+		else if( ff_do_command ) begin
 			case( ff_command )
-			8'h00, 8'h01, 8'h02:
-				ff_command_end <= ff_do_command;
+			8'h03:
+				if( ff_address[7:0] == 8'h02 ) begin
+					ff_command_end <= w_command_req;
+				end
+			8'h04:
+				if( ff_address == 15'd16385 ) begin
+					ff_command_end <= w_command_req;
+				end
+			8'h03:
+				if( ff_address[7:0] == 8'h01 ) begin
+					ff_command_end <= w_command_req;
+				end
 			default:
-				ff_command_end <= ff_do_command;
+				ff_command_end <= w_command_req;
 			endcase
+		end
+		else begin
+			ff_command_end <= 1'b0;
 		end
 	end
 
@@ -222,11 +270,11 @@ module micom_connect (
 		if( !reset_n ) begin
 			ff_msx_reset_n <= 1'b0;
 		end
-		else if( w_command_req ) begin
-			if( ff_recv_data == 8'h01 ) begin
+		else if( ff_do_command ) begin
+			if(      ff_command == 8'h01 ) begin
 				ff_msx_reset_n <= 1'b0;
 			end
-			else if( ff_recv_data == 8'h02 ) begin
+			else if( ff_command == 8'h02 ) begin
 				ff_msx_reset_n <= 1'b1;
 			end
 			else begin
@@ -239,4 +287,64 @@ module micom_connect (
 	end
 
 	assign msx_reset_n	= ff_msx_reset_n;
+
+	// --------------------------------------------------------------------
+	//	Key matrix
+	// --------------------------------------------------------------------
+	always @( posedge clk ) begin
+		if( !reset_n ) begin
+			ff_y <= 4'd0;
+		end
+		else if( ff_do_command && w_command_req ) begin
+			if( ff_command == 8'h03 ) begin
+				if(      ff_address[7:0] == 8'h1 ) begin
+					ff_y <= ff_recv_data[3:0];
+				end
+				else if( ff_address[7:0] == 8'h2 ) begin
+					ff_key_matrix[ ff_y ] <= ff_recv_data;
+				end
+			end
+			else begin
+				//	hold
+			end
+		end
+		else begin
+			//	hold
+		end
+	end
+
+	assign matrix_x	= ff_key_matrix[ matrix_y ];
+
+	// --------------------------------------------------------------------
+	//	Memory I/F
+	// --------------------------------------------------------------------
+	always @( posedge clk ) begin
+		if( !reset_n ) begin
+			ff_bank		<= 8'd0;
+			ff_req		<= 1'b0;
+			ff_wdata	<= 8'h00;
+		end
+		else if( ff_do_command && w_command_req ) begin
+			if( ff_command == 8'h04 ) begin
+				if(      ff_address[7:0] == 8'h1 ) begin
+					ff_bank		<= ff_recv_data;
+				end
+				else begin
+					ff_wdata	<= ff_recv_data;
+					ff_req		<= 1'b1;
+				end
+			end
+			else begin
+				//	hold
+			end
+		end
+		else begin
+			ff_req		<= 1'b0;
+		end
+	end
+
+	assign w_address	= ff_address - 15'd3;
+	assign address		= { ff_bank, w_address[13:0] };
+	assign wdata		= ff_wdata;
+	assign req			= ff_req;
 endmodule
