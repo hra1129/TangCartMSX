@@ -35,6 +35,11 @@ module tangnano20k_step4 (
 	output	[5:0]	lcd_green,		//	PIN32, PIN33, PIN34, PIN35, PIN36, PIN37
 	output	[4:0]	lcd_blue,		//	PIN27, PIN28, PIN29, PIN30, PIN31
 	output			lcd_bl,			//	PIN49
+	//	SPI
+	input			spi_cs_n,		//	PIN79
+	input			spi_clk,		//	PIN73
+	input			spi_mosi,		//	PIN74
+	output			spi_miso,		//	PIN75
 	//	UART
 	output			uart_tx,		//	uart_tx		PIN69_SYS_TX
 	//	SDRAM
@@ -100,6 +105,8 @@ module tangnano20k_step4 (
 	wire			w_dh_clk;
 	wire			w_dl_clk;
 
+	wire			w_msx_reset_n;
+
 	// --------------------------------------------------------------------
 	//	clock
 	// --------------------------------------------------------------------
@@ -153,10 +160,29 @@ module tangnano20k_step4 (
 	end
 
 	// --------------------------------------------------------------------
+	//	ESP32 Connection module
+	// --------------------------------------------------------------------
+	micom_connect u_esp32_conn (
+		.reset_n		( ff_reset_n	),
+		.clk			( clk			),
+		.spi_cs_n		( spi_cs_n		),
+		.spi_clk		( spi_clk		),
+		.spi_mosi		( spi_mosi		),
+		.spi_miso		( spi_miso		),
+		.msx_reset_n	( w_msx_reset_n	),
+		.matrix_y		( 4'd0			),
+		.matrix_x		( 				),
+		.address		( 				),
+		.req			( 				),
+		.wdata			( 				),
+		.sdram_busy		( w_sdram_busy	)
+	);
+
+	// --------------------------------------------------------------------
 	//	Z80 core
 	// --------------------------------------------------------------------
 	cz80_inst u_z80 (
-		.reset_n		( ff_reset_n	),
+		.reset_n		( w_msx_reset_n	),
 		.clk_n			( clk42m		),
 		.enable			( w_cpu_enable	),
 		.wait_n			( wait_n		),
@@ -190,7 +216,7 @@ module tangnano20k_step4 (
 		.clk_freq		( 43200000		),
 		.uart_freq		( 115200		)
 	) u_uart (
-		.reset_n		( ff_reset_n	),
+		.reset_n		( w_msx_reset_n	),
 		.clk			( clk42m		),
 		.enable			( w_enable		),
 		.iorq_n			( iorq_n		),
@@ -239,7 +265,7 @@ module tangnano20k_step4 (
 	// --------------------------------------------------------------------
 	vdp_inst u_v9958 (
 		.clk				( clk42m					),
-		.reset_n			( ff_reset_n				),
+		.reset_n			( w_msx_reset_n				),
 		.initial_busy		( w_sdram_busy				),
 		.iorq_n				( w_vdp_cs_n				),
 		.wr_n				( wr_n						),
@@ -276,7 +302,7 @@ module tangnano20k_step4 (
 	//	SDRAM
 	// --------------------------------------------------------------------
 	ip_sdram u_sdram (
-		.n_reset			( ff_reset_n				),
+		.n_reset			( w_msx_reset_n				),
 		.clk				( clk						),
 		.clk_sdram			( clk						),
 		.sdram_busy			( w_sdram_busy				),

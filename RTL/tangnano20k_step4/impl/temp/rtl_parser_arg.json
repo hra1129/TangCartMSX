@@ -22,6 +22,10 @@
    "Type" : "verilog"
   },
   {
+   "Path" : "D:/github/HRA_product/TangCartMSX/RTL/modules/micom_connect/micom_connect.v",
+   "Type" : "verilog"
+  },
+  {
    "Path" : "D:/github/HRA_product/TangCartMSX/RTL/modules/sdram/ip_sdram_tangnano20k.v",
    "Type" : "verilog"
   },
@@ -131,7 +135,7 @@
  ],
  "LoopLimit" : 2000,
  "ResultFile" : "D:/github/HRA_product/TangCartMSX/RTL/tangnano20k_step4/impl/temp/rtl_parser.result",
- "Top" : "",
+ "Top" : "tangnano20k_step4",
  "VerilogStd" : "verilog_2001",
  "VhdlStd" : "vhdl_93"
 }

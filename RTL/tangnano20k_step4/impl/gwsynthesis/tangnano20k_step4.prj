@@ -9,6 +9,7 @@
         <File path="D:\github\HRA_product\TangCartMSX\RTL\modules\cz80\cz80_inst.v" type="verilog"/>
         <File path="D:\github\HRA_product\TangCartMSX\RTL\modules\cz80\cz80_mcode.v" type="verilog"/>
         <File path="D:\github\HRA_product\TangCartMSX\RTL\modules\cz80\cz80_reg.v" type="verilog"/>
+        <File path="D:\github\HRA_product\TangCartMSX\RTL\modules\micom_connect\micom_connect.v" type="verilog"/>
         <File path="D:\github\HRA_product\TangCartMSX\RTL\modules\sdram\ip_sdram_tangnano20k.v" type="verilog"/>
         <File path="D:\github\HRA_product\TangCartMSX\RTL\modules\v9958\vdp.v" type="verilog"/>
         <File path="D:\github\HRA_product\TangCartMSX\RTL\modules\v9958\vdp_color_bus.v" type="verilog"/>
@@ -43,6 +44,7 @@
         <Option type="output_file" value="D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_step4\impl\gwsynthesis\tangnano20k_step4.vg"/>
         <Option type="print_all_synthesis_warning" value="0"/>
         <Option type="ram_rw_check" value="0"/>
+        <Option type="top_module" value="tangnano20k_step4"/>
         <Option type="vcc" value="1.0"/>
         <Option type="vccx" value="3.3"/>
         <Option type="verilog_language" value="verilog-2001"/>

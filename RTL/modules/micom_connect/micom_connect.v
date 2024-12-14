@@ -128,7 +128,6 @@ module micom_connect (
 			st_idle:
 				begin
 					ff_state		<= st_command;
-					ff_bit			<= 3'd0;
 					ff_connect_req	<= 1'b1;
 				end
 			st_command:
