@@ -60,6 +60,7 @@ D:\github\HRA_product\TangCartMSX\RTL\modules\cz80\cz80_alu.v<br>
 D:\github\HRA_product\TangCartMSX\RTL\modules\cz80\cz80_inst.v<br>
 D:\github\HRA_product\TangCartMSX\RTL\modules\cz80\cz80_mcode.v<br>
 D:\github\HRA_product\TangCartMSX\RTL\modules\cz80\cz80_reg.v<br>
+D:\github\HRA_product\TangCartMSX\RTL\modules\micom_connect\micom_connect.v<br>
 D:\github\HRA_product\TangCartMSX\RTL\modules\sdram\ip_sdram_tangnano20k.v<br>
 D:\github\HRA_product\TangCartMSX\RTL\modules\v9958\vdp.v<br>
 D:\github\HRA_product\TangCartMSX\RTL\modules\v9958\vdp_color_bus.v<br>
@@ -110,7 +111,7 @@ D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_step4\src\uart\ip_uart_inst.v<
 </tr>
 <tr>
 <td class="label">Created Time</td>
-<td>Wed Dec 11 23:10:19 2024
+<td>Sun Dec 15 17:56:04 2024
 </td>
 </tr>
 <tr>
@@ -126,11 +127,11 @@ D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_step4\src\uart\ip_uart_inst.v<
 </tr>
 <tr>
 <td class="label">Synthesis Process</td>
-<td>Running parser:<br/>&nbsp;&nbsp;&nbsp;&nbsp;CPU time = 0h 0m 1s, Elapsed time = 0h 0m 1s, Peak memory usage = 245.586MB<br/>Running netlist conversion:<br/>&nbsp;&nbsp;&nbsp;&nbsp;CPU time = 0h 0m 0s, Elapsed time = 0h 0m 0s, Peak memory usage = 0MB<br/>Running device independent optimization:<br/>&nbsp;&nbsp;&nbsp;&nbsp;Optimizing Phase 0: CPU time = 0h 0m 1s, Elapsed time = 0h 0m 1s, Peak memory usage = 245.586MB<br/>&nbsp;&nbsp;&nbsp;&nbsp;Optimizing Phase 1: CPU time = 0h 0m 0.515s, Elapsed time = 0h 0m 0.507s, Peak memory usage = 245.586MB<br/>&nbsp;&nbsp;&nbsp;&nbsp;Optimizing Phase 2: CPU time = 0h 0m 0.875s, Elapsed time = 0h 0m 0.892s, Peak memory usage = 245.586MB<br/>Running inference:<br/>&nbsp;&nbsp;&nbsp;&nbsp;Inferring Phase 0: CPU time = 0h 0m 0.656s, Elapsed time = 0h 0m 0.664s, Peak memory usage = 245.586MB<br/>&nbsp;&nbsp;&nbsp;&nbsp;Inferring Phase 1: CPU time = 0h 0m 0.046s, Elapsed time = 0h 0m 0.019s, Peak memory usage = 245.586MB<br/>&nbsp;&nbsp;&nbsp;&nbsp;Inferring Phase 2: CPU time = 0h 0m 0.015s, Elapsed time = 0h 0m 0.025s, Peak memory usage = 245.586MB<br/>&nbsp;&nbsp;&nbsp;&nbsp;Inferring Phase 3: CPU time = 0h 0m 0.031s, Elapsed time = 0h 0m 0.028s, Peak memory usage = 245.586MB<br/>Running technical mapping:<br/>&nbsp;&nbsp;&nbsp;&nbsp;Tech-Mapping Phase 0: CPU time = 0h 0m 0.796s, Elapsed time = 0h 0m 0.792s, Peak memory usage = 245.586MB<br/>&nbsp;&nbsp;&nbsp;&nbsp;Tech-Mapping Phase 1: CPU time = 0h 0m 0.125s, Elapsed time = 0h 0m 0.107s, Peak memory usage = 245.586MB<br/>&nbsp;&nbsp;&nbsp;&nbsp;Tech-Mapping Phase 2: CPU time = 0h 0m 0.203s, Elapsed time = 0h 0m 0.221s, Peak memory usage = 245.586MB<br/>&nbsp;&nbsp;&nbsp;&nbsp;Tech-Mapping Phase 3: CPU time = 0h 0m 25s, Elapsed time = 0h 0m 25s, Peak memory usage = 264.309MB<br/>&nbsp;&nbsp;&nbsp;&nbsp;Tech-Mapping Phase 4: CPU time = 0h 0m 0.359s, Elapsed time = 0h 0m 0.409s, Peak memory usage = 264.309MB<br/>Generate output files:<br/>&nbsp;&nbsp;&nbsp;&nbsp;CPU time = 0h 0m 0.39s, Elapsed time = 0h 0m 0.394s, Peak memory usage = 264.309MB<br/></td>
+<td>Running parser:<br/>&nbsp;&nbsp;&nbsp;&nbsp;CPU time = 0h 0m 1s, Elapsed time = 0h 0m 1s, Peak memory usage = 204.609MB<br/>Running netlist conversion:<br/>&nbsp;&nbsp;&nbsp;&nbsp;CPU time = 0h 0m 0s, Elapsed time = 0h 0m 0s, Peak memory usage = 0MB<br/>Running device independent optimization:<br/>&nbsp;&nbsp;&nbsp;&nbsp;Optimizing Phase 0: CPU time = 0h 0m 1s, Elapsed time = 0h 0m 1s, Peak memory usage = 204.609MB<br/>&nbsp;&nbsp;&nbsp;&nbsp;Optimizing Phase 1: CPU time = 0h 0m 0.5s, Elapsed time = 0h 0m 0.482s, Peak memory usage = 204.609MB<br/>&nbsp;&nbsp;&nbsp;&nbsp;Optimizing Phase 2: CPU time = 0h 0m 0.937s, Elapsed time = 0h 0m 0.907s, Peak memory usage = 204.609MB<br/>Running inference:<br/>&nbsp;&nbsp;&nbsp;&nbsp;Inferring Phase 0: CPU time = 0h 0m 0.656s, Elapsed time = 0h 0m 0.659s, Peak memory usage = 204.609MB<br/>&nbsp;&nbsp;&nbsp;&nbsp;Inferring Phase 1: CPU time = 0h 0m 0.015s, Elapsed time = 0h 0m 0.017s, Peak memory usage = 204.609MB<br/>&nbsp;&nbsp;&nbsp;&nbsp;Inferring Phase 2: CPU time = 0h 0m 0.031s, Elapsed time = 0h 0m 0.022s, Peak memory usage = 204.609MB<br/>&nbsp;&nbsp;&nbsp;&nbsp;Inferring Phase 3: CPU time = 0h 0m 0.015s, Elapsed time = 0h 0m 0.025s, Peak memory usage = 204.609MB<br/>Running technical mapping:<br/>&nbsp;&nbsp;&nbsp;&nbsp;Tech-Mapping Phase 0: CPU time = 0h 0m 0.734s, Elapsed time = 0h 0m 0.734s, Peak memory usage = 204.609MB<br/>&nbsp;&nbsp;&nbsp;&nbsp;Tech-Mapping Phase 1: CPU time = 0h 0m 0.109s, Elapsed time = 0h 0m 0.101s, Peak memory usage = 204.609MB<br/>&nbsp;&nbsp;&nbsp;&nbsp;Tech-Mapping Phase 2: CPU time = 0h 0m 0.187s, Elapsed time = 0h 0m 0.196s, Peak memory usage = 204.609MB<br/>&nbsp;&nbsp;&nbsp;&nbsp;Tech-Mapping Phase 3: CPU time = 0h 0m 25s, Elapsed time = 0h 0m 25s, Peak memory usage = 221.969MB<br/>&nbsp;&nbsp;&nbsp;&nbsp;Tech-Mapping Phase 4: CPU time = 0h 0m 0.375s, Elapsed time = 0h 0m 0.406s, Peak memory usage = 221.969MB<br/>Generate output files:<br/>&nbsp;&nbsp;&nbsp;&nbsp;CPU time = 0h 0m 0.343s, Elapsed time = 0h 0m 0.391s, Peak memory usage = 221.969MB<br/></td>
 </tr>
 <tr>
 <td class="label">Total Time and Memory Usage</td>
-<td>CPU time = 0h 0m 31s, Elapsed time = 0h 0m 31s, Peak memory usage = 264.309MB</td>
+<td>CPU time = 0h 0m 30s, Elapsed time = 0h 0m 30s, Peak memory usage = 221.969MB</td>
 </tr>
 </table>
 <h1><a name="resource">Resource</a></h1>
@@ -142,7 +143,7 @@ D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_step4\src\uart\ip_uart_inst.v<
 </tr>
 <tr>
 <td class="label"><b>I/O Port </b></td>
-<td>26</td>
+<td>30</td>
 </tr>
 <tr>
 <td class="label"><b>Embedded Port </b></td>
@@ -150,15 +151,15 @@ D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_step4\src\uart\ip_uart_inst.v<
 </tr>
 <tr>
 <td class="label"><b>I/O Buf </b></td>
-<td>80</td>
+<td>84</td>
 </tr>
 <tr>
 <td class="label">&nbsp&nbsp&nbsp&nbspIBUF</td>
-<td>3</td>
+<td>6</td>
 </tr>
 <tr>
 <td class="label">&nbsp&nbsp&nbsp&nbspOBUF</td>
-<td>45</td>
+<td>46</td>
 </tr>
 <tr>
 <td class="label">&nbsp&nbsp&nbsp&nbspIOBUF</td>
@@ -166,55 +167,55 @@ D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_step4\src\uart\ip_uart_inst.v<
 </tr>
 <tr>
 <td class="label"><b>Register </b></td>
-<td>1785</td>
+<td>1835</td>
 </tr>
 <tr>
 <td class="label">&nbsp&nbsp&nbsp&nbspDFF</td>
-<td>44</td>
+<td>37</td>
 </tr>
 <tr>
 <td class="label">&nbsp&nbsp&nbsp&nbspDFFE</td>
-<td>417</td>
+<td>427</td>
 </tr>
 <tr>
 <td class="label">&nbsp&nbsp&nbsp&nbspDFFS</td>
-<td>7</td>
+<td>8</td>
 </tr>
 <tr>
 <td class="label">&nbsp&nbsp&nbsp&nbspDFFSE</td>
-<td>105</td>
+<td>107</td>
 </tr>
 <tr>
 <td class="label">&nbsp&nbsp&nbsp&nbspDFFR</td>
-<td>73</td>
+<td>71</td>
 </tr>
 <tr>
 <td class="label">&nbsp&nbsp&nbsp&nbspDFFRE</td>
-<td>1139</td>
+<td>1185</td>
 </tr>
 <tr>
 <td class="label"><b>LUT </b></td>
-<td>3802</td>
+<td>3892</td>
 </tr>
 <tr>
 <td class="label">&nbsp&nbsp&nbsp&nbspLUT2</td>
-<td>294</td>
+<td>316</td>
 </tr>
 <tr>
 <td class="label">&nbsp&nbsp&nbsp&nbspLUT3</td>
-<td>1358</td>
+<td>1328</td>
 </tr>
 <tr>
 <td class="label">&nbsp&nbsp&nbsp&nbspLUT4</td>
-<td>2150</td>
+<td>2248</td>
 </tr>
 <tr>
 <td class="label"><b>ALU </b></td>
-<td>394</td>
+<td>395</td>
 </tr>
 <tr>
 <td class="label">&nbsp&nbsp&nbsp&nbspALU</td>
-<td>394</td>
+<td>395</td>
 </tr>
 <tr>
 <td class="label"><b>SSRAM </b></td>
@@ -266,12 +267,12 @@ D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_step4\src\uart\ip_uart_inst.v<
 </tr>
 <tr>
 <td class="label">Logic</td>
-<td>4370(3832 LUT, 394 ALU, 24 RAM16) / 20736</td>
+<td>4461(3922 LUT, 395 ALU, 24 RAM16) / 20736</td>
 <td>22%</td>
 </tr>
 <tr>
 <td class="label">Register</td>
-<td>1785 / 15915</td>
+<td>1835 / 15915</td>
 <td>12%</td>
 </tr>
 <tr>
@@ -281,7 +282,7 @@ D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_step4\src\uart\ip_uart_inst.v<
 </tr>
 <tr>
 <td class="label">&nbsp&nbsp--Register as FF</td>
-<td>1785 / 15915</td>
+<td>1835 / 15915</td>
 <td>12%</td>
 </tr>
 <tr>
@@ -388,8 +389,8 @@ D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_step4\src\uart\ip_uart_inst.v<
 <td>2</td>
 <td>u_pll/pll_inst/CLKOUTD.default_gen_clk</td>
 <td>42.948(MHz)</td>
-<td>55.424(MHz)</td>
-<td>20</td>
+<td>58.665(MHz)</td>
+<td>9</td>
 <td>TOP</td>
 </tr>
 </table>
@@ -399,11 +400,11 @@ D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_step4\src\uart\ip_uart_inst.v<
 <table class="summary_table">
 <tr>
 <td class="label">Slack</td>
-<td>2.786</td>
+<td>2.704</td>
 </tr>
 <tr>
 <td class="label">Data Arrival Time</td>
-<td>21.271</td>
+<td>21.353</td>
 </tr>
 <tr>
 <td class="label">Data Required Time</td>
@@ -415,7 +416,7 @@ D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_step4\src\uart\ip_uart_inst.v<
 </tr>
 <tr>
 <td class="label">To</td>
-<td>u_v9958/u_v9958_core/u_vdp_sprite/ff_render_planes[6]_0_s0</td>
+<td>u_v9958/u_v9958_core/u_vdp_sprite/ff_render_planes[3]_0_s0</td>
 </tr>
 <tr>
 <td class="label">Launch Clk</td>
@@ -449,7 +450,7 @@ D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_step4\src\uart\ip_uart_inst.v<
 <td>0.500</td>
 <td>tCL</td>
 <td>RR</td>
-<td>80</td>
+<td>130</td>
 <td>u_pll/pll_inst/CLKOUT</td>
 </tr>
 <tr>
@@ -570,7 +571,7 @@ D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_step4\src\uart\ip_uart_inst.v<
 <td>tNET</td>
 <td>FF</td>
 <td>1</td>
-<td>u_v9958/u_v9958_core/u_vdp_sprite/ff_y_test_en_s7/I1</td>
+<td>u_v9958/u_v9958_core/u_vdp_sprite/ff_y_test_en_s9/I1</td>
 </tr>
 <tr>
 <td>16.411</td>
@@ -578,7 +579,7 @@ D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_step4\src\uart\ip_uart_inst.v<
 <td>tINS</td>
 <td>FF</td>
 <td>1</td>
-<td>u_v9958/u_v9958_core/u_vdp_sprite/ff_y_test_en_s7/F</td>
+<td>u_v9958/u_v9958_core/u_vdp_sprite/ff_y_test_en_s9/F</td>
 </tr>
 <tr>
 <td>16.885</td>
@@ -586,7 +587,7 @@ D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_step4\src\uart\ip_uart_inst.v<
 <td>tNET</td>
 <td>FF</td>
 <td>1</td>
-<td>u_v9958/u_v9958_core/u_vdp_sprite/ff_y_test_en_s4/I3</td>
+<td>u_v9958/u_v9958_core/u_vdp_sprite/ff_y_test_en_s8/I3</td>
 </tr>
 <tr>
 <td>17.256</td>
@@ -594,7 +595,7 @@ D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_step4\src\uart\ip_uart_inst.v<
 <td>tINS</td>
 <td>FF</td>
 <td>2</td>
-<td>u_v9958/u_v9958_core/u_vdp_sprite/ff_y_test_en_s4/F</td>
+<td>u_v9958/u_v9958_core/u_vdp_sprite/ff_y_test_en_s8/F</td>
 </tr>
 <tr>
 <td>17.730</td>
@@ -602,71 +603,71 @@ D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_step4\src\uart\ip_uart_inst.v<
 <td>tNET</td>
 <td>FF</td>
 <td>1</td>
-<td>u_v9958/u_v9958_core/u_vdp_sprite/n3211_s2/I3</td>
+<td>u_v9958/u_v9958_core/u_vdp_sprite/ff_y_test_listup_addr_3_s5/I2</td>
 </tr>
 <tr>
-<td>18.101</td>
-<td>0.371</td>
+<td>18.183</td>
+<td>0.453</td>
 <td>tINS</td>
 <td>FF</td>
-<td>2</td>
-<td>u_v9958/u_v9958_core/u_vdp_sprite/n3211_s2/F</td>
+<td>1</td>
+<td>u_v9958/u_v9958_core/u_vdp_sprite/ff_y_test_listup_addr_3_s5/F</td>
 </tr>
 <tr>
-<td>18.575</td>
+<td>18.657</td>
 <td>0.474</td>
 <td>tNET</td>
 <td>FF</td>
 <td>1</td>
-<td>u_v9958/u_v9958_core/u_vdp_sprite/n3141_s2/I1</td>
+<td>u_v9958/u_v9958_core/u_vdp_sprite/ff_y_test_listup_addr_3_s4/I3</td>
 </tr>
 <tr>
-<td>19.130</td>
+<td>19.028</td>
+<td>0.371</td>
+<td>tINS</td>
+<td>FF</td>
+<td>4</td>
+<td>u_v9958/u_v9958_core/u_vdp_sprite/ff_y_test_listup_addr_3_s4/F</td>
+</tr>
+<tr>
+<td>19.502</td>
+<td>0.474</td>
+<td>tNET</td>
+<td>FF</td>
+<td>1</td>
+<td>u_v9958/u_v9958_core/u_vdp_sprite/n3141_s1/I1</td>
+</tr>
+<tr>
+<td>20.057</td>
 <td>0.555</td>
 <td>tINS</td>
 <td>FF</td>
-<td>2</td>
-<td>u_v9958/u_v9958_core/u_vdp_sprite/n3141_s2/F</td>
+<td>4</td>
+<td>u_v9958/u_v9958_core/u_vdp_sprite/n3141_s1/F</td>
 </tr>
 <tr>
-<td>19.604</td>
+<td>20.531</td>
 <td>0.474</td>
 <td>tNET</td>
 <td>FF</td>
 <td>1</td>
-<td>u_v9958/u_v9958_core/u_vdp_sprite/n3181_s1/I3</td>
+<td>u_v9958/u_v9958_core/u_vdp_sprite/n3171_s0/I2</td>
 </tr>
 <tr>
-<td>19.975</td>
-<td>0.371</td>
-<td>tINS</td>
-<td>FF</td>
-<td>3</td>
-<td>u_v9958/u_v9958_core/u_vdp_sprite/n3181_s1/F</td>
-</tr>
-<tr>
-<td>20.449</td>
-<td>0.474</td>
-<td>tNET</td>
-<td>FF</td>
-<td>1</td>
-<td>u_v9958/u_v9958_core/u_vdp_sprite/n3201_s0/I2</td>
-</tr>
-<tr>
-<td>20.911</td>
+<td>20.993</td>
 <td>0.462</td>
 <td>tINS</td>
 <td>FR</td>
 <td>5</td>
-<td>u_v9958/u_v9958_core/u_vdp_sprite/n3201_s0/F</td>
+<td>u_v9958/u_v9958_core/u_vdp_sprite/n3171_s0/F</td>
 </tr>
 <tr>
-<td>21.271</td>
+<td>21.353</td>
 <td>0.360</td>
 <td>tNET</td>
 <td>RR</td>
 <td>1</td>
-<td>u_v9958/u_v9958_core/u_vdp_sprite/ff_render_planes[6]_0_s0/CE</td>
+<td>u_v9958/u_v9958_core/u_vdp_sprite/ff_render_planes[3]_0_s0/CE</td>
 </tr>
 </table>
 <b>Data Required Path:</b>
@@ -701,7 +702,7 @@ D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_step4\src\uart\ip_uart_inst.v<
 <td>tNET</td>
 <td>RR</td>
 <td>1</td>
-<td>u_v9958/u_v9958_core/u_vdp_sprite/ff_render_planes[6]_0_s0/CLK</td>
+<td>u_v9958/u_v9958_core/u_vdp_sprite/ff_render_planes[3]_0_s0/CLK</td>
 </tr>
 <tr>
 <td>24.093</td>
@@ -709,7 +710,7 @@ D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_step4\src\uart\ip_uart_inst.v<
 <td>tUnc</td>
 <td> </td>
 <td> </td>
-<td>u_v9958/u_v9958_core/u_vdp_sprite/ff_render_planes[6]_0_s0</td>
+<td>u_v9958/u_v9958_core/u_vdp_sprite/ff_render_planes[3]_0_s0</td>
 </tr>
 <tr>
 <td>24.058</td>
@@ -717,7 +718,7 @@ D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_step4\src\uart\ip_uart_inst.v<
 <td>tSu</td>
 <td> </td>
 <td>1</td>
-<td>u_v9958/u_v9958_core/u_vdp_sprite/ff_render_planes[6]_0_s0</td>
+<td>u_v9958/u_v9958_core/u_vdp_sprite/ff_render_planes[3]_0_s0</td>
 </tr>
 </table>
 <b>Path Statistics:</b>
@@ -737,7 +738,7 @@ D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_step4\src\uart\ip_uart_inst.v<
 <tr>
 <td class="label">Arrival Clock Path Delay:</td><td> cell: 0.000, 0.000%; route: 0.360, 100.000%</td></tr>
 <tr>
-<td class="label">Arrival Data Path Delay:</td><td> cell: 4.386, 50.009%; route: 4.152, 47.345%; tC2Q: 0.232, 2.646%</td></tr>
+<td class="label">Arrival Data Path Delay:</td><td> cell: 4.468, 50.472%; route: 4.152, 46.907%; tC2Q: 0.232, 2.621%</td></tr>
 <tr>
 <td class="label">Required Clock Path Delay:</td><td> cell: 0.000, 0.000%; route: 0.360, 100.000%</td></tr>
 </table>
@@ -747,11 +748,11 @@ D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_step4\src\uart\ip_uart_inst.v<
 <table class="summary_table">
 <tr>
 <td class="label">Slack</td>
-<td>2.786</td>
+<td>2.704</td>
 </tr>
 <tr>
 <td class="label">Data Arrival Time</td>
-<td>21.271</td>
+<td>21.353</td>
 </tr>
 <tr>
 <td class="label">Data Required Time</td>
@@ -763,7 +764,7 @@ D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_step4\src\uart\ip_uart_inst.v<
 </tr>
 <tr>
 <td class="label">To</td>
-<td>u_v9958/u_v9958_core/u_vdp_sprite/ff_render_planes[6]_1_s0</td>
+<td>u_v9958/u_v9958_core/u_vdp_sprite/ff_render_planes[3]_1_s0</td>
 </tr>
 <tr>
 <td class="label">Launch Clk</td>
@@ -797,7 +798,7 @@ D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_step4\src\uart\ip_uart_inst.v<
 <td>0.500</td>
 <td>tCL</td>
 <td>RR</td>
-<td>80</td>
+<td>130</td>
 <td>u_pll/pll_inst/CLKOUT</td>
 </tr>
 <tr>
@@ -918,7 +919,7 @@ D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_step4\src\uart\ip_uart_inst.v<
 <td>tNET</td>
 <td>FF</td>
 <td>1</td>
-<td>u_v9958/u_v9958_core/u_vdp_sprite/ff_y_test_en_s7/I1</td>
+<td>u_v9958/u_v9958_core/u_vdp_sprite/ff_y_test_en_s9/I1</td>
 </tr>
 <tr>
 <td>16.411</td>
@@ -926,7 +927,7 @@ D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_step4\src\uart\ip_uart_inst.v<
 <td>tINS</td>
 <td>FF</td>
 <td>1</td>
-<td>u_v9958/u_v9958_core/u_vdp_sprite/ff_y_test_en_s7/F</td>
+<td>u_v9958/u_v9958_core/u_vdp_sprite/ff_y_test_en_s9/F</td>
 </tr>
 <tr>
 <td>16.885</td>
@@ -934,7 +935,7 @@ D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_step4\src\uart\ip_uart_inst.v<
 <td>tNET</td>
 <td>FF</td>
 <td>1</td>
-<td>u_v9958/u_v9958_core/u_vdp_sprite/ff_y_test_en_s4/I3</td>
+<td>u_v9958/u_v9958_core/u_vdp_sprite/ff_y_test_en_s8/I3</td>
 </tr>
 <tr>
 <td>17.256</td>
@@ -942,7 +943,7 @@ D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_step4\src\uart\ip_uart_inst.v<
 <td>tINS</td>
 <td>FF</td>
 <td>2</td>
-<td>u_v9958/u_v9958_core/u_vdp_sprite/ff_y_test_en_s4/F</td>
+<td>u_v9958/u_v9958_core/u_vdp_sprite/ff_y_test_en_s8/F</td>
 </tr>
 <tr>
 <td>17.730</td>
@@ -950,71 +951,71 @@ D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_step4\src\uart\ip_uart_inst.v<
 <td>tNET</td>
 <td>FF</td>
 <td>1</td>
-<td>u_v9958/u_v9958_core/u_vdp_sprite/n3211_s2/I3</td>
+<td>u_v9958/u_v9958_core/u_vdp_sprite/ff_y_test_listup_addr_3_s5/I2</td>
 </tr>
 <tr>
-<td>18.101</td>
-<td>0.371</td>
+<td>18.183</td>
+<td>0.453</td>
 <td>tINS</td>
 <td>FF</td>
-<td>2</td>
-<td>u_v9958/u_v9958_core/u_vdp_sprite/n3211_s2/F</td>
+<td>1</td>
+<td>u_v9958/u_v9958_core/u_vdp_sprite/ff_y_test_listup_addr_3_s5/F</td>
 </tr>
 <tr>
-<td>18.575</td>
+<td>18.657</td>
 <td>0.474</td>
 <td>tNET</td>
 <td>FF</td>
 <td>1</td>
-<td>u_v9958/u_v9958_core/u_vdp_sprite/n3141_s2/I1</td>
+<td>u_v9958/u_v9958_core/u_vdp_sprite/ff_y_test_listup_addr_3_s4/I3</td>
 </tr>
 <tr>
-<td>19.130</td>
+<td>19.028</td>
+<td>0.371</td>
+<td>tINS</td>
+<td>FF</td>
+<td>4</td>
+<td>u_v9958/u_v9958_core/u_vdp_sprite/ff_y_test_listup_addr_3_s4/F</td>
+</tr>
+<tr>
+<td>19.502</td>
+<td>0.474</td>
+<td>tNET</td>
+<td>FF</td>
+<td>1</td>
+<td>u_v9958/u_v9958_core/u_vdp_sprite/n3141_s1/I1</td>
+</tr>
+<tr>
+<td>20.057</td>
 <td>0.555</td>
 <td>tINS</td>
 <td>FF</td>
-<td>2</td>
-<td>u_v9958/u_v9958_core/u_vdp_sprite/n3141_s2/F</td>
+<td>4</td>
+<td>u_v9958/u_v9958_core/u_vdp_sprite/n3141_s1/F</td>
 </tr>
 <tr>
-<td>19.604</td>
+<td>20.531</td>
 <td>0.474</td>
 <td>tNET</td>
 <td>FF</td>
 <td>1</td>
-<td>u_v9958/u_v9958_core/u_vdp_sprite/n3181_s1/I3</td>
+<td>u_v9958/u_v9958_core/u_vdp_sprite/n3171_s0/I2</td>
 </tr>
 <tr>
-<td>19.975</td>
-<td>0.371</td>
-<td>tINS</td>
-<td>FF</td>
-<td>3</td>
-<td>u_v9958/u_v9958_core/u_vdp_sprite/n3181_s1/F</td>
-</tr>
-<tr>
-<td>20.449</td>
-<td>0.474</td>
-<td>tNET</td>
-<td>FF</td>
-<td>1</td>
-<td>u_v9958/u_v9958_core/u_vdp_sprite/n3201_s0/I2</td>
-</tr>
-<tr>
-<td>20.911</td>
+<td>20.993</td>
 <td>0.462</td>
 <td>tINS</td>
 <td>FR</td>
 <td>5</td>
-<td>u_v9958/u_v9958_core/u_vdp_sprite/n3201_s0/F</td>
+<td>u_v9958/u_v9958_core/u_vdp_sprite/n3171_s0/F</td>
 </tr>
 <tr>
-<td>21.271</td>
+<td>21.353</td>
 <td>0.360</td>
 <td>tNET</td>
 <td>RR</td>
 <td>1</td>
-<td>u_v9958/u_v9958_core/u_vdp_sprite/ff_render_planes[6]_1_s0/CE</td>
+<td>u_v9958/u_v9958_core/u_vdp_sprite/ff_render_planes[3]_1_s0/CE</td>
 </tr>
 </table>
 <b>Data Required Path:</b>
@@ -1049,7 +1050,7 @@ D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_step4\src\uart\ip_uart_inst.v<
 <td>tNET</td>
 <td>RR</td>
 <td>1</td>
-<td>u_v9958/u_v9958_core/u_vdp_sprite/ff_render_planes[6]_1_s0/CLK</td>
+<td>u_v9958/u_v9958_core/u_vdp_sprite/ff_render_planes[3]_1_s0/CLK</td>
 </tr>
 <tr>
 <td>24.093</td>
@@ -1057,7 +1058,7 @@ D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_step4\src\uart\ip_uart_inst.v<
 <td>tUnc</td>
 <td> </td>
 <td> </td>
-<td>u_v9958/u_v9958_core/u_vdp_sprite/ff_render_planes[6]_1_s0</td>
+<td>u_v9958/u_v9958_core/u_vdp_sprite/ff_render_planes[3]_1_s0</td>
 </tr>
 <tr>
 <td>24.058</td>
@@ -1065,7 +1066,7 @@ D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_step4\src\uart\ip_uart_inst.v<
 <td>tSu</td>
 <td> </td>
 <td>1</td>
-<td>u_v9958/u_v9958_core/u_vdp_sprite/ff_render_planes[6]_1_s0</td>
+<td>u_v9958/u_v9958_core/u_vdp_sprite/ff_render_planes[3]_1_s0</td>
 </tr>
 </table>
 <b>Path Statistics:</b>
@@ -1085,7 +1086,7 @@ D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_step4\src\uart\ip_uart_inst.v<
 <tr>
 <td class="label">Arrival Clock Path Delay:</td><td> cell: 0.000, 0.000%; route: 0.360, 100.000%</td></tr>
 <tr>
-<td class="label">Arrival Data Path Delay:</td><td> cell: 4.386, 50.009%; route: 4.152, 47.345%; tC2Q: 0.232, 2.646%</td></tr>
+<td class="label">Arrival Data Path Delay:</td><td> cell: 4.468, 50.472%; route: 4.152, 46.907%; tC2Q: 0.232, 2.621%</td></tr>
 <tr>
 <td class="label">Required Clock Path Delay:</td><td> cell: 0.000, 0.000%; route: 0.360, 100.000%</td></tr>
 </table>
@@ -1095,11 +1096,11 @@ D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_step4\src\uart\ip_uart_inst.v<
 <table class="summary_table">
 <tr>
 <td class="label">Slack</td>
-<td>2.786</td>
+<td>2.704</td>
 </tr>
 <tr>
 <td class="label">Data Arrival Time</td>
-<td>21.271</td>
+<td>21.353</td>
 </tr>
 <tr>
 <td class="label">Data Required Time</td>
@@ -1111,7 +1112,7 @@ D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_step4\src\uart\ip_uart_inst.v<
 </tr>
 <tr>
 <td class="label">To</td>
-<td>u_v9958/u_v9958_core/u_vdp_sprite/ff_render_planes[6]_2_s0</td>
+<td>u_v9958/u_v9958_core/u_vdp_sprite/ff_render_planes[3]_2_s0</td>
 </tr>
 <tr>
 <td class="label">Launch Clk</td>
@@ -1145,7 +1146,7 @@ D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_step4\src\uart\ip_uart_inst.v<
 <td>0.500</td>
 <td>tCL</td>
 <td>RR</td>
-<td>80</td>
+<td>130</td>
 <td>u_pll/pll_inst/CLKOUT</td>
 </tr>
 <tr>
@@ -1266,7 +1267,7 @@ D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_step4\src\uart\ip_uart_inst.v<
 <td>tNET</td>
 <td>FF</td>
 <td>1</td>
-<td>u_v9958/u_v9958_core/u_vdp_sprite/ff_y_test_en_s7/I1</td>
+<td>u_v9958/u_v9958_core/u_vdp_sprite/ff_y_test_en_s9/I1</td>
 </tr>
 <tr>
 <td>16.411</td>
@@ -1274,7 +1275,7 @@ D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_step4\src\uart\ip_uart_inst.v<
 <td>tINS</td>
 <td>FF</td>
 <td>1</td>
-<td>u_v9958/u_v9958_core/u_vdp_sprite/ff_y_test_en_s7/F</td>
+<td>u_v9958/u_v9958_core/u_vdp_sprite/ff_y_test_en_s9/F</td>
 </tr>
 <tr>
 <td>16.885</td>
@@ -1282,7 +1283,7 @@ D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_step4\src\uart\ip_uart_inst.v<
 <td>tNET</td>
 <td>FF</td>
 <td>1</td>
-<td>u_v9958/u_v9958_core/u_vdp_sprite/ff_y_test_en_s4/I3</td>
+<td>u_v9958/u_v9958_core/u_vdp_sprite/ff_y_test_en_s8/I3</td>
 </tr>
 <tr>
 <td>17.256</td>
@@ -1290,7 +1291,7 @@ D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_step4\src\uart\ip_uart_inst.v<
 <td>tINS</td>
 <td>FF</td>
 <td>2</td>
-<td>u_v9958/u_v9958_core/u_vdp_sprite/ff_y_test_en_s4/F</td>
+<td>u_v9958/u_v9958_core/u_vdp_sprite/ff_y_test_en_s8/F</td>
 </tr>
 <tr>
 <td>17.730</td>
@@ -1298,71 +1299,71 @@ D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_step4\src\uart\ip_uart_inst.v<
 <td>tNET</td>
 <td>FF</td>
 <td>1</td>
-<td>u_v9958/u_v9958_core/u_vdp_sprite/n3211_s2/I3</td>
+<td>u_v9958/u_v9958_core/u_vdp_sprite/ff_y_test_listup_addr_3_s5/I2</td>
 </tr>
 <tr>
-<td>18.101</td>
-<td>0.371</td>
+<td>18.183</td>
+<td>0.453</td>
 <td>tINS</td>
 <td>FF</td>
-<td>2</td>
-<td>u_v9958/u_v9958_core/u_vdp_sprite/n3211_s2/F</td>
+<td>1</td>
+<td>u_v9958/u_v9958_core/u_vdp_sprite/ff_y_test_listup_addr_3_s5/F</td>
 </tr>
 <tr>
-<td>18.575</td>
+<td>18.657</td>
 <td>0.474</td>
 <td>tNET</td>
 <td>FF</td>
 <td>1</td>
-<td>u_v9958/u_v9958_core/u_vdp_sprite/n3141_s2/I1</td>
+<td>u_v9958/u_v9958_core/u_vdp_sprite/ff_y_test_listup_addr_3_s4/I3</td>
 </tr>
 <tr>
-<td>19.130</td>
+<td>19.028</td>
+<td>0.371</td>
+<td>tINS</td>
+<td>FF</td>
+<td>4</td>
+<td>u_v9958/u_v9958_core/u_vdp_sprite/ff_y_test_listup_addr_3_s4/F</td>
+</tr>
+<tr>
+<td>19.502</td>
+<td>0.474</td>
+<td>tNET</td>
+<td>FF</td>
+<td>1</td>
+<td>u_v9958/u_v9958_core/u_vdp_sprite/n3141_s1/I1</td>
+</tr>
+<tr>
+<td>20.057</td>
 <td>0.555</td>
 <td>tINS</td>
 <td>FF</td>
-<td>2</td>
-<td>u_v9958/u_v9958_core/u_vdp_sprite/n3141_s2/F</td>
+<td>4</td>
+<td>u_v9958/u_v9958_core/u_vdp_sprite/n3141_s1/F</td>
 </tr>
 <tr>
-<td>19.604</td>
+<td>20.531</td>
 <td>0.474</td>
 <td>tNET</td>
 <td>FF</td>
 <td>1</td>
-<td>u_v9958/u_v9958_core/u_vdp_sprite/n3181_s1/I3</td>
+<td>u_v9958/u_v9958_core/u_vdp_sprite/n3171_s0/I2</td>
 </tr>
 <tr>
-<td>19.975</td>
-<td>0.371</td>
-<td>tINS</td>
-<td>FF</td>
-<td>3</td>
-<td>u_v9958/u_v9958_core/u_vdp_sprite/n3181_s1/F</td>
-</tr>
-<tr>
-<td>20.449</td>
-<td>0.474</td>
-<td>tNET</td>
-<td>FF</td>
-<td>1</td>
-<td>u_v9958/u_v9958_core/u_vdp_sprite/n3201_s0/I2</td>
-</tr>
-<tr>
-<td>20.911</td>
+<td>20.993</td>
 <td>0.462</td>
 <td>tINS</td>
 <td>FR</td>
 <td>5</td>
-<td>u_v9958/u_v9958_core/u_vdp_sprite/n3201_s0/F</td>
+<td>u_v9958/u_v9958_core/u_vdp_sprite/n3171_s0/F</td>
 </tr>
 <tr>
-<td>21.271</td>
+<td>21.353</td>
 <td>0.360</td>
 <td>tNET</td>
 <td>RR</td>
 <td>1</td>
-<td>u_v9958/u_v9958_core/u_vdp_sprite/ff_render_planes[6]_2_s0/CE</td>
+<td>u_v9958/u_v9958_core/u_vdp_sprite/ff_render_planes[3]_2_s0/CE</td>
 </tr>
 </table>
 <b>Data Required Path:</b>
@@ -1397,7 +1398,7 @@ D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_step4\src\uart\ip_uart_inst.v<
 <td>tNET</td>
 <td>RR</td>
 <td>1</td>
-<td>u_v9958/u_v9958_core/u_vdp_sprite/ff_render_planes[6]_2_s0/CLK</td>
+<td>u_v9958/u_v9958_core/u_vdp_sprite/ff_render_planes[3]_2_s0/CLK</td>
 </tr>
 <tr>
 <td>24.093</td>
@@ -1405,7 +1406,7 @@ D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_step4\src\uart\ip_uart_inst.v<
 <td>tUnc</td>
 <td> </td>
 <td> </td>
-<td>u_v9958/u_v9958_core/u_vdp_sprite/ff_render_planes[6]_2_s0</td>
+<td>u_v9958/u_v9958_core/u_vdp_sprite/ff_render_planes[3]_2_s0</td>
 </tr>
 <tr>
 <td>24.058</td>
@@ -1413,7 +1414,7 @@ D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_step4\src\uart\ip_uart_inst.v<
 <td>tSu</td>
 <td> </td>
 <td>1</td>
-<td>u_v9958/u_v9958_core/u_vdp_sprite/ff_render_planes[6]_2_s0</td>
+<td>u_v9958/u_v9958_core/u_vdp_sprite/ff_render_planes[3]_2_s0</td>
 </tr>
 </table>
 <b>Path Statistics:</b>
@@ -1433,7 +1434,7 @@ D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_step4\src\uart\ip_uart_inst.v<
 <tr>
 <td class="label">Arrival Clock Path Delay:</td><td> cell: 0.000, 0.000%; route: 0.360, 100.000%</td></tr>
 <tr>
-<td class="label">Arrival Data Path Delay:</td><td> cell: 4.386, 50.009%; route: 4.152, 47.345%; tC2Q: 0.232, 2.646%</td></tr>
+<td class="label">Arrival Data Path Delay:</td><td> cell: 4.468, 50.472%; route: 4.152, 46.907%; tC2Q: 0.232, 2.621%</td></tr>
 <tr>
 <td class="label">Required Clock Path Delay:</td><td> cell: 0.000, 0.000%; route: 0.360, 100.000%</td></tr>
 </table>
@@ -1443,11 +1444,11 @@ D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_step4\src\uart\ip_uart_inst.v<
 <table class="summary_table">
 <tr>
 <td class="label">Slack</td>
-<td>2.786</td>
+<td>2.704</td>
 </tr>
 <tr>
 <td class="label">Data Arrival Time</td>
-<td>21.271</td>
+<td>21.353</td>
 </tr>
 <tr>
 <td class="label">Data Required Time</td>
@@ -1459,7 +1460,7 @@ D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_step4\src\uart\ip_uart_inst.v<
 </tr>
 <tr>
 <td class="label">To</td>
-<td>u_v9958/u_v9958_core/u_vdp_sprite/ff_render_planes[6]_3_s0</td>
+<td>u_v9958/u_v9958_core/u_vdp_sprite/ff_render_planes[3]_3_s0</td>
 </tr>
 <tr>
 <td class="label">Launch Clk</td>
@@ -1493,7 +1494,7 @@ D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_step4\src\uart\ip_uart_inst.v<
 <td>0.500</td>
 <td>tCL</td>
 <td>RR</td>
-<td>80</td>
+<td>130</td>
 <td>u_pll/pll_inst/CLKOUT</td>
 </tr>
 <tr>
@@ -1614,7 +1615,7 @@ D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_step4\src\uart\ip_uart_inst.v<
 <td>tNET</td>
 <td>FF</td>
 <td>1</td>
-<td>u_v9958/u_v9958_core/u_vdp_sprite/ff_y_test_en_s7/I1</td>
+<td>u_v9958/u_v9958_core/u_vdp_sprite/ff_y_test_en_s9/I1</td>
 </tr>
 <tr>
 <td>16.411</td>
@@ -1622,7 +1623,7 @@ D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_step4\src\uart\ip_uart_inst.v<
 <td>tINS</td>
 <td>FF</td>
 <td>1</td>
-<td>u_v9958/u_v9958_core/u_vdp_sprite/ff_y_test_en_s7/F</td>
+<td>u_v9958/u_v9958_core/u_vdp_sprite/ff_y_test_en_s9/F</td>
 </tr>
 <tr>
 <td>16.885</td>
@@ -1630,7 +1631,7 @@ D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_step4\src\uart\ip_uart_inst.v<
 <td>tNET</td>
 <td>FF</td>
 <td>1</td>
-<td>u_v9958/u_v9958_core/u_vdp_sprite/ff_y_test_en_s4/I3</td>
+<td>u_v9958/u_v9958_core/u_vdp_sprite/ff_y_test_en_s8/I3</td>
 </tr>
 <tr>
 <td>17.256</td>
@@ -1638,7 +1639,7 @@ D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_step4\src\uart\ip_uart_inst.v<
 <td>tINS</td>
 <td>FF</td>
 <td>2</td>
-<td>u_v9958/u_v9958_core/u_vdp_sprite/ff_y_test_en_s4/F</td>
+<td>u_v9958/u_v9958_core/u_vdp_sprite/ff_y_test_en_s8/F</td>
 </tr>
 <tr>
 <td>17.730</td>
@@ -1646,71 +1647,71 @@ D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_step4\src\uart\ip_uart_inst.v<
 <td>tNET</td>
 <td>FF</td>
 <td>1</td>
-<td>u_v9958/u_v9958_core/u_vdp_sprite/n3211_s2/I3</td>
+<td>u_v9958/u_v9958_core/u_vdp_sprite/ff_y_test_listup_addr_3_s5/I2</td>
 </tr>
 <tr>
-<td>18.101</td>
-<td>0.371</td>
+<td>18.183</td>
+<td>0.453</td>
 <td>tINS</td>
 <td>FF</td>
-<td>2</td>
-<td>u_v9958/u_v9958_core/u_vdp_sprite/n3211_s2/F</td>
+<td>1</td>
+<td>u_v9958/u_v9958_core/u_vdp_sprite/ff_y_test_listup_addr_3_s5/F</td>
 </tr>
 <tr>
-<td>18.575</td>
+<td>18.657</td>
 <td>0.474</td>
 <td>tNET</td>
 <td>FF</td>
 <td>1</td>
-<td>u_v9958/u_v9958_core/u_vdp_sprite/n3141_s2/I1</td>
+<td>u_v9958/u_v9958_core/u_vdp_sprite/ff_y_test_listup_addr_3_s4/I3</td>
 </tr>
 <tr>
-<td>19.130</td>
+<td>19.028</td>
+<td>0.371</td>
+<td>tINS</td>
+<td>FF</td>
+<td>4</td>
+<td>u_v9958/u_v9958_core/u_vdp_sprite/ff_y_test_listup_addr_3_s4/F</td>
+</tr>
+<tr>
+<td>19.502</td>
+<td>0.474</td>
+<td>tNET</td>
+<td>FF</td>
+<td>1</td>
+<td>u_v9958/u_v9958_core/u_vdp_sprite/n3141_s1/I1</td>
+</tr>
+<tr>
+<td>20.057</td>
 <td>0.555</td>
 <td>tINS</td>
 <td>FF</td>
-<td>2</td>
-<td>u_v9958/u_v9958_core/u_vdp_sprite/n3141_s2/F</td>
+<td>4</td>
+<td>u_v9958/u_v9958_core/u_vdp_sprite/n3141_s1/F</td>
 </tr>
 <tr>
-<td>19.604</td>
+<td>20.531</td>
 <td>0.474</td>
 <td>tNET</td>
 <td>FF</td>
 <td>1</td>
-<td>u_v9958/u_v9958_core/u_vdp_sprite/n3181_s1/I3</td>
+<td>u_v9958/u_v9958_core/u_vdp_sprite/n3171_s0/I2</td>
 </tr>
 <tr>
-<td>19.975</td>
-<td>0.371</td>
-<td>tINS</td>
-<td>FF</td>
-<td>3</td>
-<td>u_v9958/u_v9958_core/u_vdp_sprite/n3181_s1/F</td>
-</tr>
-<tr>
-<td>20.449</td>
-<td>0.474</td>
-<td>tNET</td>
-<td>FF</td>
-<td>1</td>
-<td>u_v9958/u_v9958_core/u_vdp_sprite/n3201_s0/I2</td>
-</tr>
-<tr>
-<td>20.911</td>
+<td>20.993</td>
 <td>0.462</td>
 <td>tINS</td>
 <td>FR</td>
 <td>5</td>
-<td>u_v9958/u_v9958_core/u_vdp_sprite/n3201_s0/F</td>
+<td>u_v9958/u_v9958_core/u_vdp_sprite/n3171_s0/F</td>
 </tr>
 <tr>
-<td>21.271</td>
+<td>21.353</td>
 <td>0.360</td>
 <td>tNET</td>
 <td>RR</td>
 <td>1</td>
-<td>u_v9958/u_v9958_core/u_vdp_sprite/ff_render_planes[6]_3_s0/CE</td>
+<td>u_v9958/u_v9958_core/u_vdp_sprite/ff_render_planes[3]_3_s0/CE</td>
 </tr>
 </table>
 <b>Data Required Path:</b>
@@ -1745,7 +1746,7 @@ D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_step4\src\uart\ip_uart_inst.v<
 <td>tNET</td>
 <td>RR</td>
 <td>1</td>
-<td>u_v9958/u_v9958_core/u_vdp_sprite/ff_render_planes[6]_3_s0/CLK</td>
+<td>u_v9958/u_v9958_core/u_vdp_sprite/ff_render_planes[3]_3_s0/CLK</td>
 </tr>
 <tr>
 <td>24.093</td>
@@ -1753,7 +1754,7 @@ D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_step4\src\uart\ip_uart_inst.v<
 <td>tUnc</td>
 <td> </td>
 <td> </td>
-<td>u_v9958/u_v9958_core/u_vdp_sprite/ff_render_planes[6]_3_s0</td>
+<td>u_v9958/u_v9958_core/u_vdp_sprite/ff_render_planes[3]_3_s0</td>
 </tr>
 <tr>
 <td>24.058</td>
@@ -1761,7 +1762,7 @@ D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_step4\src\uart\ip_uart_inst.v<
 <td>tSu</td>
 <td> </td>
 <td>1</td>
-<td>u_v9958/u_v9958_core/u_vdp_sprite/ff_render_planes[6]_3_s0</td>
+<td>u_v9958/u_v9958_core/u_vdp_sprite/ff_render_planes[3]_3_s0</td>
 </tr>
 </table>
 <b>Path Statistics:</b>
@@ -1781,7 +1782,7 @@ D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_step4\src\uart\ip_uart_inst.v<
 <tr>
 <td class="label">Arrival Clock Path Delay:</td><td> cell: 0.000, 0.000%; route: 0.360, 100.000%</td></tr>
 <tr>
-<td class="label">Arrival Data Path Delay:</td><td> cell: 4.386, 50.009%; route: 4.152, 47.345%; tC2Q: 0.232, 2.646%</td></tr>
+<td class="label">Arrival Data Path Delay:</td><td> cell: 4.468, 50.472%; route: 4.152, 46.907%; tC2Q: 0.232, 2.621%</td></tr>
 <tr>
 <td class="label">Required Clock Path Delay:</td><td> cell: 0.000, 0.000%; route: 0.360, 100.000%</td></tr>
 </table>
@@ -1791,11 +1792,11 @@ D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_step4\src\uart\ip_uart_inst.v<
 <table class="summary_table">
 <tr>
 <td class="label">Slack</td>
-<td>2.786</td>
+<td>2.704</td>
 </tr>
 <tr>
 <td class="label">Data Arrival Time</td>
-<td>21.271</td>
+<td>21.353</td>
 </tr>
 <tr>
 <td class="label">Data Required Time</td>
@@ -1807,7 +1808,7 @@ D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_step4\src\uart\ip_uart_inst.v<
 </tr>
 <tr>
 <td class="label">To</td>
-<td>u_v9958/u_v9958_core/u_vdp_sprite/ff_render_planes[6]_4_s0</td>
+<td>u_v9958/u_v9958_core/u_vdp_sprite/ff_render_planes[3]_4_s0</td>
 </tr>
 <tr>
 <td class="label">Launch Clk</td>
@@ -1841,7 +1842,7 @@ D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_step4\src\uart\ip_uart_inst.v<
 <td>0.500</td>
 <td>tCL</td>
 <td>RR</td>
-<td>80</td>
+<td>130</td>
 <td>u_pll/pll_inst/CLKOUT</td>
 </tr>
 <tr>
@@ -1962,7 +1963,7 @@ D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_step4\src\uart\ip_uart_inst.v<
 <td>tNET</td>
 <td>FF</td>
 <td>1</td>
-<td>u_v9958/u_v9958_core/u_vdp_sprite/ff_y_test_en_s7/I1</td>
+<td>u_v9958/u_v9958_core/u_vdp_sprite/ff_y_test_en_s9/I1</td>
 </tr>
 <tr>
 <td>16.411</td>
@@ -1970,7 +1971,7 @@ D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_step4\src\uart\ip_uart_inst.v<
 <td>tINS</td>
 <td>FF</td>
 <td>1</td>
-<td>u_v9958/u_v9958_core/u_vdp_sprite/ff_y_test_en_s7/F</td>
+<td>u_v9958/u_v9958_core/u_vdp_sprite/ff_y_test_en_s9/F</td>
 </tr>
 <tr>
 <td>16.885</td>
@@ -1978,7 +1979,7 @@ D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_step4\src\uart\ip_uart_inst.v<
 <td>tNET</td>
 <td>FF</td>
 <td>1</td>
-<td>u_v9958/u_v9958_core/u_vdp_sprite/ff_y_test_en_s4/I3</td>
+<td>u_v9958/u_v9958_core/u_vdp_sprite/ff_y_test_en_s8/I3</td>
 </tr>
 <tr>
 <td>17.256</td>
@@ -1986,7 +1987,7 @@ D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_step4\src\uart\ip_uart_inst.v<
 <td>tINS</td>
 <td>FF</td>
 <td>2</td>
-<td>u_v9958/u_v9958_core/u_vdp_sprite/ff_y_test_en_s4/F</td>
+<td>u_v9958/u_v9958_core/u_vdp_sprite/ff_y_test_en_s8/F</td>
 </tr>
 <tr>
 <td>17.730</td>
@@ -1994,71 +1995,71 @@ D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_step4\src\uart\ip_uart_inst.v<
 <td>tNET</td>
 <td>FF</td>
 <td>1</td>
-<td>u_v9958/u_v9958_core/u_vdp_sprite/n3211_s2/I3</td>
+<td>u_v9958/u_v9958_core/u_vdp_sprite/ff_y_test_listup_addr_3_s5/I2</td>
 </tr>
 <tr>
-<td>18.101</td>
-<td>0.371</td>
+<td>18.183</td>
+<td>0.453</td>
 <td>tINS</td>
 <td>FF</td>
-<td>2</td>
-<td>u_v9958/u_v9958_core/u_vdp_sprite/n3211_s2/F</td>
+<td>1</td>
+<td>u_v9958/u_v9958_core/u_vdp_sprite/ff_y_test_listup_addr_3_s5/F</td>
 </tr>
 <tr>
-<td>18.575</td>
+<td>18.657</td>
 <td>0.474</td>
 <td>tNET</td>
 <td>FF</td>
 <td>1</td>
-<td>u_v9958/u_v9958_core/u_vdp_sprite/n3141_s2/I1</td>
+<td>u_v9958/u_v9958_core/u_vdp_sprite/ff_y_test_listup_addr_3_s4/I3</td>
 </tr>
 <tr>
-<td>19.130</td>
+<td>19.028</td>
+<td>0.371</td>
+<td>tINS</td>
+<td>FF</td>
+<td>4</td>
+<td>u_v9958/u_v9958_core/u_vdp_sprite/ff_y_test_listup_addr_3_s4/F</td>
+</tr>
+<tr>
+<td>19.502</td>
+<td>0.474</td>
+<td>tNET</td>
+<td>FF</td>
+<td>1</td>
+<td>u_v9958/u_v9958_core/u_vdp_sprite/n3141_s1/I1</td>
+</tr>
+<tr>
+<td>20.057</td>
 <td>0.555</td>
 <td>tINS</td>
 <td>FF</td>
-<td>2</td>
-<td>u_v9958/u_v9958_core/u_vdp_sprite/n3141_s2/F</td>
+<td>4</td>
+<td>u_v9958/u_v9958_core/u_vdp_sprite/n3141_s1/F</td>
 </tr>
 <tr>
-<td>19.604</td>
+<td>20.531</td>
 <td>0.474</td>
 <td>tNET</td>
 <td>FF</td>
 <td>1</td>
-<td>u_v9958/u_v9958_core/u_vdp_sprite/n3181_s1/I3</td>
+<td>u_v9958/u_v9958_core/u_vdp_sprite/n3171_s0/I2</td>
 </tr>
 <tr>
-<td>19.975</td>
-<td>0.371</td>
-<td>tINS</td>
-<td>FF</td>
-<td>3</td>
-<td>u_v9958/u_v9958_core/u_vdp_sprite/n3181_s1/F</td>
-</tr>
-<tr>
-<td>20.449</td>
-<td>0.474</td>
-<td>tNET</td>
-<td>FF</td>
-<td>1</td>
-<td>u_v9958/u_v9958_core/u_vdp_sprite/n3201_s0/I2</td>
-</tr>
-<tr>
-<td>20.911</td>
+<td>20.993</td>
 <td>0.462</td>
 <td>tINS</td>
 <td>FR</td>
 <td>5</td>
-<td>u_v9958/u_v9958_core/u_vdp_sprite/n3201_s0/F</td>
+<td>u_v9958/u_v9958_core/u_vdp_sprite/n3171_s0/F</td>
 </tr>
 <tr>
-<td>21.271</td>
+<td>21.353</td>
 <td>0.360</td>
 <td>tNET</td>
 <td>RR</td>
 <td>1</td>
-<td>u_v9958/u_v9958_core/u_vdp_sprite/ff_render_planes[6]_4_s0/CE</td>
+<td>u_v9958/u_v9958_core/u_vdp_sprite/ff_render_planes[3]_4_s0/CE</td>
 </tr>
 </table>
 <b>Data Required Path:</b>
@@ -2093,7 +2094,7 @@ D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_step4\src\uart\ip_uart_inst.v<
 <td>tNET</td>
 <td>RR</td>
 <td>1</td>
-<td>u_v9958/u_v9958_core/u_vdp_sprite/ff_render_planes[6]_4_s0/CLK</td>
+<td>u_v9958/u_v9958_core/u_vdp_sprite/ff_render_planes[3]_4_s0/CLK</td>
 </tr>
 <tr>
 <td>24.093</td>
@@ -2101,7 +2102,7 @@ D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_step4\src\uart\ip_uart_inst.v<
 <td>tUnc</td>
 <td> </td>
 <td> </td>
-<td>u_v9958/u_v9958_core/u_vdp_sprite/ff_render_planes[6]_4_s0</td>
+<td>u_v9958/u_v9958_core/u_vdp_sprite/ff_render_planes[3]_4_s0</td>
 </tr>
 <tr>
 <td>24.058</td>
@@ -2109,7 +2110,7 @@ D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_step4\src\uart\ip_uart_inst.v<
 <td>tSu</td>
 <td> </td>
 <td>1</td>
-<td>u_v9958/u_v9958_core/u_vdp_sprite/ff_render_planes[6]_4_s0</td>
+<td>u_v9958/u_v9958_core/u_vdp_sprite/ff_render_planes[3]_4_s0</td>
 </tr>
 </table>
 <b>Path Statistics:</b>
@@ -2129,7 +2130,7 @@ D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_step4\src\uart\ip_uart_inst.v<
 <tr>
 <td class="label">Arrival Clock Path Delay:</td><td> cell: 0.000, 0.000%; route: 0.360, 100.000%</td></tr>
 <tr>
-<td class="label">Arrival Data Path Delay:</td><td> cell: 4.386, 50.009%; route: 4.152, 47.345%; tC2Q: 0.232, 2.646%</td></tr>
+<td class="label">Arrival Data Path Delay:</td><td> cell: 4.468, 50.472%; route: 4.152, 46.907%; tC2Q: 0.232, 2.621%</td></tr>
 <tr>
 <td class="label">Required Clock Path Delay:</td><td> cell: 0.000, 0.000%; route: 0.360, 100.000%</td></tr>
 </table>

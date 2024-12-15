@@ -26,6 +26,7 @@
 
 module tb ();
 	localparam	clk_base	= 1_000_000_000/85_909;	//	ps
+	localparam	sclk_base	= 1_000_000_000/120_000;	//	ps
 	int				test_no;
 	int				i;
 
@@ -42,6 +43,7 @@ module tb ();
 	wire			req;
 	wire	[7:0]	wdata;
 	reg				sdram_busy;
+	reg				sclk;
 
 	reg		[7:0]	read_data;
 	reg		[1:0]	ff_clock_divider;
@@ -72,6 +74,10 @@ module tb ();
 		clk <= ~clk;				//	85.90908MHz
 	end
 
+	always #(sclk_base/2) begin
+		sclk <= ~sclk;
+	end
+
 	// --------------------------------------------------------------------
 	//	Tasks
 	// --------------------------------------------------------------------
@@ -82,19 +88,20 @@ module tb ();
 		int i;
 
 		for( i = 0; i < 8; i = i + 1 ) begin
-			# 20ns
+			@( posedge sclk );
 			spi_clk		<= 1'b0;
-			# 1ns
+			@( posedge sclk );
 			spi_mosi	<= wdata[7-i];
-			# 20ns
+			@( posedge sclk );
 			spi_clk		<= 1'b1;
-			# 1ns
+			@( posedge sclk );
 			rdata[7-i]	<= spi_miso;
 		end
-		# 21ns
+		@( posedge sclk );
 		spi_clk		<= 1'b0;
-		# 21ns
+		@( posedge sclk );
 		spi_clk		<= 1'b0;
+		@( posedge sclk );
 	endtask: send_byte
 
 	// --------------------------------------------------------------------
@@ -104,6 +111,7 @@ module tb ();
 		test_no		= -1;
 		reset_n		= 0;
 		clk			= 1;
+		sclk		= 0;
 		spi_cs_n	= 1;
 		spi_clk		= 0;
 		spi_mosi	= 0;
@@ -130,6 +138,7 @@ module tb ();
 		// --------------------------------------------------------------------
 		//	MSX Reset Signal
 		// --------------------------------------------------------------------
+		$display( "MSX Reset Signal --------------------" );
 		spi_cs_n	= 0;
 		@( posedge clk );
 		send_byte( 8'h02, read_data );
@@ -169,6 +178,7 @@ module tb ();
 		// --------------------------------------------------------------------
 		//	Key Matrix
 		// --------------------------------------------------------------------
+		$display( "Key matrix --------------------" );
 		spi_cs_n	= 0;
 		@( posedge clk );
 		send_byte( 8'h03, read_data );
@@ -396,13 +406,16 @@ module tb ();
 		for( i = 0; i < 16; i = i + 1 ) begin
 			matrix_y <= i;
 			@( posedge clk );
+			@( negedge clk );
 			assert( matrix_x == ((i + 2) & 15) | (((i + 1) & 15) << 4) );
+			$display( "  matrix_y : %d : %02X", i, ((i + 2) & 15) | (((i + 1) & 15) << 4) );
 			@( posedge clk );
 		end
 
 		// --------------------------------------------------------------------
 		//	Memory I/F
 		// --------------------------------------------------------------------
+		$display( "Memory I/F --------------------" );
 		spi_cs_n	= 0;
 		@( posedge clk );
 		send_byte( 8'h04, read_data );
@@ -423,6 +436,7 @@ module tb ();
 		// --------------------------------------------------------------------
 		//	Get Status
 		// --------------------------------------------------------------------
+		$display( "Get status --------------------" );
 		sdram_busy	= 0;
 		@( posedge clk );
 		spi_cs_n	= 0;

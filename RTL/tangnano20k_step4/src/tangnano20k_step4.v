@@ -117,7 +117,7 @@ module tangnano20k_step4 (
 	);
 
 	always @( posedge clk ) begin
-		if( !ff_reset_n ) begin
+		if( !w_msx_reset_n ) begin
 			ff_clock_div <= 1'd0;
 		end
 		else begin
@@ -127,7 +127,7 @@ module tangnano20k_step4 (
 	assign w_enable		= (ff_clock_div == 1'b1);
 
 	always @( posedge clk ) begin
-		if( !ff_reset_n ) begin
+		if( !w_msx_reset_n ) begin
 			ff_cpu_clock_div <= 3'd0;
 		end
 		else begin

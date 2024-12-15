@@ -76,9 +76,12 @@ module micom_connect (
 	//	Status
 	input			sdram_busy
 );
-	localparam		st_initial		= 4'd0;
-	localparam		st_idle			= 4'd1;
-	localparam		st_command		= 4'd2;
+	localparam		st_idle			= 3'd0;
+	localparam		st_command		= 3'd1;
+	localparam		st_operand1		= 3'd2;
+	localparam		st_operand2		= 3'd3;
+	localparam		st_data			= 3'd4;
+	localparam		st_exec			= 3'd5;
 
 	localparam		sst_idle		= 2'd0;
 	localparam		sst_clk_low		= 2'd1;
@@ -87,66 +90,28 @@ module micom_connect (
 
 	localparam		dt_signature	= 8'hA5;
 
-	reg		[3:0]	ff_state;
+	reg				ff_spi_cs_n;
+	reg				ff_spi_clk;
+	reg				ff_spi_mosi;
+	reg		[2:0]	ff_state;
 	reg		[1:0]	ff_serial_state;
 	reg		[2:0]	ff_bit;
 	reg		[7:0]	ff_recv_data;
 	reg		[7:0]	ff_send_data;
-	reg		[7:0]	ff_data;
-	reg				ff_connect_req;
 	reg		[7:0]	ff_command;
-	reg				ff_do_command;
-	wire			w_command_req;
-	reg				ff_command_end;
-	reg		[14:0]	ff_address;
-	wire	[14:0]	w_address;
+	reg		[13:0]	ff_address;
 	reg				ff_msx_reset_n;
 	reg		[7:0]	ff_key_matrix [0:15];
-	reg		[3:0]	ff_y;
-	reg		[7:0]	ff_bank;
-	reg		[7:0]	ff_wdata;
-	reg				ff_req;
+	reg		[7:0]	ff_operand1;
+	reg		[7:0]	ff_matrix_x;
 
 	// --------------------------------------------------------------------
-	//	State
+	//	flip-flop to receive
 	// --------------------------------------------------------------------
 	always @( posedge clk ) begin
-		if( !reset_n ) begin
-			ff_state		<= st_initial;
-			ff_data			<= dt_signature;
-			ff_connect_req	<= 1'b0;
-		end
-		else if( spi_cs_n ) begin
-			ff_state		<= st_idle;
-		end
-		else begin
-			case( ff_state )
-			st_initial:
-				begin
-					ff_data			<= dt_signature;
-				end
-			st_idle:
-				begin
-					ff_state		<= st_command;
-					ff_connect_req	<= 1'b1;
-				end
-			st_command:
-				begin
-					ff_connect_req	<= 1'b0;
-					if( w_command_req ) begin
-						ff_state	<= st_idle;
-						if( !ff_do_command && ff_recv_data == 8'h05 ) begin
-							ff_data			<= { 7'd0, sdram_busy };
-						end
-						else begin
-							ff_data			<= dt_signature;
-						end
-					end
-				end
-			default:
-				ff_state	<= st_idle;
-			endcase
-		end
+		ff_spi_cs_n		<= spi_cs_n;
+		ff_spi_clk		<= spi_clk;
+		ff_spi_mosi		<= spi_mosi;
 	end
 
 	// --------------------------------------------------------------------
@@ -154,113 +119,193 @@ module micom_connect (
 	// --------------------------------------------------------------------
 	always @( posedge clk ) begin
 		if( !reset_n ) begin
-			ff_serial_state	<= sst_idle;
-			ff_recv_data	<= 8'd0;
-			ff_send_data	<= 8'd0;
-		end
-		else if( spi_cs_n ) begin
 			ff_serial_state <= sst_idle;
-			ff_recv_data	<= 8'd0;
 		end
 		else begin
 			case( ff_serial_state )
 			sst_idle:
-				if( ff_connect_req ) begin
+				if( ff_spi_cs_n == 1'b0 ) begin
 					ff_serial_state <= sst_clk_low;
-					ff_bit			<= 3'd0;
-					ff_send_data	<= ff_data;
 				end
 			sst_clk_low:
-				if( spi_clk ) begin
+				if( ff_spi_cs_n == 1'b1 ) begin
+					ff_serial_state <= sst_idle;
+				end
+				else if( ff_spi_clk == 1'b1 ) begin
 					ff_serial_state <= sst_clk_hi;
-					ff_recv_data	<= { ff_recv_data[6:0], spi_mosi };
 				end
 			sst_clk_hi:
-				if( !spi_clk ) begin
-					ff_send_data	<= { ff_send_data[6:0], 1'b0 };
-					ff_bit			<= ff_bit + 3'd1;
+				if( ff_spi_cs_n == 1'b1 ) begin
+					ff_serial_state <= sst_idle;
+				end
+				else if( ff_spi_clk == 1'b0 ) begin
 					if( ff_bit == 3'd7 ) begin
-						ff_serial_state	<= sst_byte_end;
+						ff_serial_state <= sst_byte_end;
 					end
 					else begin
-						ff_serial_state	<= sst_clk_low;
+						ff_serial_state <= sst_clk_low;
 					end
 				end
+			sst_byte_end:
+				if( ff_spi_cs_n == 1'b1 ) begin
+					ff_serial_state <= sst_idle;
+				end
+				else begin
+					ff_serial_state <= sst_clk_low;
+				end
 			default:
-				ff_serial_state	<= sst_idle;
+				ff_serial_state <= sst_idle;
 			endcase
 		end
 	end
 
+	// --------------------------------------------------------------------
+	//	bit state
+	// --------------------------------------------------------------------
 	always @( posedge clk ) begin
 		if( !reset_n ) begin
-			ff_address		<= 15'd0;
+			ff_bit <= 3'd7;
 		end
-		else if( spi_cs_n ) begin
-			ff_address		<= 15'd0;
+		else if( ff_bit != 3'd7 && ff_spi_cs_n == 1'b1 ) begin
+			ff_bit <= 3'd7;
 		end
-		else if( ff_command_end ) begin
-			ff_address		<= 15'd0;
-		end
-		else if( w_command_req ) begin
-			ff_address		<= ff_address + 15'd1;
+		else if( ff_serial_state == sst_clk_low && ff_spi_clk == 1'b1 ) begin
+			ff_bit <= ff_bit + 3'd1;
 		end
 		else begin
 			//	hold
 		end
 	end
 
+	// --------------------------------------------------------------------
+	//	Receive byte
+	// --------------------------------------------------------------------
 	always @( posedge clk ) begin
 		if( !reset_n ) begin
-			ff_command		<= 8'd0;
-			ff_do_command	<= 1'b0;
+			ff_recv_data <= 8'd0;
 		end
-		else if( spi_cs_n ) begin
-			ff_command		<= 8'd0;
-			ff_do_command	<= 1'b0;
-		end
-		else if( ff_command_end ) begin
-			ff_command		<= 8'd0;
-			ff_do_command	<= 1'b0;
-		end
-		else if( !ff_do_command && w_command_req ) begin
-			ff_command		<= ff_recv_data;
-			ff_do_command	<= 1'b1;
+		else if( ff_serial_state == sst_clk_low && ff_spi_clk == 1'b1 ) begin
+			ff_recv_data <= { ff_recv_data[6:0], ff_spi_mosi };
 		end
 		else begin
 			//	hold
 		end
 	end
 
+	// --------------------------------------------------------------------
+	//	Send byte
+	// --------------------------------------------------------------------
 	always @( posedge clk ) begin
 		if( !reset_n ) begin
-			ff_command_end <= 1'b0;
+			ff_send_data <= 8'd0;
 		end
-		else if( ff_do_command ) begin
-			case( ff_command )
-			8'h03:
-				if( ff_address[7:0] == 8'h02 ) begin
-					ff_command_end <= w_command_req;
-				end
-			8'h04:
-				if( ff_address == 15'd16385 ) begin
-					ff_command_end <= w_command_req;
-				end
-			8'h03:
-				if( ff_address[7:0] == 8'h01 ) begin
-					ff_command_end <= w_command_req;
-				end
-			default:
-				ff_command_end <= w_command_req;
-			endcase
+		else if( ff_state == st_idle && ff_spi_cs_n == 1'b1 ) begin
+			ff_send_data <= dt_signature;
+		end
+		else if( ff_state == st_command && ff_serial_state == sst_byte_end && ff_recv_data == 8'h05 ) begin
+			ff_send_data <= { 7'd0, sdram_busy };
+		end
+		else if( ff_serial_state == sst_clk_hi && ff_spi_clk == 1'b0 ) begin
+			ff_send_data <= { ff_send_data[6:0], ff_send_data[7] };
 		end
 		else begin
-			ff_command_end <= 1'b0;
+			//	hold
 		end
 	end
 
-	assign w_command_req	= (ff_serial_state == sst_byte_end);
-	assign spi_miso			= ff_send_data[7];
+	assign spi_miso		= ff_send_data[7];
+
+	// --------------------------------------------------------------------
+	//	Command state
+	// --------------------------------------------------------------------
+	always @( posedge clk ) begin
+		if( !reset_n ) begin
+			ff_state <= st_idle;
+		end
+		else if( ff_state != st_idle && ff_spi_cs_n == 1'b1 ) begin
+			ff_state <= st_idle;
+		end
+		else begin
+			case( ff_state )
+			st_idle:
+				if( ff_spi_cs_n == 1'b0 ) begin
+					ff_state <= st_command;
+				end
+			st_command:
+				if( ff_serial_state == sst_byte_end ) begin
+					if( ff_recv_data == 8'h00 || ff_recv_data == 8'h01 || ff_recv_data == 8'h02 ) begin
+						ff_state <= st_exec;
+					end
+					else begin
+						ff_state <= st_operand1;
+					end
+				end
+			st_operand1:
+				if( ff_serial_state == sst_byte_end ) begin
+					if( ff_command == 8'h05 ) begin
+						ff_state <= st_exec;
+					end
+					else if( ff_command == 8'h04 ) begin
+						ff_state <= st_data;
+					end
+					else begin
+						ff_state <= st_operand2;
+					end
+				end
+			st_operand2:
+				if( ff_serial_state == sst_byte_end ) begin
+					ff_state <= st_exec;
+				end
+			st_data:
+				if( ff_serial_state == sst_byte_end ) begin
+					if( ff_address == 14'd16383 ) begin
+						ff_state <= st_exec;
+					end
+					else begin
+						//	hold
+					end
+				end
+			st_exec:
+				ff_state <= st_idle;
+			default:
+				ff_state <= st_idle;
+			endcase
+		end
+	end
+
+	// --------------------------------------------------------------------
+	//	Command latch
+	// --------------------------------------------------------------------
+	always @( posedge clk ) begin
+		if( !reset_n ) begin
+			ff_command <= 8'd0;
+		end
+		else if( ff_state == st_command ) begin
+			if( ff_serial_state == sst_byte_end ) begin
+				ff_command <= ff_recv_data;
+			end
+			else begin
+				//	hold
+			end
+		end
+	end
+
+	// --------------------------------------------------------------------
+	//	Operand1 latch
+	// --------------------------------------------------------------------
+	always @( posedge clk ) begin
+		if( !reset_n ) begin
+			ff_operand1 <= 8'd0;
+		end
+		else if( ff_state == st_operand1 ) begin
+			if( ff_serial_state == sst_byte_end ) begin
+				ff_operand1 <= ff_recv_data;
+			end
+			else begin
+				//	hold
+			end
+		end
+	end
 
 	// --------------------------------------------------------------------
 	//	MSX Reset Signal
@@ -269,7 +314,7 @@ module micom_connect (
 		if( !reset_n ) begin
 			ff_msx_reset_n <= 1'b0;
 		end
-		else if( ff_do_command ) begin
+		else if( ff_state == st_exec ) begin
 			if(      ff_command == 8'h01 ) begin
 				ff_msx_reset_n <= 1'b0;
 			end
@@ -291,17 +336,9 @@ module micom_connect (
 	//	Key matrix
 	// --------------------------------------------------------------------
 	always @( posedge clk ) begin
-		if( !reset_n ) begin
-			ff_y <= 4'd0;
-		end
-		else if( ff_do_command && w_command_req ) begin
-			if( ff_command == 8'h03 ) begin
-				if(      ff_address[7:0] == 8'h1 ) begin
-					ff_y <= ff_recv_data[3:0];
-				end
-				else if( ff_address[7:0] == 8'h2 ) begin
-					ff_key_matrix[ ff_y ] <= ff_recv_data;
-				end
+		if( ff_state == st_operand2 ) begin
+			if( ff_serial_state == sst_byte_end ) begin
+				ff_key_matrix[ ff_operand1[3:0] ] <= ff_recv_data;
 			end
 			else begin
 				//	hold
@@ -312,38 +349,35 @@ module micom_connect (
 		end
 	end
 
-	assign matrix_x	= ff_key_matrix[ matrix_y ];
+	always @( posedge clk ) begin
+		ff_matrix_x	<= ff_key_matrix[ matrix_y ];
+	end
+
+	assign matrix_x	= ff_matrix_x;
 
 	// --------------------------------------------------------------------
 	//	Memory I/F
 	// --------------------------------------------------------------------
 	always @( posedge clk ) begin
 		if( !reset_n ) begin
-			ff_bank		<= 8'd0;
-			ff_req		<= 1'b0;
-			ff_wdata	<= 8'h00;
+			ff_address	<= 14'd0;
 		end
-		else if( ff_do_command && w_command_req ) begin
-			if( ff_command == 8'h04 ) begin
-				if(      ff_address[7:0] == 8'h1 ) begin
-					ff_bank		<= ff_recv_data;
-				end
-				else begin
-					ff_wdata	<= ff_recv_data;
-					ff_req		<= 1'b1;
-				end
+		else if( ff_state == st_operand1 ) begin
+			if( ff_serial_state == sst_byte_end ) begin
+				ff_address	<= 14'd0;
 			end
-			else begin
-				//	hold
+		end
+		else if( ff_state == st_data ) begin
+			if( ff_serial_state == sst_byte_end ) begin
+				ff_address	<= ff_address + 14'd1;
 			end
 		end
 		else begin
-			ff_req		<= 1'b0;
+			//	hold
 		end
 	end
 
-	assign w_address	= ff_address - 15'd3;
-	assign address		= { ff_bank, w_address[13:0] };
-	assign wdata		= ff_wdata;
-	assign req			= ff_req;
+	assign address		= { ff_operand1, ff_address };
+	assign req			= (ff_state == st_data) && (ff_serial_state == sst_byte_end);
+	assign wdata		= ff_recv_data;
 endmodule

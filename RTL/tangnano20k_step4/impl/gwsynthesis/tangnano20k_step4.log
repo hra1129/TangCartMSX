@@ -156,3 +156,7 @@ Running technical mapping ...
 [75%] Tech-Mapping Phase 2 completed
 [80%] Tech-Mapping Phase 3 completed
 [90%] Tech-Mapping Phase 4 completed
+WARN  (NL0002) : The module "vdp_interrupt" instantiated to "u_vdp_interrupt" is swept in optimizing("D:\github\HRA_product\TangCartMSX\RTL\modules\v9958\vdp.v":537)
+[95%] Generate netlist file "D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_step4\impl\gwsynthesis\tangnano20k_step4.vg" completed
+[100%] Generate report file "D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_step4\impl\gwsynthesis\tangnano20k_step4_syn.rpt.html" completed
+GowinSynthesis finish
