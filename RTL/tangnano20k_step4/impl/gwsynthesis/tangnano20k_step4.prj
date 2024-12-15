@@ -40,7 +40,7 @@
     <OptionList>
         <Option type="disable_insert_pad" value="0"/>
         <Option type="global_freq" value="100.000"/>
-        <Option type="looplimit" value="2000"/>
+        <Option type="looplimit" value="5000"/>
         <Option type="output_file" value="D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_step4\impl\gwsynthesis\tangnano20k_step4.vg"/>
         <Option type="print_all_synthesis_warning" value="0"/>
         <Option type="ram_rw_check" value="0"/>

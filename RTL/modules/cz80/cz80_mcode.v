@@ -302,9 +302,12 @@ module cz80_mcode (
 			8'hF0, 8'hF1, 8'hF2, 8'hF3, 8'hF4, 8'hF5, 8'hF7,
 			8'hF8, 8'hF9, 8'hFA, 8'hFB, 8'hFC, 8'hFD, 8'hFF:			// set b,r
 				func_mcycles = ( xy_state != 2'b00 ) ? 3'd3: 3'd1;			// r/s (ix+d),reg, undocumented
-			8'h06, 8'h16, 8'h0E, 8'h1E, 8'h2E, 8'h3E, 8'h26, 8'h36,		// rlc (hl), rl (hl), rrc (hl), rr (hl), sra (hl), srl (hl), sla (hl), sll (hl) (undocumented) / swap (hl)
-			8'hC6, 8'hCE, 8'hD6, 8'hDE, 8'hE6, 8'hEE, 8'hF6, 8'hFE,		// set b,(hl)
-			8'h86, 8'h8E, 8'h96, 8'h9E, 8'hA6, 8'hAE, 8'hB6, 8'hBE:		// res b,(hl)
+			8'h06, 8'h16, 8'h26, 8'h36, 
+			8'h86, 8'h96, 8'hA6, 8'hB6,
+			8'hC6, 8'hD6, 8'hE6, 8'hF6, 
+			8'h0E, 8'h1E, 8'h2E, 8'h3E,
+			8'h8E, 8'h9E, 8'hAE, 8'hBE,
+			8'hCE, 8'hDE, 8'hEE, 8'hFE:
 				func_mcycles = 3'd3;
 			8'h40, 8'h41, 8'h42, 8'h43, 8'h44, 8'h45, 8'h47,
 			8'h48, 8'h49, 8'h4A, 8'h4B, 8'h4C, 8'h4D, 8'h4F,
@@ -335,32 +338,17 @@ module cz80_mcode (
 		// --------------------------------------------------------------------
 		default:
 			case( irb )
-			8'h4B, 8'h5B, 8'h6B, 8'h7B:									// ld dd,(nn)
+			8'h4B, 8'h5B, 8'h6B, 8'h7B, 8'h43, 8'h53, 8'h63, 8'h73:
 				func_mcycles = 3'd5;
-			8'h43, 8'h53, 8'h63, 8'h73:									// ld (nn),dd
-				func_mcycles = 3'd5;
-			8'hA0, 8'hA8, 8'hB0, 8'hB8:									// ldi, ldd, ldir, lddr
+			8'hA0, 8'hA8, 8'hB0, 8'hB8, 8'hA1, 8'hA9, 8'hB1, 8'hB9, 8'h6F, 8'h67,
+			8'hA2, 8'hAA, 8'hB2, 8'hBA, 8'hA3, 8'hAB, 8'hB3, 8'hBB:
 				func_mcycles = 3'd4;
-			8'hA1, 8'hA9, 8'hB1, 8'hB9:									// cpi, cpd, cpir, cpdr
-				func_mcycles = 3'd4;
-			8'h4A, 8'h5A, 8'h6A, 8'h7A:									// adc hl,ss
+			8'h4A, 8'h5A, 8'h6A, 8'h7A, 8'h42, 8'h52, 8'h62, 8'h72,
+			8'h45, 8'h4D, 8'h55, 8'h5D, 8'h65, 8'h6D, 8'h75, 8'h7D:
 				func_mcycles = 3'd3;
-			8'h42, 8'h52, 8'h62, 8'h72:									// sbc hl,ss
-				func_mcycles = 3'd3;
-			8'h6F:														// rld
-				func_mcycles = 3'd4;
-			8'h67:														// rrd
-				func_mcycles = 3'd4;
-			8'h45, 8'h4D, 8'h55, 8'h5D, 8'h65, 8'h6D, 8'h75, 8'h7D:	// reti, retn
-				func_mcycles = 3'd3;
-			8'h40, 8'h48, 8'h50, 8'h58, 8'h60, 8'h68, 8'h70, 8'h78:		// in r,(c)
+			8'h40, 8'h48, 8'h50, 8'h58, 8'h60, 8'h68, 8'h70, 8'h78,
+			8'h41, 8'h49, 8'h51, 8'h59, 8'h61, 8'h69, 8'h71, 8'h79:
 				func_mcycles = 3'd2;
-			8'h41, 8'h49, 8'h51, 8'h59, 8'h61, 8'h69, 8'h71, 8'h79:		// out (c),r, out (c),0
-				func_mcycles = 3'd2;
-			8'hA2, 8'hAA, 8'hB2, 8'hBA:									// ini, ind, inir, indr
-				func_mcycles = 3'd4;
-			8'hA3, 8'hAB, 8'hB3, 8'hBB:								// outi, outd, otir, otdr
-				func_mcycles = 3'd4;
 			default:
 				func_mcycles = 3'd1;
 			endcase
@@ -486,12 +474,11 @@ module cz80_mcode (
 					else begin
 						func_tstates = 3'd3;
 					end
-				8'h03, 8'h13, 8'h23, 8'h33,
-				8'h0B, 8'h1B, 8'h2B, 8'h3B:
+				8'h03, 8'h13, 8'h23, 8'h33, 8'h0B, 8'h1B, 8'h2B, 8'h3B:
 					func_tstates = 3'd6;
-				8'hC9,														// ret
-				8'hC0, 8'hC8, 8'hD0, 8'hD8, 8'hE0, 8'hE8, 8'hF0, 8'hF8,		// ret cc
-				8'hC7, 8'hCF, 8'hD7, 8'hDF, 8'hE7, 8'hEF, 8'hF7, 8'hFF:		// rst p
+				8'hC9,
+				8'hC0, 8'hC8, 8'hD0, 8'hD8, 8'hE0, 8'hE8, 8'hF0, 8'hF8,
+				8'hC7, 8'hCF, 8'hD7, 8'hDF, 8'hE7, 8'hEF, 8'hF7, 8'hFF:
 					func_tstates = ( mcycle == 3'd1 ) ? 3'd5: 3'd3;
 				default:
 					func_tstates = ( mcycle == 3'd1 ) ? 3'd4: 3'd3;
@@ -509,7 +496,7 @@ module cz80_mcode (
 				8'h20, 8'h21, 8'h22, 8'h23, 8'h24, 8'h25, 8'h27, 
 				8'h28, 8'h29, 8'h2A, 8'h2B, 8'h2C, 8'h2D, 8'h2F, 
 				8'h30, 8'h31, 8'h32, 8'h33, 8'h34, 8'h35, 8'h37, 
-				8'h38, 8'h39, 8'h3A, 8'h3B, 8'h3C, 8'h3D, 8'h3F,				// rlc r, rl r, rrc r, rr r, sla r, sra r, srl r, sll r (undocumented) / swap r
+				8'h38, 8'h39, 8'h3A, 8'h3B, 8'h3C, 8'h3D, 8'h3F,
 				8'h40, 8'h41, 8'h42, 8'h43, 8'h44, 8'h45, 8'h47, 
 				8'h48, 8'h49, 8'h4A, 8'h4B, 8'h4C, 8'h4D, 8'h4F, 
 				8'h50, 8'h51, 8'h52, 8'h53, 8'h54, 8'h55, 8'h57, 
@@ -517,23 +504,23 @@ module cz80_mcode (
 				8'h60, 8'h61, 8'h62, 8'h63, 8'h64, 8'h65, 8'h67, 
 				8'h68, 8'h69, 8'h6A, 8'h6B, 8'h6C, 8'h6D, 8'h6F, 
 				8'h70, 8'h71, 8'h72, 8'h73, 8'h74, 8'h75, 8'h77, 
-				8'h78, 8'h79, 8'h7A, 8'h7B, 8'h7C, 8'h7D, 8'h7F,				// bit b,r
-				8'hC0, 8'hC1, 8'hC2, 8'hC3, 8'hC4, 8'hC5, 8'hC7, 
-				8'hC8, 8'hC9, 8'hCA, 8'hCB, 8'hCC, 8'hCD, 8'hCF, 
-				8'hD0, 8'hD1, 8'hD2, 8'hD3, 8'hD4, 8'hD5, 8'hD7, 
-				8'hD8, 8'hD9, 8'hDA, 8'hDB, 8'hDC, 8'hDD, 8'hDF, 
-				8'hE0, 8'hE1, 8'hE2, 8'hE3, 8'hE4, 8'hE5, 8'hE7, 
-				8'hE8, 8'hE9, 8'hEA, 8'hEB, 8'hEC, 8'hED, 8'hEF, 
-				8'hF0, 8'hF1, 8'hF2, 8'hF3, 8'hF4, 8'hF5, 8'hF7, 
-				8'hF8, 8'hF9, 8'hFA, 8'hFB, 8'hFC, 8'hFD, 8'hFF,				// set b,r
-				8'h80, 8'h81, 8'h82, 8'h83, 8'h84, 8'h85, 8'h87, 
-				8'h88, 8'h89, 8'h8A, 8'h8B, 8'h8C, 8'h8D, 8'h8F, 
-				8'h90, 8'h91, 8'h92, 8'h93, 8'h94, 8'h95, 8'h97, 
-				8'h98, 8'h99, 8'h9A, 8'h9B, 8'h9C, 8'h9D, 8'h9F, 
-				8'hA0, 8'hA1, 8'hA2, 8'hA3, 8'hA4, 8'hA5, 8'hA7, 
-				8'hA8, 8'hA9, 8'hAA, 8'hAB, 8'hAC, 8'hAD, 8'hAF, 
-				8'hB0, 8'hB1, 8'hB2, 8'hB3, 8'hB4, 8'hB5, 8'hB7, 
-				8'hB8, 8'hB9, 8'hBA, 8'hBB, 8'hBC, 8'hBD, 8'hBF:				// res b,r
+				8'h78, 8'h79, 8'h7A, 8'h7B, 8'h7C, 8'h7D, 8'h7F,
+				8'hC0, 8'hC1, 8'hC2, 8'hC3, 8'hC4, 8'hC5, 8'hC7,
+				8'hC8, 8'hC9, 8'hCA, 8'hCB, 8'hCC, 8'hCD, 8'hCF,
+				8'hD0, 8'hD1, 8'hD2, 8'hD3, 8'hD4, 8'hD5, 8'hD7,
+				8'hD8, 8'hD9, 8'hDA, 8'hDB, 8'hDC, 8'hDD, 8'hDF,
+				8'hE0, 8'hE1, 8'hE2, 8'hE3, 8'hE4, 8'hE5, 8'hE7,
+				8'hE8, 8'hE9, 8'hEA, 8'hEB, 8'hEC, 8'hED, 8'hEF,
+				8'hF0, 8'hF1, 8'hF2, 8'hF3, 8'hF4, 8'hF5, 8'hF7,
+				8'hF8, 8'hF9, 8'hFA, 8'hFB, 8'hFC, 8'hFD, 8'hFF,
+				8'h80, 8'h81, 8'h82, 8'h83, 8'h84, 8'h85, 8'h87,
+				8'h88, 8'h89, 8'h8A, 8'h8B, 8'h8C, 8'h8D, 8'h8F,
+				8'h90, 8'h91, 8'h92, 8'h93, 8'h94, 8'h95, 8'h97,
+				8'h98, 8'h99, 8'h9A, 8'h9B, 8'h9C, 8'h9D, 8'h9F,
+				8'hA0, 8'hA1, 8'hA2, 8'hA3, 8'hA4, 8'hA5, 8'hA7,
+				8'hA8, 8'hA9, 8'hAA, 8'hAB, 8'hAC, 8'hAD, 8'hAF,
+				8'hB0, 8'hB1, 8'hB2, 8'hB3, 8'hB4, 8'hB5, 8'hB7,
+				8'hB8, 8'hB9, 8'hBA, 8'hBB, 8'hBC, 8'hBD, 8'hBF:
 					if( xy_state == 2'b00 ) begin
 						if( mcycle == 3'd1 ) begin
 							func_tstates = 3'd4;
@@ -550,24 +537,13 @@ module cz80_mcode (
 							func_tstates = 3'd3;
 						end
 					end
-				8'h06, 8'h16, 8'h0E, 8'h1E, 8'h2E, 8'h3E, 8'h26, 8'h36:	// rlc (hl), rl (hl), rrc (hl), rr (hl), sra (hl), srl (hl), sla (hl), sll (hl) (undocumented) / swap (hl)
-					if( mcycle == 3'd1 || mcycle == 3'd2 ) begin
-						func_tstates = 3'd4;
-					end
-					else begin
-						func_tstates = 3'd3;
-					end
+				8'h06, 8'h16, 8'h0E, 8'h1E, 8'h2E, 8'h3E, 8'h26, 8'h36,
 				8'h46, 8'h4E, 8'h56, 8'h5E, 8'h66, 8'h6E, 8'h76, 8'h7E,
 				8'h86, 8'h8E, 8'h96, 8'h9E, 8'hA6, 8'hAE, 8'hB6, 8'hBE,
 				8'hC6, 8'hCE, 8'hD6, 8'hDE, 8'hE6, 8'hEE, 8'hF6, 8'hFE:
 					func_tstates = ( mcycle == 3'd1 || mcycle == 3'd2 ) ? 3'd4: 3'd3;
 				default:
-					if( mcycle == 3'd1 ) begin
-						func_tstates = 3'd4;
-					end
-					else begin
-						func_tstates = 3'd3;
-					end
+					func_tstates = ( mcycle == 3'd1 ) ? 3'd4: 3'd3;
 				endcase
 			default:
 				// --------------------------------------------------------------------

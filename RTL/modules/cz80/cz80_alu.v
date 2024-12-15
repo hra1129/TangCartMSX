@@ -235,8 +235,7 @@ module cz80_alu (
 		input			arith16,
 		input			f_in_p,
 		input			w_overflow,
-		input	[7:0]	w_q_t,
-		input	[7:0]	w_daa_q
+		input	[7:0]	w_q_t
 	);
 		case( alu_op )
 		4'd0, 4'd1, 4'd2, 4'd3, 4'd7:
@@ -247,16 +246,14 @@ module cz80_alu (
 			func_flag_p = ( iset == 2'b00 ) ? f_in_p : ~( w_q_t[0] ^ w_q_t[1] ^ w_q_t[2] ^ w_q_t[3] ^ w_q_t[4] ^ w_q_t[5] ^ w_q_t[6] ^ w_q_t[7] );
 		4'd9:
 			func_flag_p = ( w_q_t[7:0] == 8'd0 );
-		4'd12:
-			func_flag_p = ~( w_daa_q[0] ^ w_daa_q[1] ^ w_daa_q[2] ^ w_daa_q[3] ^ w_daa_q[4] ^ w_daa_q[5] ^ w_daa_q[6] ^ w_daa_q[7] );
-		4'd13, 4'd14:
+		4'd12, 4'd13, 4'd14:
 			func_flag_p = ~( w_q_t[0] ^ w_q_t[1] ^ w_q_t[2] ^ w_q_t[3] ^ w_q_t[4] ^ w_q_t[5] ^ w_q_t[6] ^ w_q_t[7] );
 		default:
 			func_flag_p = f_in_p;
 		endcase
 	endfunction
 
-	assign f_out[flag_p] = func_flag_p( alu_op, iset, arith16, f_in[flag_p], w_overflow, w_q_t[7:0], w_daa_q[7:0] );
+	assign f_out[flag_p] = func_flag_p( alu_op, iset, arith16, f_in[flag_p], w_overflow, w_q_t[7:0] );
 
 	// --------------------------------------------------------------------
 	//	X flag, Y flag
@@ -268,16 +265,13 @@ module cz80_alu (
 		input			alu_cpi,
 		input			w_q_cpi,
 		input			busb,
-		input			w_q_t,
-		input			w_daa_q
+		input			w_q_t
 	);
 		case( alu_op )
-		4'd0, 4'd1, 4'd2, 4'd3, 4'd4, 4'd5, 4'd6, 4'd8, 4'd13, 4'd14:
+		4'd0, 4'd1, 4'd2, 4'd3, 4'd4, 4'd5, 4'd6, 4'd8, 4'd12, 4'd13, 4'd14:
 			func_flag_xy	= w_q_t;
 		4'd7:
 			func_flag_xy	= ( alu_cpi ) ? w_q_cpi : busb;
-		4'd12:
-			func_flag_xy	= w_daa_q;
 		4'd9:
 			func_flag_xy	= ( ir == 3'd6 ) ? 1'b0 : busb;
 		default:
@@ -285,8 +279,8 @@ module cz80_alu (
 		endcase
 	endfunction
 
-	assign f_out[flag_x] = func_flag_xy( alu_op, f_in[flag_x], ir[2:0], alu_cpi, w_q_cpi[3], busb[3], w_q_t[3], w_daa_q[3] );
-	assign f_out[flag_y] = func_flag_xy( alu_op, f_in[flag_y], ir[2:0], alu_cpi, w_q_cpi[1], busb[5], w_q_t[5], w_daa_q[5] );
+	assign f_out[flag_x] = func_flag_xy( alu_op, f_in[flag_x], ir[2:0], alu_cpi, w_q_cpi[3], busb[3], w_q_t[3] );
+	assign f_out[flag_y] = func_flag_xy( alu_op, f_in[flag_y], ir[2:0], alu_cpi, w_q_cpi[1], busb[5], w_q_t[5] );
 
 	// --------------------------------------------------------------------
 	//	Zero flag
@@ -295,7 +289,6 @@ module cz80_alu (
 		input	[3:0]	alu_op,
 		input			f_in_z,
 		input	[7:0]	w_q_t,
-		input	[7:0]	w_daa_q,
 		input			arith16,
 		input			z16,
 		input	[1:0]	iset
@@ -304,9 +297,7 @@ module cz80_alu (
 		4'd0, 4'd1, 4'd2, 4'd3, 4'd4, 4'd5, 4'd6, 4'd7:
 			func_flag_z = ( arith16       ) ? f_in_z :
 						  ( w_q_t == 8'd0 ) ? ( ( z16 ) ? f_in_z : 1'b1 ) : 1'b0;
-		4'd12:
-			func_flag_z = ( w_daa_q == 8'd0 );
-		4'd9, 4'd13, 4'd14:
+		4'd9, 4'd12, 4'd13, 4'd14:
 			func_flag_z = ( w_q_t == 8'd0 );
 		4'd8:
 			func_flag_z = ( iset == 2'b00 ) ? f_in_z : ( w_q_t == 8'd0 );
@@ -315,7 +306,7 @@ module cz80_alu (
 		endcase
 	endfunction
 
-	assign f_out[flag_z] = func_flag_z( alu_op, f_in[flag_z], w_q_t[7:0], w_daa_q[7:0], arith16, z16, iset );
+	assign f_out[flag_z] = func_flag_z( alu_op, f_in[flag_z], w_q_t[7:0], arith16, z16, iset );
 
 	// --------------------------------------------------------------------
 	//	Sign flag
@@ -325,7 +316,6 @@ module cz80_alu (
 		input	[2:0]	iset,
 		input			arith16,
 		input			w_q_t7,
-		input			w_daa_q7,
 		input			f_in_s
 	);
 		case( alu_op )
@@ -333,16 +323,14 @@ module cz80_alu (
 			func_flag_s = arith16 ? f_in_s : w_q_t7;
 		4'd8:
 			func_flag_s = ( iset == 2'b00 ) ? f_in_s : w_q_t7;
-		4'd9, 4'd13, 4'd14:
+		4'd9, 4'd12, 4'd13, 4'd14:
 			func_flag_s = w_q_t7;
-		4'd12:
-			func_flag_s = w_daa_q7;
 		default:
 			func_flag_s = f_in_s;
 		endcase
 	endfunction
 
-	assign f_out[flag_s] = func_flag_s( alu_op, iset, arith16, w_q_t[7], w_daa_q[7], f_in[flag_s] );
+	assign f_out[flag_s] = func_flag_s( alu_op, iset, arith16, w_q_t[7], f_in[flag_s] );
 
 	// --------------------------------------------------------------------
 	//	‰‰ŽZŒ‹‰Ê q

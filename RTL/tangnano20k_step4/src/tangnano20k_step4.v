@@ -182,27 +182,26 @@ module tangnano20k_step4 (
 	//	Z80 core
 	// --------------------------------------------------------------------
 	cz80_inst u_z80 (
-		.reset_n		( w_msx_reset_n	),
-		.clk_n			( clk42m		),
-		.enable			( w_cpu_enable	),
-		.wait_n			( wait_n		),
-		.int_n			( int_n			),
-		.nmi_n			( nmi_n			),
-		.busrq_n		( busrq_n		),
-		.m1_n			( m1_n			),
-		.mreq_n			( mreq_n		),
-		.iorq_n			( iorq_n		),
-		.rd_n			( rd_n			),
-		.wr_n			( wr_n			),
-		.rfsh_n			( rfsh_n		),
-		.halt_n			( halt_n		),
-		.busak_n		( busak_n		),
-		.a				( a				),
-		.d				( d				)
+		.reset_n			( w_msx_reset_n				),
+		.clk_n				( clk42m					),
+		.enable				( w_cpu_enable				),
+		.wait_n				( wait_n					),
+		.int_n				( int_n						),
+		.nmi_n				( nmi_n						),
+		.busrq_n			( busrq_n					),
+		.m1_n				( m1_n						),
+		.mreq_n				( mreq_n					),
+		.iorq_n				( iorq_n					),
+		.rd_n				( rd_n						),
+		.wr_n				( wr_n						),
+		.rfsh_n				( rfsh_n					),
+		.halt_n				( halt_n					),
+		.busak_n			( busak_n					),
+		.a					( a							),
+		.d					( d							)
 	);
 
 	assign wait_n	= 1'b1;
-	assign int_n	= 1'b1;
 	assign nmi_n	= 1'b1;
 	assign busrq_n	= 1'b1;
 	assign d		= ( w_uart_q_en ) ? w_uart_q:
@@ -213,21 +212,21 @@ module tangnano20k_step4 (
 	//	UART
 	// --------------------------------------------------------------------
 	ip_uart_inst #(
-		.clk_freq		( 43200000		),
-		.uart_freq		( 115200		)
+		.clk_freq			( 43200000					),
+		.uart_freq			( 115200					)
 	) u_uart (
-		.reset_n		( w_msx_reset_n	),
-		.clk			( clk42m		),
-		.enable			( w_enable		),
-		.iorq_n			( iorq_n		),
-		.wr_n			( wr_n			),
-		.rd_n			( rd_n			),
-		.a				( a[7:0]		),
-		.d				( d				),
-		.q				( w_uart_q		),
-		.q_en			( w_uart_q_en	),
-		.button			( button		),
-		.uart_tx		( uart_tx		)
+		.reset_n			( w_msx_reset_n				),
+		.clk				( clk42m					),
+		.enable				( w_enable					),
+		.iorq_n				( iorq_n					),
+		.wr_n				( wr_n						),
+		.rd_n				( rd_n						),
+		.a					( a[7:0]					),
+		.d					( d							),
+		.q					( w_uart_q					),
+		.q_en				( w_uart_q_en				),
+		.button				( button					),
+		.uart_tx			( uart_tx					)
 	);
 
 	// --------------------------------------------------------------------
@@ -274,7 +273,7 @@ module tangnano20k_step4 (
 		.rdata				( w_vdp_q					),		//	[ 7: 0];
 		.rdata_en			( w_vdp_q_en				),
 		.wdata				( d							),		//	[ 7: 0];
-		.int_n				( 							),		
+		.int_n				( int_n						),		
 		.p_dram_oe_n		( w_sdram_read_n			),		
 		.p_dram_we_n		( w_sdram_write_n			),		
 		.p_dram_address		( w_sdram_address[16:0]		),		//	[16: 0];
@@ -302,7 +301,7 @@ module tangnano20k_step4 (
 	//	SDRAM
 	// --------------------------------------------------------------------
 	ip_sdram u_sdram (
-		.n_reset			( w_msx_reset_n				),
+		.n_reset			( ff_reset_n				),
 		.clk				( clk						),
 		.clk_sdram			( clk						),
 		.sdram_busy			( w_sdram_busy				),

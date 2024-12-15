@@ -18,14 +18,41 @@ CRGB leds[NUM_LEDS];
 #define HSPI_MOSI   11
 #define HSPI_SCLK   12
 #define HSPI_SS     10
-SPISettings spi_settings = SPISettings( 8000000, MSBFIRST, SPI_MODE0 );
+SPISettings spi_settings = SPISettings( 1000000, MSBFIRST, SPI_MODE0 );
 SPIClass *hspi = NULL;
+
+int state = 0;
 
 // --------------------------------------------------------------------
 byte send_command( byte data ) {
     hspi->beginTransaction( spi_settings );
     digitalWrite( hspi->pinSS(), LOW );  //pull SS slow to prep other end for transfer
     data = hspi->transfer( data );
+    digitalWrite( hspi->pinSS(), HIGH );  //pull ss high to signify end of data transfer
+    hspi->endTransaction();
+    return data;
+}
+
+// --------------------------------------------------------------------
+byte send_key_matrix( int y, byte data ) {
+    hspi->beginTransaction( spi_settings );
+    digitalWrite( hspi->pinSS(), LOW );  //pull SS slow to prep other end for transfer
+    hspi->transfer( 0x03 );
+    hspi->transfer( y );
+    data = hspi->transfer( data );
+    digitalWrite( hspi->pinSS(), HIGH );  //pull ss high to signify end of data transfer
+    hspi->endTransaction();
+    return data;
+}
+
+// --------------------------------------------------------------------
+byte get_status( void ) {
+    byte data;
+
+    hspi->beginTransaction( spi_settings );
+    digitalWrite( hspi->pinSS(), LOW );  //pull SS slow to prep other end for transfer
+    hspi->transfer( 0x05 );
+    data = hspi->transfer( 0x00 );
     digitalWrite( hspi->pinSS(), HIGH );  //pull ss high to signify end of data transfer
     hspi->endTransaction();
     return data;
@@ -49,20 +76,46 @@ void setup() {
 
 // --------------------------------------------------------------------
 void loop() {
+    int i;
+    byte d;
 
     delay(15);
 
-    if( !digitalRead( PIN_BUTTON ) ) {
-        delay(5);
+    switch( state ) {
+    case 0:
         if( !digitalRead( PIN_BUTTON ) ) {
-            Serial.print( "Send command : " );
-            if( send_command( 0x12 ) == 0xA5 ) {
-                Serial.println( "Success." );
+            delay(5);
+            if( !digitalRead( PIN_BUTTON ) ) {
+                Serial.print( "Send command : " );
+                if( send_command( 0x00 ) == 0xA5 ) {
+                    Serial.println( "Success." );
+                    state = 1;
+                }
+                else {
+                    Serial.println( "Failed." );
+                }
+                while( !digitalRead(PIN_BUTTON) );
             }
-            else {
-                Serial.println( "Failed." );
-            }
-            while( !digitalRead(PIN_BUTTON) );
         }
+        break;
+    case 1:
+        //  リセット解除コマンド送信
+        Serial.println( "Send RESET off" );
+        send_command( 0x02 );
+        delay(5);
+        //  キーマトリクス初期化コマンド送信
+        Serial.println( "Initialize key matrix" );
+        for( i = 0; i < 16; i++ ) {
+            send_key_matrix( i, 0xFF );
+        }
+        d = get_status();
+        if( d == 0x00 ) {
+            Serial.println( "Status OK." );
+        }
+        else {
+            Serial.printf( "Status error %02X\r\n", d );
+        }
+        state = 0;
+        break;
     }
 }
