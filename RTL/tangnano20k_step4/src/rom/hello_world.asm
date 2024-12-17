@@ -51,12 +51,6 @@ wait_key:
 			; VDP R#7 : Set Color
 			ld		bc, 0xF707
 			call	wrtvdp
-			; VDP R#8 : Mode Register 2
-			ld		bc, 0x0808
-			call	wrtvdp
-			; VDP R#9 : Mode Register 3
-			ld		bc, 0x0009
-			call	wrtvdp
 			; 開始メッセージ
 			ld		hl, s_set_color_palette
 			call	puts

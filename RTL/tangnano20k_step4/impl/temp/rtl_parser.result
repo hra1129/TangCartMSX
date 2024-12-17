@@ -1,5 +1,13 @@
 [
  {
+  "InstFile" : "D:/github/HRA_product/TangCartMSX/RTL/modules/v9918/vdp_wait_control.v",
+  "InstLine" : 31,
+  "InstName" : "vdp_wait_control",
+  "ModuleFile" : "D:/github/HRA_product/TangCartMSX/RTL/modules/v9918/vdp_wait_control.v",
+  "ModuleLine" : 31,
+  "ModuleName" : "vdp_wait_control"
+ },
+ {
   "InstFile" : "D:/github/HRA_product/TangCartMSX/RTL/tangnano20k_step4/src/tangnano20k_step4.v",
   "InstLine" : 24,
   "InstName" : "tangnano20k_step4",
@@ -9,7 +17,7 @@
   "SubInsts" : [
    {
     "InstFile" : "D:/github/HRA_product/TangCartMSX/RTL/tangnano20k_step4/src/tangnano20k_step4.v",
-    "InstLine" : 113,
+    "InstLine" : 121,
     "InstName" : "u_pll",
     "ModuleFile" : "D:/github/HRA_product/TangCartMSX/RTL/tangnano20k_step4/src/gowin_pll/gowin_pll.v",
     "ModuleLine" : 10,
@@ -17,7 +25,7 @@
    },
    {
     "InstFile" : "D:/github/HRA_product/TangCartMSX/RTL/tangnano20k_step4/src/tangnano20k_step4.v",
-    "InstLine" : 165,
+    "InstLine" : 173,
     "InstName" : "u_esp32_conn",
     "ModuleFile" : "D:/github/HRA_product/TangCartMSX/RTL/modules/micom_connect/micom_connect.v",
     "ModuleLine" : 60,
@@ -25,7 +33,7 @@
    },
    {
     "InstFile" : "D:/github/HRA_product/TangCartMSX/RTL/tangnano20k_step4/src/tangnano20k_step4.v",
-    "InstLine" : 184,
+    "InstLine" : 192,
     "InstName" : "u_z80",
     "ModuleFile" : "D:/github/HRA_product/TangCartMSX/RTL/modules/cz80/cz80_inst.v",
     "ModuleLine" : 63,
@@ -69,7 +77,7 @@
    },
    {
     "InstFile" : "D:/github/HRA_product/TangCartMSX/RTL/tangnano20k_step4/src/tangnano20k_step4.v",
-    "InstLine" : 217,
+    "InstLine" : 225,
     "InstName" : "u_uart",
     "ModuleFile" : "D:/github/HRA_product/TangCartMSX/RTL/tangnano20k_step4/src/uart/ip_uart_inst.v",
     "ModuleLine" : 27,
@@ -87,7 +95,7 @@
    },
    {
     "InstFile" : "D:/github/HRA_product/TangCartMSX/RTL/tangnano20k_step4/src/tangnano20k_step4.v",
-    "InstLine" : 235,
+    "InstLine" : 243,
     "InstName" : "u_rom",
     "ModuleFile" : "D:/github/HRA_product/TangCartMSX/RTL/tangnano20k_step4/src/rom/ip_hello_world_rom.v",
     "ModuleLine" : 5,
@@ -95,7 +103,7 @@
    },
    {
     "InstFile" : "D:/github/HRA_product/TangCartMSX/RTL/tangnano20k_step4/src/tangnano20k_step4.v",
-    "InstLine" : 249,
+    "InstLine" : 257,
     "InstName" : "u_ram",
     "ModuleFile" : "D:/github/HRA_product/TangCartMSX/RTL/tangnano20k_step4/src/ram/ip_ram.v",
     "ModuleLine" : 5,
@@ -103,181 +111,139 @@
    },
    {
     "InstFile" : "D:/github/HRA_product/TangCartMSX/RTL/tangnano20k_step4/src/tangnano20k_step4.v",
-    "InstLine" : 265,
-    "InstName" : "u_v9958",
-    "ModuleFile" : "D:/github/HRA_product/TangCartMSX/RTL/modules/v9958/vdp_inst.v",
+    "InstLine" : 273,
+    "InstName" : "u_v9918",
+    "ModuleFile" : "D:/github/HRA_product/TangCartMSX/RTL/modules/v9918/vdp_inst.v",
     "ModuleLine" : 58,
     "ModuleName" : "vdp_inst",
     "SubInsts" : [
      {
-      "InstFile" : "D:/github/HRA_product/TangCartMSX/RTL/modules/v9958/vdp_inst.v",
-      "InstLine" : 125,
-      "InstName" : "u_v9958_core",
-      "ModuleFile" : "D:/github/HRA_product/TangCartMSX/RTL/modules/v9958/vdp.v",
+      "InstFile" : "D:/github/HRA_product/TangCartMSX/RTL/modules/v9918/vdp_inst.v",
+      "InstLine" : 122,
+      "InstName" : "u_v9918_core",
+      "ModuleFile" : "D:/github/HRA_product/TangCartMSX/RTL/modules/v9918/vdp.v",
       "ModuleLine" : 58,
       "ModuleName" : "vdp",
       "SubInsts" : [
        {
-        "InstFile" : "D:/github/HRA_product/TangCartMSX/RTL/modules/v9958/vdp.v",
-        "InstLine" : 465,
+        "InstFile" : "D:/github/HRA_product/TangCartMSX/RTL/modules/v9918/vdp.v",
+        "InstLine" : 333,
         "InstName" : "u_vdp_color_bus",
-        "ModuleFile" : "D:/github/HRA_product/TangCartMSX/RTL/modules/v9958/vdp_color_bus.v",
+        "ModuleFile" : "D:/github/HRA_product/TangCartMSX/RTL/modules/v9918/vdp_color_bus.v",
         "ModuleLine" : 56,
         "ModuleName" : "vdp_color_bus"
        },
        {
-        "InstFile" : "D:/github/HRA_product/TangCartMSX/RTL/modules/v9958/vdp.v",
-        "InstLine" : 523,
+        "InstFile" : "D:/github/HRA_product/TangCartMSX/RTL/modules/v9918/vdp.v",
+        "InstLine" : 374,
         "InstName" : "u_vdp_interrupt",
-        "ModuleFile" : "D:/github/HRA_product/TangCartMSX/RTL/modules/v9958/vdp_interrupt.v",
+        "ModuleFile" : "D:/github/HRA_product/TangCartMSX/RTL/modules/v9918/vdp_interrupt.v",
         "ModuleLine" : 57,
         "ModuleName" : "vdp_interrupt"
        },
        {
-        "InstFile" : "D:/github/HRA_product/TangCartMSX/RTL/modules/v9958/vdp.v",
-        "InstLine" : 542,
+        "InstFile" : "D:/github/HRA_product/TangCartMSX/RTL/modules/v9918/vdp.v",
+        "InstLine" : 390,
         "InstName" : "u_vdp_ssg",
-        "ModuleFile" : "D:/github/HRA_product/TangCartMSX/RTL/modules/v9958/vdp_ssg.v",
+        "ModuleFile" : "D:/github/HRA_product/TangCartMSX/RTL/modules/v9918/vdp_ssg.v",
         "ModuleLine" : 58,
         "ModuleName" : "vdp_ssg"
        },
        {
-        "InstFile" : "D:/github/HRA_product/TangCartMSX/RTL/modules/v9958/vdp.v",
-        "InstLine" : 582,
+        "InstFile" : "D:/github/HRA_product/TangCartMSX/RTL/modules/v9918/vdp.v",
+        "InstLine" : 420,
         "InstName" : "u_vdp_color_decoder",
-        "ModuleFile" : "D:/github/HRA_product/TangCartMSX/RTL/modules/v9958/vdp_color_decoder.v",
+        "ModuleFile" : "D:/github/HRA_product/TangCartMSX/RTL/modules/v9918/vdp_color_decoder.v",
         "ModuleLine" : 56,
         "ModuleName" : "vdp_color_decoder"
        },
        {
-        "InstFile" : "D:/github/HRA_product/TangCartMSX/RTL/modules/v9958/vdp.v",
-        "InstLine" : 631,
+        "InstFile" : "D:/github/HRA_product/TangCartMSX/RTL/modules/v9918/vdp.v",
+        "InstLine" : 451,
         "InstName" : "u_vdp_text12",
-        "ModuleFile" : "D:/github/HRA_product/TangCartMSX/RTL/modules/v9958/vdp_text12.v",
+        "ModuleFile" : "D:/github/HRA_product/TangCartMSX/RTL/modules/v9918/vdp_text12.v",
         "ModuleLine" : 58,
         "ModuleName" : "vdp_text12"
        },
        {
-        "InstFile" : "D:/github/HRA_product/TangCartMSX/RTL/modules/v9958/vdp.v",
-        "InstLine" : 655,
+        "InstFile" : "D:/github/HRA_product/TangCartMSX/RTL/modules/v9918/vdp.v",
+        "InstLine" : 472,
         "InstName" : "u_vdp_graphic123m",
-        "ModuleFile" : "D:/github/HRA_product/TangCartMSX/RTL/modules/v9958/vdp_graphic123m.v",
+        "ModuleFile" : "D:/github/HRA_product/TangCartMSX/RTL/modules/v9918/vdp_graphic123m.v",
         "ModuleLine" : 62,
         "ModuleName" : "vdp_graphic123m"
        },
        {
-        "InstFile" : "D:/github/HRA_product/TangCartMSX/RTL/modules/v9958/vdp.v",
-        "InstLine" : 678,
-        "InstName" : "u_vdp_graphic4567",
-        "ModuleFile" : "D:/github/HRA_product/TangCartMSX/RTL/modules/v9958/vdp_graphic4567.v",
-        "ModuleLine" : 58,
-        "ModuleName" : "vdp_graphic4567",
-        "SubInsts" : [
-         {
-          "InstFile" : "D:/github/HRA_product/TangCartMSX/RTL/modules/v9958/vdp_graphic4567.v",
-          "InstLine" : 152,
-          "InstName" : "u_fifo_ram",
-          "ModuleFile" : "D:/github/HRA_product/TangCartMSX/RTL/modules/v9958/vdp_ram_256byte.v",
-          "ModuleLine" : 32,
-          "ModuleName" : "vdp_ram_256byte"
-         }
-        ]
-       },
-       {
-        "InstFile" : "D:/github/HRA_product/TangCartMSX/RTL/modules/v9958/vdp.v",
-        "InstLine" : 711,
+        "InstFile" : "D:/github/HRA_product/TangCartMSX/RTL/modules/v9918/vdp.v",
+        "InstLine" : 495,
         "InstName" : "u_vdp_sprite",
-        "ModuleFile" : "D:/github/HRA_product/TangCartMSX/RTL/modules/v9958/vdp_sprite.v",
+        "ModuleFile" : "D:/github/HRA_product/TangCartMSX/RTL/modules/v9918/vdp_sprite.v",
         "ModuleLine" : 58,
         "ModuleName" : "vdp_sprite",
         "SubInsts" : [
          {
-          "InstFile" : "D:/github/HRA_product/TangCartMSX/RTL/modules/v9958/vdp_sprite.v",
-          "InstLine" : 229,
+          "InstFile" : "D:/github/HRA_product/TangCartMSX/RTL/modules/v9918/vdp_sprite.v",
+          "InstLine" : 212,
           "InstName" : "u_sprite_info_ram",
-          "ModuleFile" : "D:/github/HRA_product/TangCartMSX/RTL/modules/v9958/vdp_spinforam.v",
+          "ModuleFile" : "D:/github/HRA_product/TangCartMSX/RTL/modules/v9918/vdp_spinforam.v",
           "ModuleLine" : 58,
           "ModuleName" : "vdp_spinforam"
          },
          {
-          "InstFile" : "D:/github/HRA_product/TangCartMSX/RTL/modules/v9958/vdp_sprite.v",
-          "InstLine" : 257,
+          "InstFile" : "D:/github/HRA_product/TangCartMSX/RTL/modules/v9918/vdp_sprite.v",
+          "InstLine" : 238,
           "InstName" : "u_even_line_buf",
-          "ModuleFile" : "D:/github/HRA_product/TangCartMSX/RTL/modules/v9958/vdp_ram_256byte.v",
+          "ModuleFile" : "D:/github/HRA_product/TangCartMSX/RTL/modules/v9918/vdp_ram_256byte.v",
           "ModuleLine" : 32,
           "ModuleName" : "vdp_ram_256byte"
          },
          {
-          "InstFile" : "D:/github/HRA_product/TangCartMSX/RTL/modules/v9958/vdp_sprite.v",
-          "InstLine" : 273,
+          "InstFile" : "D:/github/HRA_product/TangCartMSX/RTL/modules/v9918/vdp_sprite.v",
+          "InstLine" : 254,
           "InstName" : "u_odd_line_buf",
-          "ModuleFile" : "D:/github/HRA_product/TangCartMSX/RTL/modules/v9958/vdp_ram_256byte.v",
+          "ModuleFile" : "D:/github/HRA_product/TangCartMSX/RTL/modules/v9918/vdp_ram_256byte.v",
           "ModuleLine" : 32,
           "ModuleName" : "vdp_ram_256byte"
          }
         ]
        },
        {
-        "InstFile" : "D:/github/HRA_product/TangCartMSX/RTL/modules/v9958/vdp.v",
-        "InstLine" : 752,
-        "InstName" : "u_vdp_palette_ram",
-        "ModuleFile" : "D:/github/HRA_product/TangCartMSX/RTL/modules/v9958/vdp_ram_palette.v",
-        "ModuleLine" : 32,
-        "ModuleName" : "vdp_ram_palette"
-       },
-       {
-        "InstFile" : "D:/github/HRA_product/TangCartMSX/RTL/modules/v9958/vdp.v",
-        "InstLine" : 769,
+        "InstFile" : "D:/github/HRA_product/TangCartMSX/RTL/modules/v9918/vdp.v",
+        "InstLine" : 523,
         "InstName" : "u_vdp_register",
-        "ModuleFile" : "D:/github/HRA_product/TangCartMSX/RTL/modules/v9958/vdp_register.v",
+        "ModuleFile" : "D:/github/HRA_product/TangCartMSX/RTL/modules/v9918/vdp_register.v",
         "ModuleLine" : 56,
         "ModuleName" : "vdp_register"
        },
        {
-        "InstFile" : "D:/github/HRA_product/TangCartMSX/RTL/modules/v9958/vdp.v",
-        "InstLine" : 885,
-        "InstName" : "u_vdp_command",
-        "ModuleFile" : "D:/github/HRA_product/TangCartMSX/RTL/modules/v9958/vdp_command.v",
-        "ModuleLine" : 56,
-        "ModuleName" : "vdp_command"
-       },
-       {
-        "InstFile" : "D:/github/HRA_product/TangCartMSX/RTL/modules/v9958/vdp.v",
-        "InstLine" : 919,
-        "InstName" : "u_vdp_wait_control",
-        "ModuleFile" : "D:/github/HRA_product/TangCartMSX/RTL/modules/v9958/vdp_wait_control.v",
-        "ModuleLine" : 31,
-        "ModuleName" : "vdp_wait_control"
-       },
-       {
-        "InstFile" : "D:/github/HRA_product/TangCartMSX/RTL/modules/v9958/vdp.v",
-        "InstLine" : 940,
+        "InstFile" : "D:/github/HRA_product/TangCartMSX/RTL/modules/v9918/vdp.v",
+        "InstLine" : 586,
         "InstName" : "u_vdp_lcd",
-        "ModuleFile" : "D:/github/HRA_product/TangCartMSX/RTL/modules/v9958/vdp_lcd.v",
+        "ModuleFile" : "D:/github/HRA_product/TangCartMSX/RTL/modules/v9918/vdp_lcd.v",
         "ModuleLine" : 60,
         "ModuleName" : "vdp_lcd",
         "SubInsts" : [
          {
-          "InstFile" : "D:/github/HRA_product/TangCartMSX/RTL/modules/v9958/vdp_lcd.v",
-          "InstLine" : 312,
+          "InstFile" : "D:/github/HRA_product/TangCartMSX/RTL/modules/v9918/vdp_lcd.v",
+          "InstLine" : 276,
           "InstName" : "dbuf",
-          "ModuleFile" : "D:/github/HRA_product/TangCartMSX/RTL/modules/v9958/vdp_double_buffer.v",
+          "ModuleFile" : "D:/github/HRA_product/TangCartMSX/RTL/modules/v9918/vdp_double_buffer.v",
           "ModuleLine" : 58,
           "ModuleName" : "vdp_double_buffer",
           "SubInsts" : [
            {
-            "InstFile" : "D:/github/HRA_product/TangCartMSX/RTL/modules/v9958/vdp_double_buffer.v",
+            "InstFile" : "D:/github/HRA_product/TangCartMSX/RTL/modules/v9918/vdp_double_buffer.v",
             "InstLine" : 86,
             "InstName" : "u_buf_even",
-            "ModuleFile" : "D:/github/HRA_product/TangCartMSX/RTL/modules/v9958/vdp_ram_line_buffer.v",
+            "ModuleFile" : "D:/github/HRA_product/TangCartMSX/RTL/modules/v9918/vdp_ram_line_buffer.v",
             "ModuleLine" : 58,
             "ModuleName" : "vdp_ram_line_buffer"
            },
            {
-            "InstFile" : "D:/github/HRA_product/TangCartMSX/RTL/modules/v9958/vdp_double_buffer.v",
+            "InstFile" : "D:/github/HRA_product/TangCartMSX/RTL/modules/v9918/vdp_double_buffer.v",
             "InstLine" : 96,
             "InstName" : "u_buf_odd",
-            "ModuleFile" : "D:/github/HRA_product/TangCartMSX/RTL/modules/v9958/vdp_ram_line_buffer.v",
+            "ModuleFile" : "D:/github/HRA_product/TangCartMSX/RTL/modules/v9918/vdp_ram_line_buffer.v",
             "ModuleLine" : 58,
             "ModuleName" : "vdp_ram_line_buffer"
            }
@@ -291,7 +257,15 @@
    },
    {
     "InstFile" : "D:/github/HRA_product/TangCartMSX/RTL/tangnano20k_step4/src/tangnano20k_step4.v",
-    "InstLine" : 303,
+    "InstLine" : 313,
+    "InstName" : "u_vram",
+    "ModuleFile" : "D:/github/HRA_product/TangCartMSX/RTL/tangnano20k_step4/src/ram/ip_ram.v",
+    "ModuleLine" : 5,
+    "ModuleName" : "ip_ram"
+   },
+   {
+    "InstFile" : "D:/github/HRA_product/TangCartMSX/RTL/tangnano20k_step4/src/tangnano20k_step4.v",
+    "InstLine" : 333,
     "InstName" : "u_sdram",
     "ModuleFile" : "D:/github/HRA_product/TangCartMSX/RTL/modules/sdram/ip_sdram_tangnano20k.v",
     "ModuleLine" : 57,

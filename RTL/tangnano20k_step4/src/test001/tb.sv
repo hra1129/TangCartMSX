@@ -25,7 +25,7 @@
 // -----------------------------------------------------------------------------
 
 module tb ();
-	localparam	clk_base	= 1_000_000_000/86_400;	//	ps
+	localparam	clk_base	= 1_000_000_000/85_909;	//	ps
 	int				test_no;
 
 	reg				clk;
@@ -38,6 +38,10 @@ module tb ();
 	wire	[5:0]	lcd_green;		//	PIN32, PIN33, PIN34, PIN35, PIN36, PIN37
 	wire	[4:0]	lcd_blue;		//	PIN27, PIN28, PIN29, PIN30, PIN31
 	wire			lcd_bl;			//	PIN49
+	reg				spi_cs_n;		//	PIN79
+	reg				spi_clk;		//	PIN73
+	reg				spi_mosi;		//	PIN74
+	wire			spi_miso;		//	PIN75
 	wire			uart_tx;		//	uart_tx		PIN69_SYS_TX
 	wire			O_sdram_clk;	//	Internal
 	wire			O_sdram_cke;	//	Internal
@@ -54,7 +58,8 @@ module tb ();
 	//	DUT
 	// --------------------------------------------------------------------
 	tangnano20k_step4 u_dut (
-		.clk27m				( clk				),
+		.clk27m				( 					),
+		.clk3_579m			( clk				),
 		.button				( button			),
 		.lcd_clk			( lcd_clk			),
 		.lcd_de				( lcd_de			),
@@ -64,6 +69,10 @@ module tb ();
 		.lcd_green			( lcd_green			),
 		.lcd_blue			( lcd_blue			),
 		.lcd_bl				( lcd_bl			),
+		.spi_cs_n			( spi_cs_n			),
+		.spi_clk			( spi_clk			),
+		.spi_mosi			( spi_mosi			),
+		.spi_miso			( spi_miso			),
 		.uart_tx			( uart_tx			),
 		.O_sdram_clk		( O_sdram_clk		),
 		.O_sdram_cke		( O_sdram_cke		),
@@ -104,6 +113,9 @@ module tb ();
 	initial begin
 		clk				= 1;
 		button			= 0;
+		spi_cs_n		= 1;
+		spi_clk			= 1;
+		spi_mosi		= 1;
 		repeat( 1000 ) @( posedge clk );
 
 		button[0]		= 1;

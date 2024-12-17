@@ -4,9 +4,9 @@
 //	t.hara
 // --------------------------------------------------------------------
 module Gowin_PLL (
-	output			clkout,
-	output			clkoutd,
-	input			clkin
+	output			clkout,			//	85.909MHz
+	output			clkoutd,		//	42.9545MHz
+	input			clkin			//	85.909MHz
 );
 	reg		ff_clkoutd = 1'b0;
 

@@ -56,7 +56,7 @@ module tangnano20k_step4 (
 );
 	wire			clk;
 	wire			clk42m;
-	reg				ff_delay = 3'd7;
+	reg		[2:0]	ff_delay = 3'd7;
 	reg				ff_reset_n = 1'b0;
 	reg				ff_clock_div = 1'b0;
 	reg		[2:0]	ff_cpu_clock_div = 3'b0;
@@ -94,6 +94,14 @@ module tangnano20k_step4 (
 	wire	[15:0]	w_sdram_rdata;
 	wire			w_sdram_rdata_en;
 
+	wire			w_vram_read_n;
+	wire			w_vram_write_n;
+	wire	[13:0]	w_vram_address;
+	wire	[7:0]	w_vram_wdata;
+	wire	[7:0]	w_vram_rdata;
+	wire			w_vram_rdata_en;
+	reg		[7:0]	ff_vram_rdata;
+
 	wire	[5:0]	w_lcd_red;
 	wire	[5:0]	w_lcd_green;
 	wire	[5:0]	w_lcd_blue;
@@ -116,8 +124,8 @@ module tangnano20k_step4 (
 		.clkin			( clk3_579m		)		//	input clkin		3.579545MHz
 	);
 
-	always @( posedge clk ) begin
-		if( !w_msx_reset_n ) begin
+	always @( posedge clk42m ) begin
+		if( !ff_reset_n ) begin
 			ff_clock_div <= 1'd0;
 		end
 		else begin
@@ -126,8 +134,8 @@ module tangnano20k_step4 (
 	end
 	assign w_enable		= (ff_clock_div == 1'b1);
 
-	always @( posedge clk ) begin
-		if( !w_msx_reset_n ) begin
+	always @( posedge clk42m ) begin
+		if( !ff_reset_n ) begin
 			ff_cpu_clock_div <= 3'd0;
 		end
 		else begin
@@ -182,7 +190,7 @@ module tangnano20k_step4 (
 	//	Z80 core
 	// --------------------------------------------------------------------
 	cz80_inst u_z80 (
-		.reset_n			( w_msx_reset_n				),
+		.reset_n			( ff_reset_n				),
 		.clk_n				( clk42m					),
 		.enable				( w_cpu_enable				),
 		.wait_n				( wait_n					),
@@ -215,7 +223,7 @@ module tangnano20k_step4 (
 		.clk_freq			( 43200000					),
 		.uart_freq			( 115200					)
 	) u_uart (
-		.reset_n			( w_msx_reset_n				),
+		.reset_n			( ff_reset_n				),
 		.clk				( clk42m					),
 		.enable				( w_enable					),
 		.iorq_n				( iorq_n					),
@@ -260,25 +268,25 @@ module tangnano20k_step4 (
 	assign w_ram_cs_n	= ( a[15:14] == 2'b01 ) ? mreq_n : 1'b1;
 
 	// --------------------------------------------------------------------
-	//	V9958 clone
+	//	V9918 clone
 	// --------------------------------------------------------------------
-	vdp_inst u_v9958 (
+	vdp_inst u_v9918 (
 		.clk				( clk42m					),
-		.reset_n			( w_msx_reset_n				),
-		.initial_busy		( w_sdram_busy				),
+		.reset_n			( ff_reset_n				),
+		.initial_busy		( 1'b0						),
 		.iorq_n				( w_vdp_cs_n				),
 		.wr_n				( wr_n						),
 		.rd_n				( rd_n						),
-		.address			( a[1:0]					),		//	[ 1: 0];
+		.address			( a[0]						),
 		.rdata				( w_vdp_q					),		//	[ 7: 0];
 		.rdata_en			( w_vdp_q_en				),
 		.wdata				( d							),		//	[ 7: 0];
-		.int_n				( int_n						),		
-		.p_dram_oe_n		( w_sdram_read_n			),		
-		.p_dram_we_n		( w_sdram_write_n			),		
-		.p_dram_address		( w_sdram_address[16:0]		),		//	[16: 0];
-		.p_dram_rdata		( w_sdram_rdata				),		//	[15: 0];
-		.p_dram_wdata		( w_sdram_wdata				),		//	[ 7: 0];
+		.int_n				( 							),		
+		.p_dram_oe_n		( w_vram_read_n				),		
+		.p_dram_we_n		( w_vram_write_n			),		
+		.p_dram_address		( w_vram_address			),		//	[13: 0];
+		.p_dram_rdata		( ff_vram_rdata				),		//	[ 7: 0];
+		.p_dram_wdata		( w_vram_wdata				),		//	[ 7: 0];
 		.pvideo_clk			( lcd_clk					),		
 		.pvideo_data_en		( lcd_de					),		
 		.pvideor			( w_lcd_red					),		//	[ 5: 0];
@@ -290,12 +298,34 @@ module tangnano20k_step4 (
 		.p_video_dl_clk		( w_dl_clk					)
     );
 
-	assign w_vdp_cs_n				= !( !iorq_n && ( { a[7:2], 2'd0 } == 8'h98 ) );
-	assign w_sdram_address[22:17]	= 6'b000000;
+	assign int_n					= 1'b1;
+
+	assign w_vdp_cs_n				= !( !iorq_n && ( { a[7:1], 1'd0 } == 8'h98 ) );
+	assign w_sdram_address[22:14]	= 9'd0;
 	assign lcd_red					= w_lcd_red[5:1];
 	assign lcd_green				= w_lcd_green;
 	assign lcd_blue					= w_lcd_blue[5:1];
 	assign lcd_bl					= 1'b1;
+
+	// --------------------------------------------------------------------
+	//	VRAM
+	// --------------------------------------------------------------------
+	ip_ram u_vram (
+		.clk				( clk42m					),
+		.n_cs				( 1'b0						),
+		.n_wr				( w_vram_write_n			),
+		.n_rd				( w_vram_read_n				),
+		.address			( w_vram_address			),
+		.wdata				( w_vram_wdata				),
+		.rdata				( w_vram_rdata				),
+		.rdata_en			( w_vram_rdata_en			)
+	);
+
+	always @( posedge clk42m ) begin
+		if( w_vram_rdata_en ) begin
+			ff_vram_rdata <= w_vram_rdata;
+		end
+	end
 
 	// --------------------------------------------------------------------
 	//	SDRAM
@@ -322,4 +352,9 @@ module tangnano20k_step4 (
 		.O_sdram_ba			( O_sdram_ba				),
 		.O_sdram_dqm		( O_sdram_dqm				)
 	);
+
+	assign w_sdram_read_n		= 1'b1;
+	assign w_sdram_write_n		= 1'b1;
+	assign w_sdram_address		= 23'd0;
+	assign w_sdram_wdata		= 8'd0;
 endmodule

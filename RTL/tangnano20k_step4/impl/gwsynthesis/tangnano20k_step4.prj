@@ -11,25 +11,22 @@
         <File path="D:\github\HRA_product\TangCartMSX\RTL\modules\cz80\cz80_reg.v" type="verilog"/>
         <File path="D:\github\HRA_product\TangCartMSX\RTL\modules\micom_connect\micom_connect.v" type="verilog"/>
         <File path="D:\github\HRA_product\TangCartMSX\RTL\modules\sdram\ip_sdram_tangnano20k.v" type="verilog"/>
-        <File path="D:\github\HRA_product\TangCartMSX\RTL\modules\v9958\vdp.v" type="verilog"/>
-        <File path="D:\github\HRA_product\TangCartMSX\RTL\modules\v9958\vdp_color_bus.v" type="verilog"/>
-        <File path="D:\github\HRA_product\TangCartMSX\RTL\modules\v9958\vdp_color_decoder.v" type="verilog"/>
-        <File path="D:\github\HRA_product\TangCartMSX\RTL\modules\v9958\vdp_command.v" type="verilog"/>
-        <File path="D:\github\HRA_product\TangCartMSX\RTL\modules\v9958\vdp_double_buffer.v" type="verilog"/>
-        <File path="D:\github\HRA_product\TangCartMSX\RTL\modules\v9958\vdp_graphic123m.v" type="verilog"/>
-        <File path="D:\github\HRA_product\TangCartMSX\RTL\modules\v9958\vdp_graphic4567.v" type="verilog"/>
-        <File path="D:\github\HRA_product\TangCartMSX\RTL\modules\v9958\vdp_inst.v" type="verilog"/>
-        <File path="D:\github\HRA_product\TangCartMSX\RTL\modules\v9958\vdp_interrupt.v" type="verilog"/>
-        <File path="D:\github\HRA_product\TangCartMSX\RTL\modules\v9958\vdp_lcd.v" type="verilog"/>
-        <File path="D:\github\HRA_product\TangCartMSX\RTL\modules\v9958\vdp_ram_256byte.v" type="verilog"/>
-        <File path="D:\github\HRA_product\TangCartMSX\RTL\modules\v9958\vdp_ram_line_buffer.v" type="verilog"/>
-        <File path="D:\github\HRA_product\TangCartMSX\RTL\modules\v9958\vdp_ram_palette.v" type="verilog"/>
-        <File path="D:\github\HRA_product\TangCartMSX\RTL\modules\v9958\vdp_register.v" type="verilog"/>
-        <File path="D:\github\HRA_product\TangCartMSX\RTL\modules\v9958\vdp_spinforam.v" type="verilog"/>
-        <File path="D:\github\HRA_product\TangCartMSX\RTL\modules\v9958\vdp_sprite.v" type="verilog"/>
-        <File path="D:\github\HRA_product\TangCartMSX\RTL\modules\v9958\vdp_ssg.v" type="verilog"/>
-        <File path="D:\github\HRA_product\TangCartMSX\RTL\modules\v9958\vdp_text12.v" type="verilog"/>
-        <File path="D:\github\HRA_product\TangCartMSX\RTL\modules\v9958\vdp_wait_control.v" type="verilog"/>
+        <File path="D:\github\HRA_product\TangCartMSX\RTL\modules\v9918\vdp.v" type="verilog"/>
+        <File path="D:\github\HRA_product\TangCartMSX\RTL\modules\v9918\vdp_color_bus.v" type="verilog"/>
+        <File path="D:\github\HRA_product\TangCartMSX\RTL\modules\v9918\vdp_color_decoder.v" type="verilog"/>
+        <File path="D:\github\HRA_product\TangCartMSX\RTL\modules\v9918\vdp_double_buffer.v" type="verilog"/>
+        <File path="D:\github\HRA_product\TangCartMSX\RTL\modules\v9918\vdp_graphic123m.v" type="verilog"/>
+        <File path="D:\github\HRA_product\TangCartMSX\RTL\modules\v9918\vdp_inst.v" type="verilog"/>
+        <File path="D:\github\HRA_product\TangCartMSX\RTL\modules\v9918\vdp_interrupt.v" type="verilog"/>
+        <File path="D:\github\HRA_product\TangCartMSX\RTL\modules\v9918\vdp_lcd.v" type="verilog"/>
+        <File path="D:\github\HRA_product\TangCartMSX\RTL\modules\v9918\vdp_ram_256byte.v" type="verilog"/>
+        <File path="D:\github\HRA_product\TangCartMSX\RTL\modules\v9918\vdp_ram_line_buffer.v" type="verilog"/>
+        <File path="D:\github\HRA_product\TangCartMSX\RTL\modules\v9918\vdp_register.v" type="verilog"/>
+        <File path="D:\github\HRA_product\TangCartMSX\RTL\modules\v9918\vdp_spinforam.v" type="verilog"/>
+        <File path="D:\github\HRA_product\TangCartMSX\RTL\modules\v9918\vdp_sprite.v" type="verilog"/>
+        <File path="D:\github\HRA_product\TangCartMSX\RTL\modules\v9918\vdp_ssg.v" type="verilog"/>
+        <File path="D:\github\HRA_product\TangCartMSX\RTL\modules\v9918\vdp_text12.v" type="verilog"/>
+        <File path="D:\github\HRA_product\TangCartMSX\RTL\modules\v9918\vdp_wait_control.v" type="verilog"/>
         <File path="D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_step4\src\gowin_pll\gowin_pll.v" type="verilog"/>
         <File path="D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_step4\src\ram\ip_ram.v" type="verilog"/>
         <File path="D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_step4\src\rom\ip_hello_world_rom.v" type="verilog"/>
@@ -40,7 +37,7 @@
     <OptionList>
         <Option type="disable_insert_pad" value="0"/>
         <Option type="global_freq" value="100.000"/>
-        <Option type="looplimit" value="5000"/>
+        <Option type="looplimit" value="2000"/>
         <Option type="output_file" value="D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_step4\impl\gwsynthesis\tangnano20k_step4.vg"/>
         <Option type="print_all_synthesis_warning" value="0"/>
         <Option type="ram_rw_check" value="0"/>
