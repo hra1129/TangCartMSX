@@ -56,7 +56,7 @@
 //-----------------------------------------------------------------------------
 
 module vdp_spinforam (
-	input	[2:0]	address,
+	input	[1:0]	address,
 	input			clk	,
 	input			enable,
 	input			we,
@@ -64,7 +64,7 @@ module vdp_spinforam (
 	output	[31:0]	q
 );
 	reg		[31:0]	ff_memory [0:7];
-	reg		[2:0]	ff_address;
+	reg		[1:0]	ff_address;
 
 	always @( posedge clk	 ) begin
 		if( !enable ) begin

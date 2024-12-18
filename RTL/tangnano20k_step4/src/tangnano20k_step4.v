@@ -330,28 +330,30 @@ module tangnano20k_step4 (
 	// --------------------------------------------------------------------
 	//	SDRAM
 	// --------------------------------------------------------------------
-	ip_sdram u_sdram (
-		.n_reset			( ff_reset_n				),
-		.clk				( clk						),
-		.clk_sdram			( clk						),
-		.sdram_busy			( w_sdram_busy				),
-		.dh_clk				( w_dh_clk					),
-		.dl_clk				( w_dl_clk					),
-		.address			( w_sdram_address			),
-		.is_write			( !w_sdram_write_n			),
-		.wdata				( w_sdram_wdata				),
-		.rdata				( w_sdram_rdata				),
-		.O_sdram_clk		( O_sdram_clk				),
-		.O_sdram_cke		( O_sdram_cke				),
-		.O_sdram_cs_n		( O_sdram_cs_n				),
-		.O_sdram_cas_n		( O_sdram_cas_n				),
-		.O_sdram_ras_n		( O_sdram_ras_n				),
-		.O_sdram_wen_n		( O_sdram_wen_n				),
-		.IO_sdram_dq		( IO_sdram_dq				),
-		.O_sdram_addr		( O_sdram_addr				),
-		.O_sdram_ba			( O_sdram_ba				),
-		.O_sdram_dqm		( O_sdram_dqm				)
-	);
+//	ip_sdram u_sdram (
+//		.n_reset			( ff_reset_n				),
+//		.clk				( clk						),
+//		.clk_sdram			( clk						),
+//		.sdram_busy			( w_sdram_busy				),
+//		.dh_clk				( w_dh_clk					),
+//		.dl_clk				( w_dl_clk					),
+//		.address			( w_sdram_address			),
+//		.is_write			( !w_sdram_write_n			),
+//		.wdata				( w_sdram_wdata				),
+//		.rdata				( w_sdram_rdata				),
+//		.O_sdram_clk		( O_sdram_clk				),
+//		.O_sdram_cke		( O_sdram_cke				),
+//		.O_sdram_cs_n		( O_sdram_cs_n				),
+//		.O_sdram_cas_n		( O_sdram_cas_n				),
+//		.O_sdram_ras_n		( O_sdram_ras_n				),
+//		.O_sdram_wen_n		( O_sdram_wen_n				),
+//		.IO_sdram_dq		( IO_sdram_dq				),
+//		.O_sdram_addr		( O_sdram_addr				),
+//		.O_sdram_ba			( O_sdram_ba				),
+//		.O_sdram_dqm		( O_sdram_dqm				)
+//	);
+
+	assign O_sdram_cs_n			= 1'b1;		/////
 
 	assign w_sdram_read_n		= 1'b1;
 	assign w_sdram_write_n		= 1'b1;

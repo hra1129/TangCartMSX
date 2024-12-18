@@ -18,10 +18,10 @@ VDP_PORT3	:= 0x9B
 entry:
 			ld		sp, 0x8000
 			; キー入力待ち
-wait_key:
-			call	getkey
-			and		a, 1
-			jr		z, wait_key
+;wait_key:
+;			call	getkey
+;			and		a, 1
+;			jr		z, wait_key
 			; 開始メッセージ
 			ld		hl, s_start
 			call	puts

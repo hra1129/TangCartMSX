@@ -242,11 +242,13 @@ module vdp_lcd(
 		if( reset ) begin
 			ff_v_cnt <= 10'd0;
 		end
-		else if( w_v_front_porch_end && w_h_front_porch_end ) begin
-			ff_v_cnt <= 10'd0;
-		end
-		else begin
-			ff_v_cnt <= ff_v_cnt + 10'd1;
+		else if( w_h_front_porch_end ) begin
+			if( w_v_front_porch_end ) begin
+				ff_v_cnt <= 10'd0;
+			end
+			else begin
+				ff_v_cnt <= ff_v_cnt + 10'd1;
+			end
 		end
 	end
 	assign w_x_position_r		= ff_h_cnt - (h_vdp_active_start + 1);

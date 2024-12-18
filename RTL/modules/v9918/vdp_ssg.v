@@ -494,7 +494,7 @@ module vdp_ssg (
 	//---------------------------------------------------------------------------
 	assign	w_v_sync_intr_start_line	= v_blanking_start_192_ntsc;
 
-	assign	w_v_blanking_end			= (ff_v_cnt_in_field == { 2'b00, (offset_y + led_tv_y_ntsc),          ff_field } );
-	assign	w_v_blanking_start			= (ff_v_cnt_in_field == { (w_v_sync_intr_start_line + led_tv_y_ntsc), ff_field } );
+	assign	w_v_blanking_end			= (ff_v_cnt_in_field == { 2'b00, (offset_y + led_tv_y_ntsc),          1'b0 } );
+	assign	w_v_blanking_start			= (ff_v_cnt_in_field == { (w_v_sync_intr_start_line + led_tv_y_ntsc), 1'b0 } );
 
 endmodule

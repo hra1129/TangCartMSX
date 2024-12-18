@@ -304,7 +304,7 @@ module vdp_register (
 				vdp_vram_wdata_cpu	<= wdata;
 				vdp_vram_wr_req		<= ~vdp_vram_wr_ack;
 			end
-			begin
+			else begin
 				// port#1 (0x99):register write or vram addr setup
 				if( vdp_p1_is_1st_byte ) begin
 					// it is the first byte; buffer it

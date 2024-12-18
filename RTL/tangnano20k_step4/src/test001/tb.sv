@@ -87,18 +87,18 @@ module tb ();
 	);
 
 	// --------------------------------------------------------------------
-	mt48lc2m32b2 u_sdram (
-		.Dq					( IO_sdram_dq		), 
-		.Addr				( O_sdram_addr		), 
-		.Ba					( O_sdram_ba		), 
-		.Clk				( O_sdram_clk		), 
-		.Cke				( O_sdram_cke		), 
-		.Cs_n				( O_sdram_cs_n		), 
-		.Ras_n				( O_sdram_ras_n		), 
-		.Cas_n				( O_sdram_cas_n		), 
-		.We_n				( O_sdram_wen_n		), 
-		.Dqm				( O_sdram_dqm		)
-	);
+//	mt48lc2m32b2 u_sdram (
+//		.Dq					( IO_sdram_dq		), 
+//		.Addr				( O_sdram_addr		), 
+//		.Ba					( O_sdram_ba		), 
+//		.Clk				( O_sdram_clk		), 
+//		.Cke				( O_sdram_cke		), 
+//		.Cs_n				( O_sdram_cs_n		), 
+//		.Ras_n				( O_sdram_ras_n		), 
+//		.Cas_n				( O_sdram_cas_n		), 
+//		.We_n				( O_sdram_wen_n		), 
+//		.Dqm				( O_sdram_dqm		)
+//	);
 
 	// --------------------------------------------------------------------
 	//	clock

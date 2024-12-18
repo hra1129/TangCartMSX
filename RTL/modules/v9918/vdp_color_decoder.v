@@ -81,9 +81,9 @@ module vdp_color_decoder (
 	input	[7:0]	reg_r7_frame_col	
 );
 	// d-flipflop
-	reg		[5:0]	ff_video_r;
-	reg		[5:0]	ff_video_g;
-	reg		[5:0]	ff_video_b;
+	reg		[4:0]	ff_video_r;
+	reg		[4:0]	ff_video_g;
+	reg		[4:0]	ff_video_b;
 	reg		[3:0]	ff_palette_address;
 	reg				ff_sprite_color_out;
 	// wire
@@ -91,18 +91,18 @@ module vdp_color_decoder (
 	wire	[3:0]	w_fore_color;
 	wire	[3:0]	w_back_color;
 
-	assign pvideor_vdp			= ff_video_r;
-	assign pvideog_vdp			= ff_video_g;
-	assign pvideob_vdp			= ff_video_b;
+	assign pvideor_vdp			= { ff_video_r, 1'b0 };
+	assign pvideog_vdp			= { ff_video_g, 1'b0 };
+	assign pvideob_vdp			= { ff_video_b, 1'b0 };
 
 	assign w_even_dotstate		= ( dot_state == 2'b00 || dot_state == 2'b11 ) ? 1'b1 : 1'b0;
 
 	// output data latch
 	always @( posedge clk ) begin
 		if( reset ) begin
-			ff_video_r <= 6'd0;
-			ff_video_g <= 6'd0;
-			ff_video_b <= 6'd0;
+			ff_video_r <= 5'd0;
+			ff_video_g <= 5'd0;
+			ff_video_b <= 5'd0;
 		end
 		else if( !enable ) begin
 			// hold

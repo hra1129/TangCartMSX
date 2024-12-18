@@ -1,2 +1,22 @@
 # OpenFile D:/github/HRA_product/TangCartMSX/RTL/tangnano20k_step4/src/test001/vsim.wlf
-add wave -position end vsim:/tb/u_dut/u_z80/*
+add wave -position end  vsim:/tb/u_dut/u_v9918/u_v9918_core/u_vdp_lcd/videorin
+add wave -position end  vsim:/tb/u_dut/u_v9918/u_v9918_core/u_vdp_lcd/videogin
+add wave -position end  vsim:/tb/u_dut/u_v9918/u_v9918_core/u_vdp_lcd/videobin
+add wave -position end  vsim:/tb/u_dut/u_v9918/u_v9918_core/u_vdp_lcd/videovsin_n
+add wave -position end  vsim:/tb/u_dut/u_v9918/u_v9918_core/u_vdp_lcd/hcounterin
+add wave -position end  vsim:/tb/u_dut/u_v9918/u_v9918_core/u_vdp_lcd/vcounterin
+add wave -position end  vsim:/tb/u_dut/u_v9918/u_v9918_core/u_vdp_graphic123m/p_color_code
+add wave -position end  vsim:/tb/u_dut/u_v9918/u_v9918_core/u_vdp_color_decoder/window
+add wave -position end  vsim:/tb/u_dut/u_v9918/u_v9918_core/u_vdp_color_decoder/ff_video_r
+add wave -position end  vsim:/tb/u_dut/u_v9918/u_v9918_core/u_vdp_color_decoder/ff_video_g
+add wave -position end  vsim:/tb/u_dut/u_v9918/u_v9918_core/u_vdp_color_decoder/ff_video_b
+add wave -position end  vsim:/tb/u_dut/u_v9918/u_v9918_core/u_vdp_ssg/pre_window_y
+add wave -position end  vsim:/tb/u_dut/u_v9918/u_v9918_core/u_vdp_ssg/window_x
+add wave -position end  vsim:/tb/u_dut/u_v9918/u_v9918_core/u_vdp_ssg/window_y/pre_dot_counter_yp_v
+add wave -position insertpoint  \
+vsim:/tb/u_dut/u_v9918/u_v9918_core/u_vdp_ssg/ff_h_cnt
+add wave -position end  vsim:/tb/u_dut/u_v9918/u_v9918_core/u_vdp_ssg/ff_monitor_line
+add wave -position end  vsim:/tb/u_dut/u_v9918/u_v9918_core/u_vdp_ssg/w_v_blanking_end
+add wave -position end  vsim:/tb/u_dut/u_v9918/u_v9918_core/u_vdp_ssg/ff_v_cnt_in_field
+add wave -position end  vsim:/tb/u_dut/u_v9918/u_v9918_core/u_vdp_ssg/w_hsync
+add wave -position end  vsim:/tb/u_dut/u_v9918/u_v9918_core/u_vdp_ssg/ff_field
