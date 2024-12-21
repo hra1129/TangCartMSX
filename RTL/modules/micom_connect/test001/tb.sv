@@ -37,10 +37,11 @@ module tb ();
 	reg				spi_mosi;
 	wire			spi_miso;
 	wire			msx_reset_n;
+	wire			cpu_freeze;
 	reg		[3:0]	matrix_y;
 	wire	[7:0]	matrix_x;
 	wire	[21:0]	address;
-	wire			req;
+	wire			req_n;
 	wire	[7:0]	wdata;
 	reg				sdram_busy;
 	reg				sclk;
@@ -59,10 +60,11 @@ module tb ();
 		.spi_mosi		( spi_mosi		),
 		.spi_miso		( spi_miso		),
 		.msx_reset_n	( msx_reset_n	),
+		.cpu_freeze		( cpu_freeze	),
 		.matrix_y		( matrix_y		),
 		.matrix_x		( matrix_x		),
 		.address		( address		),
-		.req			( req			),
+		.req_n			( req_n			),
 		.wdata			( wdata			),
 		.sdram_busy		( sdram_busy	)
 	);
@@ -462,6 +464,24 @@ module tb ();
 		@( posedge clk );
 		spi_cs_n	= 1;
 		@( posedge clk );
+
+		// --------------------------------------------------------------------
+		//	CPU Freeze clear
+		// --------------------------------------------------------------------
+		$display( "CPU Freeze ------------------" );
+		assert( cpu_freeze == 1'b1 );
+		@( posedge clk );
+		spi_cs_n	= 0;
+		@( posedge clk );
+		send_byte( 8'h06, read_data );
+		assert( read_data == 8'hA5 );
+		@( posedge clk );
+		spi_cs_n	= 1;
+		@( posedge clk );
+		@( posedge clk );
+		@( posedge clk );
+		@( posedge clk );
+		assert( cpu_freeze == 1'b0 );
 
 		repeat( 10 ) @( posedge clk );
 		$finish;

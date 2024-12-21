@@ -55,15 +55,15 @@
 
 module tb ();
 	localparam		clk_base	= 1_000_000_000/85_909;	//	ps
-	reg						reset;
+	reg						reset_n;
 	reg						clk;
-	reg						bus_io_req;
-	wire					bus_ack;
-	reg						bus_wrt;
-	reg			[15:0]		bus_address;
-	reg			[7:0]		bus_wdata;
-	wire		[7:0]		bus_rdata;
-	wire					bus_rdata_en;
+	reg						iorq_n;
+	reg						wr_n;
+	reg						rd_n;
+	reg			[15:0]		address;
+	reg			[7:0]		wdata;
+	wire		[7:0]		rdata;
+	wire					rdata_en;
 	wire		[3:0]		matrix_y;
 	reg			[7:0]		matrix_x;
 	wire					cmt_motor_off;
@@ -79,15 +79,15 @@ module tb ();
 	//	DUT
 	// --------------------------------------------------------------------
 	ppi_inst u_ppi (
-		.reset						( reset						),
+		.reset_n					( reset_n					),
 		.clk						( clk						),
-		.bus_io_req					( bus_io_req				),
-		.bus_ack					( bus_ack					),
-		.bus_wrt					( bus_wrt					),
-		.bus_address				( bus_address				),
-		.bus_wdata					( bus_wdata					),
-		.bus_rdata					( bus_rdata					),
-		.bus_rdata_en				( bus_rdata_en				),
+		.iorq_n						( iorq_n					),
+		.wr_n						( wr_n						),
+		.rd_n						( rd_n						),
+		.address					( address					),
+		.wdata						( wdata						),
+		.rdata						( rdata						),
+		.rdata_en					( rdata_en					),
 		.matrix_y					( matrix_y					),
 		.matrix_x					( matrix_x					),
 		.cmt_motor_off				( cmt_motor_off				),
@@ -114,22 +114,16 @@ module tb ();
 		input	[15:0]	p_address,
 		input	[7:0]	p_data
 	);
-		int count;
-
-		count		<= 0;
-		bus_io_req	<= 1'b1;
-		bus_wrt		<= 1'b1;
-		bus_address	<= p_address;
-		bus_wdata	<= p_data;
+		iorq_n		<= 1'b0;
+		wr_n		<= 1'b0;
+		address		<= p_address;
+		wdata		<= p_data;
 		@( posedge clk );
 
-		while( !bus_ack && count < 5 ) begin
-			count	<= count + 1;
-			@( posedge clk );
-		end
-
-		bus_io_req	<= 1'b0;
-		bus_wrt		<= 1'b0;
+		iorq_n		<= 1'b1;
+		wr_n		<= 1'b1;
+		address		<= 16'd0;
+		wdata		<= 'dZ;
 		@( posedge clk );
 	endtask : reg_write
 
@@ -141,28 +135,28 @@ module tb ();
 		int count;
 
 		count		<= 0;
-		bus_io_req	<= 1'b1;
-		bus_wrt		<= 1'b0;
-		bus_address	<= p_address;
-		bus_wdata	<= 8'd0;
+		iorq_n		<= 1'b0;
+		rd_n		<= 1'b0;
+		address		<= p_address;
+		wdata		<= 8'd0;
 		@( posedge clk );
 
-		while( !bus_ack && count < 5 ) begin
+		iorq_n		<= 1'b1;
+		rd_n		<= 1'b1;
+		while( !rdata_en && count < 5 ) begin
 			count	<= count + 1;
 			@( posedge clk );
 		end
 
-		bus_io_req	<= 1'b0;
-
-		while( !bus_rdata_en ) begin
+		while( !rdata_en ) begin
 			@( posedge clk );
 		end
 
-		if( bus_rdata == p_reference_data ) begin
+		if( rdata == p_reference_data ) begin
 			$display( "[OK] read( %04X ) == %02X", p_address, p_reference_data );
 		end
 		else begin
-			$display( "[NG] read( %04X ) == %02X != %02X", p_address, p_reference_data, bus_rdata );
+			$display( "[NG] read( %04X ) == %02X != %02X", p_address, p_reference_data, rdata );
 		end
 		@( posedge clk );
 	endtask : reg_read
@@ -172,7 +166,7 @@ module tb ();
 		input	[15:0]	p_address,
 		input	[3:0]	p_slot
 	);
-		bus_address	<= p_address;
+		address	<= p_address;
 		@( posedge clk );
 
 		if( p_slot == { sltsl3, sltsl2, sltsl1, sltsl0 } ) begin
@@ -211,19 +205,20 @@ module tb ();
 	//	Test bench
 	// --------------------------------------------------------------------
 	initial begin
-		reset				= 1;
+		reset_n				= 0;
 		clk					= 0;
-		bus_io_req			= 0;
-		bus_wrt				= 0;
-		bus_address			= 0;
-		bus_wdata			= 0;
+		iorq_n				= 1;
+		wr_n				= 1;
+		rd_n				= 1;
+		address				= 0;
+		wdata				= 0;
 		matrix_x			= 0;
 
 		@( negedge clk );
 		@( negedge clk );
 		@( posedge clk );
 
-		reset			= 1'b0;
+		reset_n				= 1'b1;
 		@( posedge clk );
 		repeat( 10 ) @( posedge clk );
 

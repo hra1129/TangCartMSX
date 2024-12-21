@@ -56,15 +56,15 @@
 //-----------------------------------------------------------------------------
 
 module ppi_inst (
-	input					reset,
+	input					reset_n,
 	input					clk,
-	input					bus_io_req,
-	output					bus_ack,
-	input					bus_wrt,
-	input		[15:0]		bus_address,
-	input		[7:0]		bus_wdata,
-	output		[7:0]		bus_rdata,
-	output					bus_rdata_en,
+	input					iorq_n,
+	input					wr_n,
+	input					rd_n,
+	input		[15:0]		address,
+	input		[7:0]		wdata,
+	output		[7:0]		rdata,
+	output					rdata_en,
 
 	//	keyboard I/F
 	output		[3:0]		matrix_y,
@@ -80,8 +80,6 @@ module ppi_inst (
 	output					sltsl2,
 	output					sltsl3
 );
-	localparam				c_port_number = 8'hA8;
-	wire					w_decode;
 	wire		[7:0]		w_primary_slot;
 	wire		[1:0]		w_current_page;
 	wire		[1:0]		w_current_slot;
@@ -89,9 +87,7 @@ module ppi_inst (
 	// --------------------------------------------------------------------
 	//	address decoder
 	// --------------------------------------------------------------------
-	assign w_decode			= ( { bus_address[7:2], 2'b00 } == c_port_number ) ? bus_io_req : 1'b0;
-
-	assign w_current_page	= bus_address[15:14];
+	assign w_current_page	= address[15:14];
 
 	assign w_current_slot	= (w_current_page == 2'd0) ? w_primary_slot[1:0] :
 							  (w_current_page == 2'd1) ? w_primary_slot[3:2] :
@@ -106,15 +102,15 @@ module ppi_inst (
 	//	PPI body
 	// --------------------------------------------------------------------
 	ppi u_ppi (
-		.reset					( reset					),
+		.reset_n				( reset_n				),
 		.clk					( clk					),
-		.req					( w_decode				),
-		.ack					( bus_ack				),
-		.wrt					( bus_wrt				),
-		.address				( bus_address[1:0]		),
-		.wdata					( bus_wdata				),
-		.rdata					( bus_rdata				),
-		.rdata_en				( bus_rdata_en			),
+		.iorq_n					( iorq_n				),
+		.wr_n					( wr_n					),
+		.rd_n					( rd_n					),
+		.address				( address[1:0]			),
+		.wdata					( wdata					),
+		.rdata					( rdata					),
+		.rdata_en				( rdata_en				),
 		.primary_slot			( w_primary_slot		),
 		.matrix_y				( matrix_y				),
 		.matrix_x				( matrix_x				),

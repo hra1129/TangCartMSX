@@ -56,11 +56,11 @@
 //-----------------------------------------------------------------------------
 
 module ppi(
-	input					reset,
+	input					reset_n,
 	input					clk,
-	input					req,
-	output					ack,
-	input					wrt,
+	input					iorq_n,
+	input					wr_n,
+	input					rd_n,
 	input		[1:0]		address,
 	input		[7:0]		wdata,
 	output		[7:0]		rdata,
@@ -80,16 +80,15 @@ module ppi(
 	reg			[7:0]		ff_port_c;
 	reg			[7:0]		ff_rdata;
 	reg						ff_rdata_en;
-	reg						ff_ack;
 
 	// --------------------------------------------------------------------
 	//	PortA: Primary Slot Register
 	// --------------------------------------------------------------------
 	always @( posedge clk ) begin
-		if( reset ) begin
+		if( !reset_n ) begin
 			ff_port_a <= 8'd0;
 		end
-		else if( req && wrt && ff_ack && (address == 2'b00) ) begin
+		else if( !iorq_n && !wr_n && (address == 2'b00) ) begin
 			ff_port_a <= wdata;
 		end
 		else begin
@@ -101,10 +100,10 @@ module ppi(
 	//	PortC: Keyboard and cassette interface Register
 	// --------------------------------------------------------------------
 	always @( posedge clk ) begin
-		if( reset ) begin
+		if( !reset_n ) begin
 			ff_port_c <= 8'b01110000;
 		end
-		else if( req && wrt && ff_ack && (address == 2'b10) ) begin
+		else if( !iorq_n && !wr_n && (address == 2'b10) ) begin
 			ff_port_c <= wdata;
 		end
 		else begin
@@ -116,10 +115,10 @@ module ppi(
 	//	Read
 	// --------------------------------------------------------------------
 	always @( posedge clk ) begin
-		if( reset ) begin
+		if( !reset_n ) begin
 			ff_rdata <= 8'd0;
 		end
-		else if( req && !wrt && ff_ack ) begin
+		else if( !iorq_n && !rd_n ) begin
 			case( address )
 			2'd0:		ff_rdata <= ff_port_a;
 			2'd1:		ff_rdata <= matrix_x;
@@ -134,36 +133,16 @@ module ppi(
 	end
 
 	always @( posedge clk ) begin
-		if( reset ) begin
+		if( !reset_n ) begin
 			ff_rdata_en <= 1'b0;
 		end
-		else if( req && !wrt && ff_ack ) begin
+		else if( !iorq_n && !rd_n ) begin
 			ff_rdata_en <= 1'b1;
 		end
 		else begin
 			ff_rdata_en <= 1'b0;
 		end
 	end
-
-	// --------------------------------------------------------------------
-	//	Ack
-	// --------------------------------------------------------------------
-	always @( posedge clk ) begin
-		if( reset ) begin
-			ff_ack <= 1'b0;
-		end
-		else if( ff_ack ) begin
-			ff_ack <= 1'b0;
-		end
-		else if( req ) begin
-			ff_ack <= 1'b1;
-		end
-		else begin
-			//	hold
-		end
-	end
-
-	assign ack						= ff_ack;
 
 	// --------------------------------------------------------------------
 	//	Output assignment

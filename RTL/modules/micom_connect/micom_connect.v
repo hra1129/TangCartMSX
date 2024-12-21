@@ -66,12 +66,13 @@ module micom_connect (
 	output			spi_miso,
 	//	Reset
 	output			msx_reset_n,
+	output			cpu_freeze,
 	//	keyboard I/F
 	input	[3:0]	matrix_y,
 	output	[7:0]	matrix_x,
 	//	Memory write I/F
 	output	[21:0]	address,
-	output			req,
+	output			req_n,
 	output	[7:0]	wdata,
 	//	Status
 	input			sdram_busy
@@ -101,6 +102,7 @@ module micom_connect (
 	reg		[7:0]	ff_command;
 	reg		[13:0]	ff_address;
 	reg				ff_msx_reset_n;
+	reg				ff_cpu_freeze;
 	reg		[7:0]	ff_key_matrix [0:15];
 	reg		[7:0]	ff_operand1;
 	reg		[7:0]	ff_matrix_x;
@@ -233,7 +235,7 @@ module micom_connect (
 				end
 			st_command:
 				if( ff_serial_state == sst_byte_end ) begin
-					if( ff_recv_data == 8'h00 || ff_recv_data == 8'h01 || ff_recv_data == 8'h02 ) begin
+					if( ff_recv_data == 8'h00 || ff_recv_data == 8'h01 || ff_recv_data == 8'h02 || ff_recv_data == 8'h06 ) begin
 						ff_state <= st_exec;
 					end
 					else begin
@@ -333,6 +335,28 @@ module micom_connect (
 	assign msx_reset_n	= ff_msx_reset_n;
 
 	// --------------------------------------------------------------------
+	//	CPU Freeze
+	// --------------------------------------------------------------------
+	always @( posedge clk ) begin
+		if( !reset_n ) begin
+			ff_cpu_freeze <= 1'b1;
+		end
+		else if( ff_state == st_exec ) begin
+			if(      ff_command == 8'h06 ) begin
+				ff_cpu_freeze <= 1'b0;
+			end
+			else begin
+				//	hold
+			end
+		end
+		else begin
+			//	hold
+		end
+	end
+
+	assign cpu_freeze	= ff_cpu_freeze;
+
+	// --------------------------------------------------------------------
 	//	Key matrix
 	// --------------------------------------------------------------------
 	always @( posedge clk ) begin
@@ -378,6 +402,6 @@ module micom_connect (
 	end
 
 	assign address		= { ff_operand1, ff_address };
-	assign req			= (ff_state == st_data) && (ff_serial_state == sst_byte_end);
+	assign req_n		= !((ff_state == st_data) && (ff_serial_state == sst_byte_end));
 	assign wdata		= ff_recv_data;
 endmodule
