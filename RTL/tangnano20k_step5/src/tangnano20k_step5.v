@@ -215,7 +215,10 @@ module tangnano20k_step5 (
 		.address				( w_spi_address				),
 		.req_n					( w_spi_mreq_n				),
 		.wdata					( w_spi_d					),
-		.sdram_busy				( w_sdram_busy				)
+		.sdram_busy				( w_sdram_busy				),
+		.keyboard_caps_led_off	( w_keyboard_caps_led_off	),
+		.keyboard_kana_led_off	( 1'b0						),
+		.keyboard_type			( 							)
 	);
 
 	// --------------------------------------------------------------------

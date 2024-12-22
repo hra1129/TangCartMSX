@@ -75,7 +75,10 @@ module micom_connect (
 	output			req_n,
 	output	[7:0]	wdata,
 	//	Status
-	input			sdram_busy
+	input			sdram_busy,
+	input			keyboard_caps_led_off,
+	input			keyboard_kana_led_off,
+	output			keyboard_type
 );
 	localparam		st_idle			= 3'd0;
 	localparam		st_command		= 3'd1;
@@ -205,7 +208,7 @@ module micom_connect (
 			ff_send_data <= dt_signature;
 		end
 		else if( ff_state == st_command && ff_serial_state == sst_byte_end && ff_recv_data == 8'h05 ) begin
-			ff_send_data <= { 7'd0, sdram_busy };
+			ff_send_data <= { 5'd0, keyboard_kana_led_off, keyboard_caps_led_off, sdram_busy };
 		end
 		else if( ff_serial_state == sst_clk_hi && ff_spi_clk == 1'b0 ) begin
 			ff_send_data <= { ff_send_data[6:0], ff_send_data[7] };

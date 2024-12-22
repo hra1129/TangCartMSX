@@ -1,5 +1,5 @@
 // -----------------------------------------------------------------------------
-//	Test of ssg_inst.v
+//	Test of ssg.v
 //	Copyright (C)2024 Takayuki Hara (HRA!)
 //	
 //	 Permission is hereby granted, free of charge, to any person obtaining a 
@@ -28,24 +28,22 @@ module tb ();
 	localparam	clk_base	= 1_000_000_000/85_909;	//	ps
 	int						test_no;
 	int						i;
-	reg						reset;
+	reg						reset_n;
 	reg						clk;
 	wire					enable;			//	21.47727MHz pulse
-	reg						bus_io_req;
-	wire					bus_ack;
-	reg						bus_wrt;
-	reg			[15:0]		bus_address;
-	reg			[7:0]		bus_wdata;
-	wire		[7:0]		bus_rdata;
-	wire					bus_rdata_en;
-	wire		[5:0]		joystick_port1;
-	wire		[5:0]		joystick_port2;
-	wire					strobe_port1;
-	wire					strobe_port2;
+	reg						iorq_n;
+	reg						wr_n;
+	reg						rd_n;
+	reg			[15:0]		address;
+	reg			[7:0]		wdata;
+	wire		[7:0]		rdata;
+	wire					rdata_en;
+	wire		[5:0]		ssg_ioa;
+	wire		[2:0]		ssg_iob;
 	reg						keyboard_type;
 	reg						cmt_read;
 	wire					kana_led;
-	wire		[7:0]		sound_out;
+	wire		[11:0]		sound_out;
 
 	reg			[1:0]		ff_clock_divider;
 	int						counter;
@@ -53,21 +51,19 @@ module tb ();
 	// --------------------------------------------------------------------
 	//	DUT
 	// --------------------------------------------------------------------
-	ssg_inst u_ssg_inst (
-	.reset				( reset				),
+	ssg u_ssg (
+	.reset_n			( reset_n			),
 	.clk				( clk				),
 	.enable				( enable			),
-	.bus_io_req			( bus_io_req		),
-	.bus_ack			( bus_ack			),
-	.bus_wrt			( bus_wrt			),
-	.bus_address		( bus_address		),
-	.bus_wdata			( bus_wdata			),
-	.bus_rdata			( bus_rdata			),
-	.bus_rdata_en		( bus_rdata_en		),
-	.joystick_port1		( joystick_port1	),
-	.joystick_port2		( joystick_port2	),
-	.strobe_port1		( strobe_port1		),
-	.strobe_port2		( strobe_port2		),
+	.iorq_n				( iorq_n			),
+	.wr_n				( wr_n				),
+	.rd_n				( rd_n				),
+	.address			( address			),
+	.wdata				( wdata				),
+	.rdata				( rdata				),
+	.rdata_en			( rdata_en			),
+	.ssg_ioa			( ssg_ioa			),
+	.ssg_iob			( ssg_iob			),
 	.keyboard_type		( keyboard_type		),
 	.cmt_read			( cmt_read			),
 	.kana_led			( kana_led			),
@@ -85,7 +81,7 @@ module tb ();
 	//	clock divider
 	// --------------------------------------------------------------------
 	always @( posedge clk ) begin
-		if( reset ) begin
+		if( !reset_n ) begin
 			ff_clock_divider <= 2'd0;
 		end
 		else begin
@@ -99,25 +95,25 @@ module tb ();
 	//	Tasks
 	// --------------------------------------------------------------------
 	task write_reg(
-		input	[15:0]	_bus_address,
-		input	[7:0]	_bus_wdata
+		input	[15:0]	_address,
+		input	[7:0]	_wdata
 	);
-		bus_io_req		<= 1'b1;
-		bus_address		<= _bus_address;
-		bus_wdata		<= _bus_wdata;
-		bus_wrt			<= 1'b1;
-		counter			<= 0;						//	timeout counter
+		iorq_n		<= 1'b0;
+		address		<= _address;
+		wdata		<= _wdata;
+		wr_n		<= 1'b0;
+		counter		<= 0;						//	timeout counter
 		@( posedge clk );
 
-		while( !bus_ack && counter < 5 ) begin
+		while( counter < 5 ) begin
 			counter <= counter + 1;
 			@( posedge clk );
 		end
 
-		bus_io_req		<= 1'b0;
-		bus_address		<= 0;
-		bus_wdata		<= 0;
-		bus_wrt			<= 1'b0;
+		iorq_n		<= 1'b1;
+		address		<= 0;
+		wdata		<= 0;
+		wr_n		<= 1'b1;
 		@( posedge clk );
 	endtask: write_reg
 
@@ -135,14 +131,15 @@ module tb ();
 	//	Test bench
 	// --------------------------------------------------------------------
 	initial begin
-		test_no		= -1;
-		reset		= 1;
-		clk			= 1;
+		test_no			= -1;
+		reset_n			= 0;
+		clk				= 1;
 
-		bus_io_req		= 0;
-		bus_wrt			= 0;
-		bus_address		= 0;
-		bus_wdata		= 0;
+		iorq_n			= 1;
+		wr_n			= 1;
+		rd_n			= 1;
+		address			= 0;
+		wdata			= 0;
 		keyboard_type	= 0;
 		cmt_read		= 0;
 
@@ -150,7 +147,7 @@ module tb ();
 		@( negedge clk );
 		@( posedge clk );
 
-		reset		= 0;
+		reset_n		= 1;
 		@( posedge clk );
 
 		write_ssg_reg( 0, 2 );

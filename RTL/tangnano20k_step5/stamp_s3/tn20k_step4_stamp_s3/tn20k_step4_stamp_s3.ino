@@ -129,7 +129,7 @@ void loop() {
 		break;
 	case 2:
 		//	SDRAM ready を待つ
-		d = get_status();
+		d = get_status() & 1;
 		if( d == 0x00 ) {
 			Serial.println( "SDRAM Initialize completed." );
 			state++;

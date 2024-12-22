@@ -9,7 +9,9 @@ SPI は、MODE0, MSB First で通信する。
 04 BANK D0 ... D16383 ... DRAMの指定の BANK に D0～D16383 を書き込む
 05 N ...... ステータス取得。2byte目の N は無視されるが、そこに付属する値は、ステータス値。
 		bit0 ..... SDRAM STATE  0: Ready, 1: Busy
-		bit1-7 ... Reserved
+		bit1 ..... CAPS LED     0: 点灯, 1: 消灯
+		bit2 ..... KANA LED     0; 点灯, 1: 消灯
+		bit3-7 ... Reserved
 06 ..... CPUのフリーズを解除する。
 
 SDRAM は、先頭4MB を 16KB単位で区切って、その先頭から順に BANK#0, #1, #2 ... #255 と

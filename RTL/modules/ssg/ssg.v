@@ -1,5 +1,5 @@
 //
-//	ssg_wave.v
+//	ssg.v
 //	SSG (YM2149. AY-3-8910 Compatible Processor)
 //
 //	Copyright (C) 2024 Takayuki Hara
@@ -57,20 +57,18 @@
 
 module ssg (
 	input			clk,
-	input			reset,
+	input			reset_n,
 	input			enable,
-	input			bus_req,
-	output			bus_ack,
-	input			bus_wrt,
-	input	[15:0]	bus_address,
-	input	[7:0]	bus_wdata,
-	output	[7:0]	bus_rdata,
-	output			bus_rdata_en,
+	input			iorq_n,
+	input			wr_n,
+	input			rd_n,
+	input	[15:0]	address,
+	input	[7:0]	wdata,
+	output	[7:0]	rdata,
+	output			rdata_en,
 
-	inout	[5:0]	joystick_port1,
-	inout	[5:0]	joystick_port2,
-	output			strobe_port1,
-	output			strobe_port2,
+	inout	[5:0]	ssg_ioa,
+	output	[2:0]	ssg_iob,
 
 	input			keyboard_type,		//	PortA bit6: Keyboard type  0: 50‰¹”z—ñ, 1: JIS”z—ñ 
 	input			cmt_read,			//	PortA bit7: CMT Read Signal
@@ -78,7 +76,6 @@ module ssg (
 
 	output	[11:0]	sound_out
 );
-	reg				ff_ack;
 	reg		[7:0]	ff_rdata;
 	reg				ff_rdata_en;
 
@@ -128,12 +125,30 @@ module ssg (
 
 	reg		[11:0]	ff_ssg_mixer;
 	reg		[11:0]	ff_sound_out;
+	reg				ff_wr_n;
+	reg				ff_rd_n;
+	wire			w_wr;
+	wire			w_rd;
+
+	always @( posedge clk ) begin
+		if( !reset_n ) begin
+			ff_wr_n	<= 1'b1;
+			ff_rd_n	<= 1'b1;
+		end
+		else begin
+			ff_wr_n	<= wr_n;
+			ff_rd_n	<= rd_n;
+		end
+	end
+
+	assign w_wr		= (ff_wr_n && !wr_n);
+	assign w_rd		= (ff_rd_n && !rd_n);
 
 	//--------------------------------------------------------------
 	// Miscellaneous control / clock enable (divider)
 	//--------------------------------------------------------------
 	always @( posedge clk ) begin
-		if( reset ) begin
+		if( !reset_n ) begin
 			ff_ssg_state <= 5'd0;
 		end
 		else if( enable ) begin
@@ -148,72 +163,46 @@ module ssg (
 	// Interface port
 	// -------------------------------------------------------------
 	always @( posedge clk ) begin
-		if( reset ) begin
+		if( !reset_n ) begin
 			ff_port_a		<= 8'd0;
 		end
 		else begin
-			ff_port_a[5:0]	<= ff_port_b[6] ? joystick_port2 : joystick_port1;
+			ff_port_a[5:0]	<= ssg_ioa;
 			ff_port_a[6]	<= keyboard_type;
 			ff_port_a[7]	<= cmt_read;
 		end
 	end
 
 	always @( posedge clk ) begin
-		if( reset ) begin
+		if( !reset_n ) begin
 			ff_port_b <= 8'd0;
 		end
-		else if( bus_req && bus_wrt && ff_ack && bus_address == 2'd1 && ff_ssg_register_ptr == 4'd15 ) begin
-			ff_port_b <= bus_wdata;
+		else if( !iorq_n && w_wr && address == 2'd1 && ff_ssg_register_ptr == 4'd15 ) begin
+			ff_port_b <= wdata;
 		end
 		else begin
 			//	hold
 		end
 	end
 
-	assign bus_ack				= ff_ack;
-	assign bus_rdata			= ff_rdata;
-	assign bus_rdata_en			= ff_rdata_en;
+	assign rdata				= ff_rdata;
+	assign rdata_en				= ff_rdata_en;
 
-	assign strobe_port1			= ff_port_b[4];
-	assign strobe_port2			= ff_port_b[5];
+	assign ssg_iob[0]			= ff_port_b[4];
+	assign ssg_iob[1]			= ff_port_b[5];
+	assign ssg_iob[2]			= ff_port_b[6];
 	assign kana_led				= ff_port_b[7];
 
-	assign joystick_port1[5:4]	= ( ff_port_b[1:0] == 2'd0 ) ? 2'b00 :
-								  ( ff_port_b[1:0] == 2'd1 ) ? 2'b0z :
-								  ( ff_port_b[1:0] == 2'd2 ) ? 2'bz0 : 2'bzz;
-
-	assign joystick_port2[5:4]	= ( ff_port_b[3:2] == 2'd0 ) ? 2'b00 :
-								  ( ff_port_b[3:2] == 2'd1 ) ? 2'b0z :
-								  ( ff_port_b[3:2] == 2'd2 ) ? 2'bz0 : 2'bzz;
-
 	assign sound_out			= ff_sound_out;
-
-	// -------------------------------------------------------------
-	// Register access
-	// -------------------------------------------------------------
-	always @( posedge clk ) begin
-		if( reset ) begin
-			ff_ack <= 1'b0;
-		end
-		else if( ff_ack ) begin
-			ff_ack <= 1'b0;
-		end
-		else if( bus_req ) begin
-			ff_ack <= 1'b1;
-		end
-		else begin
-			//	hold
-		end
-	end
 
 	//--------------------------------------------------------------
 	// Register read
 	//--------------------------------------------------------------
 	always @( posedge clk ) begin
-		if( reset ) begin
+		if( !reset_n ) begin
 			ff_rdata_en <= 1'b0;
 		end
-		else if( bus_req && !bus_wrt && ff_ack ) begin
+		else if( !iorq_n && w_rd ) begin
 			ff_rdata_en <= 1'b1;
 		end
 		else begin
@@ -222,11 +211,11 @@ module ssg (
 	end
 
 	always @( posedge clk ) begin
-		if( reset ) begin
+		if( !reset_n ) begin
 			ff_rdata <= 8'd0;
 		end
-		else if( bus_req && !bus_wrt && ff_ack ) begin
-			if( bus_address[1:0] == 2'd2 ) begin
+		else if( !iorq_n && w_rd ) begin
+			if( address[1:0] == 2'd2 ) begin
 				case( ff_ssg_register_ptr )
 				4'd0:		ff_rdata <= ff_ssg_ch_a_frequency[7:0];
 				4'd1:		ff_rdata <= { 4'd0, ff_ssg_ch_a_frequency[11:8] };
@@ -260,7 +249,7 @@ module ssg (
 	// Register write
 	//--------------------------------------------------------------
 	always @( posedge clk ) begin
-		if( reset ) begin
+		if( !reset_n ) begin
 			ff_ssg_register_ptr			<= 4'd0;
 			ff_ssg_ch_a_frequency		<= 12'hFFF;
 			ff_ssg_ch_b_frequency		<= 12'hFFF;
@@ -277,30 +266,30 @@ module ssg (
 			ff_continue					<= 1'b1;
 			ff_ssg_envelope_req			<= 1'b0;
 		end
-		else if( bus_req && bus_wrt && bus_ack && bus_address[1:0] == 2'd0 ) begin
-			ff_ssg_register_ptr <= bus_wdata[3:0];
+		else if( !iorq_n && w_wr && address[1:0] == 2'd0 ) begin
+			ff_ssg_register_ptr <= wdata[3:0];
 		end
-		else if( bus_req && bus_wrt && bus_ack && bus_address[1:0] == 2'd1 ) begin
+		else if( !iorq_n && w_wr && address[1:0] == 2'd1 ) begin
 			case( ff_ssg_register_ptr )
-			4'd0:		ff_ssg_ch_a_frequency[7:0]		<= bus_wdata;
-			4'd1:		ff_ssg_ch_a_frequency[11:8]		<= bus_wdata[3:0];
-			4'd2:		ff_ssg_ch_b_frequency[7:0]		<= bus_wdata;
-			4'd3:		ff_ssg_ch_b_frequency[11:8]		<= bus_wdata[3:0];
-			4'd4:		ff_ssg_ch_c_frequency[7:0]		<= bus_wdata;
-			4'd5:		ff_ssg_ch_c_frequency[11:8]		<= bus_wdata[3:0];
-			4'd6:		ff_ssg_noise_frequency			<= bus_wdata[4:0];
-			4'd7:		ff_ssg_ch_select				<= bus_wdata[5:0];
-			4'd8:		ff_ssg_ch_a_volume				<= bus_wdata[4:0];
-			4'd9:		ff_ssg_ch_b_volume				<= bus_wdata[4:0];
-			4'd10:		ff_ssg_ch_c_volume				<= bus_wdata[4:0];
-			4'd11:		ff_ssg_envelope_frequency[7:0]	<= bus_wdata;
-			4'd12:		ff_ssg_envelope_frequency[15:8]	<= bus_wdata;
+			4'd0:		ff_ssg_ch_a_frequency[7:0]		<= wdata;
+			4'd1:		ff_ssg_ch_a_frequency[11:8]		<= wdata[3:0];
+			4'd2:		ff_ssg_ch_b_frequency[7:0]		<= wdata;
+			4'd3:		ff_ssg_ch_b_frequency[11:8]		<= wdata[3:0];
+			4'd4:		ff_ssg_ch_c_frequency[7:0]		<= wdata;
+			4'd5:		ff_ssg_ch_c_frequency[11:8]		<= wdata[3:0];
+			4'd6:		ff_ssg_noise_frequency			<= wdata[4:0];
+			4'd7:		ff_ssg_ch_select				<= wdata[5:0];
+			4'd8:		ff_ssg_ch_a_volume				<= wdata[4:0];
+			4'd9:		ff_ssg_ch_b_volume				<= wdata[4:0];
+			4'd10:		ff_ssg_ch_c_volume				<= wdata[4:0];
+			4'd11:		ff_ssg_envelope_frequency[7:0]	<= wdata;
+			4'd12:		ff_ssg_envelope_frequency[15:8]	<= wdata;
 			4'd13:
 				begin
-					ff_hold							<= bus_wdata[0];
-					ff_alternate					<= bus_wdata[1];
-					ff_attack						<= bus_wdata[2];
-					ff_continue						<= bus_wdata[3];
+					ff_hold							<= wdata[0];
+					ff_alternate					<= wdata[1];
+					ff_attack						<= wdata[2];
+					ff_continue						<= wdata[3];
 					ff_ssg_envelope_req				<= ~ff_ssg_envelope_ack;
 				end
 			default:
@@ -315,7 +304,7 @@ module ssg (
 	// Tone generator (Port A)
 	//--------------------------------------------------------------
 	always @( posedge clk ) begin
-		if( reset ) begin
+		if( !reset_n ) begin
 			ff_ssg_ch_a_counter		<= 12'd0;
 		end
 		else if( enable && (ff_ssg_state[3:0] == 4'd0) ) begin
@@ -329,7 +318,7 @@ module ssg (
 	end
 
 	always @( posedge clk ) begin
-		if( reset ) begin
+		if( !reset_n ) begin
 			ff_ssg_ch_a_tone_wave	<= 1'b0;
 		end
 		else if( enable && (ff_ssg_state[3:0] == 4'd0) ) begin
@@ -346,7 +335,7 @@ module ssg (
 	// Tone generator (Port B)
 	//--------------------------------------------------------------
 	always @( posedge clk ) begin
-		if( reset ) begin
+		if( !reset_n ) begin
 			ff_ssg_ch_b_counter		<= 12'd0;
 		end
 		else if( enable && (ff_ssg_state[3:0] == 4'd0) ) begin
@@ -360,7 +349,7 @@ module ssg (
 	end
 
 	always @( posedge clk ) begin
-		if( reset ) begin
+		if( !reset_n ) begin
 			ff_ssg_ch_b_tone_wave	<= 1'b0;
 		end
 		else if( enable && (ff_ssg_state[3:0] == 4'd0) ) begin
@@ -377,7 +366,7 @@ module ssg (
 	// Tone generator (Port C)
 	//--------------------------------------------------------------
 	always @( posedge clk ) begin
-		if( reset ) begin
+		if( !reset_n ) begin
 			ff_ssg_ch_c_counter		<= 12'd0;
 		end
 		else if( enable && (ff_ssg_state[3:0] == 4'd0) ) begin
@@ -391,7 +380,7 @@ module ssg (
 	end
 
 	always @( posedge clk ) begin
-		if( reset ) begin
+		if( !reset_n ) begin
 			ff_ssg_ch_c_tone_wave	<= 1'b0;
 		end
 		else if( enable && (ff_ssg_state[3:0] == 4'd0) ) begin
@@ -408,7 +397,7 @@ module ssg (
 	// Noise generator
 	//--------------------------------------------------------------
 	always @( posedge clk ) begin
-		if( reset ) begin
+		if( !reset_n ) begin
 			ff_ssg_noise_counter <= 5'd0;
 		end
 		else begin
@@ -424,7 +413,7 @@ module ssg (
 	end
 
 	always @( posedge clk ) begin
-		if( reset ) begin
+		if( !reset_n ) begin
 			ff_ssg_noise_generator	<= 18'd0;
 		end
 		else begin
@@ -444,7 +433,7 @@ module ssg (
 	end
 
 	always @( posedge clk ) begin
-		if( reset ) begin
+		if( !reset_n ) begin
 			ff_ssg_noise <= 1'b0;
 		end
 		else if( enable ) begin
@@ -459,7 +448,7 @@ module ssg (
 	// Envelope generator
 	//--------------------------------------------------------------
 	always @( posedge clk ) begin
-		if( reset ) begin
+		if( !reset_n ) begin
 			ff_ssg_envelope_counter	<= 16'd0;
 		end
 		else if( enable && ff_ssg_state[3:0] == 4'd0 ) begin
@@ -477,7 +466,7 @@ module ssg (
 	end
 
 	always @( posedge clk ) begin
-		if( reset ) begin
+		if( !reset_n ) begin
 			ff_ssg_envelope_ptr		<= 6'b111111;
 		end
 		else if( enable && ff_ssg_state[3:0] == 4'd0 ) begin
@@ -494,7 +483,7 @@ module ssg (
 	end
 
 	always @( posedge clk ) begin
-		if( reset ) begin
+		if( !reset_n ) begin
 			ff_ssg_envelope_volume	<= 5'd0;
 		end
 		else if( enable && ff_ssg_state[3:0] == 4'd0 ) begin
@@ -514,7 +503,7 @@ module ssg (
 	end
 
 	always @( posedge clk ) begin
-		if( reset ) begin
+		if( !reset_n ) begin
 			ff_ssg_envelope_ack		<= 1'b0;
 		end
 		else if( enable && ff_ssg_state[3:0] == 4'd0 ) begin
@@ -590,7 +579,7 @@ module ssg (
 	assign w_out_level			= func_out_level( w_ssg_ch_level );
 
 	always @( posedge clk ) begin
-		if( reset ) begin
+		if( !reset_n ) begin
 			ff_ssg_mixer	<= 12'd0;
 		end
 		else if( enable ) begin
@@ -604,7 +593,7 @@ module ssg (
 	end
 
 	always @( posedge clk ) begin
-		if( reset ) begin
+		if( !reset_n ) begin
 			ff_sound_out	 <= 12'd0;
 		end
 		else if( enable ) begin
