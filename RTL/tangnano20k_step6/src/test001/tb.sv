@@ -55,6 +55,8 @@ module tb ();
 	wire	[10:0]	O_sdram_addr;	//	Internal
 	wire	[1:0]	O_sdram_ba;		//	Internal
 	wire	[3:0]	O_sdram_dqm;	//	Internal
+	wire	[5:0]	ssg_ioa;		//	PIN20, PIN19, PIN18, PIN17, PIN16, PIN15
+	wire	[2:0]	ssg_iob;		//	PIN71, PIN53, PIN52
 
 	reg				n_cs;
 	reg				n_rd;
@@ -63,6 +65,7 @@ module tb ();
 	wire			rdata_en;
 
 	int				i;
+	int				fd;
 	reg		[7:0]	read_data;
 	reg		[7:0]	write_data;
 
@@ -85,6 +88,8 @@ module tb ();
 		.spi_clk			( spi_clk			),
 		.spi_mosi			( spi_mosi			),
 		.spi_miso			( spi_miso			),
+		.ssg_ioa			( ssg_ioa			),
+		.ssg_iob			( ssg_iob			),
 		.uart_tx			( uart_tx			),
 		.O_sdram_clk		( O_sdram_clk		),
 		.O_sdram_cke		( O_sdram_cke		),
@@ -256,54 +261,121 @@ module tb ();
 		// --------------------------------------------------------------------
 		//	Send ROM image for SDRAM BANK0
 		// --------------------------------------------------------------------
-		$display( "Send ROM image 1 --------------" );
+		$display( "Send MAIN-ROM --------------" );
+		fd = $fopen( "../../stamp_s3/tn20k_step4_stamp_s3/rom_image/main.rom", "rb" );
+
 		spi_cs_n	= 0;
 		@( posedge clk );
 		send_byte( 8'h04, read_data );
 		assert( read_data == 8'hA5 );
 		@( posedge clk );
-		send_byte( 8'h12, read_data );			//	BANK = 12h ( 00_0100_1000_0000_0000_0000b = 048000h : SDRAM BANK0 )
+		send_byte( 8'h08, read_data );			//	BANK = 08h
 		assert( read_data == 8'hA5 );
 
-		for( i = 0; i < 30; i = i + 1 ) begin
-			send_byte( i & 255, read_data );
-			assert( read_data == 8'hA5 );
-			@( posedge clk );
-			$display( "Address: %04X", i );
-		end
-		spi_cs_n	= 1;
-		repeat( 40 ) @( posedge clk );
-
-		$display( "Send ROM image 2 --------------" );
-		spi_cs_n	= 0;
-		@( posedge clk );
-		send_byte( 8'h04, read_data );
-		assert( read_data == 8'hA5 );
-		@( posedge clk );
-		send_byte( 8'h89, read_data );			//	BANK = 89h ( 10_0010_0100_0000_0000_0000b = 224000h : SDRAM BANK1 )
-		assert( read_data == 8'hA5 );
-
-		for( i = 0; i < 30; i = i + 1 ) begin
-			send_byte( i & 255, read_data );
-			assert( read_data == 8'hA5 );
-			@( posedge clk );
-			$display( "Address: %04X", i );
-		end
-		spi_cs_n	= 1;
-		repeat( 40 ) @( posedge clk );
-
-		$display( "Send ROM image 3 --------------" );
-		spi_cs_n	= 0;
-		@( posedge clk );
-		send_byte( 8'h04, read_data );
-		assert( read_data == 8'hA5 );
-		@( posedge clk );
-		send_byte( 8'h08, read_data );			//	BANK = 08h ( 00_0010_0000_0000_0000_0000b = 020000h : SDRAM BANK0 )
-		assert( read_data == 8'hA5 );
-
-		for( i = 0; i < 16384; i = i + 1 ) begin
-			get_rom( i, write_data );
+		for( i = 0; i < 16384; i++ ) begin
+			write_data = $fgetc( fd );
 			send_byte( write_data, read_data );
+			assert( read_data == 8'hA5 );
+			@( posedge clk );
+			$display( "Address: %04X", i );
+		end
+		spi_cs_n	= 1;
+		repeat( 40 ) @( posedge clk );
+
+		spi_cs_n	= 0;
+		@( posedge clk );
+		send_byte( 8'h04, read_data );
+		assert( read_data == 8'hA5 );
+		@( posedge clk );
+		send_byte( 8'h09, read_data );			//	BANK = 09h
+		assert( read_data == 8'hA5 );
+
+		for( i = 0; i < 16384; i++ ) begin
+			write_data = $fgetc( fd );
+			send_byte( write_data, read_data );
+			assert( read_data == 8'hA5 );
+			@( posedge clk );
+			$display( "Address: %04X", i );
+		end
+		spi_cs_n	= 1;
+		repeat( 40 ) @( posedge clk );
+
+		$fclose( fd );
+
+		// --------------------------------------------------------------------
+		//	Zero fill for SDRAM BANK2
+		// --------------------------------------------------------------------
+		spi_cs_n	= 0;
+		@( posedge clk );
+		send_byte( 8'h07, read_data );
+		assert( read_data == 8'hA5 );
+		@( posedge clk );
+		send_byte( 8'h01, read_data );
+		assert( read_data == 8'hA5 );
+		spi_cs_n	= 1;
+		repeat( 40 ) @( posedge clk );
+
+//		spi_cs_n	= 0;
+//		@( posedge clk );
+//		send_byte( 8'h04, read_data );
+//		assert( read_data == 8'hA5 );
+//		@( posedge clk );
+//		send_byte( 8'h00, read_data );			//	BANK = 100h
+//		assert( read_data == 8'hA5 );
+//
+//		for( i = 0; i < 16384; i++ ) begin
+//			send_byte( 8'h00, read_data );
+//			assert( read_data == 8'hA5 );
+//			@( posedge clk );
+//			$display( "Address: %04X", i );
+//		end
+//		spi_cs_n	= 1;
+//		repeat( 40 ) @( posedge clk );
+//
+//		spi_cs_n	= 0;
+//		@( posedge clk );
+//		send_byte( 8'h04, read_data );
+//		assert( read_data == 8'hA5 );
+//		@( posedge clk );
+//		send_byte( 8'h01, read_data );			//	BANK = 101h
+//		assert( read_data == 8'hA5 );
+//
+//		for( i = 0; i < 16384; i++ ) begin
+//			send_byte( 8'h00, read_data );
+//			assert( read_data == 8'hA5 );
+//			@( posedge clk );
+//			$display( "Address: %04X", i );
+//		end
+//		spi_cs_n	= 1;
+//		repeat( 40 ) @( posedge clk );
+
+		spi_cs_n	= 0;
+		@( posedge clk );
+		send_byte( 8'h04, read_data );
+		assert( read_data == 8'hA5 );
+		@( posedge clk );
+		send_byte( 8'h02, read_data );			//	BANK = 102h
+		assert( read_data == 8'hA5 );
+
+		for( i = 0; i < 16384; i++ ) begin
+			send_byte( 8'h00, read_data );
+			assert( read_data == 8'hA5 );
+			@( posedge clk );
+			$display( "Address: %04X", i );
+		end
+		spi_cs_n	= 1;
+		repeat( 40 ) @( posedge clk );
+
+		spi_cs_n	= 0;
+		@( posedge clk );
+		send_byte( 8'h04, read_data );
+		assert( read_data == 8'hA5 );
+		@( posedge clk );
+		send_byte( 8'h03, read_data );			//	BANK = 103h
+		assert( read_data == 8'hA5 );
+
+		for( i = 0; i < 16384; i++ ) begin
+			send_byte( 8'h00, read_data );
 			assert( read_data == 8'hA5 );
 			@( posedge clk );
 			$display( "Address: %04X", i );
@@ -320,13 +392,19 @@ module tb ();
 		send_byte( 8'h06, read_data );
 		assert( read_data == 8'hA5 );
 		@( posedge clk );
+		spi_cs_n	= 1;
+		repeat( 42 ) @( posedge clk );
 		spi_cs_n	= 0;
 		@( posedge clk );
 		send_byte( 8'h02, read_data );
 		assert( read_data == 8'hA5 );
 		@( posedge clk );
+		spi_cs_n	= 1;
+		repeat( 40 ) @( posedge clk );
 
-		repeat( 200000 ) @( posedge clk );
+		forever begin
+			@( posedge clk );
+		end
 		$finish;
 	end
 endmodule

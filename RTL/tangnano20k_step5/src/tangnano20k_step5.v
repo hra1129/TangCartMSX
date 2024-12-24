@@ -137,7 +137,7 @@ module tangnano20k_step5 (
 	wire			w_expslt3_q_en;
 	wire			w_kanji_j1;
 	wire			w_kanji_j2;
-	wire	[21:0]	w_spi_address;
+	wire	[22:0]	w_spi_address;
 	wire			w_spi_mreq_n;
 	wire	[7:0]	w_spi_d;
 	wire	[7:0]	w_ppi_q;
@@ -445,7 +445,7 @@ module tangnano20k_step5 (
 	// --------------------------------------------------------------------
 	//	SDRAM memory map
 	// --------------------------------------------------------------------
-	assign w_sdram_address[22:13]	= ( w_cpu_freeze ) ? { 1'b0, w_spi_address[21:13] } :		//	SDRAM Updater from SPI
+	assign w_sdram_address[22:13]	= ( w_cpu_freeze ) ? w_spi_address[22:13]           :		//	SDRAM Updater from SPI
 									  ( w_kanji_j1   ) ? { 10'b100_1100_000           } :		//	JIS1 KanjiROM
 									  ( w_kanji_j2   ) ? { 10'b100_1110_000           } :		//	JIS2 KanjiROM
 									  ( w_sltsl30    ) ? { 10'b100_0000_000           } :		//	MapperRAM

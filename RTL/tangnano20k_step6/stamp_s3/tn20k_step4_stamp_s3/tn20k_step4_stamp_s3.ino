@@ -63,12 +63,39 @@ byte get_status( void ) {
 
 // --------------------------------------------------------------------
 void send_rom_image( const byte *p_rom_image, int rom_size ) {
-	int i;
+	int i, bank;
 
+	bank = 0;
 	hspi->beginTransaction( spi_settings );
+	digitalWrite( hspi->pinSS(), LOW );	 //pull SS slow to prep other end for transfer
+	hspi->transfer( 0x07 );
+	hspi->transfer( bank );
+	digitalWrite( hspi->pinSS(), HIGH );  //pull SS high to signify end of data transfer
+	delay(10);
 	digitalWrite( hspi->pinSS(), LOW );	 //pull SS slow to prep other end for transfer
 	for( i = 0; i < rom_size; i++ ) {
 		hspi->transfer( p_rom_image[i] );
+	}
+	digitalWrite( hspi->pinSS(), HIGH );  //pull SS high to signify end of data transfer
+	hspi->endTransaction();
+}
+
+// --------------------------------------------------------------------
+void send_zero_fill( int bank_id ) {
+	int i, bank;
+
+	bank = bank_id >> 8;
+	hspi->beginTransaction( spi_settings );
+	digitalWrite( hspi->pinSS(), LOW );	 //pull SS slow to prep other end for transfer
+	hspi->transfer( 0x07 );
+	hspi->transfer( bank );
+	digitalWrite( hspi->pinSS(), HIGH );  //pull SS high to signify end of data transfer
+	delay(10);
+	digitalWrite( hspi->pinSS(), LOW );	 //pull SS slow to prep other end for transfer
+	hspi->transfer( 0x04 );
+	hspi->transfer( bank_id & 255 );
+	for( i = 0; i < 16384; i++ ) {
+		hspi->transfer( 0x00 );
 	}
 	digitalWrite( hspi->pinSS(), HIGH );  //pull SS high to signify end of data transfer
 	hspi->endTransaction();
@@ -147,6 +174,11 @@ void loop() {
 		send_rom_image( rom_rabbit_adventure_00, sizeof(rom_rabbit_adventure_00) );
 		Serial.println( "RabbitAdventure 1" );
 		send_rom_image( rom_rabbit_adventure_01, sizeof(rom_rabbit_adventure_01) );
+		Serial.println( "Fill 0" );
+		send_zero_fill( 0x100 );
+		send_zero_fill( 0x101 );
+		send_zero_fill( 0x102 );
+		send_zero_fill( 0x103 );
 		state++;
 		break;
 	case 4:

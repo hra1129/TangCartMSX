@@ -1,0 +1,30 @@
+# OpenFile D:/github/HRA_product/TangCartMSX/RTL/tangnano20k_step6/src/test001/vsim.wlf
+add wave -position end  vsim:/tb/u_dut/u_z80/u_cz80/sp
+add wave -position end  vsim:/tb/u_dut/u_z80/u_cz80/pc
+add wave -position end  vsim:/tb/u_dut/u_z80/d
+add wave -position end  vsim:/tb/u_dut/u_z80/a
+add wave -position end  vsim:/tb/u_dut/u_ppi/u_ppi/ff_port_a
+add wave -position end  vsim:/tb/u_dut/u_v9918/int_n
+add wave -position end  vsim:/tb/u_dut/u_v9918/iorq_n
+add wave -position end  vsim:/tb/u_dut/u_v9918/rd_n
+add wave -position end  vsim:/tb/u_dut/u_v9918/wr_n
+add wave -position end  vsim:/tb/u_dut/u_v9918/address
+add wave -position 0  vsim:/tb/u_dut/clk42m
+add wave -position 0  vsim:/tb/u_dut/clk
+add wave -position end  vsim:/tb/u_dut/u_exp_slot3/sltsl_ext0
+add wave -position end  vsim:/tb/u_dut/u_exp_slot3/sltsl_ext1
+add wave -position end  vsim:/tb/u_dut/u_exp_slot3/sltsl_ext2
+add wave -position end  vsim:/tb/u_dut/u_exp_slot3/sltsl_ext3
+add wave -position end  vsim:/tb/u_dut/u_exp_slot3/sltsl
+add wave -position end  vsim:/tb/u_dut/u_exp_slot3/address
+write format wave -window .main_pane.wave.interior.cs.body.pw.wf D:/github/HRA_product/TangCartMSX/RTL/tangnano20k_step6/src/test001/wave.do
+add wave -position end  vsim:/tb/u_dut/u_sdram/rd_n
+add wave -position end  vsim:/tb/u_dut/u_sdram/rdata
+add wave -position end  vsim:/tb/u_dut/u_sdram/rdata_en
+add wave -position end  vsim:/tb/u_dut/u_sdram/rfsh_n
+add wave -position end  vsim:/tb/u_dut/u_sdram/wr_n
+add wave -position end  vsim:/tb/u_dut/u_sdram/ff_main_state
+add wave -position end  vsim:/tb/u_dut/u_sdram/ff_rd_n
+add wave -position end  vsim:/tb/u_dut/u_sdram/ff_do_refresh
+add wave -position end  vsim:/tb/u_dut/u_sdram/ff_no_refresh
+write format wave -window .main_pane.wave.interior.cs.body.pw.wf D:/github/HRA_product/TangCartMSX/RTL/tangnano20k_step6/src/test001/wave.do

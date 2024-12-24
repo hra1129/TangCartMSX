@@ -62,7 +62,7 @@ module ssg (
 	input			iorq_n,
 	input			wr_n,
 	input			rd_n,
-	input	[15:0]	address,
+	input	[1:0]	address,
 	input	[7:0]	wdata,
 	output	[7:0]	rdata,
 	output			rdata_en,
@@ -215,7 +215,7 @@ module ssg (
 			ff_rdata <= 8'd0;
 		end
 		else if( !iorq_n && w_rd ) begin
-			if( address[1:0] == 2'd2 ) begin
+			if( address == 2'd2 ) begin
 				case( ff_ssg_register_ptr )
 				4'd0:		ff_rdata <= ff_ssg_ch_a_frequency[7:0];
 				4'd1:		ff_rdata <= { 4'd0, ff_ssg_ch_a_frequency[11:8] };
@@ -266,10 +266,10 @@ module ssg (
 			ff_continue					<= 1'b1;
 			ff_ssg_envelope_req			<= 1'b0;
 		end
-		else if( !iorq_n && w_wr && address[1:0] == 2'd0 ) begin
+		else if( !iorq_n && w_wr && address == 2'd0 ) begin
 			ff_ssg_register_ptr <= wdata[3:0];
 		end
-		else if( !iorq_n && w_wr && address[1:0] == 2'd1 ) begin
+		else if( !iorq_n && w_wr && address == 2'd1 ) begin
 			case( ff_ssg_register_ptr )
 			4'd0:		ff_ssg_ch_a_frequency[7:0]		<= wdata;
 			4'd1:		ff_ssg_ch_a_frequency[11:8]		<= wdata[3:0];

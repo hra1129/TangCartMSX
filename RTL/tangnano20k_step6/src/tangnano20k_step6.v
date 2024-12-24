@@ -142,7 +142,7 @@ module tangnano20k_step6 (
 	wire			w_expslt3_q_en;
 	wire			w_kanji_j1;
 	wire			w_kanji_j2;
-	wire	[21:0]	w_spi_address;
+	wire	[22:0]	w_spi_address;
 	wire			w_spi_mreq_n;
 	wire	[7:0]	w_spi_d;
 	wire	[7:0]	w_ppi_q;
@@ -294,6 +294,9 @@ module tangnano20k_step6 (
 		else if( w_ppi_q_en ) begin
 			ff_d <= w_ppi_q;
 		end
+		else if( rd_n ) begin
+			ff_d <= 8'hFF;
+		end
 		else begin
 			//	hold
 		end
@@ -404,11 +407,11 @@ module tangnano20k_step6 (
 		.ssg_ioa				( ssg_ioa					),
 		.ssg_iob				( ssg_iob					),
 		.keyboard_type			( w_keyboard_type			),
-		.cmt_read				( 							),
+		.cmt_read				( 1'b0						),
 		.kana_led				( w_keyboard_kana_led_off	),
 		.sound_out				( w_ssg_sound_out			)
 	);
-	assign w_psg_cs_n				= !( !iorq_n && ( { a[7:1], 1'd0 } == 8'hA0 ) );
+	assign w_psg_cs_n				= !( !iorq_n && ( { a[7:2], 2'd0 } == 8'hA0 ) );
 
 	// --------------------------------------------------------------------
 	//	V9918 clone
@@ -475,10 +478,12 @@ module tangnano20k_step6 (
 		.clk					( clk					),
 		.clk_sdram				( clk					),
 		.sdram_busy				( w_sdram_busy			),
+		.cpu_freeze				( w_cpu_freeze			),
 		.mreq_n					( w_sdram_mreq_n		),
 		.address				( w_sdram_address		),
 		.wr_n					( w_sdram_wr_n			),
 		.rd_n					( w_sdram_rd_n			),
+		.rfsh_n					( rfsh_n				),
 		.wdata					( w_sdram_d				),
 		.rdata					( w_sdram_q				),
 		.rdata_en				( w_sdram_q_en			),
@@ -497,10 +502,10 @@ module tangnano20k_step6 (
 	// --------------------------------------------------------------------
 	//	SDRAM memory map
 	// --------------------------------------------------------------------
-	assign w_sdram_address[22:13]	= ( w_cpu_freeze ) ? { 1'b0, w_spi_address[21:13] } :		//	SDRAM Updater from SPI
+	assign w_sdram_address[22:13]	= ( w_cpu_freeze ) ? w_spi_address[22:13]           :		//	SDRAM Updater from SPI
 									  ( w_kanji_j1   ) ? { 10'b100_1100_000           } :		//	JIS1 KanjiROM
 									  ( w_kanji_j2   ) ? { 10'b100_1110_000           } :		//	JIS2 KanjiROM
-									  ( w_sltsl30    ) ? { 10'b100_0000_000           } :		//	MapperRAM
+									  ( w_sltsl30    ) ? { 7'b100_0000,      a[15:13] } :		//	MapperRAM
 									  ( w_sltsl1     ) ? { 10'b010_0000_000           } :		//	MegaROM 1MB
 									  ( w_sltsl2     ) ? { 10'b000_0100_000           } :		//	MegaROM 512KB
 									  ( w_sltsl03    ) ? { 8'b000_0011_1,    a[14:13] } :		//	MSX Logo, ExtBASIC
@@ -528,14 +533,14 @@ module tangnano20k_step6 (
 	assign w_sdram_rd_n				= ( w_kanji_j1                                            ) ? rd_n :		//	JIS1 KanjiROM
 									  ( w_kanji_j2                                            ) ? rd_n :		//	JIS2 KanjiROM
 									  ( !iorq_n                                               ) ? 1'b1 :		//	
-									  ( w_sltsl30  &&  a        != 16'hFFFF                   ) ? rd_n :		//	MapperRAM
+									  ( w_sltsl30                                             ) ? rd_n :		//	MapperRAM
 									  ( w_sltsl1   && (a[15:14] == 2'b01 || a[15:14] == 2'b10)) ? rd_n :		//	MegaROM 1MB
 									  ( w_sltsl2   && (a[15:14] == 2'b01 || a[15:14] == 2'b10)) ? rd_n :		//	MegaROM 512KB
 									  ( w_sltsl03  && (a[15:14] == 2'b01 || a[15:14] == 2'b10)) ? rd_n :		//	MSX Logo, ExtBASIC
-									  ( w_sltsl02  &&  a[15:14] == 2'b01                      ) ? rd_n :		//	MSX-MUSIC
-									  ( w_sltsl01  &&  a[15:14] == 2'b01                      ) ? rd_n :		//	IoT-BASIC
-									  ( w_sltsl31  &&  a[15]    == 1'b0                       ) ? rd_n :		//	SUB-ROM, KanjiBASIC
-									  ( w_sltsl00  &&  a[15]    == 1'b0                       ) ? rd_n :		//	MAIN-ROM
+									  ( w_sltsl02  && (a[15:14] == 2'b01)                     ) ? rd_n :		//	MSX-MUSIC
+									  ( w_sltsl01  && (a[15:14] == 2'b01)                     ) ? rd_n :		//	IoT-BASIC
+									  ( w_sltsl31  && (a[15]    == 1'b0)                      ) ? rd_n :		//	SUB-ROM, KanjiBASIC
+									  ( w_sltsl00  && (a[15]    == 1'b0)                      ) ? rd_n :		//	MAIN-ROM
 									  ( w_sltsl32  && (a[15:14] == 2'b01 || a[15:14] == 2'b10)) ? rd_n :		//	Nextor
 									                                                              1'b1;
 

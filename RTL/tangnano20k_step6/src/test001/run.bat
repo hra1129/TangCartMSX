@@ -6,6 +6,7 @@ vlog ..\uart\ip_uart.v
 vlog ..\uart\ip_uart_inst.v
 vlog ..\..\..\modules\ppi\ppi.v
 vlog ..\..\..\modules\ppi\ppi_inst.v
+vlog ..\..\..\modules\ssg\ssg.v
 vlog ..\..\..\modules\secondary_slot\secondary_slot_inst.v
 vlog ..\..\..\modules\cz80\cz80_mcode.v
 vlog ..\..\..\modules\cz80\cz80_reg.v

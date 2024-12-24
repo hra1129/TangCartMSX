@@ -59,11 +59,13 @@ module tb ();
 	reg				clk;				//	85.90908MHz
 	reg				clk_sdram;			//	85.90908MHz
 	wire			sdram_busy;
+	reg				cpu_freeze;
 
-	reg				merq_n;
+	reg				mreq_n;
 	reg		[22:0]	address;
 	reg				wr_n;
 	reg				rd_n;
+	reg				rfsh_n;
 	reg		[ 7:0]	wdata;
 	wire	[ 7:0]	rdata;
 	wire			rdata_en;
@@ -80,6 +82,8 @@ module tb ();
 	wire	[ 3:0]	O_sdram_dqm;		// data mask
 	reg		[ 1:0]	ff_video_clk;
 
+	int				i;
+
 	// --------------------------------------------------------------------
 	//	DUT
 	// --------------------------------------------------------------------
@@ -88,10 +92,12 @@ module tb ();
 		.clk				( clk				),
 		.clk_sdram			( clk				),
 		.sdram_busy			( sdram_busy		),
-		.merq_n				( merq_n			),
+		.cpu_freeze			( cpu_freeze		),
+		.mreq_n				( mreq_n			),
 		.address			( address			),
 		.wr_n				( wr_n				),
 		.rd_n				( rd_n				),
+		.rfsh_n				( rfsh_n			),
 		.wdata				( wdata				),
 		.rdata				( rdata				),
 		.rdata_en			( rdata_en			),
@@ -143,7 +149,7 @@ module tb ();
 		$display( "write_data( 0x%06X, 0x%02X )", p_address, p_data );
 		address		<= p_address;
 		wdata		<= p_data;
-		merq_n		<= 1'b0;
+		mreq_n		<= 1'b0;
 		wr_n		<= 1'b0;
 		@( posedge clk );
 		@( posedge clk );
@@ -152,7 +158,7 @@ module tb ();
 
 		address		<= 0;
 		wdata		<= 0;
-		merq_n		<= 1'b1;
+		mreq_n		<= 1'b1;
 		wr_n		<= 1'b1;
 		repeat( 12 ) @( posedge clk );
 	endtask: write_data
@@ -166,7 +172,7 @@ module tb ();
 
 		$display( "read_data( 0x%06X, 0x%02X )", p_address, p_data );
 		address		<= p_address;
-		merq_n		<= 1'b0;
+		mreq_n		<= 1'b0;
 		rd_n		<= 1'b0;
 		@( posedge clk );
 		@( posedge clk );
@@ -174,12 +180,15 @@ module tb ();
 		@( posedge clk );
 
 		address		<= 0;
-		merq_n		<= 1'b1;
+		mreq_n		<= 1'b1;
 		rd_n		<= 1'b1;
 		while( !rdata_en ) begin
 			@( posedge clk );
 		end
 		assert( rdata == p_data );
+		if( rdata != p_data ) begin
+			$display( "-- p_data = %08X", p_data );
+		end
 		repeat( 16 ) @( posedge clk );
 	endtask: read_data
 
@@ -190,12 +199,14 @@ module tb ();
 		reset_n = 0;
 		clk = 0;
 		clk_sdram = 1;
-		merq_n = 1;
+		mreq_n = 1;
 		wr_n = 1;
 		rd_n = 1;
+		rfsh_n = 1;
 		address = 0;
 		wdata = 0;
 		ff_video_clk = 0;
+		cpu_freeze = 1;
 
 		@( negedge clk );
 		@( negedge clk );
@@ -211,6 +222,7 @@ module tb ();
 		repeat( 16 ) @( posedge clk );
 		repeat( 7 ) @( posedge clk );
 
+		$display( "write -------------------------" );
 		write_data( 'h000000, 'h12 );
 		write_data( 'h000001, 'h23 );
 		write_data( 'h000002, 'h34 );
@@ -220,6 +232,7 @@ module tb ();
 		write_data( 'h000006, 'h78 );
 		write_data( 'h000007, 'h89 );
 
+		$display( "read -------------------------" );
 		read_data(  'h000000, 'h12 );
 		read_data(  'h000001, 'h23 );
 		read_data(  'h000002, 'h34 );
@@ -238,7 +251,96 @@ module tb ();
 		read_data(  'h000001, 'h23 );
 		read_data(  'h000000, 'h12 );
 
-		repeat( 12 ) @( posedge clk );
+		$display( "write -------------------------" );
+		write_data( 'h400000, 'h21 );
+		write_data( 'h400001, 'h32 );
+		write_data( 'h400002, 'h43 );
+		write_data( 'h400003, 'h54 );
+		write_data( 'h400004, 'h65 );
+		write_data( 'h400005, 'h76 );
+		write_data( 'h400006, 'h87 );
+		write_data( 'h400007, 'h98 );
+
+		$display( "read -------------------------" );
+		read_data(  'h400000, 'h21 );
+		read_data(  'h400001, 'h32 );
+		read_data(  'h400002, 'h43 );
+		read_data(  'h400003, 'h54 );
+		read_data(  'h400004, 'h65 );
+		read_data(  'h400005, 'h76 );
+		read_data(  'h400006, 'h87 );
+		read_data(  'h400007, 'h98 );
+
+		read_data(  'h000000, 'h12 );
+		read_data(  'h000001, 'h23 );
+		read_data(  'h000002, 'h34 );
+		read_data(  'h000003, 'h45 );
+		read_data(  'h000004, 'h56 );
+		read_data(  'h000005, 'h67 );
+		read_data(  'h000006, 'h78 );
+		read_data(  'h000007, 'h89 );
+
+		read_data(  'h400007, 'h98 );
+		read_data(  'h400006, 'h87 );
+		read_data(  'h400005, 'h76 );
+		read_data(  'h400004, 'h65 );
+		read_data(  'h400003, 'h54 );
+		read_data(  'h400002, 'h43 );
+		read_data(  'h400001, 'h32 );
+		read_data(  'h400000, 'h21 );
+
+		read_data(  'h000007, 'h89 );
+		read_data(  'h000006, 'h78 );
+		read_data(  'h000005, 'h67 );
+		read_data(  'h000004, 'h56 );
+		read_data(  'h000003, 'h45 );
+		read_data(  'h000002, 'h34 );
+		read_data(  'h000001, 'h23 );
+		read_data(  'h000000, 'h12 );
+
+		$display( "Wait -------------------------------" );
+		for( i = 0; i < 100; i++ ) begin
+			$display( "** %d **", i );
+			repeat( 100 ) @( posedge clk );
+		end
+
+		$display( "delay read -------------------------" );
+		read_data(  'h400000, 'h21 );
+		read_data(  'h400001, 'h32 );
+		read_data(  'h400002, 'h43 );
+		read_data(  'h400003, 'h54 );
+		read_data(  'h400004, 'h65 );
+		read_data(  'h400005, 'h76 );
+		read_data(  'h400006, 'h87 );
+		read_data(  'h400007, 'h98 );
+
+		read_data(  'h000000, 'h12 );
+		read_data(  'h000001, 'h23 );
+		read_data(  'h000002, 'h34 );
+		read_data(  'h000003, 'h45 );
+		read_data(  'h000004, 'h56 );
+		read_data(  'h000005, 'h67 );
+		read_data(  'h000006, 'h78 );
+		read_data(  'h000007, 'h89 );
+
+		read_data(  'h400007, 'h98 );
+		read_data(  'h400006, 'h87 );
+		read_data(  'h400005, 'h76 );
+		read_data(  'h400004, 'h65 );
+		read_data(  'h400003, 'h54 );
+		read_data(  'h400002, 'h43 );
+		read_data(  'h400001, 'h32 );
+		read_data(  'h400000, 'h21 );
+
+		read_data(  'h000007, 'h89 );
+		read_data(  'h000006, 'h78 );
+		read_data(  'h000005, 'h67 );
+		read_data(  'h000004, 'h56 );
+		read_data(  'h000003, 'h45 );
+		read_data(  'h000002, 'h34 );
+		read_data(  'h000001, 'h23 );
+		read_data(  'h000000, 'h12 );
+
 		$finish;
 	end
 endmodule
