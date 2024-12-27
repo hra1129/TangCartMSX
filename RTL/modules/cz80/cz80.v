@@ -395,11 +395,12 @@ module cz80 (
 					iset <= 2'b00;
 					if( prefix != 2'b00 ) begin
 						if( prefix == 2'b11 ) begin
+							//	DDh = 11011101, FDh = 11111101h
 							if( ir[5] == 1'b1 ) begin
-								xy_state <= 2'b10;
+								xy_state <= 2'b10;		//	IY
 							end
 							else begin
-								xy_state <= 2'b01;
+								xy_state <= 2'b01;		//	IX
 							end
 						end
 						else begin

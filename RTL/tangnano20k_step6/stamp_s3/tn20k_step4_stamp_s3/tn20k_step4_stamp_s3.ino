@@ -11,6 +11,8 @@
 #include "romimage_basicn.h"
 #include "romimage_rabbit_adventure.h"
 #include "romimage_hello_world.h"
+#include "romimage_stepper.h"
+#include "romimage_super_cobra.h"
 
 #define PIN_BUTTON	0
 
@@ -172,7 +174,11 @@ void loop() {
 //		Serial.println( "Send BASIC'N" );
 //		send_rom_image( rom_basicn_00, sizeof(rom_basicn_00) );
 		Serial.println( "hello world" );
-		send_rom_image( rom_hello_world_00, sizeof(rom_rabbit_adventure_00) );
+		send_rom_image( rom_hello_world_00, sizeof(rom_hello_world_00) );
+//		Serial.println( "Super Cobra" );
+//		send_rom_image( rom_super_cobra_00, sizeof(rom_super_cobra_00) );
+//		Serial.println( "Stepper" );
+//		send_rom_image( rom_stepper_00, sizeof(rom_stepper_00) );
 //		Serial.println( "RabbitAdventure 0" );
 //		send_rom_image( rom_rabbit_adventure_00, sizeof(rom_rabbit_adventure_00) );
 //		Serial.println( "RabbitAdventure 1" );

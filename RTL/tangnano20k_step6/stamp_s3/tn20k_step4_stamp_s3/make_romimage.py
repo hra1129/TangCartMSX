@@ -8,7 +8,9 @@ target_list = [
 	( "main"            , 0x20000 ),
 	( "basicn"          , 0x30000 ),
 	( "rabbit_adventure", 0x40000 ),
-	( "hello_world"     , 0x40000 )
+	( "hello_world"     , 0x40000 ),
+	( "stepper"         , 0x44000 ),
+	( "super_cobra"     , 0x40000 ),
 ]
 
 s_rom_image_path = "./rom_image/"
