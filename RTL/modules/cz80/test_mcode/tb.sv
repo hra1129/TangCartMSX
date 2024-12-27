@@ -288,6 +288,7 @@ module tb ();
 		//	random test
 		// --------------------------------------------------------------------
 		for( i_xy_state = 0; i_xy_state < 4; i_xy_state = i_xy_state + 1 ) begin
+			$display( "xy_state : %d/3 ----------------------", i_xy_state );
 			xy_state = i_xy_state;
 			for( i_intcycle = 0; i_intcycle < 2; i_intcycle = i_intcycle + 1 ) begin
 				intcycle = i_intcycle;

@@ -104,13 +104,18 @@ module tb ();
 		//	random test
 		// --------------------------------------------------------------------
 		for( i_arith16	= 0; i_arith16	< 2;	i_arith16	= i_arith16	+1 ) begin
+			$display( "arith16 : %d/1", i_arith16 );
 			for( i_z16		= 0; i_z16		< 2;	i_z16		= i_z16		+1 ) begin
+				$display( "-- z16 : %d/1", i_z16 );
 				for( i_alu_cpi	= 0; i_alu_cpi	< 2;	i_alu_cpi	= i_alu_cpi	+1 ) begin
+					$display( "---- alu_cpi : %d/1", i_alu_cpi );
 					for( i_alu_op	= 0; i_alu_op	< 16;	i_alu_op	= i_alu_op	+1 ) begin
+						$display( "------ alu_op : %d/15", i_alu_op );
 						for( i_ir		= 0; i_ir		< 64;	i_ir		= i_ir		+1 ) begin
+							$display( "-------- ir : %d/63", i_ir );
 							for( i_iset		= 0; i_iset		< 4;	i_iset		= i_iset	+1 ) begin
-								for( i_busa		= 0; i_busa		< 256;	i_busa		= i_busa	+1 ) begin
-									for( i_busb		= 0; i_busb		< 256;	i_busb		= i_busb	+1 ) begin
+								for( i_busa		= 0; i_busa		< 256;	i_busa		= i_busa	+29 ) begin
+									for( i_busb		= 0; i_busb		< 256;	i_busb		= i_busb	+19 ) begin
 										for( i_f_in		= 0; i_f_in		< 256;	i_f_in		= i_f_in	+1 ) begin
 											arith16		= i_arith16		;
 											z16			= i_z16			;

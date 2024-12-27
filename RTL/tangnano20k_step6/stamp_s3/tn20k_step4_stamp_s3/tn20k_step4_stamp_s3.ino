@@ -10,6 +10,7 @@
 #include "romimage_main.h"
 #include "romimage_basicn.h"
 #include "romimage_rabbit_adventure.h"
+#include "romimage_hello_world.h"
 
 #define PIN_BUTTON	0
 
@@ -168,12 +169,15 @@ void loop() {
 		send_rom_image( rom_main_00, sizeof(rom_main_00) );
 		Serial.println( "Send MAIN-ROM 1" );
 		send_rom_image( rom_main_01, sizeof(rom_main_01) );
-		Serial.println( "Send BASIC'N" );
-		send_rom_image( rom_basicn_00, sizeof(rom_basicn_00) );
-		Serial.println( "RabbitAdventure 0" );
-		send_rom_image( rom_rabbit_adventure_00, sizeof(rom_rabbit_adventure_00) );
-		Serial.println( "RabbitAdventure 1" );
-		send_rom_image( rom_rabbit_adventure_01, sizeof(rom_rabbit_adventure_01) );
+//		Serial.println( "Send BASIC'N" );
+//		send_rom_image( rom_basicn_00, sizeof(rom_basicn_00) );
+		Serial.println( "hello world" );
+		send_rom_image( rom_hello_world_00, sizeof(rom_rabbit_adventure_00) );
+//		Serial.println( "RabbitAdventure 0" );
+//		send_rom_image( rom_rabbit_adventure_00, sizeof(rom_rabbit_adventure_00) );
+//		Serial.println( "RabbitAdventure 1" );
+//		send_rom_image( rom_rabbit_adventure_01, sizeof(rom_rabbit_adventure_01) );
+
 		Serial.println( "Fill 0" );
 		send_zero_fill( 0x100 );
 		send_zero_fill( 0x101 );

@@ -506,7 +506,7 @@ module tangnano20k_step6 (
 									  ( w_kanji_j1   ) ? { 10'b100_1100_000           } :		//	JIS1 KanjiROM
 									  ( w_kanji_j2   ) ? { 10'b100_1110_000           } :		//	JIS2 KanjiROM
 									  ( w_sltsl30    ) ? { 7'b100_0000,      a[15:13] } :		//	MapperRAM
-									  ( w_sltsl1     ) ? { 10'b010_0000_000           } :		//	MegaROM 1MB
+									  ( w_sltsl1     ) ? { 8'b010_0000_0,~a[14],a[13] } :		//	MegaROM 1MB
 									  ( w_sltsl2     ) ? { 10'b000_0100_000           } :		//	MegaROM 512KB
 									  ( w_sltsl03    ) ? { 8'b000_0011_1,    a[14:13] } :		//	MSX Logo, ExtBASIC
 									  ( w_sltsl02    ) ? { 9'b000_0011_01,   a[13]    } :		//	MSX-MUSIC
