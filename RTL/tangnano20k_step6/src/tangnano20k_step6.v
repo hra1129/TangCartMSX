@@ -153,6 +153,7 @@ module tangnano20k_step6 (
 	wire			w_keyboard_type;
 	wire			w_keyboard_kana_led_off;
 	wire	[11:0]	w_ssg_sound_out;
+	wire			w_debug_signal;
 
 	// --------------------------------------------------------------------
 	//	clock
@@ -498,6 +499,8 @@ module tangnano20k_step6 (
 		.O_sdram_ba				( O_sdram_ba			),
 		.O_sdram_dqm			( O_sdram_dqm			)
 	);
+
+	assign w_debug_signal	= (w_sdram_address[22:12] == 11'h40F && w_sdram_wr_n == 1'b0 && w_sdram_mreq_n == 1'b0 && w_sdram_d == 8'h00 );
 
 	// --------------------------------------------------------------------
 	//	SDRAM memory map

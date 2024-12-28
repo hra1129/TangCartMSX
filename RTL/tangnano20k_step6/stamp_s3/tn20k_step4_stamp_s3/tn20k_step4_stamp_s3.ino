@@ -24,7 +24,7 @@ CRGB leds[NUM_LEDS];
 #define HSPI_MOSI	11
 #define HSPI_SCLK	12
 #define HSPI_SS		10
-SPISettings spi_settings = SPISettings( 10000000, MSBFIRST, SPI_MODE0 );
+SPISettings spi_settings = SPISettings( 30000000, MSBFIRST, SPI_MODE0 );
 SPIClass *hspi = NULL;
 
 int state = 0;
@@ -171,8 +171,8 @@ void loop() {
 		send_rom_image( rom_main_00, sizeof(rom_main_00) );
 		Serial.println( "Send MAIN-ROM 1" );
 		send_rom_image( rom_main_01, sizeof(rom_main_01) );
-//		Serial.println( "Send BASIC'N" );
-//		send_rom_image( rom_basicn_00, sizeof(rom_basicn_00) );
+		Serial.println( "Send BASIC'N" );
+		send_rom_image( rom_basicn_00, sizeof(rom_basicn_00) );
 		Serial.println( "hello world" );
 		send_rom_image( rom_hello_world_00, sizeof(rom_hello_world_00) );
 //		Serial.println( "Super Cobra" );
