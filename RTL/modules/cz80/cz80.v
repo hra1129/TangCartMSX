@@ -787,6 +787,7 @@ module cz80 (
 					  ( incdec_16[2] && ((tstate == 3'd2 && mcycle != 3'd1) || (tstate == 3'd3 && mcycle == 3'd1)) ) ? id16[ 7:0] : save_mux;
 
 	cz80_registers u_regs (
+		.reset_n		( reset_n			),
 		.clk			( clk_n				),
 		.cen			( clken				),
 		.we_h			( regweh			),
