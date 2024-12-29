@@ -166,6 +166,17 @@ module tb ();
 	endtask: receive_byte
 
 	// --------------------------------------------------------------------
+	task receive_byte_a(
+		output	[7:0]	data,
+		output	[15:0]	address
+	);
+		@( negedge wr_n );
+		data	<= d;
+		address	<= a;
+		@( posedge wr_n );
+	endtask: receive_byte_a
+
+	// --------------------------------------------------------------------
 	task test_ld_r_n(
 		input	[7:0]	opecode,
 		input	[7:0]	data,
@@ -374,6 +385,290 @@ module tb ();
 	endtask: test_ld_xy_nn
 
 	// --------------------------------------------------------------------
+	task test_ld_hl_n(
+		input	[7:0]	data,
+		input	[15:0]	address,
+		input	[7:0]	ref_b,
+		input	[7:0]	ref_c,
+		input	[7:0]	ref_d,
+		input	[7:0]	ref_e,
+		input	[7:0]	ref_h,
+		input	[7:0]	ref_l,
+		input	[7:0]	ref_a,
+		input	[7:0]	ref_f,
+		input	[7:0]	ref_ixh,
+		input	[7:0]	ref_ixl,
+		input	[7:0]	ref_iyh,
+		input	[7:0]	ref_iyl
+	);
+		logic	[15:0]	raddress;
+		logic	[7:0]	rdata;
+
+		$display( "CODE 36, %02X        : LD  (HL), %02Xh", data, data );
+
+		//	2bytes の命令コードを送る 
+		send_byte( 8'h36 );
+		send_byte( data );
+		receive_byte_a( rdata, raddress );
+		assert( rdata === data );
+		assert( raddress === address );
+
+		//	確認用に全レジスタを push してレジスタ値を出力させる 
+		send_byte( 8'hC5 );
+		receive_byte( rdata );
+		assert( rdata === ref_b );
+		receive_byte( rdata );
+		assert( rdata === ref_c );
+
+		send_byte( 8'hD5 );
+		receive_byte( rdata );
+		assert( rdata === ref_d );
+		receive_byte( rdata );
+		assert( rdata === ref_e );
+
+		send_byte( 8'hE5 );
+		receive_byte( rdata );
+		assert( rdata === ref_h );
+		receive_byte( rdata );
+		assert( rdata === ref_l );
+
+		send_byte( 8'hF5 );
+		receive_byte( rdata );
+		assert( rdata === ref_a );
+		receive_byte( rdata );
+		assert( rdata === ref_f );
+
+		send_byte( 8'hDD );
+		send_byte( 8'hE5 );
+		receive_byte( rdata );
+		assert( rdata === ref_ixh );
+		receive_byte( rdata );
+		assert( rdata === ref_ixl );
+
+		send_byte( 8'hFD );
+		send_byte( 8'hE5 );
+		receive_byte( rdata );
+		assert( rdata === ref_iyh );
+		receive_byte( rdata );
+		assert( rdata === ref_iyl );
+	endtask: test_ld_hl_n
+
+	// --------------------------------------------------------------------
+	task test_ld_xy_n(
+		input	[7:0]	prefix,
+		input	[7:0]	d,
+		input	[15:0]	address,
+		input	[7:0]	n,
+		input	[7:0]	ref_b,
+		input	[7:0]	ref_c,
+		input	[7:0]	ref_d,
+		input	[7:0]	ref_e,
+		input	[7:0]	ref_h,
+		input	[7:0]	ref_l,
+		input	[7:0]	ref_a,
+		input	[7:0]	ref_f,
+		input	[7:0]	ref_ixh,
+		input	[7:0]	ref_ixl,
+		input	[7:0]	ref_iyh,
+		input	[7:0]	ref_iyl
+	);
+		logic	[15:0]	raddress;
+		logic	[7:0]	rdata;
+
+		$display( "CODE %02X, 36, %02X, %02X: LD  (%s + %02Xh), %02Xh", prefix, d, n, regxy_sel( prefix[5] ), d, n );
+
+		//	2bytes の命令コードを送る 
+		send_byte( prefix );
+		send_byte( 8'h36 );
+		send_byte( d );
+		send_byte( n );
+		receive_byte_a( rdata, raddress );
+		assert( rdata === n );
+		assert( raddress === address );
+
+		//	確認用に全レジスタを push してレジスタ値を出力させる 
+		send_byte( 8'hC5 );
+		receive_byte( rdata );
+		assert( rdata === ref_b );
+		receive_byte( rdata );
+		assert( rdata === ref_c );
+
+		send_byte( 8'hD5 );
+		receive_byte( rdata );
+		assert( rdata === ref_d );
+		receive_byte( rdata );
+		assert( rdata === ref_e );
+
+		send_byte( 8'hE5 );
+		receive_byte( rdata );
+		assert( rdata === ref_h );
+		receive_byte( rdata );
+		assert( rdata === ref_l );
+
+		send_byte( 8'hF5 );
+		receive_byte( rdata );
+		assert( rdata === ref_a );
+		receive_byte( rdata );
+		assert( rdata === ref_f );
+
+		send_byte( 8'hDD );
+		send_byte( 8'hE5 );
+		receive_byte( rdata );
+		assert( rdata === ref_ixh );
+		receive_byte( rdata );
+		assert( rdata === ref_ixl );
+
+		send_byte( 8'hFD );
+		send_byte( 8'hE5 );
+		receive_byte( rdata );
+		assert( rdata === ref_iyh );
+		receive_byte( rdata );
+		assert( rdata === ref_iyl );
+	endtask: test_ld_xy_n
+
+	// --------------------------------------------------------------------
+	task test_ld_hl_r(
+		input	[7:0]	opecode,
+		input	[15:0]	address,
+		input	[7:0]	data,
+		input	[7:0]	ref_b,
+		input	[7:0]	ref_c,
+		input	[7:0]	ref_d,
+		input	[7:0]	ref_e,
+		input	[7:0]	ref_h,
+		input	[7:0]	ref_l,
+		input	[7:0]	ref_a,
+		input	[7:0]	ref_f,
+		input	[7:0]	ref_ixh,
+		input	[7:0]	ref_ixl,
+		input	[7:0]	ref_iyh,
+		input	[7:0]	ref_iyl
+	);
+		logic	[15:0]	raddress;
+		logic	[7:0]	rdata;
+
+		$display( "CODE %02X            : LD  (HL), %s", opecode, reg8_sel( opecode[2:0] ) );
+
+		//	1byte の命令コードを送る 
+		send_byte( opecode );
+		receive_byte_a( rdata, raddress );
+		assert( rdata === data );
+		assert( raddress === address );
+
+		//	確認用に全レジスタを push してレジスタ値を出力させる 
+		send_byte( 8'hC5 );
+		receive_byte( rdata );
+		assert( rdata === ref_b );
+		receive_byte( rdata );
+		assert( rdata === ref_c );
+
+		send_byte( 8'hD5 );
+		receive_byte( rdata );
+		assert( rdata === ref_d );
+		receive_byte( rdata );
+		assert( rdata === ref_e );
+
+		send_byte( 8'hE5 );
+		receive_byte( rdata );
+		assert( rdata === ref_h );
+		receive_byte( rdata );
+		assert( rdata === ref_l );
+
+		send_byte( 8'hF5 );
+		receive_byte( rdata );
+		assert( rdata === ref_a );
+		receive_byte( rdata );
+		assert( rdata === ref_f );
+
+		send_byte( 8'hDD );
+		send_byte( 8'hE5 );
+		receive_byte( rdata );
+		assert( rdata === ref_ixh );
+		receive_byte( rdata );
+		assert( rdata === ref_ixl );
+
+		send_byte( 8'hFD );
+		send_byte( 8'hE5 );
+		receive_byte( rdata );
+		assert( rdata === ref_iyh );
+		receive_byte( rdata );
+		assert( rdata === ref_iyl );
+	endtask: test_ld_hl_r
+
+	// --------------------------------------------------------------------
+	task test_ld_xy_r(
+		input	[7:0]	prefix,
+		input	[7:0]	opecode,
+		input	[7:0]	d,
+		input	[15:0]	address,
+		input	[7:0]	n,
+		input	[7:0]	ref_b,
+		input	[7:0]	ref_c,
+		input	[7:0]	ref_d,
+		input	[7:0]	ref_e,
+		input	[7:0]	ref_h,
+		input	[7:0]	ref_l,
+		input	[7:0]	ref_a,
+		input	[7:0]	ref_f,
+		input	[7:0]	ref_ixh,
+		input	[7:0]	ref_ixl,
+		input	[7:0]	ref_iyh,
+		input	[7:0]	ref_iyl
+	);
+		logic	[15:0]	raddress;
+		logic	[7:0]	rdata;
+
+		$display( "CODE %02X, %02X, %02X    : LD  (%s + %02Xh), %s", prefix, opecode, d, regxy_sel( prefix[5] ), d, reg8_sel( opecode[2:0] ) );
+
+		//	3bytes の命令コードを送る 
+		send_byte( prefix );
+		send_byte( opecode );
+		send_byte( d );
+		receive_byte_a( rdata, raddress );
+		assert( rdata === n );
+		assert( raddress === address );
+
+		//	確認用に全レジスタを push してレジスタ値を出力させる 
+		send_byte( 8'hC5 );
+		receive_byte( rdata );
+		assert( rdata === ref_b );
+		receive_byte( rdata );
+		assert( rdata === ref_c );
+
+		send_byte( 8'hD5 );
+		receive_byte( rdata );
+		assert( rdata === ref_d );
+		receive_byte( rdata );
+		assert( rdata === ref_e );
+
+		send_byte( 8'hE5 );
+		receive_byte( rdata );
+		assert( rdata === ref_h );
+		receive_byte( rdata );
+		assert( rdata === ref_l );
+
+		send_byte( 8'hF5 );
+		receive_byte( rdata );
+		assert( rdata === ref_a );
+		receive_byte( rdata );
+		assert( rdata === ref_f );
+
+		send_byte( 8'hDD );
+		send_byte( 8'hE5 );
+		receive_byte( rdata );
+		assert( rdata === ref_ixh );
+		receive_byte( rdata );
+		assert( rdata === ref_ixl );
+
+		send_byte( 8'hFD );
+		send_byte( 8'hE5 );
+		receive_byte( rdata );
+		assert( rdata === ref_iyh );
+		receive_byte( rdata );
+		assert( rdata === ref_iyl );
+	endtask: test_ld_xy_r
+
+	// --------------------------------------------------------------------
 	//	test bench
 	// --------------------------------------------------------------------
 	initial begin
@@ -397,11 +692,11 @@ module tb ();
 		//	LD		r, n
 		// --------------------------------------------------------------------
 		//            code   data  ref B  ref C  ref D  ref E  ref H  ref L  ref A  ref F
-		test_ld_r_n( 8'h06, 8'h12, 8'h12, 8'hXX, 8'hXX, 8'hXX, 8'hXX, 8'hXX, 8'hFF, 8'hFF );	//	LD B, 12h
-		test_ld_r_n( 8'h0E, 8'h23, 8'h12, 8'h23, 8'hXX, 8'hXX, 8'hXX, 8'hXX, 8'hFF, 8'hFF );	//	LD C, 23h
-		test_ld_r_n( 8'h16, 8'h34, 8'h12, 8'h23, 8'h34, 8'hXX, 8'hXX, 8'hXX, 8'hFF, 8'hFF );	//	LD D, 34h
-		test_ld_r_n( 8'h1E, 8'h45, 8'h12, 8'h23, 8'h34, 8'h45, 8'hXX, 8'hXX, 8'hFF, 8'hFF );	//	LD E, 45h
-		test_ld_r_n( 8'h26, 8'h56, 8'h12, 8'h23, 8'h34, 8'h45, 8'h56, 8'hXX, 8'hFF, 8'hFF );	//	LD H, 56h
+		test_ld_r_n( 8'h06, 8'h12, 8'h12, 8'h00, 8'h00, 8'h00, 8'h00, 8'h00, 8'hFF, 8'hFF );	//	LD B, 12h
+		test_ld_r_n( 8'h0E, 8'h23, 8'h12, 8'h23, 8'h00, 8'h00, 8'h00, 8'h00, 8'hFF, 8'hFF );	//	LD C, 23h
+		test_ld_r_n( 8'h16, 8'h34, 8'h12, 8'h23, 8'h34, 8'h00, 8'h00, 8'h00, 8'hFF, 8'hFF );	//	LD D, 34h
+		test_ld_r_n( 8'h1E, 8'h45, 8'h12, 8'h23, 8'h34, 8'h45, 8'h00, 8'h00, 8'hFF, 8'hFF );	//	LD E, 45h
+		test_ld_r_n( 8'h26, 8'h56, 8'h12, 8'h23, 8'h34, 8'h45, 8'h56, 8'h00, 8'hFF, 8'hFF );	//	LD H, 56h
 		test_ld_r_n( 8'h2E, 8'h67, 8'h12, 8'h23, 8'h34, 8'h45, 8'h56, 8'h67, 8'hFF, 8'hFF );	//	LD L, 67h
 		test_ld_r_n( 8'h3E, 8'h78, 8'h12, 8'h23, 8'h34, 8'h45, 8'h56, 8'h67, 8'h78, 8'hFF );	//	LD A, 78h
 
@@ -543,8 +838,76 @@ module tb ();
 		//	LD		xy, nn
 		// --------------------------------------------------------------------
 		//              code                   ref B  ref C  ref D  ref E  ref H  ref L  ref A  ref F rf IXH rf IXL rf IYH rf IYL
-		test_ld_xy_nn( 8'hDD, 8'h21, 16'hEFF0, 8'h89, 8'h9A, 8'hAB, 8'hBC, 8'hCD, 8'hDE, 8'h78, 8'hFF, 8'hEF, 8'hF0, 8'hXX, 8'hXX );	//	LD IX, EFF0h
+		test_ld_xy_nn( 8'hDD, 8'h21, 16'hEFF0, 8'h89, 8'h9A, 8'hAB, 8'hBC, 8'hCD, 8'hDE, 8'h78, 8'hFF, 8'hEF, 8'hF0, 8'h00, 8'h00 );	//	LD IX, EFF0h
 		test_ld_xy_nn( 8'hFD, 8'h21, 16'h0112, 8'h89, 8'h9A, 8'hAB, 8'hBC, 8'hCD, 8'hDE, 8'h78, 8'hFF, 8'hEF, 8'hF0, 8'h01, 8'h12 );	//	LD IY, 0112h
+
+		// --------------------------------------------------------------------
+		//	LD		(hl), n
+		// --------------------------------------------------------------------
+		//             data   ref addr  ref B  ref C  ref D  ref E  ref H  ref L  ref A  ref F rf IXH rf IXL rf IYH rf IYL
+		test_ld_rr_nn( 8'h21, 16'h1234, 8'h89, 8'h9A, 8'hAB, 8'hBC, 8'h12, 8'h34, 8'h78, 8'hFF );								//	LD HL, 1234h
+		test_ld_hl_n(  8'hAB, 16'h1234, 8'h89, 8'h9A, 8'hAB, 8'hBC, 8'h12, 8'h34, 8'h78, 8'hFF, 8'hEF, 8'hF0, 8'h01, 8'h12 );	//	LD (HL), ABh
+		test_ld_rr_nn( 8'h21, 16'hFEDC, 8'h89, 8'h9A, 8'hAB, 8'hBC, 8'hFE, 8'hDC, 8'h78, 8'hFF );								//	LD HL, FEDCh
+		test_ld_hl_n(  8'h53, 16'hFEDC, 8'h89, 8'h9A, 8'hAB, 8'hBC, 8'hFE, 8'hDC, 8'h78, 8'hFF, 8'hEF, 8'hF0, 8'h01, 8'h12 );	//	LD (HL), 53h
+
+		// --------------------------------------------------------------------
+		//	LD		(IX + d), n
+		// --------------------------------------------------------------------
+		//             prefix data  ref addr       n  ref B  ref C  ref D  ref E  ref H  ref L  ref A  ref F rf IXH rf IXL rf IYH rf IYL
+		test_ld_xy_nn( 8'hDD, 8'h21, 16'h7654,        8'h89, 8'h9A, 8'hAB, 8'hBC, 8'hFE, 8'hDC, 8'h78, 8'hFF, 8'h76, 8'h54, 8'h01, 8'h12 );		//	LD IX, 7654h
+		test_ld_xy_nn( 8'hFD, 8'h21, 16'h3456,        8'h89, 8'h9A, 8'hAB, 8'hBC, 8'hFE, 8'hDC, 8'h78, 8'hFF, 8'h76, 8'h54, 8'h34, 8'h56 );		//	LD IY, 3456h
+		test_ld_xy_n(  8'hDD, 8'h00, 16'h7654, 8'h53, 8'h89, 8'h9A, 8'hAB, 8'hBC, 8'hFE, 8'hDC, 8'h78, 8'hFF, 8'h76, 8'h54, 8'h34, 8'h56 );		//	LD (IX+00h), 53h
+		test_ld_xy_n(  8'hDD, 8'h09, 16'h765D, 8'hA2, 8'h89, 8'h9A, 8'hAB, 8'hBC, 8'hFE, 8'hDC, 8'h78, 8'hFF, 8'h76, 8'h54, 8'h34, 8'h56 );		//	LD (IX+09h), A2h
+		test_ld_xy_n(  8'hDD, 8'h7F, 16'h76D3, 8'hBE, 8'h89, 8'h9A, 8'hAB, 8'hBC, 8'hFE, 8'hDC, 8'h78, 8'hFF, 8'h76, 8'h54, 8'h34, 8'h56 );		//	LD (IX+7Fh), BEh
+		test_ld_xy_n(  8'hDD, 8'h80, 16'h75D4, 8'h93, 8'h89, 8'h9A, 8'hAB, 8'hBC, 8'hFE, 8'hDC, 8'h78, 8'hFF, 8'h76, 8'h54, 8'h34, 8'h56 );		//	LD (IX-80h), 93h
+		test_ld_xy_n(  8'hFD, 8'h00, 16'h3456, 8'h53, 8'h89, 8'h9A, 8'hAB, 8'hBC, 8'hFE, 8'hDC, 8'h78, 8'hFF, 8'h76, 8'h54, 8'h34, 8'h56 );		//	LD (IY+00h), 53h
+		test_ld_xy_n(  8'hFD, 8'h09, 16'h345F, 8'hA2, 8'h89, 8'h9A, 8'hAB, 8'hBC, 8'hFE, 8'hDC, 8'h78, 8'hFF, 8'h76, 8'h54, 8'h34, 8'h56 );		//	LD (IY+09h), A2h
+		test_ld_xy_n(  8'hFD, 8'h7F, 16'h34D5, 8'hBE, 8'h89, 8'h9A, 8'hAB, 8'hBC, 8'hFE, 8'hDC, 8'h78, 8'hFF, 8'h76, 8'h54, 8'h34, 8'h56 );		//	LD (IY+7Fh), BEh
+		test_ld_xy_n(  8'hFD, 8'h80, 16'h33D6, 8'h93, 8'h89, 8'h9A, 8'hAB, 8'hBC, 8'hFE, 8'hDC, 8'h78, 8'hFF, 8'h76, 8'h54, 8'h34, 8'h56 );		//	LD (IY-80h), 93h
+
+		test_ld_rr_nn(        8'h21, 16'hCDDE,        8'h89, 8'h9A, 8'hAB, 8'hBC, 8'hCD, 8'hDE, 8'h78, 8'hFF );								//	LD HL, FEDCh
+		test_ld_xy_nn( 8'hDD, 8'h21, 16'hEFF0,        8'h89, 8'h9A, 8'hAB, 8'hBC, 8'hCD, 8'hDE, 8'h78, 8'hFF, 8'hEF, 8'hF0, 8'h34, 8'h56 );	//	LD IX, EFF0h
+		test_ld_xy_nn( 8'hFD, 8'h21, 16'h0112,        8'h89, 8'h9A, 8'hAB, 8'hBC, 8'hCD, 8'hDE, 8'h78, 8'hFF, 8'hEF, 8'hF0, 8'h01, 8'h12 );	//	LD IY, 0112h
+
+		// --------------------------------------------------------------------
+		//	LD		(hl), r
+		// --------------------------------------------------------------------
+		//            code   address   r      ref B  ref C  ref D  ref E  ref H  ref L  ref A  ref F rf IXH rf IXL rf IYH rf IYL
+		test_ld_hl_r( 8'h70, 16'hCDDE, 8'h89, 8'h89, 8'h9A, 8'hAB, 8'hBC, 8'hCD, 8'hDE, 8'h78, 8'hFF, 8'hEF, 8'hF0, 8'h01, 8'h12 );		//	LD (HL), B
+		test_ld_hl_r( 8'h71, 16'hCDDE, 8'h9A, 8'h89, 8'h9A, 8'hAB, 8'hBC, 8'hCD, 8'hDE, 8'h78, 8'hFF, 8'hEF, 8'hF0, 8'h01, 8'h12 );		//	LD (HL), C
+		test_ld_hl_r( 8'h72, 16'hCDDE, 8'hAB, 8'h89, 8'h9A, 8'hAB, 8'hBC, 8'hCD, 8'hDE, 8'h78, 8'hFF, 8'hEF, 8'hF0, 8'h01, 8'h12 );		//	LD (HL), D
+		test_ld_hl_r( 8'h73, 16'hCDDE, 8'hBC, 8'h89, 8'h9A, 8'hAB, 8'hBC, 8'hCD, 8'hDE, 8'h78, 8'hFF, 8'hEF, 8'hF0, 8'h01, 8'h12 );		//	LD (HL), E
+		test_ld_hl_r( 8'h74, 16'hCDDE, 8'hCD, 8'h89, 8'h9A, 8'hAB, 8'hBC, 8'hCD, 8'hDE, 8'h78, 8'hFF, 8'hEF, 8'hF0, 8'h01, 8'h12 );		//	LD (HL), H
+		test_ld_hl_r( 8'h75, 16'hCDDE, 8'hDE, 8'h89, 8'h9A, 8'hAB, 8'hBC, 8'hCD, 8'hDE, 8'h78, 8'hFF, 8'hEF, 8'hF0, 8'h01, 8'h12 );		//	LD (HL), L
+		test_ld_hl_r( 8'h77, 16'hCDDE, 8'h78, 8'h89, 8'h9A, 8'hAB, 8'hBC, 8'hCD, 8'hDE, 8'h78, 8'hFF, 8'hEF, 8'hF0, 8'h01, 8'h12 );		//	LD (HL), A
+
+		// --------------------------------------------------------------------
+		//	LD		(ix + d), r
+		// --------------------------------------------------------------------
+		//            prefix code   d      address   r      ref B  ref C  ref D  ref E  ref H  ref L  ref A  ref F rf IXH rf IXL rf IYH rf IYL
+		test_ld_xy_r( 8'hDD, 8'h70, 8'h00, 16'hEFF0, 8'h89, 8'h89, 8'h9A, 8'hAB, 8'hBC, 8'hCD, 8'hDE, 8'h78, 8'hFF, 8'hEF, 8'hF0, 8'h01, 8'h12 );		//	LD (IX+00h), B
+		test_ld_xy_r( 8'hDD, 8'h71, 8'h7F, 16'hF06F, 8'h9A, 8'h89, 8'h9A, 8'hAB, 8'hBC, 8'hCD, 8'hDE, 8'h78, 8'hFF, 8'hEF, 8'hF0, 8'h01, 8'h12 );		//	LD (IX+7Fh), C
+		test_ld_xy_r( 8'hDD, 8'h72, 8'h80, 16'hEF70, 8'hAB, 8'h89, 8'h9A, 8'hAB, 8'hBC, 8'hCD, 8'hDE, 8'h78, 8'hFF, 8'hEF, 8'hF0, 8'h01, 8'h12 );		//	LD (IX+80h), D
+		test_ld_xy_r( 8'hDD, 8'h73, 8'h40, 16'hF030, 8'hBC, 8'h89, 8'h9A, 8'hAB, 8'hBC, 8'hCD, 8'hDE, 8'h78, 8'hFF, 8'hEF, 8'hF0, 8'h01, 8'h12 );		//	LD (IX+40h), E
+		test_ld_xy_r( 8'hDD, 8'h74, 8'h15, 16'hF005, 8'hCD, 8'h89, 8'h9A, 8'hAB, 8'hBC, 8'hCD, 8'hDE, 8'h78, 8'hFF, 8'hEF, 8'hF0, 8'h01, 8'h12 );		//	LD (IX+15h), H
+		test_ld_xy_r( 8'hDD, 8'h75, 8'h57, 16'hF047, 8'hDE, 8'h89, 8'h9A, 8'hAB, 8'hBC, 8'hCD, 8'hDE, 8'h78, 8'hFF, 8'hEF, 8'hF0, 8'h01, 8'h12 );		//	LD (IX+57h), L
+		test_ld_xy_r( 8'hDD, 8'h77, 8'hC0, 16'hEFB0, 8'h78, 8'h89, 8'h9A, 8'hAB, 8'hBC, 8'hCD, 8'hDE, 8'h78, 8'hFF, 8'hEF, 8'hF0, 8'h01, 8'h12 );		//	LD (IX+C0h), A
+
+		// --------------------------------------------------------------------
+		//	LD		(iy + d), r
+		// --------------------------------------------------------------------
+		//            prefix code   d      address   r      ref B  ref C  ref D  ref E  ref H  ref L  ref A  ref F rf IXH rf IXL rf IYH rf IYL
+		test_ld_xy_r( 8'hFD, 8'h70, 8'h00, 16'h0112, 8'h89, 8'h89, 8'h9A, 8'hAB, 8'hBC, 8'hCD, 8'hDE, 8'h78, 8'hFF, 8'hEF, 8'hF0, 8'h01, 8'h12 );		//	LD (IY+00h), B
+		test_ld_xy_r( 8'hFD, 8'h71, 8'h7F, 16'h0191, 8'h9A, 8'h89, 8'h9A, 8'hAB, 8'hBC, 8'hCD, 8'hDE, 8'h78, 8'hFF, 8'hEF, 8'hF0, 8'h01, 8'h12 );		//	LD (IY+7Fh), C
+		test_ld_xy_r( 8'hFD, 8'h72, 8'h80, 16'h0092, 8'hAB, 8'h89, 8'h9A, 8'hAB, 8'hBC, 8'hCD, 8'hDE, 8'h78, 8'hFF, 8'hEF, 8'hF0, 8'h01, 8'h12 );		//	LD (IY+80h), D
+		test_ld_xy_r( 8'hFD, 8'h73, 8'h40, 16'h0152, 8'hBC, 8'h89, 8'h9A, 8'hAB, 8'hBC, 8'hCD, 8'hDE, 8'h78, 8'hFF, 8'hEF, 8'hF0, 8'h01, 8'h12 );		//	LD (IY+40h), E
+		test_ld_xy_r( 8'hFD, 8'h74, 8'h15, 16'h0127, 8'hCD, 8'h89, 8'h9A, 8'hAB, 8'hBC, 8'hCD, 8'hDE, 8'h78, 8'hFF, 8'hEF, 8'hF0, 8'h01, 8'h12 );		//	LD (IY+15h), H
+		test_ld_xy_r( 8'hFD, 8'h75, 8'h57, 16'h0169, 8'hDE, 8'h89, 8'h9A, 8'hAB, 8'hBC, 8'hCD, 8'hDE, 8'h78, 8'hFF, 8'hEF, 8'hF0, 8'h01, 8'h12 );		//	LD (IY+57h), L
+		test_ld_xy_r( 8'hFD, 8'h77, 8'hC0, 16'h00D2, 8'h78, 8'h89, 8'h9A, 8'hAB, 8'hBC, 8'hCD, 8'hDE, 8'h78, 8'hFF, 8'hEF, 8'hF0, 8'h01, 8'h12 );		//	LD (IY+C0h), A
+
+		// ================================================================================================================================
+		//	フラグを書き替えないことを確認するために、もう一度同じことを確認する 
+		// ================================================================================================================================
 
 		// --------------------------------------------------------------------
 		//	POP		AF を使って Fレジスタを 00h にする 
@@ -552,10 +915,6 @@ module tb ();
 		send_byte( 8'hF1 );
 		send_byte( 8'h00 );
 		send_byte( 8'h00 );
-
-		// ================================================================================================================================
-		//	フラグを書き替えないことを確認するために、もう一度同じことを確認する 
-		// ================================================================================================================================
 
 		// --------------------------------------------------------------------
 		//	LD		r, n
@@ -709,6 +1068,33 @@ module tb ();
 		//              code                   ref B  ref C  ref D  ref E  ref H  ref L  ref A  ref F rf IXH rf IXL rf IYH rf IYL
 		test_ld_xy_nn( 8'hDD, 8'h21, 16'hEFF0, 8'h89, 8'h9A, 8'hAB, 8'hBC, 8'hCD, 8'hDE, 8'h78, 8'h00, 8'hEF, 8'hF0, 8'h01, 8'h12 );	//	LD IX, EFF0h
 		test_ld_xy_nn( 8'hFD, 8'h21, 16'h0112, 8'h89, 8'h9A, 8'hAB, 8'hBC, 8'hCD, 8'hDE, 8'h78, 8'h00, 8'hEF, 8'hF0, 8'h01, 8'h12 );	//	LD IY, 0112h
+
+		// --------------------------------------------------------------------
+		//	LD		(hl), n
+		// --------------------------------------------------------------------
+		test_ld_rr_nn( 8'h21, 16'h1234, 8'h89, 8'h9A, 8'hAB, 8'hBC, 8'h12, 8'h34, 8'h78, 8'h00 );								//	LD HL, 1234h
+		test_ld_hl_n(  8'hAB, 16'h1234, 8'h89, 8'h9A, 8'hAB, 8'hBC, 8'h12, 8'h34, 8'h78, 8'h00, 8'hEF, 8'hF0, 8'h01, 8'h12 );	//	LD (HL), ABh
+		test_ld_rr_nn( 8'h21, 16'hFEDC, 8'h89, 8'h9A, 8'hAB, 8'hBC, 8'hFE, 8'hDC, 8'h78, 8'h00 );								//	LD HL, FEDCh
+		test_ld_hl_n(  8'h53, 16'hFEDC, 8'h89, 8'h9A, 8'hAB, 8'hBC, 8'hFE, 8'hDC, 8'h78, 8'h00, 8'hEF, 8'hF0, 8'h01, 8'h12 );	//	LD (HL), 53h
+
+		// --------------------------------------------------------------------
+		//	LD		(IX + d), n
+		// --------------------------------------------------------------------
+		//             prefix data  ref addr       n  ref B  ref C  ref D  ref E  ref H  ref L  ref A  ref F rf IXH rf IXL rf IYH rf IYL
+		test_ld_xy_nn( 8'hDD, 8'h21, 16'h7654,        8'h89, 8'h9A, 8'hAB, 8'hBC, 8'hFE, 8'hDC, 8'h78, 8'h00, 8'h76, 8'h54, 8'h01, 8'h12 );		//	LD IX, 7654h
+		test_ld_xy_nn( 8'hFD, 8'h21, 16'h3456,        8'h89, 8'h9A, 8'hAB, 8'hBC, 8'hFE, 8'hDC, 8'h78, 8'h00, 8'h76, 8'h54, 8'h34, 8'h56 );		//	LD IY, 3456h
+		test_ld_xy_n(  8'hDD, 8'h00, 16'h7654, 8'h53, 8'h89, 8'h9A, 8'hAB, 8'hBC, 8'hFE, 8'hDC, 8'h78, 8'h00, 8'h76, 8'h54, 8'h34, 8'h56 );		//	LD (IX+00h), 53h
+		test_ld_xy_n(  8'hDD, 8'h09, 16'h765D, 8'hA2, 8'h89, 8'h9A, 8'hAB, 8'hBC, 8'hFE, 8'hDC, 8'h78, 8'h00, 8'h76, 8'h54, 8'h34, 8'h56 );		//	LD (IX+09h), A2h
+		test_ld_xy_n(  8'hDD, 8'h7F, 16'h76D3, 8'hBE, 8'h89, 8'h9A, 8'hAB, 8'hBC, 8'hFE, 8'hDC, 8'h78, 8'h00, 8'h76, 8'h54, 8'h34, 8'h56 );		//	LD (IX+7Fh), BEh
+		test_ld_xy_n(  8'hDD, 8'h80, 16'h75D4, 8'h93, 8'h89, 8'h9A, 8'hAB, 8'hBC, 8'hFE, 8'hDC, 8'h78, 8'h00, 8'h76, 8'h54, 8'h34, 8'h56 );		//	LD (IX-80h), 93h
+		test_ld_xy_n(  8'hFD, 8'h00, 16'h3456, 8'h53, 8'h89, 8'h9A, 8'hAB, 8'hBC, 8'hFE, 8'hDC, 8'h78, 8'h00, 8'h76, 8'h54, 8'h34, 8'h56 );		//	LD (IY+00h), 53h
+		test_ld_xy_n(  8'hFD, 8'h09, 16'h345F, 8'hA2, 8'h89, 8'h9A, 8'hAB, 8'hBC, 8'hFE, 8'hDC, 8'h78, 8'h00, 8'h76, 8'h54, 8'h34, 8'h56 );		//	LD (IY+09h), A2h
+		test_ld_xy_n(  8'hFD, 8'h7F, 16'h34D5, 8'hBE, 8'h89, 8'h9A, 8'hAB, 8'hBC, 8'hFE, 8'hDC, 8'h78, 8'h00, 8'h76, 8'h54, 8'h34, 8'h56 );		//	LD (IY+7Fh), BEh
+		test_ld_xy_n(  8'hFD, 8'h80, 16'h33D6, 8'h93, 8'h89, 8'h9A, 8'hAB, 8'hBC, 8'hFE, 8'hDC, 8'h78, 8'h00, 8'h76, 8'h54, 8'h34, 8'h56 );		//	LD (IY-80h), 93h
+
+		test_ld_rr_nn(        8'h21, 16'hCDDE,        8'h89, 8'h9A, 8'hAB, 8'hBC, 8'hCD, 8'hDE, 8'h78, 8'h00 );								//	LD HL, FEDCh
+		test_ld_xy_nn( 8'hDD, 8'h21, 16'hEFF0,        8'h89, 8'h9A, 8'hAB, 8'hBC, 8'hCD, 8'hDE, 8'h78, 8'h00, 8'hEF, 8'hF0, 8'h34, 8'h56 );	//	LD IX, EFF0h
+		test_ld_xy_nn( 8'hFD, 8'h21, 16'h0112,        8'h89, 8'h9A, 8'hAB, 8'hBC, 8'hCD, 8'hDE, 8'h78, 8'h00, 8'hEF, 8'hF0, 8'h01, 8'h12 );	//	LD IY, 0112h
 
 		$finish;
 	end
