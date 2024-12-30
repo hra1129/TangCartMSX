@@ -500,7 +500,7 @@ module tangnano20k_step6 (
 		.O_sdram_dqm			( O_sdram_dqm			)
 	);
 
-	assign w_debug_signal	= (w_sdram_address == 23'h40F0A2 && w_sdram_wr_n == 1'b0 && w_sdram_mreq_n == 1'b0 );
+	assign w_debug_signal	= (w_sdram_address == 23'h40F0A2 && (w_sdram_wr_n == 1'b0 || w_sdram_rd_n == 1'b0) && w_sdram_mreq_n == 1'b0 );
 
 	// --------------------------------------------------------------------
 	//	SDRAM memory map

@@ -161,7 +161,7 @@ module cz80_inst (
 		if( !ff_reset_n ) begin
 			ff_dinst <= 8'd0;
 		end
-		else if( !w_rd_n_i && !w_m1_n ) begin
+		else if( !w_rd_n_i ) begin
 			ff_dinst <= d;
 		end
 	end

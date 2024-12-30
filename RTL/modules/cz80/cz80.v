@@ -538,8 +538,8 @@ module cz80 (
 					tmpaddr <= regbusc + { { 8 { di_reg[7] } }, di_reg };
 				end
 
-				if( (tstate == 3'd2 && wait_n == 1'b1) || (tstate == 4 && mcycle == 3'b001) ) begin
-					if( incdec_16[2:0] == 3'b111 ) begin
+				if( (tstate == 3'd2 && wait_n == 1'b1) || (tstate == 3'd4 && mcycle == 3'd1) ) begin
+					if( incdec_16[2:0] == 3'd7 ) begin
 						if( incdec_16[3] == 1'b1 ) begin
 							sp <= sp - 1;
 						end
@@ -620,11 +620,11 @@ module cz80 (
 			end
 
 			if( tstate == 1 && auto_wait_t1 == 1'b0 ) begin
-				if( i_rld == 1'b1 ) begin
-					ff_do <= { busb[3:0], busa[3:0] };
-				end
-				else if( i_rrd == 1'b1 ) begin
+				if( i_rrd == 1'b1 ) begin
 					ff_do <= { busa[3:0], busb[7:4] };
+				end
+				else if( i_rld == 1'b1 ) begin
+					ff_do <= { busb[3:0], busa[3:0] };
 				end
 				else begin
 					ff_do <= busb;
@@ -650,7 +650,7 @@ module cz80 (
 				f[flag_p] <= incdecz;
 			end
 
-			if( (tstate == 1 && save_alu_r == 1'b0 && auto_wait_t1 == 1'b0) ||
+			if( (tstate == 3'd1 && save_alu_r == 1'b0 && auto_wait_t1 == 1'b0) ||
 				(save_alu_r == 1'b1 && alu_op_r != 4'b0111) ) begin
 				case( read_to_reg_r )
 				5'b10111:
@@ -752,15 +752,10 @@ module cz80 (
 		input	[2:0]	mcycle,
 		input			let
 	);
-		if( incdec_16[2] && ((tstate == 3'd2 && wait_n && mcycle != 3'b001) || (tstate == 3'd3 && mcycle == 3'b001)) ) begin
-			case( incdec_16[1:0] )
-			2'b00, 2'b01, 2'b10:
-				func_regwe = 1'b1;
-			default:
-				func_regwe = 1'b0;
-			endcase
+		if( incdec_16[2] && ((tstate == 3'd2 && wait_n && mcycle != 3'b001) || (tstate == 3'd3 && mcycle == 3'b001)) && (incdec_16[1:0] != 2'b11)) begin
+			func_regwe = 1'b1;
 		end
-		else if( exchangedh && (tstate == 3'd3 || tstate == 3'd4 ) ) begin
+		else if( exchangedh && (tstate == 3'd3 || tstate == 3'd4) ) begin
 			func_regwe = 1'b1;
 		end
 		else if( ( tstate == 3'd1 && !save_alu_r && !auto_wait_t1) || (save_alu_r && alu_op_r != 4'b0111) ) begin
@@ -779,12 +774,12 @@ module cz80 (
 	assign regweh = func_regwe( tstate, save_alu_r, auto_wait_t1, alu_op_r, read_to_reg_r, exchangedh, incdec_16, wait_n, mcycle, ~read_to_reg_r[0] );
 	assign regwel = func_regwe( tstate, save_alu_r, auto_wait_t1, alu_op_r, read_to_reg_r, exchangedh, incdec_16, wait_n, mcycle,  read_to_reg_r[0] );
 
-	assign regdih	= ( exchangedh && tstate == 3'd3 ) ? regbusb[15:8]:
+	assign regdih	= ( incdec_16[2] && ((tstate == 3'd2 && mcycle != 3'd1) || (tstate == 3'd3 && mcycle == 3'd1)) ) ? id16[15:8] :
 					  ( exchangedh && tstate == 3'd4 ) ? regbusa_r[15:8]:
-					  ( incdec_16[2] && ((tstate == 3'd2 && mcycle != 3'd1) || (tstate == 3'd3 && mcycle == 3'd1)) ) ? id16[15:8] : save_mux;
-	assign regdil	= ( exchangedh && tstate == 3'd3 ) ? regbusb[7:0]:
+					  ( exchangedh && tstate == 3'd3 ) ? regbusb[15:8]: save_mux;
+	assign regdil	= ( incdec_16[2] && ((tstate == 3'd2 && mcycle != 3'd1) || (tstate == 3'd3 && mcycle == 3'd1)) ) ? id16[ 7:0] :
 					  ( exchangedh && tstate == 3'd4 ) ? regbusa_r[7:0]:
-					  ( incdec_16[2] && ((tstate == 3'd2 && mcycle != 3'd1) || (tstate == 3'd3 && mcycle == 3'd1)) ) ? id16[ 7:0] : save_mux;
+					  ( exchangedh && tstate == 3'd3 ) ? regbusb[7:0]: save_mux;
 
 	cz80_registers u_regs (
 		.reset_n		( reset_n			),
@@ -869,7 +864,7 @@ module cz80 (
 			ff_rfsh_n <= 1'b1;
 		end
 		else if( cen ) begin
-			if( mcycle == 3'd1 && ((tstate == 2	&& wait_n) || tstate == 3 ) ) begin
+			if( mcycle == 3'd1 && ((tstate == 2 && wait_n) || tstate == 3 ) ) begin
 				ff_rfsh_n <= 1'b0;
 			end
 			else begin
@@ -1018,7 +1013,7 @@ module cz80 (
 					end
 				end
 				else begin
-					if( ~( (auto_wait && !auto_wait_t2) || (iorq_i && !auto_wait_t1) ) ) begin
+					if( !( (auto_wait && !auto_wait_t2) || (iorq_i && !auto_wait_t1) ) ) begin
 						tstate <= tstate + 3'd1;
 					end
 				end

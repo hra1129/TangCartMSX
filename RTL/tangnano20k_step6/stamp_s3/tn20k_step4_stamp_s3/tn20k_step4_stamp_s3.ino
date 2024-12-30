@@ -173,8 +173,8 @@ void loop() {
 		send_rom_image( rom_main_01, sizeof(rom_main_01) );
 		Serial.println( "Send BASIC'N" );
 		send_rom_image( rom_basicn_00, sizeof(rom_basicn_00) );
-		Serial.println( "hello world" );
-		send_rom_image( rom_hello_world_00, sizeof(rom_hello_world_00) );
+//		Serial.println( "hello world" );
+//		send_rom_image( rom_hello_world_00, sizeof(rom_hello_world_00) );
 //		Serial.println( "Super Cobra" );
 //		send_rom_image( rom_super_cobra_00, sizeof(rom_super_cobra_00) );
 //		Serial.println( "Stepper" );
