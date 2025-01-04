@@ -99,7 +99,7 @@ WARN  (EX3791) : Expression size 32 truncated to fit in target size 10("D:\githu
 Compiling module 'ip_ram'("D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_step6\src\ram\ip_ram.v":5)
 Extracting RAM for identifier 'ff_ram'("D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_step6\src\ram\ip_ram.v":15)
 Compiling module 'ip_sdram'("D:\github\HRA_product\TangCartMSX\RTL\modules\sdram\ip_sdram_tangnano20k_c.v":57)
-WARN  (EX3791) : Expression size 32 truncated to fit in target size 14("D:\github\HRA_product\TangCartMSX\RTL\modules\sdram\ip_sdram_tangnano20k_c.v":372)
+WARN  (EX3791) : Expression size 32 truncated to fit in target size 14("D:\github\HRA_product\TangCartMSX\RTL\modules\sdram\ip_sdram_tangnano20k_c.v":389)
 NOTE  (EX0101) : Current top module is "tangnano20k_step6"
 [5%] Running netlist conversion ...
 WARN  (CV0016) : Input clk27m is unused("D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_step6\src\tangnano20k_step6.v":25)

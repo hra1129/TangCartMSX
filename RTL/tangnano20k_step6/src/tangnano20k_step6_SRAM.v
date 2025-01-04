@@ -1,0 +1,579 @@
+// -----------------------------------------------------------------------------
+//	tangnano20k_step6.v
+//	Copyright (C)2024 Takayuki Hara (HRA!)
+//	
+//	 Permission is hereby granted, free of charge, to any person obtaining a 
+//	copy of this software and associated documentation files (the "Software"), 
+//	to deal in the Software without restriction, including without limitation 
+//	the rights to use, copy, modify, merge, publish, distribute, sublicense, 
+//	and/or sell copies of the Software, and to permit persons to whom the 
+//	Software is furnished to do so, subject to the following conditions:
+//	
+//	The above copyright notice and this permission notice shall be included in 
+//	all copies or substantial portions of the Software.
+//	
+//	The Software is provided "as is", without warranty of any kind, express or 
+//	implied, including but not limited to the warranties of merchantability, 
+//	fitness for a particular purpose and noninfringement. In no event shall the 
+//	authors or copyright holders be liable for any claim, damages or other 
+//	liability, whether in an action of contract, tort or otherwise, arising 
+//	from, out of or in connection with the Software or the use or other dealings 
+//	in the Software.
+// -----------------------------------------------------------------------------
+
+module tangnano20k_step6 (
+	input			clk27m,			//	clk27m		PIN04_SYS_CLK		(27MHz)
+	input			clk3_579m,		//	clk3_579m	PIN76				(3.579545MHz)
+	input	[1:0]	button,			//	button[0]	PIN88_MODE0_KEY1
+									//	button[1]	PIN87_MODE1_KEY2
+	//	VGA Output
+	output			lcd_clk,		//	PIN77
+	output			lcd_de,			//	PIN48
+	output			lcd_hsync,		//	PIN25
+	output			lcd_vsync,		//	PIN26
+	output	[4:0]	lcd_red,		//	PIN38, PIN39, PIN40, PIN41, PIN42
+	output	[5:0]	lcd_green,		//	PIN32, PIN33, PIN34, PIN35, PIN36, PIN37
+	output	[4:0]	lcd_blue,		//	PIN27, PIN28, PIN29, PIN30, PIN31
+	output			lcd_bl,			//	PIN49
+	//	SPI
+	input			spi_cs_n,		//	PIN79
+	input			spi_clk,		//	PIN73
+	input			spi_mosi,		//	PIN74
+	output			spi_miso,		//	PIN75
+	//	PSG
+	inout	[5:0]	ssg_ioa,		//	PIN20, PIN19, PIN18, PIN17, PIN16, PIN15
+	output	[2:0]	ssg_iob,		//	PIN71, PIN53, PIN52
+	//	UART
+	output			uart_tx,		//	uart_tx		PIN69_SYS_TX
+	//	SDRAM
+	output			O_sdram_clk,	//	Internal
+	output			O_sdram_cke,	//	Internal
+	output			O_sdram_cs_n,	//	Internal
+	output			O_sdram_cas_n,	//	Internal
+	output			O_sdram_ras_n,	//	Internal
+	output			O_sdram_wen_n,	//	Internal
+	inout	[31:0]	IO_sdram_dq,	//	Internal
+	output	[10:0]	O_sdram_addr,	//	Internal
+	output	[1:0]	O_sdram_ba,		//	Internal
+	output	[3:0]	O_sdram_dqm		//	Internal
+);
+	wire			clk;
+	wire			clk42m;
+	reg		[2:0]	ff_delay = 3'd7;
+	reg				ff_reset_n = 1'b0;
+	reg				ff_clock_div = 1'b0;
+	reg		[2:0]	ff_cpu_clock_div = 3'b0;
+	reg		[3:0]	ff_psg_clock_div = 4'b0;
+	wire			w_enable;
+	wire			w_cpu_enable;
+	wire			w_psg_enable;
+
+	wire			wait_n;
+	wire			int_n;
+	wire			nmi_n;
+	wire			busrq_n;
+	wire			m1_n;
+	wire			mreq_n;
+	wire			iorq_n;
+	wire			rd_n;
+	wire			wr_n;
+	wire			rfsh_n;
+	wire			halt_n;
+	wire			busak_n;
+	wire	[15:0]	a;
+	wire	[7:0]	d;
+	reg		[7:0]	ff_d;
+	wire	[7:0]	w_uart_q;
+	wire			w_uart_q_en;
+
+	wire			w_sdram_mreq_n;
+	wire			w_sdram_wr_n;
+	wire			w_sdram_rd_n;
+	wire			w_sdram_busy;
+	wire	[22:0]	w_sdram_address;
+	wire	[7:0]	w_sdram_q;
+	wire			w_sdram_q_en;
+	wire	[7:0]	w_sdram_d;
+
+	wire			w_vram_read_n;
+	wire			w_vram_write_n;
+	wire	[13:0]	w_vram_address;
+	wire	[7:0]	w_vram_wdata;
+	wire	[7:0]	w_vram_rdata;
+	wire			w_vram_rdata_en;
+	reg		[7:0]	ff_vram_rdata;
+
+	wire			w_dram_read_n;
+	wire			w_dram_write_n;
+	wire	[13:0]	w_dram_address;
+	wire	[7:0]	w_dram_wdata;
+	wire	[7:0]	w_dram_rdata;
+	wire			w_dram_rdata_en;
+
+	wire	[5:0]	w_lcd_red;
+	wire	[5:0]	w_lcd_green;
+	wire	[5:0]	w_lcd_blue;
+
+	wire	[1:0]	w_vdp_enable_state;
+	wire			w_vdp_cs_n;
+	wire	[7:0]	w_vdp_q;
+	wire			w_vdp_q_en;
+	wire			w_dh_clk;
+	wire			w_dl_clk;
+
+	wire			w_msx_reset_n;
+	wire			w_cpu_freeze;
+
+	wire			w_ppi_cs_n;
+	wire	[3:0]	w_matrix_y;
+	wire	[7:0]	w_matrix_x;
+	wire			w_cmt_motor_off;
+	wire			w_cmt_write_signal;
+	wire			w_keyboard_caps_led_off;
+	wire			w_click_sound;
+	wire			w_sltsl0;
+	wire			w_sltsl1;
+	wire			w_sltsl2;
+	wire			w_sltsl3;
+	wire			w_sltsl00;
+	wire			w_sltsl01;
+	wire			w_sltsl02;
+	wire			w_sltsl03;
+	wire			w_sltsl30;
+	wire			w_sltsl31;
+	wire			w_sltsl32;
+	wire			w_sltsl33;
+	wire	[7:0]	w_expslt0_q;
+	wire			w_expslt0_q_en;
+	wire	[7:0]	w_expslt3_q;
+	wire			w_expslt3_q_en;
+	wire			w_kanji_j1;
+	wire			w_kanji_j2;
+	wire	[22:0]	w_spi_address;
+	wire			w_spi_mreq_n;
+	wire	[7:0]	w_spi_d;
+	wire	[7:0]	w_ppi_q;
+	wire			w_ppi_q_en;
+	wire			w_psg_cs_n;
+	wire	[7:0]	w_psg_q;
+	wire			w_psg_q_en;
+	wire			w_keyboard_type;
+	wire			w_keyboard_kana_led_off;
+	wire	[11:0]	w_ssg_sound_out;
+	wire			w_debug_signal;
+
+	// --------------------------------------------------------------------
+	//	clock
+	// --------------------------------------------------------------------
+	Gowin_PLL u_pll (
+		.clkout			( clk			),		//	output clkout	85.90908MHz
+		.clkoutd		( clk42m		),		//	output clkoutd	42.95454MHz
+		.clkin			( clk3_579m		)		//	input clkin		3.579545MHz
+	);
+
+	always @( posedge clk42m ) begin
+		if( !ff_reset_n ) begin
+			ff_clock_div <= 1'd0;
+		end
+		else begin
+			ff_clock_div <= ~ff_clock_div;
+		end
+	end
+	assign w_enable		= (ff_clock_div == 1'b1);
+
+	always @( posedge clk42m ) begin
+		if( !ff_reset_n ) begin
+			ff_cpu_clock_div <= 3'd0;
+		end
+		else if( w_cpu_freeze ) begin
+			ff_cpu_clock_div <= 3'd0;
+		end
+		else begin
+			if( ff_cpu_clock_div == 3'd5 ) begin
+				ff_cpu_clock_div <= 3'd0;
+			end
+			else begin
+				ff_cpu_clock_div <= ff_cpu_clock_div + 3'd1;
+			end
+		end
+	end
+	assign w_cpu_enable		= (ff_cpu_clock_div == 3'd5 && !w_sdram_busy && !w_cpu_freeze);
+
+	always @( posedge clk42m ) begin
+		if( !ff_reset_n ) begin
+			ff_psg_clock_div <= 4'd0;
+		end
+		else if( w_cpu_freeze ) begin
+			ff_psg_clock_div <= 4'd0;
+		end
+		else begin
+			if( ff_psg_clock_div == 4'd11 ) begin
+				ff_psg_clock_div <= 4'd0;
+			end
+			else begin
+				ff_psg_clock_div <= ff_psg_clock_div + 4'd1;
+			end
+		end
+	end
+	assign w_psg_enable		= (ff_psg_clock_div == 4'd11 && !w_sdram_busy && !w_cpu_freeze);
+
+	// --------------------------------------------------------------------
+	//	reset
+	// --------------------------------------------------------------------
+	always @( posedge clk42m ) begin
+		if( ff_delay != 3'd0 ) begin
+			ff_delay <= ff_delay - 3'd1;
+		end
+		else begin
+			//	hold
+		end
+	end
+
+	always @( posedge clk42m ) begin
+		if( ff_delay == 3'd0 ) begin
+			ff_reset_n <= 1'b1;
+		end
+	end
+
+	// --------------------------------------------------------------------
+	//	ESP32 Connection module
+	// --------------------------------------------------------------------
+	micom_connect u_esp32_conn (
+		.reset_n				( ff_reset_n				),
+		.clk					( clk						),
+		.spi_cs_n				( spi_cs_n					),
+		.spi_clk				( spi_clk					),
+		.spi_mosi				( spi_mosi					),
+		.spi_miso				( spi_miso					),
+		.msx_reset_n			( w_msx_reset_n				),
+		.cpu_freeze				( w_cpu_freeze				),
+		.matrix_y				( w_matrix_y				),
+		.matrix_x				( w_matrix_x				),
+		.address				( w_spi_address				),
+		.req_n					( w_spi_mreq_n				),
+		.wdata					( w_spi_d					),
+		.sdram_busy				( w_sdram_busy				),
+		.keyboard_caps_led_off	( w_keyboard_caps_led_off	),
+		.keyboard_kana_led_off	( w_keyboard_kana_led_off	),
+		.keyboard_type			( w_keyboard_type			)
+	);
+
+	// --------------------------------------------------------------------
+	//	Z80 core
+	// --------------------------------------------------------------------
+	cz80_inst u_z80 (
+		.reset_n				( w_msx_reset_n				),
+		.clk_n					( clk42m					),
+		.enable					( w_cpu_enable				),
+		.wait_n					( wait_n					),
+		.int_n					( int_n						),
+		.nmi_n					( nmi_n						),
+		.busrq_n				( busrq_n					),
+		.m1_n					( m1_n						),
+		.mreq_n					( mreq_n					),
+		.iorq_n					( iorq_n					),
+		.rd_n					( rd_n						),
+		.wr_n					( wr_n						),
+		.rfsh_n					( rfsh_n					),
+		.halt_n					( halt_n					),
+		.busak_n				( busak_n					),
+		.a						( a							),
+		.d						( d							)
+	);
+
+	assign wait_n	= 1'b1;
+	assign nmi_n	= 1'b1;
+	assign busrq_n	= 1'b1;
+	assign d		= ( !rd_n ) ? ff_d : 8'hzz;
+
+	always @( posedge clk ) begin
+		if( w_sdram_q_en ) begin
+			ff_d <= w_sdram_q;
+		end
+		else if( w_dram_rdata_en ) begin
+			ff_d <= w_dram_rdata;
+		end
+		else if( w_uart_q_en ) begin
+			ff_d <= w_uart_q;
+		end
+		else if( w_expslt0_q_en ) begin
+			ff_d <= w_expslt0_q;
+		end
+		else if( w_expslt3_q_en ) begin
+			ff_d <= w_expslt3_q;
+		end
+		else if( w_ppi_q_en ) begin
+			ff_d <= w_ppi_q;
+		end
+		else if( rd_n ) begin
+			ff_d <= 8'hFF;
+		end
+		else begin
+			//	hold
+		end
+	end
+
+	// --------------------------------------------------------------------
+	//	UART
+	// --------------------------------------------------------------------
+	ip_uart_inst #(
+		.clk_freq				( 43200000					),
+		.uart_freq				( 115200					)
+	) u_uart (
+		.reset_n				( ff_reset_n				),
+		.clk					( clk42m					),
+		.enable					( w_enable					),
+		.iorq_n					( iorq_n					),
+		.wr_n					( wr_n						),
+		.rd_n					( rd_n						),
+		.a						( a[7:0]					),
+		.d						( d							),
+		.q						( w_uart_q					),
+		.q_en					( w_uart_q_en				),
+		.button					( button					),
+		.uart_tx				( uart_tx					)
+	);
+
+	// --------------------------------------------------------------------
+	//	PPI
+	// --------------------------------------------------------------------
+	ppi_inst u_ppi (
+		.reset_n				( w_msx_reset_n				),
+		.clk					( clk						),
+		.iorq_n					( w_ppi_cs_n				),
+		.wr_n					( wr_n						),
+		.rd_n					( rd_n						),
+		.address				( a							),
+		.wdata					( d							),
+		.rdata					( w_ppi_q					),
+		.rdata_en				( w_ppi_q_en				),
+		.matrix_y				( w_matrix_y				),
+		.matrix_x				( w_matrix_x				),
+		.cmt_motor_off			( w_cmt_motor_off			),
+		.cmt_write_signal		( w_cmt_write_signal		),
+		.keyboard_caps_led_off	( w_keyboard_caps_led_off	),
+		.click_sound			( w_click_sound				),
+		.sltsl0					( w_sltsl0					),
+		.sltsl1					( w_sltsl1					),
+		.sltsl2					( w_sltsl2					),
+		.sltsl3					( w_sltsl3					)
+	);
+
+	assign w_ppi_cs_n	= ( { a[7:2], 2'b00 } == 8'hA8 ) ? iorq_n : 1'b1;
+
+	// --------------------------------------------------------------------
+	//	Expansion Slot#0-X
+	// --------------------------------------------------------------------
+	secondary_slot_inst u_exp_slot0 (
+		.reset_n				( w_msx_reset_n				),
+		.clk					( clk42m					),
+		.sltsl					( w_sltsl0					),
+		.mreq_n					( mreq_n					),
+		.wr_n					( wr_n						),
+		.rd_n					( rd_n						),
+		.address				( a							),
+		.wdata					( d							),
+		.rdata					( w_expslt0_q				),
+		.rdata_en				( w_expslt0_q_en			),
+		.sltsl_ext0				( w_sltsl00					),
+		.sltsl_ext1				( w_sltsl01					),
+		.sltsl_ext2				( w_sltsl02					),
+		.sltsl_ext3				( w_sltsl03					)
+	);
+
+	// --------------------------------------------------------------------
+	//	Expansion Slot#3-X
+	// --------------------------------------------------------------------
+	secondary_slot_inst u_exp_slot3 (
+		.reset_n				( w_msx_reset_n				),
+		.clk					( clk42m					),
+		.sltsl					( w_sltsl3					),
+		.mreq_n					( mreq_n					),
+		.wr_n					( wr_n						),
+		.rd_n					( rd_n						),
+		.address				( a							),
+		.wdata					( d							),
+		.rdata					( w_expslt3_q				),
+		.rdata_en				( w_expslt3_q_en			),
+		.sltsl_ext0				( w_sltsl30					),
+		.sltsl_ext1				( w_sltsl31					),
+		.sltsl_ext2				( w_sltsl32					),
+		.sltsl_ext3				( w_sltsl33					)
+	);
+
+	// --------------------------------------------------------------------
+	//	SSG
+	// --------------------------------------------------------------------
+	ssg u_ssg (
+		.clk					( clk42m					),
+		.reset_n				( w_msx_reset_n				),
+		.enable					( w_psg_enable				),
+		.iorq_n					( w_psg_cs_n				),
+		.wr_n					( wr_n						),
+		.rd_n					( rd_n						),
+		.address				( a[1:0]					),
+		.wdata					( d							),
+		.rdata					( w_psg_q					),
+		.rdata_en				( w_psg_q_en				),
+		.ssg_ioa				( ssg_ioa					),
+		.ssg_iob				( ssg_iob					),
+		.keyboard_type			( w_keyboard_type			),
+		.cmt_read				( 1'b0						),
+		.kana_led				( w_keyboard_kana_led_off	),
+		.sound_out				( w_ssg_sound_out			)
+	);
+	assign w_psg_cs_n				= !( !iorq_n && ( { a[7:2], 2'd0 } == 8'hA0 ) );
+
+	// --------------------------------------------------------------------
+	//	V9918 clone
+	// --------------------------------------------------------------------
+	vdp_inst u_v9918 (
+		.clk					( clk42m				),
+		.reset_n				( w_msx_reset_n			),
+		.initial_busy			( 1'b0					),
+		.iorq_n					( w_vdp_cs_n			),
+		.wr_n					( wr_n					),
+		.rd_n					( rd_n					),
+		.address				( a[0]					),
+		.rdata					( w_vdp_q				),		//	[ 7: 0];
+		.rdata_en				( w_vdp_q_en			),
+		.wdata					( d						),		//	[ 7: 0];
+		.int_n					( int_n					),		
+		.p_dram_oe_n			( w_vram_read_n			),		
+		.p_dram_we_n			( w_vram_write_n		),		
+		.p_dram_address			( w_vram_address		),		//	[13: 0];
+		.p_dram_rdata			( ff_vram_rdata			),		//	[ 7: 0];
+		.p_dram_wdata			( w_vram_wdata			),		//	[ 7: 0];
+		.pvideo_clk				( lcd_clk				),		
+		.pvideo_data_en			( lcd_de				),		
+		.pvideor				( w_lcd_red				),		//	[ 5: 0];
+		.pvideog				( w_lcd_green			),		//	[ 5: 0];
+		.pvideob				( w_lcd_blue			),		//	[ 5: 0];
+		.pvideohs_n				( lcd_hsync				),
+		.pvideovs_n				( lcd_vsync				),
+		.p_video_dh_clk			( w_dh_clk				),
+		.p_video_dl_clk			( w_dl_clk				)
+    );
+
+	assign w_vdp_cs_n				= !( !iorq_n && ( { a[7:1], 1'd0 } == 8'h98 ) );
+	assign lcd_red					= w_lcd_red[5:1];
+	assign lcd_green				= w_lcd_green;
+	assign lcd_blue					= w_lcd_blue[5:1];
+	assign lcd_bl					= !w_cpu_freeze;
+
+	// --------------------------------------------------------------------
+	//	VRAM
+	// --------------------------------------------------------------------
+	ip_ram u_vram (
+		.clk					( clk42m				),
+		.n_cs					( 1'b0					),
+		.n_wr					( w_vram_write_n		),
+		.n_rd					( w_vram_read_n			),
+		.address				( w_vram_address		),
+		.wdata					( w_vram_wdata			),
+		.rdata					( w_vram_rdata			),
+		.rdata_en				( w_vram_rdata_en		)
+	);
+
+	always @( posedge clk42m ) begin
+		if( w_vram_rdata_en ) begin
+			ff_vram_rdata <= w_vram_rdata;
+		end
+	end
+
+	// --------------------------------------------------------------------
+	//	DRAM
+	// --------------------------------------------------------------------
+	ip_ram u_dram (
+		.clk					( clk42m				),
+		.n_cs					( mreq_n				),
+		.n_wr					( w_dram_write_n		),
+		.n_rd					( w_dram_read_n			),
+		.address				( w_dram_address		),
+		.wdata					( w_dram_wdata			),
+		.rdata					( w_dram_rdata			),
+		.rdata_en				( w_dram_rdata_en		)
+	);
+
+	assign w_dram_write_n		= (w_sltsl30 && a[15:14] == 2'b11) ? wr_n : 1'b1;
+	assign w_dram_read_n		= (w_sltsl30 && a[15:14] == 2'b11) ? rd_n : 1'b1;
+	assign w_dram_address		= a[13:0];
+	assign w_dram_wdata			= d;
+
+	// --------------------------------------------------------------------
+	//	SDRAM
+	// --------------------------------------------------------------------
+	ip_sdram u_sdram (
+		.reset_n				( ff_reset_n			),
+		.clk					( clk					),
+		.clk_sdram				( clk					),
+		.sdram_busy				( w_sdram_busy			),
+		.cpu_freeze				( w_cpu_freeze			),
+		.mreq_n					( w_sdram_mreq_n		),
+		.address				( w_sdram_address		),
+		.wr_n					( w_sdram_wr_n			),
+		.rd_n					( w_sdram_rd_n			),
+		.rfsh_n					( rfsh_n				),
+		.wdata					( w_sdram_d				),
+		.rdata					( w_sdram_q				),
+		.rdata_en				( w_sdram_q_en			),
+		.O_sdram_clk			( O_sdram_clk			),
+		.O_sdram_cke			( O_sdram_cke			),
+		.O_sdram_cs_n			( O_sdram_cs_n			),
+		.O_sdram_cas_n			( O_sdram_cas_n			),
+		.O_sdram_ras_n			( O_sdram_ras_n			),
+		.O_sdram_wen_n			( O_sdram_wen_n			),
+		.IO_sdram_dq			( IO_sdram_dq			),
+		.O_sdram_addr			( O_sdram_addr			),
+		.O_sdram_ba				( O_sdram_ba			),
+		.O_sdram_dqm			( O_sdram_dqm			)
+	);
+
+	assign w_debug_signal	= (w_sdram_address == 23'h40F098 && (w_sdram_wr_n == 1'b0 || w_sdram_rd_n == 1'b0) && w_sdram_mreq_n == 1'b0 );
+
+	// --------------------------------------------------------------------
+	//	SDRAM memory map
+	// --------------------------------------------------------------------
+	assign w_sdram_address[22:13]	= ( w_cpu_freeze ) ? w_spi_address[22:13]           :		//	SDRAM Updater from SPI
+									  ( w_kanji_j1   ) ? { 10'b100_1100_000           } :		//	JIS1 KanjiROM
+									  ( w_kanji_j2   ) ? { 10'b100_1110_000           } :		//	JIS2 KanjiROM
+//									  ( w_sltsl30    ) ? { 7'b100_0000,      a[15:13] } :		//	MapperRAM
+									  ( w_sltsl1     ) ? { 8'b010_0000_0,~a[14],a[13] } :		//	MegaROM 1MB
+									  ( w_sltsl2     ) ? { 10'b000_0100_000           } :		//	MegaROM 512KB
+									  ( w_sltsl03    ) ? { 8'b000_0011_1,    a[14:13] } :		//	MSX Logo, ExtBASIC
+									  ( w_sltsl02    ) ? { 9'b000_0011_01,   a[13]    } :		//	MSX-MUSIC
+									  ( w_sltsl01    ) ? { 9'b000_0011_00,   a[13]    } :		//	IoT-BASIC
+									  ( w_sltsl31    ) ? { 8'b000_0010_1,    a[14:13] } :		//	SUB-ROM, KanjiBASIC
+									  ( w_sltsl00    ) ? { 8'b000_0010_0,    a[14:13] } :		//	MAIN-ROM
+									  ( w_sltsl32    ) ? { 6'b000_000, 1'b0, a[15:13] } :		//	Nextor
+									                     10'b000_0000_000;						//	#3-3 N/A
+
+	assign w_kanji_j1				= 1'b0;
+	assign w_kanji_j2				= 1'b0;
+	assign w_sdram_address[12:0]	= w_cpu_freeze ? w_spi_address[12:0]: a[12:0];
+	assign w_sdram_d				= w_cpu_freeze ? w_spi_d            : d;
+
+	assign w_sdram_mreq_n			= ( w_cpu_freeze ) ? w_spi_mreq_n   : 
+									  ( w_kanji_j1   ) ? iorq_n         :		//	JIS1 KanjiROM
+									  ( w_kanji_j2   ) ? iorq_n         :		//	JIS2 KanjiROM
+									                     mreq_n;
+
+	assign w_sdram_wr_n				= ( w_cpu_freeze ) ? w_spi_mreq_n :							//	SDRAM Updater from SPI
+//									  ( w_sltsl30    ) ? wr_n         :							//	MapperRAM
+									                     1'b1;
+
+	assign w_sdram_rd_n				= ( w_kanji_j1                                            ) ? rd_n :		//	JIS1 KanjiROM
+									  ( w_kanji_j2                                            ) ? rd_n :		//	JIS2 KanjiROM
+									  ( !iorq_n                                               ) ? 1'b1 :		//	
+//									  ( w_sltsl30                                             ) ? rd_n :		//	MapperRAM
+									  ( w_sltsl1   && (a[15:14] == 2'b01 || a[15:14] == 2'b10)) ? rd_n :		//	MegaROM 1MB
+									  ( w_sltsl2   && (a[15:14] == 2'b01 || a[15:14] == 2'b10)) ? rd_n :		//	MegaROM 512KB
+									  ( w_sltsl03  && (a[15:14] == 2'b01 || a[15:14] == 2'b10)) ? rd_n :		//	MSX Logo, ExtBASIC
+									  ( w_sltsl02  && (a[15:14] == 2'b01)                     ) ? rd_n :		//	MSX-MUSIC
+									  ( w_sltsl01  && (a[15:14] == 2'b01)                     ) ? rd_n :		//	IoT-BASIC
+									  ( w_sltsl31  && (a[15]    == 1'b0)                      ) ? rd_n :		//	SUB-ROM, KanjiBASIC
+									  ( w_sltsl00  && (a[15]    == 1'b0)                      ) ? rd_n :		//	MAIN-ROM
+									  ( w_sltsl32  && (a[15:14] == 2'b01 || a[15:14] == 2'b10)) ? rd_n :		//	Nextor
+									                                                              1'b1;
+
+endmodule

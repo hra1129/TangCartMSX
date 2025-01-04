@@ -58,8 +58,8 @@ module vdp_register (
 	input				clk,
 	input				enable,
 
-	input				wr_req,
-	input				rd_req,
+	input				wr_n,
+	input				rd_n,
 	input				address,
 	output reg	[7:0]	rdata,
 	output				rdata_en,
@@ -116,6 +116,10 @@ module vdp_register (
 	output				vdp_mode_graphic2
 );
 	reg				ff_rdata_en;
+	reg				ff_rdata_en1;
+	reg				ff_rdata_en2;
+	reg				ff_rd_n;
+	reg				ff_wr_n;
 	reg				ff_wr_req;
 	reg				ff_rd_req;
 
@@ -135,6 +139,52 @@ module vdp_register (
 
 	wire			w_even_dotstate;
 
+	// --------------------------------------------------------------------
+	always @( posedge clk ) begin
+		if( reset ) begin
+			ff_wr_n <= 1'b1;
+			ff_rd_n <= 1'b1;
+		end
+		else if( !enable ) begin
+			//	hold
+		end
+		else begin
+			ff_wr_n <= wr_n;
+			ff_rd_n <= rd_n;
+		end
+	end
+
+	always @( posedge clk ) begin
+		if( reset ) begin
+			ff_wr_req <= 1'b0;
+		end
+		else if( !enable ) begin
+			//	hold
+		end
+		else if( !ff_wr_n && wr_n ) begin
+			ff_wr_req <= 1'b1;
+		end
+		else begin
+			ff_wr_req <= 1'b0;
+		end
+	end
+
+	always @( posedge clk ) begin
+		if( reset ) begin
+			ff_rd_req <= 1'b0;
+		end
+		else if( !enable ) begin
+			//	hold
+		end
+		else if( ff_rd_n && !rd_n ) begin
+			ff_rd_req <= 1'b1;
+		end
+		else begin
+			ff_rd_req <= 1'b0;
+		end
+	end
+
+	// --------------------------------------------------------------------
 	assign sp_vdp_s0_reset_req			= ff_sp_vdp_s0_reset_req;
 
 	assign vdp_mode_graphic1			=	( { reg_r0_disp_mode, reg_r1_disp_mode[0], reg_r1_disp_mode[1] } == 5'b00000 ) ? 1'b1: 1'b0;
@@ -149,29 +199,42 @@ module vdp_register (
 		if( reset ) begin
 			ff_rdata_en <= 1'b0;
 		end
-		else if( ff_rdata_en && enable ) begin
+		else if( ff_rdata_en ) begin
 			ff_rdata_en <= 1'b0;
 		end
-		else if( !ff_rd_req && rd_req ) begin
-			ff_rdata_en <= rd_req;
+		else if( ff_rd_req ) begin
+			ff_rdata_en <= 1'b1;
 		end
 		else begin
 			//	hold
 		end
 	end
 
-	assign rdata_en		= ff_rdata_en;
+	always @( posedge clk ) begin
+		if( reset ) begin
+			ff_rdata_en1 <= 1'b0;
+		end
+		else if( ff_rdata_en ) begin
+			ff_rdata_en1 <= 1'b1;
+		end
+		else if( enable ) begin
+			ff_rdata_en1 <= 1'b0;
+		end
+	end
 
 	always @( posedge clk ) begin
 		if( reset ) begin
-			ff_wr_req <= 1'b0;
-			ff_rd_req <= 1'b0;
+			ff_rdata_en2 <= 1'b0;
+		end
+		else if( enable ) begin
+			ff_rdata_en2 <= ff_rdata_en1;
 		end
 		else begin
-			ff_wr_req <= wr_req;
-			ff_rd_req <= rd_req;
+			ff_rdata_en2 <= 1'b0;
 		end
 	end
+
+	assign rdata_en		= ff_rdata_en2;
 
 	// --------------------------------------------------------------------
 	always @( posedge clk ) begin
@@ -213,7 +276,7 @@ module vdp_register (
 		if( reset ) begin
 			rdata <= 8'h00;
 		end
-		else if( !ff_rd_req && rd_req ) begin
+		else if( ff_rd_req ) begin
 			// read request
 			if( !address ) begin
 				// port#0 (0x98):read vram
@@ -233,21 +296,17 @@ module vdp_register (
 		if( reset ) begin
 			clr_vsync_int <= 1'b0;
 		end
-		else if( !ff_rd_req && rd_req ) begin
+		else if( !enable ) begin
+		end
+		else if( ff_rd_req ) begin
 			// case of read request
 			if( address ) begin
 				// clear vsync interrupt by read s#0
 				clr_vsync_int <= 1'b1;
 			end
-			else if( !enable ) begin
-				//	hold
-			end
 			else begin
 				clr_vsync_int <= 1'b0;
 			end
-		end
-		else if( !enable ) begin
-			//	hold
 		end
 		else begin
 			clr_vsync_int <= 1'b0;
@@ -286,7 +345,10 @@ module vdp_register (
 			reg_r5_sp_atr_addr			<= 7'd0;
 			ff_sp_vdp_s0_reset_req		<= 1'b0;
 		end
-		else if( !ff_rd_req && rd_req ) begin
+		else if( !enable ) begin
+			//	hold
+		end
+		else if( ff_rd_req ) begin
 			// read request
 			if( !address ) begin
 				// port#0 (0x98):read vram
@@ -298,7 +360,7 @@ module vdp_register (
 				ff_sp_vdp_s0_reset_req	<= ~sp_vdp_s0_reset_ack;
 			end
 		end
-		else if( ff_wr_req && !wr_req ) begin
+		else if( ff_wr_req ) begin
 			// write request
 			if( !address ) begin
 				vdp_vram_wdata_cpu	<= wdata;

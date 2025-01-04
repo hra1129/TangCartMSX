@@ -89,6 +89,7 @@ module tangnano20k_step6 (
 	wire			w_sdram_mreq_n;
 	wire			w_sdram_wr_n;
 	wire			w_sdram_rd_n;
+	wire			w_sdram_init_busy;
 	wire			w_sdram_busy;
 	wire	[22:0]	w_sdram_address;
 	wire	[7:0]	w_sdram_q;
@@ -153,7 +154,6 @@ module tangnano20k_step6 (
 	wire			w_keyboard_type;
 	wire			w_keyboard_kana_led_off;
 	wire	[11:0]	w_ssg_sound_out;
-	wire			w_debug_signal;
 
 	// --------------------------------------------------------------------
 	//	clock
@@ -190,7 +190,7 @@ module tangnano20k_step6 (
 			end
 		end
 	end
-	assign w_cpu_enable		= (ff_cpu_clock_div == 3'd5 && !w_sdram_busy && !w_cpu_freeze);
+	assign w_cpu_enable		= (ff_cpu_clock_div == 3'd5 && !w_sdram_init_busy && !w_cpu_freeze);
 
 	always @( posedge clk42m ) begin
 		if( !ff_reset_n ) begin
@@ -208,7 +208,7 @@ module tangnano20k_step6 (
 			end
 		end
 	end
-	assign w_psg_enable		= (ff_psg_clock_div == 4'd11 && !w_sdram_busy && !w_cpu_freeze);
+	assign w_psg_enable		= (ff_psg_clock_div == 4'd11 && !w_sdram_init_busy && !w_cpu_freeze);
 
 	// --------------------------------------------------------------------
 	//	reset
@@ -245,7 +245,7 @@ module tangnano20k_step6 (
 		.address				( w_spi_address				),
 		.req_n					( w_spi_mreq_n				),
 		.wdata					( w_spi_d					),
-		.sdram_busy				( w_sdram_busy				),
+		.sdram_busy				( w_sdram_init_busy			),
 		.keyboard_caps_led_off	( w_keyboard_caps_led_off	),
 		.keyboard_kana_led_off	( w_keyboard_kana_led_off	),
 		.keyboard_type			( w_keyboard_type			)
@@ -282,6 +282,9 @@ module tangnano20k_step6 (
 	always @( posedge clk ) begin
 		if( w_sdram_q_en ) begin
 			ff_d <= w_sdram_q;
+		end
+		else if( w_vdp_q_en ) begin
+			ff_d <= w_vdp_q;
 		end
 		else if( w_uart_q_en ) begin
 			ff_d <= w_uart_q;
@@ -478,6 +481,7 @@ module tangnano20k_step6 (
 		.reset_n				( ff_reset_n			),
 		.clk					( clk					),
 		.clk_sdram				( clk					),
+		.sdram_init_busy		( w_sdram_init_busy		),
 		.sdram_busy				( w_sdram_busy			),
 		.cpu_freeze				( w_cpu_freeze			),
 		.mreq_n					( w_sdram_mreq_n		),
@@ -499,8 +503,6 @@ module tangnano20k_step6 (
 		.O_sdram_ba				( O_sdram_ba			),
 		.O_sdram_dqm			( O_sdram_dqm			)
 	);
-
-	assign w_debug_signal	= (w_sdram_address == 23'h40F0A2 && (w_sdram_wr_n == 1'b0 || w_sdram_rd_n == 1'b0) && w_sdram_mreq_n == 1'b0 );
 
 	// --------------------------------------------------------------------
 	//	SDRAM memory map

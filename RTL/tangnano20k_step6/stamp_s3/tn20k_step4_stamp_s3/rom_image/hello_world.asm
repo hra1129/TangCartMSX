@@ -11,6 +11,8 @@ vdp_port2	:= 0x9a
 vdp_port3	:= 0x9b
 ppi_port	:= 0xa8
 
+rdvrm		:= 0x004a
+wrvrm		:= 0x004d
 setwrt		:= 0x0053
 filvrm		:= 0x0056
 chgmod		:= 0x005f
@@ -43,6 +45,31 @@ entry:
 			call	set_font
 			; フォントに色を付ける
 			call	set_color
+
+			; Set Name Table
+			ld		hl, name_table1
+			ld		de, 0x1800
+			ld		bc, name_table1_end - name_table1
+			call	ldirvm
+
+			; Set Name Table
+			ld		hl, name_table1
+			ld		de, 0x1900
+			ld		bc, name_table1_end - name_table1
+			call	ldirvm
+
+			; Set Name Table
+			ld		hl, name_table1
+			ld		de, 0x1A00
+			ld		bc, name_table1_end - name_table1
+			call	ldirvm
+
+			ld		hl, 0x1802
+			call	rdvrm
+			call	wrvrm
+			di
+			halt
+
 main_loop:
 			; Set Name Table
 			ld		hl, name_table1

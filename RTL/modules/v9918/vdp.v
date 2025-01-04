@@ -525,8 +525,8 @@ module vdp(
 		.clk							( clk							),
 		.enable							( enable						),
 
-		.wr_req							( ~w_wr_n						),
-		.rd_req							( ~w_rd_n						),
+		.wr_n							( w_wr_n						),
+		.rd_n							( w_rd_n						),
 		.address						( address						),
 		.rdata							( rdata							),
 		.rdata_en						( rdata_en						),
