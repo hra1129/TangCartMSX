@@ -11,12 +11,15 @@ vdp_port2	:= 0x9a
 vdp_port3	:= 0x9b
 ppi_port	:= 0xa8
 
+enaslt		:= 0x0024
 rdvrm		:= 0x004a
 wrvrm		:= 0x004d
 setwrt		:= 0x0053
 filvrm		:= 0x0056
 chgmod		:= 0x005f
 ldirvm		:= 0x005c
+gtstck		:= 0x00d5
+gttrig		:= 0x00d8
 jiffy		:= 0xfc9e
 font_adr	:= 0x0004
 
@@ -45,6 +48,11 @@ entry:
 			call	set_font
 			; フォントに色を付ける
 			call	set_color
+			; page2 を SLOT#1 にする
+			ld		a, 0x01
+			ld		h, 0x80
+			call	enaslt
+			ei
 
 			; Set Name Table
 			ld		hl, name_table1
@@ -63,27 +71,18 @@ entry:
 			ld		de, 0x1A00
 			ld		bc, name_table1_end - name_table1
 			call	ldirvm
-
-			ld		hl, 0x1802
-			call	rdvrm
-			call	wrvrm
-			di
-			halt
-
 main_loop:
 			; Set Name Table
 			ld		hl, name_table1
 			ld		de, 0x1800
 			ld		bc, name_table1_end - name_table1
 			call	ldirvm
-			call	wait_time
 
 			; Set Name Table
 			ld		hl, name_table1
 			ld		de, 0x1900
 			ld		bc, name_table1_end - name_table1
 			call	ldirvm
-			call	wait_time
 
 			; Set Name Table
 			ld		hl, name_table1
@@ -97,14 +96,12 @@ main_loop:
 			ld		de, 0x1800
 			ld		bc, name_table2_end - name_table2
 			call	ldirvm
-			call	wait_time
 
 			; Set Name Table
 			ld		hl, name_table2
 			ld		de, 0x1900
 			ld		bc, name_table2_end - name_table2
 			call	ldirvm
-			call	wait_time
 
 			; Set Name Table
 			ld		hl, name_table2
@@ -178,13 +175,42 @@ wait_time::
 			ld		hl, [jiffy]
 			ld		de, 4
 			add		hl, de
+			push	hl
 	loop:
+			pop		hl
 			or		a, a
 			ld		de, [jiffy]
 			ex		de, hl
 			sbc		hl, de
 			ex		de, hl
 			ret		nc
+			push	hl
+			; ジョイパッド判定
+			ld		a, 1
+			call	gttrig
+			ld		hl, 0x1800
+			or		a, a
+			ld		a, 'O'
+			jr		z, skip_a_button
+			ld		a, 'X'
+	skip_a_button:
+			call	wrvrm
+
+			ld		a, 3
+			call	gttrig
+			ld		hl, 0x1801
+			or		a, a
+			ld		a, 'O'
+			jr		z, skip_b_button
+			ld		a, 'X'
+	skip_b_button:
+			call	wrvrm
+
+			ld		a, 1
+			call	gtstck
+			ld		hl, 0x1802
+			add		a, 'A'
+			call	wrvrm
 			jr		loop
 			endscope
 
@@ -196,6 +222,7 @@ name_table1::	;	 01234567890123456789012345678901
 			db		"  ", 255
 name_table1_end::
 
+			align	0x8000
 name_table2::	;	 01234567890123456789012345678901
 			db		"  HELLO, WORLD!                 "
 			db		"                                "

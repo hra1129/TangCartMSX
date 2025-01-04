@@ -5,13 +5,14 @@ import os
 
 # ( ROM name, SDRAM address ), SDRAM address は 16KB単位 
 target_list = [
-	( "main"            , 0x20000 ),
-	( "basicn"          , 0x30000 ),
-	( "rabbit_adventure", 0x40000 ),
-	( "hello_world"     , 0x40000 ),
-	( "stepper"         , 0x44000 ),
-	( "super_cobra"     , 0x40000 ),
-	( "kings_valley"    , 0x40000 ),
+	( "main"                 , 0x020000 ),
+	( "basicn"               , 0x030000 ),
+	( "rabbit_adventure"     , 0x204000 ),
+	( "rabbit_adventure_demo", 0x204000 ),
+	( "hello_world"          , 0x204000 ),
+	( "stepper"              , 0x208000 ),
+	( "super_cobra"          , 0x204000 ),
+	( "kings_valley"         , 0x204000 ),
 ]
 
 s_rom_image_path = "./rom_image/"

@@ -10,6 +10,7 @@
 #include "romimage_main.h"
 #include "romimage_basicn.h"
 #include "romimage_rabbit_adventure.h"
+#include "romimage_rabbit_adventure_demo.h"
 #include "romimage_hello_world.h"
 #include "romimage_stepper.h"
 #include "romimage_super_cobra.h"
@@ -236,8 +237,10 @@ void state3_send_rom_image( void ) {
 	send_rom_image( rom_main_01, sizeof(rom_main_01) );
 	Serial.println( "Send BASIC'N" );
 	send_rom_image( rom_basicn_00, sizeof(rom_basicn_00) );
-//	Serial.println( "hello world" );
+//	Serial.println( "hello world 0" );
 //	send_rom_image( rom_hello_world_00, sizeof(rom_hello_world_00) );
+//	Serial.println( "hello world 1" );
+//	send_rom_image( rom_hello_world_01, sizeof(rom_hello_world_01) );
 //	Serial.println( "Super Cobra" );
 //	send_rom_image( rom_super_cobra_00, sizeof(rom_super_cobra_00) );
 //	Serial.println( "kings_valley" );
@@ -248,6 +251,10 @@ void state3_send_rom_image( void ) {
 //	send_rom_image( rom_rabbit_adventure_00, sizeof(rom_rabbit_adventure_00) );
 //	Serial.println( "RabbitAdventure 1" );
 //	send_rom_image( rom_rabbit_adventure_01, sizeof(rom_rabbit_adventure_01) );
+	Serial.println( "RabbitAdventureDEMO 0" );
+	send_rom_image( rom_rabbit_adventure_demo_00, sizeof(rom_rabbit_adventure_demo_00) );
+	Serial.println( "RabbitAdventureDEMO 1" );
+	send_rom_image( rom_rabbit_adventure_demo_01, sizeof(rom_rabbit_adventure_demo_01) );
 
 	Serial.println( "Start FPGA MSX." );
 	start_cpu();

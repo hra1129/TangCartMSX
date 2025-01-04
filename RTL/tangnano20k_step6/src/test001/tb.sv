@@ -302,11 +302,40 @@ module tb ();
 
 		$fclose( fd );
 
+//		// --------------------------------------------------------------------
+//		//	Send ROM image for SDRAM BANK0
+//		// --------------------------------------------------------------------
+//		$display( "Send TEST-ROM --------------" );
+//		fd = $fopen( "../../stamp_s3/tn20k_step4_stamp_s3/rom_image/hello_world.rom", "rb" );
+//
+//		spi_cs_n	= 0;
+//		@( posedge clk );
+//		send_byte( 8'h04, read_data );
+//		assert( read_data == 8'hA5 );
+//		@( posedge clk );
+//		send_byte( 8'h10, read_data );			//	BANK = 10h
+//		assert( read_data == 8'hA5 );
+//
+//		for( i = 0; i < 16384; i++ ) begin
+//			if( $feof( fd ) ) begin
+//				break;
+//			end
+//			write_data = $fgetc( fd );
+//			send_byte( write_data, read_data );
+//			assert( read_data == 8'hA5 );
+//			@( posedge clk );
+//			$display( "Address: %04X", i );
+//		end
+//		spi_cs_n	= 1;
+//		repeat( 40 ) @( posedge clk );
+//
+//		$fclose( fd );
+
 		// --------------------------------------------------------------------
 		//	Send ROM image for SDRAM BANK0
 		// --------------------------------------------------------------------
-		$display( "Send TEST-ROM --------------" );
-		fd = $fopen( "../../stamp_s3/tn20k_step4_stamp_s3/rom_image/hello_world.rom", "rb" );
+		$display( "Send Rabbit Adventure --------" );
+		fd = $fopen( "../../stamp_s3/tn20k_step4_stamp_s3/rom_image/rabbit_adventure.rom", "rb" );
 
 		spi_cs_n	= 0;
 		@( posedge clk );
@@ -314,6 +343,27 @@ module tb ();
 		assert( read_data == 8'hA5 );
 		@( posedge clk );
 		send_byte( 8'h10, read_data );			//	BANK = 10h
+		assert( read_data == 8'hA5 );
+
+		for( i = 0; i < 16384; i++ ) begin
+			if( $feof( fd ) ) begin
+				break;
+			end
+			write_data = $fgetc( fd );
+			send_byte( write_data, read_data );
+			assert( read_data == 8'hA5 );
+			@( posedge clk );
+			$display( "Address: %04X", i );
+		end
+		spi_cs_n	= 1;
+		repeat( 40 ) @( posedge clk );
+
+		spi_cs_n	= 0;
+		@( posedge clk );
+		send_byte( 8'h04, read_data );
+		assert( read_data == 8'hA5 );
+		@( posedge clk );
+		send_byte( 8'h11, read_data );			//	BANK = 11h
 		assert( read_data == 8'hA5 );
 
 		for( i = 0; i < 16384; i++ ) begin

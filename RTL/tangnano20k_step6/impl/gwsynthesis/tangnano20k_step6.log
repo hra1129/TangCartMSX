@@ -103,7 +103,6 @@ WARN  (EX3791) : Expression size 32 truncated to fit in target size 14("D:\githu
 NOTE  (EX0101) : Current top module is "tangnano20k_step6"
 [5%] Running netlist conversion ...
 WARN  (CV0016) : Input clk27m is unused("D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_step6\src\tangnano20k_step6.v":25)
-WARN  (CV0017) : Inout ssg_ioa is unused("D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_step6\src\tangnano20k_step6.v":44)
 Running device independent optimization ...
 [10%] Optimizing Phase 0 completed
 [15%] Optimizing Phase 1 completed
