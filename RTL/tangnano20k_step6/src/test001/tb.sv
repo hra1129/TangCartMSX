@@ -342,7 +342,7 @@ module tb ();
 		send_byte( 8'h04, read_data );
 		assert( read_data == 8'hA5 );
 		@( posedge clk );
-		send_byte( 8'h10, read_data );			//	BANK = 10h
+		send_byte( 8'h81, read_data );			//	BANK = 81h
 		assert( read_data == 8'hA5 );
 
 		for( i = 0; i < 16384; i++ ) begin
@@ -363,7 +363,7 @@ module tb ();
 		send_byte( 8'h04, read_data );
 		assert( read_data == 8'hA5 );
 		@( posedge clk );
-		send_byte( 8'h11, read_data );			//	BANK = 11h
+		send_byte( 8'h82, read_data );			//	BANK = 82h
 		assert( read_data == 8'hA5 );
 
 		for( i = 0; i < 16384; i++ ) begin

@@ -89,7 +89,8 @@ module tb ();
 	wire					p_video_dh_clk;
 	wire					p_video_dl_clk;
 
-	int				i, j, k;
+	int						i, j, k;
+	reg						timing;
 
 	// --------------------------------------------------------------------
 	//	DUT
@@ -205,6 +206,7 @@ module tb ();
 	//	Test bench
 	// --------------------------------------------------------------------
 	initial begin
+		timing = 0;
 		reset_n = 0;
 		clk = 0;
 		reset_n = 0;
@@ -255,6 +257,50 @@ module tb ();
 		write_data( 1, 8'hA0 );
 		write_data( 1, 8'h81 );
 
+		repeat( 100 ) @( posedge clk );
+
+		//	GRAPHIC1 (SCREEN1) にセットする 
+		timing = 1;
+		write_data( 1, 8'h00 );
+		write_data( 1, 8'h80 );			//	R#0 = 0x00
+		write_data( 1, 8'h00 );
+		write_data( 1, 8'h81 );			//	R#1 = 0x00
+		write_data( 1, 8'h06 );
+		write_data( 1, 8'h82 );			//	R#2 = 0x06 : Pattern Name Table      0x1800 = 01_1000_0000_0000 → 01_10
+		write_data( 1, 8'h80 );
+		write_data( 1, 8'h83 );			//	R#3 = 0x80 : Color Table             0x2000 = 10_0000_0000_0000 → 10_0000_00
+		write_data( 1, 8'h00 );
+		write_data( 1, 8'h84 );			//	R#4 = 0x00 : Pattern Generator Table 0x0000 = 00_0000_0000_0000 → 00_0
+		timing = 0;
+
+		//	Pattern Name Table にインクリメント値をセットする 
+		write_data( 1, 8'h00 );
+		write_data( 1, 8'h58 );			//	VRAM Ptr. = 0x1800
+		for( i = 0; i < 768; i++ ) begin
+			write_data( 0, i & 255 );
+		end
+
+		//	Pattern Generator Table にインクリメント値をセットする 
+		write_data( 1, 8'h00 );
+		write_data( 1, 8'h40 );			//	VRAM Ptr. = 0x0000
+		for( i = 0; i < 256; i++ ) begin
+			for( j = 0; j < 8; j++ ) begin
+				write_data( 0, j + ((i << 4) & 255) );
+			end
+		end
+
+		//	Pattern Name Table にインクリメント値をセットする 
+		write_data( 1, 8'h00 );
+		write_data( 1, 8'h60 );			//	VRAM Ptr. = 0x2000
+		for( i = 0; i < 32; i++ ) begin
+			write_data( 0, 8'hF4 );
+		end
+
+		timing = 1;
+		@( posedge clk );
+
+		timing = 0;
+		repeat( 3000 ) @( posedge clk );
 		$finish;
 	end
 endmodule
