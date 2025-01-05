@@ -42,7 +42,6 @@ module vdp_ram_256byte (
 	reg		[7:0]	ff_d;
 	reg		[7:0]	ff_block_ram [0:255];
 	reg		[7:0]	ff_q;
-	reg		[7:0]	ff_q_out;
 
 	always @( posedge clk ) begin
 		if( enable ) begin
@@ -59,14 +58,13 @@ module vdp_ram_256byte (
 		if( ff_we ) begin
 			ff_block_ram[ ff_address ]	<= ff_d;
 		end
-		else begin
-			ff_q						<= ff_block_ram[ ff_address ];
-		end
 	end
 
 	always @( posedge clk ) begin
-		ff_q_out <= ff_q;
+		if( !ff_we ) begin
+			ff_q		<= ff_block_ram[ ff_address ];
+		end
 	end
 
-	assign rdata = ff_q_out;
+	assign rdata = ff_q;
 endmodule

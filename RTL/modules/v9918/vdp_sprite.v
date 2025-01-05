@@ -118,7 +118,7 @@ module vdp_sprite (
 	reg		[1:0]	ff_main_state;
 
 	// jp: スプライトプレーン番号×横方向表示枚数の配列
-	reg		[4:0]	ff_render_planes[0:7];
+	reg		[4:0]	ff_render_planes[0:3];
 
 	reg		[13:0]	ff_y_test_address;
 	reg		[13:0]	ff_preread_address;
@@ -481,7 +481,13 @@ module vdp_sprite (
 	// [y_test]表示するスプライトをリストアップするためのリストアップメモリへの書き込み
 	//---------------------------------------------------------------------------
 	always @( posedge clk ) begin
-		if( !enable ) begin
+		if( reset ) begin
+			ff_render_planes[0] <= 5'd0;
+			ff_render_planes[1] <= 5'd0;
+			ff_render_planes[2] <= 5'd0;
+			ff_render_planes[3] <= 5'd0;
+		end
+		else if( !enable ) begin
 			//	hold
 		end
 		else if( dot_state == 2'b01 ) begin
@@ -491,7 +497,7 @@ module vdp_sprite (
 			else if( eight_dot_state == 3'd6 ) begin
 				// next sprite
 				if( ff_y_test_en && w_target_sp_en && !w_sp_overmap ) begin
-					ff_render_planes[ ff_y_test_listup_addr ] <= ff_y_test_sp_num;
+					ff_render_planes[ ff_y_test_listup_addr[2:0] ] <= ff_y_test_sp_num;
 				end
 			end
 		end
@@ -712,7 +718,10 @@ module vdp_sprite (
 	end
 
 	always @( posedge clk ) begin
-		if( !enable ) begin
+		if( reset ) begin
+			ff_prepare_plane_num <= 5'd0;
+		end
+		else if( !enable ) begin
 			//	hold
 		end
 		else if( dot_state == 2'b01 ) begin
@@ -786,7 +795,7 @@ module vdp_sprite (
 						// jp: ラインバッファの6-4ビット目はそこに描画されているドットのローカルプレーン番号
 						if( !w_line_buf_draw_data[7] ) begin
 							// jp: w_line_buf_draw_data[7] == 0 のドットはまだスプライトが描画されていないので、描画して良い。
-							ff_line_buf_draw_color		<= { 1'b1, ff_predraw_local_plane_num, ff_draw_color };
+							ff_line_buf_draw_color		<= { 2'b10, ff_predraw_local_plane_num, ff_draw_color };
 							ff_line_buf_draw_we			<= 1'b1;
 						end
 						else begin

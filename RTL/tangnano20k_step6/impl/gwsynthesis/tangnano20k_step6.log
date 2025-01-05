@@ -87,7 +87,7 @@ Compiling module 'vdp_ram_256byte'("D:\github\HRA_product\TangCartMSX\RTL\module
 Extracting RAM for identifier 'ff_block_ram'("D:\github\HRA_product\TangCartMSX\RTL\modules\v9918\vdp_ram_256byte.v":43)
 WARN  (EX3791) : Expression size 6 truncated to fit in target size 5("D:\github\HRA_product\TangCartMSX\RTL\modules\v9918\vdp_sprite.v":450)
 WARN  (EX3791) : Expression size 5 truncated to fit in target size 4("D:\github\HRA_product\TangCartMSX\RTL\modules\v9918\vdp_sprite.v":474)
-WARN  (EX3791) : Expression size 10 truncated to fit in target size 9("D:\github\HRA_product\TangCartMSX\RTL\modules\v9918\vdp_sprite.v":774)
+WARN  (EX3791) : Expression size 10 truncated to fit in target size 9("D:\github\HRA_product\TangCartMSX\RTL\modules\v9918\vdp_sprite.v":783)
 Compiling module 'vdp_register'("D:\github\HRA_product\TangCartMSX\RTL\modules\v9918\vdp_register.v":56)
 Compiling module 'vdp_lcd'("D:\github\HRA_product\TangCartMSX\RTL\modules\v9918\vdp_lcd.v":60)
 WARN  (EX3791) : Expression size 32 truncated to fit in target size 10("D:\github\HRA_product\TangCartMSX\RTL\modules\v9918\vdp_lcd.v":173)

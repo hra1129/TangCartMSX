@@ -203,6 +203,23 @@ module tb ();
 	endtask: read_data
 
 	// --------------------------------------------------------------------
+	task set_vram_address(
+		input	[13:0]	address
+	);
+		write_data( 1, address[7:0] );
+		write_data( 1, { 2'b01, address[13:8] } );
+	endtask: set_vram_address
+
+	// --------------------------------------------------------------------
+	task write_reg(
+		input	[2:0]	reg_num,
+		input	[7:0]	data
+	);
+		write_data( 1, data );
+		write_data( 1, { 5'b10000, reg_num } );
+	endtask: write_reg
+
+	// --------------------------------------------------------------------
 	//	Test bench
 	// --------------------------------------------------------------------
 	initial begin
@@ -254,53 +271,72 @@ module tb ();
 		read_data( 1, 8'h1f );
 
 		//	レジスタ書き込み
-		write_data( 1, 8'hA0 );
-		write_data( 1, 8'h81 );
+		write_reg( 1, 8'hA0 );
 
 		repeat( 100 ) @( posedge clk );
 
+		// ====================================================================
 		//	GRAPHIC1 (SCREEN1) にセットする 
 		timing = 1;
-		write_data( 1, 8'h00 );
-		write_data( 1, 8'h80 );			//	R#0 = 0x00
-		write_data( 1, 8'h00 );
-		write_data( 1, 8'h81 );			//	R#1 = 0x00
-		write_data( 1, 8'h06 );
-		write_data( 1, 8'h82 );			//	R#2 = 0x06 : Pattern Name Table      0x1800 = 01_1000_0000_0000 → 01_10
-		write_data( 1, 8'h80 );
-		write_data( 1, 8'h83 );			//	R#3 = 0x80 : Color Table             0x2000 = 10_0000_0000_0000 → 10_0000_00
-		write_data( 1, 8'h00 );
-		write_data( 1, 8'h84 );			//	R#4 = 0x00 : Pattern Generator Table 0x0000 = 00_0000_0000_0000 → 00_0
+		write_reg( 0, 8'h00 );			//	R#0 = 0x00 : Mode 0 : SCREEN1
+		write_reg( 1, 8'h02 );			//	R#1 = 0x02 : Mode 1 : SCREEN1, 16x16 Sprite
+		write_reg( 2, 8'h06 );			//	R#2 = 0x06 : Pattern Name Table      0x1800 = 01_1000_0000_0000 → 01_10
+		write_reg( 3, 8'h80 );			//	R#3 = 0x80 : Color Table             0x2000 = 10_0000_0000_0000 → 10_0000_00
+		write_reg( 4, 8'h00 );			//	R#4 = 0x00 : Pattern Generator Table 0x0000 = 00_0000_0000_0000 → 00_0
+		write_reg( 5, 8'h36 );			//	R#5 = 0x36 : Sprite Attribute Table  0x1B00 = 01_1011_0000_0000 → 01_1011_0
+		write_reg( 6, 8'h07 );			//	R#6 = 0x07 : Sprite Generator Table  0x3800 = 11_1000_0000_0000 → 11_1
 		timing = 0;
 
+		//	VRAMをゼロクリアする 
+		set_vram_address( 14'h0000 );
+		for( i = 0; i < 16384; i++ ) begin
+			write_data( 0, 8'h00 );
+		end
+
 		//	Pattern Name Table にインクリメント値をセットする 
-		write_data( 1, 8'h00 );
-		write_data( 1, 8'h58 );			//	VRAM Ptr. = 0x1800
+		set_vram_address( 14'h1800 );
 		for( i = 0; i < 768; i++ ) begin
 			write_data( 0, i & 255 );
 		end
 
 		//	Pattern Generator Table にインクリメント値をセットする 
-		write_data( 1, 8'h00 );
-		write_data( 1, 8'h40 );			//	VRAM Ptr. = 0x0000
+		set_vram_address( 14'h0000 );
 		for( i = 0; i < 256; i++ ) begin
 			for( j = 0; j < 8; j++ ) begin
 				write_data( 0, j + ((i << 4) & 255) );
 			end
 		end
 
-		//	Pattern Name Table にインクリメント値をセットする 
-		write_data( 1, 8'h00 );
-		write_data( 1, 8'h60 );			//	VRAM Ptr. = 0x2000
+		//	Color Table に定数値をセットする 
+		set_vram_address( 14'h2000 );
 		for( i = 0; i < 32; i++ ) begin
 			write_data( 0, 8'hF4 );
+		end
+
+		//	Sprite Generator Table に FFh をセットする 
+		set_vram_address( 14'h3800 );
+		for( i = 0; i < 256; i++ ) begin
+			for( j = 0; j < 8; j++ ) begin
+				write_data( 0, 8'hFF );
+			end
+		end
+
+		//	Sprite Attribute Table にインクリメント値をセットする 
+		set_vram_address( 14'h1B00 );
+		for( i = 0; i < 32; i++ ) begin
+			write_data( 0, 8'h00 );				//	Y座標 
+			write_data( 0, i * 8 );				//	X座標 
+			write_data( 0, 0 );					//	パターン番号 
+			write_data( 0, (i & 7) + 8 );		//	色 
 		end
 
 		timing = 1;
 		@( posedge clk );
 
 		timing = 0;
-		repeat( 3000 ) @( posedge clk );
+
+		# 17ms
+		@( posedge clk );
 		$finish;
 	end
 endmodule
