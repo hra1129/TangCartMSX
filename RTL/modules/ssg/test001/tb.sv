@@ -38,7 +38,8 @@ module tb ();
 	reg			[7:0]		wdata;
 	wire		[7:0]		rdata;
 	wire					rdata_en;
-	wire		[5:0]		ssg_ioa;
+	wire		[5:0]		w_ssg_ioa;
+	reg			[5:0]		ssg_ioa;
 	wire		[2:0]		ssg_iob;
 	reg						keyboard_type;
 	reg						cmt_read;
@@ -47,6 +48,7 @@ module tb ();
 
 	reg			[1:0]		ff_clock_divider;
 	int						counter;
+	reg			[7:0]		ff_rdata;
 
 	// --------------------------------------------------------------------
 	//	DUT
@@ -58,17 +60,19 @@ module tb ();
 	.iorq_n				( iorq_n			),
 	.wr_n				( wr_n				),
 	.rd_n				( rd_n				),
-	.address			( address			),
+	.address			( address[1:0]		),
 	.wdata				( wdata				),
 	.rdata				( rdata				),
 	.rdata_en			( rdata_en			),
-	.ssg_ioa			( ssg_ioa			),
+	.ssg_ioa			( w_ssg_ioa			),
 	.ssg_iob			( ssg_iob			),
 	.keyboard_type		( keyboard_type		),
 	.cmt_read			( cmt_read			),
 	.kana_led			( kana_led			),
 	.sound_out			( sound_out			)
 	);
+	
+	assign w_ssg_ioa	= ssg_ioa;
 
 	// --------------------------------------------------------------------
 	//	clock
@@ -92,30 +96,72 @@ module tb ();
 	assign enable = (ff_clock_divider == 2'd3 );
 
 	// --------------------------------------------------------------------
+	//	rdata
+	// --------------------------------------------------------------------
+	always @( posedge clk ) begin
+		if( !reset_n ) begin
+			ff_rdata <= 8'h00;
+		end
+		else if( rdata_en ) begin
+			ff_rdata <= rdata;
+		end
+	end
+
+	// --------------------------------------------------------------------
 	//	Tasks
 	// --------------------------------------------------------------------
 	task write_reg(
 		input	[15:0]	_address,
 		input	[7:0]	_wdata
 	);
-		iorq_n		<= 1'b0;
+		$display( "write_reg( 0x%04X, 0x%02X )", _address, _wdata );
 		address		<= _address;
 		wdata		<= _wdata;
+		iorq_n		<= 1'b0;
 		wr_n		<= 1'b0;
-		counter		<= 0;						//	timeout counter
 		@( posedge clk );
-
-		while( counter < 5 ) begin
-			counter <= counter + 1;
-			@( posedge clk );
-		end
+		@( posedge clk );
 
 		iorq_n		<= 1'b1;
+		wr_n		<= 1'b1;
 		address		<= 0;
 		wdata		<= 0;
-		wr_n		<= 1'b1;
+		@( posedge clk );
+		@( posedge clk );
+		@( posedge clk );
+		@( posedge clk );
+		@( posedge clk );
 		@( posedge clk );
 	endtask: write_reg
+
+	// --------------------------------------------------------------------
+	task read_reg(
+		input	[15:0]	_address,
+		input	[7:0]	_rdata
+	);
+		int time_out;
+
+		$display( "read_reg( 0x%04X, 0x%02X )", _address, _rdata );
+		address		<= _address;
+		iorq_n		<= 1'b0;
+		@( posedge clk );
+		rd_n		<= 1'b0;
+		repeat( 16 ) @( negedge clk );
+
+		iorq_n		<= 1'b1;
+		rd_n		<= 1'b1;
+		@( posedge clk );
+
+		assert( ff_rdata == _rdata );
+		if( ff_rdata != _rdata ) begin
+			$display( "-- p_data = %08X (ref: %08X)", rdata, _rdata );
+		end
+
+		@( posedge clk );
+		@( posedge clk );
+		@( posedge clk );
+		@( posedge clk );
+	endtask: read_reg
 
 	// --------------------------------------------------------------------
 	task write_ssg_reg(
@@ -305,6 +351,21 @@ module tb ();
 			repeat( 500000 ) @( posedge clk );
 		end
 		write_ssg_reg( 8, 0 );
+
+		// --------------------------------------------------------------------
+		//	Read port test
+		// --------------------------------------------------------------------
+		test_no = 11;
+		write_ssg_reg( 15, 8'b00000000 );
+		write_reg( 0, 14 );
+		ssg_ioa = 6'b101010;
+		read_reg( 2, ssg_ioa );
+		ssg_ioa = 6'b010101;
+		read_reg( 2, ssg_ioa );
+		ssg_ioa = 6'b110011;
+		read_reg( 2, ssg_ioa );
+		ssg_ioa = 6'b111000;
+		read_reg( 2, ssg_ioa );
 		$finish;
 	end
 endmodule

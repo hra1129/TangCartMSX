@@ -245,16 +245,16 @@ void state3_send_rom_image( void ) {
 //	send_rom_image( rom_super_cobra_00, sizeof(rom_super_cobra_00) );
 //	Serial.println( "kings_valley" );
 //	send_rom_image( rom_kings_valley_00, sizeof(rom_kings_valley_00) );
-//	Serial.println( "Stepper" );
-//	send_rom_image( rom_stepper_00, sizeof(rom_stepper_00) );
+	Serial.println( "Stepper" );
+	send_rom_image( rom_stepper_00, sizeof(rom_stepper_00) );
 //	Serial.println( "RabbitAdventure 0" );
 //	send_rom_image( rom_rabbit_adventure_00, sizeof(rom_rabbit_adventure_00) );
 //	Serial.println( "RabbitAdventure 1" );
 //	send_rom_image( rom_rabbit_adventure_01, sizeof(rom_rabbit_adventure_01) );
-	Serial.println( "RabbitAdventureDEMO 0" );
-	send_rom_image( rom_rabbit_adventure_demo_00, sizeof(rom_rabbit_adventure_demo_00) );
-	Serial.println( "RabbitAdventureDEMO 1" );
-	send_rom_image( rom_rabbit_adventure_demo_01, sizeof(rom_rabbit_adventure_demo_01) );
+//	Serial.println( "RabbitAdventureDEMO 0" );
+//	send_rom_image( rom_rabbit_adventure_demo_00, sizeof(rom_rabbit_adventure_demo_00) );
+//	Serial.println( "RabbitAdventureDEMO 1" );
+//	send_rom_image( rom_rabbit_adventure_demo_01, sizeof(rom_rabbit_adventure_demo_01) );
 
 	Serial.println( "Start FPGA MSX." );
 	start_cpu();
