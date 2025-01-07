@@ -1,0 +1,5 @@
+ENTRY equ 00h
+LOOP equ 014h
+PSG_REG_ADR equ 0a0h
+PSG_REG_RD equ 0a2h
+PSG_REG_WR equ 0a1h

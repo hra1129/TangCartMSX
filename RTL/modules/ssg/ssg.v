@@ -76,6 +76,7 @@ module ssg (
 
 	output	[11:0]	sound_out
 );
+	reg		[7:0]	ff_wdata;
 	reg		[7:0]	ff_rdata;
 	reg				ff_rdata_en;
 
@@ -125,6 +126,7 @@ module ssg (
 
 	reg		[11:0]	ff_ssg_mixer;
 	reg		[11:0]	ff_sound_out;
+	reg				ff_iorq_n;
 	reg				ff_wr_n;
 	reg				ff_rd_n;
 	wire			w_wr;
@@ -132,17 +134,35 @@ module ssg (
 
 	always @( posedge clk ) begin
 		if( !reset_n ) begin
-			ff_wr_n	<= 1'b1;
-			ff_rd_n	<= 1'b1;
+			ff_iorq_n	<= 1'b1;
+			ff_wr_n		<= 1'b1;
 		end
 		else begin
-			ff_wr_n	<= wr_n;
-			ff_rd_n	<= rd_n;
+			ff_iorq_n	<= iorq_n;
+			ff_wr_n		<= wr_n;
 		end
 	end
 
-	assign w_wr		= (ff_wr_n && !wr_n);
-	assign w_rd		= (ff_rd_n && !rd_n);
+	always @( posedge clk ) begin
+		if( ff_wr_n == 1'b0 ) begin
+			ff_wdata	<= wdata;
+		end
+	end
+
+	always @( posedge clk ) begin
+		if( !reset_n ) begin
+			ff_rd_n		<= 1'b1;
+		end
+		else if( !enable ) begin
+			//	hold
+		end
+		else begin
+			ff_rd_n		<= rd_n;
+		end
+	end
+
+	assign w_wr		= (!ff_iorq_n && !ff_wr_n &&  wr_n);
+	assign w_rd		= (!iorq_n    &&  ff_rd_n && !rd_n);
 
 	//--------------------------------------------------------------
 	// Miscellaneous control / clock enable (divider)
@@ -177,8 +197,8 @@ module ssg (
 		if( !reset_n ) begin
 			ff_port_b <= 8'd0;
 		end
-		else if( !iorq_n && w_wr && address == 2'd1 && ff_ssg_register_ptr == 4'd15 ) begin
-			ff_port_b <= wdata;
+		else if( w_wr && address == 2'd1 && ff_ssg_register_ptr == 4'd15 ) begin
+			ff_port_b <= ff_wdata;
 		end
 		else begin
 			//	hold
@@ -202,8 +222,8 @@ module ssg (
 		if( !reset_n ) begin
 			ff_rdata_en <= 1'b0;
 		end
-		else if( !iorq_n && w_rd ) begin
-			ff_rdata_en <= 1'b1;
+		else if( w_rd ) begin
+			ff_rdata_en <= enable | ff_rdata_en;
 		end
 		else begin
 			ff_rdata_en <= 1'b0;
@@ -214,7 +234,10 @@ module ssg (
 		if( !reset_n ) begin
 			ff_rdata <= 8'd0;
 		end
-		else if( !iorq_n && w_rd ) begin
+		else if( !enable ) begin
+			//	hold
+		end
+		else if( w_rd ) begin
 			if( address == 2'd2 ) begin
 				case( ff_ssg_register_ptr )
 				4'd0:		ff_rdata <= ff_ssg_ch_a_frequency[7:0];
@@ -266,30 +289,30 @@ module ssg (
 			ff_continue					<= 1'b1;
 			ff_ssg_envelope_req			<= 1'b0;
 		end
-		else if( !iorq_n && w_wr && address == 2'd0 ) begin
-			ff_ssg_register_ptr <= wdata[3:0];
+		else if( w_wr && address == 2'd0 ) begin
+			ff_ssg_register_ptr <= ff_wdata[3:0];
 		end
-		else if( !iorq_n && w_wr && address == 2'd1 ) begin
+		else if( w_wr && address == 2'd1 ) begin
 			case( ff_ssg_register_ptr )
-			4'd0:		ff_ssg_ch_a_frequency[7:0]		<= wdata;
-			4'd1:		ff_ssg_ch_a_frequency[11:8]		<= wdata[3:0];
-			4'd2:		ff_ssg_ch_b_frequency[7:0]		<= wdata;
-			4'd3:		ff_ssg_ch_b_frequency[11:8]		<= wdata[3:0];
-			4'd4:		ff_ssg_ch_c_frequency[7:0]		<= wdata;
-			4'd5:		ff_ssg_ch_c_frequency[11:8]		<= wdata[3:0];
-			4'd6:		ff_ssg_noise_frequency			<= wdata[4:0];
-			4'd7:		ff_ssg_ch_select				<= wdata[5:0];
-			4'd8:		ff_ssg_ch_a_volume				<= wdata[4:0];
-			4'd9:		ff_ssg_ch_b_volume				<= wdata[4:0];
-			4'd10:		ff_ssg_ch_c_volume				<= wdata[4:0];
-			4'd11:		ff_ssg_envelope_frequency[7:0]	<= wdata;
-			4'd12:		ff_ssg_envelope_frequency[15:8]	<= wdata;
+			4'd0:		ff_ssg_ch_a_frequency[7:0]		<= ff_wdata;
+			4'd1:		ff_ssg_ch_a_frequency[11:8]		<= ff_wdata[3:0];
+			4'd2:		ff_ssg_ch_b_frequency[7:0]		<= ff_wdata;
+			4'd3:		ff_ssg_ch_b_frequency[11:8]		<= ff_wdata[3:0];
+			4'd4:		ff_ssg_ch_c_frequency[7:0]		<= ff_wdata;
+			4'd5:		ff_ssg_ch_c_frequency[11:8]		<= ff_wdata[3:0];
+			4'd6:		ff_ssg_noise_frequency			<= ff_wdata[4:0];
+			4'd7:		ff_ssg_ch_select				<= ff_wdata[5:0];
+			4'd8:		ff_ssg_ch_a_volume				<= ff_wdata[4:0];
+			4'd9:		ff_ssg_ch_b_volume				<= ff_wdata[4:0];
+			4'd10:		ff_ssg_ch_c_volume				<= ff_wdata[4:0];
+			4'd11:		ff_ssg_envelope_frequency[7:0]	<= ff_wdata;
+			4'd12:		ff_ssg_envelope_frequency[15:8]	<= ff_wdata;
 			4'd13:
 				begin
-					ff_hold							<= wdata[0];
-					ff_alternate					<= wdata[1];
-					ff_attack						<= wdata[2];
-					ff_continue						<= wdata[3];
+					ff_hold							<= ff_wdata[0];
+					ff_alternate					<= ff_wdata[1];
+					ff_attack						<= ff_wdata[2];
+					ff_continue						<= ff_wdata[3];
 					ff_ssg_envelope_req				<= ~ff_ssg_envelope_ack;
 				end
 			default:
