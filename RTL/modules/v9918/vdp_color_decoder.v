@@ -143,7 +143,7 @@ module vdp_color_decoder (
 		end
 		else if( w_even_dotstate ) begin
 			//	16 color palettes
-			if( !window || !reg_r1_disp_on ) begin
+			if( !window || !reg_r1_disp_on || (w_fore_color == 4'd0) ) begin
 				ff_palette_address		<= w_back_color;
 			end
 			else begin
