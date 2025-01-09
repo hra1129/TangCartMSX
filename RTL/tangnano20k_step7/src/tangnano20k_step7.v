@@ -22,40 +22,45 @@
 // -----------------------------------------------------------------------------
 
 module tangnano20k_step7 (
-	input			clk27m,			//	clk27m		PIN04_SYS_CLK		(27MHz)
-	input			clk3_579m,		//	clk3_579m	PIN76				(3.579545MHz)
-	input	[1:0]	button,			//	button[0]	PIN88_MODE0_KEY1
-									//	button[1]	PIN87_MODE1_KEY2
+	input			clk27m,				//	clk27m		PIN04_SYS_CLK		(27MHz)
+	input			clk3_579m,			//	clk3_579m	PIN76				(3.579545MHz)
+	input	[1:0]	button,				//	button[0]	PIN88_MODE0_KEY1
+										//	button[1]	PIN87_MODE1_KEY2
 	//	VGA Output
-	output			lcd_clk,		//	PIN77
-	output			lcd_de,			//	PIN48
-	output			lcd_hsync,		//	PIN25
-	output			lcd_vsync,		//	PIN26
-	output	[4:0]	lcd_red,		//	PIN38, PIN39, PIN40, PIN41, PIN42
-	output	[5:0]	lcd_green,		//	PIN32, PIN33, PIN34, PIN35, PIN36, PIN37
-	output	[4:0]	lcd_blue,		//	PIN27, PIN28, PIN29, PIN30, PIN31
-	output			lcd_bl,			//	PIN49
+	output			lcd_clk,			//	PIN77
+	output			lcd_de,				//	PIN48
+	output			lcd_hsync,			//	PIN25
+	output			lcd_vsync,			//	PIN26
+	output	[4:0]	lcd_red,			//	PIN38, PIN39, PIN40, PIN41, PIN42
+	output	[5:0]	lcd_green,			//	PIN32, PIN33, PIN34, PIN35, PIN36, PIN37
+	output	[4:0]	lcd_blue,			//	PIN27, PIN28, PIN29, PIN30, PIN31
+	output			lcd_bl,				//	PIN49
 	//	SPI
-	input			spi_cs_n,		//	PIN79
-	input			spi_clk,		//	PIN73
-	input			spi_mosi,		//	PIN74
-	output			spi_miso,		//	PIN75
+	input			spi_cs_n,			//	PIN79
+	input			spi_clk,			//	PIN73
+	input			spi_mosi,			//	PIN74
+	output			spi_miso,			//	PIN75
 	//	PSG
-	inout	[5:0]	ssg_ioa,		//	PIN20, PIN19, PIN18, PIN17, PIN16, PIN15
-	output	[2:0]	ssg_iob,		//	PIN71, PIN53, PIN52
+	inout	[5:0]	ssg_ioa,			//	PIN20, PIN19, PIN18, PIN17, PIN16, PIN15
+	output	[2:0]	ssg_iob,			//	PIN71, PIN53, PIN52
+	//	I2C AUDIO
+	output			i2s_audio_en,		//	PIN51
+	output			i2s_audio_din,		//	PIN54
+	output			i2s_audio_lrclk,	//	PIN55
+	output			i2s_audio_bclk,		//	PIN56
 	//	UART
-	output			uart_tx,		//	uart_tx		PIN69_SYS_TX
+	output			uart_tx,			//	uart_tx		PIN69_SYS_TX
 	//	SDRAM
-	output			O_sdram_clk,	//	Internal
-	output			O_sdram_cke,	//	Internal
-	output			O_sdram_cs_n,	//	Internal
-	output			O_sdram_cas_n,	//	Internal
-	output			O_sdram_ras_n,	//	Internal
-	output			O_sdram_wen_n,	//	Internal
-	inout	[31:0]	IO_sdram_dq,	//	Internal
-	output	[10:0]	O_sdram_addr,	//	Internal
-	output	[1:0]	O_sdram_ba,		//	Internal
-	output	[3:0]	O_sdram_dqm		//	Internal
+	output			O_sdram_clk,		//	Internal
+	output			O_sdram_cke,		//	Internal
+	output			O_sdram_cs_n,		//	Internal
+	output			O_sdram_cas_n,		//	Internal
+	output			O_sdram_ras_n,		//	Internal
+	output			O_sdram_wen_n,		//	Internal
+	inout	[31:0]	IO_sdram_dq,		//	Internal
+	output	[10:0]	O_sdram_addr,		//	Internal
+	output	[1:0]	O_sdram_ba,			//	Internal
+	output	[3:0]	O_sdram_dqm			//	Internal
 );
 	wire			clk;
 	wire			clk42m;
@@ -154,6 +159,7 @@ module tangnano20k_step7 (
 	wire			w_keyboard_type;
 	wire			w_keyboard_kana_led_off;
 	wire	[11:0]	w_ssg_sound_out;
+	wire	[15:0]	w_sound_in;
 
 	// --------------------------------------------------------------------
 	//	clock
@@ -419,6 +425,21 @@ module tangnano20k_step7 (
 		.sound_out				( w_ssg_sound_out			)
 	);
 	assign w_psg_cs_n				= !( !iorq_n && ( { a[7:2], 2'd0 } == 8'hA0 ) );
+
+	// --------------------------------------------------------------------
+	//	Audio out
+	// --------------------------------------------------------------------
+	i2s_audio u_audio (
+		.clk					( clk						),
+		.reset_n				( reset_n					),
+		.sound_in				( w_sound_in				),
+		.i2s_audio_en			( i2s_audio_en				),
+		.i2s_audio_din			( i2s_audio_din				),
+		.i2s_audio_lrclk		( i2s_audio_lrclk			),
+		.i2s_audio_bclk			( i2s_audio_bclk			)
+	);
+
+	assign w_sound_in	= { 1'b0, w_click_sound, 14'd0 } + { 1'b0, w_ssg_sound_out, 3'd0 };
 
 	// --------------------------------------------------------------------
 	//	V9918 clone

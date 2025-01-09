@@ -1,7 +1,7 @@
 //
 //Written by GowinSynthesis
 //Tool Version "V1.9.10.03 (64-bit)"
-//Wed Jan  8 06:56:41 2025
+//Thu Jan  9 23:00:49 2025
 
 //Source file index table:
 //file0 "\D:/github/HRA_product/TangCartMSX/RTL/modules/cz80/cz80.v"
@@ -37,6 +37,7 @@
 //file30 "\D:/github/HRA_product/TangCartMSX/RTL/tangnano20k_step7/src/tangnano20k_step7.v"
 //file31 "\D:/github/HRA_product/TangCartMSX/RTL/tangnano20k_step7/src/uart/ip_uart.v"
 //file32 "\D:/github/HRA_product/TangCartMSX/RTL/tangnano20k_step7/src/uart/ip_uart_inst.v"
+//file33 "\D:/github/HRA_product/TangCartMSX/RTL/modules/i2s_audio/i2s_audio.v"
 `timescale 100 ps/100 ps
 module Gowin_PLL (
   clk3_579m_d,
@@ -8114,7 +8115,7 @@ module cz80 (
   n279_20,
   w_cpu_freeze,
   ff_sdr_ready,
-  n673_6,
+  n693_6,
   w_msx_reset_n,
   n279_9,
   ff_di_reg,
@@ -8186,7 +8187,7 @@ input n279_19;
 input n279_20;
 input w_cpu_freeze;
 input ff_sdr_ready;
-input n673_6;
+input n693_6;
 input w_msx_reset_n;
 input n279_9;
 input [7:0] ff_di_reg;
@@ -19017,14 +19018,14 @@ defparam n1550_s19.INIT=16'h0200;
     .I0(n94_3),
     .I1(w_cpu_freeze),
     .I2(ff_sdr_ready),
-    .I3(n673_6) 
+    .I3(n693_6) 
 );
 defparam mcycle_2_s3.INIT=16'h1000;
   LUT4 n2034_s2 (
     .F(n2034_6),
     .I0(w_cpu_freeze),
     .I1(ff_sdr_ready),
-    .I2(n673_6),
+    .I2(n693_6),
     .I3(n2033_7) 
 );
 defparam n2034_s2.INIT=16'h4000;
@@ -19032,7 +19033,7 @@ defparam n2034_s2.INIT=16'h4000;
     .F(n2025_6),
     .I0(w_cpu_freeze),
     .I1(ff_sdr_ready),
-    .I2(n673_6),
+    .I2(n693_6),
     .I3(n2024_4) 
 );
 defparam n2025_s2.INIT=16'h4000;
@@ -19040,7 +19041,7 @@ defparam n2025_s2.INIT=16'h4000;
     .F(n1590_6),
     .I0(w_cpu_freeze),
     .I1(ff_sdr_ready),
-    .I2(n673_6),
+    .I2(n693_6),
     .I3(n1099_5) 
 );
 defparam n1590_s2.INIT=16'h4000;
@@ -19048,7 +19049,7 @@ defparam n1590_s2.INIT=16'h4000;
     .F(n3349_6),
     .I0(w_cpu_freeze),
     .I1(ff_sdr_ready),
-    .I2(n673_6),
+    .I2(n693_6),
     .I3(n3349_4) 
 );
 defparam n3349_s2.INIT=16'h4000;
@@ -21572,7 +21573,7 @@ module cz80_inst (
   reg_r1_vsync_int_en_Z,
   w_cpu_freeze,
   ff_sdr_ready,
-  n673_6,
+  n693_6,
   ff_d,
   ff_ireq_inhibit,
   ff_req_inhibit,
@@ -21598,7 +21599,7 @@ input req_vsync_int_n;
 input reg_r1_vsync_int_en_Z;
 input w_cpu_freeze;
 input ff_sdr_ready;
-input n673_6;
+input n693_6;
 input [7:0] ff_d;
 output ff_ireq_inhibit;
 output ff_req_inhibit;
@@ -22334,7 +22335,7 @@ defparam ff_wr_n_i_s1.INIT=1'b1;
     .n279_20(n279_20),
     .w_cpu_freeze(w_cpu_freeze),
     .ff_sdr_ready(ff_sdr_ready),
-    .n673_6(n673_6),
+    .n693_6(n693_6),
     .w_msx_reset_n(w_msx_reset_n),
     .n279_9(n279_9),
     .ff_di_reg(ff_di_reg[7:0]),
@@ -23114,7 +23115,8 @@ wire n77_12;
 wire n78_12;
 wire n79_12;
 wire n71_9;
-wire [7:4] ff_port_c;
+wire w_click_sound;
+wire [5:4] ff_port_c;
 wire VCC;
 wire GND;
   LUT4 n10_s1 (
@@ -23212,7 +23214,7 @@ defparam n10_s2.INIT=4'h8;
   LUT3 n72_s7 (
     .F(n72_12),
     .I0(w_primary_slot[7]),
-    .I1(ff_port_c[7]),
+    .I1(w_click_sound),
     .I2(w_a_i[1]) 
 );
 defparam n72_s7.INIT=8'h3A;
@@ -23331,7 +23333,7 @@ defparam n71_s4.INIT=16'h4000;
     .RESET(n1710_5) 
 );
   DFFRE ff_port_c_7_s0 (
-    .Q(ff_port_c[7]),
+    .Q(w_click_sound),
     .D(d_Z[7]),
     .CLK(O_sdram_clk_d),
     .CE(n42_3),
@@ -44834,6 +44836,10 @@ module tangnano20k_step7 (
   spi_miso,
   ssg_ioa,
   ssg_iob,
+  i2s_audio_en,
+  i2s_audio_din,
+  i2s_audio_lrclk,
+  i2s_audio_bclk,
   uart_tx,
   O_sdram_clk,
   O_sdram_cke,
@@ -44864,6 +44870,10 @@ input spi_mosi;
 output spi_miso;
 inout [5:0] ssg_ioa;
 output [2:0] ssg_iob;
+output i2s_audio_en;
+output i2s_audio_din;
+output i2s_audio_lrclk;
+output i2s_audio_bclk;
 output uart_tx;
 output O_sdram_clk;
 output O_sdram_cke;
@@ -44885,9 +44895,9 @@ wire ssg_ioa_2_1;
 wire ssg_ioa_3_1;
 wire ssg_ioa_4_1;
 wire ssg_ioa_5_1;
-wire n673_5;
+wire n693_5;
 wire w_cpu_enable;
-wire n680_4;
+wire n700_4;
 wire w_psg_enable;
 wire n96_3;
 wire n236_4;
@@ -44905,8 +44915,8 @@ wire n20_4;
 wire n57_4;
 wire n56_4;
 wire n55_4;
-wire n673_6;
-wire n680_5;
+wire n693_6;
+wire n700_5;
 wire n236_5;
 wire n236_6;
 wire n237_5;
@@ -45415,6 +45425,24 @@ wire GND;
     .O(ssg_iob[2]),
     .I(ssg_iob_d[2]) 
 );
+  OBUF i2s_audio_en_obuf (
+    .O(i2s_audio_en),
+    .I(VCC) 
+);
+  OBUF i2s_audio_din_obuf (
+    .O(i2s_audio_din),
+    .I(GND) 
+);
+  TBUF i2s_audio_lrclk_s0 (
+    .O(i2s_audio_lrclk),
+    .I(GND),
+    .OEN(VCC) 
+);
+  TBUF i2s_audio_bclk_s0 (
+    .O(i2s_audio_bclk),
+    .I(GND),
+    .OEN(VCC) 
+);
   OBUF uart_tx_obuf (
     .O(uart_tx),
     .I(uart_tx_d) 
@@ -45511,32 +45539,32 @@ wire GND;
     .O(O_sdram_dqm[3]),
     .I(O_sdram_dqm_d[3]) 
 );
-  LUT3 n673_s1 (
-    .F(n673_5),
+  LUT3 n693_s1 (
+    .F(n693_5),
     .I0(w_cpu_freeze),
-    .I1(n673_6),
+    .I1(n693_6),
     .I2(ff_reset_n) 
 );
-defparam n673_s1.INIT=8'hEF;
+defparam n693_s1.INIT=8'hEF;
   LUT3 w_cpu_enable_s1 (
     .F(w_cpu_enable),
     .I0(w_cpu_freeze),
     .I1(ff_sdr_ready),
-    .I2(n673_6) 
+    .I2(n693_6) 
 );
 defparam w_cpu_enable_s1.INIT=8'h40;
-  LUT3 n680_s1 (
-    .F(n680_4),
+  LUT3 n700_s1 (
+    .F(n700_4),
     .I0(w_cpu_freeze),
-    .I1(n680_5),
+    .I1(n700_5),
     .I2(ff_reset_n) 
 );
-defparam n680_s1.INIT=8'hEF;
+defparam n700_s1.INIT=8'hEF;
   LUT3 w_psg_enable_s1 (
     .F(w_psg_enable),
     .I0(w_cpu_freeze),
     .I1(ff_sdr_ready),
-    .I2(n680_5) 
+    .I2(n700_5) 
 );
 defparam w_psg_enable_s1.INIT=8'h40;
   LUT3 n96_s0 (
@@ -45869,22 +45897,22 @@ defparam n56_s0.INIT=8'h78;
     .I3(ff_psg_clock_div[3]) 
 );
 defparam n55_s0.INIT=16'h7F80;
-  LUT4 n673_s2 (
-    .F(n673_6),
+  LUT4 n693_s2 (
+    .F(n693_6),
     .I0(ff_cpu_clock_div[2]),
     .I1(ff_cpu_clock_div[1]),
     .I2(ff_cpu_clock_div[0]),
     .I3(ff_cpu_clock_div[3]) 
 );
-defparam n673_s2.INIT=16'h4000;
-  LUT4 n680_s2 (
-    .F(n680_5),
+defparam n693_s2.INIT=16'h4000;
+  LUT4 n700_s2 (
+    .F(n700_5),
     .I0(ff_psg_clock_div[2]),
     .I1(ff_psg_clock_div[1]),
     .I2(ff_psg_clock_div[0]),
     .I3(ff_psg_clock_div[3]) 
 );
-defparam n680_s2.INIT=16'h4000;
+defparam n700_s2.INIT=16'h4000;
   LUT4 n236_s2 (
     .F(n236_5),
     .I0(n236_7),
@@ -46400,56 +46428,56 @@ defparam w_sdram_address_13_s2.INIT=16'hBF00;
     .Q(ff_cpu_clock_div[3]),
     .D(n20_4),
     .CLK(lcd_clk_d),
-    .RESET(n673_5) 
+    .RESET(n693_5) 
 );
 defparam ff_cpu_clock_div_3_s0.INIT=1'b0;
   DFFR ff_cpu_clock_div_2_s0 (
     .Q(ff_cpu_clock_div[2]),
     .D(n21_4),
     .CLK(lcd_clk_d),
-    .RESET(n673_5) 
+    .RESET(n693_5) 
 );
 defparam ff_cpu_clock_div_2_s0.INIT=1'b0;
   DFFR ff_cpu_clock_div_1_s0 (
     .Q(ff_cpu_clock_div[1]),
     .D(n22_4),
     .CLK(lcd_clk_d),
-    .RESET(n673_5) 
+    .RESET(n693_5) 
 );
 defparam ff_cpu_clock_div_1_s0.INIT=1'b0;
   DFFR ff_cpu_clock_div_0_s0 (
     .Q(ff_cpu_clock_div[0]),
     .D(n23_6),
     .CLK(lcd_clk_d),
-    .RESET(n673_5) 
+    .RESET(n693_5) 
 );
 defparam ff_cpu_clock_div_0_s0.INIT=1'b0;
   DFFR ff_psg_clock_div_3_s0 (
     .Q(ff_psg_clock_div[3]),
     .D(n55_4),
     .CLK(lcd_clk_d),
-    .RESET(n680_4) 
+    .RESET(n700_4) 
 );
 defparam ff_psg_clock_div_3_s0.INIT=1'b0;
   DFFR ff_psg_clock_div_2_s0 (
     .Q(ff_psg_clock_div[2]),
     .D(n56_4),
     .CLK(lcd_clk_d),
-    .RESET(n680_4) 
+    .RESET(n700_4) 
 );
 defparam ff_psg_clock_div_2_s0.INIT=1'b0;
   DFFR ff_psg_clock_div_1_s0 (
     .Q(ff_psg_clock_div[1]),
     .D(n57_4),
     .CLK(lcd_clk_d),
-    .RESET(n680_4) 
+    .RESET(n700_4) 
 );
 defparam ff_psg_clock_div_1_s0.INIT=1'b0;
   DFFR ff_psg_clock_div_0_s0 (
     .Q(ff_psg_clock_div[0]),
     .D(n58_6),
     .CLK(lcd_clk_d),
-    .RESET(n680_4) 
+    .RESET(n700_4) 
 );
 defparam ff_psg_clock_div_0_s0.INIT=1'b0;
   DFFE ff_vram_rdata_7_s0 (
@@ -46639,7 +46667,7 @@ defparam ff_delay_2_s2.INIT=1'b1;
     .reg_r1_vsync_int_en_Z(reg_r1_vsync_int_en_Z),
     .w_cpu_freeze(w_cpu_freeze),
     .ff_sdr_ready(ff_sdr_ready),
-    .n673_6(n673_6),
+    .n693_6(n693_6),
     .ff_d(ff_d[7:0]),
     .ff_ireq_inhibit(ff_ireq_inhibit),
     .ff_req_inhibit(ff_req_inhibit),

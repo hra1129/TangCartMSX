@@ -55,13 +55,79 @@
 //
 //-----------------------------------------------------------------------------
 
-module i2c_audio #(
-	parameter		c_dac_address	= 8'h00
-) (
-	input			clk,
+module i2s_audio(
+	input			clk,				//	42.95454MHz
 	input			reset_n,
 	input	[15:0]	sound_in,
-	output			i2c_audio_scl,
-	output			i2c_audio_sda
+	output			i2s_audio_en,
+	output			i2s_audio_din,
+	output			i2s_audio_lrclk,
+	output			i2s_audio_bclk
 );
+	localparam		c_512khz	= 8'd83;
+	reg		[7:0]	ff_divider;
+	wire			w_512khz_pulse;
+	reg				ff_bclk;
+	reg				ff_lrclk;
+	reg		[3:0]	ff_bit_count;
+	reg		[15:0]	ff_shift_reg;
+
+	assign i2s_audio_en		= 1'b1;
+
+	always @( posedge clk ) begin
+		if( !reset_n ) begin
+			ff_divider <= 8'd0;
+		end
+		else if( w_512khz_pulse ) begin
+			ff_divider <= 8'd0;
+		end
+		else begin
+			ff_divider <= ff_divider + 8'd1;
+		end
+	end
+
+	assign w_512khz_pulse	= (ff_divider == c_512khz);
+
+	always @( posedge clk ) begin
+		if( !reset_n ) begin
+			ff_bclk <= 1'b0;
+		end
+		else if( w_512khz_pulse ) begin
+			ff_bclk <= ~ff_bclk;
+		end
+	end
+
+	always @( posedge clk ) begin
+		if( !reset_n ) begin
+			ff_lrclk <= 1'b0;
+		end
+		else if( w_512khz_pulse && ff_bit_count == 4'd15 ) begin
+			ff_lrclk <= ~ff_lrclk;
+		end
+	end
+
+	always @( posedge clk ) begin
+		if( !reset_n ) begin
+			ff_bit_count <= 4'd0;
+		end
+		else if( w_512khz_pulse && !ff_bclk ) begin
+			ff_bit_count <= ff_bit_count + 4'd1;
+		end
+	end
+
+	always @( posedge clk ) begin
+		if( !reset_n ) begin
+			ff_shift_reg <= 16'd0;
+		end
+		else if( w_512khz_pulse && !ff_bclk ) begin
+			if( ff_bit_count == 4'd15 ) begin
+				ff_shift_reg <= sound_in;
+			end
+			else begin
+				ff_shift_reg <= { ff_shift_reg[14:0], 1'b0 };
+			end
+		end
+	end
+
+	assign i2s_audio_din	= ff_shift_reg[15];
 endmodule

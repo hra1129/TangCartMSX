@@ -5,33 +5,34 @@
     <Version>5</Version>
     <Device name="GW2AR-18C" pn="GW2AR-LV18QN88C8/I7">gw2ar18c-000</Device>
     <FileList>
-        <File path="../modules/cz80/cz80.v" type="file.verilog" enable="1"/>
-        <File path="../modules/cz80/cz80_alu.v" type="file.verilog" enable="1"/>
-        <File path="../modules/cz80/cz80_inst.v" type="file.verilog" enable="1"/>
-        <File path="../modules/cz80/cz80_mcode.v" type="file.verilog" enable="1"/>
-        <File path="../modules/cz80/cz80_reg.v" type="file.verilog" enable="1"/>
-        <File path="../modules/micom_connect/micom_connect.v" type="file.verilog" enable="1"/>
-        <File path="../modules/ppi/ppi.v" type="file.verilog" enable="1"/>
-        <File path="../modules/ppi/ppi_inst.v" type="file.verilog" enable="1"/>
-        <File path="../modules/ssg/ssg.v" type="file.verilog" enable="1"/>
-        <File path="../modules/sdram/ip_sdram_tangnano20k_c.v" type="file.verilog" enable="1"/>
-        <File path="../modules/secondary_slot/secondary_slot_inst.v" type="file.verilog" enable="1"/>
-        <File path="../modules/v9918/vdp.v" type="file.verilog" enable="1"/>
-        <File path="../modules/v9918/vdp_color_bus.v" type="file.verilog" enable="1"/>
-        <File path="../modules/v9918/vdp_color_decoder.v" type="file.verilog" enable="1"/>
-        <File path="../modules/v9918/vdp_double_buffer.v" type="file.verilog" enable="1"/>
-        <File path="../modules/v9918/vdp_graphic123m.v" type="file.verilog" enable="1"/>
-        <File path="../modules/v9918/vdp_inst.v" type="file.verilog" enable="1"/>
-        <File path="../modules/v9918/vdp_interrupt.v" type="file.verilog" enable="1"/>
-        <File path="../modules/v9918/vdp_lcd.v" type="file.verilog" enable="1"/>
-        <File path="../modules/v9918/vdp_ram_256byte.v" type="file.verilog" enable="1"/>
-        <File path="../modules/v9918/vdp_ram_line_buffer.v" type="file.verilog" enable="1"/>
-        <File path="../modules/v9918/vdp_register.v" type="file.verilog" enable="1"/>
-        <File path="../modules/v9918/vdp_spinforam.v" type="file.verilog" enable="1"/>
-        <File path="../modules/v9918/vdp_sprite.v" type="file.verilog" enable="1"/>
-        <File path="../modules/v9918/vdp_ssg.v" type="file.verilog" enable="1"/>
-        <File path="../modules/v9918/vdp_text12.v" type="file.verilog" enable="1"/>
-        <File path="../modules/v9918/vdp_wait_control.v" type="file.verilog" enable="1"/>
+        <File path="D:/github/HRA_product/TangCartMSX/RTL/modules/cz80/cz80.v" type="file.verilog" enable="1"/>
+        <File path="D:/github/HRA_product/TangCartMSX/RTL/modules/cz80/cz80_alu.v" type="file.verilog" enable="1"/>
+        <File path="D:/github/HRA_product/TangCartMSX/RTL/modules/cz80/cz80_inst.v" type="file.verilog" enable="1"/>
+        <File path="D:/github/HRA_product/TangCartMSX/RTL/modules/cz80/cz80_mcode.v" type="file.verilog" enable="1"/>
+        <File path="D:/github/HRA_product/TangCartMSX/RTL/modules/cz80/cz80_reg.v" type="file.verilog" enable="1"/>
+        <File path="D:/github/HRA_product/TangCartMSX/RTL/modules/i2s_audio/i2s_audio.v" type="file.verilog" enable="1"/>
+        <File path="D:/github/HRA_product/TangCartMSX/RTL/modules/micom_connect/micom_connect.v" type="file.verilog" enable="1"/>
+        <File path="D:/github/HRA_product/TangCartMSX/RTL/modules/ppi/ppi.v" type="file.verilog" enable="1"/>
+        <File path="D:/github/HRA_product/TangCartMSX/RTL/modules/ppi/ppi_inst.v" type="file.verilog" enable="1"/>
+        <File path="D:/github/HRA_product/TangCartMSX/RTL/modules/sdram/ip_sdram_tangnano20k_c.v" type="file.verilog" enable="1"/>
+        <File path="D:/github/HRA_product/TangCartMSX/RTL/modules/secondary_slot/secondary_slot_inst.v" type="file.verilog" enable="1"/>
+        <File path="D:/github/HRA_product/TangCartMSX/RTL/modules/ssg/ssg.v" type="file.verilog" enable="1"/>
+        <File path="D:/github/HRA_product/TangCartMSX/RTL/modules/v9918/vdp.v" type="file.verilog" enable="1"/>
+        <File path="D:/github/HRA_product/TangCartMSX/RTL/modules/v9918/vdp_color_bus.v" type="file.verilog" enable="1"/>
+        <File path="D:/github/HRA_product/TangCartMSX/RTL/modules/v9918/vdp_color_decoder.v" type="file.verilog" enable="1"/>
+        <File path="D:/github/HRA_product/TangCartMSX/RTL/modules/v9918/vdp_double_buffer.v" type="file.verilog" enable="1"/>
+        <File path="D:/github/HRA_product/TangCartMSX/RTL/modules/v9918/vdp_graphic123m.v" type="file.verilog" enable="1"/>
+        <File path="D:/github/HRA_product/TangCartMSX/RTL/modules/v9918/vdp_inst.v" type="file.verilog" enable="1"/>
+        <File path="D:/github/HRA_product/TangCartMSX/RTL/modules/v9918/vdp_interrupt.v" type="file.verilog" enable="1"/>
+        <File path="D:/github/HRA_product/TangCartMSX/RTL/modules/v9918/vdp_lcd.v" type="file.verilog" enable="1"/>
+        <File path="D:/github/HRA_product/TangCartMSX/RTL/modules/v9918/vdp_ram_256byte.v" type="file.verilog" enable="1"/>
+        <File path="D:/github/HRA_product/TangCartMSX/RTL/modules/v9918/vdp_ram_line_buffer.v" type="file.verilog" enable="1"/>
+        <File path="D:/github/HRA_product/TangCartMSX/RTL/modules/v9918/vdp_register.v" type="file.verilog" enable="1"/>
+        <File path="D:/github/HRA_product/TangCartMSX/RTL/modules/v9918/vdp_spinforam.v" type="file.verilog" enable="1"/>
+        <File path="D:/github/HRA_product/TangCartMSX/RTL/modules/v9918/vdp_sprite.v" type="file.verilog" enable="1"/>
+        <File path="D:/github/HRA_product/TangCartMSX/RTL/modules/v9918/vdp_ssg.v" type="file.verilog" enable="1"/>
+        <File path="D:/github/HRA_product/TangCartMSX/RTL/modules/v9918/vdp_text12.v" type="file.verilog" enable="1"/>
+        <File path="D:/github/HRA_product/TangCartMSX/RTL/modules/v9918/vdp_wait_control.v" type="file.verilog" enable="1"/>
         <File path="src/gowin_pll/gowin_pll.v" type="file.verilog" enable="1"/>
         <File path="src/ram/ip_ram.v" type="file.verilog" enable="1"/>
         <File path="src/rom/ip_hello_world_rom.v" type="file.verilog" enable="1"/>

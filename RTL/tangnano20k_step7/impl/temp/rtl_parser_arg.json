@@ -132,6 +132,10 @@
   {
    "Path" : "D:/github/HRA_product/TangCartMSX/RTL/tangnano20k_step7/src/uart/ip_uart_inst.v",
    "Type" : "verilog"
+  },
+  {
+   "Path" : "D:/github/HRA_product/TangCartMSX/RTL/modules/i2s_audio/i2s_audio.v",
+   "Type" : "verilog"
   }
  ],
  "IncludePath" : [
