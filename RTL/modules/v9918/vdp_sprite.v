@@ -97,7 +97,6 @@ module vdp_sprite (
 	wire			w_split_screen;
 
 	reg				ff_vdps0resetack;
-	reg				ff_vdps5resetack;
 
 	// for spinforam
 	wire	[1:0]	w_info_address;
@@ -186,7 +185,6 @@ module vdp_sprite (
 	wire			w_ram_odd_we;
 
 	assign p_s0_reset_ack			= ff_vdps0resetack;
-	assign p_s5_reset_ack			= ff_vdps5resetack;
 	assign p_s0_sp_overmapped		= ff_sp_overmap;
 	assign p_s0_sp_overmapped_num	= ff_sp_overmap_num;
 
@@ -757,7 +755,6 @@ module vdp_sprite (
 			ff_line_buf_draw_x			<= 8'd0;
 			ff_draw_color				<= 4'd0;
 			ff_vdps0resetack			<= 1'b0;
-			ff_vdps5resetack			<= 1'b0;
 
 			ff_s0_collision_incidence	= 1'b0;						// jp: スプライトが衝突したかどうかを示すフラグ
 		end

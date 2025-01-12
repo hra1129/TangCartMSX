@@ -7,6 +7,15 @@ Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\modules\cz80\cz80_
 Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\modules\cz80\cz80_reg.v'
 Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\modules\i2s_audio\i2s_audio.v'
 Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\modules\megarom\megarom.v'
+Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\modules\megarom\megarom_wo_scc.v'
+Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\modules\megarom\scc\scc_channel_mixer.v'
+Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\modules\megarom\scc\scc_channel_volume.v'
+Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\modules\megarom\scc\scc_core.v'
+Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\modules\megarom\scc\scc_inst.v'
+Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\modules\megarom\scc\scc_ram.v'
+Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\modules\megarom\scc\scc_register.v'
+Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\modules\megarom\scc\scc_selector.v'
+Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\modules\megarom\scc\scc_tone_generator_5ch.v'
 Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\modules\micom_connect\micom_connect.v'
 Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\modules\ppi\ppi.v'
 Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\modules\ppi\ppi_inst.v'
@@ -26,7 +35,6 @@ Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\modules\v9918\vdp_
 Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\modules\v9918\vdp_register.v'
 Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\modules\v9918\vdp_spinforam.v'
 Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\modules\v9918\vdp_sprite.v'
-Undeclared symbol 'p_s5_reset_ack', assumed default net type 'wire'("D:\github\HRA_product\TangCartMSX\RTL\modules\v9918\vdp_sprite.v":189)
 Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\modules\v9918\vdp_ssg.v'
 Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\modules\v9918\vdp_text12.v'
 Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\modules\v9918\vdp_wait_control.v'
@@ -66,6 +74,7 @@ WARN  (EX3791) : Expression size 32 truncated to fit in target size 6("D:\github
 WARN  (EX3791) : Expression size 6 truncated to fit in target size 5("D:\github\HRA_product\TangCartMSX\RTL\modules\ssg\ssg.v":517)
 WARN  (EX3791) : Expression size 6 truncated to fit in target size 5("D:\github\HRA_product\TangCartMSX\RTL\modules\ssg\ssg.v":520)
 Compiling module 'i2s_audio'("D:\github\HRA_product\TangCartMSX\RTL\modules\i2s_audio\i2s_audio.v":58)
+WARN  (EX3791) : Expression size 17 truncated to fit in target size 16("D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_step7\src\tangnano20k_step7.v":464)
 Compiling module 'vdp_inst'("D:\github\HRA_product\TangCartMSX\RTL\modules\v9918\vdp_inst.v":58)
 Compiling module 'vdp'("D:\github\HRA_product\TangCartMSX\RTL\modules\v9918\vdp.v":58)
 Compiling module 'vdp_color_bus'("D:\github\HRA_product\TangCartMSX\RTL\modules\v9918\vdp_color_bus.v":56)
@@ -88,9 +97,9 @@ Compiling module 'vdp_spinforam'("D:\github\HRA_product\TangCartMSX\RTL\modules\
 Extracting RAM for identifier 'ff_memory'("D:\github\HRA_product\TangCartMSX\RTL\modules\v9918\vdp_spinforam.v":66)
 Compiling module 'vdp_ram_256byte'("D:\github\HRA_product\TangCartMSX\RTL\modules\v9918\vdp_ram_256byte.v":32)
 Extracting RAM for identifier 'ff_block_ram'("D:\github\HRA_product\TangCartMSX\RTL\modules\v9918\vdp_ram_256byte.v":43)
-WARN  (EX3791) : Expression size 6 truncated to fit in target size 5("D:\github\HRA_product\TangCartMSX\RTL\modules\v9918\vdp_sprite.v":450)
-WARN  (EX3791) : Expression size 5 truncated to fit in target size 4("D:\github\HRA_product\TangCartMSX\RTL\modules\v9918\vdp_sprite.v":474)
-WARN  (EX3791) : Expression size 10 truncated to fit in target size 9("D:\github\HRA_product\TangCartMSX\RTL\modules\v9918\vdp_sprite.v":783)
+WARN  (EX3791) : Expression size 6 truncated to fit in target size 5("D:\github\HRA_product\TangCartMSX\RTL\modules\v9918\vdp_sprite.v":448)
+WARN  (EX3791) : Expression size 5 truncated to fit in target size 4("D:\github\HRA_product\TangCartMSX\RTL\modules\v9918\vdp_sprite.v":472)
+WARN  (EX3791) : Expression size 10 truncated to fit in target size 9("D:\github\HRA_product\TangCartMSX\RTL\modules\v9918\vdp_sprite.v":780)
 Compiling module 'vdp_register'("D:\github\HRA_product\TangCartMSX\RTL\modules\v9918\vdp_register.v":56)
 Compiling module 'vdp_lcd'("D:\github\HRA_product\TangCartMSX\RTL\modules\v9918\vdp_lcd.v":60)
 WARN  (EX3791) : Expression size 32 truncated to fit in target size 10("D:\github\HRA_product\TangCartMSX\RTL\modules\v9918\vdp_lcd.v":173)
@@ -103,7 +112,7 @@ Compiling module 'ip_ram'("D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_ste
 Extracting RAM for identifier 'ff_ram'("D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_step7\src\ram\ip_ram.v":15)
 Compiling module 'ip_sdram'("D:\github\HRA_product\TangCartMSX\RTL\modules\sdram\ip_sdram_tangnano20k_c.v":57)
 WARN  (EX3791) : Expression size 32 truncated to fit in target size 14("D:\github\HRA_product\TangCartMSX\RTL\modules\sdram\ip_sdram_tangnano20k_c.v":389)
-Compiling module 'megarom'("D:\github\HRA_product\TangCartMSX\RTL\modules\megarom\megarom.v":58)
+Compiling module 'megarom_wo_scc'("D:\github\HRA_product\TangCartMSX\RTL\modules\megarom\megarom_wo_scc.v":58)
 NOTE  (EX0101) : Current top module is "tangnano20k_step7"
 [5%] Running netlist conversion ...
 WARN  (CV0016) : Input clk27m is unused("D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_step7\src\tangnano20k_step7.v":25)

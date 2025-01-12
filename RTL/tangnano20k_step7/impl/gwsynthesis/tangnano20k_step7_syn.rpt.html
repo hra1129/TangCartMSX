@@ -62,6 +62,15 @@ D:\github\HRA_product\TangCartMSX\RTL\modules\cz80\cz80_mcode.v<br>
 D:\github\HRA_product\TangCartMSX\RTL\modules\cz80\cz80_reg.v<br>
 D:\github\HRA_product\TangCartMSX\RTL\modules\i2s_audio\i2s_audio.v<br>
 D:\github\HRA_product\TangCartMSX\RTL\modules\megarom\megarom.v<br>
+D:\github\HRA_product\TangCartMSX\RTL\modules\megarom\megarom_wo_scc.v<br>
+D:\github\HRA_product\TangCartMSX\RTL\modules\megarom\scc\scc_channel_mixer.v<br>
+D:\github\HRA_product\TangCartMSX\RTL\modules\megarom\scc\scc_channel_volume.v<br>
+D:\github\HRA_product\TangCartMSX\RTL\modules\megarom\scc\scc_core.v<br>
+D:\github\HRA_product\TangCartMSX\RTL\modules\megarom\scc\scc_inst.v<br>
+D:\github\HRA_product\TangCartMSX\RTL\modules\megarom\scc\scc_ram.v<br>
+D:\github\HRA_product\TangCartMSX\RTL\modules\megarom\scc\scc_register.v<br>
+D:\github\HRA_product\TangCartMSX\RTL\modules\megarom\scc\scc_selector.v<br>
+D:\github\HRA_product\TangCartMSX\RTL\modules\megarom\scc\scc_tone_generator_5ch.v<br>
 D:\github\HRA_product\TangCartMSX\RTL\modules\micom_connect\micom_connect.v<br>
 D:\github\HRA_product\TangCartMSX\RTL\modules\ppi\ppi.v<br>
 D:\github\HRA_product\TangCartMSX\RTL\modules\ppi\ppi_inst.v<br>
@@ -114,7 +123,7 @@ D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_step7\src\uart\ip_uart_inst.v<
 </tr>
 <tr>
 <td class="label">Created Time</td>
-<td>Sun Jan 12 09:21:14 2025
+<td>Sun Jan 12 20:58:32 2025
 </td>
 </tr>
 <tr>
@@ -130,11 +139,11 @@ D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_step7\src\uart\ip_uart_inst.v<
 </tr>
 <tr>
 <td class="label">Synthesis Process</td>
-<td>Running parser:<br/>&nbsp;&nbsp;&nbsp;&nbsp;CPU time = 0h 0m 0.625s, Elapsed time = 0h 0m 0.603s, Peak memory usage = 455.949MB<br/>Running netlist conversion:<br/>&nbsp;&nbsp;&nbsp;&nbsp;CPU time = 0h 0m 0s, Elapsed time = 0h 0m 0s, Peak memory usage = 0MB<br/>Running device independent optimization:<br/>&nbsp;&nbsp;&nbsp;&nbsp;Optimizing Phase 0: CPU time = 0h 0m 0.671s, Elapsed time = 0h 0m 0.654s, Peak memory usage = 455.949MB<br/>&nbsp;&nbsp;&nbsp;&nbsp;Optimizing Phase 1: CPU time = 0h 0m 0.25s, Elapsed time = 0h 0m 0.226s, Peak memory usage = 455.949MB<br/>&nbsp;&nbsp;&nbsp;&nbsp;Optimizing Phase 2: CPU time = 0h 0m 0.375s, Elapsed time = 0h 0m 0.38s, Peak memory usage = 455.949MB<br/>Running inference:<br/>&nbsp;&nbsp;&nbsp;&nbsp;Inferring Phase 0: CPU time = 0h 0m 0.234s, Elapsed time = 0h 0m 0.258s, Peak memory usage = 455.949MB<br/>&nbsp;&nbsp;&nbsp;&nbsp;Inferring Phase 1: CPU time = 0h 0m 0.015s, Elapsed time = 0h 0m 0.019s, Peak memory usage = 455.949MB<br/>&nbsp;&nbsp;&nbsp;&nbsp;Inferring Phase 2: CPU time = 0h 0m 0.031s, Elapsed time = 0h 0m 0.028s, Peak memory usage = 455.949MB<br/>&nbsp;&nbsp;&nbsp;&nbsp;Inferring Phase 3: CPU time = 0h 0m 0.015s, Elapsed time = 0h 0m 0.022s, Peak memory usage = 455.949MB<br/>Running technical mapping:<br/>&nbsp;&nbsp;&nbsp;&nbsp;Tech-Mapping Phase 0: CPU time = 0h 0m 0.609s, Elapsed time = 0h 0m 0.581s, Peak memory usage = 455.949MB<br/>&nbsp;&nbsp;&nbsp;&nbsp;Tech-Mapping Phase 1: CPU time = 0h 0m 0.093s, Elapsed time = 0h 0m 0.103s, Peak memory usage = 455.949MB<br/>&nbsp;&nbsp;&nbsp;&nbsp;Tech-Mapping Phase 2: CPU time = 0h 0m 0.187s, Elapsed time = 0h 0m 0.183s, Peak memory usage = 455.949MB<br/>&nbsp;&nbsp;&nbsp;&nbsp;Tech-Mapping Phase 3: CPU time = 0h 0m 23s, Elapsed time = 0h 0m 24s, Peak memory usage = 455.949MB<br/>&nbsp;&nbsp;&nbsp;&nbsp;Tech-Mapping Phase 4: CPU time = 0h 0m 0.359s, Elapsed time = 0h 0m 0.393s, Peak memory usage = 455.949MB<br/>Generate output files:<br/>&nbsp;&nbsp;&nbsp;&nbsp;CPU time = 0h 0m 0.328s, Elapsed time = 0h 0m 0.354s, Peak memory usage = 455.949MB<br/></td>
+<td>Running parser:<br/>&nbsp;&nbsp;&nbsp;&nbsp;CPU time = 0h 0m 0.703s, Elapsed time = 0h 0m 0.613s, Peak memory usage = 178.699MB<br/>Running netlist conversion:<br/>&nbsp;&nbsp;&nbsp;&nbsp;CPU time = 0h 0m 0s, Elapsed time = 0h 0m 0s, Peak memory usage = 0MB<br/>Running device independent optimization:<br/>&nbsp;&nbsp;&nbsp;&nbsp;Optimizing Phase 0: CPU time = 0h 0m 0.703s, Elapsed time = 0h 0m 0.691s, Peak memory usage = 178.699MB<br/>&nbsp;&nbsp;&nbsp;&nbsp;Optimizing Phase 1: CPU time = 0h 0m 0.25s, Elapsed time = 0h 0m 0.245s, Peak memory usage = 178.699MB<br/>&nbsp;&nbsp;&nbsp;&nbsp;Optimizing Phase 2: CPU time = 0h 0m 0.375s, Elapsed time = 0h 0m 0.377s, Peak memory usage = 178.699MB<br/>Running inference:<br/>&nbsp;&nbsp;&nbsp;&nbsp;Inferring Phase 0: CPU time = 0h 0m 0.234s, Elapsed time = 0h 0m 0.233s, Peak memory usage = 178.699MB<br/>&nbsp;&nbsp;&nbsp;&nbsp;Inferring Phase 1: CPU time = 0h 0m 0s, Elapsed time = 0h 0m 0.012s, Peak memory usage = 178.699MB<br/>&nbsp;&nbsp;&nbsp;&nbsp;Inferring Phase 2: CPU time = 0h 0m 0.031s, Elapsed time = 0h 0m 0.02s, Peak memory usage = 178.699MB<br/>&nbsp;&nbsp;&nbsp;&nbsp;Inferring Phase 3: CPU time = 0h 0m 0.015s, Elapsed time = 0h 0m 0.018s, Peak memory usage = 178.699MB<br/>Running technical mapping:<br/>&nbsp;&nbsp;&nbsp;&nbsp;Tech-Mapping Phase 0: CPU time = 0h 0m 0.593s, Elapsed time = 0h 0m 0.601s, Peak memory usage = 178.699MB<br/>&nbsp;&nbsp;&nbsp;&nbsp;Tech-Mapping Phase 1: CPU time = 0h 0m 0.109s, Elapsed time = 0h 0m 0.096s, Peak memory usage = 178.699MB<br/>&nbsp;&nbsp;&nbsp;&nbsp;Tech-Mapping Phase 2: CPU time = 0h 0m 0.218s, Elapsed time = 0h 0m 0.219s, Peak memory usage = 178.699MB<br/>&nbsp;&nbsp;&nbsp;&nbsp;Tech-Mapping Phase 3: CPU time = 0h 0m 22s, Elapsed time = 0h 0m 23s, Peak memory usage = 198.387MB<br/>&nbsp;&nbsp;&nbsp;&nbsp;Tech-Mapping Phase 4: CPU time = 0h 0m 0.359s, Elapsed time = 0h 0m 0.383s, Peak memory usage = 198.387MB<br/>Generate output files:<br/>&nbsp;&nbsp;&nbsp;&nbsp;CPU time = 0h 0m 0.343s, Elapsed time = 0h 0m 0.343s, Peak memory usage = 198.387MB<br/></td>
 </tr>
 <tr>
 <td class="label">Total Time and Memory Usage</td>
-<td>CPU time = 0h 0m 26s, Elapsed time = 0h 0m 27s, Peak memory usage = 455.949MB</td>
+<td>CPU time = 0h 0m 25s, Elapsed time = 0h 0m 26s, Peak memory usage = 198.387MB</td>
 </tr>
 </table>
 <h1><a name="resource">Resource</a></h1>
@@ -198,7 +207,7 @@ D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_step7\src\uart\ip_uart_inst.v<
 </tr>
 <tr>
 <td class="label"><b>LUT </b></td>
-<td>3738</td>
+<td>3685</td>
 </tr>
 <tr>
 <td class="label">&nbsp&nbsp&nbsp&nbspLUT1</td>
@@ -206,15 +215,15 @@ D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_step7\src\uart\ip_uart_inst.v<
 </tr>
 <tr>
 <td class="label">&nbsp&nbsp&nbsp&nbspLUT2</td>
-<td>320</td>
+<td>330</td>
 </tr>
 <tr>
 <td class="label">&nbsp&nbsp&nbsp&nbspLUT3</td>
-<td>1375</td>
+<td>1311</td>
 </tr>
 <tr>
 <td class="label">&nbsp&nbsp&nbsp&nbspLUT4</td>
-<td>2042</td>
+<td>2043</td>
 </tr>
 <tr>
 <td class="label"><b>ALU </b></td>
@@ -266,7 +275,7 @@ D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_step7\src\uart\ip_uart_inst.v<
 </tr>
 <tr>
 <td class="label">Logic</td>
-<td>3916(3782 LUT, 122 ALU, 2 RAM16) / 20736</td>
+<td>3863(3729 LUT, 122 ALU, 2 RAM16) / 20736</td>
 <td>19%</td>
 </tr>
 <tr>
@@ -380,7 +389,7 @@ D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_step7\src\uart\ip_uart_inst.v<
 <td>1</td>
 <td>u_pll/pll_inst/CLKOUT.default_gen_clk</td>
 <td>85.896(MHz)</td>
-<td>119.574(MHz)</td>
+<td>122.835(MHz)</td>
 <td>9</td>
 <td>TOP</td>
 </tr>
@@ -388,8 +397,8 @@ D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_step7\src\uart\ip_uart_inst.v<
 <td>2</td>
 <td>u_pll/pll_inst/CLKOUTD.default_gen_clk</td>
 <td>42.948(MHz)</td>
-<td>60.277(MHz)</td>
-<td>16</td>
+<td>61.683(MHz)</td>
+<td>9</td>
 <td>TOP</td>
 </tr>
 </table>
@@ -399,11 +408,11 @@ D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_step7\src\uart\ip_uart_inst.v<
 <table class="summary_table">
 <tr>
 <td class="label">Slack</td>
-<td>3.012</td>
+<td>3.050</td>
 </tr>
 <tr>
 <td class="label">Data Arrival Time</td>
-<td>9.420</td>
+<td>9.382</td>
 </tr>
 <tr>
 <td class="label">Data Required Time</td>
@@ -411,575 +420,7 @@ D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_step7\src\uart\ip_uart_inst.v<
 </tr>
 <tr>
 <td class="label">From</td>
-<td>u_z80/u_cz80/ff_a_9_s0</td>
-</tr>
-<tr>
-<td class="label">To</td>
-<td>u_sdram/ff_req_s2</td>
-</tr>
-<tr>
-<td class="label">Launch Clk</td>
-<td>u_pll/pll_inst/CLKOUTD.default_gen_clk[R]</td>
-</tr>
-<tr>
-<td class="label">Latch Clk</td>
-<td>u_pll/pll_inst/CLKOUT.default_gen_clk[R]</td>
-</tr>
-</table>
-<b>Data Arrival Path:</b>
-<table class="summary_table">
-<tr>
-<th>AT</th>
-<th>DELAY</th>
-<th>TYPE</th>
-<th>RF</th>
-<th>FANOUT</th>
-<th>NODE</th>
-</tr>
-<tr>
-<td>0.000</td>
-<td>0.000</td>
-<td> </td>
-<td> </td>
-<td> </td>
-<td>u_pll/pll_inst/CLKOUTD.default_gen_clk</td>
-</tr>
-<tr>
-<td>0.484</td>
-<td>0.484</td>
-<td>tCL</td>
-<td>RR</td>
-<td>1658</td>
-<td>u_pll/pll_inst/CLKOUTD</td>
-</tr>
-<tr>
-<td>0.844</td>
-<td>0.360</td>
-<td>tNET</td>
-<td>RR</td>
-<td>1</td>
-<td>u_z80/u_cz80/ff_a_9_s0/CLK</td>
-</tr>
-<tr>
-<td>1.076</td>
-<td>0.232</td>
-<td>tC2Q</td>
-<td>RF</td>
-<td>2</td>
-<td>u_z80/u_cz80/ff_a_9_s0/Q</td>
-</tr>
-<tr>
-<td>1.550</td>
-<td>0.474</td>
-<td>tNET</td>
-<td>FF</td>
-<td>1</td>
-<td>u_exp_slot0/n28_s6/I1</td>
-</tr>
-<tr>
-<td>2.105</td>
-<td>0.555</td>
-<td>tINS</td>
-<td>FF</td>
-<td>1</td>
-<td>u_exp_slot0/n28_s6/F</td>
-</tr>
-<tr>
-<td>2.579</td>
-<td>0.474</td>
-<td>tNET</td>
-<td>FF</td>
-<td>1</td>
-<td>u_exp_slot0/n28_s3/I1</td>
-</tr>
-<tr>
-<td>3.134</td>
-<td>0.555</td>
-<td>tINS</td>
-<td>FF</td>
-<td>6</td>
-<td>u_exp_slot0/n28_s3/F</td>
-</tr>
-<tr>
-<td>3.608</td>
-<td>0.474</td>
-<td>tNET</td>
-<td>FF</td>
-<td>1</td>
-<td>w_sdram_address_22_s3/I0</td>
-</tr>
-<tr>
-<td>4.125</td>
-<td>0.517</td>
-<td>tINS</td>
-<td>FF</td>
-<td>5</td>
-<td>w_sdram_address_22_s3/F</td>
-</tr>
-<tr>
-<td>4.599</td>
-<td>0.474</td>
-<td>tNET</td>
-<td>FF</td>
-<td>1</td>
-<td>w_sdram_address_22_s1/I1</td>
-</tr>
-<tr>
-<td>5.154</td>
-<td>0.555</td>
-<td>tINS</td>
-<td>FF</td>
-<td>2</td>
-<td>w_sdram_address_22_s1/F</td>
-</tr>
-<tr>
-<td>5.628</td>
-<td>0.474</td>
-<td>tNET</td>
-<td>FF</td>
-<td>1</td>
-<td>u_sdram/n75_s2/I2</td>
-</tr>
-<tr>
-<td>6.081</td>
-<td>0.453</td>
-<td>tINS</td>
-<td>FF</td>
-<td>3</td>
-<td>u_sdram/n75_s2/F</td>
-</tr>
-<tr>
-<td>6.555</td>
-<td>0.474</td>
-<td>tNET</td>
-<td>FF</td>
-<td>1</td>
-<td>u_sdram/n179_s3/I0</td>
-</tr>
-<tr>
-<td>7.072</td>
-<td>0.517</td>
-<td>tINS</td>
-<td>FF</td>
-<td>1</td>
-<td>u_sdram/n179_s3/F</td>
-</tr>
-<tr>
-<td>7.546</td>
-<td>0.474</td>
-<td>tNET</td>
-<td>FF</td>
-<td>1</td>
-<td>u_sdram/n179_s1/I3</td>
-</tr>
-<tr>
-<td>7.917</td>
-<td>0.371</td>
-<td>tINS</td>
-<td>FF</td>
-<td>4</td>
-<td>u_sdram/n179_s1/F</td>
-</tr>
-<tr>
-<td>8.391</td>
-<td>0.474</td>
-<td>tNET</td>
-<td>FF</td>
-<td>1</td>
-<td>u_sdram/n224_s4/I1</td>
-</tr>
-<tr>
-<td>8.946</td>
-<td>0.555</td>
-<td>tINS</td>
-<td>FF</td>
-<td>1</td>
-<td>u_sdram/n224_s4/F</td>
-</tr>
-<tr>
-<td>9.420</td>
-<td>0.474</td>
-<td>tNET</td>
-<td>FF</td>
-<td>1</td>
-<td>u_sdram/ff_req_s2/D</td>
-</tr>
-</table>
-<b>Data Required Path:</b>
-<table class="summary_table">
-<tr>
-<th>AT</th>
-<th>DELAY</th>
-<th>TYPE</th>
-<th>RF</th>
-<th>FANOUT</th>
-<th>NODE</th>
-</tr>
-<tr>
-<td>11.642</td>
-<td>0.000</td>
-<td> </td>
-<td> </td>
-<td> </td>
-<td>u_pll/pll_inst/CLKOUT.default_gen_clk</td>
-</tr>
-<tr>
-<td>12.142</td>
-<td>0.500</td>
-<td>tCL</td>
-<td>RR</td>
-<td>215</td>
-<td>u_pll/pll_inst/CLKOUT</td>
-</tr>
-<tr>
-<td>12.502</td>
-<td>0.360</td>
-<td>tNET</td>
-<td>RR</td>
-<td>1</td>
-<td>u_sdram/ff_req_s2/CLK</td>
-</tr>
-<tr>
-<td>12.467</td>
-<td>-0.035</td>
-<td>tUnc</td>
-<td> </td>
-<td> </td>
-<td>u_sdram/ff_req_s2</td>
-</tr>
-<tr>
-<td>12.432</td>
-<td>-0.035</td>
-<td>tSu</td>
-<td> </td>
-<td>1</td>
-<td>u_sdram/ff_req_s2</td>
-</tr>
-</table>
-<b>Path Statistics:</b>
-<table class="summary_table">
-<tr>
-<td class="label">Clock Skew:</td>
-<td>0.016</td>
-</tr>
-<tr>
-<td class="label">Setup Relationship:</td>
-<td>11.642</td>
-</tr>
-<tr>
-<td class="label">Logic Level:</td>
-<td>9</td>
-</tr>
-<tr>
-<td class="label">Arrival Clock Path Delay:</td><td> cell: 0.000, 0.000%; route: 0.360, 100.000%</td></tr>
-<tr>
-<td class="label">Arrival Data Path Delay:</td><td> cell: 4.078, 47.551%; route: 4.266, 49.744%; tC2Q: 0.232, 2.705%</td></tr>
-<tr>
-<td class="label">Required Clock Path Delay:</td><td> cell: 0.000, 0.000%; route: 0.360, 100.000%</td></tr>
-</table>
-<br/>
-<h3>Path&nbsp2</h3>
-<b>Path Summary:</b></br>
-<table class="summary_table">
-<tr>
-<td class="label">Slack</td>
-<td>3.012</td>
-</tr>
-<tr>
-<td class="label">Data Arrival Time</td>
-<td>9.420</td>
-</tr>
-<tr>
-<td class="label">Data Required Time</td>
-<td>12.432</td>
-</tr>
-<tr>
-<td class="label">From</td>
-<td>u_z80/u_cz80/ff_a_9_s0</td>
-</tr>
-<tr>
-<td class="label">To</td>
-<td>u_sdram/ff_main_state_0_s0</td>
-</tr>
-<tr>
-<td class="label">Launch Clk</td>
-<td>u_pll/pll_inst/CLKOUTD.default_gen_clk[R]</td>
-</tr>
-<tr>
-<td class="label">Latch Clk</td>
-<td>u_pll/pll_inst/CLKOUT.default_gen_clk[R]</td>
-</tr>
-</table>
-<b>Data Arrival Path:</b>
-<table class="summary_table">
-<tr>
-<th>AT</th>
-<th>DELAY</th>
-<th>TYPE</th>
-<th>RF</th>
-<th>FANOUT</th>
-<th>NODE</th>
-</tr>
-<tr>
-<td>0.000</td>
-<td>0.000</td>
-<td> </td>
-<td> </td>
-<td> </td>
-<td>u_pll/pll_inst/CLKOUTD.default_gen_clk</td>
-</tr>
-<tr>
-<td>0.484</td>
-<td>0.484</td>
-<td>tCL</td>
-<td>RR</td>
-<td>1658</td>
-<td>u_pll/pll_inst/CLKOUTD</td>
-</tr>
-<tr>
-<td>0.844</td>
-<td>0.360</td>
-<td>tNET</td>
-<td>RR</td>
-<td>1</td>
-<td>u_z80/u_cz80/ff_a_9_s0/CLK</td>
-</tr>
-<tr>
-<td>1.076</td>
-<td>0.232</td>
-<td>tC2Q</td>
-<td>RF</td>
-<td>2</td>
-<td>u_z80/u_cz80/ff_a_9_s0/Q</td>
-</tr>
-<tr>
-<td>1.550</td>
-<td>0.474</td>
-<td>tNET</td>
-<td>FF</td>
-<td>1</td>
-<td>u_exp_slot0/n28_s6/I1</td>
-</tr>
-<tr>
-<td>2.105</td>
-<td>0.555</td>
-<td>tINS</td>
-<td>FF</td>
-<td>1</td>
-<td>u_exp_slot0/n28_s6/F</td>
-</tr>
-<tr>
-<td>2.579</td>
-<td>0.474</td>
-<td>tNET</td>
-<td>FF</td>
-<td>1</td>
-<td>u_exp_slot0/n28_s3/I1</td>
-</tr>
-<tr>
-<td>3.134</td>
-<td>0.555</td>
-<td>tINS</td>
-<td>FF</td>
-<td>6</td>
-<td>u_exp_slot0/n28_s3/F</td>
-</tr>
-<tr>
-<td>3.608</td>
-<td>0.474</td>
-<td>tNET</td>
-<td>FF</td>
-<td>1</td>
-<td>w_sdram_address_22_s3/I0</td>
-</tr>
-<tr>
-<td>4.125</td>
-<td>0.517</td>
-<td>tINS</td>
-<td>FF</td>
-<td>5</td>
-<td>w_sdram_address_22_s3/F</td>
-</tr>
-<tr>
-<td>4.599</td>
-<td>0.474</td>
-<td>tNET</td>
-<td>FF</td>
-<td>1</td>
-<td>w_sdram_address_22_s1/I1</td>
-</tr>
-<tr>
-<td>5.154</td>
-<td>0.555</td>
-<td>tINS</td>
-<td>FF</td>
-<td>2</td>
-<td>w_sdram_address_22_s1/F</td>
-</tr>
-<tr>
-<td>5.628</td>
-<td>0.474</td>
-<td>tNET</td>
-<td>FF</td>
-<td>1</td>
-<td>u_sdram/n75_s2/I2</td>
-</tr>
-<tr>
-<td>6.081</td>
-<td>0.453</td>
-<td>tINS</td>
-<td>FF</td>
-<td>3</td>
-<td>u_sdram/n75_s2/F</td>
-</tr>
-<tr>
-<td>6.555</td>
-<td>0.474</td>
-<td>tNET</td>
-<td>FF</td>
-<td>1</td>
-<td>u_sdram/n179_s3/I0</td>
-</tr>
-<tr>
-<td>7.072</td>
-<td>0.517</td>
-<td>tINS</td>
-<td>FF</td>
-<td>1</td>
-<td>u_sdram/n179_s3/F</td>
-</tr>
-<tr>
-<td>7.546</td>
-<td>0.474</td>
-<td>tNET</td>
-<td>FF</td>
-<td>1</td>
-<td>u_sdram/n179_s1/I3</td>
-</tr>
-<tr>
-<td>7.917</td>
-<td>0.371</td>
-<td>tINS</td>
-<td>FF</td>
-<td>4</td>
-<td>u_sdram/n179_s1/F</td>
-</tr>
-<tr>
-<td>8.391</td>
-<td>0.474</td>
-<td>tNET</td>
-<td>FF</td>
-<td>1</td>
-<td>u_sdram/n446_s7/I1</td>
-</tr>
-<tr>
-<td>8.946</td>
-<td>0.555</td>
-<td>tINS</td>
-<td>FF</td>
-<td>1</td>
-<td>u_sdram/n446_s7/F</td>
-</tr>
-<tr>
-<td>9.420</td>
-<td>0.474</td>
-<td>tNET</td>
-<td>FF</td>
-<td>1</td>
-<td>u_sdram/ff_main_state_0_s0/D</td>
-</tr>
-</table>
-<b>Data Required Path:</b>
-<table class="summary_table">
-<tr>
-<th>AT</th>
-<th>DELAY</th>
-<th>TYPE</th>
-<th>RF</th>
-<th>FANOUT</th>
-<th>NODE</th>
-</tr>
-<tr>
-<td>11.642</td>
-<td>0.000</td>
-<td> </td>
-<td> </td>
-<td> </td>
-<td>u_pll/pll_inst/CLKOUT.default_gen_clk</td>
-</tr>
-<tr>
-<td>12.142</td>
-<td>0.500</td>
-<td>tCL</td>
-<td>RR</td>
-<td>215</td>
-<td>u_pll/pll_inst/CLKOUT</td>
-</tr>
-<tr>
-<td>12.502</td>
-<td>0.360</td>
-<td>tNET</td>
-<td>RR</td>
-<td>1</td>
-<td>u_sdram/ff_main_state_0_s0/CLK</td>
-</tr>
-<tr>
-<td>12.467</td>
-<td>-0.035</td>
-<td>tUnc</td>
-<td> </td>
-<td> </td>
-<td>u_sdram/ff_main_state_0_s0</td>
-</tr>
-<tr>
-<td>12.432</td>
-<td>-0.035</td>
-<td>tSu</td>
-<td> </td>
-<td>1</td>
-<td>u_sdram/ff_main_state_0_s0</td>
-</tr>
-</table>
-<b>Path Statistics:</b>
-<table class="summary_table">
-<tr>
-<td class="label">Clock Skew:</td>
-<td>0.016</td>
-</tr>
-<tr>
-<td class="label">Setup Relationship:</td>
-<td>11.642</td>
-</tr>
-<tr>
-<td class="label">Logic Level:</td>
-<td>9</td>
-</tr>
-<tr>
-<td class="label">Arrival Clock Path Delay:</td><td> cell: 0.000, 0.000%; route: 0.360, 100.000%</td></tr>
-<tr>
-<td class="label">Arrival Data Path Delay:</td><td> cell: 4.078, 47.551%; route: 4.266, 49.744%; tC2Q: 0.232, 2.705%</td></tr>
-<tr>
-<td class="label">Required Clock Path Delay:</td><td> cell: 0.000, 0.000%; route: 0.360, 100.000%</td></tr>
-</table>
-<br/>
-<h3>Path&nbsp3</h3>
-<b>Path Summary:</b></br>
-<table class="summary_table">
-<tr>
-<td class="label">Slack</td>
-<td>3.096</td>
-</tr>
-<tr>
-<td class="label">Data Arrival Time</td>
-<td>9.336</td>
-</tr>
-<tr>
-<td class="label">Data Required Time</td>
-<td>12.432</td>
-</tr>
-<tr>
-<td class="label">From</td>
-<td>u_z80/u_cz80/ir_2_s0</td>
+<td>u_z80/u_cz80/ir_1_s0</td>
 </tr>
 <tr>
 <td class="label">To</td>
@@ -1026,15 +467,15 @@ D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_step7\src\uart\ip_uart_inst.v<
 <td>tNET</td>
 <td>RR</td>
 <td>1</td>
-<td>u_z80/u_cz80/ir_2_s0/CLK</td>
+<td>u_z80/u_cz80/ir_1_s0/CLK</td>
 </tr>
 <tr>
 <td>1.076</td>
 <td>0.232</td>
 <td>tC2Q</td>
 <td>RF</td>
-<td>64</td>
-<td>u_z80/u_cz80/ir_2_s0/Q</td>
+<td>69</td>
+<td>u_z80/u_cz80/ir_1_s0/Q</td>
 </tr>
 <tr>
 <td>1.550</td>
@@ -1042,15 +483,15 @@ D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_step7\src\uart\ip_uart_inst.v<
 <td>tNET</td>
 <td>FF</td>
 <td>1</td>
-<td>u_z80/u_cz80/u_mcode/mcycles_d_0_s9/I1</td>
+<td>u_z80/n189_s5/I1</td>
 </tr>
 <tr>
 <td>2.105</td>
 <td>0.555</td>
 <td>tINS</td>
 <td>FF</td>
-<td>9</td>
-<td>u_z80/u_cz80/u_mcode/mcycles_d_0_s9/F</td>
+<td>8</td>
+<td>u_z80/n189_s5/F</td>
 </tr>
 <tr>
 <td>2.579</td>
@@ -1058,82 +499,82 @@ D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_step7\src\uart\ip_uart_inst.v<
 <td>tNET</td>
 <td>FF</td>
 <td>1</td>
-<td>u_z80/n279_s21/I1</td>
+<td>u_z80/n189_s8/I0</td>
 </tr>
 <tr>
-<td>3.134</td>
+<td>3.096</td>
+<td>0.517</td>
+<td>tINS</td>
+<td>FF</td>
+<td>6</td>
+<td>u_z80/n189_s8/F</td>
+</tr>
+<tr>
+<td>3.570</td>
+<td>0.474</td>
+<td>tNET</td>
+<td>FF</td>
+<td>1</td>
+<td>u_z80/n279_s18/I1</td>
+</tr>
+<tr>
+<td>4.125</td>
 <td>0.555</td>
 <td>tINS</td>
 <td>FF</td>
 <td>1</td>
-<td>u_z80/n279_s21/F</td>
+<td>u_z80/n279_s18/F</td>
 </tr>
 <tr>
-<td>3.608</td>
+<td>4.599</td>
 <td>0.474</td>
 <td>tNET</td>
 <td>FF</td>
 <td>1</td>
-<td>u_z80/n279_s17/I2</td>
+<td>u_z80/n279_s14/I0</td>
 </tr>
 <tr>
-<td>4.061</td>
-<td>0.453</td>
+<td>5.116</td>
+<td>0.517</td>
 <td>tINS</td>
 <td>FF</td>
 <td>1</td>
-<td>u_z80/n279_s17/F</td>
+<td>u_z80/n279_s14/F</td>
 </tr>
 <tr>
-<td>4.535</td>
+<td>5.590</td>
 <td>0.474</td>
 <td>tNET</td>
 <td>FF</td>
 <td>1</td>
-<td>u_z80/n279_s11/I2</td>
+<td>u_z80/n279_s8/I1</td>
 </tr>
 <tr>
-<td>4.988</td>
-<td>0.453</td>
-<td>tINS</td>
-<td>FF</td>
-<td>1</td>
-<td>u_z80/n279_s11/F</td>
-</tr>
-<tr>
-<td>5.462</td>
-<td>0.474</td>
-<td>tNET</td>
-<td>FF</td>
-<td>1</td>
-<td>u_z80/n279_s6/I2</td>
-</tr>
-<tr>
-<td>5.915</td>
-<td>0.453</td>
-<td>tINS</td>
-<td>FF</td>
-<td>1</td>
-<td>u_z80/n279_s6/F</td>
-</tr>
-<tr>
-<td>6.389</td>
-<td>0.474</td>
-<td>tNET</td>
-<td>FF</td>
-<td>1</td>
-<td>u_z80/n279_s4/I1</td>
-</tr>
-<tr>
-<td>6.944</td>
+<td>6.145</td>
 <td>0.555</td>
+<td>tINS</td>
+<td>FF</td>
+<td>1</td>
+<td>u_z80/n279_s8/F</td>
+</tr>
+<tr>
+<td>6.619</td>
+<td>0.474</td>
+<td>tNET</td>
+<td>FF</td>
+<td>1</td>
+<td>u_z80/n279_s4/I3</td>
+</tr>
+<tr>
+<td>6.990</td>
+<td>0.371</td>
 <td>tINS</td>
 <td>FF</td>
 <td>11</td>
 <td>u_z80/n279_s4/F</td>
 </tr>
 <tr>
-<td>7.418</td>
+<td>7.464</td>
 <td>0.474</td>
 <td>tNET</td>
 <td>FF</td>
@@ -1141,7 +582,7 @@ D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_step7\src\uart\ip_uart_inst.v<
 <td>u_z80/d_Z_0_s/I2</td>
 </tr>
 <tr>
-<td>7.871</td>
+<td>7.917</td>
 <td>0.453</td>
 <td>tINS</td>
 <td>FF</td>
@@ -1149,7 +590,7 @@ D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_step7\src\uart\ip_uart_inst.v<
 <td>u_z80/d_Z_0_s/F</td>
 </tr>
 <tr>
-<td>8.345</td>
+<td>8.391</td>
 <td>0.474</td>
 <td>tNET</td>
 <td>FF</td>
@@ -1157,7 +598,7 @@ D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_step7\src\uart\ip_uart_inst.v<
 <td>w_sdram_d_0_s0/I0</td>
 </tr>
 <tr>
-<td>8.862</td>
+<td>8.908</td>
 <td>0.517</td>
 <td>tINS</td>
 <td>FF</td>
@@ -1165,7 +606,7 @@ D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_step7\src\uart\ip_uart_inst.v<
 <td>w_sdram_d_0_s0/F</td>
 </tr>
 <tr>
-<td>9.336</td>
+<td>9.382</td>
 <td>0.474</td>
 <td>tNET</td>
 <td>FF</td>
@@ -1241,21 +682,21 @@ D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_step7\src\uart\ip_uart_inst.v<
 <tr>
 <td class="label">Arrival Clock Path Delay:</td><td> cell: 0.000, 0.000%; route: 0.360, 100.000%</td></tr>
 <tr>
-<td class="label">Arrival Data Path Delay:</td><td> cell: 3.994, 47.033%; route: 4.266, 50.235%; tC2Q: 0.232, 2.732%</td></tr>
+<td class="label">Arrival Data Path Delay:</td><td> cell: 4.040, 47.318%; route: 4.266, 49.965%; tC2Q: 0.232, 2.717%</td></tr>
 <tr>
 <td class="label">Required Clock Path Delay:</td><td> cell: 0.000, 0.000%; route: 0.360, 100.000%</td></tr>
 </table>
 <br/>
-<h3>Path&nbsp4</h3>
+<h3>Path&nbsp2</h3>
 <b>Path Summary:</b></br>
 <table class="summary_table">
 <tr>
 <td class="label">Slack</td>
-<td>3.096</td>
+<td>3.050</td>
 </tr>
 <tr>
 <td class="label">Data Arrival Time</td>
-<td>9.336</td>
+<td>9.382</td>
 </tr>
 <tr>
 <td class="label">Data Required Time</td>
@@ -1263,7 +704,7 @@ D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_step7\src\uart\ip_uart_inst.v<
 </tr>
 <tr>
 <td class="label">From</td>
-<td>u_z80/u_cz80/ir_2_s0</td>
+<td>u_z80/u_cz80/ir_1_s0</td>
 </tr>
 <tr>
 <td class="label">To</td>
@@ -1310,15 +751,15 @@ D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_step7\src\uart\ip_uart_inst.v<
 <td>tNET</td>
 <td>RR</td>
 <td>1</td>
-<td>u_z80/u_cz80/ir_2_s0/CLK</td>
+<td>u_z80/u_cz80/ir_1_s0/CLK</td>
 </tr>
 <tr>
 <td>1.076</td>
 <td>0.232</td>
 <td>tC2Q</td>
 <td>RF</td>
-<td>64</td>
-<td>u_z80/u_cz80/ir_2_s0/Q</td>
+<td>69</td>
+<td>u_z80/u_cz80/ir_1_s0/Q</td>
 </tr>
 <tr>
 <td>1.550</td>
@@ -1326,15 +767,15 @@ D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_step7\src\uart\ip_uart_inst.v<
 <td>tNET</td>
 <td>FF</td>
 <td>1</td>
-<td>u_z80/u_cz80/u_mcode/mcycles_d_0_s9/I1</td>
+<td>u_z80/n189_s5/I1</td>
 </tr>
 <tr>
 <td>2.105</td>
 <td>0.555</td>
 <td>tINS</td>
 <td>FF</td>
-<td>9</td>
-<td>u_z80/u_cz80/u_mcode/mcycles_d_0_s9/F</td>
+<td>8</td>
+<td>u_z80/n189_s5/F</td>
 </tr>
 <tr>
 <td>2.579</td>
@@ -1342,82 +783,82 @@ D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_step7\src\uart\ip_uart_inst.v<
 <td>tNET</td>
 <td>FF</td>
 <td>1</td>
-<td>u_z80/n279_s21/I1</td>
+<td>u_z80/n189_s8/I0</td>
 </tr>
 <tr>
-<td>3.134</td>
+<td>3.096</td>
+<td>0.517</td>
+<td>tINS</td>
+<td>FF</td>
+<td>6</td>
+<td>u_z80/n189_s8/F</td>
+</tr>
+<tr>
+<td>3.570</td>
+<td>0.474</td>
+<td>tNET</td>
+<td>FF</td>
+<td>1</td>
+<td>u_z80/n279_s18/I1</td>
+</tr>
+<tr>
+<td>4.125</td>
 <td>0.555</td>
 <td>tINS</td>
 <td>FF</td>
 <td>1</td>
-<td>u_z80/n279_s21/F</td>
+<td>u_z80/n279_s18/F</td>
 </tr>
 <tr>
-<td>3.608</td>
+<td>4.599</td>
 <td>0.474</td>
 <td>tNET</td>
 <td>FF</td>
 <td>1</td>
-<td>u_z80/n279_s17/I2</td>
+<td>u_z80/n279_s14/I0</td>
 </tr>
 <tr>
-<td>4.061</td>
-<td>0.453</td>
+<td>5.116</td>
+<td>0.517</td>
 <td>tINS</td>
 <td>FF</td>
 <td>1</td>
-<td>u_z80/n279_s17/F</td>
+<td>u_z80/n279_s14/F</td>
 </tr>
 <tr>
-<td>4.535</td>
+<td>5.590</td>
 <td>0.474</td>
 <td>tNET</td>
 <td>FF</td>
 <td>1</td>
-<td>u_z80/n279_s11/I2</td>
+<td>u_z80/n279_s8/I1</td>
 </tr>
 <tr>
-<td>4.988</td>
-<td>0.453</td>
-<td>tINS</td>
-<td>FF</td>
-<td>1</td>
-<td>u_z80/n279_s11/F</td>
-</tr>
-<tr>
-<td>5.462</td>
-<td>0.474</td>
-<td>tNET</td>
-<td>FF</td>
-<td>1</td>
-<td>u_z80/n279_s6/I2</td>
-</tr>
-<tr>
-<td>5.915</td>
-<td>0.453</td>
-<td>tINS</td>
-<td>FF</td>
-<td>1</td>
-<td>u_z80/n279_s6/F</td>
-</tr>
-<tr>
-<td>6.389</td>
-<td>0.474</td>
-<td>tNET</td>
-<td>FF</td>
-<td>1</td>
-<td>u_z80/n279_s4/I1</td>
-</tr>
-<tr>
-<td>6.944</td>
+<td>6.145</td>
 <td>0.555</td>
+<td>tINS</td>
+<td>FF</td>
+<td>1</td>
+<td>u_z80/n279_s8/F</td>
+</tr>
+<tr>
+<td>6.619</td>
+<td>0.474</td>
+<td>tNET</td>
+<td>FF</td>
+<td>1</td>
+<td>u_z80/n279_s4/I3</td>
+</tr>
+<tr>
+<td>6.990</td>
+<td>0.371</td>
 <td>tINS</td>
 <td>FF</td>
 <td>11</td>
 <td>u_z80/n279_s4/F</td>
 </tr>
 <tr>
-<td>7.418</td>
+<td>7.464</td>
 <td>0.474</td>
 <td>tNET</td>
 <td>FF</td>
@@ -1425,7 +866,7 @@ D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_step7\src\uart\ip_uart_inst.v<
 <td>u_z80/d_Z_1_s/I2</td>
 </tr>
 <tr>
-<td>7.871</td>
+<td>7.917</td>
 <td>0.453</td>
 <td>tINS</td>
 <td>FF</td>
@@ -1433,7 +874,7 @@ D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_step7\src\uart\ip_uart_inst.v<
 <td>u_z80/d_Z_1_s/F</td>
 </tr>
 <tr>
-<td>8.345</td>
+<td>8.391</td>
 <td>0.474</td>
 <td>tNET</td>
 <td>FF</td>
@@ -1441,7 +882,7 @@ D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_step7\src\uart\ip_uart_inst.v<
 <td>w_sdram_d_1_s0/I0</td>
 </tr>
 <tr>
-<td>8.862</td>
+<td>8.908</td>
 <td>0.517</td>
 <td>tINS</td>
 <td>FF</td>
@@ -1449,7 +890,7 @@ D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_step7\src\uart\ip_uart_inst.v<
 <td>w_sdram_d_1_s0/F</td>
 </tr>
 <tr>
-<td>9.336</td>
+<td>9.382</td>
 <td>0.474</td>
 <td>tNET</td>
 <td>FF</td>
@@ -1525,21 +966,21 @@ D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_step7\src\uart\ip_uart_inst.v<
 <tr>
 <td class="label">Arrival Clock Path Delay:</td><td> cell: 0.000, 0.000%; route: 0.360, 100.000%</td></tr>
 <tr>
-<td class="label">Arrival Data Path Delay:</td><td> cell: 3.994, 47.033%; route: 4.266, 50.235%; tC2Q: 0.232, 2.732%</td></tr>
+<td class="label">Arrival Data Path Delay:</td><td> cell: 4.040, 47.318%; route: 4.266, 49.965%; tC2Q: 0.232, 2.717%</td></tr>
 <tr>
 <td class="label">Required Clock Path Delay:</td><td> cell: 0.000, 0.000%; route: 0.360, 100.000%</td></tr>
 </table>
 <br/>
-<h3>Path&nbsp5</h3>
+<h3>Path&nbsp3</h3>
 <b>Path Summary:</b></br>
 <table class="summary_table">
 <tr>
 <td class="label">Slack</td>
-<td>3.096</td>
+<td>3.050</td>
 </tr>
 <tr>
 <td class="label">Data Arrival Time</td>
-<td>9.336</td>
+<td>9.382</td>
 </tr>
 <tr>
 <td class="label">Data Required Time</td>
@@ -1547,7 +988,7 @@ D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_step7\src\uart\ip_uart_inst.v<
 </tr>
 <tr>
 <td class="label">From</td>
-<td>u_z80/u_cz80/ir_2_s0</td>
+<td>u_z80/u_cz80/ir_1_s0</td>
 </tr>
 <tr>
 <td class="label">To</td>
@@ -1594,15 +1035,15 @@ D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_step7\src\uart\ip_uart_inst.v<
 <td>tNET</td>
 <td>RR</td>
 <td>1</td>
-<td>u_z80/u_cz80/ir_2_s0/CLK</td>
+<td>u_z80/u_cz80/ir_1_s0/CLK</td>
 </tr>
 <tr>
 <td>1.076</td>
 <td>0.232</td>
 <td>tC2Q</td>
 <td>RF</td>
-<td>64</td>
-<td>u_z80/u_cz80/ir_2_s0/Q</td>
+<td>69</td>
+<td>u_z80/u_cz80/ir_1_s0/Q</td>
 </tr>
 <tr>
 <td>1.550</td>
@@ -1610,15 +1051,15 @@ D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_step7\src\uart\ip_uart_inst.v<
 <td>tNET</td>
 <td>FF</td>
 <td>1</td>
-<td>u_z80/u_cz80/u_mcode/mcycles_d_0_s9/I1</td>
+<td>u_z80/n189_s5/I1</td>
 </tr>
 <tr>
 <td>2.105</td>
 <td>0.555</td>
 <td>tINS</td>
 <td>FF</td>
-<td>9</td>
-<td>u_z80/u_cz80/u_mcode/mcycles_d_0_s9/F</td>
+<td>8</td>
+<td>u_z80/n189_s5/F</td>
 </tr>
 <tr>
 <td>2.579</td>
@@ -1626,82 +1067,82 @@ D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_step7\src\uart\ip_uart_inst.v<
 <td>tNET</td>
 <td>FF</td>
 <td>1</td>
-<td>u_z80/n279_s21/I1</td>
+<td>u_z80/n189_s8/I0</td>
 </tr>
 <tr>
-<td>3.134</td>
+<td>3.096</td>
+<td>0.517</td>
+<td>tINS</td>
+<td>FF</td>
+<td>6</td>
+<td>u_z80/n189_s8/F</td>
+</tr>
+<tr>
+<td>3.570</td>
+<td>0.474</td>
+<td>tNET</td>
+<td>FF</td>
+<td>1</td>
+<td>u_z80/n279_s18/I1</td>
+</tr>
+<tr>
+<td>4.125</td>
 <td>0.555</td>
 <td>tINS</td>
 <td>FF</td>
 <td>1</td>
-<td>u_z80/n279_s21/F</td>
+<td>u_z80/n279_s18/F</td>
 </tr>
 <tr>
-<td>3.608</td>
+<td>4.599</td>
 <td>0.474</td>
 <td>tNET</td>
 <td>FF</td>
 <td>1</td>
-<td>u_z80/n279_s17/I2</td>
+<td>u_z80/n279_s14/I0</td>
 </tr>
 <tr>
-<td>4.061</td>
-<td>0.453</td>
+<td>5.116</td>
+<td>0.517</td>
 <td>tINS</td>
 <td>FF</td>
 <td>1</td>
-<td>u_z80/n279_s17/F</td>
+<td>u_z80/n279_s14/F</td>
 </tr>
 <tr>
-<td>4.535</td>
+<td>5.590</td>
 <td>0.474</td>
 <td>tNET</td>
 <td>FF</td>
 <td>1</td>
-<td>u_z80/n279_s11/I2</td>
+<td>u_z80/n279_s8/I1</td>
 </tr>
 <tr>
-<td>4.988</td>
-<td>0.453</td>
-<td>tINS</td>
-<td>FF</td>
-<td>1</td>
-<td>u_z80/n279_s11/F</td>
-</tr>
-<tr>
-<td>5.462</td>
-<td>0.474</td>
-<td>tNET</td>
-<td>FF</td>
-<td>1</td>
-<td>u_z80/n279_s6/I2</td>
-</tr>
-<tr>
-<td>5.915</td>
-<td>0.453</td>
-<td>tINS</td>
-<td>FF</td>
-<td>1</td>
-<td>u_z80/n279_s6/F</td>
-</tr>
-<tr>
-<td>6.389</td>
-<td>0.474</td>
-<td>tNET</td>
-<td>FF</td>
-<td>1</td>
-<td>u_z80/n279_s4/I1</td>
-</tr>
-<tr>
-<td>6.944</td>
+<td>6.145</td>
 <td>0.555</td>
+<td>tINS</td>
+<td>FF</td>
+<td>1</td>
+<td>u_z80/n279_s8/F</td>
+</tr>
+<tr>
+<td>6.619</td>
+<td>0.474</td>
+<td>tNET</td>
+<td>FF</td>
+<td>1</td>
+<td>u_z80/n279_s4/I3</td>
+</tr>
+<tr>
+<td>6.990</td>
+<td>0.371</td>
 <td>tINS</td>
 <td>FF</td>
 <td>11</td>
 <td>u_z80/n279_s4/F</td>
 </tr>
 <tr>
-<td>7.418</td>
+<td>7.464</td>
 <td>0.474</td>
 <td>tNET</td>
 <td>FF</td>
@@ -1709,7 +1150,7 @@ D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_step7\src\uart\ip_uart_inst.v<
 <td>u_z80/d_Z_2_s/I2</td>
 </tr>
 <tr>
-<td>7.871</td>
+<td>7.917</td>
 <td>0.453</td>
 <td>tINS</td>
 <td>FF</td>
@@ -1717,7 +1158,7 @@ D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_step7\src\uart\ip_uart_inst.v<
 <td>u_z80/d_Z_2_s/F</td>
 </tr>
 <tr>
-<td>8.345</td>
+<td>8.391</td>
 <td>0.474</td>
 <td>tNET</td>
 <td>FF</td>
@@ -1725,7 +1166,7 @@ D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_step7\src\uart\ip_uart_inst.v<
 <td>w_sdram_d_2_s0/I0</td>
 </tr>
 <tr>
-<td>8.862</td>
+<td>8.908</td>
 <td>0.517</td>
 <td>tINS</td>
 <td>FF</td>
@@ -1733,7 +1174,7 @@ D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_step7\src\uart\ip_uart_inst.v<
 <td>w_sdram_d_2_s0/F</td>
 </tr>
 <tr>
-<td>9.336</td>
+<td>9.382</td>
 <td>0.474</td>
 <td>tNET</td>
 <td>FF</td>
@@ -1809,7 +1250,575 @@ D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_step7\src\uart\ip_uart_inst.v<
 <tr>
 <td class="label">Arrival Clock Path Delay:</td><td> cell: 0.000, 0.000%; route: 0.360, 100.000%</td></tr>
 <tr>
-<td class="label">Arrival Data Path Delay:</td><td> cell: 3.994, 47.033%; route: 4.266, 50.235%; tC2Q: 0.232, 2.732%</td></tr>
+<td class="label">Arrival Data Path Delay:</td><td> cell: 4.040, 47.318%; route: 4.266, 49.965%; tC2Q: 0.232, 2.717%</td></tr>
+<tr>
+<td class="label">Required Clock Path Delay:</td><td> cell: 0.000, 0.000%; route: 0.360, 100.000%</td></tr>
+</table>
+<br/>
+<h3>Path&nbsp4</h3>
+<b>Path Summary:</b></br>
+<table class="summary_table">
+<tr>
+<td class="label">Slack</td>
+<td>3.050</td>
+</tr>
+<tr>
+<td class="label">Data Arrival Time</td>
+<td>9.382</td>
+</tr>
+<tr>
+<td class="label">Data Required Time</td>
+<td>12.432</td>
+</tr>
+<tr>
+<td class="label">From</td>
+<td>u_z80/u_cz80/ir_1_s0</td>
+</tr>
+<tr>
+<td class="label">To</td>
+<td>u_sdram/ff_wdata_3_s0</td>
+</tr>
+<tr>
+<td class="label">Launch Clk</td>
+<td>u_pll/pll_inst/CLKOUTD.default_gen_clk[R]</td>
+</tr>
+<tr>
+<td class="label">Latch Clk</td>
+<td>u_pll/pll_inst/CLKOUT.default_gen_clk[R]</td>
+</tr>
+</table>
+<b>Data Arrival Path:</b>
+<table class="summary_table">
+<tr>
+<th>AT</th>
+<th>DELAY</th>
+<th>TYPE</th>
+<th>RF</th>
+<th>FANOUT</th>
+<th>NODE</th>
+</tr>
+<tr>
+<td>0.000</td>
+<td>0.000</td>
+<td> </td>
+<td> </td>
+<td> </td>
+<td>u_pll/pll_inst/CLKOUTD.default_gen_clk</td>
+</tr>
+<tr>
+<td>0.484</td>
+<td>0.484</td>
+<td>tCL</td>
+<td>RR</td>
+<td>1658</td>
+<td>u_pll/pll_inst/CLKOUTD</td>
+</tr>
+<tr>
+<td>0.844</td>
+<td>0.360</td>
+<td>tNET</td>
+<td>RR</td>
+<td>1</td>
+<td>u_z80/u_cz80/ir_1_s0/CLK</td>
+</tr>
+<tr>
+<td>1.076</td>
+<td>0.232</td>
+<td>tC2Q</td>
+<td>RF</td>
+<td>69</td>
+<td>u_z80/u_cz80/ir_1_s0/Q</td>
+</tr>
+<tr>
+<td>1.550</td>
+<td>0.474</td>
+<td>tNET</td>
+<td>FF</td>
+<td>1</td>
+<td>u_z80/n189_s5/I1</td>
+</tr>
+<tr>
+<td>2.105</td>
+<td>0.555</td>
+<td>tINS</td>
+<td>FF</td>
+<td>8</td>
+<td>u_z80/n189_s5/F</td>
+</tr>
+<tr>
+<td>2.579</td>
+<td>0.474</td>
+<td>tNET</td>
+<td>FF</td>
+<td>1</td>
+<td>u_z80/n189_s8/I0</td>
+</tr>
+<tr>
+<td>3.096</td>
+<td>0.517</td>
+<td>tINS</td>
+<td>FF</td>
+<td>6</td>
+<td>u_z80/n189_s8/F</td>
+</tr>
+<tr>
+<td>3.570</td>
+<td>0.474</td>
+<td>tNET</td>
+<td>FF</td>
+<td>1</td>
+<td>u_z80/n279_s18/I1</td>
+</tr>
+<tr>
+<td>4.125</td>
+<td>0.555</td>
+<td>tINS</td>
+<td>FF</td>
+<td>1</td>
+<td>u_z80/n279_s18/F</td>
+</tr>
+<tr>
+<td>4.599</td>
+<td>0.474</td>
+<td>tNET</td>
+<td>FF</td>
+<td>1</td>
+<td>u_z80/n279_s14/I0</td>
+</tr>
+<tr>
+<td>5.116</td>
+<td>0.517</td>
+<td>tINS</td>
+<td>FF</td>
+<td>1</td>
+<td>u_z80/n279_s14/F</td>
+</tr>
+<tr>
+<td>5.590</td>
+<td>0.474</td>
+<td>tNET</td>
+<td>FF</td>
+<td>1</td>
+<td>u_z80/n279_s8/I1</td>
+</tr>
+<tr>
+<td>6.145</td>
+<td>0.555</td>
+<td>tINS</td>
+<td>FF</td>
+<td>1</td>
+<td>u_z80/n279_s8/F</td>
+</tr>
+<tr>
+<td>6.619</td>
+<td>0.474</td>
+<td>tNET</td>
+<td>FF</td>
+<td>1</td>
+<td>u_z80/n279_s4/I3</td>
+</tr>
+<tr>
+<td>6.990</td>
+<td>0.371</td>
+<td>tINS</td>
+<td>FF</td>
+<td>11</td>
+<td>u_z80/n279_s4/F</td>
+</tr>
+<tr>
+<td>7.464</td>
+<td>0.474</td>
+<td>tNET</td>
+<td>FF</td>
+<td>1</td>
+<td>u_z80/d_Z_3_s/I2</td>
+</tr>
+<tr>
+<td>7.917</td>
+<td>0.453</td>
+<td>tINS</td>
+<td>FF</td>
+<td>20</td>
+<td>u_z80/d_Z_3_s/F</td>
+</tr>
+<tr>
+<td>8.391</td>
+<td>0.474</td>
+<td>tNET</td>
+<td>FF</td>
+<td>1</td>
+<td>w_sdram_d_3_s0/I0</td>
+</tr>
+<tr>
+<td>8.908</td>
+<td>0.517</td>
+<td>tINS</td>
+<td>FF</td>
+<td>1</td>
+<td>w_sdram_d_3_s0/F</td>
+</tr>
+<tr>
+<td>9.382</td>
+<td>0.474</td>
+<td>tNET</td>
+<td>FF</td>
+<td>1</td>
+<td>u_sdram/ff_wdata_3_s0/D</td>
+</tr>
+</table>
+<b>Data Required Path:</b>
+<table class="summary_table">
+<tr>
+<th>AT</th>
+<th>DELAY</th>
+<th>TYPE</th>
+<th>RF</th>
+<th>FANOUT</th>
+<th>NODE</th>
+</tr>
+<tr>
+<td>11.642</td>
+<td>0.000</td>
+<td> </td>
+<td> </td>
+<td> </td>
+<td>u_pll/pll_inst/CLKOUT.default_gen_clk</td>
+</tr>
+<tr>
+<td>12.142</td>
+<td>0.500</td>
+<td>tCL</td>
+<td>RR</td>
+<td>215</td>
+<td>u_pll/pll_inst/CLKOUT</td>
+</tr>
+<tr>
+<td>12.502</td>
+<td>0.360</td>
+<td>tNET</td>
+<td>RR</td>
+<td>1</td>
+<td>u_sdram/ff_wdata_3_s0/CLK</td>
+</tr>
+<tr>
+<td>12.467</td>
+<td>-0.035</td>
+<td>tUnc</td>
+<td> </td>
+<td> </td>
+<td>u_sdram/ff_wdata_3_s0</td>
+</tr>
+<tr>
+<td>12.432</td>
+<td>-0.035</td>
+<td>tSu</td>
+<td> </td>
+<td>1</td>
+<td>u_sdram/ff_wdata_3_s0</td>
+</tr>
+</table>
+<b>Path Statistics:</b>
+<table class="summary_table">
+<tr>
+<td class="label">Clock Skew:</td>
+<td>0.016</td>
+</tr>
+<tr>
+<td class="label">Setup Relationship:</td>
+<td>11.642</td>
+</tr>
+<tr>
+<td class="label">Logic Level:</td>
+<td>9</td>
+</tr>
+<tr>
+<td class="label">Arrival Clock Path Delay:</td><td> cell: 0.000, 0.000%; route: 0.360, 100.000%</td></tr>
+<tr>
+<td class="label">Arrival Data Path Delay:</td><td> cell: 4.040, 47.318%; route: 4.266, 49.965%; tC2Q: 0.232, 2.717%</td></tr>
+<tr>
+<td class="label">Required Clock Path Delay:</td><td> cell: 0.000, 0.000%; route: 0.360, 100.000%</td></tr>
+</table>
+<br/>
+<h3>Path&nbsp5</h3>
+<b>Path Summary:</b></br>
+<table class="summary_table">
+<tr>
+<td class="label">Slack</td>
+<td>3.050</td>
+</tr>
+<tr>
+<td class="label">Data Arrival Time</td>
+<td>9.382</td>
+</tr>
+<tr>
+<td class="label">Data Required Time</td>
+<td>12.432</td>
+</tr>
+<tr>
+<td class="label">From</td>
+<td>u_z80/u_cz80/ir_1_s0</td>
+</tr>
+<tr>
+<td class="label">To</td>
+<td>u_sdram/ff_wdata_4_s0</td>
+</tr>
+<tr>
+<td class="label">Launch Clk</td>
+<td>u_pll/pll_inst/CLKOUTD.default_gen_clk[R]</td>
+</tr>
+<tr>
+<td class="label">Latch Clk</td>
+<td>u_pll/pll_inst/CLKOUT.default_gen_clk[R]</td>
+</tr>
+</table>
+<b>Data Arrival Path:</b>
+<table class="summary_table">
+<tr>
+<th>AT</th>
+<th>DELAY</th>
+<th>TYPE</th>
+<th>RF</th>
+<th>FANOUT</th>
+<th>NODE</th>
+</tr>
+<tr>
+<td>0.000</td>
+<td>0.000</td>
+<td> </td>
+<td> </td>
+<td> </td>
+<td>u_pll/pll_inst/CLKOUTD.default_gen_clk</td>
+</tr>
+<tr>
+<td>0.484</td>
+<td>0.484</td>
+<td>tCL</td>
+<td>RR</td>
+<td>1658</td>
+<td>u_pll/pll_inst/CLKOUTD</td>
+</tr>
+<tr>
+<td>0.844</td>
+<td>0.360</td>
+<td>tNET</td>
+<td>RR</td>
+<td>1</td>
+<td>u_z80/u_cz80/ir_1_s0/CLK</td>
+</tr>
+<tr>
+<td>1.076</td>
+<td>0.232</td>
+<td>tC2Q</td>
+<td>RF</td>
+<td>69</td>
+<td>u_z80/u_cz80/ir_1_s0/Q</td>
+</tr>
+<tr>
+<td>1.550</td>
+<td>0.474</td>
+<td>tNET</td>
+<td>FF</td>
+<td>1</td>
+<td>u_z80/n189_s5/I1</td>
+</tr>
+<tr>
+<td>2.105</td>
+<td>0.555</td>
+<td>tINS</td>
+<td>FF</td>
+<td>8</td>
+<td>u_z80/n189_s5/F</td>
+</tr>
+<tr>
+<td>2.579</td>
+<td>0.474</td>
+<td>tNET</td>
+<td>FF</td>
+<td>1</td>
+<td>u_z80/n189_s8/I0</td>
+</tr>
+<tr>
+<td>3.096</td>
+<td>0.517</td>
+<td>tINS</td>
+<td>FF</td>
+<td>6</td>
+<td>u_z80/n189_s8/F</td>
+</tr>
+<tr>
+<td>3.570</td>
+<td>0.474</td>
+<td>tNET</td>
+<td>FF</td>
+<td>1</td>
+<td>u_z80/n279_s18/I1</td>
+</tr>
+<tr>
+<td>4.125</td>
+<td>0.555</td>
+<td>tINS</td>
+<td>FF</td>
+<td>1</td>
+<td>u_z80/n279_s18/F</td>
+</tr>
+<tr>
+<td>4.599</td>
+<td>0.474</td>
+<td>tNET</td>
+<td>FF</td>
+<td>1</td>
+<td>u_z80/n279_s14/I0</td>
+</tr>
+<tr>
+<td>5.116</td>
+<td>0.517</td>
+<td>tINS</td>
+<td>FF</td>
+<td>1</td>
+<td>u_z80/n279_s14/F</td>
+</tr>
+<tr>
+<td>5.590</td>
+<td>0.474</td>
+<td>tNET</td>
+<td>FF</td>
+<td>1</td>
+<td>u_z80/n279_s8/I1</td>
+</tr>
+<tr>
+<td>6.145</td>
+<td>0.555</td>
+<td>tINS</td>
+<td>FF</td>
+<td>1</td>
+<td>u_z80/n279_s8/F</td>
+</tr>
+<tr>
+<td>6.619</td>
+<td>0.474</td>
+<td>tNET</td>
+<td>FF</td>
+<td>1</td>
+<td>u_z80/n279_s4/I3</td>
+</tr>
+<tr>
+<td>6.990</td>
+<td>0.371</td>
+<td>tINS</td>
+<td>FF</td>
+<td>11</td>
+<td>u_z80/n279_s4/F</td>
+</tr>
+<tr>
+<td>7.464</td>
+<td>0.474</td>
+<td>tNET</td>
+<td>FF</td>
+<td>1</td>
+<td>u_z80/d_Z_4_s/I2</td>
+</tr>
+<tr>
+<td>7.917</td>
+<td>0.453</td>
+<td>tINS</td>
+<td>FF</td>
+<td>20</td>
+<td>u_z80/d_Z_4_s/F</td>
+</tr>
+<tr>
+<td>8.391</td>
+<td>0.474</td>
+<td>tNET</td>
+<td>FF</td>
+<td>1</td>
+<td>w_sdram_d_4_s0/I0</td>
+</tr>
+<tr>
+<td>8.908</td>
+<td>0.517</td>
+<td>tINS</td>
+<td>FF</td>
+<td>1</td>
+<td>w_sdram_d_4_s0/F</td>
+</tr>
+<tr>
+<td>9.382</td>
+<td>0.474</td>
+<td>tNET</td>
+<td>FF</td>
+<td>1</td>
+<td>u_sdram/ff_wdata_4_s0/D</td>
+</tr>
+</table>
+<b>Data Required Path:</b>
+<table class="summary_table">
+<tr>
+<th>AT</th>
+<th>DELAY</th>
+<th>TYPE</th>
+<th>RF</th>
+<th>FANOUT</th>
+<th>NODE</th>
+</tr>
+<tr>
+<td>11.642</td>
+<td>0.000</td>
+<td> </td>
+<td> </td>
+<td> </td>
+<td>u_pll/pll_inst/CLKOUT.default_gen_clk</td>
+</tr>
+<tr>
+<td>12.142</td>
+<td>0.500</td>
+<td>tCL</td>
+<td>RR</td>
+<td>215</td>
+<td>u_pll/pll_inst/CLKOUT</td>
+</tr>
+<tr>
+<td>12.502</td>
+<td>0.360</td>
+<td>tNET</td>
+<td>RR</td>
+<td>1</td>
+<td>u_sdram/ff_wdata_4_s0/CLK</td>
+</tr>
+<tr>
+<td>12.467</td>
+<td>-0.035</td>
+<td>tUnc</td>
+<td> </td>
+<td> </td>
+<td>u_sdram/ff_wdata_4_s0</td>
+</tr>
+<tr>
+<td>12.432</td>
+<td>-0.035</td>
+<td>tSu</td>
+<td> </td>
+<td>1</td>
+<td>u_sdram/ff_wdata_4_s0</td>
+</tr>
+</table>
+<b>Path Statistics:</b>
+<table class="summary_table">
+<tr>
+<td class="label">Clock Skew:</td>
+<td>0.016</td>
+</tr>
+<tr>
+<td class="label">Setup Relationship:</td>
+<td>11.642</td>
+</tr>
+<tr>
+<td class="label">Logic Level:</td>
+<td>9</td>
+</tr>
+<tr>
+<td class="label">Arrival Clock Path Delay:</td><td> cell: 0.000, 0.000%; route: 0.360, 100.000%</td></tr>
+<tr>
+<td class="label">Arrival Data Path Delay:</td><td> cell: 4.040, 47.318%; route: 4.266, 49.965%; tC2Q: 0.232, 2.717%</td></tr>
 <tr>
 <td class="label">Required Clock Path Delay:</td><td> cell: 0.000, 0.000%; route: 0.360, 100.000%</td></tr>
 </table>

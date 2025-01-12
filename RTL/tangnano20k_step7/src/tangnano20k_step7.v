@@ -160,12 +160,22 @@ module tangnano20k_step7 (
 	wire			w_keyboard_kana_led_off;
 	wire	[11:0]	w_ssg_sound_out;
 	wire	[15:0]	w_sound_in;
+
 	wire			w_megarom1_rd_n;
 	wire	[21:0]	w_megarom1_address;
 	wire	[2:0]	w_megarom1_mode;
+	wire	[10:0]	w_megarom1_sound;
+	wire	[7:0]	w_megarom1_rdata;
+	wire			w_megarom1_rdata_en;
+	wire			w_megarom1_mem_cs_n;
+
 	wire			w_megarom2_rd_n;
 	wire	[21:0]	w_megarom2_address;
 	wire	[2:0]	w_megarom2_mode;
+	wire	[10:0]	w_megarom2_sound;
+	wire	[7:0]	w_megarom2_rdata;
+	wire			w_megarom2_rdata_en;
+	wire			w_megarom2_mem_cs_n;
 
 	// --------------------------------------------------------------------
 	//	clock
@@ -447,7 +457,11 @@ module tangnano20k_step7 (
 		.i2s_audio_bclk			( i2s_audio_bclk			)
 	);
 
-	assign w_sound_in	= { 2'd0, w_click_sound, 14'd0 } + { 2'd0, w_ssg_sound_out, 2'd0 };
+	assign w_sound_in	= 
+		{ 2'd0, w_click_sound, 14'd0 } + 
+		{ 2'd0, w_ssg_sound_out, 2'd0 } + 
+		{ 2'd0, w_megarom1_sound, 3'd0 } +
+		{ 2'd0, w_megarom2_sound, 3'd0 };
 
 	// --------------------------------------------------------------------
 	//	V9918 clone
@@ -539,7 +553,7 @@ module tangnano20k_step7 (
 	// --------------------------------------------------------------------
 	//	MegaROM Controller
 	// --------------------------------------------------------------------
-	megarom u_megarom_slot1 (
+	megarom_wo_scc u_megarom_slot1 (
 		.clk					( clk42m				),
 		.reset_n				( w_msx_reset_n			),
 		.sltsl					( w_sltsl1				),
@@ -548,12 +562,16 @@ module tangnano20k_step7 (
 		.rd_n					( rd_n					),
 		.address				( a						),
 		.wdata					( d						),
+		.rdata					( w_megarom1_rdata		),
+		.rdata_en				( w_megarom1_rdata_en	),
+		.mem_cs_n				( w_megarom1_mem_cs_n	),
 		.megarom_rd_n			( w_megarom1_rd_n		),
 		.megarom_address		( w_megarom1_address	),
-		.mode					( w_megarom1_mode		)
+		.mode					( w_megarom1_mode		),
+		.sound_out				( w_megarom1_sound		)
 	);
 
-	megarom u_megarom_slot2 (
+	megarom_wo_scc u_megarom_slot2 (
 		.clk					( clk42m				),
 		.reset_n				( w_msx_reset_n			),
 		.sltsl					( w_sltsl2				),
@@ -562,9 +580,13 @@ module tangnano20k_step7 (
 		.rd_n					( rd_n					),
 		.address				( a						),
 		.wdata					( d						),
+		.rdata					( w_megarom2_rdata		),
+		.rdata_en				( w_megarom2_rdata_en	),
+		.mem_cs_n				( w_megarom2_mem_cs_n	),
 		.megarom_rd_n			( w_megarom2_rd_n		),
 		.megarom_address		( w_megarom2_address	),
-		.mode					( w_megarom2_mode		)
+		.mode					( w_megarom2_mode		),
+		.sound_out				( w_megarom2_sound		)
 	);
 
 	// --------------------------------------------------------------------
@@ -602,8 +624,8 @@ module tangnano20k_step7 (
 									  ( w_kanji_j2                                            ) ? rd_n :				//	JIS2 KanjiROM
 									  ( !iorq_n                                               ) ? 1'b1 :				//	
 									  ( w_sltsl30                                             ) ? rd_n :				//	MapperRAM
-									  ( w_sltsl1                                              ) ? w_megarom1_rd_n :		//	MegaROM 1MB
-									  ( w_sltsl2   && (a[15:14] == 2'b01 || a[15:14] == 2'b10)) ? w_megarom2_rd_n :		//	MegaROM 512KB
+									  ( !w_megarom1_mem_cs_n                                  ) ? w_megarom1_rd_n :		//	MegaROM 1MB
+									  ( !w_megarom2_mem_cs_n                                  ) ? w_megarom2_rd_n :		//	MegaROM 512KB
 									  ( w_sltsl03  && (a[15:14] == 2'b01 || a[15:14] == 2'b10)) ? rd_n :				//	MSX Logo, ExtBASIC
 									  ( w_sltsl02  && (a[15:14] == 2'b01)                     ) ? rd_n :				//	MSX-MUSIC
 									  ( w_sltsl01  && (a[15:14] == 2'b01)                     ) ? rd_n :				//	IoT-BASIC

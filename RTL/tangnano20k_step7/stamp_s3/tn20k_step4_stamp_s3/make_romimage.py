@@ -16,6 +16,8 @@ target_list = [
 	( "dragon_quest2"        , 0x200000 ),
 	( "gall_force"           , 0x200000 ),
 	( "megarom_asc8"         , 0x200000 ),
+	( "gradius"              , 0x200000 ),
+	( "gradius2"             , 0x200000 ),
 ]
 
 s_rom_image_path = "./rom_image/"

@@ -30,6 +30,42 @@
    "Type" : "verilog"
   },
   {
+   "Path" : "D:/github/HRA_product/TangCartMSX/RTL/modules/megarom/megarom_wo_scc.v",
+   "Type" : "verilog"
+  },
+  {
+   "Path" : "D:/github/HRA_product/TangCartMSX/RTL/modules/megarom/scc/scc_channel_mixer.v",
+   "Type" : "verilog"
+  },
+  {
+   "Path" : "D:/github/HRA_product/TangCartMSX/RTL/modules/megarom/scc/scc_channel_volume.v",
+   "Type" : "verilog"
+  },
+  {
+   "Path" : "D:/github/HRA_product/TangCartMSX/RTL/modules/megarom/scc/scc_core.v",
+   "Type" : "verilog"
+  },
+  {
+   "Path" : "D:/github/HRA_product/TangCartMSX/RTL/modules/megarom/scc/scc_inst.v",
+   "Type" : "verilog"
+  },
+  {
+   "Path" : "D:/github/HRA_product/TangCartMSX/RTL/modules/megarom/scc/scc_ram.v",
+   "Type" : "verilog"
+  },
+  {
+   "Path" : "D:/github/HRA_product/TangCartMSX/RTL/modules/megarom/scc/scc_register.v",
+   "Type" : "verilog"
+  },
+  {
+   "Path" : "D:/github/HRA_product/TangCartMSX/RTL/modules/megarom/scc/scc_selector.v",
+   "Type" : "verilog"
+  },
+  {
+   "Path" : "D:/github/HRA_product/TangCartMSX/RTL/modules/megarom/scc/scc_tone_generator_5ch.v",
+   "Type" : "verilog"
+  },
+  {
    "Path" : "D:/github/HRA_product/TangCartMSX/RTL/modules/micom_connect/micom_connect.v",
    "Type" : "verilog"
   },
@@ -145,9 +181,9 @@
  "IncludePath" : [
 
  ],
- "LoopLimit" : 2000,
+ "LoopLimit" : 8000,
  "ResultFile" : "D:/github/HRA_product/TangCartMSX/RTL/tangnano20k_step7/impl/temp/rtl_parser.result",
- "Top" : "",
+ "Top" : "tangnano20k_step7",
  "VerilogStd" : "verilog_2001",
  "VhdlStd" : "vhdl_93"
 }

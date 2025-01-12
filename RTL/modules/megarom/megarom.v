@@ -64,17 +64,23 @@ module megarom (
 	input			rd_n,
 	input	[15:0]	address,
 	input	[7:0]	wdata,
+	output	[7:0]	rdata,
+	output			rdata_en,
+	output			mem_cs_n,
 	//	ROM interface
 	output			megarom_rd_n,
 	output	[21:0]	megarom_address,
 	//	Mode select
-	input	[2:0]	mode				//	0: ASC16, 1: ASC8, 2: KonamiSCC, 3: KonamiSCC+, 4: Linear, 5: KonamiVRC, 6: ---, 7: ---
+	input	[2:0]	mode,				//	0: ASC16, 1: ASC8, 2: KonamiSCC/SCC+, 3: ---, 4: Linear, 5: ---, 6: KonamiVRC, 7: ---
+	//	SCC sound out
+	output	[10:0]	sound_out
 );
 	reg		[7:0]	ff_rdata;
 	reg				ff_rdata_en;
 	reg				ff_rd_n;
 	wire			w_wr;
 	wire			w_rd;
+	reg				ff_enable;
 
 	reg		[7:0]	ff_bank0;
 	reg		[7:0]	ff_bank1;
@@ -82,6 +88,10 @@ module megarom (
 	reg		[7:0]	ff_bank3;
 	wire	[7:0]	w_address16;
 	wire	[7:0]	w_address8;
+	wire			w_scc_mem_cs_n;
+	wire	[7:0]	w_scc_rdata;
+	wire			w_scc_rdata_en;
+	wire	[7:0]	w_scc_address;
 
 	always @( posedge clk ) begin
 		if( !reset_n ) begin
@@ -103,10 +113,10 @@ module megarom (
 			ff_bank0 <= 8'd0;
 		end
 		else if( w_wr ) begin
-			if( mode[2:1] == 2'b00 && address[15:11] == 5'b0110_0 ) begin	//	ASC8, ASC16: 6000-67FFh
+			if(      mode[2:1] == 2'b00 && address[15:11] == 5'b0110_0 ) begin	//	0,1: ASC8/ASC16: 6000-67FFh
 				ff_bank0 <= wdata;
 			end
-			else begin
+			else begin		//	4,5,6,7: Linear, VRC
 				//	hold
 			end
 		end
@@ -125,10 +135,13 @@ module megarom (
 			end
 		end
 		else if( w_wr ) begin
-			if( mode[2:1] == 2'b00 && address[15:11] == 5'b0110_1 ) begin	//	ASC8: 6800-6FFFh
+			if(      mode[2:1] == 2'b00 && address[15:11] == 5'b0110_1 ) begin	//	0,1: ASC8    : 6800-6FFFh
 				ff_bank1 <= wdata;
 			end
-			else begin
+			else if( mode[2:1] == 2'b11 && address[15:13] == 3'b011    ) begin	//	6,7: VRC     : 6000-7FFFh
+				ff_bank1 <= wdata;
+			end
+			else begin		//	4,5: Linear
 				//	hold
 			end
 		end
@@ -147,10 +160,13 @@ module megarom (
 			end
 		end
 		else if( w_wr ) begin
-			if( mode[2:1] == 2'b00 && address[15:11] == 5'b0111_0 ) begin	//	ASC8, ASC16: 7000-77FFh
+			if(      mode[2:1] == 2'b00 && address[15:11] == 5'b0111_0 ) begin	//	0,1: ASC8/ASC16: 7000-77FFh
 				ff_bank2 <= wdata;
 			end
-			else begin
+			else if( mode[2:1] == 2'b11 && address[15:13] == 3'b100    ) begin	//	6,7: VRC       : 8000-9FFFh
+				ff_bank2 <= wdata;
+			end
+			else begin		//	4,5: Linear
 				//	hold
 			end
 		end
@@ -169,10 +185,13 @@ module megarom (
 			end
 		end
 		else if( w_wr ) begin
-			if( mode[2:1] == 2'b00 && address[15:11] == 5'b0111_1 ) begin	//	ASC8: 7800-7FFFh
+			if(      mode[2:1] == 2'b00 && address[15:11] == 5'b0111_1 ) begin	//	0,1: ASC8    : 7800-7FFFh
 				ff_bank3 <= wdata;
 			end
-			else begin
+			else if( mode[2:1] == 2'b11 && address[15:13] == 3'b101    ) begin	//	6,7: VRC     : A000-BFFFh
+				ff_bank3 <= wdata;
+			end
+			else begin		//	4,5: Linear
 				//	hold
 			end
 		end
@@ -180,6 +199,42 @@ module megarom (
 			//	hold
 		end
 	end
+
+	// --------------------------------------------------------------------
+	//	SCC
+	// --------------------------------------------------------------------
+	always @( posedge clk ) begin
+		if( !reset_n ) begin
+			ff_enable <= 1'b0;
+		end
+		else begin
+			if( mode == 3'd2 ) begin
+				ff_enable <= ~ff_enable;
+			end
+			else begin
+				ff_enable <= 1'b0;
+			end
+		end
+	end
+
+	scc_core #(
+		.add_offset		( 1					)
+	) u_scc_core (
+		.nreset			( reset_n			),
+		.clk			( clk				),
+		.enable			( ff_enable			),
+		.wrreq			( w_wr				),
+		.rdreq			( w_rd				),
+		.wr_active		( ~wr_n				),
+		.rd_active		( ~rd_n				),
+		.a				( address			),
+		.d				( wdata				),
+		.q				( w_scc_rdata		),
+		.q_en			( w_scc_rdata_en	),
+		.mem_ncs		( w_scc_mem_cs_n	),
+		.mem_a			( w_scc_address		),
+		.left_out		( sound_out			)
+	);
 
 	// --------------------------------------------------------------------
 	//	Address select
@@ -192,6 +247,13 @@ module megarom (
 	                 				                              ff_bank3;				//	A000h-BFFFh MSB 3bit = 101-101
 
 	assign megarom_rd_n				= ff_rd_n;
-	assign megarom_address[21:13]	= (mode == 3'd0) ? { w_address16, address[13] }: { 1'b0, w_address8 };
+	assign megarom_address[21:13]	= (mode == 3'd4) ? { 6'd0, address[15:13] }:		//	Linear
+	                             	  (mode == 3'd2) ? { 1'b0, w_scc_address }:			//	SCC bank
+	                             	  (mode == 3'd0) ? { w_address16, address[13] }:	//	16K bank
+	                             	                   { 1'b0, w_address8 };			//	8K bank
 	assign megarom_address[12:0]	= address[12:0];
+
+	assign rdata					= w_scc_rdata;
+	assign rdata_en					= w_scc_rdata_en;
+	assign mem_cs_n					= (mode == 3'd2) ? w_scc_mem_cs_n : ~sltsl;
 endmodule

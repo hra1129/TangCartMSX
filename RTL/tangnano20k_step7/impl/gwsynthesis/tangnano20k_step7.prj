@@ -11,6 +11,15 @@
         <File path="D:\github\HRA_product\TangCartMSX\RTL\modules\cz80\cz80_reg.v" type="verilog"/>
         <File path="D:\github\HRA_product\TangCartMSX\RTL\modules\i2s_audio\i2s_audio.v" type="verilog"/>
         <File path="D:\github\HRA_product\TangCartMSX\RTL\modules\megarom\megarom.v" type="verilog"/>
+        <File path="D:\github\HRA_product\TangCartMSX\RTL\modules\megarom\megarom_wo_scc.v" type="verilog"/>
+        <File path="D:\github\HRA_product\TangCartMSX\RTL\modules\megarom\scc\scc_channel_mixer.v" type="verilog"/>
+        <File path="D:\github\HRA_product\TangCartMSX\RTL\modules\megarom\scc\scc_channel_volume.v" type="verilog"/>
+        <File path="D:\github\HRA_product\TangCartMSX\RTL\modules\megarom\scc\scc_core.v" type="verilog"/>
+        <File path="D:\github\HRA_product\TangCartMSX\RTL\modules\megarom\scc\scc_inst.v" type="verilog"/>
+        <File path="D:\github\HRA_product\TangCartMSX\RTL\modules\megarom\scc\scc_ram.v" type="verilog"/>
+        <File path="D:\github\HRA_product\TangCartMSX\RTL\modules\megarom\scc\scc_register.v" type="verilog"/>
+        <File path="D:\github\HRA_product\TangCartMSX\RTL\modules\megarom\scc\scc_selector.v" type="verilog"/>
+        <File path="D:\github\HRA_product\TangCartMSX\RTL\modules\megarom\scc\scc_tone_generator_5ch.v" type="verilog"/>
         <File path="D:\github\HRA_product\TangCartMSX\RTL\modules\micom_connect\micom_connect.v" type="verilog"/>
         <File path="D:\github\HRA_product\TangCartMSX\RTL\modules\ppi\ppi.v" type="verilog"/>
         <File path="D:\github\HRA_product\TangCartMSX\RTL\modules\ppi\ppi_inst.v" type="verilog"/>
@@ -43,10 +52,11 @@
     <OptionList>
         <Option type="disable_insert_pad" value="0"/>
         <Option type="global_freq" value="100.000"/>
-        <Option type="looplimit" value="2000"/>
+        <Option type="looplimit" value="8000"/>
         <Option type="output_file" value="D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_step7\impl\gwsynthesis\tangnano20k_step7.vg"/>
         <Option type="print_all_synthesis_warning" value="0"/>
         <Option type="ram_rw_check" value="0"/>
+        <Option type="top_module" value="tangnano20k_step7"/>
         <Option type="vcc" value="1.0"/>
         <Option type="vccx" value="3.3"/>
         <Option type="verilog_language" value="verilog-2001"/>

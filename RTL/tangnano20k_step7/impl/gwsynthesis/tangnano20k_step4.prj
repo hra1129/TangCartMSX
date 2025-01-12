@@ -11,6 +11,8 @@
         <File path="D:\github\HRA_product\TangCartMSX\RTL\modules\cz80\cz80_reg.v" type="verilog"/>
         <File path="D:\github\HRA_product\TangCartMSX\RTL\modules\micom_connect\micom_connect.v" type="verilog"/>
         <File path="D:\github\HRA_product\TangCartMSX\RTL\modules\sdram\ip_sdram_tangnano20k.v" type="verilog"/>
+        <File path="D:\github\HRA_product\TangCartMSX\RTL\modules\megarom\megarom.v" type="verilog"/>
+        <File path="D:\github\HRA_product\TangCartMSX\RTL\modules\megarom\megarom_wo_scc.v" type="verilog"/>
         <File path="D:\github\HRA_product\TangCartMSX\RTL\modules\v9918\vdp.v" type="verilog"/>
         <File path="D:\github\HRA_product\TangCartMSX\RTL\modules\v9918\vdp_color_bus.v" type="verilog"/>
         <File path="D:\github\HRA_product\TangCartMSX\RTL\modules\v9918\vdp_color_decoder.v" type="verilog"/>
@@ -27,10 +29,12 @@
         <File path="D:\github\HRA_product\TangCartMSX\RTL\modules\v9918\vdp_ssg.v" type="verilog"/>
         <File path="D:\github\HRA_product\TangCartMSX\RTL\modules\v9918\vdp_text12.v" type="verilog"/>
         <File path="D:\github\HRA_product\TangCartMSX\RTL\modules\v9918\vdp_wait_control.v" type="verilog"/>
+        <File path="D:\github\HRA_product\TangCartMSX\RTL\modules\ppi\ppi.v" type="verilog"/>
+        <File path="D:\github\HRA_product\TangCartMSX\RTL\modules\ppi\ppi_inst.v" type="verilog"/>
         <File path="D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_step7\src\gowin_pll\gowin_pll.v" type="verilog"/>
         <File path="D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_step7\src\ram\ip_ram.v" type="verilog"/>
         <File path="D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_step7\src\rom\ip_hello_world_rom.v" type="verilog"/>
-        <File path="D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_step7\src\tangnano20k_step4.v" type="verilog"/>
+        <File path="D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_step7\src\tangnano20k_step7.v" type="verilog"/>
         <File path="D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_step7\src\uart\ip_uart.v" type="verilog"/>
         <File path="D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_step7\src\uart\ip_uart_inst.v" type="verilog"/>
     </FileList>

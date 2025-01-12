@@ -1,6 +1,5 @@
 GowinSynthesis start
 Running parser ...
-ERROR (EX5998) : Cannot open Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_step7\src\tangnano20k_step4.v'
 Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\modules\cz80\cz80.v'
 Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\modules\cz80\cz80_alu.v'
 Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\modules\cz80\cz80_inst.v'
@@ -8,6 +7,8 @@ Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\modules\cz80\cz80_
 Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\modules\cz80\cz80_reg.v'
 Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\modules\micom_connect\micom_connect.v'
 Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\modules\sdram\ip_sdram_tangnano20k.v'
+Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\modules\megarom\megarom.v'
+Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\modules\megarom\megarom_wo_scc.v'
 Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\modules\v9918\vdp.v'
 Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\modules\v9918\vdp_color_bus.v'
 Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\modules\v9918\vdp_color_decoder.v'
@@ -21,13 +22,16 @@ Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\modules\v9918\vdp_
 Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\modules\v9918\vdp_register.v'
 Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\modules\v9918\vdp_spinforam.v'
 Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\modules\v9918\vdp_sprite.v'
-Undeclared symbol 'p_s5_reset_ack', assumed default net type 'wire'("D:\github\HRA_product\TangCartMSX\RTL\modules\v9918\vdp_sprite.v":189)
 Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\modules\v9918\vdp_ssg.v'
 Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\modules\v9918\vdp_text12.v'
 Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\modules\v9918\vdp_wait_control.v'
+Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\modules\ppi\ppi.v'
+Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\modules\ppi\ppi_inst.v'
 Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_step7\src\gowin_pll\gowin_pll.v'
 Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_step7\src\ram\ip_ram.v'
 Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_step7\src\rom\ip_hello_world_rom.v'
+Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_step7\src\tangnano20k_step7.v'
 Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_step7\src\uart\ip_uart.v'
 Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_step7\src\uart\ip_uart_inst.v'
+ERROR (EX0302) : No valid top module found
 GowinSynthesis finish

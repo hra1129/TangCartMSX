@@ -18,6 +18,8 @@
 #include "romimage_dragon_quest2.h"
 #include "romimage_gall_force.h"
 #include "romimage_megarom_asc8.h"
+#include "romimage_gradius.h"
+#include "romimage_gradius2.h"
 
 #define PIN_BUTTON		0
 #define PIN_Y0			8
@@ -57,7 +59,7 @@ static int last_reset = 0;
 #define MEGAROM_KONSCC	2
 #define MEGAROM_KONSCCI	3
 #define MEGAROM_LINEAR	4
-#define MEGAROM_KONVRC	5
+#define MEGAROM_KONVRC	6
 
 // --------------------------------------------------------------------
 byte send_command( byte data ) {
@@ -159,7 +161,7 @@ void set_megarom_mode( int slot_no, int mode ) {
 	else {
 		hspi->transfer( 0x09 );
 	}
-	hspi->transfer( mode & 7 );
+	hspi->transfer( mode );
 	digitalWrite( hspi->pinSS(), HIGH );  //pull SS high to signify end of data transfer
 	hspi->endTransaction();
 }
@@ -304,24 +306,24 @@ void state3_send_rom_image( void ) {
 //	send_rom_image( rom_rabbit_adventure_demo_01, sizeof(rom_rabbit_adventure_demo_01) );
 //	set_megarom_mode( 1, MEGAROM_LINEAR );
 
-	Serial.println( "dragon_quest2" );
-	send_rom_image( rom_dragon_quest2_00, sizeof(rom_dragon_quest2_00) );
-	send_rom_image( rom_dragon_quest2_01, sizeof(rom_dragon_quest2_01) );
-	send_rom_image( rom_dragon_quest2_02, sizeof(rom_dragon_quest2_02) );
-	send_rom_image( rom_dragon_quest2_03, sizeof(rom_dragon_quest2_03) );
-	send_rom_image( rom_dragon_quest2_04, sizeof(rom_dragon_quest2_04) );
-	send_rom_image( rom_dragon_quest2_05, sizeof(rom_dragon_quest2_05) );
-	send_rom_image( rom_dragon_quest2_06, sizeof(rom_dragon_quest2_06) );
-	send_rom_image( rom_dragon_quest2_07, sizeof(rom_dragon_quest2_07) );
-	send_rom_image( rom_dragon_quest2_08, sizeof(rom_dragon_quest2_08) );
-	send_rom_image( rom_dragon_quest2_09, sizeof(rom_dragon_quest2_09) );
-	send_rom_image( rom_dragon_quest2_0A, sizeof(rom_dragon_quest2_0A) );
-	send_rom_image( rom_dragon_quest2_0B, sizeof(rom_dragon_quest2_0B) );
-	send_rom_image( rom_dragon_quest2_0C, sizeof(rom_dragon_quest2_0C) );
-	send_rom_image( rom_dragon_quest2_0D, sizeof(rom_dragon_quest2_0D) );
-	send_rom_image( rom_dragon_quest2_0E, sizeof(rom_dragon_quest2_0E) );
-	send_rom_image( rom_dragon_quest2_0F, sizeof(rom_dragon_quest2_0F) );
-	set_megarom_mode( 1, MEGAROM_ASC8 );
+//	Serial.println( "dragon_quest2" );
+//	send_rom_image( rom_dragon_quest2_00, sizeof(rom_dragon_quest2_00) );
+//	send_rom_image( rom_dragon_quest2_01, sizeof(rom_dragon_quest2_01) );
+//	send_rom_image( rom_dragon_quest2_02, sizeof(rom_dragon_quest2_02) );
+//	send_rom_image( rom_dragon_quest2_03, sizeof(rom_dragon_quest2_03) );
+//	send_rom_image( rom_dragon_quest2_04, sizeof(rom_dragon_quest2_04) );
+//	send_rom_image( rom_dragon_quest2_05, sizeof(rom_dragon_quest2_05) );
+//	send_rom_image( rom_dragon_quest2_06, sizeof(rom_dragon_quest2_06) );
+//	send_rom_image( rom_dragon_quest2_07, sizeof(rom_dragon_quest2_07) );
+//	send_rom_image( rom_dragon_quest2_08, sizeof(rom_dragon_quest2_08) );
+//	send_rom_image( rom_dragon_quest2_09, sizeof(rom_dragon_quest2_09) );
+//	send_rom_image( rom_dragon_quest2_0A, sizeof(rom_dragon_quest2_0A) );
+//	send_rom_image( rom_dragon_quest2_0B, sizeof(rom_dragon_quest2_0B) );
+//	send_rom_image( rom_dragon_quest2_0C, sizeof(rom_dragon_quest2_0C) );
+//	send_rom_image( rom_dragon_quest2_0D, sizeof(rom_dragon_quest2_0D) );
+//	send_rom_image( rom_dragon_quest2_0E, sizeof(rom_dragon_quest2_0E) );
+//	send_rom_image( rom_dragon_quest2_0F, sizeof(rom_dragon_quest2_0F) );
+//	set_megarom_mode( 1, MEGAROM_ASC8 );
 
 //	Serial.println( "gall_force" );
 //	send_rom_image( rom_gall_force_00, sizeof(rom_gall_force_00) );
@@ -340,6 +342,28 @@ void state3_send_rom_image( void ) {
 //	send_rom_image( rom_megarom_asc8_02, sizeof(rom_megarom_asc8_02) );
 //	send_rom_image( rom_megarom_asc8_03, sizeof(rom_megarom_asc8_03) );
 //	set_megarom_mode( 1, MEGAROM_ASC8 );
+
+//	Serial.println( "gradius" );
+//	send_rom_image( rom_gradius_00, sizeof(rom_gradius_00) );
+//	send_rom_image( rom_gradius_01, sizeof(rom_gradius_01) );
+//	send_rom_image( rom_gradius_02, sizeof(rom_gradius_02) );
+//	send_rom_image( rom_gradius_03, sizeof(rom_gradius_03) );
+//	send_rom_image( rom_gradius_04, sizeof(rom_gradius_04) );
+//	send_rom_image( rom_gradius_05, sizeof(rom_gradius_05) );
+//	send_rom_image( rom_gradius_06, sizeof(rom_gradius_06) );
+//	send_rom_image( rom_gradius_07, sizeof(rom_gradius_07) );
+//	set_megarom_mode( 1, MEGAROM_KONVRC );
+
+	Serial.println( "gradius2" );
+	send_rom_image( rom_gradius2_00, sizeof(rom_gradius2_00) );
+	send_rom_image( rom_gradius2_01, sizeof(rom_gradius2_01) );
+	send_rom_image( rom_gradius2_02, sizeof(rom_gradius2_02) );
+	send_rom_image( rom_gradius2_03, sizeof(rom_gradius2_03) );
+	send_rom_image( rom_gradius2_04, sizeof(rom_gradius2_04) );
+	send_rom_image( rom_gradius2_05, sizeof(rom_gradius2_05) );
+	send_rom_image( rom_gradius2_06, sizeof(rom_gradius2_06) );
+	send_rom_image( rom_gradius2_07, sizeof(rom_gradius2_07) );
+	set_megarom_mode( 1, MEGAROM_KONSCC );
 
 	Serial.println( "Start FPGA MSX." );
 	start_cpu();
