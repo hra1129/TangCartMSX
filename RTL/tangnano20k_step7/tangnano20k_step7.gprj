@@ -11,6 +11,7 @@
         <File path="D:/github/HRA_product/TangCartMSX/RTL/modules/cz80/cz80_mcode.v" type="file.verilog" enable="1"/>
         <File path="D:/github/HRA_product/TangCartMSX/RTL/modules/cz80/cz80_reg.v" type="file.verilog" enable="1"/>
         <File path="D:/github/HRA_product/TangCartMSX/RTL/modules/i2s_audio/i2s_audio.v" type="file.verilog" enable="1"/>
+        <File path="D:/github/HRA_product/TangCartMSX/RTL/modules/megarom/megarom.v" type="file.verilog" enable="1"/>
         <File path="D:/github/HRA_product/TangCartMSX/RTL/modules/micom_connect/micom_connect.v" type="file.verilog" enable="1"/>
         <File path="D:/github/HRA_product/TangCartMSX/RTL/modules/ppi/ppi.v" type="file.verilog" enable="1"/>
         <File path="D:/github/HRA_product/TangCartMSX/RTL/modules/ppi/ppi_inst.v" type="file.verilog" enable="1"/>

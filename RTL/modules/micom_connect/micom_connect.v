@@ -78,7 +78,9 @@ module micom_connect (
 	input			sdram_busy,
 	input			keyboard_caps_led_off,
 	input			keyboard_kana_led_off,
-	output			keyboard_type
+	output			keyboard_type,
+	output	[2:0]	megarom1_mode,
+	output	[2:0]	megarom2_mode
 );
 	localparam		st_idle			= 3'd0;
 	localparam		st_command		= 3'd1;
@@ -110,6 +112,8 @@ module micom_connect (
 	reg		[7:0]	ff_key_matrix [0:15];
 	reg		[7:0]	ff_operand1;
 	reg		[7:0]	ff_matrix_x;
+	reg		[2:0]	ff_megarom1_mode;
+	reg		[2:0]	ff_megarom2_mode;
 
 	// --------------------------------------------------------------------
 	//	flip-flop to receive
@@ -248,7 +252,7 @@ module micom_connect (
 				end
 			st_operand1:
 				if( ff_serial_state == sst_byte_end ) begin
-					if( ff_command == 8'h05 || ff_command == 8'h07 ) begin
+					if( ff_command == 8'h05 || ff_command == 8'h07 || ff_command == 8'h08 || ff_command == 8'h09 ) begin
 						ff_state <= st_exec;
 					end
 					else if( ff_command == 8'h04 ) begin
@@ -425,8 +429,34 @@ module micom_connect (
 		end
 	end
 
+	// --------------------------------------------------------------------
+	//	MegaROM mode
+	// --------------------------------------------------------------------
+	always @( posedge clk ) begin
+		if( !reset_n ) begin
+			ff_megarom1_mode <= 3'b0;
+			ff_megarom2_mode <= 3'b0;
+		end
+		else if( ff_state == st_exec ) begin
+			if(      ff_command == 8'h08 ) begin
+				ff_megarom1_mode <= ff_recv_data[2:0];
+			end
+			else if( ff_command == 8'h09 ) begin
+				ff_megarom2_mode <= ff_recv_data[2:0];
+			end
+			else begin
+				//	hold
+			end
+		end
+		else begin
+			//	hold
+		end
+	end
+
 	assign address			= { ff_address_msb, ff_operand1, ff_address };
 	assign req_n			= !((ff_state == st_data) && (ff_serial_state == sst_byte_end));
 	assign wdata			= ff_recv_data;
 	assign keyboard_type	= 1'b0;
+	assign megarom1_mode	= ff_megarom1_mode;
+	assign megarom2_mode	= ff_megarom2_mode;
 endmodule

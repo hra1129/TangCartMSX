@@ -160,6 +160,12 @@ module tangnano20k_step7 (
 	wire			w_keyboard_kana_led_off;
 	wire	[11:0]	w_ssg_sound_out;
 	wire	[15:0]	w_sound_in;
+	wire			w_megarom1_rd_n;
+	wire	[21:0]	w_megarom1_address;
+	wire	[2:0]	w_megarom1_mode;
+	wire			w_megarom2_rd_n;
+	wire	[21:0]	w_megarom2_address;
+	wire	[2:0]	w_megarom2_mode;
 
 	// --------------------------------------------------------------------
 	//	clock
@@ -254,7 +260,9 @@ module tangnano20k_step7 (
 		.sdram_busy				( w_sdram_init_busy			),
 		.keyboard_caps_led_off	( w_keyboard_caps_led_off	),
 		.keyboard_kana_led_off	( w_keyboard_kana_led_off	),
-		.keyboard_type			( w_keyboard_type			)
+		.keyboard_type			( w_keyboard_type			),
+		.megarom1_mode			( w_megarom1_mode			),
+		.megarom2_mode			( w_megarom2_mode			)
 	);
 
 	// --------------------------------------------------------------------
@@ -430,8 +438,8 @@ module tangnano20k_step7 (
 	//	Audio out
 	// --------------------------------------------------------------------
 	i2s_audio u_audio (
-		.clk					( clk						),
-		.reset_n				( reset_n					),
+		.clk					( clk42m					),
+		.reset_n				( w_msx_reset_n				),
 		.sound_in				( w_sound_in				),
 		.i2s_audio_en			( i2s_audio_en				),
 		.i2s_audio_din			( i2s_audio_din				),
@@ -439,7 +447,7 @@ module tangnano20k_step7 (
 		.i2s_audio_bclk			( i2s_audio_bclk			)
 	);
 
-	assign w_sound_in	= { 1'b0, w_click_sound, 14'd0 } + { 1'b0, w_ssg_sound_out, 3'd0 };
+	assign w_sound_in	= { 2'd0, w_click_sound, 14'd0 } + { 2'd0, w_ssg_sound_out, 2'd0 };
 
 	// --------------------------------------------------------------------
 	//	V9918 clone
@@ -529,21 +537,52 @@ module tangnano20k_step7 (
 	);
 
 	// --------------------------------------------------------------------
+	//	MegaROM Controller
+	// --------------------------------------------------------------------
+	megarom u_megarom_slot1 (
+		.clk					( clk42m				),
+		.reset_n				( w_msx_reset_n			),
+		.sltsl					( w_sltsl1				),
+		.mreq_n					( mreq_n				),
+		.wr_n					( wr_n					),
+		.rd_n					( rd_n					),
+		.address				( a						),
+		.wdata					( d						),
+		.megarom_rd_n			( w_megarom1_rd_n		),
+		.megarom_address		( w_megarom1_address	),
+		.mode					( w_megarom1_mode		)
+	);
+
+	megarom u_megarom_slot2 (
+		.clk					( clk42m				),
+		.reset_n				( w_msx_reset_n			),
+		.sltsl					( w_sltsl2				),
+		.mreq_n					( mreq_n				),
+		.wr_n					( wr_n					),
+		.rd_n					( rd_n					),
+		.address				( a						),
+		.wdata					( d						),
+		.megarom_rd_n			( w_megarom2_rd_n		),
+		.megarom_address		( w_megarom2_address	),
+		.mode					( w_megarom2_mode		)
+	);
+
+	// --------------------------------------------------------------------
 	//	SDRAM memory map
 	// --------------------------------------------------------------------
-	assign w_sdram_address[22:13]	= ( w_cpu_freeze ) ? w_spi_address[22:13]            :		//	SDRAM Updater from SPI
-									  ( w_kanji_j1   ) ? { 10'b100_1100_000            } :		//	JIS1 KanjiROM
-									  ( w_kanji_j2   ) ? { 10'b100_1110_000            } :		//	JIS2 KanjiROM
-									  ( w_sltsl30    ) ? {  7'b100_0000,      a[15:13] } :		//	MapperRAM
-									  ( w_sltsl1     ) ? {  7'b010_0000,      a[15:13] } :		//	MegaROM 1MB
-									  ( w_sltsl2     ) ? { 10'b000_0100_000            } :		//	MegaROM 512KB
-									  ( w_sltsl03    ) ? {  8'b000_0011_1,    a[14:13] } :		//	MSX Logo, ExtBASIC
-									  ( w_sltsl02    ) ? {  9'b000_0011_01,   a[13]    } :		//	MSX-MUSIC
-									  ( w_sltsl01    ) ? {  9'b000_0011_00,   a[13]    } :		//	IoT-BASIC
-									  ( w_sltsl31    ) ? {  8'b000_0010_1,    a[14:13] } :		//	SUB-ROM, KanjiBASIC
-									  ( w_sltsl00    ) ? {  8'b000_0010_0,    a[14:13] } :		//	MAIN-ROM
-									  ( w_sltsl32    ) ? {  6'b000_000, 1'b0, a[15:13] } :		//	BANK#00-07: Nextor
-									                       10'b000_0000_000;					//	#3-3 N/A
+	assign w_sdram_address[22:13]	= ( w_cpu_freeze ) ? w_spi_address[22:13]                  :		//	SDRAM Updater from SPI
+									  ( w_kanji_j1   ) ? { 10'b100_1100_000                  } :		//	JIS1 KanjiROM
+									  ( w_kanji_j2   ) ? { 10'b100_1110_000                  } :		//	JIS2 KanjiROM
+									  ( w_sltsl30    ) ? {  7'b100_0000,      a[15:13]       } :		//	MapperRAM
+									  ( w_sltsl1     ) ? {  2'b01, w_megarom1_address[20:13] } :		//	MegaROM 2MB
+									  ( w_sltsl2     ) ? {  3'b001,w_megarom2_address[19:13] } :		//	MegaROM 1MB
+									  ( w_sltsl03    ) ? {  8'b000_0011_1,    a[14:13]       } :		//	MSX Logo, ExtBASIC
+									  ( w_sltsl02    ) ? {  9'b001_0011_01,   a[13]          } :		//	MSX-MUSIC
+									  ( w_sltsl01    ) ? {  9'b010_0011_00,   a[13]          } :		//	IoT-BASIC
+									  ( w_sltsl31    ) ? {  8'b000_0010_1,    a[14:13]       } :		//	SUB-ROM, KanjiBASIC
+									  ( w_sltsl00    ) ? {  8'b000_0010_0,    a[14:13]       } :		//	MAIN-ROM
+									  ( w_sltsl32    ) ? {  6'b000_000, 1'b0, a[15:13]       } :		//	BANK#00-07: Nextor
+									                       10'b000_0000_000;							//	#3-3 N/A
 
 	assign w_kanji_j1				= 1'b0;
 	assign w_kanji_j2				= 1'b0;
@@ -559,19 +598,17 @@ module tangnano20k_step7 (
 									  ( w_sltsl30    ) ? wr_n         :							//	MapperRAM
 									                     1'b1;
 
-	assign w_sdram_rd_n				= ( w_kanji_j1                                            ) ? rd_n :		//	JIS1 KanjiROM
-									  ( w_kanji_j2                                            ) ? rd_n :		//	JIS2 KanjiROM
-									  ( !iorq_n                                               ) ? 1'b1 :		//	
-									  ( w_sltsl30                                             ) ? rd_n :		//	MapperRAM
-//									  ( w_sltsl1   && (a[15:14] == 2'b01 || a[15:14] == 2'b10)) ? rd_n :		//	MegaROM 1MB
-									  ( w_sltsl1                                              ) ? rd_n :		//	MegaROM 1MB
-									  ( w_sltsl2   && (a[15:14] == 2'b01 || a[15:14] == 2'b10)) ? rd_n :		//	MegaROM 512KB
-									  ( w_sltsl03  && (a[15:14] == 2'b01 || a[15:14] == 2'b10)) ? rd_n :		//	MSX Logo, ExtBASIC
-									  ( w_sltsl02  && (a[15:14] == 2'b01)                     ) ? rd_n :		//	MSX-MUSIC
-									  ( w_sltsl01  && (a[15:14] == 2'b01)                     ) ? rd_n :		//	IoT-BASIC
-									  ( w_sltsl31  && (a[15]    == 1'b0)                      ) ? rd_n :		//	SUB-ROM, KanjiBASIC
-									  ( w_sltsl00  && (a[15]    == 1'b0)                      ) ? rd_n :		//	MAIN-ROM
-									  ( w_sltsl32  && (a[15:14] == 2'b01 || a[15:14] == 2'b10)) ? rd_n :		//	Nextor
+	assign w_sdram_rd_n				= ( w_kanji_j1                                            ) ? rd_n :				//	JIS1 KanjiROM
+									  ( w_kanji_j2                                            ) ? rd_n :				//	JIS2 KanjiROM
+									  ( !iorq_n                                               ) ? 1'b1 :				//	
+									  ( w_sltsl30                                             ) ? rd_n :				//	MapperRAM
+									  ( w_sltsl1                                              ) ? w_megarom1_rd_n :		//	MegaROM 1MB
+									  ( w_sltsl2   && (a[15:14] == 2'b01 || a[15:14] == 2'b10)) ? w_megarom2_rd_n :		//	MegaROM 512KB
+									  ( w_sltsl03  && (a[15:14] == 2'b01 || a[15:14] == 2'b10)) ? rd_n :				//	MSX Logo, ExtBASIC
+									  ( w_sltsl02  && (a[15:14] == 2'b01)                     ) ? rd_n :				//	MSX-MUSIC
+									  ( w_sltsl01  && (a[15:14] == 2'b01)                     ) ? rd_n :				//	IoT-BASIC
+									  ( w_sltsl31  && (a[15]    == 1'b0)                      ) ? rd_n :				//	SUB-ROM, KanjiBASIC
+									  ( w_sltsl00  && (a[15]    == 1'b0)                      ) ? rd_n :				//	MAIN-ROM
+									  ( w_sltsl32  && (a[15:14] == 2'b01 || a[15:14] == 2'b10)) ? rd_n :				//	Nextor
 									                                                              1'b1;
-
 endmodule

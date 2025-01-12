@@ -248,7 +248,9 @@ module tangnano20k_step6 (
 		.sdram_busy				( w_sdram_init_busy			),
 		.keyboard_caps_led_off	( w_keyboard_caps_led_off	),
 		.keyboard_kana_led_off	( w_keyboard_kana_led_off	),
-		.keyboard_type			( w_keyboard_type			)
+		.keyboard_type			( w_keyboard_type			),
+		.megarom1_mode			( 							),
+		.megarom2_mode			( 							)
 	);
 
 	// --------------------------------------------------------------------

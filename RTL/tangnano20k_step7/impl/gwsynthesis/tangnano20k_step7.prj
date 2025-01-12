@@ -9,12 +9,14 @@
         <File path="D:\github\HRA_product\TangCartMSX\RTL\modules\cz80\cz80_inst.v" type="verilog"/>
         <File path="D:\github\HRA_product\TangCartMSX\RTL\modules\cz80\cz80_mcode.v" type="verilog"/>
         <File path="D:\github\HRA_product\TangCartMSX\RTL\modules\cz80\cz80_reg.v" type="verilog"/>
+        <File path="D:\github\HRA_product\TangCartMSX\RTL\modules\i2s_audio\i2s_audio.v" type="verilog"/>
+        <File path="D:\github\HRA_product\TangCartMSX\RTL\modules\megarom\megarom.v" type="verilog"/>
         <File path="D:\github\HRA_product\TangCartMSX\RTL\modules\micom_connect\micom_connect.v" type="verilog"/>
         <File path="D:\github\HRA_product\TangCartMSX\RTL\modules\ppi\ppi.v" type="verilog"/>
         <File path="D:\github\HRA_product\TangCartMSX\RTL\modules\ppi\ppi_inst.v" type="verilog"/>
-        <File path="D:\github\HRA_product\TangCartMSX\RTL\modules\ssg\ssg.v" type="verilog"/>
         <File path="D:\github\HRA_product\TangCartMSX\RTL\modules\sdram\ip_sdram_tangnano20k_c.v" type="verilog"/>
         <File path="D:\github\HRA_product\TangCartMSX\RTL\modules\secondary_slot\secondary_slot_inst.v" type="verilog"/>
+        <File path="D:\github\HRA_product\TangCartMSX\RTL\modules\ssg\ssg.v" type="verilog"/>
         <File path="D:\github\HRA_product\TangCartMSX\RTL\modules\v9918\vdp.v" type="verilog"/>
         <File path="D:\github\HRA_product\TangCartMSX\RTL\modules\v9918\vdp_color_bus.v" type="verilog"/>
         <File path="D:\github\HRA_product\TangCartMSX\RTL\modules\v9918\vdp_color_decoder.v" type="verilog"/>
@@ -37,7 +39,6 @@
         <File path="D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_step7\src\tangnano20k_step7.v" type="verilog"/>
         <File path="D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_step7\src\uart\ip_uart.v" type="verilog"/>
         <File path="D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_step7\src\uart\ip_uart_inst.v" type="verilog"/>
-        <File path="D:\github\HRA_product\TangCartMSX\RTL\modules\i2s_audio\i2s_audio.v" type="verilog"/>
     </FileList>
     <OptionList>
         <Option type="disable_insert_pad" value="0"/>

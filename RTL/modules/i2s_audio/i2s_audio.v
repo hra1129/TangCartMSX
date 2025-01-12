@@ -64,53 +64,110 @@ module i2s_audio(
 	output			i2s_audio_lrclk,
 	output			i2s_audio_bclk
 );
-	localparam		c_512khz	= 8'd83;
-	reg		[7:0]	ff_divider;
-	wire			w_512khz_pulse;
+	localparam		test_mode	= 0;		// 0: sound_in を使う, 1: テスト信号を使う 
+	localparam		c_96khz		= 3'd6;
+	reg		[2:0]	ff_divider;
+	wire			w_96khz_pulse;
+	reg				ff_clk_en;
 	reg				ff_bclk;
 	reg				ff_lrclk;
 	reg		[3:0]	ff_bit_count;
 	reg		[15:0]	ff_shift_reg;
+	wire	[15:0]	w_sound_in;
 
-	assign i2s_audio_en		= 1'b1;
+	generate
+		if( test_mode == 1 ) begin
+			reg		[12:0]	ff_880hz_counter;
+			reg				ff_440hz;
 
-	always @( posedge clk ) begin
-		if( !reset_n ) begin
-			ff_divider <= 8'd0;
-		end
-		else if( w_512khz_pulse ) begin
-			ff_divider <= 8'd0;
+			always @( posedge clk ) begin
+				if( !reset_n ) begin
+					ff_880hz_counter <= 13'd0;
+				end
+				else if( w_96khz_pulse ) begin
+					if( ff_880hz_counter == 13'd6972 ) begin
+						ff_880hz_counter <= 13'd0;
+					end
+					else begin
+						ff_880hz_counter <= ff_880hz_counter + 13'd1;
+					end
+				end
+			end
+
+			always @( posedge clk ) begin
+				if( !reset_n ) begin
+					ff_440hz <= 1'b0;
+				end
+				else if( w_96khz_pulse ) begin
+					if( ff_880hz_counter == 13'd6972 ) begin
+						ff_440hz <= ~ff_440hz;
+					end
+				end
+			end
+
+			assign w_sound_in	= { 16 { ff_440hz } };
 		end
 		else begin
-			ff_divider <= ff_divider + 8'd1;
+			assign w_sound_in	= sound_in;
+		end
+	endgenerate
+
+	// --------------------------------------------------------------------
+	assign i2s_audio_en		= reset_n;
+
+	// --------------------------------------------------------------------
+	always @( posedge clk ) begin
+		if( !reset_n ) begin
+			ff_divider <= 3'd0;
+		end
+		else if( w_96khz_pulse ) begin
+			ff_divider <= 3'd0;
+		end
+		else begin
+			ff_divider <= ff_divider + 3'd1;
 		end
 	end
 
-	assign w_512khz_pulse	= (ff_divider == c_512khz);
+	assign w_96khz_pulse	= (ff_divider == c_96khz);
 
 	always @( posedge clk ) begin
 		if( !reset_n ) begin
 			ff_bclk <= 1'b0;
 		end
-		else if( w_512khz_pulse ) begin
+		else if( w_96khz_pulse ) begin
 			ff_bclk <= ~ff_bclk;
 		end
 	end
 
 	always @( posedge clk ) begin
 		if( !reset_n ) begin
-			ff_lrclk <= 1'b0;
+			ff_lrclk <= 1'b1;
 		end
-		else if( w_512khz_pulse && ff_bit_count == 4'd15 ) begin
+		else if( ff_bclk && w_96khz_pulse && (ff_bit_count == 4'd15) ) begin
 			ff_lrclk <= ~ff_lrclk;
 		end
 	end
 
 	always @( posedge clk ) begin
 		if( !reset_n ) begin
-			ff_bit_count <= 4'd0;
+			ff_clk_en <= 1'b0;
 		end
-		else if( w_512khz_pulse && !ff_bclk ) begin
+		else if( ff_clk_en ) begin
+			//	hold
+		end
+		else if( ff_bclk && w_96khz_pulse && (ff_bit_count == 4'd14) && !ff_lrclk ) begin
+			ff_clk_en <= 1'b1;
+		end
+	end
+
+	assign i2s_audio_bclk	= ff_clk_en & ff_bclk;
+	assign i2s_audio_lrclk	= ff_clk_en & ff_lrclk;
+
+	always @( posedge clk ) begin
+		if( !reset_n ) begin
+			ff_bit_count <= 4'd15;
+		end
+		else if( w_96khz_pulse && ff_bclk ) begin
 			ff_bit_count <= ff_bit_count + 4'd1;
 		end
 	end
@@ -119,9 +176,9 @@ module i2s_audio(
 		if( !reset_n ) begin
 			ff_shift_reg <= 16'd0;
 		end
-		else if( w_512khz_pulse && !ff_bclk ) begin
-			if( ff_bit_count == 4'd15 ) begin
-				ff_shift_reg <= sound_in;
+		else if( w_96khz_pulse && ff_bclk ) begin
+			if( ff_bit_count == 4'd0 ) begin
+				ff_shift_reg <= w_sound_in;
 			end
 			else begin
 				ff_shift_reg <= { ff_shift_reg[14:0], 1'b0 };

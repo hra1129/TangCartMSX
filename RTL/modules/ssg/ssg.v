@@ -572,9 +572,9 @@ module ssg (
 		5'd6:		func_out_level = 10'd13;
 		5'd5:		func_out_level = 10'd11;
 		5'd4:		func_out_level = 10'd9;
-		5'd3:		func_out_level = 10'd7;
-		5'd2:		func_out_level = 10'd3;
-		5'd1:		func_out_level = 10'd1;
+		5'd3:		func_out_level = 10'd6;
+		5'd2:		func_out_level = 10'd2;
+		5'd1:		func_out_level = 10'd0;
 		default:	func_out_level = 10'd0;
 		endcase
 	endfunction
