@@ -463,10 +463,10 @@ void send_cartridge( void ) {
 		set_super_cobra();
 	}
 	else if( (x & (1 << 0)) == 0 ) {
-		set_blank();
+		set_rabbit_adventure();
 	}
 	else {
-		set_rabbit_adventure();
+		set_blank();
 	}
 }
 

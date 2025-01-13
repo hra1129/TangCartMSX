@@ -26,6 +26,10 @@
    "Type" : "verilog"
   },
   {
+   "Path" : "D:/github/HRA_product/TangCartMSX/RTL/modules/kanji_rom/kanji_rom.v",
+   "Type" : "verilog"
+  },
+  {
    "Path" : "D:/github/HRA_product/TangCartMSX/RTL/modules/megarom/megarom.v",
    "Type" : "verilog"
   },
@@ -175,10 +179,6 @@
   },
   {
    "Path" : "D:/github/HRA_product/TangCartMSX/RTL/tangnano20k_step7/src/uart/ip_uart_inst.v",
-   "Type" : "verilog"
-  },
-  {
-   "Path" : "D:/github/HRA_product/TangCartMSX/RTL/modules/kanji_rom/kanji_rom.v",
    "Type" : "verilog"
   }
  ],
