@@ -243,7 +243,7 @@ module micom_connect (
 				end
 			st_command:
 				if( ff_serial_state == sst_byte_end ) begin
-					if( ff_recv_data == 8'h00 || ff_recv_data == 8'h01 || ff_recv_data == 8'h02 || ff_recv_data == 8'h06 ) begin
+					if( ff_recv_data == 8'h00 || ff_recv_data == 8'h01 || ff_recv_data == 8'h02 || ff_recv_data == 8'h06 || ff_recv_data == 8'h0A ) begin
 						ff_state <= st_exec;
 					end
 					else begin
@@ -352,6 +352,9 @@ module micom_connect (
 		else if( ff_state == st_exec ) begin
 			if(      ff_command == 8'h06 ) begin
 				ff_cpu_freeze <= 1'b0;
+			end
+			else if( ff_command == 8'h0A ) begin
+				ff_cpu_freeze <= 1'b1;
 			end
 			else begin
 				//	hold

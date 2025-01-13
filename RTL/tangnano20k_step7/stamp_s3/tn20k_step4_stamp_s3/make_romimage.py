@@ -11,13 +11,18 @@ target_list = [
 	( "rabbit_adventure_demo", 0x204000 ),
 	( "hello_world"          , 0x204000 ),
 	( "stepper"              , 0x208000 ),
-	( "super_cobra"          , 0x200000 ),
-	( "kings_valley"         , 0x200000 ),
+	( "super_cobra"          , 0x204000 ),
+	( "kings_valley"         , 0x204000 ),
 	( "dragon_quest2"        , 0x200000 ),
 	( "gall_force"           , 0x200000 ),
 	( "megarom_asc8"         , 0x200000 ),
 	( "gradius"              , 0x200000 ),
 	( "gradius2"             , 0x200000 ),
+	( "kanji_font"           , 0x040000 ),
+	( "kanji_driver"         , 0x028000 ),
+	( "tiny_slot_checker"    , 0x204000 ),
+	( "msx_write"            , 0x200000 ),
+	( "stevedore"            , 0x200000 ),
 ]
 
 s_rom_image_path = "./rom_image/"

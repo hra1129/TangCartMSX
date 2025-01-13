@@ -56,29 +56,52 @@
 //-----------------------------------------------------------------------------
 
 module kanji_rom(
-	input					reset,
+	input					reset_n,
 	input					clk,
-	input					req,
-	output					ack,
-	input					wrt,
+	input					iorq_n,
+	input					wr_n,
+	input					rd_n,
 	input		[1:0]		address,			//	D8h, D9h, DAh, DBh
 	input		[7:0]		wdata,
 	output		[17:0]		kanji_rom_address,
 	output					kanji_rom_address_en
 );
+	reg						ff_iorq_n;
+	reg						ff_wr_n;
+	reg						ff_rd_n;
+	wire					w_wr;
+	wire					w_rd;
 	reg			[16:0]		ff_jis1_address;
 	reg			[16:0]		ff_jis2_address;
 	reg						ff_kanji_rom_address_en;
-	reg						ff_ack;
+
+	// --------------------------------------------------------------------
+	//	Access timing
+	// --------------------------------------------------------------------
+	always @( posedge clk ) begin
+		if( !reset_n ) begin
+			ff_iorq_n <= 1'b1;
+			ff_wr_n <= 1'b1;
+			ff_rd_n <= 1'b1;
+		end
+		else begin
+			ff_iorq_n <= iorq_n;
+			ff_wr_n <= wr_n;
+			ff_rd_n <= rd_n;
+		end
+	end
+
+	assign w_wr		= (!ff_iorq_n && !ff_wr_n &&  wr_n);
+	assign w_rd		= (!iorq_n    &&  ff_rd_n && !rd_n);
 
 	// --------------------------------------------------------------------
 	//	JIS1
 	// --------------------------------------------------------------------
 	always @( posedge clk ) begin
-		if( reset ) begin
+		if( !reset_n ) begin
 			ff_jis1_address <= 17'd0;
 		end
-		else if( req && wrt && ff_ack ) begin
+		else if( w_wr ) begin
 			case( address )
 			2'd0:
 				begin
@@ -108,10 +131,10 @@ module kanji_rom(
 	//	JIS2
 	// --------------------------------------------------------------------
 	always @( posedge clk ) begin
-		if( reset ) begin
+		if( !reset_n ) begin
 			ff_jis2_address <= 17'd0;
 		end
-		else if( req && wrt && ff_ack ) begin
+		else if( w_wr ) begin
 			case( address )
 			2'd2:
 				begin
@@ -141,36 +164,16 @@ module kanji_rom(
 	//	Read
 	// --------------------------------------------------------------------
 	always @( posedge clk ) begin
-		if( reset ) begin
+		if( !reset_n ) begin
 			ff_kanji_rom_address_en <= 1'b0;
 		end
-		else if( req && !wrt && ff_ack && address[0] ) begin
+		else if( w_rd && address[0] ) begin
 			ff_kanji_rom_address_en <= 1'b1;
 		end
 		else begin
 			ff_kanji_rom_address_en <= 1'b0;
 		end
 	end
-
-	// --------------------------------------------------------------------
-	//	Ack
-	// --------------------------------------------------------------------
-	always @( posedge clk ) begin
-		if( reset ) begin
-			ff_ack <= 1'b0;
-		end
-		else if( ff_ack ) begin
-			ff_ack <= 1'b0;
-		end
-		else if( req ) begin
-			ff_ack <= 1'b1;
-		end
-		else begin
-			//	hold
-		end
-	end
-
-	assign ack						= ff_ack;
 
 	// --------------------------------------------------------------------
 	//	Output assignment

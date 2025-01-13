@@ -10,16 +10,19 @@
 #include "romimage_main.h"
 #include "romimage_basicn.h"
 #include "romimage_rabbit_adventure.h"
-#include "romimage_rabbit_adventure_demo.h"
-#include "romimage_hello_world.h"
+//#include "romimage_hello_world.h"
 #include "romimage_stepper.h"
 #include "romimage_super_cobra.h"
 #include "romimage_kings_valley.h"
 #include "romimage_dragon_quest2.h"
 #include "romimage_gall_force.h"
-#include "romimage_megarom_asc8.h"
 #include "romimage_gradius.h"
-#include "romimage_gradius2.h"
+//#include "romimage_gradius2.h"
+#include "romimage_kanji_driver.h"
+#include "romimage_kanji_font.h"
+//#include "romimage_tiny_slot_checker.h"
+//#include "romimage_msx_write.h"
+#include "romimage_stevedore.h"
 
 #define PIN_BUTTON		0
 #define PIN_Y0			8
@@ -60,8 +63,11 @@ static int last_reset = 0;
 #define MEGAROM_KONSCCI	3
 #define MEGAROM_LINEAR	4
 #define MEGAROM_KONVRC	6
+#define MEGAROM_MSXWRITE	7
 
-// --------------------------------------------------------------------
+// ====================================================================
+//	SPI Commands
+// ====================================================================
 byte send_command( byte data ) {
 	hspi->beginTransaction( spi_settings );
 	digitalWrite( hspi->pinSS(), LOW );	 //pull SS slow to prep other end for transfer
@@ -116,7 +122,7 @@ void send_rom_image( const byte *p_rom_image, int rom_size ) {
 }
 
 // --------------------------------------------------------------------
-void send_zero_fill( int bank_id ) {
+void send_FF_fill( int bank_id ) {
 	int i, bank;
 
 	bank = bank_id >> 8;
@@ -130,7 +136,7 @@ void send_zero_fill( int bank_id ) {
 	hspi->transfer( 0x04 );
 	hspi->transfer( bank_id & 255 );
 	for( i = 0; i < 16384; i++ ) {
-		hspi->transfer( 0x00 );
+		hspi->transfer( 0xFF );
 	}
 	digitalWrite( hspi->pinSS(), HIGH );  //pull SS high to signify end of data transfer
 	hspi->endTransaction();
@@ -146,6 +152,20 @@ void start_cpu( void ) {
 	delay( 5 );
 	digitalWrite( hspi->pinSS(), LOW );	 //pull SS slow to prep other end for transfer
 	hspi->transfer( 0x02 );
+	digitalWrite( hspi->pinSS(), HIGH );  //pull SS high to signify end of data transfer
+	hspi->endTransaction();
+}
+
+// --------------------------------------------------------------------
+void stop_cpu( void ) {
+
+	hspi->beginTransaction( spi_settings );
+	digitalWrite( hspi->pinSS(), LOW );	 //pull SS slow to prep other end for transfer
+	hspi->transfer( 0x01 );
+	digitalWrite( hspi->pinSS(), HIGH );  //pull SS high to signify end of data transfer
+	delay( 5 );
+	digitalWrite( hspi->pinSS(), LOW );	 //pull SS slow to prep other end for transfer
+	hspi->transfer( 0x0A );
 	digitalWrite( hspi->pinSS(), HIGH );  //pull SS high to signify end of data transfer
 	hspi->endTransaction();
 }
@@ -186,7 +206,185 @@ void send_reset_off( void ) {
 	hspi->endTransaction();
 }
 
+// ====================================================================
+//	(1) Rabbit Adventure (default)
+//	(2) King's valley
+//	(3) Stepper
+//	(4) DragonQuest2
+//	(5) Gradius
+//	(6) Gradius2
+//	(7) MSX-Write
+//	(0) MSX-BASIC with BASIC'N and KanjiDriver
+// ====================================================================
+void set_blank( void ) {
+	send_FF_fill( 0x80 );
+	send_FF_fill( 0x81 );
+	send_FF_fill( 0x82 );
+	send_FF_fill( 0x83 );
+	set_megarom_mode( 1, MEGAROM_LINEAR );
+}
+
 // --------------------------------------------------------------------
+//void set_test_rom( void ) {
+//	Serial.println( "hello world" );
+//	set_blank();
+//	send_rom_image( rom_hello_world_00, sizeof(rom_hello_world_00) );
+//	send_rom_image( rom_hello_world_01, sizeof(rom_hello_world_01) );
+//	set_megarom_mode( 1, MEGAROM_LINEAR );
+//}
+
+// --------------------------------------------------------------------
+//void set_tiny_slot_checker( void ) {
+//	Serial.println( "tiny slot checker" );
+//	set_blank();
+//	send_rom_image( rom_tiny_slot_checker_00, sizeof(rom_tiny_slot_checker_00) );
+//	set_megarom_mode( 1, MEGAROM_LINEAR );
+//}
+
+// --------------------------------------------------------------------
+void set_super_cobra( void ) {
+	Serial.println( "Super Cobra" );
+	set_blank();
+	send_rom_image( rom_super_cobra_00, sizeof(rom_super_cobra_00) );
+}
+
+// --------------------------------------------------------------------
+void set_stepper( void ) {
+	Serial.println( "Stepper" );
+	set_blank();
+	send_rom_image( rom_stepper_00, sizeof(rom_stepper_00) );
+}
+
+// --------------------------------------------------------------------
+void set_kings_valley( void ) {
+	Serial.println( "kings_valley" );
+	set_blank();
+	send_rom_image( rom_kings_valley_00, sizeof(rom_kings_valley_00) );
+}
+
+// --------------------------------------------------------------------
+void set_rabbit_adventure( void ) {
+	Serial.println( "RabbitAdventure" );
+	set_blank();
+	send_rom_image( rom_rabbit_adventure_00, sizeof(rom_rabbit_adventure_00) );
+	send_rom_image( rom_rabbit_adventure_01, sizeof(rom_rabbit_adventure_01) );
+}
+
+// --------------------------------------------------------------------
+void set_dragon_quest2( void ) {
+	Serial.println( "dragon_quest2" );
+	send_rom_image( rom_dragon_quest2_00, sizeof(rom_dragon_quest2_00) );
+	send_rom_image( rom_dragon_quest2_01, sizeof(rom_dragon_quest2_01) );
+	send_rom_image( rom_dragon_quest2_02, sizeof(rom_dragon_quest2_02) );
+	send_rom_image( rom_dragon_quest2_03, sizeof(rom_dragon_quest2_03) );
+	send_rom_image( rom_dragon_quest2_04, sizeof(rom_dragon_quest2_04) );
+	send_rom_image( rom_dragon_quest2_05, sizeof(rom_dragon_quest2_05) );
+	send_rom_image( rom_dragon_quest2_06, sizeof(rom_dragon_quest2_06) );
+	send_rom_image( rom_dragon_quest2_07, sizeof(rom_dragon_quest2_07) );
+	send_rom_image( rom_dragon_quest2_08, sizeof(rom_dragon_quest2_08) );
+	send_rom_image( rom_dragon_quest2_09, sizeof(rom_dragon_quest2_09) );
+	send_rom_image( rom_dragon_quest2_0A, sizeof(rom_dragon_quest2_0A) );
+	send_rom_image( rom_dragon_quest2_0B, sizeof(rom_dragon_quest2_0B) );
+	send_rom_image( rom_dragon_quest2_0C, sizeof(rom_dragon_quest2_0C) );
+	send_rom_image( rom_dragon_quest2_0D, sizeof(rom_dragon_quest2_0D) );
+	send_rom_image( rom_dragon_quest2_0E, sizeof(rom_dragon_quest2_0E) );
+	send_rom_image( rom_dragon_quest2_0F, sizeof(rom_dragon_quest2_0F) );
+	set_megarom_mode( 1, MEGAROM_ASC8 );
+}
+
+// --------------------------------------------------------------------
+void set_gall_force( void ) {
+	Serial.println( "gall_force" );
+	send_rom_image( rom_gall_force_00, sizeof(rom_gall_force_00) );
+	send_rom_image( rom_gall_force_01, sizeof(rom_gall_force_01) );
+	send_rom_image( rom_gall_force_02, sizeof(rom_gall_force_02) );
+	send_rom_image( rom_gall_force_03, sizeof(rom_gall_force_03) );
+	send_rom_image( rom_gall_force_04, sizeof(rom_gall_force_04) );
+	send_rom_image( rom_gall_force_05, sizeof(rom_gall_force_05) );
+	send_rom_image( rom_gall_force_06, sizeof(rom_gall_force_06) );
+	send_rom_image( rom_gall_force_07, sizeof(rom_gall_force_07) );
+	set_megarom_mode( 1, MEGAROM_ASC16 );
+}
+
+// --------------------------------------------------------------------
+void set_gradius( void ) {
+	Serial.println( "gradius" );
+	send_rom_image( rom_gradius_00, sizeof(rom_gradius_00) );
+	send_rom_image( rom_gradius_01, sizeof(rom_gradius_01) );
+	send_rom_image( rom_gradius_02, sizeof(rom_gradius_02) );
+	send_rom_image( rom_gradius_03, sizeof(rom_gradius_03) );
+	send_rom_image( rom_gradius_04, sizeof(rom_gradius_04) );
+	send_rom_image( rom_gradius_05, sizeof(rom_gradius_05) );
+	send_rom_image( rom_gradius_06, sizeof(rom_gradius_06) );
+	send_rom_image( rom_gradius_07, sizeof(rom_gradius_07) );
+	set_megarom_mode( 1, MEGAROM_KONVRC );
+}
+
+// --------------------------------------------------------------------
+//void set_gradius2( void ) {
+//	Serial.println( "gradius2" );
+//	send_rom_image( rom_gradius2_00, sizeof(rom_gradius2_00) );
+//	send_rom_image( rom_gradius2_01, sizeof(rom_gradius2_01) );
+//	send_rom_image( rom_gradius2_02, sizeof(rom_gradius2_02) );
+//	send_rom_image( rom_gradius2_03, sizeof(rom_gradius2_03) );
+//	send_rom_image( rom_gradius2_04, sizeof(rom_gradius2_04) );
+//	send_rom_image( rom_gradius2_05, sizeof(rom_gradius2_05) );
+//	send_rom_image( rom_gradius2_06, sizeof(rom_gradius2_06) );
+//	send_rom_image( rom_gradius2_07, sizeof(rom_gradius2_07) );
+//	set_megarom_mode( 1, MEGAROM_KONSCC );
+//}
+
+// --------------------------------------------------------------------
+//void set_msxwrite( void ) {
+//	Serial.println( "MSX-Write" );
+//	send_rom_image( rom_msx_write_00, sizeof(rom_msx_write_00) );
+//	send_rom_image( rom_msx_write_01, sizeof(rom_msx_write_01) );
+//	send_rom_image( rom_msx_write_02, sizeof(rom_msx_write_02) );
+//	send_rom_image( rom_msx_write_03, sizeof(rom_msx_write_03) );
+//	send_rom_image( rom_msx_write_04, sizeof(rom_msx_write_04) );
+//	send_rom_image( rom_msx_write_05, sizeof(rom_msx_write_05) );
+//	send_rom_image( rom_msx_write_06, sizeof(rom_msx_write_06) );
+//	send_rom_image( rom_msx_write_07, sizeof(rom_msx_write_07) );
+//	send_rom_image( rom_msx_write_08, sizeof(rom_msx_write_08) );
+//	send_rom_image( rom_msx_write_09, sizeof(rom_msx_write_09) );
+//	send_rom_image( rom_msx_write_0A, sizeof(rom_msx_write_0A) );
+//	send_rom_image( rom_msx_write_0B, sizeof(rom_msx_write_0B) );
+//	send_rom_image( rom_msx_write_0C, sizeof(rom_msx_write_0C) );
+//	send_rom_image( rom_msx_write_0D, sizeof(rom_msx_write_0D) );
+//	send_rom_image( rom_msx_write_0E, sizeof(rom_msx_write_0E) );
+//	send_rom_image( rom_msx_write_0F, sizeof(rom_msx_write_0F) );
+//	send_rom_image( rom_msx_write_10, sizeof(rom_msx_write_10) );
+//	send_rom_image( rom_msx_write_11, sizeof(rom_msx_write_11) );
+//	send_rom_image( rom_msx_write_12, sizeof(rom_msx_write_12) );
+//	send_rom_image( rom_msx_write_13, sizeof(rom_msx_write_13) );
+//	send_rom_image( rom_msx_write_14, sizeof(rom_msx_write_14) );
+//	send_rom_image( rom_msx_write_15, sizeof(rom_msx_write_15) );
+//	send_rom_image( rom_msx_write_16, sizeof(rom_msx_write_16) );
+//	send_rom_image( rom_msx_write_17, sizeof(rom_msx_write_17) );
+//	send_rom_image( rom_msx_write_18, sizeof(rom_msx_write_18) );
+//	send_rom_image( rom_msx_write_19, sizeof(rom_msx_write_19) );
+//	send_rom_image( rom_msx_write_1A, sizeof(rom_msx_write_1A) );
+//	send_rom_image( rom_msx_write_1B, sizeof(rom_msx_write_1B) );
+//	send_rom_image( rom_msx_write_1C, sizeof(rom_msx_write_1C) );
+//	send_rom_image( rom_msx_write_1D, sizeof(rom_msx_write_1D) );
+//	send_rom_image( rom_msx_write_1E, sizeof(rom_msx_write_1E) );
+//	send_rom_image( rom_msx_write_1F, sizeof(rom_msx_write_1F) );
+//	set_megarom_mode( 1, MEGAROM_MSXWRITE );
+//}
+
+// --------------------------------------------------------------------
+void set_stevedore( void ) {
+
+	Serial.println( "stevedore" );
+	set_blank();
+	send_rom_image( rom_stevedore_00, sizeof(rom_stevedore_00) );
+	send_rom_image( rom_stevedore_01, sizeof(rom_stevedore_01) );
+	send_rom_image( rom_stevedore_02, sizeof(rom_stevedore_02) );
+}
+
+// ====================================================================
+//	Keyboard driver
+// ====================================================================
 void set_keyboard_row( int row ) {
 	static const uint32_t row_tbl[] = { 
 		0x0000,
@@ -207,9 +405,9 @@ void set_keyboard_row( int row ) {
 		0xC300,
 	};
 	GPIO.out_w1tc = GPIO.out_w1tc | 0xC300;
-	delayMicroseconds(10);
+	delayMicroseconds(100);
 	GPIO.out_w1ts = GPIO.out_w1ts | row_tbl[ row ];
-	delayMicroseconds(40);
+	delayMicroseconds(100);
 }
 
 // --------------------------------------------------------------------
@@ -220,8 +418,6 @@ unsigned char get_keyboard_col( void ) {
 	return d;
 }
 
-//static int count = 0;
-
 // --------------------------------------------------------------------
 void update_key_matrix( void ) {
 	int i;
@@ -231,19 +427,46 @@ void update_key_matrix( void ) {
 		set_keyboard_row( i );
 		prev = keymatrix[ i ];
 		keymatrix[ i ] = get_keyboard_col();
-
-//    count++;
-//		if( i == 0 && count > 2000 ) {
-//			keymatrix[ i ] = keymatrix[ i ] ^ 2;		//	★SuperCobra用 1連打
-//		}
-//    if( count == 3500 ) {
-//      count = 0;
-//    }
-
 		if( keymatrix[ i ] != prev ) {
 			send_key_matrix( i, keymatrix[ i ] );
-			Serial.printf( "keymatrix[%d] = %02X;\r\n", i, keymatrix[i] );
 		}
+	}
+}
+
+// --------------------------------------------------------------------
+void send_cartridge( void ) {
+	unsigned char x;
+
+	//	キーボードの Y0 を取得する 
+	set_keyboard_row( 0 );
+	x = get_keyboard_col();
+	Serial.printf( "Key check: %02X\r\n", x );
+	if(      (x & (1 << 1)) == 0 ) {
+		set_kings_valley();
+	}
+	else if( (x & (1 << 2)) == 0 ) {
+		set_stepper();
+	}
+	else if( (x & (1 << 3)) == 0 ) {
+		set_gall_force();
+	}
+	else if( (x & (1 << 4)) == 0 ) {
+		set_dragon_quest2();
+	}
+	else if( (x & (1 << 5)) == 0 ) {
+		set_gradius();
+	}
+	else if( (x & (1 << 6)) == 0 ) {
+		set_stevedore();
+	}
+	else if( (x & (1 << 7)) == 0 ) {
+		set_super_cobra();
+	}
+	else if( (x & (1 << 0)) == 0 ) {
+		set_blank();
+	}
+	else {
+		set_rabbit_adventure();
 	}
 }
 
@@ -257,10 +480,11 @@ void state4_main_loop( void ) {
 	if( reset_sw != last_reset ) {
 		last_reset = reset_sw;
 		if( reset_sw ) {
-			send_reset_on();
+			stop_cpu();
 		}
 		else {
-			send_reset_off();
+			send_cartridge();
+			start_cpu();
 		}
 	}
 
@@ -276,97 +500,32 @@ void state3_send_rom_image( void ) {
 	send_rom_image( rom_main_01, sizeof(rom_main_01) );
 	Serial.println( "Send BASIC'N" );
 	send_rom_image( rom_basicn_00, sizeof(rom_basicn_00) );
-//	Serial.println( "hello world 0" );
-//	send_rom_image( rom_hello_world_00, sizeof(rom_hello_world_00) );
-//	Serial.println( "hello world 1" );
-//	send_rom_image( rom_hello_world_01, sizeof(rom_hello_world_01) );
-//	set_megarom_mode( 1, MEGAROM_LINEAR );
+	Serial.println( "Send KanjiDriver" );
+	send_rom_image( rom_kanji_driver_00, sizeof(rom_kanji_driver_00) );
+	send_rom_image( rom_kanji_driver_01, sizeof(rom_kanji_driver_01) );
+	Serial.println( "Send KanjiFont" );
+	send_rom_image( rom_kanji_font_00, sizeof(rom_kanji_font_00) );
+	send_rom_image( rom_kanji_font_01, sizeof(rom_kanji_font_01) );
+	send_rom_image( rom_kanji_font_02, sizeof(rom_kanji_font_02) );
+	send_rom_image( rom_kanji_font_03, sizeof(rom_kanji_font_03) );
+	send_rom_image( rom_kanji_font_04, sizeof(rom_kanji_font_04) );
+	send_rom_image( rom_kanji_font_05, sizeof(rom_kanji_font_05) );
+	send_rom_image( rom_kanji_font_06, sizeof(rom_kanji_font_06) );
+	send_rom_image( rom_kanji_font_07, sizeof(rom_kanji_font_07) );
+	send_rom_image( rom_kanji_font_08, sizeof(rom_kanji_font_08) );
+	send_rom_image( rom_kanji_font_09, sizeof(rom_kanji_font_09) );
+	send_rom_image( rom_kanji_font_0A, sizeof(rom_kanji_font_0A) );
+	send_rom_image( rom_kanji_font_0B, sizeof(rom_kanji_font_0B) );
+	send_rom_image( rom_kanji_font_0C, sizeof(rom_kanji_font_0C) );
+	send_rom_image( rom_kanji_font_0D, sizeof(rom_kanji_font_0D) );
+	send_rom_image( rom_kanji_font_0E, sizeof(rom_kanji_font_0E) );
+	send_rom_image( rom_kanji_font_0F, sizeof(rom_kanji_font_0F) );
 
-//	Serial.println( "Super Cobra" );
-//	send_rom_image( rom_super_cobra_00, sizeof(rom_super_cobra_00) );
-//	set_megarom_mode( 1, MEGAROM_ASC16 );
-
-//	Serial.println( "kings_valley" );
-//	send_rom_image( rom_kings_valley_00, sizeof(rom_kings_valley_00) );
-//	set_megarom_mode( 1, MEGAROM_ASC16 );
-
-//	Serial.println( "Stepper" );
-//	send_rom_image( rom_stepper_00, sizeof(rom_stepper_00) );
-//	set_megarom_mode( 1, MEGAROM_ASC16 );
-
-//	Serial.println( "RabbitAdventure 0" );
-//	send_rom_image( rom_rabbit_adventure_00, sizeof(rom_rabbit_adventure_00) );
-//	Serial.println( "RabbitAdventure 1" );
-//	send_rom_image( rom_rabbit_adventure_01, sizeof(rom_rabbit_adventure_01) );
-//	set_megarom_mode( 1, MEGAROM_LINEAR );
-
-//	Serial.println( "RabbitAdventureDEMO 0" );
-//	send_rom_image( rom_rabbit_adventure_demo_00, sizeof(rom_rabbit_adventure_demo_00) );
-//	Serial.println( "RabbitAdventureDEMO 1" );
-//	send_rom_image( rom_rabbit_adventure_demo_01, sizeof(rom_rabbit_adventure_demo_01) );
-//	set_megarom_mode( 1, MEGAROM_LINEAR );
-
-//	Serial.println( "dragon_quest2" );
-//	send_rom_image( rom_dragon_quest2_00, sizeof(rom_dragon_quest2_00) );
-//	send_rom_image( rom_dragon_quest2_01, sizeof(rom_dragon_quest2_01) );
-//	send_rom_image( rom_dragon_quest2_02, sizeof(rom_dragon_quest2_02) );
-//	send_rom_image( rom_dragon_quest2_03, sizeof(rom_dragon_quest2_03) );
-//	send_rom_image( rom_dragon_quest2_04, sizeof(rom_dragon_quest2_04) );
-//	send_rom_image( rom_dragon_quest2_05, sizeof(rom_dragon_quest2_05) );
-//	send_rom_image( rom_dragon_quest2_06, sizeof(rom_dragon_quest2_06) );
-//	send_rom_image( rom_dragon_quest2_07, sizeof(rom_dragon_quest2_07) );
-//	send_rom_image( rom_dragon_quest2_08, sizeof(rom_dragon_quest2_08) );
-//	send_rom_image( rom_dragon_quest2_09, sizeof(rom_dragon_quest2_09) );
-//	send_rom_image( rom_dragon_quest2_0A, sizeof(rom_dragon_quest2_0A) );
-//	send_rom_image( rom_dragon_quest2_0B, sizeof(rom_dragon_quest2_0B) );
-//	send_rom_image( rom_dragon_quest2_0C, sizeof(rom_dragon_quest2_0C) );
-//	send_rom_image( rom_dragon_quest2_0D, sizeof(rom_dragon_quest2_0D) );
-//	send_rom_image( rom_dragon_quest2_0E, sizeof(rom_dragon_quest2_0E) );
-//	send_rom_image( rom_dragon_quest2_0F, sizeof(rom_dragon_quest2_0F) );
-//	set_megarom_mode( 1, MEGAROM_ASC8 );
-
-//	Serial.println( "gall_force" );
-//	send_rom_image( rom_gall_force_00, sizeof(rom_gall_force_00) );
-//	send_rom_image( rom_gall_force_01, sizeof(rom_gall_force_01) );
-//	send_rom_image( rom_gall_force_02, sizeof(rom_gall_force_02) );
-//	send_rom_image( rom_gall_force_03, sizeof(rom_gall_force_03) );
-//	send_rom_image( rom_gall_force_04, sizeof(rom_gall_force_04) );
-//	send_rom_image( rom_gall_force_05, sizeof(rom_gall_force_05) );
-//	send_rom_image( rom_gall_force_06, sizeof(rom_gall_force_06) );
-//	send_rom_image( rom_gall_force_07, sizeof(rom_gall_force_07) );
-//	set_megarom_mode( 1, MEGAROM_ASC16 );
-
-//	Serial.println( "megarom_asc8" );
-//	send_rom_image( rom_megarom_asc8_00, sizeof(rom_megarom_asc8_00) );
-//	send_rom_image( rom_megarom_asc8_01, sizeof(rom_megarom_asc8_01) );
-//	send_rom_image( rom_megarom_asc8_02, sizeof(rom_megarom_asc8_02) );
-//	send_rom_image( rom_megarom_asc8_03, sizeof(rom_megarom_asc8_03) );
-//	set_megarom_mode( 1, MEGAROM_ASC8 );
-
-//	Serial.println( "gradius" );
-//	send_rom_image( rom_gradius_00, sizeof(rom_gradius_00) );
-//	send_rom_image( rom_gradius_01, sizeof(rom_gradius_01) );
-//	send_rom_image( rom_gradius_02, sizeof(rom_gradius_02) );
-//	send_rom_image( rom_gradius_03, sizeof(rom_gradius_03) );
-//	send_rom_image( rom_gradius_04, sizeof(rom_gradius_04) );
-//	send_rom_image( rom_gradius_05, sizeof(rom_gradius_05) );
-//	send_rom_image( rom_gradius_06, sizeof(rom_gradius_06) );
-//	send_rom_image( rom_gradius_07, sizeof(rom_gradius_07) );
-//	set_megarom_mode( 1, MEGAROM_KONVRC );
-
-	Serial.println( "gradius2" );
-	send_rom_image( rom_gradius2_00, sizeof(rom_gradius2_00) );
-	send_rom_image( rom_gradius2_01, sizeof(rom_gradius2_01) );
-	send_rom_image( rom_gradius2_02, sizeof(rom_gradius2_02) );
-	send_rom_image( rom_gradius2_03, sizeof(rom_gradius2_03) );
-	send_rom_image( rom_gradius2_04, sizeof(rom_gradius2_04) );
-	send_rom_image( rom_gradius2_05, sizeof(rom_gradius2_05) );
-	send_rom_image( rom_gradius2_06, sizeof(rom_gradius2_06) );
-	send_rom_image( rom_gradius2_07, sizeof(rom_gradius2_07) );
-	set_megarom_mode( 1, MEGAROM_KONSCC );
+	send_cartridge();
 
 	Serial.println( "Start FPGA MSX." );
 	start_cpu();
+	last_reset = digitalRead( PIN_RESET_SW );
 	p_function = state4_main_loop;
 }
 

@@ -71,7 +71,7 @@ module megarom_wo_scc (
 	output			megarom_rd_n,
 	output	[21:0]	megarom_address,
 	//	Mode select
-	input	[2:0]	mode,				//	0: ASC16, 1: ASC8, 2: KonamiSCC/SCC+, 3: ---, 4: Linear, 5: ---, 6: KonamiVRC, 7: ---
+	input	[2:0]	mode,				//	0: ASC16, 1: ASC8, 2: KonamiSCC/SCC+, 3: ---, 4: Linear, 5: ---, 6: KonamiVRC, 7: MSX-Write
 	//	SCC sound out
 	output	[10:0]	sound_out			//	0ŒÅ’è‚Å‚· 
 );
@@ -115,7 +115,10 @@ module megarom_wo_scc (
 			else if( mode[2:1] == 2'b01 && address[15:11] == 5'b0110_0 ) begin	//	2,3: SCC       : 5000-57FFh
 				ff_bank0 <= wdata;
 			end
-			else begin		//	4,5,6,7: Linear, VRC
+			else if( mode == 3'd7 && (address[15:11] == 5'b0110_0 || address == 16'h6FFF) ) begin		//	7: MSX-Write
+				ff_bank0 <= wdata;
+			end
+			else begin		//	4,5,6: Linear, VRC
 				//	hold
 			end
 		end
@@ -168,7 +171,10 @@ module megarom_wo_scc (
 			else if( mode[2:1] == 2'b01 && address[15:11] == 5'b1001_0 ) begin	//	2,3: SCC       : 9000-97FFh
 				ff_bank2 <= wdata;
 			end
-			else if( mode[2:1] == 2'b11 && address[15:13] == 3'b100    ) begin	//	6,7: VRC       : 8000-9FFFh
+			else if( mode == 3'd6 && address[15:13] == 3'b100 ) begin	//	6  : VRC       : 8000-9FFFh
+				ff_bank2 <= wdata;
+			end
+			else if( mode == 3'd7 && (address[15:11] == 5'b0111_0 || address == 16'h7FFF) ) begin		//	7: MSX-Write
 				ff_bank2 <= wdata;
 			end
 			else begin		//	4,5: Linear
@@ -221,6 +227,7 @@ module megarom_wo_scc (
 	assign megarom_rd_n				= ff_rd_n;
 	assign megarom_address[21:13]	= (mode == 3'd4) ? { 6'd0, address[15:13] }:		//	Linear
 	                             	  (mode == 3'd0) ? { w_address16, address[13] }:	//	16K bank
+	                             	  (mode == 3'd7) ? { w_address16, address[13] }:	//	16K bank
 	                             	                   { 1'b0, w_address8 };			//	8K bank
 	assign megarom_address[12:0]	= address[12:0];
 

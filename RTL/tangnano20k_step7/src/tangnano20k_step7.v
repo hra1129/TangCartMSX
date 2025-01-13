@@ -146,8 +146,6 @@ module tangnano20k_step7 (
 	wire			w_expslt0_q_en;
 	wire	[7:0]	w_expslt3_q;
 	wire			w_expslt3_q_en;
-	wire			w_kanji_j1;
-	wire			w_kanji_j2;
 	wire	[22:0]	w_spi_address;
 	wire			w_spi_mreq_n;
 	wire	[7:0]	w_spi_d;
@@ -176,6 +174,10 @@ module tangnano20k_step7 (
 	wire	[7:0]	w_megarom2_rdata;
 	wire			w_megarom2_rdata_en;
 	wire			w_megarom2_mem_cs_n;
+
+	wire			w_kanji_iorq_n;
+	wire	[17:0]	w_kanji_address;
+	wire			w_kanji_en;
 
 	// --------------------------------------------------------------------
 	//	clock
@@ -551,6 +553,23 @@ module tangnano20k_step7 (
 	);
 
 	// --------------------------------------------------------------------
+	//	KanjiROM
+	// --------------------------------------------------------------------
+	kanji_rom u_kanji_rom (
+		.reset_n				( w_msx_reset_n			),
+		.clk					( clk42m				),
+		.iorq_n					( w_kanji_iorq_n		),
+		.wr_n					( wr_n					),
+		.rd_n					( rd_n					),
+		.address				( a[1:0]				),
+		.wdata					( d						),
+		.kanji_rom_address		( w_kanji_address		),
+		.kanji_rom_address_en	( w_kanji_en			)
+	);
+
+	assign w_kanji_iorq_n	= ( { a[7:2], 2'b00 } == 8'hD8 ) ? iorq_n : 1'b1;
+
+	// --------------------------------------------------------------------
 	//	MegaROM Controller
 	// --------------------------------------------------------------------
 	megarom_wo_scc u_megarom_slot1 (
@@ -592,36 +611,34 @@ module tangnano20k_step7 (
 	// --------------------------------------------------------------------
 	//	SDRAM memory map
 	// --------------------------------------------------------------------
-	assign w_sdram_address[22:13]	= ( w_cpu_freeze ) ? w_spi_address[22:13]                  :		//	SDRAM Updater from SPI
-									  ( w_kanji_j1   ) ? { 10'b100_1100_000                  } :		//	JIS1 KanjiROM
-									  ( w_kanji_j2   ) ? { 10'b100_1110_000                  } :		//	JIS2 KanjiROM
-									  ( w_sltsl30    ) ? {  7'b100_0000,      a[15:13]       } :		//	MapperRAM
-									  ( w_sltsl1     ) ? {  2'b01, w_megarom1_address[20:13] } :		//	MegaROM 2MB
-									  ( w_sltsl2     ) ? {  3'b001,w_megarom2_address[19:13] } :		//	MegaROM 1MB
-									  ( w_sltsl03    ) ? {  8'b000_0011_1,    a[14:13]       } :		//	MSX Logo, ExtBASIC
-									  ( w_sltsl02    ) ? {  9'b001_0011_01,   a[13]          } :		//	MSX-MUSIC
-									  ( w_sltsl01    ) ? {  9'b010_0011_00,   a[13]          } :		//	IoT-BASIC
-									  ( w_sltsl31    ) ? {  8'b000_0010_1,    a[14:13]       } :		//	SUB-ROM, KanjiBASIC
-									  ( w_sltsl00    ) ? {  8'b000_0010_0,    a[14:13]       } :		//	MAIN-ROM
-									  ( w_sltsl32    ) ? {  6'b000_000, 1'b0, a[15:13]       } :		//	BANK#00-07: Nextor
-									                       10'b000_0000_000;							//	#3-3 N/A
+	assign w_sdram_address[22:13]	= ( w_cpu_freeze                     ) ? w_spi_address[22:13]                   :		//	SDRAM Updater from SPI
+									  ( w_kanji_en                       ) ? {  5'b000_01, w_kanji_address[17:13] } :		//	JIS1/JIS2 KanjiROM
+									  ( w_sltsl30                        ) ? {  7'b100_0000,      a[15:13]        } :		//	MapperRAM
+									  ( w_sltsl1                         ) ? {  2'b01, w_megarom1_address[20:13]  } :		//	MegaROM 2MB
+									  ( w_sltsl2                         ) ? {  3'b001,w_megarom2_address[19:13]  } :		//	MegaROM 1MB
+									  ( w_sltsl03                        ) ? {  8'b000_0011_1,    a[14:13]        } :		//	MSX Logo, ExtBASIC
+									  ( w_sltsl02                        ) ? {  9'b001_0011_01,   a[13]           } :		//	MSX-MUSIC
+									  ( w_sltsl01                        ) ? {  9'b010_0011_00,   a[13]           } :		//	IoT-BASIC
+									  ( w_sltsl31 && (a[15:14] == 2'b00) ) ? {  8'b000_1000_0,    a[13]           } :		//	SUB-ROM
+									  ( w_sltsl31                        ) ? {  8'b000_0010_1,    a[15], a[13]    } :		//	KanjiBASIC
+									  ( w_sltsl00                        ) ? {  8'b000_0010_0,    a[14:13]        } :		//	MAIN-ROM
+									  ( w_sltsl32                        ) ? {  6'b000_000, 1'b0, a[15:13]        } :		//	BANK#00-07: Nextor
+									                                           10'b000_0000_000;							//	#3-3 N/A
 
-	assign w_kanji_j1				= 1'b0;
-	assign w_kanji_j2				= 1'b0;
-	assign w_sdram_address[12:0]	= w_cpu_freeze ? w_spi_address[12:0]: a[12:0];
+	assign w_sdram_address[12:0]	= w_cpu_freeze ? w_spi_address[12:0]: 
+	                            	  w_kanji_en   ? w_kanji_address[12:0]:
+	                            	                 a[12:0];
 	assign w_sdram_d				= w_cpu_freeze ? w_spi_d            : d;
 
 	assign w_sdram_mreq_n			= ( w_cpu_freeze ) ? w_spi_mreq_n   : 
-									  ( w_kanji_j1   ) ? iorq_n         :		//	JIS1 KanjiROM
-									  ( w_kanji_j2   ) ? iorq_n         :		//	JIS2 KanjiROM
+									  ( w_kanji_en   ) ? ~w_kanji_en    :		//	JIS1/JIS2 KanjiROM
 									                     mreq_n;
 
 	assign w_sdram_wr_n				= ( w_cpu_freeze ) ? w_spi_mreq_n :							//	SDRAM Updater from SPI
 									  ( w_sltsl30    ) ? wr_n         :							//	MapperRAM
 									                     1'b1;
 
-	assign w_sdram_rd_n				= ( w_kanji_j1                                            ) ? rd_n :				//	JIS1 KanjiROM
-									  ( w_kanji_j2                                            ) ? rd_n :				//	JIS2 KanjiROM
+	assign w_sdram_rd_n				= ( w_kanji_en                                            ) ? ~w_kanji_en :			//	JIS1/JIS2 KanjiROM
 									  ( !iorq_n                                               ) ? 1'b1 :				//	
 									  ( w_sltsl30                                             ) ? rd_n :				//	MapperRAM
 									  ( !w_megarom1_mem_cs_n                                  ) ? w_megarom1_rd_n :		//	MegaROM 1MB
@@ -629,7 +646,7 @@ module tangnano20k_step7 (
 									  ( w_sltsl03  && (a[15:14] == 2'b01 || a[15:14] == 2'b10)) ? rd_n :				//	MSX Logo, ExtBASIC
 									  ( w_sltsl02  && (a[15:14] == 2'b01)                     ) ? rd_n :				//	MSX-MUSIC
 									  ( w_sltsl01  && (a[15:14] == 2'b01)                     ) ? rd_n :				//	IoT-BASIC
-									  ( w_sltsl31  && (a[15]    == 1'b0)                      ) ? rd_n :				//	SUB-ROM, KanjiBASIC
+									  ( w_sltsl31                                             ) ? rd_n :				//	SUB-ROM, KanjiBASIC
 									  ( w_sltsl00  && (a[15]    == 1'b0)                      ) ? rd_n :				//	MAIN-ROM
 									  ( w_sltsl32  && (a[15:14] == 2'b01 || a[15:14] == 2'b10)) ? rd_n :				//	Nextor
 									                                                              1'b1;
