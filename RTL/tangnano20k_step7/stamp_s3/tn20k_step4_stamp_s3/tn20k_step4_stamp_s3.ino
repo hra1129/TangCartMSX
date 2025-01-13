@@ -49,7 +49,7 @@ CRGB leds[NUM_LEDS];
 #define HSPI_MOSI		11
 #define HSPI_SCLK		12
 #define HSPI_SS			10
-SPISettings spi_settings = SPISettings( 30000000, MSBFIRST, SPI_MODE0 );
+SPISettings spi_settings = SPISettings( 36000000, MSBFIRST, SPI_MODE0 );
 SPIClass *hspi = NULL;
 
 static void (*p_function)( void );
@@ -471,7 +471,27 @@ void send_cartridge( void ) {
 }
 
 // --------------------------------------------------------------------
+void update_led( void ) {
+	byte status;
+
+	status = get_status();
+	if( (status & (1 << 1)) == 0 ) {
+		digitalWrite( PIN_CAPS_LED, 0 );
+	}
+	else {
+		digitalWrite( PIN_CAPS_LED, 1 );
+	}
+	if( (status & (1 << 2)) == 0 ) {
+		digitalWrite( PIN_KANA_LED, 0 );
+	}
+	else {
+		digitalWrite( PIN_KANA_LED, 1 );
+	}
+}
+
+// --------------------------------------------------------------------
 void state4_main_loop( void ) {
+	static int led_update_counter = 0;
 	int reset_sw;
 
 	update_key_matrix();
@@ -488,6 +508,12 @@ void state4_main_loop( void ) {
 		}
 	}
 
+	if( led_update_counter == 0 ) {
+		update_led();
+		led_update_counter = 10;
+	}
+	led_update_counter--;
+	
 	delayMicroseconds(500);
 }
 
