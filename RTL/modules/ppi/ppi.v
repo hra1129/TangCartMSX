@@ -106,6 +106,24 @@ module ppi(
 		else if( !iorq_n && !wr_n && (address == 2'b10) ) begin
 			ff_port_c <= wdata;
 		end
+		else if( !iorq_n && !wr_n && (address == 2'b11) ) begin
+			if( wdata[7] == 1'b0 ) begin
+				case( wdata[3:1] )
+				3'd0:		ff_port_c[0] <= wdata[0];
+				3'd1:		ff_port_c[1] <= wdata[0];
+				3'd2:		ff_port_c[2] <= wdata[0];
+				3'd3:		ff_port_c[3] <= wdata[0];
+				3'd4:		ff_port_c[4] <= wdata[0];
+				3'd5:		ff_port_c[5] <= wdata[0];
+				3'd6:		ff_port_c[6] <= wdata[0];
+				3'd7:		ff_port_c[7] <= wdata[0];
+				default:	ff_port_c[0] <= wdata[0];
+				endcase
+			end
+			else begin
+				//	hold
+			end
+		end
 		else begin
 			//	hold
 		end
@@ -123,7 +141,7 @@ module ppi(
 			2'd0:		ff_rdata <= ff_port_a;
 			2'd1:		ff_rdata <= matrix_x;
 			2'd2:		ff_rdata <= ff_port_c;
-			2'd3:		ff_rdata <= 8'd0;
+			2'd3:		ff_rdata <= 8'h82;
 			default:	ff_rdata <= 8'd0;
 			endcase
 		end

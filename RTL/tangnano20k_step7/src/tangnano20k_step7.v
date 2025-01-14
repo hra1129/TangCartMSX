@@ -179,6 +179,8 @@ module tangnano20k_step7 (
 	wire	[17:0]	w_kanji_address;
 	wire			w_kanji_en;
 
+	wire	[7:0]	w_mapper_segment;
+
 	// --------------------------------------------------------------------
 	//	clock
 	// --------------------------------------------------------------------
@@ -611,14 +613,27 @@ module tangnano20k_step7 (
 	// --------------------------------------------------------------------
 	//	SDRAM memory map
 	// --------------------------------------------------------------------
+	memory_mapper_inst(
+		.reset_n				( w_msx_reset_n			),
+		.clk					( clk42m				),
+		.iorq_n					( iorq_n				),
+		.wr_n					( wr_n					),
+		.address				( a						),
+		.wdata					( d						),
+		.mapper_segment			( w_mapper_segment		)
+	);
+
+	// --------------------------------------------------------------------
+	//	SDRAM memory map
+	// --------------------------------------------------------------------
 	assign w_sdram_address[22:13]	= ( w_cpu_freeze                     ) ? w_spi_address[22:13]                   :		//	SDRAM Updater from SPI
 									  ( w_kanji_en                       ) ? {  5'b000_01, w_kanji_address[17:13] } :		//	JIS1/JIS2 KanjiROM
-									  ( w_sltsl30                        ) ? {  7'b100_0000,      a[15:13]        } :		//	MapperRAM
+									  ( w_sltsl30                        ) ? {  1'b1, w_mapper_segment, a[13]     } :		//	MapperRAM
 									  ( w_sltsl1                         ) ? {  2'b01, w_megarom1_address[20:13]  } :		//	MegaROM 2MB
 									  ( w_sltsl2                         ) ? {  3'b001,w_megarom2_address[19:13]  } :		//	MegaROM 1MB
 									  ( w_sltsl03                        ) ? {  8'b000_0011_1,    a[14:13]        } :		//	MSX Logo, ExtBASIC
-									  ( w_sltsl02                        ) ? {  9'b001_0011_01,   a[13]           } :		//	MSX-MUSIC
-									  ( w_sltsl01                        ) ? {  9'b010_0011_00,   a[13]           } :		//	IoT-BASIC
+									  ( w_sltsl02                        ) ? {  9'b000_0011_01,   a[13]           } :		//	MSX-MUSIC
+									  ( w_sltsl01                        ) ? {  9'b000_0011_00,   a[13]           } :		//	BASIC'N
 									  ( w_sltsl31 && (a[15:14] == 2'b00) ) ? {  8'b000_1000_0,    a[13]           } :		//	SUB-ROM
 									  ( w_sltsl31                        ) ? {  8'b000_0010_1,    a[15], a[13]    } :		//	KanjiBASIC
 									  ( w_sltsl00                        ) ? {  8'b000_0010_0,    a[14:13]        } :		//	MAIN-ROM
@@ -645,7 +660,7 @@ module tangnano20k_step7 (
 									  ( !w_megarom2_mem_cs_n                                  ) ? w_megarom2_rd_n :		//	MegaROM 512KB
 									  ( w_sltsl03  && (a[15:14] == 2'b01 || a[15:14] == 2'b10)) ? rd_n :				//	MSX Logo, ExtBASIC
 									  ( w_sltsl02  && (a[15:14] == 2'b01)                     ) ? rd_n :				//	MSX-MUSIC
-									  ( w_sltsl01  && (a[15:14] == 2'b01)                     ) ? rd_n :				//	IoT-BASIC
+									  ( w_sltsl01  && (a[15:14] == 2'b01)                     ) ? rd_n :				//	BASIC'N
 									  ( w_sltsl31                                             ) ? rd_n :				//	SUB-ROM, KanjiBASIC
 									  ( w_sltsl00  && (a[15]    == 1'b0)                      ) ? rd_n :				//	MAIN-ROM
 									  ( w_sltsl32  && (a[15:14] == 2'b01 || a[15:14] == 2'b10)) ? rd_n :				//	Nextor

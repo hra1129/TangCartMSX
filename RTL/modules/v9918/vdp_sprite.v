@@ -94,7 +94,6 @@ module vdp_sprite (
 	reg				ff_sp_en;
 	reg		[8:0]	ff_cur_y;
 	reg		[8:0]	ff_prev_cur_y;
-	wire			w_split_screen;
 
 	reg				ff_vdps0resetack;
 
@@ -130,7 +129,7 @@ module vdp_sprite (
 
 	// jp: y座標検査中のプレーン番号
 	reg		[4:0]	ff_y_test_sp_num;
-	reg		[3:0]	ff_y_test_listup_addr;		 // 0 - 8
+	reg		[2:0]	ff_y_test_listup_addr;		 // 0 - 4
 	reg				ff_y_test_en;
 	// jp: 下書きデータ準備中のローカルプレーン番号
 	reg		[1:0]	ff_prepare_local_plane_num;
@@ -178,6 +177,7 @@ module vdp_sprite (
 
 	wire	[7:0]	w_listup_y;
 	wire			w_target_sp_en;
+	wire			w_sp_off;
 	wire			w_sp_overmap;
 	wire			w_active;
 	reg				ff_window_y;
@@ -316,9 +316,6 @@ module vdp_sprite (
 		end
 	end
 
-	// detect a split screen
-	assign w_split_screen	= (ff_cur_y == (ff_prev_cur_y + 1)) ? 1'b0 : 1'b1;
-
 	//---------------------------------------------------------------------------
 	// vram address generator
 	//---------------------------------------------------------------------------
@@ -382,6 +379,9 @@ module vdp_sprite (
 							   ((w_listup_y[7:4] == 4'd0) && (!reg_r1_sp_size) && ( reg_r1_sp_zoom)) ||
 							   ((w_listup_y[7:5] == 3'd0) && ( reg_r1_sp_size) && ( reg_r1_sp_zoom)) );
 
+	// [y_test]これ以降のスプライトは表示禁止かどうかの信号
+	assign w_sp_off			=	( p_vram_rdata == 8'd208 ) ? 1'b1: 1'b0;
+
 	// [y_test]４つのスプライトが並んでいるかどうかの信号
 	assign w_sp_overmap		=	ff_y_test_listup_addr[2];
 
@@ -422,7 +422,7 @@ module vdp_sprite (
 				ff_y_test_en <= ff_sp_en;
 			end
 			else if( eight_dot_state == 3'd6 ) begin
-				if( (w_sp_overmap && w_target_sp_en) || (ff_y_test_sp_num == 5'b11111) ) begin
+				if( w_sp_off || (w_sp_overmap && w_target_sp_en) || (ff_y_test_sp_num == 5'd31) ) begin
 					ff_y_test_en <= 1'b0;
 				end
 			end
@@ -444,8 +444,8 @@ module vdp_sprite (
 				ff_y_test_sp_num <= 5'd0;
 			end
 			else if( eight_dot_state == 3'd6 ) begin
-				if( ff_y_test_en && ff_y_test_sp_num != 5'b11111 ) begin
-					ff_y_test_sp_num <= ff_y_test_sp_num + 1;
+				if( ff_y_test_en && ff_y_test_sp_num != 5'd31 ) begin
+					ff_y_test_sp_num <= ff_y_test_sp_num + 5'd1;
 				end
 			end
 		end
@@ -456,7 +456,7 @@ module vdp_sprite (
 	//---------------------------------------------------------------------------
 	always @( posedge clk ) begin
 		if( reset ) begin
-			ff_y_test_listup_addr <= 4'd0;
+			ff_y_test_listup_addr <= 3'd0;
 		end
 		else if( !enable ) begin
 			//	hold
@@ -464,12 +464,12 @@ module vdp_sprite (
 		else if( dot_state == 2'b01 ) begin
 			if( dot_counter_x == 9'd0 ) begin
 				// initialize
-				ff_y_test_listup_addr <= 4'd0;
+				ff_y_test_listup_addr <= 3'd0;
 			end
 			else if( eight_dot_state == 3'd6 ) begin
 				// next sprite [リストアップメモリが満杯になるまでインクリメント]
-				if( ff_y_test_en && w_target_sp_en && !w_sp_overmap ) begin
-					ff_y_test_listup_addr <= ff_y_test_listup_addr + 1;
+				if( ff_y_test_en && w_target_sp_en && !w_sp_overmap && !w_sp_off ) begin
+					ff_y_test_listup_addr <= ff_y_test_listup_addr + 3'd1;
 				end
 			end
 		end
@@ -494,15 +494,15 @@ module vdp_sprite (
 			end
 			else if( eight_dot_state == 3'd6 ) begin
 				// next sprite
-				if( ff_y_test_en && w_target_sp_en && !w_sp_overmap ) begin
-					ff_render_planes[ ff_y_test_listup_addr[2:0] ] <= ff_y_test_sp_num;
+				if( ff_y_test_en && w_target_sp_en && !w_sp_overmap && !w_sp_off ) begin
+					ff_render_planes[ ff_y_test_listup_addr[1:0] ] <= ff_y_test_sp_num;
 				end
 			end
 		end
 	end
 
 	//---------------------------------------------------------------------------
-	// [y_test]４つ目（８つ目）のスプライトが並んだかどうかの信号
+	// [y_test]４つ目のスプライトが並んだかどうかの信号
 	//---------------------------------------------------------------------------
 	always @( posedge clk ) begin
 		if( reset ) begin
@@ -520,7 +520,7 @@ module vdp_sprite (
 				// initialize
 			end
 			else if( eight_dot_state == 3'd6 ) begin
-				if( ff_window_y && ff_y_test_en && w_target_sp_en && w_sp_overmap ) begin
+				if( ff_window_y && ff_y_test_en && w_target_sp_en && w_sp_overmap && !w_sp_off ) begin
 					ff_sp_overmap <= 1'b1;
 				end
 			end
@@ -532,13 +532,13 @@ module vdp_sprite (
 	//---------------------------------------------------------------------------
 	always @( posedge clk ) begin
 		if( reset ) begin
-			ff_sp_overmap_num	<= 5'b11111;
+			ff_sp_overmap_num	<= 5'd31;
 		end
 		else if( !enable ) begin
 			//	hold
 		end
 		else if( p_s0_reset_req == ~ff_vdps0resetack ) begin
-			ff_sp_overmap_num	<= 5'b11111;
+			ff_sp_overmap_num	<= 5'd31;
 		end
 		else if( dot_state == 2'b01 ) begin
 			if( dot_counter_x == 9'd0 ) begin
@@ -547,7 +547,7 @@ module vdp_sprite (
 			else if( eight_dot_state == 3'd6 ) begin
 				// jp: 調査をあきらめたスプライト番号が格納される。overmapとは限らない。
 				// jp: しかし、すでに overmap で値が確定している場合は更新しない。
-				if( ff_window_y && ff_y_test_en && w_target_sp_en && w_sp_overmap && !ff_sp_overmap ) begin
+				if( ff_window_y && ff_y_test_en && w_target_sp_en && w_sp_overmap && !ff_sp_overmap && !w_sp_off ) begin
 					ff_sp_overmap_num <= ff_y_test_sp_num;
 				end
 			end
@@ -805,7 +805,7 @@ module vdp_sprite (
 					//
 					if( dot_counter_x == 9'd0 ) begin
 						ff_predraw_local_plane_num		<= 2'd0;
-						ff_sp_predraw_end				<= w_split_screen;
+						ff_sp_predraw_end				<= 1'b0;
 					end
 					else if( dot_counter_x[4:0] == 5'd0 ) begin
 						ff_predraw_local_plane_num <= ff_predraw_local_plane_num + 2'd1;

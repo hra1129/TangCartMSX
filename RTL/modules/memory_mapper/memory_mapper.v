@@ -56,15 +56,12 @@
 //-----------------------------------------------------------------------------
 
 module memory_mapper(
-	input					reset,
+	input					reset_n,
 	input					clk,
-	input					req,
-	output					ack,
-	input					wrt,
+	input					iorq_n,
+	input					wr_n,
 	input		[1:0]		address,
 	input		[7:0]		wdata,
-	output		[7:0]		rdata,
-	output					rdata_en,
 	output		[7:0]		page0_segment,
 	output		[7:0]		page1_segment,
 	output		[7:0]		page2_segment,
@@ -74,18 +71,15 @@ module memory_mapper(
 	reg			[7:0]		ff_page1_segment;
 	reg			[7:0]		ff_page2_segment;
 	reg			[7:0]		ff_page3_segment;
-	reg			[7:0]		ff_rdata;
-	reg						ff_rdata_en;
-	reg						ff_ack;
 
 	// --------------------------------------------------------------------
 	//	Latch
 	// --------------------------------------------------------------------
 	always @( posedge clk ) begin
-		if( reset ) begin
-			ff_page0_segment <= 8'd0;
+		if( !reset_n ) begin
+			ff_page0_segment <= 8'd3;
 		end
-		else if( req && wrt && ff_ack && (address == 2'd0) ) begin
+		else if( !iorq_n && !wr_n && (address == 2'd0) ) begin
 			ff_page0_segment <= wdata;
 		end
 		else begin
@@ -94,10 +88,10 @@ module memory_mapper(
 	end
 
 	always @( posedge clk ) begin
-		if( reset ) begin
-			ff_page1_segment <= 8'd0;
+		if( !reset_n ) begin
+			ff_page1_segment <= 8'd2;
 		end
-		else if( req && wrt && ff_ack && (address == 2'd1) ) begin
+		else if( !iorq_n && !wr_n && (address == 2'd1) ) begin
 			ff_page1_segment <= wdata;
 		end
 		else begin
@@ -106,10 +100,10 @@ module memory_mapper(
 	end
 
 	always @( posedge clk ) begin
-		if( reset ) begin
-			ff_page2_segment <= 8'd0;
+		if( !reset_n ) begin
+			ff_page2_segment <= 8'd1;
 		end
-		else if( req && wrt && ff_ack && (address == 2'd2) ) begin
+		else if( !iorq_n && !wr_n && (address == 2'd2) ) begin
 			ff_page2_segment <= wdata;
 		end
 		else begin
@@ -118,10 +112,10 @@ module memory_mapper(
 	end
 
 	always @( posedge clk ) begin
-		if( reset ) begin
+		if( !reset_n ) begin
 			ff_page3_segment <= 8'd0;
 		end
-		else if( req && wrt && ff_ack && (address == 2'd3) ) begin
+		else if( !iorq_n && !wr_n && (address == 2'd3) ) begin
 			ff_page3_segment <= wdata;
 		end
 		else begin
@@ -130,51 +124,8 @@ module memory_mapper(
 	end
 
 	// --------------------------------------------------------------------
-	//	Read
-	// --------------------------------------------------------------------
-	always @( posedge clk ) begin
-		if( reset ) begin
-			ff_rdata <= 8'd0;
-			ff_rdata_en <= 1'b0;
-		end
-		else if( req && !wrt && ff_ack ) begin
-			case( address )
-			2'd0:		begin ff_rdata <= ff_page0_segment;	ff_rdata_en	<= 1'b1;	end
-			2'd1:		begin ff_rdata <= ff_page1_segment;	ff_rdata_en	<= 1'b1;	end
-			2'd2:		begin ff_rdata <= ff_page2_segment;	ff_rdata_en	<= 1'b1;	end
-			2'd3:		begin ff_rdata <= ff_page3_segment;	ff_rdata_en	<= 1'b1;	end
-			default:	begin ff_rdata <= 8'd0;				ff_rdata_en	<= 1'b0;	end
-			endcase
-		end
-		else begin
-			ff_rdata	<= 8'd0;
-			ff_rdata_en	<= 1'b0;
-		end
-	end
-
-	// --------------------------------------------------------------------
-	//	Ack
-	// --------------------------------------------------------------------
-	always @( posedge clk ) begin
-		if( reset ) begin
-			ff_ack <= 1'b0;
-		end
-		else if( ff_ack ) begin
-			ff_ack <= 1'b0;
-		end
-		else begin
-			ff_ack <= req;
-		end
-	end
-
-	assign ack						= ff_ack;
-
-	// --------------------------------------------------------------------
 	//	Output assignment
 	// --------------------------------------------------------------------
-	assign rdata					= ff_rdata;
-	assign rdata_en					= ff_rdata_en;
-
 	assign page0_segment			= ff_page0_segment;
 	assign page1_segment			= ff_page1_segment;
 	assign page2_segment			= ff_page2_segment;

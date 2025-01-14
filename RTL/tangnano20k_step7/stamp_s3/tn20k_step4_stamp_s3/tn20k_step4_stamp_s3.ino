@@ -481,6 +481,7 @@ void update_led( void ) {
 	else {
 		digitalWrite( PIN_CAPS_LED, 1 );
 	}
+
 	if( (status & (1 << 2)) == 0 ) {
 		digitalWrite( PIN_KANA_LED, 0 );
 	}

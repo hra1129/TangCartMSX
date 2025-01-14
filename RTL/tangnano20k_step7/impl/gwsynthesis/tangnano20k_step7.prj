@@ -10,6 +10,7 @@
         <File path="D:\github\HRA_product\TangCartMSX\RTL\modules\cz80\cz80_mcode.v" type="verilog"/>
         <File path="D:\github\HRA_product\TangCartMSX\RTL\modules\cz80\cz80_reg.v" type="verilog"/>
         <File path="D:\github\HRA_product\TangCartMSX\RTL\modules\i2s_audio\i2s_audio.v" type="verilog"/>
+        <File path="D:\github\HRA_product\TangCartMSX\RTL\modules\kanji_rom\kanji_rom.v" type="verilog"/>
         <File path="D:\github\HRA_product\TangCartMSX\RTL\modules\megarom\megarom.v" type="verilog"/>
         <File path="D:\github\HRA_product\TangCartMSX\RTL\modules\megarom\megarom_wo_scc.v" type="verilog"/>
         <File path="D:\github\HRA_product\TangCartMSX\RTL\modules\megarom\scc\scc_channel_mixer.v" type="verilog"/>
@@ -48,7 +49,8 @@
         <File path="D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_step7\src\tangnano20k_step7.v" type="verilog"/>
         <File path="D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_step7\src\uart\ip_uart.v" type="verilog"/>
         <File path="D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_step7\src\uart\ip_uart_inst.v" type="verilog"/>
-        <File path="D:\github\HRA_product\TangCartMSX\RTL\modules\kanji_rom\kanji_rom.v" type="verilog"/>
+        <File path="D:\github\HRA_product\TangCartMSX\RTL\modules\memory_mapper\memory_mapper.v" type="verilog"/>
+        <File path="D:\github\HRA_product\TangCartMSX\RTL\modules\memory_mapper\memory_mapper_inst.v" type="verilog"/>
     </FileList>
     <OptionList>
         <Option type="disable_insert_pad" value="0"/>

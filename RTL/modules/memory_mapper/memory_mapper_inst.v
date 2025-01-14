@@ -56,15 +56,12 @@
 //-----------------------------------------------------------------------------
 
 module memory_mapper_inst(
-	input					reset,
+	input					reset_n,
 	input					clk,
-	input					bus_io_req,
-	output					bus_ack,
-	input					bus_wrt,
-	input		[15:0]		bus_address,
-	input		[7:0]		bus_wdata,
-	output		[7:0]		bus_rdata,
-	output					bus_rdata_en,
+	input					iorq_n,
+	input					wr_n,
+	input		[15:0]		address,
+	input		[7:0]		wdata,
 	output		[7:0]		mapper_segment
 );
 	localparam				c_port_number = 8'hFC;
@@ -77,25 +74,22 @@ module memory_mapper_inst(
 	// --------------------------------------------------------------------
 	//	Address decode
 	// --------------------------------------------------------------------
-	assign w_decode			= ( { bus_address[7:2], 2'b00 } == c_port_number ) ? bus_io_req : 1'b0;
+	assign w_decode			= ( { address[7:2], 2'b00 } == c_port_number ) ? iorq_n : 1'b1;
 
-	assign mapper_segment	= ( bus_address[15:14] == 2'd0 ) ? w_page0_segment :
-							  ( bus_address[15:14] == 2'd1 ) ? w_page1_segment :
-							  ( bus_address[15:14] == 2'd2 ) ? w_page2_segment : w_page3_segment;
+	assign mapper_segment	= ( address[15:14] == 2'd0 ) ? w_page0_segment :
+							  ( address[15:14] == 2'd1 ) ? w_page1_segment :
+							  ( address[15:14] == 2'd2 ) ? w_page2_segment : w_page3_segment;
 
 	// --------------------------------------------------------------------
 	//	System Register body
 	// --------------------------------------------------------------------
 	memory_mapper u_memory_mapper(
-		.reset				( reset				),
+		.reset_n			( reset_n			),
 		.clk				( clk				),
-		.req				( w_decode			),
-		.ack				( bus_ack			),
-		.wrt				( bus_wrt			),
-		.address			( bus_address[1:0]	),
-		.wdata				( bus_wdata			),
-		.rdata				( bus_rdata			),
-		.rdata_en			( bus_rdata_en		),
+		.iorq_n				( w_decode			),
+		.wr_n				( wr_n				),
+		.address			( address[1:0]		),
+		.wdata				( wdata				),
 		.page0_segment		( w_page0_segment	),
 		.page1_segment		( w_page1_segment	),
 		.page2_segment		( w_page2_segment	),
