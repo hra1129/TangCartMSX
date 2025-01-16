@@ -139,7 +139,7 @@
   "SubInsts" : [
    {
     "InstFile" : "D:/github/HRA_product/TangCartMSX/RTL/tangnano20k_step7/src/tangnano20k_step7.v",
-    "InstLine" : 187,
+    "InstLine" : 193,
     "InstName" : "u_pll",
     "ModuleFile" : "D:/github/HRA_product/TangCartMSX/RTL/tangnano20k_step7/src/gowin_pll/gowin_pll.v",
     "ModuleLine" : 10,
@@ -147,7 +147,7 @@
    },
    {
     "InstFile" : "D:/github/HRA_product/TangCartMSX/RTL/tangnano20k_step7/src/tangnano20k_step7.v",
-    "InstLine" : 260,
+    "InstLine" : 266,
     "InstName" : "u_esp32_conn",
     "ModuleFile" : "D:/github/HRA_product/TangCartMSX/RTL/modules/micom_connect/micom_connect.v",
     "ModuleLine" : 60,
@@ -155,7 +155,7 @@
    },
    {
     "InstFile" : "D:/github/HRA_product/TangCartMSX/RTL/tangnano20k_step7/src/tangnano20k_step7.v",
-    "InstLine" : 285,
+    "InstLine" : 291,
     "InstName" : "u_z80",
     "ModuleFile" : "D:/github/HRA_product/TangCartMSX/RTL/modules/cz80/cz80_inst.v",
     "ModuleLine" : 63,
@@ -199,7 +199,7 @@
    },
    {
     "InstFile" : "D:/github/HRA_product/TangCartMSX/RTL/tangnano20k_step7/src/tangnano20k_step7.v",
-    "InstLine" : 346,
+    "InstLine" : 352,
     "InstName" : "u_uart",
     "ModuleFile" : "D:/github/HRA_product/TangCartMSX/RTL/tangnano20k_step7/src/uart/ip_uart_inst.v",
     "ModuleLine" : 27,
@@ -217,7 +217,7 @@
    },
    {
     "InstFile" : "D:/github/HRA_product/TangCartMSX/RTL/tangnano20k_step7/src/tangnano20k_step7.v",
-    "InstLine" : 364,
+    "InstLine" : 370,
     "InstName" : "u_ppi",
     "ModuleFile" : "D:/github/HRA_product/TangCartMSX/RTL/modules/ppi/ppi_inst.v",
     "ModuleLine" : 58,
@@ -235,7 +235,7 @@
    },
    {
     "InstFile" : "D:/github/HRA_product/TangCartMSX/RTL/tangnano20k_step7/src/tangnano20k_step7.v",
-    "InstLine" : 391,
+    "InstLine" : 397,
     "InstName" : "u_exp_slot0",
     "ModuleFile" : "D:/github/HRA_product/TangCartMSX/RTL/modules/secondary_slot/secondary_slot_inst.v",
     "ModuleLine" : 58,
@@ -243,7 +243,7 @@
    },
    {
     "InstFile" : "D:/github/HRA_product/TangCartMSX/RTL/tangnano20k_step7/src/tangnano20k_step7.v",
-    "InstLine" : 411,
+    "InstLine" : 417,
     "InstName" : "u_exp_slot3",
     "ModuleFile" : "D:/github/HRA_product/TangCartMSX/RTL/modules/secondary_slot/secondary_slot_inst.v",
     "ModuleLine" : 58,
@@ -251,7 +251,7 @@
    },
    {
     "InstFile" : "D:/github/HRA_product/TangCartMSX/RTL/tangnano20k_step7/src/tangnano20k_step7.v",
-    "InstLine" : 431,
+    "InstLine" : 437,
     "InstName" : "u_ssg",
     "ModuleFile" : "D:/github/HRA_product/TangCartMSX/RTL/modules/ssg/ssg.v",
     "ModuleLine" : 58,
@@ -259,7 +259,307 @@
    },
    {
     "InstFile" : "D:/github/HRA_product/TangCartMSX/RTL/tangnano20k_step7/src/tangnano20k_step7.v",
-    "InstLine" : 454,
+    "InstLine" : 460,
+    "InstName" : "u_opll",
+    "ModuleFile" : "D:/github/HRA_product/TangCartMSX/RTL/modules/opll/opll.v",
+    "ModuleLine" : 7,
+    "ModuleName" : "ip_opll",
+    "SubInsts" : [
+     {
+      "InstFile" : "D:/github/HRA_product/TangCartMSX/RTL/modules/opll/opll.v",
+      "InstLine" : 53,
+      "InstName" : "u_ikaopll",
+      "ModuleFile" : "D:/github/HRA_product/TangCartMSX/RTL/modules/opll/ikaopll/IKAOPLL.v",
+      "ModuleLine" : 1,
+      "ModuleName" : "IKAOPLL",
+      "SubInsts" : [
+       {
+        "InstFile" : "D:/github/HRA_product/TangCartMSX/RTL/modules/opll/ikaopll/IKAOPLL.v",
+        "InstLine" : 133,
+        "InstName" : "u_TIMINGGEN",
+        "ModuleFile" : "D:/github/HRA_product/TangCartMSX/RTL/modules/opll/ikaopll/IKAOPLL_modules/IKAOPLL_timinggen.v",
+        "ModuleLine" : 1,
+        "ModuleName" : "IKAOPLL_timinggen"
+       },
+       {
+        "InstFile" : "D:/github/HRA_product/TangCartMSX/RTL/modules/opll/ikaopll/IKAOPLL.v",
+        "InstLine" : 170,
+        "InstName" : "u_REG",
+        "ModuleFile" : "D:/github/HRA_product/TangCartMSX/RTL/modules/opll/ikaopll/IKAOPLL_modules/IKAOPLL_reg.v",
+        "ModuleLine" : 1,
+        "ModuleName" : "IKAOPLL_reg",
+        "SubInsts" : [
+         {
+          "InstFile" : "D:/github/HRA_product/TangCartMSX/RTL/modules/opll/ikaopll/IKAOPLL_modules/IKAOPLL_reg.v",
+          "InstLine" : 71,
+          "InstName" : "u_sync_addrreg",
+          "ModuleFile" : "D:/github/HRA_product/TangCartMSX/RTL/modules/opll/ikaopll/IKAOPLL_modules/IKAOPLL_reg.v",
+          "ModuleLine" : 467,
+          "ModuleName" : "IKAOPLL_rw_synchronizer"
+         },
+         {
+          "InstFile" : "D:/github/HRA_product/TangCartMSX/RTL/modules/opll/ikaopll/IKAOPLL_modules/IKAOPLL_reg.v",
+          "InstLine" : 75,
+          "InstName" : "u_sync_datareg",
+          "ModuleFile" : "D:/github/HRA_product/TangCartMSX/RTL/modules/opll/ikaopll/IKAOPLL_modules/IKAOPLL_reg.v",
+          "ModuleLine" : 467,
+          "ModuleName" : "IKAOPLL_rw_synchronizer"
+         },
+         {
+          "InstFile" : "D:/github/HRA_product/TangCartMSX/RTL/modules/opll/ikaopll/IKAOPLL_modules/IKAOPLL_reg.v",
+          "InstLine" : 250,
+          "InstName" : "u_fnum_lsbs",
+          "ModuleFile" : "D:/github/HRA_product/TangCartMSX/RTL/modules/opll/ikaopll/IKAOPLL_modules/IKAOPLL_reg.v",
+          "ModuleLine" : 525,
+          "ModuleName" : "IKAOPLL_d9reg",
+          "SubInsts" : [
+           {
+            "InstFile" : "D:/github/HRA_product/TangCartMSX/RTL/modules/opll/ikaopll/IKAOPLL_modules/IKAOPLL_reg.v",
+            "InstLine" : 538,
+            "InstName" : "u_d9reg",
+            "ModuleFile" : "D:/github/HRA_product/TangCartMSX/RTL/modules/opll/ikaopll/IKAOPLL_modules/IKAOPLL_primitives.v",
+            "ModuleLine" : 31,
+            "ModuleName" : "IKAOPLL_sr"
+           }
+          ]
+         },
+         {
+          "InstFile" : "D:/github/HRA_product/TangCartMSX/RTL/modules/opll/ikaopll/IKAOPLL_modules/IKAOPLL_reg.v",
+          "InstLine" : 253,
+          "InstName" : "u_fnum_msb",
+          "ModuleFile" : "D:/github/HRA_product/TangCartMSX/RTL/modules/opll/ikaopll/IKAOPLL_modules/IKAOPLL_reg.v",
+          "ModuleLine" : 525,
+          "ModuleName" : "IKAOPLL_d9reg",
+          "SubInsts" : [
+           {
+            "InstFile" : "D:/github/HRA_product/TangCartMSX/RTL/modules/opll/ikaopll/IKAOPLL_modules/IKAOPLL_reg.v",
+            "InstLine" : 538,
+            "InstName" : "u_d9reg",
+            "ModuleFile" : "D:/github/HRA_product/TangCartMSX/RTL/modules/opll/ikaopll/IKAOPLL_modules/IKAOPLL_primitives.v",
+            "ModuleLine" : 31,
+            "ModuleName" : "IKAOPLL_sr"
+           }
+          ]
+         },
+         {
+          "InstFile" : "D:/github/HRA_product/TangCartMSX/RTL/modules/opll/ikaopll/IKAOPLL_modules/IKAOPLL_reg.v",
+          "InstLine" : 256,
+          "InstName" : "u_block",
+          "ModuleFile" : "D:/github/HRA_product/TangCartMSX/RTL/modules/opll/ikaopll/IKAOPLL_modules/IKAOPLL_reg.v",
+          "ModuleLine" : 525,
+          "ModuleName" : "IKAOPLL_d9reg",
+          "SubInsts" : [
+           {
+            "InstFile" : "D:/github/HRA_product/TangCartMSX/RTL/modules/opll/ikaopll/IKAOPLL_modules/IKAOPLL_reg.v",
+            "InstLine" : 538,
+            "InstName" : "u_d9reg",
+            "ModuleFile" : "D:/github/HRA_product/TangCartMSX/RTL/modules/opll/ikaopll/IKAOPLL_modules/IKAOPLL_primitives.v",
+            "ModuleLine" : 31,
+            "ModuleName" : "IKAOPLL_sr"
+           }
+          ]
+         },
+         {
+          "InstFile" : "D:/github/HRA_product/TangCartMSX/RTL/modules/opll/ikaopll/IKAOPLL_modules/IKAOPLL_reg.v",
+          "InstLine" : 259,
+          "InstName" : "u_kon",
+          "ModuleFile" : "D:/github/HRA_product/TangCartMSX/RTL/modules/opll/ikaopll/IKAOPLL_modules/IKAOPLL_reg.v",
+          "ModuleLine" : 525,
+          "ModuleName" : "IKAOPLL_d9reg",
+          "SubInsts" : [
+           {
+            "InstFile" : "D:/github/HRA_product/TangCartMSX/RTL/modules/opll/ikaopll/IKAOPLL_modules/IKAOPLL_reg.v",
+            "InstLine" : 538,
+            "InstName" : "u_d9reg",
+            "ModuleFile" : "D:/github/HRA_product/TangCartMSX/RTL/modules/opll/ikaopll/IKAOPLL_modules/IKAOPLL_primitives.v",
+            "ModuleLine" : 31,
+            "ModuleName" : "IKAOPLL_sr"
+           }
+          ]
+         },
+         {
+          "InstFile" : "D:/github/HRA_product/TangCartMSX/RTL/modules/opll/ikaopll/IKAOPLL_modules/IKAOPLL_reg.v",
+          "InstLine" : 262,
+          "InstName" : "u_susen",
+          "ModuleFile" : "D:/github/HRA_product/TangCartMSX/RTL/modules/opll/ikaopll/IKAOPLL_modules/IKAOPLL_reg.v",
+          "ModuleLine" : 525,
+          "ModuleName" : "IKAOPLL_d9reg",
+          "SubInsts" : [
+           {
+            "InstFile" : "D:/github/HRA_product/TangCartMSX/RTL/modules/opll/ikaopll/IKAOPLL_modules/IKAOPLL_reg.v",
+            "InstLine" : 538,
+            "InstName" : "u_d9reg",
+            "ModuleFile" : "D:/github/HRA_product/TangCartMSX/RTL/modules/opll/ikaopll/IKAOPLL_modules/IKAOPLL_primitives.v",
+            "ModuleLine" : 31,
+            "ModuleName" : "IKAOPLL_sr"
+           }
+          ]
+         },
+         {
+          "InstFile" : "D:/github/HRA_product/TangCartMSX/RTL/modules/opll/ikaopll/IKAOPLL_modules/IKAOPLL_reg.v",
+          "InstLine" : 265,
+          "InstName" : "u_vol",
+          "ModuleFile" : "D:/github/HRA_product/TangCartMSX/RTL/modules/opll/ikaopll/IKAOPLL_modules/IKAOPLL_reg.v",
+          "ModuleLine" : 525,
+          "ModuleName" : "IKAOPLL_d9reg",
+          "SubInsts" : [
+           {
+            "InstFile" : "D:/github/HRA_product/TangCartMSX/RTL/modules/opll/ikaopll/IKAOPLL_modules/IKAOPLL_reg.v",
+            "InstLine" : 538,
+            "InstName" : "u_d9reg",
+            "ModuleFile" : "D:/github/HRA_product/TangCartMSX/RTL/modules/opll/ikaopll/IKAOPLL_modules/IKAOPLL_primitives.v",
+            "ModuleLine" : 31,
+            "ModuleName" : "IKAOPLL_sr"
+           }
+          ]
+         },
+         {
+          "InstFile" : "D:/github/HRA_product/TangCartMSX/RTL/modules/opll/ikaopll/IKAOPLL_modules/IKAOPLL_reg.v",
+          "InstLine" : 268,
+          "InstName" : "u_inst",
+          "ModuleFile" : "D:/github/HRA_product/TangCartMSX/RTL/modules/opll/ikaopll/IKAOPLL_modules/IKAOPLL_reg.v",
+          "ModuleLine" : 525,
+          "ModuleName" : "IKAOPLL_d9reg",
+          "SubInsts" : [
+           {
+            "InstFile" : "D:/github/HRA_product/TangCartMSX/RTL/modules/opll/ikaopll/IKAOPLL_modules/IKAOPLL_reg.v",
+            "InstLine" : 538,
+            "InstName" : "u_d9reg",
+            "ModuleFile" : "D:/github/HRA_product/TangCartMSX/RTL/modules/opll/ikaopll/IKAOPLL_modules/IKAOPLL_primitives.v",
+            "ModuleLine" : 31,
+            "ModuleName" : "IKAOPLL_sr"
+           }
+          ]
+         },
+         {
+          "InstFile" : "D:/github/HRA_product/TangCartMSX/RTL/modules/opll/ikaopll/IKAOPLL_modules/IKAOPLL_reg.v",
+          "InstLine" : 301,
+          "InstName" : "u_instrom",
+          "ModuleFile" : "D:/github/HRA_product/TangCartMSX/RTL/modules/opll/ikaopll/IKAOPLL_modules/IKAOPLL_reg.v",
+          "ModuleLine" : 554,
+          "ModuleName" : "IKAOPLL_instrom"
+         }
+        ]
+       },
+       {
+        "InstFile" : "D:/github/HRA_product/TangCartMSX/RTL/modules/opll/ikaopll/IKAOPLL.v",
+        "InstLine" : 233,
+        "InstName" : "u_LFO",
+        "ModuleFile" : "D:/github/HRA_product/TangCartMSX/RTL/modules/opll/ikaopll/IKAOPLL_modules/IKAOPLL_lfo.v",
+        "ModuleLine" : 1,
+        "ModuleName" : "IKAOPLL_lfo"
+       },
+       {
+        "InstFile" : "D:/github/HRA_product/TangCartMSX/RTL/modules/opll/ikaopll/IKAOPLL.v",
+        "InstLine" : 258,
+        "InstName" : "u_PG",
+        "ModuleFile" : "D:/github/HRA_product/TangCartMSX/RTL/modules/opll/ikaopll/IKAOPLL_modules/IKAOPLL_pg.v",
+        "ModuleLine" : 1,
+        "ModuleName" : "IKAOPLL_pg",
+        "SubInsts" : [
+         {
+          "InstFile" : "D:/github/HRA_product/TangCartMSX/RTL/modules/opll/ikaopll/IKAOPLL_modules/IKAOPLL_pg.v",
+          "InstLine" : 269,
+          "InstName" : "u_cyc4r_cyc18r_phase_sr",
+          "ModuleFile" : "D:/github/HRA_product/TangCartMSX/RTL/modules/opll/ikaopll/IKAOPLL_modules/IKAOPLL_primitives.v",
+          "ModuleLine" : 31,
+          "ModuleName" : "IKAOPLL_sr"
+         }
+        ]
+       },
+       {
+        "InstFile" : "D:/github/HRA_product/TangCartMSX/RTL/modules/opll/ikaopll/IKAOPLL.v",
+        "InstLine" : 289,
+        "InstName" : "u_EG",
+        "ModuleFile" : "D:/github/HRA_product/TangCartMSX/RTL/modules/opll/ikaopll/IKAOPLL_modules/IKAOPLL_eg.v",
+        "ModuleLine" : 1,
+        "ModuleName" : "IKAOPLL_eg",
+        "SubInsts" : [
+         {
+          "InstFile" : "D:/github/HRA_product/TangCartMSX/RTL/modules/opll/ikaopll/IKAOPLL_modules/IKAOPLL_eg.v",
+          "InstLine" : 122,
+          "InstName" : "u_cyc2r_cyc19r_envstatreg",
+          "ModuleFile" : "D:/github/HRA_product/TangCartMSX/RTL/modules/opll/ikaopll/IKAOPLL_modules/IKAOPLL_primitives.v",
+          "ModuleLine" : 31,
+          "ModuleName" : "IKAOPLL_sr"
+         },
+         {
+          "InstFile" : "D:/github/HRA_product/TangCartMSX/RTL/modules/opll/ikaopll/IKAOPLL_modules/IKAOPLL_eg.v",
+          "InstLine" : 296,
+          "InstName" : "u_cyc3r_cyc19r_attnlvreg",
+          "ModuleFile" : "D:/github/HRA_product/TangCartMSX/RTL/modules/opll/ikaopll/IKAOPLL_modules/IKAOPLL_primitives.v",
+          "ModuleLine" : 31,
+          "ModuleName" : "IKAOPLL_sr"
+         }
+        ]
+       },
+       {
+        "InstFile" : "D:/github/HRA_product/TangCartMSX/RTL/modules/opll/ikaopll/IKAOPLL.v",
+        "InstLine" : 331,
+        "InstName" : "u_OP",
+        "ModuleFile" : "D:/github/HRA_product/TangCartMSX/RTL/modules/opll/ikaopll/IKAOPLL_modules/IKAOPLL_op.v",
+        "ModuleLine" : 1,
+        "ModuleName" : "IKAOPLL_op",
+        "SubInsts" : [
+         {
+          "InstFile" : "D:/github/HRA_product/TangCartMSX/RTL/modules/opll/ikaopll/IKAOPLL_modules/IKAOPLL_op.v",
+          "InstLine" : 65,
+          "InstName" : "u_cyc19c_logsinrom",
+          "ModuleFile" : "D:/github/HRA_product/TangCartMSX/RTL/modules/opll/ikaopll/IKAOPLL_modules/IKAOPLL_op.v",
+          "ModuleLine" : 277,
+          "ModuleName" : "IKAOPLL_logsinrom"
+         },
+         {
+          "InstFile" : "D:/github/HRA_product/TangCartMSX/RTL/modules/opll/ikaopll/IKAOPLL_modules/IKAOPLL_op.v",
+          "InstLine" : 110,
+          "InstName" : "u_cyc20c_exprom",
+          "ModuleFile" : "D:/github/HRA_product/TangCartMSX/RTL/modules/opll/ikaopll/IKAOPLL_modules/IKAOPLL_op.v",
+          "ModuleLine" : 325,
+          "ModuleName" : "IKAOPLL_exprom"
+         },
+         {
+          "InstFile" : "D:/github/HRA_product/TangCartMSX/RTL/modules/opll/ikaopll/IKAOPLL_modules/IKAOPLL_op.v",
+          "InstLine" : 194,
+          "InstName" : "u_op_z_reg",
+          "ModuleFile" : "D:/github/HRA_product/TangCartMSX/RTL/modules/opll/ikaopll/IKAOPLL_modules/IKAOPLL_primitives.v",
+          "ModuleLine" : 31,
+          "ModuleName" : "IKAOPLL_sr"
+         },
+         {
+          "InstFile" : "D:/github/HRA_product/TangCartMSX/RTL/modules/opll/ikaopll/IKAOPLL_modules/IKAOPLL_op.v",
+          "InstLine" : 199,
+          "InstName" : "u_op_zz_reg",
+          "ModuleFile" : "D:/github/HRA_product/TangCartMSX/RTL/modules/opll/ikaopll/IKAOPLL_modules/IKAOPLL_primitives.v",
+          "ModuleLine" : 31,
+          "ModuleName" : "IKAOPLL_sr"
+         }
+        ]
+       },
+       {
+        "InstFile" : "D:/github/HRA_product/TangCartMSX/RTL/modules/opll/ikaopll/IKAOPLL.v",
+        "InstLine" : 356,
+        "InstName" : "u_DAC",
+        "ModuleFile" : "D:/github/HRA_product/TangCartMSX/RTL/modules/opll/ikaopll/IKAOPLL_modules/IKAOPLL_dac.v",
+        "ModuleLine" : 1,
+        "ModuleName" : "IKAOPLL_dac",
+        "SubInsts" : [
+         {
+          "InstFile" : "D:/github/HRA_product/TangCartMSX/RTL/modules/opll/ikaopll/IKAOPLL_modules/IKAOPLL_dac.v",
+          "InstLine" : 80,
+          "InstName" : "u_percussion_sr",
+          "ModuleFile" : "D:/github/HRA_product/TangCartMSX/RTL/modules/opll/ikaopll/IKAOPLL_modules/IKAOPLL_primitives.v",
+          "ModuleLine" : 31,
+          "ModuleName" : "IKAOPLL_sr"
+         }
+        ]
+       }
+      ]
+     }
+    ]
+   },
+   {
+    "InstFile" : "D:/github/HRA_product/TangCartMSX/RTL/tangnano20k_step7/src/tangnano20k_step7.v",
+    "InstLine" : 473,
     "InstName" : "u_audio",
     "ModuleFile" : "D:/github/HRA_product/TangCartMSX/RTL/modules/i2s_audio/i2s_audio.v",
     "ModuleLine" : 58,
@@ -267,7 +567,7 @@
    },
    {
     "InstFile" : "D:/github/HRA_product/TangCartMSX/RTL/tangnano20k_step7/src/tangnano20k_step7.v",
-    "InstLine" : 473,
+    "InstLine" : 493,
     "InstName" : "u_v9918",
     "ModuleFile" : "D:/github/HRA_product/TangCartMSX/RTL/modules/v9918/vdp_inst.v",
     "ModuleLine" : 58,
@@ -413,7 +713,7 @@
    },
    {
     "InstFile" : "D:/github/HRA_product/TangCartMSX/RTL/tangnano20k_step7/src/tangnano20k_step7.v",
-    "InstLine" : 510,
+    "InstLine" : 530,
     "InstName" : "u_vram",
     "ModuleFile" : "D:/github/HRA_product/TangCartMSX/RTL/tangnano20k_step7/src/ram/ip_ram.v",
     "ModuleLine" : 5,
@@ -421,7 +721,7 @@
    },
    {
     "InstFile" : "D:/github/HRA_product/TangCartMSX/RTL/tangnano20k_step7/src/tangnano20k_step7.v",
-    "InstLine" : 530,
+    "InstLine" : 550,
     "InstName" : "u_sdram",
     "ModuleFile" : "D:/github/HRA_product/TangCartMSX/RTL/modules/sdram/ip_sdram_tangnano20k_c.v",
     "ModuleLine" : 57,
@@ -429,7 +729,7 @@
    },
    {
     "InstFile" : "D:/github/HRA_product/TangCartMSX/RTL/tangnano20k_step7/src/tangnano20k_step7.v",
-    "InstLine" : 560,
+    "InstLine" : 580,
     "InstName" : "u_kanji_rom",
     "ModuleFile" : "D:/github/HRA_product/TangCartMSX/RTL/modules/kanji_rom/kanji_rom.v",
     "ModuleLine" : 58,
@@ -437,7 +737,7 @@
    },
    {
     "InstFile" : "D:/github/HRA_product/TangCartMSX/RTL/tangnano20k_step7/src/tangnano20k_step7.v",
-    "InstLine" : 577,
+    "InstLine" : 597,
     "InstName" : "u_megarom_slot1",
     "ModuleFile" : "D:/github/HRA_product/TangCartMSX/RTL/modules/megarom/megarom_wo_scc.v",
     "ModuleLine" : 58,
@@ -445,7 +745,7 @@
    },
    {
     "InstFile" : "D:/github/HRA_product/TangCartMSX/RTL/tangnano20k_step7/src/tangnano20k_step7.v",
-    "InstLine" : 595,
+    "InstLine" : 615,
     "InstName" : "u_megarom_slot2",
     "ModuleFile" : "D:/github/HRA_product/TangCartMSX/RTL/modules/megarom/megarom_wo_scc.v",
     "ModuleLine" : 58,
@@ -453,8 +753,8 @@
    },
    {
     "InstFile" : "D:/github/HRA_product/TangCartMSX/RTL/tangnano20k_step7/src/tangnano20k_step7.v",
-    "InstLine" : 616,
-    "InstName" : "i242",
+    "InstLine" : 636,
+    "InstName" : "i243",
     "ModuleFile" : "D:/github/HRA_product/TangCartMSX/RTL/modules/memory_mapper/memory_mapper_inst.v",
     "ModuleLine" : 58,
     "ModuleName" : "memory_mapper_inst",

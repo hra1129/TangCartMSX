@@ -24,6 +24,7 @@ target_list = [
 	( "msx_write"            , 0x200000 ),
 	( "stevedore"            , 0x200000 ),
 	( "nextsdxr"             , 0x000000 ),
+	( "msxmusic"             , 0x034000 ),
 ]
 
 s_rom_image_path = "./rom_image/"

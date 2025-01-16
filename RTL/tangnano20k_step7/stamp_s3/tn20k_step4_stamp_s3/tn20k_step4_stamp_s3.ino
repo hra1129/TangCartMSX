@@ -7,8 +7,13 @@
 #include <Arduino.h>
 #include <FastLED.h>
 #include <SPI.h>
+
 #include "romimage_main.h"
 #include "romimage_basicn.h"
+#include "romimage_msxmusic.h"
+#include "romimage_kanji_driver.h"
+#include "romimage_kanji_font.h"
+
 #include "romimage_rabbit_adventure.h"
 //#include "romimage_hello_world.h"
 #include "romimage_stepper.h"
@@ -18,8 +23,6 @@
 #include "romimage_gall_force.h"
 #include "romimage_gradius.h"
 //#include "romimage_gradius2.h"
-#include "romimage_kanji_driver.h"
-#include "romimage_kanji_font.h"
 //#include "romimage_tiny_slot_checker.h"
 //#include "romimage_msx_write.h"
 #include "romimage_stevedore.h"
@@ -531,6 +534,8 @@ void state3_send_rom_image( void ) {
 	send_rom_image( rom_main_01, sizeof(rom_main_01) );
 	Serial.println( "Send BASIC'N" );
 	send_rom_image( rom_basicn_00, sizeof(rom_basicn_00) );
+	Serial.println( "Send MSX-MUSIC" );
+	send_rom_image( rom_msxmusic_00, sizeof(rom_msxmusic_00) );
 	Serial.println( "Send KanjiDriver" );
 	send_rom_image( rom_kanji_driver_00, sizeof(rom_kanji_driver_00) );
 	send_rom_image( rom_kanji_driver_01, sizeof(rom_kanji_driver_01) );

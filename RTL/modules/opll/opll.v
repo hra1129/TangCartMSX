@@ -6,16 +6,19 @@
 
 module ip_opll (
 	input			reset_n,
-	input			clk,					//	
+	input			clk,
 	input			iorq_n,
 	input			wr_n,
 	input	[15:0]	address,
 	input	[7:0]	wdata,
-	output	[15:0]	sound_out
+	output	[15:0]	sound_out				//	signed
 );
 	wire			w_cs_n;
-	wire			w_enable;
+	wire			w_enable_n;
 	reg		[3:0]	ff_divider;
+	wire	[15:0]	w_sound_out;
+
+	assign sound_out	= w_sound_out;
 
 	// --------------------------------------------------------------------
 	//	Address decoder
@@ -30,11 +33,14 @@ module ip_opll (
 			ff_divider <= 4'd0;
 		end
 		else if( ff_divider == 4'd11 ) begin
+			ff_divider <= 4'd0;
+		end
+		else begin
 			ff_divider <= ff_divider + 4'd1;
 		end
 	end
 
-	assign w_enable	= (ff_divider == 4'd11 );
+	assign w_enable_n	= (ff_divider == 4'd0 ) ? 1'b0 : 1'b1;
 
 	// --------------------------------------------------------------------
 	//	IKAOPLL body
@@ -47,7 +53,7 @@ module ip_opll (
 	) u_ikaopll (
 		.i_XIN_EMUCLK				( clk				),
 		.o_XOUT						( 					),		//	no use: Clock output
-		.i_phiM_PCEN_n				( w_enable			),
+		.i_phiM_PCEN_n				( w_enable_n		),
 		.i_IC_n						( reset_n			),
 		.i_ALTPATCH_EN				( 1'b0				),		//	VRC7 patch disable
 		.i_CS_n						( w_cs_n			),
@@ -65,6 +71,6 @@ module ip_opll (
 		.i_ACC_SIGNED_MOVOL			( 5'd10				),		//	Melody volume level: -16...15 (SIGNED)
 		.i_ACC_SIGNED_ROVOL			( 5'd15				),		//	Drum volume level  : -16...15 (SIGNED)
 		.o_ACC_SIGNED_STRB			( 					),		//	no use
-		.o_ACC_SIGNED				( sound_out			)		//	sound out
+		.o_ACC_SIGNED				( w_sound_out		)		//	sound out
 	);
 endmodule

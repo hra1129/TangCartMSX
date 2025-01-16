@@ -21,6 +21,8 @@
         <File path="D:\github\HRA_product\TangCartMSX\RTL\modules\megarom\scc\scc_register.v" type="verilog"/>
         <File path="D:\github\HRA_product\TangCartMSX\RTL\modules\megarom\scc\scc_selector.v" type="verilog"/>
         <File path="D:\github\HRA_product\TangCartMSX\RTL\modules\megarom\scc\scc_tone_generator_5ch.v" type="verilog"/>
+        <File path="D:\github\HRA_product\TangCartMSX\RTL\modules\memory_mapper\memory_mapper.v" type="verilog"/>
+        <File path="D:\github\HRA_product\TangCartMSX\RTL\modules\memory_mapper\memory_mapper_inst.v" type="verilog"/>
         <File path="D:\github\HRA_product\TangCartMSX\RTL\modules\micom_connect\micom_connect.v" type="verilog"/>
         <File path="D:\github\HRA_product\TangCartMSX\RTL\modules\ppi\ppi.v" type="verilog"/>
         <File path="D:\github\HRA_product\TangCartMSX\RTL\modules\ppi\ppi_inst.v" type="verilog"/>
@@ -49,8 +51,16 @@
         <File path="D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_step7\src\tangnano20k_step7.v" type="verilog"/>
         <File path="D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_step7\src\uart\ip_uart.v" type="verilog"/>
         <File path="D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_step7\src\uart\ip_uart_inst.v" type="verilog"/>
-        <File path="D:\github\HRA_product\TangCartMSX\RTL\modules\memory_mapper\memory_mapper.v" type="verilog"/>
-        <File path="D:\github\HRA_product\TangCartMSX\RTL\modules\memory_mapper\memory_mapper_inst.v" type="verilog"/>
+        <File path="D:\github\HRA_product\TangCartMSX\RTL\modules\opll\opll.v" type="verilog"/>
+        <File path="D:\github\HRA_product\TangCartMSX\RTL\modules\opll\ikaopll\IKAOPLL.v" type="verilog"/>
+        <File path="D:\github\HRA_product\TangCartMSX\RTL\modules\opll\ikaopll\IKAOPLL_modules\IKAOPLL_dac.v" type="verilog"/>
+        <File path="D:\github\HRA_product\TangCartMSX\RTL\modules\opll\ikaopll\IKAOPLL_modules\IKAOPLL_eg.v" type="verilog"/>
+        <File path="D:\github\HRA_product\TangCartMSX\RTL\modules\opll\ikaopll\IKAOPLL_modules\IKAOPLL_lfo.v" type="verilog"/>
+        <File path="D:\github\HRA_product\TangCartMSX\RTL\modules\opll\ikaopll\IKAOPLL_modules\IKAOPLL_op.v" type="verilog"/>
+        <File path="D:\github\HRA_product\TangCartMSX\RTL\modules\opll\ikaopll\IKAOPLL_modules\IKAOPLL_pg.v" type="verilog"/>
+        <File path="D:\github\HRA_product\TangCartMSX\RTL\modules\opll\ikaopll\IKAOPLL_modules\IKAOPLL_primitives.v" type="verilog"/>
+        <File path="D:\github\HRA_product\TangCartMSX\RTL\modules\opll\ikaopll\IKAOPLL_modules\IKAOPLL_reg.v" type="verilog"/>
+        <File path="D:\github\HRA_product\TangCartMSX\RTL\modules\opll\ikaopll\IKAOPLL_modules\IKAOPLL_timinggen.v" type="verilog"/>
     </FileList>
     <OptionList>
         <Option type="disable_insert_pad" value="0"/>

@@ -70,6 +70,14 @@
    "Type" : "verilog"
   },
   {
+   "Path" : "D:/github/HRA_product/TangCartMSX/RTL/modules/memory_mapper/memory_mapper.v",
+   "Type" : "verilog"
+  },
+  {
+   "Path" : "D:/github/HRA_product/TangCartMSX/RTL/modules/memory_mapper/memory_mapper_inst.v",
+   "Type" : "verilog"
+  },
+  {
    "Path" : "D:/github/HRA_product/TangCartMSX/RTL/modules/micom_connect/micom_connect.v",
    "Type" : "verilog"
   },
@@ -182,11 +190,43 @@
    "Type" : "verilog"
   },
   {
-   "Path" : "D:/github/HRA_product/TangCartMSX/RTL/modules/memory_mapper/memory_mapper.v",
+   "Path" : "D:/github/HRA_product/TangCartMSX/RTL/modules/opll/opll.v",
    "Type" : "verilog"
   },
   {
-   "Path" : "D:/github/HRA_product/TangCartMSX/RTL/modules/memory_mapper/memory_mapper_inst.v",
+   "Path" : "D:/github/HRA_product/TangCartMSX/RTL/modules/opll/ikaopll/IKAOPLL.v",
+   "Type" : "verilog"
+  },
+  {
+   "Path" : "D:/github/HRA_product/TangCartMSX/RTL/modules/opll/ikaopll/IKAOPLL_modules/IKAOPLL_dac.v",
+   "Type" : "verilog"
+  },
+  {
+   "Path" : "D:/github/HRA_product/TangCartMSX/RTL/modules/opll/ikaopll/IKAOPLL_modules/IKAOPLL_eg.v",
+   "Type" : "verilog"
+  },
+  {
+   "Path" : "D:/github/HRA_product/TangCartMSX/RTL/modules/opll/ikaopll/IKAOPLL_modules/IKAOPLL_lfo.v",
+   "Type" : "verilog"
+  },
+  {
+   "Path" : "D:/github/HRA_product/TangCartMSX/RTL/modules/opll/ikaopll/IKAOPLL_modules/IKAOPLL_op.v",
+   "Type" : "verilog"
+  },
+  {
+   "Path" : "D:/github/HRA_product/TangCartMSX/RTL/modules/opll/ikaopll/IKAOPLL_modules/IKAOPLL_pg.v",
+   "Type" : "verilog"
+  },
+  {
+   "Path" : "D:/github/HRA_product/TangCartMSX/RTL/modules/opll/ikaopll/IKAOPLL_modules/IKAOPLL_primitives.v",
+   "Type" : "verilog"
+  },
+  {
+   "Path" : "D:/github/HRA_product/TangCartMSX/RTL/modules/opll/ikaopll/IKAOPLL_modules/IKAOPLL_reg.v",
+   "Type" : "verilog"
+  },
+  {
+   "Path" : "D:/github/HRA_product/TangCartMSX/RTL/modules/opll/ikaopll/IKAOPLL_modules/IKAOPLL_timinggen.v",
    "Type" : "verilog"
   }
  ],

@@ -44,10 +44,10 @@ module tangnano20k_step7 (
 	inout	[5:0]	ssg_ioa,			//	PIN20, PIN19, PIN18, PIN17, PIN16, PIN15
 	output	[2:0]	ssg_iob,			//	PIN71, PIN53, PIN52
 	//	TF Card I/F
-	output			tf_ck,				//	TF Card I/F PIN83_SDIO_CLK
-	output			tf_cs,				//	TF Card I/F PIN81_SDIO_D3
-	output reg		tf_di,				//	TF Card I/F PIN82_SDIO_CMD
-	input			tf_do				//	TF Card I/F PIN84_SDIO_D0
+//	output			tf_ck,				//	TF Card I/F PIN83_SDIO_CLK
+//	output			tf_cs,				//	TF Card I/F PIN81_SDIO_D3
+//	output reg		tf_di,				//	TF Card I/F PIN82_SDIO_CMD
+//	input			tf_do,				//	TF Card I/F PIN84_SDIO_D0
 	//	I2C AUDIO
 	output			i2s_audio_en,		//	PIN51
 	output			i2s_audio_din,		//	PIN54
@@ -162,6 +162,7 @@ module tangnano20k_step7 (
 	wire			w_keyboard_type;
 	wire			w_keyboard_kana_led_off;
 	wire	[11:0]	w_ssg_sound_out;
+	wire	[15:0]	w_opll_sound_out;
 	wire	[15:0]	w_sound_in;
 
 	wire			w_megarom1_rd_n;
@@ -454,6 +455,19 @@ module tangnano20k_step7 (
 	assign w_psg_cs_n				= !( !iorq_n && ( { a[7:2], 2'd0 } == 8'hA0 ) );
 
 	// --------------------------------------------------------------------
+	//	OPLL
+	// --------------------------------------------------------------------
+	ip_opll u_opll (
+		.reset_n				( w_msx_reset_n				),
+		.clk					( clk42m					),
+		.iorq_n					( iorq_n					),
+		.wr_n					( wr_n						),
+		.address				( a							),
+		.wdata					( d							),
+		.sound_out				( w_opll_sound_out			)
+	);
+
+	// --------------------------------------------------------------------
 	//	Audio out
 	// --------------------------------------------------------------------
 	i2s_audio u_audio (
@@ -466,8 +480,10 @@ module tangnano20k_step7 (
 		.i2s_audio_bclk			( i2s_audio_bclk			)
 	);
 
+	//	signed 16bit mono
 	assign w_sound_in	= 
-		{ 2'd0, w_click_sound, 14'd0 } + 
+		{ w_opll_sound_out } +
+		{ 4'd0, w_click_sound, 12'd0 } + 
 		{ 2'd0, w_ssg_sound_out, 2'd0 } + 
 		{ 2'd0, w_megarom1_sound, 3'd0 } +
 		{ 2'd0, w_megarom2_sound, 3'd0 };
