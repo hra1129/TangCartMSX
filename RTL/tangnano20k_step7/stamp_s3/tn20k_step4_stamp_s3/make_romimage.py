@@ -23,6 +23,7 @@ target_list = [
 	( "tiny_slot_checker"    , 0x204000 ),
 	( "msx_write"            , 0x200000 ),
 	( "stevedore"            , 0x200000 ),
+	( "nextsdxr"             , 0x000000 ),
 ]
 
 s_rom_image_path = "./rom_image/"

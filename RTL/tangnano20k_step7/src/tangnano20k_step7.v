@@ -43,6 +43,11 @@ module tangnano20k_step7 (
 	//	PSG
 	inout	[5:0]	ssg_ioa,			//	PIN20, PIN19, PIN18, PIN17, PIN16, PIN15
 	output	[2:0]	ssg_iob,			//	PIN71, PIN53, PIN52
+	//	TF Card I/F
+	output			tf_ck,				//	TF Card I/F PIN83_SDIO_CLK
+	output			tf_cs,				//	TF Card I/F PIN81_SDIO_D3
+	output reg		tf_di,				//	TF Card I/F PIN82_SDIO_CMD
+	input			tf_do				//	TF Card I/F PIN84_SDIO_D0
 	//	I2C AUDIO
 	output			i2s_audio_en,		//	PIN51
 	output			i2s_audio_din,		//	PIN54

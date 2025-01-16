@@ -56,6 +56,7 @@ static void (*p_function)( void );
 
 static unsigned char keymatrix[16];
 static int last_reset = 0;
+static byte last_status = 0;
 
 #define MEGAROM_ASC16	0
 #define MEGAROM_ASC8	1
@@ -405,9 +406,8 @@ void set_keyboard_row( int row ) {
 		0xC300,
 	};
 	GPIO.out_w1tc = GPIO.out_w1tc | 0xC300;
-	delayMicroseconds(100);
 	GPIO.out_w1ts = GPIO.out_w1ts | row_tbl[ row ];
-	delayMicroseconds(100);
+	delayMicroseconds(50);
 }
 
 // --------------------------------------------------------------------
@@ -475,6 +475,10 @@ void update_led( void ) {
 	byte status;
 
 	status = get_status();
+	if( status == last_status ) {
+		return;
+	}
+	last_status = status;
 	if( (status & (1 << 1)) == 0 ) {
 		digitalWrite( PIN_CAPS_LED, 0 );
 	}
@@ -511,7 +515,7 @@ void state4_main_loop( void ) {
 
 	if( led_update_counter == 0 ) {
 		update_led();
-		led_update_counter = 10;
+		led_update_counter = 5;
 	}
 	led_update_counter--;
 	
