@@ -26,3 +26,5 @@ Makefile	text
 *.xlsx		binary
 *.png		binary
 *.pdf		binary
+*.pptx		binary
+*.odp		binary
