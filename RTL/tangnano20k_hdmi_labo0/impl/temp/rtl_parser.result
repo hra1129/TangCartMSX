@@ -1,0 +1,148 @@
+[
+ {
+  "InstFile" : "D:/github/HRA_product/TangCartMSX/RTL/tangnano20k_hdmi_labo0/src/tangnano20k_hdmi_labo.v",
+  "InstLine" : 24,
+  "InstName" : "tangnano20k_hdmi_labo",
+  "ModuleFile" : "D:/github/HRA_product/TangCartMSX/RTL/tangnano20k_hdmi_labo0/src/tangnano20k_hdmi_labo.v",
+  "ModuleLine" : 24,
+  "ModuleName" : "tangnano20k_hdmi_labo",
+  "SubInsts" : [
+   {
+    "InstFile" : "D:/github/HRA_product/TangCartMSX/RTL/tangnano20k_hdmi_labo0/src/tangnano20k_hdmi_labo.v",
+    "InstLine" : 108,
+    "InstName" : "u_pll",
+    "ModuleFile" : "D:/github/HRA_product/TangCartMSX/RTL/tangnano20k_hdmi_labo0/src/gowin_rpll/gowin_rpll.v",
+    "ModuleLine" : 10,
+    "ModuleName" : "Gowin_rPLL"
+   },
+   {
+    "InstFile" : "D:/github/HRA_product/TangCartMSX/RTL/tangnano20k_hdmi_labo0/src/tangnano20k_hdmi_labo.v",
+    "InstLine" : 114,
+    "InstName" : "u_clkdiv",
+    "ModuleFile" : "D:/github/HRA_product/TangCartMSX/RTL/tangnano20k_hdmi_labo0/src/gowin_clkdiv/gowin_clkdiv.v",
+    "ModuleLine" : 10,
+    "ModuleName" : "Gowin_CLKDIV"
+   },
+   {
+    "InstFile" : "D:/github/HRA_product/TangCartMSX/RTL/tangnano20k_hdmi_labo0/src/tangnano20k_hdmi_labo.v",
+    "InstLine" : 143,
+    "InstName" : "u_z80",
+    "ModuleFile" : "D:/github/HRA_product/TangCartMSX/RTL/tangnano20k_hdmi_labo0/src/cz80/cz80_inst.v",
+    "ModuleLine" : 63,
+    "ModuleName" : "cz80_inst",
+    "SubInsts" : [
+     {
+      "InstFile" : "D:/github/HRA_product/TangCartMSX/RTL/tangnano20k_hdmi_labo0/src/cz80/cz80_inst.v",
+      "InstLine" : 132,
+      "InstName" : "u_cz80",
+      "ModuleFile" : "D:/github/HRA_product/TangCartMSX/RTL/tangnano20k_hdmi_labo0/src/cz80/cz80.v",
+      "ModuleLine" : 63,
+      "ModuleName" : "cz80",
+      "SubInsts" : [
+       {
+        "InstFile" : "D:/github/HRA_product/TangCartMSX/RTL/tangnano20k_hdmi_labo0/src/cz80/cz80.v",
+        "InstLine" : 237,
+        "InstName" : "u_mcode",
+        "ModuleFile" : "D:/github/HRA_product/TangCartMSX/RTL/tangnano20k_hdmi_labo0/src/cz80/cz80_mcode.v",
+        "ModuleLine" : 63,
+        "ModuleName" : "cz80_mcode"
+       },
+       {
+        "InstFile" : "D:/github/HRA_product/TangCartMSX/RTL/tangnano20k_hdmi_labo0/src/cz80/cz80.v",
+        "InstLine" : 296,
+        "InstName" : "u_alu",
+        "ModuleFile" : "D:/github/HRA_product/TangCartMSX/RTL/tangnano20k_hdmi_labo0/src/cz80/cz80_alu.v",
+        "ModuleLine" : 63,
+        "ModuleName" : "cz80_alu"
+       },
+       {
+        "InstFile" : "D:/github/HRA_product/TangCartMSX/RTL/tangnano20k_hdmi_labo0/src/cz80/cz80.v",
+        "InstLine" : 784,
+        "InstName" : "u_regs",
+        "ModuleFile" : "D:/github/HRA_product/TangCartMSX/RTL/tangnano20k_hdmi_labo0/src/cz80/cz80_reg.v",
+        "ModuleLine" : 55,
+        "ModuleName" : "cz80_registers"
+       }
+      ]
+     }
+    ]
+   },
+   {
+    "InstFile" : "D:/github/HRA_product/TangCartMSX/RTL/tangnano20k_hdmi_labo0/src/tangnano20k_hdmi_labo.v",
+    "InstLine" : 192,
+    "InstName" : "u_gpio",
+    "ModuleFile" : "D:/github/HRA_product/TangCartMSX/RTL/tangnano20k_hdmi_labo0/src/gpio/ip_gpio.v",
+    "ModuleLine" : 27,
+    "ModuleName" : "ip_gpio"
+   },
+   {
+    "InstFile" : "D:/github/HRA_product/TangCartMSX/RTL/tangnano20k_hdmi_labo0/src/tangnano20k_hdmi_labo.v",
+    "InstLine" : 209,
+    "InstName" : "u_rom",
+    "ModuleFile" : "D:/github/HRA_product/TangCartMSX/RTL/tangnano20k_hdmi_labo0/src/rom/ip_rom.v",
+    "ModuleLine" : 5,
+    "ModuleName" : "ip_rom"
+   },
+   {
+    "InstFile" : "D:/github/HRA_product/TangCartMSX/RTL/tangnano20k_hdmi_labo0/src/tangnano20k_hdmi_labo.v",
+    "InstLine" : 223,
+    "InstName" : "u_ram",
+    "ModuleFile" : "D:/github/HRA_product/TangCartMSX/RTL/tangnano20k_hdmi_labo0/src/ram/ip_ram.v",
+    "ModuleLine" : 5,
+    "ModuleName" : "ip_ram"
+   },
+   {
+    "InstFile" : "D:/github/HRA_product/TangCartMSX/RTL/tangnano20k_hdmi_labo0/src/tangnano20k_hdmi_labo.v",
+    "InstLine" : 239,
+    "InstName" : "testpattern_inst",
+    "ModuleFile" : "D:/github/HRA_product/TangCartMSX/RTL/tangnano20k_hdmi_labo0/src/testpattern.v",
+    "ModuleLine" : 17,
+    "ModuleName" : "testpattern"
+   },
+   {
+    "InstFile" : "D:/github/HRA_product/TangCartMSX/RTL/tangnano20k_hdmi_labo0/src/tangnano20k_hdmi_labo.v",
+    "InstLine" : 267,
+    "InstName" : "u_dvi",
+    "ModuleFile" : "D:/github/HRA_product/TangCartMSX/RTL/tangnano20k_hdmi_labo0/src/dvi_tx/dvi_tx.v",
+    "ModuleLine" : 1070,
+    "ModuleName" : "DVI_TX_Top",
+    "SubInsts" : [
+     {
+      "InstFile" : "D:/github/HRA_product/TangCartMSX/RTL/tangnano20k_hdmi_labo0/src/dvi_tx/dvi_tx.v",
+      "InstLine" : 1101,
+      "InstName" : "rgb2dvi_inst",
+      "ModuleFile" : "D:/github/HRA_product/TangCartMSX/RTL/tangnano20k_hdmi_labo0/src/dvi_tx/dvi_tx.v",
+      "ModuleLine" : 10,
+      "ModuleName" : "~rgb2dvi.DVI_TX_Top"
+     }
+    ]
+   },
+   {
+    "InstFile" : "D:/github/HRA_product/TangCartMSX/RTL/tangnano20k_hdmi_labo0/src/tangnano20k_hdmi_labo.v",
+    "InstLine" : 286,
+    "InstName" : "u_sdram",
+    "ModuleFile" : "D:/github/HRA_product/TangCartMSX/RTL/tangnano20k_hdmi_labo0/src/sdram/ip_sdram_tangnano20k_c.v",
+    "ModuleLine" : 57,
+    "ModuleName" : "ip_sdram"
+   }
+  ]
+ },
+ {
+  "InstFile" : "D:/github/HRA_product/TangCartMSX/RTL/tangnano20k_hdmi_labo0/src/uart/ip_uart_inst.v",
+  "InstLine" : 27,
+  "InstName" : "ip_uart_inst",
+  "ModuleFile" : "D:/github/HRA_product/TangCartMSX/RTL/tangnano20k_hdmi_labo0/src/uart/ip_uart_inst.v",
+  "ModuleLine" : 27,
+  "ModuleName" : "ip_uart_inst",
+  "SubInsts" : [
+   {
+    "InstFile" : "D:/github/HRA_product/TangCartMSX/RTL/tangnano20k_hdmi_labo0/src/uart/ip_uart_inst.v",
+    "InstLine" : 132,
+    "InstName" : "u_uart",
+    "ModuleFile" : "D:/github/HRA_product/TangCartMSX/RTL/tangnano20k_hdmi_labo0/src/uart/ip_uart.v",
+    "ModuleLine" : 27,
+    "ModuleName" : "ip_uart"
+   }
+  ]
+ }
+]

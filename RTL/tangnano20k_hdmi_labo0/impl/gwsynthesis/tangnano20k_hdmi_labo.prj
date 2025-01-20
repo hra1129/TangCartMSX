@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE gowin-synthesis-project>
+<Project>
+    <Version>beta</Version>
+    <Device id="GW2AR-18C" package="QFN88" speed="8" partNumber="GW2AR-LV18QN88C8/I7"/>
+    <FileList>
+        <File path="D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_hdmi_labo0\src\cz80\cz80.v" type="verilog"/>
+        <File path="D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_hdmi_labo0\src\cz80\cz80_alu.v" type="verilog"/>
+        <File path="D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_hdmi_labo0\src\cz80\cz80_inst.v" type="verilog"/>
+        <File path="D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_hdmi_labo0\src\cz80\cz80_mcode.v" type="verilog"/>
+        <File path="D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_hdmi_labo0\src\cz80\cz80_reg.v" type="verilog"/>
+        <File path="D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_hdmi_labo0\src\dvi_tx\dvi_tx.v" type="verilog"/>
+        <File path="D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_hdmi_labo0\src\gowin_clkdiv\gowin_clkdiv.v" type="verilog"/>
+        <File path="D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_hdmi_labo0\src\gowin_rpll\gowin_rpll.v" type="verilog"/>
+        <File path="D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_hdmi_labo0\src\gpio\ip_gpio.v" type="verilog"/>
+        <File path="D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_hdmi_labo0\src\ram\ip_ram.v" type="verilog"/>
+        <File path="D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_hdmi_labo0\src\rom\ip_rom.v" type="verilog"/>
+        <File path="D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_hdmi_labo0\src\sdram\ip_sdram_tangnano20k_c.v" type="verilog"/>
+        <File path="D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_hdmi_labo0\src\tangnano20k_hdmi_labo.v" type="verilog"/>
+        <File path="D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_hdmi_labo0\src\testpattern.v" type="verilog"/>
+        <File path="D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_hdmi_labo0\src\uart\ip_uart.v" type="verilog"/>
+        <File path="D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_hdmi_labo0\src\uart\ip_uart_inst.v" type="verilog"/>
+    </FileList>
+    <OptionList>
+        <Option type="disable_insert_pad" value="0"/>
+        <Option type="global_freq" value="100.000"/>
+        <Option type="looplimit" value="8000"/>
+        <Option type="output_file" value="D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_hdmi_labo0\impl\gwsynthesis\tangnano20k_hdmi_labo.vg"/>
+        <Option type="print_all_synthesis_warning" value="0"/>
+        <Option type="ram_rw_check" value="0"/>
+        <Option type="top_module" value="tangnano20k_hdmi_labo"/>
+        <Option type="vcc" value="1.0"/>
+        <Option type="vccx" value="3.3"/>
+        <Option type="verilog_language" value="verilog-2001"/>
+        <Option type="vhdl_language" value="vhdl-1993"/>
+    </OptionList>
+</Project>

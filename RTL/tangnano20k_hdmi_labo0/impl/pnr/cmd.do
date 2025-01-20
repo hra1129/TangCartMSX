@@ -1,0 +1,14 @@
+-d D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_hdmi_labo0\impl\gwsynthesis\tangnano20k_hdmi_labo.vg
+-p GW2AR-18C-QFN88-8
+-pn GW2AR-LV18QN88C8/I7
+-cst D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_hdmi_labo0\src\tangnano20k_hdmi_labo.cst
+-cfg D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_hdmi_labo0\impl\pnr\device.cfg
+-bit
+-tr
+-ph
+-timing
+-cst_error
+-convert_sdp32_36_to_sdp16_18
+-correct_hold 1
+-route_maxfan 23
+-global_freq 100.000
