@@ -236,29 +236,15 @@ module tangnano20k_hdmi_labo (
 	// --------------------------------------------------------------------
 	//	Video Core
 	// --------------------------------------------------------------------
-	testpattern testpattern_inst (
-		.I_pxl_clk   ( clk_pixel			),	//pixel clock
-		.I_rst_n     ( w_hdmi_reset_n		),	//low active 
-		.I_mode      ( w_gpo[2:0]			),	//data select
-		.I_single_r  ( 8'd0					),
-		.I_single_g  ( 8'd255				),
-		.I_single_b  ( 8'd0					),	                  //800x600    //1024x768   //1280x720    
-		.I_h_total   ( 12'd1650				),	//hor total time  // 12'd1056  // 12'd1344  // 12'd1650  
-		.I_h_sync    ( 12'd40				),	//hor sync time   // 12'd128   // 12'd136   // 12'd40    
-		.I_h_bporch  ( 12'd220				),	//hor back porch  // 12'd88    // 12'd160   // 12'd220   
-		.I_h_res     ( 12'd1280				),	//hor resolution  // 12'd800   // 12'd1024  // 12'd1280  
-		.I_v_total   ( 12'd750				),	//ver total time  // 12'd628   // 12'd806   // 12'd750    
-		.I_v_sync    ( 12'd5				),	//ver sync time   // 12'd4     // 12'd6     // 12'd5     
-		.I_v_bporch  ( 12'd20				),	//ver back porch  // 12'd23    // 12'd29    // 12'd20    
-		.I_v_res     ( 12'd720				),	//ver resolution  // 12'd600   // 12'd768   // 12'd720    
-		.I_hs_pol    ( 1'b1					),	//HS polarity , 0:negetive ploarity，1：positive polarity
-		.I_vs_pol    ( 1'b1					),	//VS polarity , 0:negetive ploarity，1：positive polarity
-		.O_de        ( w_de					),
-		.O_hs        ( w_hs					),
-		.O_vs        ( w_vs					),
-		.O_data_r    ( w_r					),
-		.O_data_g    ( w_g					),
-		.O_data_b    ( w_b					)
+	ip_video u_video (
+		.reset_n				( w_hdmi_reset_n		),
+		.clk					( clk_pixel				),
+		.video_de				( w_de					),
+		.video_hs				( w_hs					),
+		.video_vs				( w_vs					),
+		.video_r				( w_r					),
+		.video_g				( w_g					),
+		.video_b				( w_b					)
 	);
 
 	// --------------------------------------------------------------------

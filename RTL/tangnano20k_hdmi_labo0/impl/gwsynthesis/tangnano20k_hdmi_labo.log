@@ -13,9 +13,11 @@ Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_hdmi_l
 Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_hdmi_labo0\src\rom\ip_rom.v'
 Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_hdmi_labo0\src\sdram\ip_sdram_tangnano20k_c.v'
 Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_hdmi_labo0\src\tangnano20k_hdmi_labo.v'
-Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_hdmi_labo0\src\testpattern.v'
 Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_hdmi_labo0\src\uart\ip_uart.v'
 Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_hdmi_labo0\src\uart\ip_uart_inst.v'
+Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_hdmi_labo0\src\video\ip_video.v'
+WARN  (EX2950) : Extra semicolon is not allowed here in this dialect, use SystemVerilog mode instead("D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_hdmi_labo0\src\video\ip_video.v":78)
+WARN  (EX2950) : Extra semicolon is not allowed here in this dialect, use SystemVerilog mode instead("D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_hdmi_labo0\src\video\ip_video.v":99)
 Compiling module 'tangnano20k_hdmi_labo'("D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_hdmi_labo0\src\tangnano20k_hdmi_labo.v":24)
 Compiling module 'Gowin_rPLL'("D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_hdmi_labo0\src\gowin_rpll\gowin_rpll.v":10)
 Compiling module 'Gowin_CLKDIV'("D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_hdmi_labo0\src\gowin_clkdiv\gowin_clkdiv.v":10)
@@ -35,13 +37,14 @@ Compiling module 'ip_rom'("D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_hdm
 Extracting RAM for identifier 'ff_rom'("D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_hdmi_labo0\src\rom\ip_rom.v":13)
 Compiling module 'ip_ram'("D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_hdmi_labo0\src\ram\ip_ram.v":5)
 Extracting RAM for identifier 'ff_ram'("D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_hdmi_labo0\src\ram\ip_ram.v":15)
-Compiling module 'testpattern'("D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_hdmi_labo0\src\testpattern.v":17)
+Compiling module 'ip_video'("D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_hdmi_labo0\src\video\ip_video.v":27)
 Compiling module 'DVI_TX_Top'("D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_hdmi_labo0\src\dvi_tx\dvi_tx.v":1070)
 Compiling module '**'("D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_hdmi_labo0\src\dvi_tx\dvi_tx.v":1069)
 Compiling module 'ip_sdram'("D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_hdmi_labo0\src\sdram\ip_sdram_tangnano20k_c.v":57)
 WARN  (EX3791) : Expression size 32 truncated to fit in target size 14("D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_hdmi_labo0\src\sdram\ip_sdram_tangnano20k_c.v":389)
 NOTE  (EX0101) : Current top module is "tangnano20k_hdmi_labo"
 [5%] Running netlist conversion ...
+WARN  (CV0016) : Input button is unused("D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_hdmi_labo0\src\tangnano20k_hdmi_labo.v":26)
 Running device independent optimization ...
 [10%] Optimizing Phase 0 completed
 [15%] Optimizing Phase 1 completed
@@ -57,6 +60,14 @@ Running technical mapping ...
 [75%] Tech-Mapping Phase 2 completed
 [80%] Tech-Mapping Phase 3 completed
 [90%] Tech-Mapping Phase 4 completed
+WARN  (NL0002) : The module "ip_gpio" instantiated to "u_gpio" is swept in optimizing("D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_hdmi_labo0\src\tangnano20k_hdmi_labo.v":204)
+WARN  (NL0002) : The module "ip_ram" instantiated to "u_ram" is swept in optimizing("D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_hdmi_labo0\src\tangnano20k_hdmi_labo.v":232)
+WARN  (NL0002) : The module "ip_rom" instantiated to "u_rom" is swept in optimizing("D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_hdmi_labo0\src\tangnano20k_hdmi_labo.v":216)
+WARN  (NL0002) : The module "cz80_inst" instantiated to "u_z80" is swept in optimizing("D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_hdmi_labo0\src\tangnano20k_hdmi_labo.v":161)
+WARN  (NL0002) : The module "cz80" instantiated to "u_cz80" is swept in optimizing("D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_hdmi_labo0\src\cz80\cz80_inst.v":156)
+WARN  (NL0002) : The module "cz80_alu" instantiated to "u_alu" is swept in optimizing("D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_hdmi_labo0\src\cz80\cz80.v":308)
+WARN  (NL0002) : The module "cz80_mcode" instantiated to "u_mcode" is swept in optimizing("D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_hdmi_labo0\src\cz80\cz80.v":293)
+WARN  (NL0002) : The module "cz80_registers" instantiated to "u_regs" is swept in optimizing("D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_hdmi_labo0\src\cz80\cz80.v":801)
 [95%] Generate netlist file "D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_hdmi_labo0\impl\gwsynthesis\tangnano20k_hdmi_labo.vg" completed
 [100%] Generate report file "D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_hdmi_labo0\impl\gwsynthesis\tangnano20k_hdmi_labo_syn.rpt.html" completed
 GowinSynthesis finish

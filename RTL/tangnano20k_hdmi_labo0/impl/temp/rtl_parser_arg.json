@@ -54,15 +54,15 @@
    "Type" : "verilog"
   },
   {
-   "Path" : "D:/github/HRA_product/TangCartMSX/RTL/tangnano20k_hdmi_labo0/src/testpattern.v",
-   "Type" : "verilog"
-  },
-  {
    "Path" : "D:/github/HRA_product/TangCartMSX/RTL/tangnano20k_hdmi_labo0/src/uart/ip_uart.v",
    "Type" : "verilog"
   },
   {
    "Path" : "D:/github/HRA_product/TangCartMSX/RTL/tangnano20k_hdmi_labo0/src/uart/ip_uart_inst.v",
+   "Type" : "verilog"
+  },
+  {
+   "Path" : "D:/github/HRA_product/TangCartMSX/RTL/tangnano20k_hdmi_labo0/src/video/ip_video.v",
    "Type" : "verilog"
   }
  ],
