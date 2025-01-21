@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Module name="tangnano20k_hdmi_labo" Register="3" T_Register="165(3)" T_Alu="80(0)" T_Lut="372(0)">
+ <SubModule name="u_pll"/>
+ <SubModule name="u_clkdiv"/>
+ <SubModule name="u_video" Register="52" Alu="11" Lut="54" T_Register="52(52)" T_Alu="11(11)" T_Lut="54(54)"/>
+ <SubModule name="u_dvi" Register="73" Alu="69" Lut="229" T_Register="73(73)" T_Alu="69(69)" T_Lut="229(229)"/>
+ <SubModule name="u_sdram" Register="37" Lut="89" T_Register="37(37)" T_Lut="89(89)"/>
+</Module>

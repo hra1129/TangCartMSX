@@ -1,6 +1,6 @@
 // -----------------------------------------------------------------------------
 //	ip_video.v
-//	Copyright (C)2024 Takayuki Hara (HRA!)
+//	Copyright (C)2025 Takayuki Hara (HRA!)
 //	
 //	 Permission is hereby granted, free of charge, to any person obtaining a 
 //	copy of this software and associated documentation files (the "Software"), 
@@ -21,7 +21,7 @@
 //	in the Software.
 // -----------------------------------------------------------------------------
 //	Description:
-//		UART (TX ONLY)
+//		Simple video controller
 // -----------------------------------------------------------------------------
 
 module ip_video (
