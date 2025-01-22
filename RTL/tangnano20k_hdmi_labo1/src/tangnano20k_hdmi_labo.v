@@ -87,7 +87,7 @@ module tangnano20k_hdmi_labo (
 	wire			w_sdram_init_busy;
 	wire			w_sdram_busy;
 	wire	[22:0]	w_sdram_address;
-	wire	[7:0]	w_sdram_q;
+	wire	[31:0]	w_sdram_q;
 	wire			w_sdram_q_en;
 	wire	[7:0]	w_sdram_d;
 

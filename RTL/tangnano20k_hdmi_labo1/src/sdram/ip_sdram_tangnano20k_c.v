@@ -70,7 +70,7 @@ module ip_sdram #(
 	input				rd_n,
 	input				rfsh_n,
 	input	[ 7:0]		wdata,
-	output	[ 7:0]		rdata,
+	output	[31:0]		rdata,
 	output				rdata_en,
 
 	// SDRAM ports
@@ -142,7 +142,7 @@ module ip_sdram #(
 	reg		[12:0]				ff_sdr_address			= 13'h0000;
 	reg		[31:0]				ff_sdr_write_data		= 32'd0;
 	reg		[ 3:0]				ff_sdr_dq_mask			= 4'b1111;
-	reg		[ 7:0]				ff_sdr_read_data		= 8'd0;
+	reg		[31:0]				ff_sdr_read_data		= 32'd0;
 	reg							ff_sdr_read_data_en		= 1'b0;
 	reg							ff_req;
 	reg							ff_rd_n;
@@ -559,17 +559,11 @@ module ip_sdram #(
 
 	always @( posedge clk_sdram ) begin
 		if( !reset_n ) begin
-			ff_sdr_read_data	<= 8'd0;
+			ff_sdr_read_data	<= 32'd0;
 			ff_sdr_read_data_en	<= 1'b0;
 		end
 		else if( ff_main_state == c_main_state_data_fetch ) begin
-			case( ff_address[1:0] )
-			2'd0:		ff_sdr_read_data <= IO_sdram_dq[7 :0 ];
-			2'd1:		ff_sdr_read_data <= IO_sdram_dq[15:8 ];
-			2'd2:		ff_sdr_read_data <= IO_sdram_dq[23:16];
-			2'd3:		ff_sdr_read_data <= IO_sdram_dq[31:24];
-			default:	ff_sdr_read_data <= 8'd0;
-			endcase
+			ff_sdr_read_data	<= IO_sdram_dq;
 			ff_sdr_read_data_en	<= ~ff_rd_n;
 		end
 		else begin
