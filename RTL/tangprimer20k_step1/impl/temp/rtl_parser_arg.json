@@ -1,0 +1,17 @@
+{
+ "Device" : "GW2A-18C",
+ "Files" : [
+  {
+   "Path" : "D:/github/HRA_product/TangCartMSX/RTL/tangprimer20k_step1/src/tangprimer20k_step1.v",
+   "Type" : "verilog"
+  }
+ ],
+ "IncludePath" : [
+
+ ],
+ "LoopLimit" : 20000,
+ "ResultFile" : "D:/github/HRA_product/TangCartMSX/RTL/tangprimer20k_step1/impl/temp/rtl_parser.result",
+ "Top" : "tangprimer20k_step1",
+ "VerilogStd" : "verilog_2001",
+ "VhdlStd" : "vhdl_93"
+}
