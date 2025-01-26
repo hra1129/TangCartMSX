@@ -8,6 +8,7 @@ puts "Run compile Tangnano20k_hdmi_labo"
 # =============================================================================
 #	Add files
 # =============================================================================
+add_file src/dvi_tx/dvi_tx.v
 add_file src/cz80/cz80.v
 add_file src/cz80/cz80_alu.v
 add_file src/cz80/cz80_inst.v
@@ -18,6 +19,9 @@ add_file src/gowin_rpll/gowin_rpll.v
 add_file src/gowin_clkdiv/gowin_clkdiv.v
 add_file src/rom/ip_rom.v
 add_file src/ram/ip_ram.v
+add_file src/video/ip_line_buffer.v
+add_file src/video/ip_palette.v
+add_file src/video/ip_video.v
 add_file src/tangnano20k_hdmi_labo.v
 add_file src/gpio/ip_gpio.v
 
@@ -37,7 +41,7 @@ set_device -device_version C GW2AR-LV18QN88C8/I7
 set_option -top_module tangnano20k_hdmi_labo
 set_option -gen_io_cst 1
 set_option -output_base_name tangnano20k_hdmi_labo
-set_option -looplimit 8000
+set_option -looplimit 20000
 
 puts "Start Synsesis"
 run syn

@@ -57,6 +57,10 @@ module tb ();
 	localparam		clk_base	= 1_000_000_000/74_250;	//	ps
 	reg				reset_n;
 	reg				clk;
+	reg				iorq_n;
+	reg		[7:0]	address;
+	reg				wr_n;
+	reg		[7:0]	wdata;
 	wire			vram_mreq_n;
 	wire	[22:0]	vram_address;
 	wire			vram_wr_n;
@@ -65,12 +69,28 @@ module tb ();
 	wire	[ 7:0]	vram_wdata;
 	reg		[31:0]	vram_rdata;
 	reg				vram_rdata_en;
+
+	reg		[31:0]	vram_rdata0;
+	reg		[31:0]	vram_rdata1;
+	reg		[31:0]	vram_rdata2;
+	reg		[31:0]	vram_rdata3;
+	reg		[31:0]	vram_rdata4;
+	reg		[31:0]	vram_rdata5;
+	reg				vram_rdata_en0;
+	reg				vram_rdata_en1;
+	reg				vram_rdata_en2;
+	reg				vram_rdata_en3;
+	reg				vram_rdata_en4;
+	reg				vram_rdata_en5;
+
 	wire			video_de;
 	wire			video_hs;
 	wire			video_vs;
 	wire	[7:0]	video_r;
 	wire	[7:0]	video_g;
 	wire	[7:0]	video_b;
+	int				i, j, k, p;
+	reg		[7:0]	ff_ram [0: 8192 * 1024 - 1];
 
 	// --------------------------------------------------------------------
 	//	DUT
@@ -78,6 +98,10 @@ module tb ();
 	ip_video u_dut (
 		.reset_n			( reset_n			),
 		.clk				( clk				),
+		.iorq_n				( iorq_n			),
+		.wr_n				( wr_n				),
+		.address			( address			),
+		.wdata				( wdata				),
 		.vram_mreq_n		( vram_mreq_n		),
 		.vram_address		( vram_address		),
 		.vram_wr_n			( vram_wr_n			),
@@ -102,11 +126,161 @@ module tb ();
 	end
 
 	// --------------------------------------------------------------------
+	//	RAM
+	// --------------------------------------------------------------------
+	always @( posedge clk ) begin
+		if( !vram_mreq_n ) begin
+			if( !vram_wr_n ) begin
+				ff_ram[ vram_address ] <= vram_wdata;
+				vram_rdata_en0	<= 1'b0;
+			end
+			else if( !vram_rd_n ) begin
+				vram_rdata0		<= { 
+					ff_ram[ { vram_address[22:2], 2'd3 } ], 
+					ff_ram[ { vram_address[22:2], 2'd2 } ], 
+					ff_ram[ { vram_address[22:2], 2'd1 } ], 
+					ff_ram[ { vram_address[22:2], 2'd0 } ] };
+				vram_rdata_en0	<= 1'b1;
+			end
+			else begin
+				vram_rdata_en0	<= 1'b0;
+			end
+		end
+		else begin
+			vram_rdata_en0	<= 1'b0;
+		end
+	end
+
+	always @( posedge clk ) begin
+		vram_rdata_en1 <= vram_rdata_en0;
+		vram_rdata_en2 <= vram_rdata_en1;
+		vram_rdata_en3 <= vram_rdata_en2;
+		vram_rdata_en4 <= vram_rdata_en3;
+		vram_rdata_en5 <= vram_rdata_en4;
+		vram_rdata_en  <= vram_rdata_en5;
+
+		vram_rdata1 <= vram_rdata0;
+		vram_rdata2 <= vram_rdata1;
+		vram_rdata3 <= vram_rdata2;
+		vram_rdata4 <= vram_rdata3;
+		vram_rdata5 <= vram_rdata4;
+		vram_rdata  <= vram_rdata5;
+	end
+
+	// --------------------------------------------------------------------
+	//	task
+	// --------------------------------------------------------------------
+	task set_palette_address(
+		input	[7:0]	palette
+	);
+		iorq_n	<= 1'b0;
+		wr_n	<= 1'b0;
+		address	<= 8'h20;
+		wdata	<= palette;
+		@( posedge clk );
+
+		iorq_n	<= 1'b1;
+		wr_n	<= 1'b1;
+		@( posedge clk );
+	endtask: set_palette_address
+
+	// --------------------------------------------------------------------
+	task set_palette_color(
+		input	[7:0]	palette_r,
+		input	[7:0]	palette_g,
+		input	[7:0]	palette_b
+	);
+		iorq_n	<= 1'b0;
+		wr_n	<= 1'b0;
+		address	<= 8'h21;
+		wdata	<= palette_r;
+		@( posedge clk );
+
+		iorq_n	<= 1'b1;
+		wr_n	<= 1'b1;
+		@( posedge clk );
+
+		iorq_n	<= 1'b0;
+		wr_n	<= 1'b0;
+		address	<= 8'h21;
+		wdata	<= palette_g;
+		@( posedge clk );
+
+		iorq_n	<= 1'b1;
+		wr_n	<= 1'b1;
+		@( posedge clk );
+
+		iorq_n	<= 1'b0;
+		wr_n	<= 1'b0;
+		address	<= 8'h21;
+		wdata	<= palette_b;
+		@( posedge clk );
+
+		iorq_n	<= 1'b1;
+		wr_n	<= 1'b1;
+		@( posedge clk );
+	endtask: set_palette_color
+
+	// --------------------------------------------------------------------
+	task set_address(
+		input	[22:0]	p_address
+	);
+		iorq_n	<= 1'b0;
+		wr_n	<= 1'b0;
+		address	<= 8'h22;
+		wdata	<= p_address[7:0];
+		@( posedge clk );
+
+		iorq_n	<= 1'b1;
+		wr_n	<= 1'b1;
+		@( posedge clk );
+
+		iorq_n	<= 1'b0;
+		wr_n	<= 1'b0;
+		address	<= 8'h22;
+		wdata	<= p_address[15:8];
+		@( posedge clk );
+
+		iorq_n	<= 1'b1;
+		wr_n	<= 1'b1;
+		@( posedge clk );
+
+		iorq_n	<= 1'b0;
+		wr_n	<= 1'b0;
+		address	<= 8'h22;
+		wdata	<= { 1'b0, p_address[22:16] };
+		@( posedge clk );
+
+		iorq_n	<= 1'b1;
+		wr_n	<= 1'b1;
+		@( posedge clk );
+	endtask: set_address
+
+	// --------------------------------------------------------------------
+	task set_data(
+		input	[7:0]	data
+	);
+		iorq_n	<= 1'b0;
+		wr_n	<= 1'b0;
+		address	<= 8'h23;
+		wdata	<= data;
+		@( posedge clk );
+
+		iorq_n	<= 1'b1;
+		wr_n	<= 1'b1;
+		@( posedge clk );
+	endtask: set_data
+
+	// --------------------------------------------------------------------
 	//	Test bench
 	// --------------------------------------------------------------------
 	initial begin
 		reset_n			= 0;
 		clk				= 0;
+		iorq_n			= 1;
+		address			= 0;
+		wr_n			= 1;
+		wdata			= 0;
 		vram_rdata		= 0;
 		vram_rdata_en	= 0;
 
@@ -117,6 +291,30 @@ module tb ();
 		reset_n				= 1'b1;
 		@( posedge clk );
 		repeat( 10 ) @( posedge clk );
+
+		// --------------------------------------------------------------------
+		//	set palette color
+		// --------------------------------------------------------------------
+		set_palette_address( 0 );
+		for( i = 0; i < 8; i++ ) begin
+			for( j = 0; j < 8; j++ ) begin
+				for( k = 0; k < 4; k++ ) begin
+					set_palette_color( i * 255 / 7, j * 255 / 7, k * 255 / 3 );
+				end
+			end
+		end
+
+		repeat( 10 ) @( posedge clk );
+
+		set_address( 0 );
+		for( i = 0; i < 360; i++ ) begin
+			for( j = 0; j < 640; j++ ) begin
+				set_data( i & 255 );
+				repeat( 20 ) @( posedge clk );
+			end
+		end
+
+		repeat( 100000 ) @( posedge clk );
 		$finish;
 	end
 endmodule

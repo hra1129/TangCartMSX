@@ -80,16 +80,21 @@ module tangnano20k_hdmi_labo (
 	wire	[7:0]	w_ram_rdata;
 	wire			w_ram_rdata_en;
 
+	wire			w_vram_mreq_n;
+	wire	[22:0]	w_vram_address;
+	wire			w_vram_wr_n;
+	wire			w_vram_rd_n;
+	wire			w_vram_rfsh_n;
+	wire	[ 7:0]	w_vram_wdata;
+	wire	[31:0]	w_vram_rdata;
+	wire			w_vram_rdata_en;
+
 	wire			w_sdram_mreq_n;
 	wire			w_sdram_wr_n;
 	wire			w_sdram_rd_n;
 	wire			w_sdram_rfsh_n;
 	wire			w_sdram_init_busy;
 	wire			w_sdram_busy;
-	wire	[22:0]	w_sdram_address;
-	wire	[31:0]	w_sdram_q;
-	wire			w_sdram_q_en;
-	wire	[7:0]	w_sdram_d;
 
 	wire			w_hs;
 	wire			w_vs;
@@ -97,8 +102,6 @@ module tangnano20k_hdmi_labo (
 	wire	[7:0]	w_r;
 	wire	[7:0]	w_g;
 	wire	[7:0]	w_b;
-
-	wire			w_cpu_freeze;
 
 	// --------------------------------------------------------------------
 	//	clock
@@ -131,6 +134,10 @@ module tangnano20k_hdmi_labo (
 	// --------------------------------------------------------------------
 	always @( posedge clk_pixel ) begin
 		if( !ff_reset_n ) begin
+			ff_cpu_enable <= 1'b0;
+		end
+		else if( w_sdram_init_busy ) begin
+			//	Wait finish for SDRAM initialization
 			ff_cpu_enable <= 1'b0;
 		end
 		else begin
@@ -239,6 +246,18 @@ module tangnano20k_hdmi_labo (
 	ip_video u_video (
 		.reset_n				( w_hdmi_reset_n		),
 		.clk					( clk_pixel				),
+		.iorq_n					( iorq_n				),
+		.address				( a[7:0]				),
+		.wr_n					( wr_n					),
+		.wdata					( d						),
+		.vram_mreq_n			( w_vram_mreq_n			),
+		.vram_address			( w_vram_address		),
+		.vram_wr_n				( w_vram_wr_n			),
+		.vram_rd_n				( w_vram_rd_n			),
+		.vram_rfsh_n			( w_vram_rfsh_n			),
+		.vram_wdata				( w_vram_wdata			),
+		.vram_rdata				( w_vram_rdata			),
+		.vram_rdata_en			( w_vram_rdata_en		),
 		.video_de				( w_de					),
 		.video_hs				( w_hs					),
 		.video_vs				( w_vs					),
@@ -246,6 +265,8 @@ module tangnano20k_hdmi_labo (
 		.video_g				( w_g					),
 		.video_b				( w_b					)
 	);
+
+	assign w_sdram_mreq_n	= w_vram_mreq_n | w_sdram_init_busy;
 
 	// --------------------------------------------------------------------
 	//	HDMI
@@ -275,15 +296,14 @@ module tangnano20k_hdmi_labo (
 		.clk_sdram				( clk_pixel				),
 		.sdram_init_busy		( w_sdram_init_busy		),
 		.sdram_busy				( w_sdram_busy			),
-		.cpu_freeze				( w_cpu_freeze			),
 		.mreq_n					( w_sdram_mreq_n		),
-		.address				( w_sdram_address		),
-		.wr_n					( w_sdram_wr_n			),
-		.rd_n					( w_sdram_rd_n			),
-		.rfsh_n					( w_sdram_rfsh_n		),
-		.wdata					( w_sdram_d				),
-		.rdata					( w_sdram_q				),
-		.rdata_en				( w_sdram_q_en			),
+		.address				( w_vram_address		),
+		.wr_n					( w_vram_wr_n			),
+		.rd_n					( w_vram_rd_n			),
+		.rfsh_n					( w_vram_rfsh_n			),
+		.wdata					( w_vram_wdata			),
+		.rdata					( w_vram_rdata			),
+		.rdata_en				( w_vram_rdata_en		),
 		.O_sdram_clk			( O_sdram_clk			),
 		.O_sdram_cke			( O_sdram_cke			),
 		.O_sdram_cs_n			( O_sdram_cs_n			),
@@ -295,12 +315,4 @@ module tangnano20k_hdmi_labo (
 		.O_sdram_ba				( O_sdram_ba			),
 		.O_sdram_dqm			( O_sdram_dqm			)
 	);
-
-	assign w_sdram_mreq_n	= 1'b1;
-	assign w_sdram_address	= 23'd0;
-	assign w_sdram_wr_n		= 1'b1;
-	assign w_sdram_rd_n		= 1'b1;
-	assign w_sdram_rfsh_n	= 1'b1;
-	assign w_sdram_d		= 8'd0;
-	assign w_cpu_freeze		= 1'b1;
 endmodule

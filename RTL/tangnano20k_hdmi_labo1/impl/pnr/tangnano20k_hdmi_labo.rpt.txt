@@ -5,34 +5,34 @@
 1. PnR Messages
 
   <Report Title>: PnR Report
-  <Design File>: D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_hdmi_labo0\impl\gwsynthesis\tangnano20k_hdmi_labo.vg
-  <Physical Constraints File>: D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_hdmi_labo0\src\tangnano20k_hdmi_labo.cst
+  <Design File>: D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_hdmi_labo1\impl\gwsynthesis\tangnano20k_hdmi_labo.vg
+  <Physical Constraints File>: D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_hdmi_labo1\src\tangnano20k_hdmi_labo.cst
   <Timing Constraints File>: ---
   <Tool Version>: V1.9.10.03 (64-bit)
   <Part Number>: GW2AR-LV18QN88C8/I7
   <Device>: GW2AR-18
   <Device Version>: C
-  <Created Time>:Tue Jan 21 18:52:57 2025
+  <Created Time>:Sat Jan 25 21:25:19 2025
 
 
 2. PnR Details
 
   Running placement:
-    Placement Phase 0: CPU time = 0h 0m 0.056s, Elapsed time = 0h 0m 0.056s
-    Placement Phase 1: CPU time = 0h 0m 0.285s, Elapsed time = 0h 0m 0.286s
-    Placement Phase 2: CPU time = 0h 0m 0.047s, Elapsed time = 0h 0m 0.046s
-    Placement Phase 3: CPU time = 0h 0m 0.839s, Elapsed time = 0h 0m 0.839s
+    Placement Phase 0: CPU time = 0h 0m 0.041s, Elapsed time = 0h 0m 0.041s
+    Placement Phase 1: CPU time = 0h 0m 0.277s, Elapsed time = 0h 0m 0.277s
+    Placement Phase 2: CPU time = 0h 0m 0.038s, Elapsed time = 0h 0m 0.037s
+    Placement Phase 3: CPU time = 0h 0m 0.814s, Elapsed time = 0h 0m 0.814s
     Total Placement: CPU time = 0h 0m 1s, Elapsed time = 0h 0m 1s
  Running routing:
-    Routing Phase 0: CPU time = 0h 0m 0.001s, Elapsed time = 0h 0m 0.001s
-    Routing Phase 1: CPU time = 0h 0m 0.307s, Elapsed time = 0h 0m 0.308s
-    Routing Phase 2: CPU time = 0h 0m 0.34s, Elapsed time = 0h 0m 0.339s
+    Routing Phase 0: CPU time = 0h 0m 0.001s, Elapsed time = 0h 0m 0s
+    Routing Phase 1: CPU time = 0h 0m 0.316s, Elapsed time = 0h 0m 0.316s
+    Routing Phase 2: CPU time = 0h 0m 0.297s, Elapsed time = 0h 0m 0.297s
     Routing Phase 3: CPU time = 0h 0m 0s, Elapsed time = 0h 0m 0s
-    Total Routing: CPU time = 0h 0m 0.648s, Elapsed time = 0h 0m 0.648s
+    Total Routing: CPU time = 0h 0m 0.614s, Elapsed time = 0h 0m 0.613s
  Generate output files:
     CPU time = 0h 0m 2s, Elapsed time = 0h 0m 2s
 
- Total Time and Memory Usage: CPU time = 0h 0m 4s, Elapsed time = 0h 0m 4s, Peak memory usage = 434MB
+ Total Time and Memory Usage: CPU time = 0h 0m 3s, Elapsed time = 0h 0m 3s, Peak memory usage = 404MB
 
 
 3. Resource Usage Summary
@@ -40,15 +40,15 @@
   --------------------------------------------------------------------------------
   Resources                   | Usage                               | Utilization
   --------------------------------------------------------------------------------
-  Logic                       | 469/20736                           |  3%
-    --LUT,ALU,ROM16           | 469(367 LUT, 102 ALU, 0 ROM16)      | -
+  Logic                       | 461/20736                           |  3%
+    --LUT,ALU,ROM16           | 461(359 LUT, 102 ALU, 0 ROM16)      | -
     --SSRAM(RAM16)            | 0                                   | -
-  Register                    | 165/15915                           |  2%
+  Register                    | 127/15915                           |  <1%
     --Logic Register as Latch | 0/15552                             |  0%
-    --Logic Register as FF    | 163/15552                           |  2%
+    --Logic Register as FF    | 125/15552                           |  <1%
     --I/O Register as Latch   | 0/363                               |  0%
     --I/O Register as FF      | 2/363                               |  <1%
-  CLS                         | 295/10368                           |  3%
+  CLS                         | 271/10368                           |  3%
   I/O Port                    | 11/66                               |  17%
   I/O Buf                     | 5                                   | -
     --Input Buf               | 1                                   | -

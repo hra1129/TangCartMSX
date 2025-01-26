@@ -18,6 +18,8 @@
         <File path="src/rom/ip_rom.v" type="file.verilog" enable="1"/>
         <File path="src/sdram/ip_sdram_tangnano20k_c.v" type="file.verilog" enable="1"/>
         <File path="src/tangnano20k_hdmi_labo.v" type="file.verilog" enable="1"/>
+        <File path="src/video/ip_line_buffer.v" type="file.verilog" enable="1"/>
+        <File path="src/video/ip_palette.v" type="file.verilog" enable="1"/>
         <File path="src/video/ip_video.v" type="file.verilog" enable="1"/>
         <File path="src/tangnano20k_hdmi_labo.cst" type="file.cst" enable="1"/>
     </FileList>

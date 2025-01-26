@@ -4,17 +4,45 @@
 ;  Programmed by t.hara
 ; -----------------------------------------------------------------------------
 
-REG_PATTERN_MODE	:= 0x10
 REG_KEY_STATE		:= 0x10
-MODE_VALUE			:= 0xF400
+
+REG_PALETTE_ADDR	:= 0x20
+REG_PALETTE_COLOR	:= 0x21
+REG_VRAM_ADDR		:= 0x22
+REG_VRAM_DATA		:= 0x23
 
 			org		0x0000
 
 			di
 			ld		sp, 0
+
 			xor		a, a
-			ld		[MODE_VALUE], a
-			out		[REG_PATTERN_MODE], a
+			out		[REG_PALETTE_ADDR], a
+palette_loop:
+			out		[REG_PALETTE_COLOR], a		; R
+			out		[REG_PALETTE_COLOR], a		; G
+			out		[REG_PALETTE_COLOR], a		; B
+			inc		a
+			jr		nz, palette_loop
+
+			out		[REG_VRAM_ADDR], a
+			out		[REG_VRAM_ADDR], a
+			out		[REG_VRAM_ADDR], a
+y_loop:
+			ld		hl, 360
+			push	hl
+			ld		hl, 640
+x_loop:
+			ld		a, l
+			out		[REG_VRAM_DATA], a
+			dec		hl
+			ld		a, l
+			or		a, h
+			jr		nz, x_loop
+			pop		hl
+			ld		a, l
+			or		a, h
+			jr		nz, y_loop
 
 wait_key_release:
 			call	getkey
@@ -32,17 +60,9 @@ main_loop:
 			jr		c, press_button1
 
 press_button0:
-			ld		a, [MODE_VALUE]
-			inc		a
-			ld		[MODE_VALUE], a
-			out		[REG_PATTERN_MODE], a
 			jr		wait_key_release
 
 press_button1:
-			ld		a, [MODE_VALUE]
-			dec		a
-			ld		[MODE_VALUE], a
-			out		[REG_PATTERN_MODE], a
 			jr		wait_key_release
 
 ; -----------------------------------------------------------------------------

@@ -1,7 +1,7 @@
-Reading netlist file: "D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_hdmi_labo0\impl\gwsynthesis\tangnano20k_hdmi_labo.vg"
-Parsing netlist file "D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_hdmi_labo0\impl\gwsynthesis\tangnano20k_hdmi_labo.vg" completed
+Reading netlist file: "D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_hdmi_labo1\impl\gwsynthesis\tangnano20k_hdmi_labo.vg"
+Parsing netlist file "D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_hdmi_labo1\impl\gwsynthesis\tangnano20k_hdmi_labo.vg" completed
 Processing netlist completed
-Reading constraint file: "D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_hdmi_labo0\src\tangnano20k_hdmi_labo.cst"
+Reading constraint file: "D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_hdmi_labo1\src\tangnano20k_hdmi_labo.cst"
 Physical Constraint parsed completed
 Running placement......
 [10%] Placement Phase 0 completed
@@ -22,10 +22,10 @@ Bitstream generation in progress......
 Bitstream generation completed
 Running power analysis......
 [100%] Power analysis completed
-Generate file "D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_hdmi_labo0\impl\pnr\tangnano20k_hdmi_labo.power.html" completed
-Generate file "D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_hdmi_labo0\impl\pnr\tangnano20k_hdmi_labo.pin.html" completed
-Generate file "D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_hdmi_labo0\impl\pnr\tangnano20k_hdmi_labo.rpt.html" completed
-Generate file "D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_hdmi_labo0\impl\pnr\tangnano20k_hdmi_labo.rpt.txt" completed
-Generate file "D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_hdmi_labo0\impl\pnr\tangnano20k_hdmi_labo.tr.html" completed
-Tue Jan 21 18:52:57 2025
+Generate file "D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_hdmi_labo1\impl\pnr\tangnano20k_hdmi_labo.power.html" completed
+Generate file "D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_hdmi_labo1\impl\pnr\tangnano20k_hdmi_labo.pin.html" completed
+Generate file "D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_hdmi_labo1\impl\pnr\tangnano20k_hdmi_labo.rpt.html" completed
+Generate file "D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_hdmi_labo1\impl\pnr\tangnano20k_hdmi_labo.rpt.txt" completed
+Generate file "D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_hdmi_labo1\impl\pnr\tangnano20k_hdmi_labo.tr.html" completed
+Sat Jan 25 21:25:20 2025
 
