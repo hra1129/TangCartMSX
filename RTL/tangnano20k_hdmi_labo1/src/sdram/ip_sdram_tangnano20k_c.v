@@ -109,16 +109,15 @@ module ip_sdram #(
 	localparam	[4:0]	c_main_state_ready					= 5'd10;
 	localparam	[4:0]	c_main_state_activate				= 5'd11;
 	localparam	[4:0]	c_main_state_nop1					= 5'd12;
-	localparam	[4:0]	c_main_state_nop2					= 5'd13;
-	localparam	[4:0]	c_main_state_read_or_write			= 5'd14;
+	localparam	[4:0]	c_main_state_read_or_write			= 5'd13;
+	localparam	[4:0]	c_main_state_nop2					= 5'd14;
 	localparam	[4:0]	c_main_state_nop3					= 5'd15;
 	localparam	[4:0]	c_main_state_nop4					= 5'd16;
 	localparam	[4:0]	c_main_state_finish					= 5'd17;
 	localparam	[4:0]	c_main_state_nop5					= 5'd18;
 	localparam	[4:0]	c_main_state_nop6					= 5'd19;
 	localparam	[4:0]	c_main_state_nop7					= 5'd20;
-	localparam	[4:0]	c_main_state_nop8					= 5'd21;
-	localparam	[4:0]	c_main_state_finish2				= 5'd22;
+	localparam	[4:0]	c_main_state_finish2				= 5'd21;
 
 	localparam CLOCK_TIME		= 1_000_000_000 / FREQ;		// nsec
 	localparam TIMER_COUNT		= 120_000 / CLOCK_TIME;		// clock
@@ -376,14 +375,16 @@ module ip_sdram #(
 			default:
 				if( ff_sdr_ready ) begin
 					case( ff_main_state )
-					c_main_state_activate:
-						if( ff_rfsh_accept ) begin
-//							$display( "do_refresh: precharge_all" );
+					c_main_state_ready:
+						if( !rfsh_n ) begin
 							ff_sdr_command		<= c_sdr_command_precharge_all;
 							ff_sdr_dq_mask		<= 4'b0000;
 						end
-						else if( ff_rd_wr_accept ) begin
-//							$display( "activate address %X", ff_address[20:10] );
+						else if( !mreq_n && !rd_n && !w_busy ) begin
+							ff_sdr_command		<= c_sdr_command_activate;
+							ff_sdr_dq_mask		<= 4'b1111;
+						end
+						else if( !mreq_n && !wr_n && !w_busy ) begin
 							ff_sdr_command		<= c_sdr_command_activate;
 							ff_sdr_dq_mask		<= 4'b1111;
 						end

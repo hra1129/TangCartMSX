@@ -28,8 +28,9 @@ palette_loop:
 			out		[REG_VRAM_ADDR], a
 			out		[REG_VRAM_ADDR], a
 			out		[REG_VRAM_ADDR], a
-y_loop:
+
 			ld		hl, 360
+y_loop:
 			push	hl
 			ld		hl, 640
 x_loop:
@@ -40,30 +41,33 @@ x_loop:
 			or		a, h
 			jr		nz, x_loop
 			pop		hl
+			dec		hl
 			ld		a, l
 			or		a, h
 			jr		nz, y_loop
 
-wait_key_release:
-			call	getkey
-			or		a, a
-			jr		nz, wait_key_release
+			halt
 
-main_loop:
-			call	getkey
-			or		a, a
-			jr		z, main_loop
-
-			rrca
-			jr		c, press_button0
-			rrca
-			jr		c, press_button1
-
-press_button0:
-			jr		wait_key_release
-
-press_button1:
-			jr		wait_key_release
+;wait_key_release:
+;			call	getkey
+;			or		a, a
+;			jr		nz, wait_key_release
+;
+;main_loop:
+;			call	getkey
+;			or		a, a
+;			jr		z, main_loop
+;
+;			rrca
+;			jr		c, press_button0
+;			rrca
+;			jr		c, press_button1
+;
+;press_button0:
+;			jr		wait_key_release
+;
+;press_button1:
+;			jr		wait_key_release
 
 ; -----------------------------------------------------------------------------
 ;	getkey

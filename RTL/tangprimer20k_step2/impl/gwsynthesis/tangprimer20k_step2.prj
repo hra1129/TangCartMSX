@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE gowin-synthesis-project>
+<Project>
+    <Version>beta</Version>
+    <Device id="GW2A-18C" package="PBGA256" speed="8" partNumber="GW2A-LV18PG256C8/I7"/>
+    <FileList>
+        <File path="D:\github\HRA_product\TangCartMSX\RTL\tangprimer20k_step2\src\ddr3_memory_interface\ddr3_memory_interface.v" type="verilog"/>
+        <File path="D:\github\HRA_product\TangCartMSX\RTL\tangprimer20k_step2\src\gowin_rpll\gowin_rpll.v" type="verilog"/>
+        <File path="D:\github\HRA_product\TangCartMSX\RTL\tangprimer20k_step2\src\tangprimer20k_step2.v" type="verilog"/>
+    </FileList>
+    <OptionList>
+        <Option type="disable_insert_pad" value="0"/>
+        <Option type="global_freq" value="100.000"/>
+        <Option type="looplimit" value="20000"/>
+        <Option type="output_file" value="D:\github\HRA_product\TangCartMSX\RTL\tangprimer20k_step2\impl\gwsynthesis\tangprimer20k_step2.vg"/>
+        <Option type="print_all_synthesis_warning" value="0"/>
+        <Option type="ram_rw_check" value="0"/>
+        <Option type="top_module" value="tangprimer20k_step2"/>
+        <Option type="vcc" value="1.0"/>
+        <Option type="vccx" value="3.3"/>
+        <Option type="verilog_language" value="verilog-2001"/>
+        <Option type="vhdl_language" value="vhdl-1993"/>
+    </OptionList>
+</Project>

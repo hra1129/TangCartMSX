@@ -106,7 +106,9 @@ module tb ();
 		button			= 1;
 		repeat( 100000 ) @( posedge clk );
 		button			= 0;
-		repeat( 100000 ) @( posedge clk );
+		forever begin
+			@( posedge clk );
+		end
 		$finish;
 	end
 endmodule
