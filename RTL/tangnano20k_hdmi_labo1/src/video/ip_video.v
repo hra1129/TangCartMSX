@@ -82,7 +82,8 @@ module ip_video (
 	reg				ff_vram_rd;
 	reg		[31:0]	ff_vram_rdata;
 	reg				ff_vram_rdata_en;
-	reg		[9:0]	ff_buffer_address;
+	reg		[9:0]	ff_buffer_re_address;
+	reg		[9:0]	ff_buffer_we_address;
 	wire	[9:0]	w_buffer_even_address;
 	wire			w_buffer_even_we;
 	wire	[7:0]	w_buffer_even_rdata;
@@ -90,7 +91,6 @@ module ip_video (
 	wire			w_buffer_odd_we;
 	wire	[7:0]	w_buffer_odd_rdata;
 	wire	[7:0]	w_pixel_index;
-	wire	[11:0]	w_h_position;
 	wire			w_palette_we;
 	wire	[7:0]	w_palette_r;
 	wire	[7:0]	w_palette_g;
@@ -357,7 +357,7 @@ module ip_video (
 	//	ff_h_counter[3:0] >< 15>< 0 >< 1 >< 2 >< 3 >< 4 >< 5 >< 6 >< 7 >< 8 >< 9 >< 10>< 11>< 12>< 13>< 14>< 15><
 	//	ff_vram_rd        ~~~~~~_____~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~_
 	//	vram_rdata             ><                                 >< RD><                                      ><
-	//	ff_buffer_address                                                   0    ><   1    ><   2    ><   3    ><
+	//	ff_buffer_re_address                                                   0    ><   1    ><   2    ><   3    ><
 	//	ff_vram_rdata                                                  >< RD0    >< RD1    >< RD2    >< RD3    ><
 	//	ff_vram_rdata_en  ______________________________________________~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~_
 	//	w_buffer_we       ______________________________________________~~~~~_____~~~~~_____~~~~~_____~~~~~______
@@ -389,14 +389,14 @@ module ip_video (
 			ff_vram_rdata		<= 32'd0;
 			ff_vram_rdata_en	<= 1'b0;
 		end
-		else if( ff_h_counter[3:0] == 4'd8 ) begin
+		else if( ff_h_counter[3:0] == 4'd7 ) begin
 			ff_vram_rdata		<= vram_rdata;
 			ff_vram_rdata_en	<= 1'b1;
 		end
-		else if( ff_vram_rdata_en && ff_h_counter[0] == 1'b0 ) begin
-			//	10, 12, 14, 0
+		else if( ff_vram_rdata_en && ff_h_counter[0] == 1'b1 ) begin
+			//	9, 11, 13, 15
 			ff_vram_rdata		<= { 8'd0, ff_vram_rdata[31:8] };
-			ff_vram_rdata_en	<= (ff_h_counter[3:1] != 3'd0);
+			ff_vram_rdata_en	<= (ff_h_counter[3:1] != 3'b111);
 		end
 	end
 
@@ -424,24 +424,35 @@ module ip_video (
 		end
 	end
 
+	always @( posedge clk ) begin
+		if( !reset_n ) begin
+			ff_buffer_re_address <= 10'd0;
+		end
+		else if( w_h_count_end ) begin
+			ff_buffer_re_address <= 10'd0;
+		end
+		else if( ff_h_window && ff_h_counter[0] ) begin
+			ff_buffer_re_address <= ff_buffer_re_address + 10'd1;
+		end
+	end
 
 	always @( posedge clk ) begin
 		if( !reset_n ) begin
-			ff_buffer_address <= 10'd0;
+			ff_buffer_we_address <= 10'd0;
 		end
-		else if( w_h_count_end ) begin
-			ff_buffer_address <= 10'd0;
+		else if( w_h_count_end && ff_v_counter[0] == 1'b1 ) begin
+			ff_buffer_we_address <= 10'd0;
 		end
-		else if( ff_h_counter[3] && ff_h_counter[0] ) begin
-			ff_buffer_address <= ff_buffer_address + 10'd1;
+		else if( ~ff_h_counter[0] && ff_vram_rdata_en ) begin
+			ff_buffer_we_address <= ff_buffer_we_address + 10'd1;
 		end
 	end
 
 	assign w_h_position				= ff_h_counter - (c_h_sync + c_h_bporch);
-	assign w_buffer_even_address	= ff_v_counter[1] ? w_h_position[10:1]: ff_buffer_address;
-	assign w_buffer_odd_address		= ff_v_counter[1] ? ff_buffer_address : w_h_position[10:1];
-	assign w_buffer_even_we			= ff_h_counter[0] & ff_vram_rdata_en & ~ff_v_counter[1];
-	assign w_buffer_odd_we			= ff_h_counter[0] & ff_vram_rdata_en &  ff_v_counter[1];
+	assign w_buffer_even_address	= ff_v_counter[1] ? ff_buffer_we_address: ff_buffer_re_address;
+	assign w_buffer_odd_address		= ff_v_counter[1] ? ff_buffer_re_address: ff_buffer_we_address;
+	assign w_buffer_even_we			= ~ff_h_counter[0] & ff_vram_rdata_en & ~ff_v_counter[1];
+	assign w_buffer_odd_we			= ~ff_h_counter[0] & ff_vram_rdata_en &  ff_v_counter[1];
 
 	ip_line_buffer u_line_buffer_even (
 		.clk			( clk					),
