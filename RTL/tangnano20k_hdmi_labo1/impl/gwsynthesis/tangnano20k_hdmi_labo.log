@@ -16,7 +16,7 @@ Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_hdmi_l
 Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_hdmi_labo1\src\video\ip_line_buffer.v'
 Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_hdmi_labo1\src\video\ip_palette.v'
 Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_hdmi_labo1\src\video\ip_video.v'
-Undeclared symbol 'w_h_position', assumed default net type 'wire'("D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_hdmi_labo1\src\video\ip_video.v":451)
+Undeclared symbol 'w_h_position', assumed default net type 'wire'("D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_hdmi_labo1\src\video\ip_video.v":458)
 Compiling module 'tangnano20k_hdmi_labo'("D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_hdmi_labo1\src\tangnano20k_hdmi_labo.v":24)
 Compiling module 'Gowin_rPLL'("D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_hdmi_labo1\src\gowin_rpll\gowin_rpll.v":10)
 Compiling module 'Gowin_CLKDIV'("D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_hdmi_labo1\src\gowin_clkdiv\gowin_clkdiv.v":10)
@@ -37,7 +37,7 @@ Extracting RAM for identifier 'ff_rom'("D:\github\HRA_product\TangCartMSX\RTL\ta
 Compiling module 'ip_ram'("D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_hdmi_labo1\src\ram\ip_ram.v":5)
 Extracting RAM for identifier 'ff_ram'("D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_hdmi_labo1\src\ram\ip_ram.v":15)
 Compiling module 'ip_video'("D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_hdmi_labo1\src\video\ip_video.v":27)
-WARN  (EX3791) : Expression size 12 truncated to fit in target size 1("D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_hdmi_labo1\src\video\ip_video.v":451)
+WARN  (EX3791) : Expression size 12 truncated to fit in target size 1("D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_hdmi_labo1\src\video\ip_video.v":458)
 Compiling module 'ip_line_buffer'("D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_hdmi_labo1\src\video\ip_line_buffer.v":27)
 Extracting RAM for identifier 'ff_ram'("D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_hdmi_labo1\src\video\ip_line_buffer.v":34)
 Compiling module 'ip_palette'("D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_hdmi_labo1\src\video\ip_palette.v":27)

@@ -64,6 +64,7 @@ module ip_video (
 //	reg				ff_rd_n;
 	wire			w_wr;
 //	wire			w_rd;
+	reg		[7:0]	ff_wdata;
 	reg		[11:0]	ff_h_counter;
 	reg		[11:0]	ff_v_counter;
 	reg				ff_h_window;
@@ -124,6 +125,12 @@ module ip_video (
 		end
 	end
 
+	always @( posedge clk ) begin
+		if( !wr_n ) begin
+			ff_wdata	<= wdata;
+		end
+	end
+
 	assign w_wr		= !ff_iorq_n && !ff_wr_n &&  wr_n;
 //	assign w_rd		= !iorq_n    &&  ff_rd_n && !rd_n;
 
@@ -181,16 +188,16 @@ module ip_video (
 			ff_wr_palette_index	<= 8'd0;
 			ff_wr_palette		<= 1'b0;
 		end
-		else if( ff_h_counter[0] == 1'b1 ) begin
-			//	consume request
-			ff_wr_palette		<= 1'b0;
-		end
 		else if( w_wr && address == 8'h21 ) begin
 			if( ff_palette_element == 2'd2 ) begin
 				//	write request
 				ff_wr_palette_index	<= ff_palette_index;
 				ff_wr_palette		<= 1'b1;
 			end
+		end
+		else if( ff_h_counter[0] == 1'b1 ) begin
+			//	consume request
+			ff_wr_palette		<= 1'b0;
 		end
 	end
 
@@ -230,7 +237,7 @@ module ip_video (
 		end
 		else if( w_wr && address == 8'h23 ) begin
 			ff_wr_vram			<= 1'b1;
-			ff_wr_vram_wdata	<= wdata;
+			ff_wr_vram_wdata	<= ff_wdata;
 		end
 	end
 
@@ -390,7 +397,7 @@ module ip_video (
 			ff_vram_rdata_en	<= 1'b0;
 		end
 		else if( ff_h_counter[3:0] == 4'd7 ) begin
-			ff_vram_rdata		<= vram_rdata;
+			ff_vram_rdata		<= 32'h80808080;	//vram_rdata;
 			ff_vram_rdata_en	<= 1'b1;
 		end
 		else if( ff_vram_rdata_en && ff_h_counter[0] == 1'b1 ) begin
@@ -449,8 +456,8 @@ module ip_video (
 	end
 
 	assign w_h_position				= ff_h_counter - (c_h_sync + c_h_bporch);
-	assign w_buffer_even_address	= ff_v_counter[1] ? ff_buffer_we_address: ff_buffer_re_address;
-	assign w_buffer_odd_address		= ff_v_counter[1] ? ff_buffer_re_address: ff_buffer_we_address;
+	assign w_buffer_even_address	= ff_v_counter[1] ? ff_buffer_re_address: ff_buffer_we_address;
+	assign w_buffer_odd_address		= ff_v_counter[1] ? ff_buffer_we_address: ff_buffer_re_address;
 	assign w_buffer_even_we			= ~ff_h_counter[0] & ff_vram_rdata_en & ~ff_v_counter[1];
 	assign w_buffer_odd_we			= ~ff_h_counter[0] & ff_vram_rdata_en &  ff_v_counter[1];
 

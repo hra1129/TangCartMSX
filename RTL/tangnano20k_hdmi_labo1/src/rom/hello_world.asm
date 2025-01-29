@@ -19,9 +19,13 @@ REG_VRAM_DATA		:= 0x23
 			xor		a, a
 			out		[REG_PALETTE_ADDR], a
 palette_loop:
+			push	af
 			out		[REG_PALETTE_COLOR], a		; R
+			srl		a
 			out		[REG_PALETTE_COLOR], a		; G
+			srl		a
 			out		[REG_PALETTE_COLOR], a		; B
+			pop		af
 			inc		a
 			jr		nz, palette_loop
 
@@ -29,24 +33,45 @@ palette_loop:
 			out		[REG_VRAM_ADDR], a
 			out		[REG_VRAM_ADDR], a
 
-			ld		hl, 360
-y_loop:
-			push	hl
-			ld		hl, 640
-x_loop:
-			ld		a, l
-			out		[REG_VRAM_DATA], a
-			dec		hl
-			ld		a, l
-			or		a, h
-			jr		nz, x_loop
-			pop		hl
-			dec		hl
-			ld		a, l
-			or		a, h
-			jr		nz, y_loop
+;			ld		hl, 360
+;y_loop:
+;			push	hl
+;			ld		hl, 640
+;x_loop:
+;			ld		a, l
+;			out		[REG_VRAM_DATA], a
+;			dec		hl
+;			ld		a, l
+;			or		a, h
+;			jr		nz, x_loop
+;			pop		hl
+;			dec		hl
+;			ld		a, l
+;			or		a, h
+;			jr		nz, y_loop
 
-			halt
+			ld		b, 255
+main_loop:
+			; Bレジスタの明るさを基に、パレットの値を更新 (R,G,B)=(b,b/2,b/4)
+			ld		a, 128
+			out		[REG_PALETTE_ADDR], a
+			ld		a, b
+			out		[REG_PALETTE_COLOR], a		; R
+			srl		a
+			out		[REG_PALETTE_COLOR], a		; G
+			srl		a
+			out		[REG_PALETTE_COLOR], a		; B
+
+			; 時間待ち
+			ld		hl, 1000
+wait_loop:
+			dec		hl
+			ld		a, l
+			or		a, h
+			jr		nz, wait_loop
+
+			dec		b
+			jp		main_loop
 
 ;wait_key_release:
 ;			call	getkey
