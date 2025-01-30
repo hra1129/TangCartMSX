@@ -452,38 +452,28 @@ module ip_sdram #(
 		end
 		else begin
 			case( ff_main_state )
-			c_main_state_activate:
-				if( ff_sdr_ready ) begin
-					ff_sdr_address <= { 
-						ff_address[22:21],			// Bank
-						ff_address[20:10]			// Row address
-					};
-				end
-				else begin
-					ff_sdr_address <= 13'd0;	// Initialize phase
-				end
+			c_main_state_ready:
+				ff_sdr_address <= { 
+					address[22:21],				// Bank
+					address[20:10]				// Row address
+				};
 			c_main_state_read_or_write:
 				begin
-					if( ff_sdr_ready ) begin
-						if( ff_rfsh_accept ) begin
+					if( ff_rfsh_accept ) begin
 //							$display( "do_refresh" );
-							ff_sdr_address <= { 
-								2'b00,				// Ignore
-								1'b1,				// All banks
-								10'd0				// Ignore
-							};
-						end
-						else begin
-							ff_sdr_address <= { 
-								ff_address[22:21],	// Bank
-								1'b1,				// Enable auto precharge
-								2'd0,				// 00
-								ff_address[9:2] 	// Column address
-							};
-						end
+						ff_sdr_address <= { 
+							2'b00,				// Ignore
+							1'b1,				// All banks
+							10'd0				// Ignore
+						};
 					end
 					else begin
-						ff_sdr_address <= 13'd0;
+						ff_sdr_address <= { 
+							ff_address[22:21],	// Bank
+							1'b1,				// Enable auto precharge
+							2'd0,				// 00
+							ff_address[9:2] 	// Column address
+						};
 					end
 				end
 			default:

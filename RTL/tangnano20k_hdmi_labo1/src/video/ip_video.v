@@ -397,7 +397,7 @@ module ip_video (
 			ff_vram_rdata_en	<= 1'b0;
 		end
 		else if( ff_h_counter[3:0] == 4'd7 ) begin
-			ff_vram_rdata		<= 32'h80808080;	//vram_rdata;
+			ff_vram_rdata		<= vram_rdata;
 			ff_vram_rdata_en	<= 1'b1;
 		end
 		else if( ff_vram_rdata_en && ff_h_counter[0] == 1'b1 ) begin
@@ -535,7 +535,7 @@ module ip_video (
 	assign video_de	= ff_h_window & ff_v_window;
 	assign video_hs	= ff_h_sync;
 	assign video_vs	= ff_v_sync;
-	assign video_r	= ff_r;
-	assign video_g	= ff_g;
-	assign video_b	= ff_b;
+	assign video_r	= (ff_h_window & ff_v_window) ? ff_r: 8'd0;
+	assign video_g	= (ff_h_window & ff_v_window) ? ff_g: 8'd0;
+	assign video_b	= (ff_h_window & ff_v_window) ? ff_b: 8'd0;
 endmodule
