@@ -69,24 +69,16 @@ module ip_rom (
 		ff_rom[51] = 8'hB4;
 		ff_rom[52] = 8'h20;
 		ff_rom[53] = 8'hED;
-		ff_rom[54] = 8'h21;
-		ff_rom[55] = 8'h10;
-		ff_rom[56] = 8'h27;
-		ff_rom[57] = 8'h2B;
-		ff_rom[58] = 8'h7D;
-		ff_rom[59] = 8'hB4;
-		ff_rom[60] = 8'h20;
-		ff_rom[61] = 8'hFB;
-		ff_rom[62] = 8'hC1;
-		ff_rom[63] = 8'h04;
-		ff_rom[64] = 8'hC3;
-		ff_rom[65] = 8'h18;
-		ff_rom[66] = 8'h00;
-		ff_rom[67] = 8'hDB;
-		ff_rom[68] = 8'h10;
-		ff_rom[69] = 8'h07;
-		ff_rom[70] = 8'h07;
-		ff_rom[71] = 8'hC9;
+		ff_rom[54] = 8'hC1;
+		ff_rom[55] = 8'h04;
+		ff_rom[56] = 8'hC3;
+		ff_rom[57] = 8'h18;
+		ff_rom[58] = 8'h00;
+		ff_rom[59] = 8'hDB;
+		ff_rom[60] = 8'h10;
+		ff_rom[61] = 8'h07;
+		ff_rom[62] = 8'h07;
+		ff_rom[63] = 8'hC9;
 	end
 
 	always @( posedge clk ) begin

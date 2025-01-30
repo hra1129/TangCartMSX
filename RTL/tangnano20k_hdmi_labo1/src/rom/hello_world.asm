@@ -55,13 +55,13 @@ x_loop:
 			or		a, h
 			jr		nz, y_loop
 
-			; ŽžŠÔ‘Ò‚¿
-			ld		hl, 10000
-wait_loop:
-			dec		hl
-			ld		a, l
-			or		a, h
-			jr		nz, wait_loop
+;			; ŽžŠÔ‘Ò‚¿
+;			ld		hl, 10000
+;wait_loop:
+;			dec		hl
+;			ld		a, l
+;			or		a, h
+;			jr		nz, wait_loop
 
 			pop		bc
 			inc		b
