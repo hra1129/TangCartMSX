@@ -61,9 +61,7 @@ module ip_video (
 
 	reg				ff_iorq_n;
 	reg				ff_wr_n;
-//	reg				ff_rd_n;
 	wire			w_wr;
-//	wire			w_rd;
 	reg		[7:0]	ff_wdata;
 	reg		[11:0]	ff_h_counter;
 	wire	[11:0]	w_h_counter;
@@ -81,7 +79,6 @@ module ip_video (
 	reg				ff_vram_wr_n;
 	reg				ff_vram_rd_n;
 	reg				ff_vram_rfsh_n;
-	reg				ff_vram_rd;
 	reg		[31:0]	ff_vram_rdata;
 	reg				ff_vram_rdata_en;
 	reg		[9:0]	ff_buffer_re_address;
@@ -109,6 +106,7 @@ module ip_video (
 	reg				ff_wr_vram;
 	reg		[7:0]	ff_wr_vram_wdata;
 	wire	[22:0]	w_rd_vram_address;
+	reg		[9:2]	ff_rd_vram_address;
 
 	// --------------------------------------------------------------------
 	//	CPU I/F
@@ -117,12 +115,10 @@ module ip_video (
 		if( !reset_n ) begin
 			ff_iorq_n	<= 1'b1;
 			ff_wr_n		<= 1'b1;
-//			ff_rd_n		<= 1'b1;
 		end
 		else begin
 			ff_iorq_n	<= iorq_n;
 			ff_wr_n		<= wr_n;
-//			ff_rd_n		<= rd_n;
 		end
 	end
 
@@ -133,7 +129,6 @@ module ip_video (
 	end
 
 	assign w_wr		= !ff_iorq_n && !ff_wr_n &&  wr_n;
-//	assign w_rd		= !iorq_n    &&  ff_rd_n && !rd_n;
 
 	// --------------------------------------------------------------------
 	//	Registers
@@ -196,20 +191,20 @@ module ip_video (
 				ff_wr_palette		<= 1'b1;
 			end
 		end
-		else if( ff_h_counter[0] == 1'b1 ) begin
+		else if( w_h_counter[0] == 1'b1 ) begin
 			//	consume request
 			ff_wr_palette		<= 1'b0;
 		end
 	end
 
-	assign w_palette_we = ff_wr_palette & ff_h_counter[0];
+	assign w_palette_we = ff_wr_palette & w_h_counter[0];
 
 	always @( posedge clk ) begin
 		if( !reset_n ) begin
 			ff_wr_vram_address			<= 23'd0;
 			ff_wr_vram_address_phase	<= 2'd0;
 		end
-		else if( ff_wr_vram && ff_h_counter[3:0] == 4'd8 ) begin
+		else if( ff_wr_vram && w_h_counter[3:0] == 4'd8 ) begin
 			ff_wr_vram_address			<= ff_wr_vram_address + 23'd1;
 		end
 		else if( w_wr && address == 8'h22 ) begin
@@ -233,7 +228,7 @@ module ip_video (
 			ff_wr_vram			<= 1'b0;
 			ff_wr_vram_wdata	<= 8'd0;
 		end
-		else if( ff_h_counter[3:0] == 4'd8 && ff_wr_vram ) begin
+		else if( w_h_counter[3:0] == 4'd8 && ff_wr_vram ) begin
 			ff_wr_vram			<= 1'b0;
 		end
 		else if( w_wr && address == 8'h23 ) begin
@@ -258,6 +253,18 @@ module ip_video (
 	end
 	assign w_h_counter		= ff_h_counter - (c_h_sync + c_h_bporch);
 	assign w_h_count_end	= (ff_h_counter == (c_h_total - 12'd1));
+
+	always @( posedge clk ) begin
+		if( !reset_n ) begin
+			ff_rd_vram_address <= 8'd0;
+		end
+		else if( w_h_count_end && ff_v_counter[0] ) begin
+			ff_rd_vram_address <= 8'd0;
+		end
+		else if( ff_h_window && ff_h_counter[3:0] == 4'd7 ) begin
+			ff_rd_vram_address <= ff_rd_vram_address + 8'd1;
+		end
+	end
 
 	// --------------------------------------------------------------------
 	//	Vertical counter
@@ -364,9 +371,8 @@ module ip_video (
 	// ---------------------------------------------------------------------------------------------------------
 	//	[HORIZONTAL]
 	//	w_h_counter[3:0]  >< 15>< 0 >< 1 >< 2 >< 3 >< 4 >< 5 >< 6 >< 7 >< 8 >< 9 >< 10>< 11>< 12>< 13>< 14>< 15><
-	//	ff_vram_rd        ~~~~~~_____~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~_
 	//	vram_rdata             ><                                 >< RD><                                      ><
-	//	ff_buffer_re_address                                                   0    ><   1    ><   2    ><   3    ><
+	//	ff_buffer_re_address                                                0    ><   1    ><   2    ><   3    ><
 	//	ff_vram_rdata                                                  >< RD0    >< RD1    >< RD2    >< RD3    ><
 	//	ff_vram_rdata_en  ______________________________________________~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~_
 	//	w_buffer_we       ______________________________________________~~~~~_____~~~~~_____~~~~~_____~~~~~______
@@ -375,24 +381,6 @@ module ip_video (
 	//	ff_v_counter[1:0] ><  0  ><  1  ><  2  ><  3  ><  0  ><  1  ><  2  ><  3  ><  0  ><  1  ><  2  ><  3  >
 	//	w_buffer_even_we  _~~~~~~~~~~~~~~______________~~~~~~~~~~~~~~______________~~~~~~~~~~~~~~______________
 	// ---------------------------------------------------------------------------------------------------------
-	always @( posedge clk ) begin
-		if( !reset_n ) begin
-			ff_vram_rd <= 1'b1;
-		end
-		else if( w_h_counter[2:0] == 3'd7 ) begin
-			if( (w_h_counter[3] == 1'b0) && (ff_v_counter[0] == 1'b0) ) begin
-				//	read for display
-				ff_vram_rd <= 1'b0;
-			end
-			else begin
-				//	read for CPU
-			end
-		end
-		else begin
-			ff_vram_rd <= 1'b1;
-		end
-	end
-
 	always @( posedge clk ) begin
 		if( !reset_n ) begin
 			ff_vram_rdata		<= 32'd0;
@@ -409,7 +397,7 @@ module ip_video (
 		end
 	end
 
-	assign w_rd_vram_address	= { ff_v_counter[11:1], w_h_counter[11:3] };
+	assign w_rd_vram_address	= { 2'd0, ff_v_counter[11:1], ff_rd_vram_address, 2'd0 };
 
 	assign vram_mreq_n			= 1'b0;
 	assign vram_address			= ff_vram_address;
@@ -452,16 +440,15 @@ module ip_video (
 		else if( w_h_count_end && ff_v_counter[0] == 1'b1 ) begin
 			ff_buffer_we_address <= 10'd0;
 		end
-		else if( ~w_h_counter[0] && ff_vram_rdata_en ) begin
+		else if( ~w_h_counter[0] && ff_vram_rdata_en && ff_h_window ) begin
 			ff_buffer_we_address <= ff_buffer_we_address + 10'd1;
 		end
 	end
 
-	assign w_h_position				= w_h_counter - (c_h_sync + c_h_bporch);
 	assign w_buffer_even_address	= ff_v_counter[1] ? ff_buffer_re_address: ff_buffer_we_address;
 	assign w_buffer_odd_address		= ff_v_counter[1] ? ff_buffer_we_address: ff_buffer_re_address;
-	assign w_buffer_even_we			= ~w_h_counter[0] & ff_vram_rdata_en & ~ff_v_counter[1];
-	assign w_buffer_odd_we			= ~w_h_counter[0] & ff_vram_rdata_en &  ff_v_counter[1];
+	assign w_buffer_even_we			= ~w_h_counter[0] & ff_vram_rdata_en & ~ff_v_counter[1] & ff_h_window;
+	assign w_buffer_odd_we			= ~w_h_counter[0] & ff_vram_rdata_en &  ff_v_counter[1] & ff_h_window;
 
 	ip_line_buffer u_line_buffer_even (
 		.clk			( clk					),
@@ -479,15 +466,15 @@ module ip_video (
 		.rdata			( w_buffer_odd_rdata	)
 	);
 
-	assign w_pixel_index = w_h_counter[0]  ? ff_wr_palette_index :
-	                       ff_v_counter[1] ? w_buffer_odd_rdata  : w_buffer_even_rdata;
+	assign w_pixel_index =  w_h_counter[0] ? ff_wr_palette_index :
+	                       ff_v_counter[1] ? w_buffer_even_rdata : w_buffer_odd_rdata;
 
 	// ---------------------------------------------------------------------------------------------------------
 	//	Pixel index --> palette color
 	// ---------------------------------------------------------------------------------------------------------
 	//	[HORIZONTAL]
 	//	w_h_counter[3:0]  >< 15>< 0 >< 1 >< 2 >< 3 >< 4 >< 5 >< 6 >< 7 >< 8 >< 9 >< 10>< 11>< 12>< 13>< 14>< 15><
-	//	w_h_position[10:1]      <   0    ><   1    ><   2    ><   3    ><   4    ><   5    ><   6    ><   7    >
+	//	w_h_counter[10:1]       <   0    ><   1    ><   2    ><   3    ><   4    ><   5    ><   6    ><   7    >
 	//	w_pixel_index                <PI0>< X ><PI1>< X ><PI2>< X ><PI3>< X ><PI4>< X ><PI5>< X ><PI6>< X ><PI7>< X >
 	//	w_pallette_we                <CPU><   ><CPU><   ><CPU><   ><CPU><   ><CPU><   ><CPU><   ><CPU><   ><CPU><   >   <CPU>は CPUがパレット更新するときに 1 になる
 	//	w_palette_r                            < R0>< X >< R1>< X >< R2>< X >< R3>< X >< R4>< X >< R5>< X >< R6>< X >

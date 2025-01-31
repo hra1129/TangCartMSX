@@ -29,41 +29,43 @@ palette_loop:
 			inc		a
 			jr		nz, palette_loop
 
-			ld		b, 0
+			ld		bc, 0
 main_loop:
-			push	bc
-			xor		a, a
-			out		[REG_VRAM_ADDR], a
-			out		[REG_VRAM_ADDR], a
-			out		[REG_VRAM_ADDR], a
-
+			ld		de, 0
 			ld		hl, 360
 y_loop:
+			xor		a, a
+			out		[REG_VRAM_ADDR], a
+			ld		a, e
+			out		[REG_VRAM_ADDR], a
+			ld		a, d
+			out		[REG_VRAM_ADDR], a
+
 			push	hl
 			ld		hl, 640
+			push	bc
 x_loop:
 			ld		a, b
+			add		a, c
 			inc		b
 			out		[REG_VRAM_DATA], a
 			dec		hl
 			ld		a, l
 			or		a, h
 			jr		nz, x_loop
+
+			ld		hl, 1024 >> 8
+			add		hl, de
+			ex		de, hl
+
+			pop		bc
 			pop		hl
 			dec		hl
 			ld		a, l
 			or		a, h
+			inc		c
 			jr		nz, y_loop
 
-;			; ŽžŠÔ‘Ò‚¿
-;			ld		hl, 10000
-;wait_loop:
-;			dec		hl
-;			ld		a, l
-;			or		a, h
-;			jr		nz, wait_loop
-
-			pop		bc
 			inc		b
 			jp		main_loop
 
