@@ -66,8 +66,11 @@ module ip_video (
 	reg		[11:0]	ff_h_counter;
 	wire	[11:0]	w_h_counter;
 	reg		[11:0]	ff_v_counter;
-	reg				ff_h_window;
-	reg				ff_v_window;
+	wire	[11:0]	w_v_counter;
+	reg				ff_h_pre_window;
+	reg				ff_v_pre_window;
+	reg				ff_h_out_window;
+	reg				ff_v_out_window;
 	reg				ff_h_sync;
 	reg				ff_v_sync;
 	wire			w_h_count_end;
@@ -204,7 +207,7 @@ module ip_video (
 			ff_wr_vram_address			<= 23'd0;
 			ff_wr_vram_address_phase	<= 2'd0;
 		end
-		else if( ff_wr_vram && w_h_counter[3:0] == 4'd8 ) begin
+		else if( ff_wr_vram && w_h_counter[3:0] == 4'd7 ) begin
 			ff_wr_vram_address			<= ff_wr_vram_address + 23'd1;
 		end
 		else if( w_wr && address == 8'h22 ) begin
@@ -228,7 +231,7 @@ module ip_video (
 			ff_wr_vram			<= 1'b0;
 			ff_wr_vram_wdata	<= 8'd0;
 		end
-		else if( w_h_counter[3:0] == 4'd8 && ff_wr_vram ) begin
+		else if( w_h_counter[3:0] == 4'd7 && ff_wr_vram ) begin
 			ff_wr_vram			<= 1'b0;
 		end
 		else if( w_wr && address == 8'h23 ) begin
@@ -251,20 +254,8 @@ module ip_video (
 			ff_h_counter <= ff_h_counter + 12'd1;
 		end
 	end
-	assign w_h_counter		= ff_h_counter - (c_h_sync + c_h_bporch);
+	assign w_h_counter		= ff_h_counter - (c_h_sync + c_h_bporch - 12'd9);
 	assign w_h_count_end	= (ff_h_counter == (c_h_total - 12'd1));
-
-	always @( posedge clk ) begin
-		if( !reset_n ) begin
-			ff_rd_vram_address <= 8'd0;
-		end
-		else if( w_h_count_end && ff_v_counter[0] ) begin
-			ff_rd_vram_address <= 8'd0;
-		end
-		else if( ff_h_window && ff_h_counter[3:0] == 4'd7 ) begin
-			ff_rd_vram_address <= ff_rd_vram_address + 8'd1;
-		end
-	end
 
 	// --------------------------------------------------------------------
 	//	Vertical counter
@@ -285,20 +276,36 @@ module ip_video (
 			//	hold
 		end
 	end
-	assign w_v_count_end = (ff_v_counter == (c_v_total - 12'd1));
+	assign w_v_counter		= ff_v_counter - (c_v_sync + c_v_bporch - 11'd2);
+	assign w_v_count_end	= (ff_v_counter == (c_v_total - 12'd1));
 
 	// --------------------------------------------------------------------
 	//	Horizontal window
 	// --------------------------------------------------------------------
 	always @( posedge clk ) begin
 		if( !reset_n ) begin
-			ff_h_window <= 1'b0;
+			ff_h_pre_window <= 1'b0;
+		end
+		else if( ff_h_counter == (c_h_sync + c_h_bporch - 12'd10) ) begin
+			ff_h_pre_window <= 1'b1;
+		end
+		else if( ff_h_counter == (c_h_sync + c_h_bporch + c_h_res - 12'd10) ) begin
+			ff_h_pre_window <= 1'b0;
+		end
+		else begin
+			//	hold
+		end
+	end
+
+	always @( posedge clk ) begin
+		if( !reset_n ) begin
+			ff_h_out_window <= 1'b0;
 		end
 		else if( ff_h_counter == (c_h_sync + c_h_bporch - 12'd1) ) begin
-			ff_h_window <= 1'b1;
+			ff_h_out_window <= 1'b1;
 		end
 		else if( ff_h_counter == (c_h_sync + c_h_bporch + c_h_res - 12'd1) ) begin
-			ff_h_window <= 1'b0;
+			ff_h_out_window <= 1'b0;
 		end
 		else begin
 			//	hold
@@ -310,14 +317,34 @@ module ip_video (
 	// --------------------------------------------------------------------
 	always @( posedge clk ) begin
 		if( !reset_n ) begin
-			ff_v_window <= 1'b0;
+			ff_v_pre_window <= 1'b0;
+		end
+		else if( w_h_count_end ) begin
+			if(      ff_v_counter == (c_v_sync + c_v_bporch - 12'd3) ) begin
+				ff_v_pre_window <= 1'b1;
+			end
+			else if( ff_v_counter == (c_v_sync + c_v_bporch + c_v_res - 12'd3) ) begin
+				ff_v_pre_window <= 1'b0;
+			end
+			else begin
+				//	hold
+			end
+		end
+		else begin
+			//	hold
+		end
+	end
+
+	always @( posedge clk ) begin
+		if( !reset_n ) begin
+			ff_v_out_window <= 1'b0;
 		end
 		else if( w_h_count_end ) begin
 			if(      ff_v_counter == (c_v_sync + c_v_bporch - 12'd1) ) begin
-				ff_v_window <= 1'b1;
+				ff_v_out_window <= 1'b1;
 			end
 			else if( ff_v_counter == (c_v_sync + c_v_bporch + c_v_res - 12'd1) ) begin
-				ff_v_window <= 1'b0;
+				ff_v_out_window <= 1'b0;
 			end
 			else begin
 				//	hold
@@ -378,9 +405,30 @@ module ip_video (
 	//	w_buffer_we       ______________________________________________~~~~~_____~~~~~_____~~~~~_____~~~~~______
 	//
 	//	[VERTICAL]
-	//	ff_v_counter[1:0] ><  0  ><  1  ><  2  ><  3  ><  0  ><  1  ><  2  ><  3  ><  0  ><  1  ><  2  ><  3  >
+	//	w_v_counter[1:0]  ><  0  ><  1  ><  2  ><  3  ><  0  ><  1  ><  2  ><  3  ><  0  ><  1  ><  2  ><  3  >
 	//	w_buffer_even_we  _~~~~~~~~~~~~~~______________~~~~~~~~~~~~~~______________~~~~~~~~~~~~~~______________
 	// ---------------------------------------------------------------------------------------------------------
+	always @( posedge clk ) begin
+		if( !reset_n ) begin
+			ff_rd_vram_address <= 8'd0;
+		end
+		else if( w_h_count_end && w_v_counter[0] ) begin
+			ff_rd_vram_address <= 8'd0;
+		end
+		else if( ff_h_pre_window && ff_h_counter[3:0] == 4'd7 ) begin
+			ff_rd_vram_address <= ff_rd_vram_address + 8'd1;
+		end
+	end
+
+	assign w_rd_vram_address	= { 3'd0, w_v_counter[11:2], ff_rd_vram_address, 2'd0 };
+
+	assign vram_mreq_n			= 1'b0;
+	assign vram_address			= ff_vram_address;
+	assign vram_wr_n			= ff_vram_wr_n;
+	assign vram_rd_n			= ff_vram_rd_n;
+	assign vram_rfsh_n			= ff_vram_rfsh_n;
+	assign vram_wdata			= ff_wr_vram_wdata;
+
 	always @( posedge clk ) begin
 		if( !reset_n ) begin
 			ff_vram_rdata		<= 32'd0;
@@ -396,15 +444,6 @@ module ip_video (
 			ff_vram_rdata_en	<= (w_h_counter[3:1] != 3'b111);
 		end
 	end
-
-	assign w_rd_vram_address	= { 2'd0, ff_v_counter[11:1], ff_rd_vram_address, 2'd0 };
-
-	assign vram_mreq_n			= 1'b0;
-	assign vram_address			= ff_vram_address;
-	assign vram_wr_n			= ff_vram_wr_n;
-	assign vram_rd_n			= ff_vram_rd_n;
-	assign vram_rfsh_n			= ff_vram_rfsh_n;
-	assign vram_wdata			= ff_wr_vram_wdata;
 
 	always @( posedge clk ) begin
 		if( !reset_n ) begin
@@ -428,7 +467,7 @@ module ip_video (
 		else if( w_h_count_end ) begin
 			ff_buffer_re_address <= 10'd0;
 		end
-		else if( ff_h_window && w_h_counter[0] ) begin
+		else if( ff_h_pre_window && ff_v_pre_window && w_h_counter[0] ) begin
 			ff_buffer_re_address <= ff_buffer_re_address + 10'd1;
 		end
 	end
@@ -437,18 +476,18 @@ module ip_video (
 		if( !reset_n ) begin
 			ff_buffer_we_address <= 10'd0;
 		end
-		else if( w_h_count_end && ff_v_counter[0] == 1'b1 ) begin
+		else if( w_h_count_end && w_v_counter[0] == 1'b1 ) begin
 			ff_buffer_we_address <= 10'd0;
 		end
-		else if( ~w_h_counter[0] && ff_vram_rdata_en && ff_h_window ) begin
+		else if( ~w_h_counter[0] && ff_vram_rdata_en && ff_h_pre_window ) begin
 			ff_buffer_we_address <= ff_buffer_we_address + 10'd1;
 		end
 	end
 
-	assign w_buffer_even_address	= ff_v_counter[1] ? ff_buffer_re_address: ff_buffer_we_address;
-	assign w_buffer_odd_address		= ff_v_counter[1] ? ff_buffer_we_address: ff_buffer_re_address;
-	assign w_buffer_even_we			= ~w_h_counter[0] & ff_vram_rdata_en & ~ff_v_counter[1] & ff_h_window;
-	assign w_buffer_odd_we			= ~w_h_counter[0] & ff_vram_rdata_en &  ff_v_counter[1] & ff_h_window;
+	assign w_buffer_even_address	=  w_v_counter[1] ? ff_buffer_re_address: ff_buffer_we_address;
+	assign w_buffer_odd_address		=  w_v_counter[1] ? ff_buffer_we_address: ff_buffer_re_address;
+	assign w_buffer_even_we			= ~w_h_counter[0] & ff_vram_rdata_en & ~w_v_counter[1] & ff_h_pre_window;
+	assign w_buffer_odd_we			= ~w_h_counter[0] & ff_vram_rdata_en &  w_v_counter[1] & ff_h_pre_window;
 
 	ip_line_buffer u_line_buffer_even (
 		.clk			( clk					),
@@ -466,8 +505,8 @@ module ip_video (
 		.rdata			( w_buffer_odd_rdata	)
 	);
 
-	assign w_pixel_index =  w_h_counter[0] ? ff_wr_palette_index :
-	                       ff_v_counter[1] ? w_buffer_even_rdata : w_buffer_odd_rdata;
+	assign w_pixel_index = w_h_counter[0] ? ff_wr_palette_index :
+	                       w_v_counter[1] ? w_buffer_even_rdata : w_buffer_odd_rdata;
 
 	// ---------------------------------------------------------------------------------------------------------
 	//	Pixel index --> palette color
@@ -521,10 +560,10 @@ module ip_video (
 		end
 	end
 
-	assign video_de	= ff_h_window & ff_v_window;
+	assign video_de	= ff_h_out_window & ff_v_out_window;
 	assign video_hs	= ff_h_sync;
 	assign video_vs	= ff_v_sync;
-	assign video_r	= (ff_h_window & ff_v_window) ? ff_r: 8'd0;
-	assign video_g	= (ff_h_window & ff_v_window) ? ff_g: 8'd0;
-	assign video_b	= (ff_h_window & ff_v_window) ? ff_b: 8'd0;
+	assign video_r	= (ff_h_out_window & ff_v_out_window) ? ff_r: 8'd0;
+	assign video_g	= (ff_h_out_window & ff_v_out_window) ? ff_g: 8'd0;
+	assign video_b	= (ff_h_out_window & ff_v_out_window) ? ff_b: 8'd0;
 endmodule

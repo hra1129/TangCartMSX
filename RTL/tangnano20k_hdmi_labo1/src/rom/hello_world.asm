@@ -41,9 +41,9 @@ y_loop:
 			ld		a, d
 			out		[REG_VRAM_ADDR], a
 
-			push	hl
+			push	hl						; [1] Yカウント
 			ld		hl, 640
-			push	bc
+			push	bc						; [2] 画素値の位相
 x_loop:
 			ld		a, b
 			add		a, c
@@ -58,8 +58,8 @@ x_loop:
 			add		hl, de
 			ex		de, hl
 
-			pop		bc
-			pop		hl
+			pop		bc						; (2) 画素値の位相
+			pop		hl						; (1) Yカウント
 			dec		hl
 			ld		a, l
 			or		a, h
