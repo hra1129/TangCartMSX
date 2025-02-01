@@ -420,7 +420,7 @@ module ip_video (
 		end
 	end
 
-	assign w_rd_vram_address	= { 3'd0, w_v_counter[11:2], ff_rd_vram_address, 2'd0 };
+	assign w_rd_vram_address	= { 2'd0, w_v_counter[11:1], ff_rd_vram_address, 2'd0 };
 
 	assign vram_mreq_n			= 1'b0;
 	assign vram_address			= ff_vram_address;

@@ -78,9 +78,9 @@ module ip_rom (
 		ff_rom[60] = 8'hC1;
 		ff_rom[61] = 8'hE1;
 		ff_rom[62] = 8'h2B;
-		ff_rom[63] = 8'h7D;
-		ff_rom[64] = 8'hB4;
-		ff_rom[65] = 8'h0C;
+		ff_rom[63] = 8'h0C;
+		ff_rom[64] = 8'h7D;
+		ff_rom[65] = 8'hB4;
 		ff_rom[66] = 8'h20;
 		ff_rom[67] = 8'hDB;
 		ff_rom[68] = 8'h04;

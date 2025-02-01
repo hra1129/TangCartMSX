@@ -61,9 +61,9 @@ x_loop:
 			pop		bc						; (2) 画素値の位相
 			pop		hl						; (1) Yカウント
 			dec		hl
+			inc		c
 			ld		a, l
 			or		a, h
-			inc		c
 			jr		nz, y_loop
 
 			inc		b
