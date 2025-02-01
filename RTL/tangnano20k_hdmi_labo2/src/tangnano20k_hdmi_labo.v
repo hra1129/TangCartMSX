@@ -26,6 +26,7 @@ module tangnano20k_hdmi_labo (
 	input			clk3_579m,			//	clk3_579m	PIN76				(3.579545MHz)
 	input	[1:0]	button,				//	button[0]	PIN88_MODE0_KEY1
 										//	button[1]	PIN87_MODE1_KEY2
+	output	[5:0]	led,				//	led[5:0]	PIN20, PIN19, PIN18, PIN17, PIN16, PIN15
 	//	HDMI
 	output			tmds_clk_p,			//	(PIN33/34)
 	output			tmds_clk_n,			//	dummy
@@ -53,6 +54,9 @@ module tangnano20k_hdmi_labo (
 	reg				ff_reset_n = 1'b0;
 	wire			w_hdmi_reset_n;
 	wire			w_enable;
+
+	reg		[23:0]	ff_timer;
+	reg		[5:0]	ff_led;
 
 	wire			wait_n;
 	wire			int_n;
@@ -108,7 +112,7 @@ module tangnano20k_hdmi_labo (
 	// --------------------------------------------------------------------
 	//	clock
 	// --------------------------------------------------------------------
-	assign w_hdmi_reset_n	= ff_reset_n & pll_lock;
+	assign w_hdmi_reset_n	= ff_reset_n;
 
 	Gowin_rPLL u_pll (
 		.clkout			( clk_serial		),		//	output clkout	214.7727MHz
@@ -124,7 +128,7 @@ module tangnano20k_hdmi_labo (
 	Gowin_CLKDIV u_clkdiv (
 		.clkout			( clk_pixel			),		//	output clkout	42.95454MHz
 		.hclkin			( clk_serial		),		//	input hclkin	214.7727MHz
-		.resetn			( w_hdmi_reset_n	)		//	input resetn
+		.resetn			( 1'b1				)		//	input resetn
 	);
 
 	// --------------------------------------------------------------------
@@ -135,6 +139,29 @@ module tangnano20k_hdmi_labo (
 		ff_reset1_n	<= ff_reset0_n;
 		ff_reset0_n	<= 1'b1;
 	end
+
+	// --------------------------------------------------------------------
+	//	Test circuit
+	// --------------------------------------------------------------------
+	always @( posedge clk_pixel ) begin
+		if( !ff_reset_n ) begin
+			ff_timer <= 24'd0;
+		end
+		else begin
+			ff_timer <= ff_timer + 24'd1;
+		end
+	end
+
+	always @( posedge clk_pixel ) begin
+		if( !ff_reset_n ) begin
+			ff_led <= 6'd0;
+		end
+		else if( ff_timer == 24'd0 ) begin
+			ff_led <= ff_led + 6'd1;
+		end
+	end
+
+	assign led		= ff_led;
 
 	// --------------------------------------------------------------------
 	//	Z80 core
@@ -299,8 +326,8 @@ module tangnano20k_hdmi_labo (
 	// --------------------------------------------------------------------
 	ip_sdram u_sdram (
 		.reset_n				( ff_reset_n			),
-		.clk					( clk_pixel				),
-		.clk_sdram				( clk_pixel				),
+		.clk					( clk85m				),
+		.clk_sdram				( clk85m				),
 		.sdram_init_busy		( w_sdram_init_busy		),
 		.sdram_busy				( w_sdram_busy			),
 		.mreq_n					( w_sdram_mreq_n		),

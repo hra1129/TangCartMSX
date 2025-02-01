@@ -34,6 +34,10 @@
    "Type" : "verilog"
   },
   {
+   "Path" : "D:/github/HRA_product/TangCartMSX/RTL/tangnano20k_hdmi_labo2/src/gowin_rpll2/gowin_rpll2.v",
+   "Type" : "verilog"
+  },
+  {
    "Path" : "D:/github/HRA_product/TangCartMSX/RTL/tangnano20k_hdmi_labo2/src/gpio/ip_gpio.v",
    "Type" : "verilog"
   },
@@ -63,10 +67,6 @@
   },
   {
    "Path" : "D:/github/HRA_product/TangCartMSX/RTL/tangnano20k_hdmi_labo2/src/video/ip_video.v",
-   "Type" : "verilog"
-  },
-  {
-   "Path" : "D:/github/HRA_product/TangCartMSX/RTL/tangnano20k_hdmi_labo2/src/gowin_rpll2/gowin_rpll2.v",
    "Type" : "verilog"
   }
  ],

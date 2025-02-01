@@ -50,14 +50,14 @@ module ip_video (
 	output	[7:0]	video_b
 );
 	//												// 800x600   // 1024x768  // 1280x720  
-	localparam	[11:0]	c_h_total   = 12'd1650;		// 12'd1056  // 12'd1344  // 12'd1650  
-	localparam	[11:0]	c_h_sync    = 12'd40;		// 12'd128   // 12'd136   // 12'd40    
-	localparam	[11:0]	c_h_bporch  = 12'd220;		// 12'd88    // 12'd160   // 12'd220   
-	localparam	[11:0]	c_h_res     = 12'd1280;		// 12'd800   // 12'd1024  // 12'd1280  
-	localparam	[11:0]	c_v_total   = 12'd750;		// 12'd628   // 12'd806   // 12'd750   
-	localparam	[11:0]	c_v_sync    = 12'd5;		// 12'd4     // 12'd6     // 12'd5     
-	localparam	[11:0]	c_v_bporch  = 12'd20;		// 12'd23    // 12'd29    // 12'd20    
-	localparam	[11:0]	c_v_res     = 12'd720;		// 12'd600   // 12'd768   // 12'd720   
+	localparam	[11:0]	c_h_total   = 12'd1368;		// 12'd1056  // 12'd1344  // 12'd1650  
+	localparam	[11:0]	c_h_sync    = 12'd20;		// 12'd128   // 12'd136   // 12'd40    
+	localparam	[11:0]	c_h_bporch  = 12'd46;		// 12'd88    // 12'd160   // 12'd220   
+	localparam	[11:0]	c_h_res     = 12'd800;		// 12'd800   // 12'd1024  // 12'd1280  
+	localparam	[11:0]	c_v_total   = 12'd547;		// 12'd628   // 12'd806   // 12'd750   
+	localparam	[11:0]	c_v_sync    = 12'd6;		// 12'd4     // 12'd6     // 12'd5     
+	localparam	[11:0]	c_v_bporch  = 12'd22;		// 12'd23    // 12'd29    // 12'd20    
+	localparam	[11:0]	c_v_res     = 12'd480;		// 12'd600   // 12'd768   // 12'd720   
 
 	reg				ff_iorq_n;
 	reg				ff_wr_n;

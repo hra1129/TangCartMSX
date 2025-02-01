@@ -1,8 +1,8 @@
--d /mnt/d/github/HRA_product/TangCartMSX/RTL/tangnano20k_hdmi_labo1/impl/gwsynthesis/tangnano20k_hdmi_labo.vg
+-d /mnt/d/github/HRA_product/TangCartMSX/RTL/tangnano20k_hdmi_labo2/impl/gwsynthesis/tangnano20k_hdmi_labo.vg
 -p GW2AR-18C-QFN88-8
 -pn GW2AR-LV18QN88C8/I7
--cst /mnt/d/github/HRA_product/TangCartMSX/RTL/tangnano20k_hdmi_labo1/src/tangnano20k_hdmi_labo.cst
--cfg /mnt/d/github/HRA_product/TangCartMSX/RTL/tangnano20k_hdmi_labo1/impl/pnr/device.cfg
+-cst /mnt/d/github/HRA_product/TangCartMSX/RTL/tangnano20k_hdmi_labo2/src/tangnano20k_hdmi_labo.cst
+-cfg /mnt/d/github/HRA_product/TangCartMSX/RTL/tangnano20k_hdmi_labo2/impl/pnr/device.cfg
 -bit
 -tr
 -ph
