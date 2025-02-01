@@ -29,8 +29,9 @@ palette_loop:
 			inc		a
 			jr		nz, palette_loop
 
-			ld		bc, 0
+			ld		b, 0
 main_loop:
+			ld		c, 0
 			ld		de, 0
 			ld		hl, 360
 y_loop:
@@ -66,6 +67,7 @@ x_loop:
 			or		a, h
 			jr		nz, y_loop
 
+			inc		b
 			inc		b
 			jp		main_loop
 
