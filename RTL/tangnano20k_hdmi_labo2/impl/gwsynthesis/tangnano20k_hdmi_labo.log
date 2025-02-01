@@ -1,0 +1,61 @@
+GowinSynthesis start
+Running parser ...
+Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_hdmi_labo2\src\cz80\cz80.v'
+Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_hdmi_labo2\src\cz80\cz80_alu.v'
+Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_hdmi_labo2\src\cz80\cz80_inst.v'
+Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_hdmi_labo2\src\cz80\cz80_mcode.v'
+Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_hdmi_labo2\src\cz80\cz80_reg.v'
+Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_hdmi_labo2\src\dvi_tx\dvi_tx.v'
+Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_hdmi_labo2\src\gowin_clkdiv\gowin_clkdiv.v'
+Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_hdmi_labo2\src\gowin_rpll\gowin_rpll.v'
+Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_hdmi_labo2\src\gpio\ip_gpio.v'
+Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_hdmi_labo2\src\ram\ip_ram.v'
+Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_hdmi_labo2\src\rom\ip_rom.v'
+Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_hdmi_labo2\src\sdram\ip_sdram_tangnano20k_c.v'
+Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_hdmi_labo2\src\tangnano20k_hdmi_labo.v'
+Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_hdmi_labo2\src\video\ip_line_buffer.v'
+Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_hdmi_labo2\src\video\ip_palette.v'
+Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_hdmi_labo2\src\video\ip_video.v'
+Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_hdmi_labo2\src\gowin_rpll2\gowin_rpll2.v'
+Compiling module 'tangnano20k_hdmi_labo'("D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_hdmi_labo2\src\tangnano20k_hdmi_labo.v":24)
+Compiling module 'Gowin_rPLL'("D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_hdmi_labo2\src\gowin_rpll\gowin_rpll.v":10)
+Compiling module 'Gowin_rPLL2'("D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_hdmi_labo2\src\gowin_rpll2\gowin_rpll2.v":10)
+Compiling module 'Gowin_CLKDIV'("D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_hdmi_labo2\src\gowin_clkdiv\gowin_clkdiv.v":10)
+Compiling module 'cz80_inst'("D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_hdmi_labo2\src\cz80\cz80_inst.v":63)
+Compiling module 'cz80'("D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_hdmi_labo2\src\cz80\cz80.v":63)
+Compiling module 'cz80_mcode'("D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_hdmi_labo2\src\cz80\cz80_mcode.v":63)
+Compiling module 'cz80_alu'("D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_hdmi_labo2\src\cz80\cz80_alu.v":63)
+WARN  (EX3791) : Expression size 17 truncated to fit in target size 16("D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_hdmi_labo2\src\cz80\cz80.v":382)
+WARN  (EX3791) : Expression size 17 truncated to fit in target size 16("D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_hdmi_labo2\src\cz80\cz80.v":528)
+WARN  (EX3791) : Expression size 32 truncated to fit in target size 16("D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_hdmi_labo2\src\cz80\cz80.v":531)
+WARN  (EX3791) : Expression size 32 truncated to fit in target size 16("D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_hdmi_labo2\src\cz80\cz80.v":544)
+WARN  (EX3791) : Expression size 17 truncated to fit in target size 16("D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_hdmi_labo2\src\cz80\cz80.v":547)
+Compiling module 'cz80_registers'("D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_hdmi_labo2\src\cz80\cz80_reg.v":55)
+WARN  (EX3791) : Expression size 4 truncated to fit in target size 3("D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_hdmi_labo2\src\cz80\cz80.v":1011)
+Compiling module 'ip_gpio'("D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_hdmi_labo2\src\gpio\ip_gpio.v":27)
+Compiling module 'ip_rom'("D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_hdmi_labo2\src\rom\ip_rom.v":5)
+Extracting RAM for identifier 'ff_rom'("D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_hdmi_labo2\src\rom\ip_rom.v":13)
+Compiling module 'ip_ram'("D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_hdmi_labo2\src\ram\ip_ram.v":5)
+Extracting RAM for identifier 'ff_ram'("D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_hdmi_labo2\src\ram\ip_ram.v":15)
+Compiling module 'ip_video'("D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_hdmi_labo2\src\video\ip_video.v":27)
+Compiling module 'ip_line_buffer'("D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_hdmi_labo2\src\video\ip_line_buffer.v":27)
+Extracting RAM for identifier 'ff_ram'("D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_hdmi_labo2\src\video\ip_line_buffer.v":34)
+Compiling module 'ip_palette'("D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_hdmi_labo2\src\video\ip_palette.v":27)
+Extracting RAM for identifier 'ff_ram'("D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_hdmi_labo2\src\video\ip_palette.v":34)
+Compiling module 'DVI_TX_Top'("D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_hdmi_labo2\src\dvi_tx\dvi_tx.v":1070)
+Compiling module '**'("D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_hdmi_labo2\src\dvi_tx\dvi_tx.v":1069)
+Compiling module 'ip_sdram'("D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_hdmi_labo2\src\sdram\ip_sdram_tangnano20k_c.v":57)
+WARN  (EX3791) : Expression size 32 truncated to fit in target size 14("D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_hdmi_labo2\src\sdram\ip_sdram_tangnano20k_c.v":341)
+NOTE  (EX0101) : Current top module is "tangnano20k_hdmi_labo"
+[5%] Running netlist conversion ...
+WARN  (CV0016) : Input clk27m is unused("D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_hdmi_labo2\src\tangnano20k_hdmi_labo.v":25)
+Running device independent optimization ...
+[10%] Optimizing Phase 0 completed
+[15%] Optimizing Phase 1 completed
+[25%] Optimizing Phase 2 completed
+Running inference ...
+[30%] Inferring Phase 0 completed
+[40%] Inferring Phase 1 completed
+[50%] Inferring Phase 2 completed
+[55%] Inferring Phase 3 completed
+Running technical mapping ...

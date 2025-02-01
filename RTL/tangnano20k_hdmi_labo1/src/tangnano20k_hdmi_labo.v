@@ -106,7 +106,7 @@ module tangnano20k_hdmi_labo (
 	// --------------------------------------------------------------------
 	//	clock
 	// --------------------------------------------------------------------
-	assign w_hdmi_reset_n	= ff_reset_n;	// & pll_lock;
+	assign w_hdmi_reset_n	= ff_reset_n;
 
 	Gowin_rPLL u_pll (
 		.clkout			( clk_serial		),		//	output clkout	371.25MHz
