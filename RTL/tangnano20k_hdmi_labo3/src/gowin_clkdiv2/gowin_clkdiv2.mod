@@ -1,0 +1,14 @@
+-series GW2AR
+-device GW2AR-18
+-device_version C
+-package QFN88
+-part_number GW2AR-LV18QN88C8/I7
+
+
+-mod_name Gowin_CLKDIV2
+-file_name gowin_clkdiv2
+-path D:/github/HRA_product/TangCartMSX/RTL/tangnano20k_hdmi_labo3/src/gowin_clkdiv2/
+-type CLKDIV
+-file_type vlg
+-division_factor 4
+-calib false

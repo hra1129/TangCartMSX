@@ -1,19 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<Module name="tangnano20k_hdmi_labo" Register="42" Alu="28" Lut="31" T_Register="812(42)" T_Alu="214(28)" T_Lut="2425(31)" T_Bsram="5(0)">
+<Module name="tangnano20k_hdmi_labo" Register="42" Alu="28" Lut="31" T_Register="812(42)" T_Alu="214(28)" T_Lut="2426(31)" T_Bsram="5(0)">
  <SubModule name="u_pll"/>
  <SubModule name="your_instance_name"/>
  <SubModule name="u_clkdiv"/>
- <SubModule name="u_z80" Register="24" Lut="56" T_Register="355(24)" T_Alu="81(0)" T_Lut="1725(56)">
-  <SubModule name="u_cz80" Register="203" Alu="70" Lut="1125" T_Register="331(203)" T_Alu="81(70)" T_Lut="1669(1125)">
-   <SubModule name="u_mcode" Lut="217" T_Lut="217(217)"/>
+ <SubModule name="u_z80" Register="24" Lut="56" T_Register="355(24)" T_Alu="81(0)" T_Lut="1727(56)">
+  <SubModule name="u_cz80" Register="203" Alu="70" Lut="1133" T_Register="331(203)" T_Alu="81(70)" T_Lut="1671(1133)">
+   <SubModule name="u_mcode" Lut="221" T_Lut="221(221)"/>
    <SubModule name="u_alu" Alu="11" Lut="11" T_Alu="11(11)" T_Lut="11(11)"/>
-   <SubModule name="u_regs" Register="128" Lut="316" T_Register="128(128)" T_Lut="316(316)"/>
+   <SubModule name="u_regs" Register="128" Lut="306" T_Register="128(128)" T_Lut="306(306)"/>
   </SubModule>
  </SubModule>
  <SubModule name="u_gpio" Register="2" Lut="3" T_Register="2(2)" T_Lut="3(3)"/>
  <SubModule name="u_rom" Register="1" Lut="4" Bsram="1" T_Register="1(1)" T_Lut="4(4)" T_Bsram="1(1)"/>
  <SubModule name="u_ram" Register="2" Lut="11" Bsram="1" T_Register="2(2)" T_Lut="11(11)" T_Bsram="1(1)"/>
- <SubModule name="u_video" Register="228" Alu="36" Lut="277" T_Register="231(228)" T_Alu="36(36)" T_Lut="318(277)" T_Bsram="3(0)">
+ <SubModule name="u_video" Register="228" Alu="36" Lut="276" T_Register="231(228)" T_Alu="36(36)" T_Lut="317(276)" T_Bsram="3(0)">
   <SubModule name="u_line_buffer_even" Register="1" Lut="9" Bsram="1" T_Register="1(1)" T_Lut="9(9)" T_Bsram="1(1)"/>
   <SubModule name="u_line_buffer_odd" Register="1" Lut="8" Bsram="1" T_Register="1(1)" T_Lut="8(8)" T_Bsram="1(1)"/>
   <SubModule name="u_palette_r" Lut="8" T_Lut="8(8)"/>
