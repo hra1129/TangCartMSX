@@ -182,10 +182,6 @@
    "Type" : "verilog"
   },
   {
-   "Path" : "D:/github/HRA_product/TangCartMSX/RTL/tangnano20k_hdmi_labo3/src/v9918/vdp_double_buffer.v",
-   "Type" : "verilog"
-  },
-  {
    "Path" : "D:/github/HRA_product/TangCartMSX/RTL/tangnano20k_hdmi_labo3/src/v9918/vdp_graphic123m.v",
    "Type" : "verilog"
   },
@@ -198,15 +194,7 @@
    "Type" : "verilog"
   },
   {
-   "Path" : "D:/github/HRA_product/TangCartMSX/RTL/tangnano20k_hdmi_labo3/src/v9918/vdp_lcd.v",
-   "Type" : "verilog"
-  },
-  {
    "Path" : "D:/github/HRA_product/TangCartMSX/RTL/tangnano20k_hdmi_labo3/src/v9918/vdp_ram_256byte.v",
-   "Type" : "verilog"
-  },
-  {
-   "Path" : "D:/github/HRA_product/TangCartMSX/RTL/tangnano20k_hdmi_labo3/src/v9918/vdp_ram_line_buffer.v",
    "Type" : "verilog"
   },
   {
@@ -231,6 +219,18 @@
   },
   {
    "Path" : "D:/github/HRA_product/TangCartMSX/RTL/tangnano20k_hdmi_labo3/src/v9918/vdp_wait_control.v",
+   "Type" : "verilog"
+  },
+  {
+   "Path" : "D:/github/HRA_product/TangCartMSX/RTL/tangnano20k_hdmi_labo3/src/video_out/video_out.v",
+   "Type" : "verilog"
+  },
+  {
+   "Path" : "D:/github/HRA_product/TangCartMSX/RTL/tangnano20k_hdmi_labo3/src/video_out/video_double_buffer.v",
+   "Type" : "verilog"
+  },
+  {
+   "Path" : "D:/github/HRA_product/TangCartMSX/RTL/tangnano20k_hdmi_labo3/src/video_out/video_ram_line_buffer.v",
    "Type" : "verilog"
   }
  ],

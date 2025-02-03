@@ -1,5 +1,5 @@
 //
-//	vdp_lcd.v
+//	video_out.v
 //	 LCD 800x480 up-scan converter.
 //
 //	Copyright (C) 2024 Takayuki Hara.
@@ -57,27 +57,28 @@
 //
 // -----------------------------------------------------------------------------
 
-module vdp_lcd(
+module video_out #(
+	parameter		hs_positive = 1'b1,		//	If video_hs is positive logic, set to 1; if video_hs is negative logic, set to 0.
+	parameter		vs_positive = 1'b1		//	If video_vs is positive logic, set to 1; if video_vs is negative logic, set to 0.
+) (
 	// vdp clock ... 42.95454MHz
 	input			clk,
-	input			reset,
+	input			reset_n,					//	Must be reset and released at the same time as the VDP
 	input			enable,
-	// lcd output
-	output			lcd_clk,
-	output			lcd_de,
 	// video input
-	input	[5:0]	videorin,
-	input	[5:0]	videogin,
-	input	[5:0]	videobin,
-	input			videovsin_n,
-	input	[10:0]	hcounterin,
-	input	[10:0]	vcounterin,
+	input	[5:0]	vdp_r,
+	input	[5:0]	vdp_g,
+	input	[5:0]	vdp_b,
+	input	[10:0]	vdp_hcounter,
+	input	[10:0]	vdp_vcounter,
 	// video output
-	output	[7:0]	videorout,
-	output	[7:0]	videogout,
-	output	[7:0]	videobout,
-	output			videohsout_n,
-	output			videovsout_n
+	output			video_clk,
+	output			video_de,
+	output			video_hs,
+	output			video_vs,
+	output	[7:0]	video_r,
+	output	[7:0]	video_g,
+	output	[7:0]	video_b
 );
 	// LCD 800x480 parameters
 	// Horizontal timing by ff_h_cnt value : 1368cyc
@@ -111,9 +112,9 @@ module vdp_lcd(
 	wire	[9:0]	w_x_position_w;
 	wire			w_is_odd;
 	wire			w_we_buf;
-	wire	[4:0]	w_data_r_out;
-	wire	[4:0]	w_data_g_out;
-	wire	[4:0]	w_data_b_out;
+	wire	[5:0]	w_data_r_out;
+	wire	[5:0]	w_data_g_out;
+	wire	[5:0]	w_data_b_out;
 
 	reg		[10:0]	ff_h_cnt;
 	reg				ff_h_sync;
@@ -156,15 +157,10 @@ module vdp_lcd(
 	assign w_h_vdp_active_end	= (ff_h_cnt == h_vdp_active_end);
 
 	// --------------------------------------------------------------------
-	//	LCD clock
-	// --------------------------------------------------------------------
-	assign lcd_clk	= clk;
-
-	// --------------------------------------------------------------------
 	//	H Counter
 	// --------------------------------------------------------------------
 	always @( posedge clk ) begin
-		if( reset ) begin
+		if( !reset_n ) begin
 			ff_h_cnt <= 11'd0;
 		end
 		else if( w_h_line_end ) begin
@@ -180,14 +176,14 @@ module vdp_lcd(
 	//	H Sync
 	// --------------------------------------------------------------------
 	always @( posedge clk ) begin
-		if( reset ) begin
-			ff_h_sync <= 1'b0;
+		if( !reset_n ) begin
+			ff_h_sync <= ~hs_positive;
 		end
 		else if( w_h_pulse_start ) begin
-			ff_h_sync <= 1'b1;
+			ff_h_sync <= hs_positive;
 		end
 		else if( w_h_pulse_end ) begin
-			ff_h_sync <= 1'b0;
+			ff_h_sync <= ~hs_positive;
 		end
 		else begin
 			//	hold
@@ -198,7 +194,7 @@ module vdp_lcd(
 	//	H Active
 	// --------------------------------------------------------------------
 	always @( posedge clk ) begin
-		if( reset ) begin
+		if( !reset_n ) begin
 			ff_h_active <= 1'b0;
 		end
 		else if( w_h_active_end ) begin
@@ -216,7 +212,7 @@ module vdp_lcd(
 	//	H VDP Active
 	// --------------------------------------------------------------------
 	always @( posedge clk ) begin
-		if( reset ) begin
+		if( !reset_n ) begin
 			ff_h_vdp_active <= 1'b0;
 		end
 		else if( w_h_vdp_active_start ) begin
@@ -234,7 +230,7 @@ module vdp_lcd(
 	//	V Counter
 	// --------------------------------------------------------------------
 	always @( posedge clk ) begin
-		if( reset ) begin
+		if( !reset_n ) begin
 			ff_v_cnt <= 10'd0;
 		end
 		else if( w_h_front_porch_end ) begin
@@ -252,7 +248,7 @@ module vdp_lcd(
 	//	V Active
 	// --------------------------------------------------------------------
 	always @( posedge clk ) begin
-		if( reset )begin
+		if( !reset_n )begin
 			ff_v_active <= 1'b0;
 		end
 		else if( w_h_front_porch_end ) begin
@@ -270,47 +266,47 @@ module vdp_lcd(
 	// --------------------------------------------------------------------
 	assign w_lcd_de		= ff_h_active && ff_v_active;
 	assign w_vdp_de		= ff_h_vdp_active && ff_v_active;
-	assign videorout	= w_vdp_de ? { w_data_r_out, 3'b0 }: 8'd0;
-	assign videogout	= w_vdp_de ? { w_data_g_out, 3'b0 }: 8'd0;
-	assign videobout	= w_vdp_de ? { w_data_b_out, 3'b0 }: 8'd0;
-	assign lcd_de		= w_lcd_de;
 
-	vdp_double_buffer dbuf (
+	video_double_buffer u_double_buffer (
 		.clk			( clk				),
-		.reset			( reset				),
+		.reset_n		( reset_n			),
 		.enable			( enable			),
 		.x_position_w	( w_x_position_w	),
 		.x_position_r	( w_x_position_r	),
 		.is_odd			( w_is_odd			),
 		.we				( w_we_buf			),
-		.wdata_r		( videorin[5:1]		),
-		.wdata_g		( videogin[5:1]		),
-		.wdata_b		( videobin[5:1]		),
+		.wdata_r		( vdp_r				),
+		.wdata_g		( vdp_g				),
+		.wdata_b		( vdp_b				),
 		.rdata_r		( w_data_r_out		),
 		.rdata_g		( w_data_g_out		),
 		.rdata_b		( w_data_b_out		)
 	);
 
-	assign w_x_position_w	= hcounterin[10:1] - (clocks_per_line/2 - disp_width - 10);
-	assign w_is_odd			= vcounterin[1];
+	assign w_x_position_w	= vdp_hcounter[10:1] - (clocks_per_line/2 - disp_width - 10);
+	assign w_is_odd			= vdp_vcounter[1];
 	assign w_we_buf			= 1'b1;
 
 	// generate v-sync signal
-	// the videovsin_n signal is not used
 	always @( posedge clk ) begin
-		if( reset )begin
-			ff_v_sync <= 1'b1;
+		if( !reset_n )begin
+			ff_v_sync <= vs_positive;
 		end
 		else if( w_h_front_porch_end ) begin
 			if( w_v_pulse_start )begin
-				ff_v_sync <= 1'b1;
+				ff_v_sync <= vs_positive;
 			end
 			else if( w_v_pulse_end )begin
-				ff_v_sync <= 1'b0;
+				ff_v_sync <= ~vs_positive;
 			end
 		end
 	end
 
-	assign videohsout_n		= ff_h_sync;
-	assign videovsout_n		= ff_v_sync;
+	assign video_clk	= clk;
+	assign video_de		= w_lcd_de;
+	assign video_hs		= ff_h_sync;
+	assign video_vs		= ff_v_sync;
+	assign video_r		= w_vdp_de ? { w_data_r_out, 2'b0 }: 8'd0;
+	assign video_g		= w_vdp_de ? { w_data_g_out, 2'b0 }: 8'd0;
+	assign video_b		= w_vdp_de ? { w_data_b_out, 2'b0 }: 8'd0;
 endmodule

@@ -76,16 +76,11 @@ module vdp(
 	input		[7:0]		p_dram_rdata,
 	output		[7:0]		p_dram_wdata,
 	// video output
-	output					pvideo_clk,
-	output					pvideo_data_en,
-
-	output		[7:0]		pvideor,
-	output		[7:0]		pvideog,
-	output		[7:0]		pvideob,
-
-	output					pvideohs_n,
-	output					pvideovs_n,
-
+	output		[5:0]		p_vdp_r,
+	output		[5:0]		p_vdp_g,
+	output		[5:0]		p_vdp_b,
+	output		[10:0]		p_vdp_hcounter,
+	output		[10:0]		p_vdp_vcounter,
 	output					p_video_dh_clk,
 	output					p_video_dl_clk
 );
@@ -94,8 +89,8 @@ module vdp(
 	localparam		led_tv_x_ntsc		= -3;
 	localparam		led_tv_y_ntsc		= 1;
 
-	wire	[10:0]	w_h_count;
-	wire	[10:0]	w_v_count;
+	wire	[10:0]	w_hcounter;
+	wire	[10:0]	w_vcounter;
 
 	// dot state register
 	wire	[1:0]	w_dot_state;
@@ -215,21 +210,13 @@ module vdp(
 	assign w_rd_n			= rd_n | iorq_n;
 
 	//--------------------------------------------------------------
-	// display components
+	// display outputs
 	//--------------------------------------------------------------
-	assign w_video_r		= ( !ff_bwindow ) ? 6'd0 : w_video_r_vdp;
-	assign w_video_g		= ( !ff_bwindow ) ? 6'd0 : w_video_g_vdp;
-	assign w_video_b		= ( !ff_bwindow ) ? 6'd0 : w_video_b_vdp;
-
-	// change display mode by external input port.
-	assign pvideor			= w_video_r_lcd;
-	assign pvideog			= w_video_g_lcd;
-	assign pvideob			= w_video_b_lcd;
-
-	// h sync signal
-	assign pvideohs_n		= w_video_hs_n_lcd;
-	// v sync signal
-	assign pvideovs_n		= w_video_vs_n_lcd;
+	assign p_vdp_r			= ( !ff_bwindow ) ? 6'd0 : w_video_r_vdp;
+	assign p_vdp_g			= ( !ff_bwindow ) ? 6'd0 : w_video_g_vdp;
+	assign p_vdp_b			= ( !ff_bwindow ) ? 6'd0 : w_video_b_vdp;
+	assign p_vdp_hcounter	= w_hcounter;
+	assign p_vdp_vcounter	= w_vcounter;
 
 	//---------------------------------------------------------------------------
 	// interrupt
@@ -263,10 +250,10 @@ module vdp(
 		else if( !enable ) begin
 			// hold
 		end
-		else if( w_h_count == 200 ) begin
+		else if( w_hcounter == 200 ) begin
 			ff_bwindow_x <= 1'b1;
 		end
-		else if( w_h_count == clocks_per_line-1-1 ) begin
+		else if( w_hcounter == clocks_per_line-1-1 ) begin
 			ff_bwindow_x <= 1'b0;
 		end
 	end
@@ -281,10 +268,10 @@ module vdp(
 		else begin
 			// non-interlace
 			// 3+3+16 = 19
-			if( (w_v_count == 20*2) || (w_v_count == 524+20*2) ) begin
+			if( (w_vcounter == 20*2) || (w_vcounter == 524+20*2) ) begin
 				ff_bwindow_y <= 1'b1;
 			end
-			else if( (w_v_count == 524) || (w_v_count == 0) ) begin
+			else if( (w_vcounter == 524) || (w_vcounter == 0) ) begin
 				ff_bwindow_y <= 1'b0;
 			end
 		end
@@ -313,10 +300,10 @@ module vdp(
 		else if( !enable ) begin
 			// hold
 		end
-		else if( w_h_count == {2'b00, (offset_x + led_tv_x_ntsc    ), 2'b10} ) begin
+		else if( w_hcounter == {2'b00, (offset_x + led_tv_x_ntsc    ), 2'b10} ) begin
 			// hold
 		end
-		else if( w_h_count[1:0] == 2'b10) begin
+		else if( w_hcounter[1:0] == 2'b10) begin
 			if( w_pre_dot_counter_x == 9'b111111111 ) begin
 				// jp: w_pre_dot_counter_x が -1から0にカウントアップする時にw_windowを1にする
 				ff_prewindow_x <= 1'b1;
@@ -376,7 +363,7 @@ module vdp(
 		.clk							( clk							),
 		.enable							( enable						),
 
-		.h_cnt							( w_h_count						),
+		.h_cnt							( w_hcounter						),
 		.y_cnt							( w_pre_dot_counter_y[7:0]		),
 		.active_line					( ff_active_line				),
 		.v_blanking_start				( w_v_blanking_start			),
@@ -392,8 +379,8 @@ module vdp(
 		.clk							( clk							),
 		.enable							( enable						),
 
-		.h_cnt							( w_h_count						),
-		.v_cnt							( w_v_count						),
+		.h_cnt							( w_hcounter					),
+		.v_cnt							( w_vcounter					),
 		.dot_state						( w_dot_state					),
 		.eight_dot_state				( w_eight_dot_state				),
 		.pre_dot_counter_x				( w_pre_dot_counter_x			),
@@ -578,27 +565,5 @@ module vdp(
 		.vdp_mode_multiq				( w_vdp_mode_multiq				),
 		.vdp_mode_graphic1				( w_vdp_mode_graphic1			),
 		.vdp_mode_graphic2				( w_vdp_mode_graphic2			)
-	);
-
-	// --------------------------------------------------------------------
-	//	LCD Controller
-	// --------------------------------------------------------------------
-	vdp_lcd u_vdp_lcd(
-		.clk							( clk							),
-		.reset							( reset							),
-		.enable							( enable						),
-		.lcd_clk						( pvideo_clk					),
-		.lcd_de							( pvideo_data_en				),
-		.videorin						( w_video_r						),
-		.videogin						( w_video_g						),
-		.videobin						( w_video_b						),
-		.videovsin_n					( w_video_vsync_n				),
-		.hcounterin						( w_h_count						),
-		.vcounterin						( w_v_count						),
-		.videorout						( w_video_r_lcd					),
-		.videogout						( w_video_g_lcd					),
-		.videobout						( w_video_b_lcd					),
-		.videohsout_n					( w_video_hs_n_lcd				),
-		.videovsout_n					( w_video_vs_n_lcd				)
 	);
 endmodule

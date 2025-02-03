@@ -105,19 +105,25 @@ module tangnano20k_hdmi_labo (
 	wire			w_vram_rdata_en;
 	reg		[7:0]	ff_vram_rdata;
 
-	wire			w_hdmi_de;
-	wire			w_hdmi_hs;
-	wire			w_hdmi_vs;
-	wire	[7:0]	w_hdmi_red;
-	wire	[7:0]	w_hdmi_green;
-	wire	[7:0]	w_hdmi_blue;
-
-	wire	[1:0]	w_vdp_enable_state;
 	wire			w_vdp_cs_n;
 	wire	[7:0]	w_vdp_q;
 	wire			w_vdp_q_en;
+	wire			w_vdp_enable;
+	wire	[5:0]	w_vdp_r;
+	wire	[5:0]	w_vdp_g;
+	wire	[5:0]	w_vdp_b;
+	wire	[10:0]	w_vdp_hcounter;
+	wire	[10:0]	w_vdp_vcounter;
 	wire			w_dh_clk;
 	wire			w_dl_clk;
+
+	wire			w_video_clk;
+	wire			w_video_de;
+	wire			w_video_hs;
+	wire			w_video_vs;
+	wire	[7:0]	w_video_r;
+	wire	[7:0]	w_video_g;
+	wire	[7:0]	w_video_b;
 
 	wire			w_msx_reset_n;
 	wire			w_cpu_freeze;
@@ -496,18 +502,60 @@ module tangnano20k_hdmi_labo (
 		.p_dram_address			( w_vram_address		),		//	[13: 0];
 		.p_dram_rdata			( ff_vram_rdata			),		//	[ 7: 0];
 		.p_dram_wdata			( w_vram_wdata			),		//	[ 7: 0];
-		.pvideo_clk				( w_hdmi_clk			),		
-		.pvideo_data_en			( w_hdmi_de				),		
-		.pvideor				( w_hdmi_red			),		//	[ 7: 0];
-		.pvideog				( w_hdmi_green			),		//	[ 7: 0];
-		.pvideob				( w_hdmi_blue			),		//	[ 7: 0];
-		.pvideohs_n				( w_hdmi_hs				),
-		.pvideovs_n				( w_hdmi_vs				),
+		.p_vdp_enable			( w_vdp_enable			),
+		.p_vdp_r				( w_vdp_r				),		//	[ 5: 0];
+		.p_vdp_g				( w_vdp_g				),		//	[ 5: 0];
+		.p_vdp_b				( w_vdp_b				),		//	[ 5: 0];
+		.p_vdp_hcounter			( w_vdp_hcounter		),
+		.p_vdp_vcounter			( w_vdp_vcounter		),
 		.p_video_dh_clk			( w_dh_clk				),
 		.p_video_dl_clk			( w_dl_clk				)
     );
 
 	assign w_vdp_cs_n				= !( !iorq_n && ( { a[7:1], 1'd0 } == 8'h98 ) );
+
+	// --------------------------------------------------------------------
+	//	Video output
+	// --------------------------------------------------------------------
+	video_out #(
+		.hs_positive			( 1'b1					),		//	If video_hs is positive logic, set to 1.
+		.vs_positive			( 1'b1					)		//	If video_vs is positive logic, set to 1.
+	) u_video_out (
+		.clk					( clk42m				),
+		.reset_n				( w_msx_reset_n			),
+		.enable					( w_vdp_enable			),
+		.vdp_r					( w_vdp_r				),
+		.vdp_g					( w_vdp_g				),
+		.vdp_b					( w_vdp_b				),
+		.vdp_hcounter			( w_vdp_hcounter		),
+		.vdp_vcounter			( w_vdp_vcounter		),
+		.video_clk				( w_video_clk			),
+		.video_de				( w_video_de			),
+		.video_hs				( w_video_hs			),
+		.video_vs				( w_video_vs			),
+		.video_r				( w_video_r				),
+		.video_g				( w_video_g				),
+		.video_b				( w_video_b				)
+	);
+
+	// --------------------------------------------------------------------
+	//	HDMI
+	// --------------------------------------------------------------------
+	DVI_TX_Top u_dvi (
+		.I_rst_n				( ff_reset1_n			),		//input I_rst_n
+		.I_serial_clk			( clk215m				),		//input I_serial_clk
+		.I_rgb_clk				( w_video_clk			),		//input I_rgb_clk
+		.I_rgb_vs				( w_video_vs			),		//input I_rgb_vs
+		.I_rgb_hs				( w_video_hs			),		//input I_rgb_hs
+		.I_rgb_de				( w_video_de			),		//input I_rgb_de
+		.I_rgb_r				( w_video_r				),		//input [7:0] I_rgb_r
+		.I_rgb_g				( w_video_g				),		//input [7:0] I_rgb_g
+		.I_rgb_b				( w_video_b				),		//input [7:0] I_rgb_b
+		.O_tmds_clk_p			( tmds_clk_p			),		//output O_tmds_clk_p
+		.O_tmds_clk_n			( tmds_clk_n			),		//output O_tmds_clk_n
+		.O_tmds_data_p			( tmds_d_p				),		//output [2:0] O_tmds_data_p
+		.O_tmds_data_n			( tmds_d_n				)		//output [2:0] O_tmds_data_n
+	);
 
 	// --------------------------------------------------------------------
 	//	VRAM
@@ -670,23 +718,4 @@ module tangnano20k_hdmi_labo (
 									  ( w_sltsl00  && (a[15]    == 1'b0)                      ) ? rd_n :				//	MAIN-ROM
 									  ( w_sltsl32  && (a[15:14] == 2'b01 || a[15:14] == 2'b10)) ? rd_n :				//	Nextor
 									                                                              1'b1;
-
-	// --------------------------------------------------------------------
-	//	HDMI
-	// --------------------------------------------------------------------
-	DVI_TX_Top u_dvi (
-		.I_rst_n				( ff_reset1_n			),		//input I_rst_n
-		.I_serial_clk			( clk215m				),		//input I_serial_clk
-		.I_rgb_clk				( w_hdmi_clk			),		//input I_rgb_clk
-		.I_rgb_vs				( w_hdmi_vs				),		//input I_rgb_vs
-		.I_rgb_hs				( w_hdmi_hs				),		//input I_rgb_hs
-		.I_rgb_de				( w_hdmi_de				),		//input I_rgb_de
-		.I_rgb_r				( w_hdmi_red			),		//input [7:0] I_rgb_r
-		.I_rgb_g				( w_hdmi_green			),		//input [7:0] I_rgb_g
-		.I_rgb_b				( w_hdmi_blue			),		//input [7:0] I_rgb_b
-		.O_tmds_clk_p			( tmds_clk_p			),		//output O_tmds_clk_p
-		.O_tmds_clk_n			( tmds_clk_n			),		//output O_tmds_clk_n
-		.O_tmds_data_p			( tmds_d_p				),		//output [2:0] O_tmds_data_p
-		.O_tmds_data_n			( tmds_d_n				)		//output [2:0] O_tmds_data_n
-	);
 endmodule

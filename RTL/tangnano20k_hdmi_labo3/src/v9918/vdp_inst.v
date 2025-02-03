@@ -76,15 +76,12 @@ module vdp_inst(
 	output		[7:0]		p_dram_wdata,
 
 	// video output
-	output					pvideo_clk,
-	output					pvideo_data_en,
-
-	output		[7:0]		pvideor,
-	output		[7:0]		pvideog,
-	output		[7:0]		pvideob,
-
-	output					pvideohs_n,
-	output					pvideovs_n,
+	output					p_vdp_enable,
+	output		[5:0]		p_vdp_r,
+	output		[5:0]		p_vdp_g,
+	output		[5:0]		p_vdp_b,
+	output		[10:0]		p_vdp_hcounter,
+	output		[10:0]		p_vdp_vcounter,
 
 	output					p_video_dh_clk,
 	output					p_video_dl_clk
@@ -119,6 +116,8 @@ module vdp_inst(
 		end
 	end
 
+	assign p_vdp_enable	= ff_enable;
+
 	vdp u_v9918_core (
 		.reset				( !reset_n					),	// IN	
 		.initial_busy		( ff_initial_busy			),	// IN	
@@ -137,13 +136,11 @@ module vdp_inst(
 		.p_dram_address		( p_dram_address			),	// OUT	[13: 0 ];
 		.p_dram_rdata		( p_dram_rdata				),	// IN	[ 7: 0 ];
 		.p_dram_wdata		( p_dram_wdata				),	// OUT	[ 7: 0 ];
-		.pvideo_clk			( pvideo_clk				),	// OUT	
-		.pvideo_data_en		( pvideo_data_en			),	// OUT	
-		.pvideor			( pvideor					),	// OUT	[ 7: 0 ];
-		.pvideog			( pvideog					),	// OUT	[ 7: 0 ];
-		.pvideob			( pvideob					),	// OUT	[ 7: 0 ];
-		.pvideohs_n			( pvideohs_n				),	// OUT	
-		.pvideovs_n			( pvideovs_n				),	// OUT	
+		.p_vdp_r			( p_vdp_r					),	// OUT	[ 7: 0 ];
+		.p_vdp_g			( p_vdp_g					),	// OUT	[ 7: 0 ];
+		.p_vdp_b			( p_vdp_b					),	// OUT	[ 7: 0 ];
+		.p_vdp_hcounter		( p_vdp_hcounter			),	// OUT	[10: 0 ];
+		.p_vdp_vcounter		( p_vdp_vcounter			),	// OUT	[10: 0 ];
 		.p_video_dh_clk		( p_video_dh_clk			),	// OUT	
 		.p_video_dl_clk		( p_video_dl_clk			)	// OUT	
     );
