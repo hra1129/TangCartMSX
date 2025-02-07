@@ -1,0 +1,187 @@
+GowinSynthesis start
+Running parser ...
+Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_hdmi_labo4\src\cz80\cz80.v'
+Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_hdmi_labo4\src\cz80\cz80_alu.v'
+Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_hdmi_labo4\src\cz80\cz80_inst.v'
+Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_hdmi_labo4\src\cz80\cz80_mcode.v'
+Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_hdmi_labo4\src\cz80\cz80_reg.v'
+Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_hdmi_labo4\src\dvi_tx\dvi_tx.v'
+Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_hdmi_labo4\src\gowin_clkdiv\gowin_clkdiv.v'
+Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_hdmi_labo4\src\gowin_clkdiv2\gowin_clkdiv2.v'
+Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_hdmi_labo4\src\gowin_rpll\gowin_rpll.v'
+Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_hdmi_labo4\src\gowin_rpll2\gowin_rpll2.v'
+Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_hdmi_labo4\src\i2s_audio\i2s_audio.v'
+Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_hdmi_labo4\src\kanji_rom\kanji_rom.v'
+Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_hdmi_labo4\src\megarom\megarom.v'
+Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_hdmi_labo4\src\megarom\megarom_wo_scc.v'
+Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_hdmi_labo4\src\megarom\scc\scc_channel_mixer.v'
+Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_hdmi_labo4\src\megarom\scc\scc_channel_volume.v'
+Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_hdmi_labo4\src\megarom\scc\scc_core.v'
+Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_hdmi_labo4\src\megarom\scc\scc_inst.v'
+Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_hdmi_labo4\src\megarom\scc\scc_ram.v'
+Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_hdmi_labo4\src\megarom\scc\scc_register.v'
+Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_hdmi_labo4\src\megarom\scc\scc_selector.v'
+Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_hdmi_labo4\src\megarom\scc\scc_tone_generator_5ch.v'
+Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_hdmi_labo4\src\memory_mapper\memory_mapper.v'
+Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_hdmi_labo4\src\memory_mapper\memory_mapper_inst.v'
+Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_hdmi_labo4\src\micom_connect\micom_connect.v'
+Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_hdmi_labo4\src\opll\ikaopll\IKAOPLL.v'
+Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_hdmi_labo4\src\opll\ikaopll\IKAOPLL_modules\IKAOPLL_dac.v'
+Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_hdmi_labo4\src\opll\ikaopll\IKAOPLL_modules\IKAOPLL_eg.v'
+Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_hdmi_labo4\src\opll\ikaopll\IKAOPLL_modules\IKAOPLL_lfo.v'
+Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_hdmi_labo4\src\opll\ikaopll\IKAOPLL_modules\IKAOPLL_op.v'
+Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_hdmi_labo4\src\opll\ikaopll\IKAOPLL_modules\IKAOPLL_pg.v'
+Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_hdmi_labo4\src\opll\ikaopll\IKAOPLL_modules\IKAOPLL_primitives.v'
+Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_hdmi_labo4\src\opll\ikaopll\IKAOPLL_modules\IKAOPLL_reg.v'
+Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_hdmi_labo4\src\opll\ikaopll\IKAOPLL_modules\IKAOPLL_timinggen.v'
+Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_hdmi_labo4\src\opll\opll.v'
+Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_hdmi_labo4\src\ppi\ppi.v'
+Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_hdmi_labo4\src\ppi\ppi_inst.v'
+Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_hdmi_labo4\src\ram\ip_ram.v'
+Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_hdmi_labo4\src\sdram\ip_sdram_tangnano20k_c.v'
+Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_hdmi_labo4\src\secondary_slot\secondary_slot_inst.v'
+Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_hdmi_labo4\src\ssg\ssg.v'
+Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_hdmi_labo4\src\tangnano20k_hdmi_labo.v'
+Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_hdmi_labo4\src\v9918\vdp.v'
+Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_hdmi_labo4\src\v9918\vdp_color_bus.v'
+Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_hdmi_labo4\src\v9918\vdp_color_decoder.v'
+Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_hdmi_labo4\src\v9918\vdp_graphic123m.v'
+Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_hdmi_labo4\src\v9918\vdp_inst.v'
+Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_hdmi_labo4\src\v9918\vdp_interrupt.v'
+Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_hdmi_labo4\src\v9918\vdp_ram_256byte.v'
+Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_hdmi_labo4\src\v9918\vdp_register.v'
+Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_hdmi_labo4\src\v9918\vdp_spinforam.v'
+Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_hdmi_labo4\src\v9918\vdp_sprite.v'
+Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_hdmi_labo4\src\v9918\vdp_ssg.v'
+Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_hdmi_labo4\src\v9918\vdp_text12.v'
+Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_hdmi_labo4\src\v9918\vdp_wait_control.v'
+Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_hdmi_labo4\src\video_out\video_out.v'
+Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_hdmi_labo4\src\video_out\video_out_sigmoid.v'
+Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_hdmi_labo4\src\video_out\video_out_bilinear.v'
+Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_hdmi_labo4\src\video_out\video_out_hmag.v'
+Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_hdmi_labo4\src\video_out\video_double_buffer.v'
+Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_hdmi_labo4\src\video_out\video_ram_line_buffer.v'
+Compiling module 'tangnano20k_hdmi_labo'("D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_hdmi_labo4\src\tangnano20k_hdmi_labo.v":24)
+Compiling module 'Gowin_rPLL'("D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_hdmi_labo4\src\gowin_rpll\gowin_rpll.v":10)
+Compiling module 'Gowin_rPLL2'("D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_hdmi_labo4\src\gowin_rpll2\gowin_rpll2.v":10)
+Compiling module 'Gowin_CLKDIV'("D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_hdmi_labo4\src\gowin_clkdiv\gowin_clkdiv.v":10)
+Compiling module 'Gowin_CLKDIV2'("D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_hdmi_labo4\src\gowin_clkdiv2\gowin_clkdiv2.v":10)
+Compiling module 'micom_connect'("D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_hdmi_labo4\src\micom_connect\micom_connect.v":60)
+Extracting RAM for identifier 'ff_key_matrix'("D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_hdmi_labo4\src\micom_connect\micom_connect.v":112)
+Compiling module 'cz80_inst'("D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_hdmi_labo4\src\cz80\cz80_inst.v":63)
+Compiling module 'cz80'("D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_hdmi_labo4\src\cz80\cz80.v":63)
+Compiling module 'cz80_mcode'("D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_hdmi_labo4\src\cz80\cz80_mcode.v":63)
+Compiling module 'cz80_alu'("D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_hdmi_labo4\src\cz80\cz80_alu.v":63)
+WARN  (EX3791) : Expression size 17 truncated to fit in target size 16("D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_hdmi_labo4\src\cz80\cz80.v":382)
+WARN  (EX3791) : Expression size 17 truncated to fit in target size 16("D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_hdmi_labo4\src\cz80\cz80.v":528)
+WARN  (EX3791) : Expression size 32 truncated to fit in target size 16("D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_hdmi_labo4\src\cz80\cz80.v":531)
+WARN  (EX3791) : Expression size 32 truncated to fit in target size 16("D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_hdmi_labo4\src\cz80\cz80.v":544)
+WARN  (EX3791) : Expression size 17 truncated to fit in target size 16("D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_hdmi_labo4\src\cz80\cz80.v":547)
+Compiling module 'cz80_registers'("D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_hdmi_labo4\src\cz80\cz80_reg.v":55)
+WARN  (EX3791) : Expression size 4 truncated to fit in target size 3("D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_hdmi_labo4\src\cz80\cz80.v":1011)
+Compiling module 'ppi_inst'("D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_hdmi_labo4\src\ppi\ppi_inst.v":58)
+Compiling module 'ppi'("D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_hdmi_labo4\src\ppi\ppi.v":58)
+Compiling module 'secondary_slot_inst'("D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_hdmi_labo4\src\secondary_slot\secondary_slot_inst.v":58)
+Compiling module 'ssg'("D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_hdmi_labo4\src\ssg\ssg.v":58)
+WARN  (EX3791) : Expression size 32 truncated to fit in target size 5("D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_hdmi_labo4\src\ssg\ssg.v":429)
+WARN  (EX3791) : Expression size 32 truncated to fit in target size 5("D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_hdmi_labo4\src\ssg\ssg.v":432)
+WARN  (EX3791) : Expression size 32 truncated to fit in target size 16("D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_hdmi_labo4\src\ssg\ssg.v":480)
+WARN  (EX3791) : Expression size 32 truncated to fit in target size 16("D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_hdmi_labo4\src\ssg\ssg.v":483)
+WARN  (EX3791) : Expression size 32 truncated to fit in target size 6("D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_hdmi_labo4\src\ssg\ssg.v":500)
+WARN  (EX3791) : Expression size 6 truncated to fit in target size 5("D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_hdmi_labo4\src\ssg\ssg.v":517)
+WARN  (EX3791) : Expression size 6 truncated to fit in target size 5("D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_hdmi_labo4\src\ssg\ssg.v":520)
+Compiling module 'ip_opll'("D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_hdmi_labo4\src\opll\opll.v":7)
+Compiling module 'IKAOPLL(FAST_RESET=1,USE_PIPELINED_MULTIPLIER=1)'("D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_hdmi_labo4\src\opll\ikaopll\IKAOPLL.v":1)
+Compiling module 'IKAOPLL_timinggen(FAST_RESET=1)'("D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_hdmi_labo4\src\opll\ikaopll\IKAOPLL_modules\IKAOPLL_timinggen.v":1)
+Compiling module 'IKAOPLL_reg'("D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_hdmi_labo4\src\opll\ikaopll\IKAOPLL_modules\IKAOPLL_reg.v":1)
+Compiling module 'IKAOPLL_rw_synchronizer'("D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_hdmi_labo4\src\opll\ikaopll\IKAOPLL_modules\IKAOPLL_reg.v":467)
+Compiling module 'IKAOPLL_d9reg(WIDTH=8)'("D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_hdmi_labo4\src\opll\ikaopll\IKAOPLL_modules\IKAOPLL_reg.v":525)
+Compiling module 'IKAOPLL_sr(WIDTH=8,TAP0=2,TAP1=5,TAP2=8)'("D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_hdmi_labo4\src\opll\ikaopll\IKAOPLL_modules\IKAOPLL_primitives.v":31)
+Compiling module 'IKAOPLL_d9reg'("D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_hdmi_labo4\src\opll\ikaopll\IKAOPLL_modules\IKAOPLL_reg.v":525)
+Compiling module 'IKAOPLL_sr(TAP0=2,TAP1=5,TAP2=8)'("D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_hdmi_labo4\src\opll\ikaopll\IKAOPLL_modules\IKAOPLL_primitives.v":31)
+Compiling module 'IKAOPLL_d9reg(WIDTH=3)'("D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_hdmi_labo4\src\opll\ikaopll\IKAOPLL_modules\IKAOPLL_reg.v":525)
+Compiling module 'IKAOPLL_sr(WIDTH=3,TAP0=2,TAP1=5,TAP2=8)'("D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_hdmi_labo4\src\opll\ikaopll\IKAOPLL_modules\IKAOPLL_primitives.v":31)
+Compiling module 'IKAOPLL_d9reg(WIDTH=4)'("D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_hdmi_labo4\src\opll\ikaopll\IKAOPLL_modules\IKAOPLL_reg.v":525)
+Compiling module 'IKAOPLL_sr(WIDTH=4,TAP0=2,TAP1=5,TAP2=8)'("D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_hdmi_labo4\src\opll\ikaopll\IKAOPLL_modules\IKAOPLL_primitives.v":31)
+Compiling module 'IKAOPLL_instrom'("D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_hdmi_labo4\src\opll\ikaopll\IKAOPLL_modules\IKAOPLL_reg.v":554)
+Compiling module 'IKAOPLL_lfo'("D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_hdmi_labo4\src\opll\ikaopll\IKAOPLL_modules\IKAOPLL_lfo.v":1)
+Compiling module 'IKAOPLL_pg'("D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_hdmi_labo4\src\opll\ikaopll\IKAOPLL_modules\IKAOPLL_pg.v":1)
+Compiling module 'IKAOPLL_sr(WIDTH=19,LENGTH=15)'("D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_hdmi_labo4\src\opll\ikaopll\IKAOPLL_modules\IKAOPLL_primitives.v":31)
+Compiling module 'IKAOPLL_eg'("D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_hdmi_labo4\src\opll\ikaopll\IKAOPLL_modules\IKAOPLL_eg.v":1)
+Compiling module 'IKAOPLL_sr(WIDTH=2,LENGTH=18,TAP0=16)'("D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_hdmi_labo4\src\opll\ikaopll\IKAOPLL_modules\IKAOPLL_primitives.v":31)
+Compiling module 'IKAOPLL_sr(WIDTH=7,LENGTH=17,TAP0=15,TAP1=16)'("D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_hdmi_labo4\src\opll\ikaopll\IKAOPLL_modules\IKAOPLL_primitives.v":31)
+Compiling module 'IKAOPLL_op'("D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_hdmi_labo4\src\opll\ikaopll\IKAOPLL_modules\IKAOPLL_op.v":1)
+Compiling module 'IKAOPLL_logsinrom'("D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_hdmi_labo4\src\opll\ikaopll\IKAOPLL_modules\IKAOPLL_op.v":277)
+Compiling module 'IKAOPLL_exprom'("D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_hdmi_labo4\src\opll\ikaopll\IKAOPLL_modules\IKAOPLL_op.v":325)
+Compiling module 'IKAOPLL_sr(WIDTH=12,TAP0=6)'("D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_hdmi_labo4\src\opll\ikaopll\IKAOPLL_modules\IKAOPLL_primitives.v":31)
+Compiling module 'IKAOPLL_dac'("D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_hdmi_labo4\src\opll\ikaopll\IKAOPLL_modules\IKAOPLL_dac.v":1)
+Compiling module 'IKAOPLL_sr(WIDTH=9,LENGTH=5)'("D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_hdmi_labo4\src\opll\ikaopll\IKAOPLL_modules\IKAOPLL_primitives.v":31)
+Compiling module 'i2s_audio'("D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_hdmi_labo4\src\i2s_audio\i2s_audio.v":58)
+WARN  (EX3791) : Expression size 17 truncated to fit in target size 16("D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_hdmi_labo4\src\tangnano20k_hdmi_labo.v":485)
+Compiling module 'vdp_inst'("D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_hdmi_labo4\src\v9918\vdp_inst.v":58)
+Compiling module 'vdp'("D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_hdmi_labo4\src\v9918\vdp.v":58)
+Compiling module 'vdp_color_bus'("D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_hdmi_labo4\src\v9918\vdp_color_bus.v":56)
+Compiling module 'vdp_interrupt'("D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_hdmi_labo4\src\v9918\vdp_interrupt.v":57)
+Compiling module 'vdp_ssg'("D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_hdmi_labo4\src\v9918\vdp_ssg.v":58)
+WARN  (EX3791) : Expression size 12 truncated to fit in target size 11("D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_hdmi_labo4\src\v9918\vdp_ssg.v":146)
+WARN  (EX3791) : Expression size 12 truncated to fit in target size 11("D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_hdmi_labo4\src\v9918\vdp_ssg.v":188)
+WARN  (EX3791) : Expression size 4 truncated to fit in target size 3("D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_hdmi_labo4\src\v9918\vdp_ssg.v":340)
+WARN  (EX3791) : Expression size 10 truncated to fit in target size 9("D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_hdmi_labo4\src\v9918\vdp_ssg.v":359)
+WARN  (EX3791) : Expression size 10 truncated to fit in target size 9("D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_hdmi_labo4\src\v9918\vdp_ssg.v":379)
+WARN  (EX3791) : Expression size 10 truncated to fit in target size 9("D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_hdmi_labo4\src\v9918\vdp_ssg.v":467)
+Compiling module 'vdp_color_decoder'("D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_hdmi_labo4\src\v9918\vdp_color_decoder.v":56)
+Compiling module 'vdp_text12'("D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_hdmi_labo4\src\v9918\vdp_text12.v":58)
+WARN  (EX3791) : Expression size 3 truncated to fit in target size 2("D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_hdmi_labo4\src\v9918\vdp_text12.v":146)
+WARN  (EX3791) : Expression size 4 truncated to fit in target size 3("D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_hdmi_labo4\src\v9918\vdp_text12.v":150)
+WARN  (EX3791) : Expression size 8 truncated to fit in target size 7("D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_hdmi_labo4\src\v9918\vdp_text12.v":226)
+Compiling module 'vdp_graphic123m'("D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_hdmi_labo4\src\v9918\vdp_graphic123m.v":62)
+Compiling module 'vdp_sprite'("D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_hdmi_labo4\src\v9918\vdp_sprite.v":58)
+Compiling module 'vdp_spinforam'("D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_hdmi_labo4\src\v9918\vdp_spinforam.v":58)
+Extracting RAM for identifier 'ff_memory'("D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_hdmi_labo4\src\v9918\vdp_spinforam.v":66)
+Compiling module 'vdp_ram_256byte'("D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_hdmi_labo4\src\v9918\vdp_ram_256byte.v":32)
+Extracting RAM for identifier 'ff_block_ram'("D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_hdmi_labo4\src\v9918\vdp_ram_256byte.v":43)
+WARN  (EX3791) : Expression size 10 truncated to fit in target size 9("D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_hdmi_labo4\src\v9918\vdp_sprite.v":780)
+Compiling module 'vdp_register'("D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_hdmi_labo4\src\v9918\vdp_register.v":56)
+Compiling module 'video_out'("D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_hdmi_labo4\src\video_out\video_out.v":60)
+WARN  (EX3771) : Module instantiation should have an instance name("D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_hdmi_labo4\src\video_out\video_out.v":262)
+Compiling module 'video_out_hmag'("D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_hdmi_labo4\src\video_out\video_out_hmag.v":60)
+WARN  (EX3791) : Expression size 32 truncated to fit in target size 10("D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_hdmi_labo4\src\video_out\video_out_hmag.v":111)
+Compiling module 'video_out_sigmoid'("D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_hdmi_labo4\src\video_out\video_out_sigmoid.v":60)
+Compiling module 'video_double_buffer'("D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_hdmi_labo4\src\video_out\video_double_buffer.v":58)
+Compiling module 'video_ram_line_buffer'("D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_hdmi_labo4\src\video_out\video_ram_line_buffer.v":58)
+Extracting RAM for identifier 'ff_imem'("D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_hdmi_labo4\src\video_out\video_ram_line_buffer.v":69)
+WARN  (EX3791) : Expression size 7 truncated to fit in target size 6("D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_hdmi_labo4\src\video_out\video_double_buffer.v":126)
+Compiling module 'video_out_bilinear'("D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_hdmi_labo4\src\video_out\video_out_bilinear.v":60)
+Compiling module 'DVI_TX_Top'("D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_hdmi_labo4\src\dvi_tx\dvi_tx.v":1070)
+Compiling module '**'("D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_hdmi_labo4\src\dvi_tx\dvi_tx.v":1069)
+Compiling module 'ip_ram'("D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_hdmi_labo4\src\ram\ip_ram.v":5)
+Extracting RAM for identifier 'ff_ram'("D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_hdmi_labo4\src\ram\ip_ram.v":15)
+Compiling module 'ip_sdram'("D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_hdmi_labo4\src\sdram\ip_sdram_tangnano20k_c.v":57)
+WARN  (EX3791) : Expression size 32 truncated to fit in target size 14("D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_hdmi_labo4\src\sdram\ip_sdram_tangnano20k_c.v":389)
+Compiling module 'kanji_rom'("D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_hdmi_labo4\src\kanji_rom\kanji_rom.v":58)
+Compiling module 'megarom_wo_scc'("D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_hdmi_labo4\src\megarom\megarom_wo_scc.v":58)
+WARN  (EX3771) : Module instantiation should have an instance name("D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_hdmi_labo4\src\tangnano20k_hdmi_labo.v":671)
+Compiling module 'memory_mapper_inst'("D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_hdmi_labo4\src\memory_mapper\memory_mapper_inst.v":58)
+Compiling module 'memory_mapper'("D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_hdmi_labo4\src\memory_mapper\memory_mapper.v":58)
+NOTE  (EX0101) : Current top module is "tangnano20k_hdmi_labo"
+[5%] Running netlist conversion ...
+WARN  (CV0016) : Input clk27m is unused("D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_hdmi_labo4\src\tangnano20k_hdmi_labo.v":25)
+WARN  (CV0016) : Input button is unused("D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_hdmi_labo4\src\tangnano20k_hdmi_labo.v":27)
+Running device independent optimization ...
+[10%] Optimizing Phase 0 completed
+[15%] Optimizing Phase 1 completed
+[25%] Optimizing Phase 2 completed
+Running inference ...
+[30%] Inferring Phase 0 completed
+[40%] Inferring Phase 1 completed
+[50%] Inferring Phase 2 completed
+[55%] Inferring Phase 3 completed
+Running technical mapping ...
+[60%] Tech-Mapping Phase 0 completed
+[65%] Tech-Mapping Phase 1 completed
+[75%] Tech-Mapping Phase 2 completed
+[80%] Tech-Mapping Phase 3 completed
+[90%] Tech-Mapping Phase 4 completed
+[95%] Generate netlist file "D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_hdmi_labo4\impl\gwsynthesis\tangnano20k_hdmi_labo.vg" completed
+[100%] Generate report file "D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_hdmi_labo4\impl\gwsynthesis\tangnano20k_hdmi_labo_syn.rpt.html" completed
+GowinSynthesis finish
