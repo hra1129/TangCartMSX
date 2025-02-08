@@ -66,73 +66,205 @@ module video_out_sigmoid (
 
 	always @( posedge clk ) begin
 		case( coeff )
+//	4
+//		6'd0:		ff_sigmoid	<= 6'd0;
+//		6'd1:		ff_sigmoid	<= 6'd0;
+//		6'd2:		ff_sigmoid	<= 6'd1;
+//		6'd3:		ff_sigmoid	<= 6'd1;
+//		6'd4:		ff_sigmoid	<= 6'd1;
+//		6'd5:		ff_sigmoid	<= 6'd2;
+//		6'd6:		ff_sigmoid	<= 6'd2;
+//		6'd7:		ff_sigmoid	<= 6'd2;
+//		6'd8:		ff_sigmoid	<= 6'd3;
+//		6'd9:		ff_sigmoid	<= 6'd3;
+//		6'd10:		ff_sigmoid	<= 6'd3;
+//		6'd11:		ff_sigmoid	<= 6'd4;
+//		6'd12:		ff_sigmoid	<= 6'd4;
+//		6'd13:		ff_sigmoid	<= 6'd5;
+//		6'd14:		ff_sigmoid	<= 6'd6;
+//		6'd15:		ff_sigmoid	<= 6'd6;
+//		6'd16:		ff_sigmoid	<= 6'd7;
+//		6'd17:		ff_sigmoid	<= 6'd8;
+//		6'd18:		ff_sigmoid	<= 6'd9;
+//		6'd19:		ff_sigmoid	<= 6'd10;
+//		6'd20:		ff_sigmoid	<= 6'd11;
+//		6'd21:		ff_sigmoid	<= 6'd12;
+//		6'd22:		ff_sigmoid	<= 6'd14;
+//		6'd23:		ff_sigmoid	<= 6'd15;
+//		6'd24:		ff_sigmoid	<= 6'd17;
+//		6'd25:		ff_sigmoid	<= 6'd18;
+//		6'd26:		ff_sigmoid	<= 6'd20;
+//		6'd27:		ff_sigmoid	<= 6'd22;
+//		6'd28:		ff_sigmoid	<= 6'd24;
+//		6'd29:		ff_sigmoid	<= 6'd26;
+//		6'd30:		ff_sigmoid	<= 6'd28;
+//		6'd31:		ff_sigmoid	<= 6'd30;
+//		6'd32:		ff_sigmoid	<= 6'd32;
+//		6'd33:		ff_sigmoid	<= 6'd33;
+//		6'd34:		ff_sigmoid	<= 6'd35;
+//		6'd35:		ff_sigmoid	<= 6'd37;
+//		6'd36:		ff_sigmoid	<= 6'd39;
+//		6'd37:		ff_sigmoid	<= 6'd41;
+//		6'd38:		ff_sigmoid	<= 6'd43;
+//		6'd39:		ff_sigmoid	<= 6'd45;
+//		6'd40:		ff_sigmoid	<= 6'd46;
+//		6'd41:		ff_sigmoid	<= 6'd48;
+//		6'd42:		ff_sigmoid	<= 6'd49;
+//		6'd43:		ff_sigmoid	<= 6'd51;
+//		6'd44:		ff_sigmoid	<= 6'd52;
+//		6'd45:		ff_sigmoid	<= 6'd53;
+//		6'd46:		ff_sigmoid	<= 6'd54;
+//		6'd47:		ff_sigmoid	<= 6'd55;
+//		6'd48:		ff_sigmoid	<= 6'd56;
+//		6'd49:		ff_sigmoid	<= 6'd57;
+//		6'd50:		ff_sigmoid	<= 6'd57;
+//		6'd51:		ff_sigmoid	<= 6'd58;
+//		6'd52:		ff_sigmoid	<= 6'd59;
+//		6'd53:		ff_sigmoid	<= 6'd59;
+//		6'd54:		ff_sigmoid	<= 6'd60;
+//		6'd55:		ff_sigmoid	<= 6'd60;
+//		6'd56:		ff_sigmoid	<= 6'd61;
+//		6'd57:		ff_sigmoid	<= 6'd61;
+//		6'd58:		ff_sigmoid	<= 6'd61;
+//		6'd59:		ff_sigmoid	<= 6'd62;
+//		6'd60:		ff_sigmoid	<= 6'd62;
+//		6'd61:		ff_sigmoid	<= 6'd62;
+//		6'd62:		ff_sigmoid	<= 6'd63;
+//		6'd63:		ff_sigmoid	<= 6'd63;
+//		default:	ff_sigmoid	<= 6'dX;
+
+//	3
 		6'd0:		ff_sigmoid	<= 6'd0;
-		6'd1:		ff_sigmoid	<= 6'd0;
-		6'd2:		ff_sigmoid	<= 6'd1;
-		6'd3:		ff_sigmoid	<= 6'd1;
-		6'd4:		ff_sigmoid	<= 6'd1;
-		6'd5:		ff_sigmoid	<= 6'd2;
-		6'd6:		ff_sigmoid	<= 6'd2;
-		6'd7:		ff_sigmoid	<= 6'd2;
-		6'd8:		ff_sigmoid	<= 6'd3;
-		6'd9:		ff_sigmoid	<= 6'd3;
-		6'd10:		ff_sigmoid	<= 6'd3;
-		6'd11:		ff_sigmoid	<= 6'd4;
-		6'd12:		ff_sigmoid	<= 6'd4;
-		6'd13:		ff_sigmoid	<= 6'd5;
-		6'd14:		ff_sigmoid	<= 6'd6;
-		6'd15:		ff_sigmoid	<= 6'd6;
-		6'd16:		ff_sigmoid	<= 6'd7;
-		6'd17:		ff_sigmoid	<= 6'd8;
-		6'd18:		ff_sigmoid	<= 6'd9;
-		6'd19:		ff_sigmoid	<= 6'd10;
-		6'd20:		ff_sigmoid	<= 6'd11;
-		6'd21:		ff_sigmoid	<= 6'd12;
-		6'd22:		ff_sigmoid	<= 6'd14;
-		6'd23:		ff_sigmoid	<= 6'd15;
-		6'd24:		ff_sigmoid	<= 6'd17;
-		6'd25:		ff_sigmoid	<= 6'd18;
-		6'd26:		ff_sigmoid	<= 6'd20;
-		6'd27:		ff_sigmoid	<= 6'd22;
-		6'd28:		ff_sigmoid	<= 6'd24;
-		6'd29:		ff_sigmoid	<= 6'd26;
-		6'd30:		ff_sigmoid	<= 6'd28;
+		6'd1:		ff_sigmoid	<= 6'd1;
+		6'd2:		ff_sigmoid	<= 6'd2;
+		6'd3:		ff_sigmoid	<= 6'd3;
+		6'd4:		ff_sigmoid	<= 6'd4;
+		6'd5:		ff_sigmoid	<= 6'd4;
+		6'd6:		ff_sigmoid	<= 6'd5;
+		6'd7:		ff_sigmoid	<= 6'd5;
+		6'd8:		ff_sigmoid	<= 6'd6;
+		6'd9:		ff_sigmoid	<= 6'd6;
+		6'd10:		ff_sigmoid	<= 6'd7;
+		6'd11:		ff_sigmoid	<= 6'd7;
+		6'd12:		ff_sigmoid	<= 6'd8;
+		6'd13:		ff_sigmoid	<= 6'd9;
+		6'd14:		ff_sigmoid	<= 6'd9;
+		6'd15:		ff_sigmoid	<= 6'd10;
+		6'd16:		ff_sigmoid	<= 6'd11;
+		6'd17:		ff_sigmoid	<= 6'd12;
+		6'd18:		ff_sigmoid	<= 6'd13;
+		6'd19:		ff_sigmoid	<= 6'd14;
+		6'd20:		ff_sigmoid	<= 6'd15;
+		6'd21:		ff_sigmoid	<= 6'd16;
+		6'd22:		ff_sigmoid	<= 6'd18;
+		6'd23:		ff_sigmoid	<= 6'd19;
+		6'd24:		ff_sigmoid	<= 6'd20;
+		6'd25:		ff_sigmoid	<= 6'd21;
+		6'd26:		ff_sigmoid	<= 6'd23;
+		6'd27:		ff_sigmoid	<= 6'd24;
+		6'd28:		ff_sigmoid	<= 6'd26;
+		6'd29:		ff_sigmoid	<= 6'd27;
+		6'd30:		ff_sigmoid	<= 6'd29;
 		6'd31:		ff_sigmoid	<= 6'd30;
 		6'd32:		ff_sigmoid	<= 6'd32;
 		6'd33:		ff_sigmoid	<= 6'd33;
-		6'd34:		ff_sigmoid	<= 6'd35;
-		6'd35:		ff_sigmoid	<= 6'd37;
-		6'd36:		ff_sigmoid	<= 6'd39;
-		6'd37:		ff_sigmoid	<= 6'd41;
-		6'd38:		ff_sigmoid	<= 6'd43;
-		6'd39:		ff_sigmoid	<= 6'd45;
-		6'd40:		ff_sigmoid	<= 6'd46;
-		6'd41:		ff_sigmoid	<= 6'd48;
-		6'd42:		ff_sigmoid	<= 6'd49;
-		6'd43:		ff_sigmoid	<= 6'd51;
-		6'd44:		ff_sigmoid	<= 6'd52;
-		6'd45:		ff_sigmoid	<= 6'd53;
-		6'd46:		ff_sigmoid	<= 6'd54;
-		6'd47:		ff_sigmoid	<= 6'd55;
-		6'd48:		ff_sigmoid	<= 6'd56;
-		6'd49:		ff_sigmoid	<= 6'd57;
-		6'd50:		ff_sigmoid	<= 6'd57;
-		6'd51:		ff_sigmoid	<= 6'd58;
-		6'd52:		ff_sigmoid	<= 6'd59;
-		6'd53:		ff_sigmoid	<= 6'd59;
-		6'd54:		ff_sigmoid	<= 6'd60;
-		6'd55:		ff_sigmoid	<= 6'd60;
-		6'd56:		ff_sigmoid	<= 6'd61;
-		6'd57:		ff_sigmoid	<= 6'd61;
-		6'd58:		ff_sigmoid	<= 6'd61;
-		6'd59:		ff_sigmoid	<= 6'd62;
-		6'd60:		ff_sigmoid	<= 6'd62;
-		6'd61:		ff_sigmoid	<= 6'd62;
-		6'd62:		ff_sigmoid	<= 6'd63;
+		6'd34:		ff_sigmoid	<= 6'd34;
+		6'd35:		ff_sigmoid	<= 6'd36;
+		6'd36:		ff_sigmoid	<= 6'd37;
+		6'd37:		ff_sigmoid	<= 6'd39;
+		6'd38:		ff_sigmoid	<= 6'd40;
+		6'd39:		ff_sigmoid	<= 6'd42;
+		6'd40:		ff_sigmoid	<= 6'd43;
+		6'd41:		ff_sigmoid	<= 6'd44;
+		6'd42:		ff_sigmoid	<= 6'd45;
+		6'd43:		ff_sigmoid	<= 6'd47;
+		6'd44:		ff_sigmoid	<= 6'd48;
+		6'd45:		ff_sigmoid	<= 6'd49;
+		6'd46:		ff_sigmoid	<= 6'd50;
+		6'd47:		ff_sigmoid	<= 6'd51;
+		6'd48:		ff_sigmoid	<= 6'd52;
+		6'd49:		ff_sigmoid	<= 6'd53;
+		6'd50:		ff_sigmoid	<= 6'd54;
+		6'd51:		ff_sigmoid	<= 6'd54;
+		6'd52:		ff_sigmoid	<= 6'd55;
+		6'd53:		ff_sigmoid	<= 6'd56;
+		6'd54:		ff_sigmoid	<= 6'd56;
+		6'd55:		ff_sigmoid	<= 6'd57;
+		6'd56:		ff_sigmoid	<= 6'd57;
+		6'd57:		ff_sigmoid	<= 6'd58;
+		6'd58:		ff_sigmoid	<= 6'd58;
+		6'd59:		ff_sigmoid	<= 6'd59;
+		6'd60:		ff_sigmoid	<= 6'd60;
+		6'd61:		ff_sigmoid	<= 6'd61;
+		6'd62:		ff_sigmoid	<= 6'd62;
 		6'd63:		ff_sigmoid	<= 6'd63;
 		default:	ff_sigmoid	<= 6'dX;
 		endcase
 	end
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 	assign sigmoid	= ff_sigmoid;
 endmodule

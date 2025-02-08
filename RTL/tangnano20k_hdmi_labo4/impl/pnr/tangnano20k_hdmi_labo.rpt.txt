@@ -12,27 +12,27 @@
   <Part Number>: GW2AR-LV18QN88C8/I7
   <Device>: GW2AR-18
   <Device Version>: C
-  <Created Time>:Sat Feb  8 08:43:25 2025
+  <Created Time>:Sat Feb  8 14:49:51 2025
 
 
 2. PnR Details
 
   Running placement:
     Placement Phase 0: CPU time = 0h 0m 1s, Elapsed time = 0h 0m 1s
-    Placement Phase 1: CPU time = 0h 0m 0.396s, Elapsed time = 0h 0m 0.396s
+    Placement Phase 1: CPU time = 0h 0m 0.412s, Elapsed time = 0h 0m 0.412s
     Placement Phase 2: CPU time = 0h 0m 3s, Elapsed time = 0h 0m 3s
     Placement Phase 3: CPU time = 0h 0m 3s, Elapsed time = 0h 0m 3s
     Total Placement: CPU time = 0h 0m 8s, Elapsed time = 0h 0m 8s
  Running routing:
     Routing Phase 0: CPU time = 0h 0m 0.004s, Elapsed time = 0h 0m 0.004s
-    Routing Phase 1: CPU time = 0h 0m 0.467s, Elapsed time = 0h 0m 0.468s
-    Routing Phase 2: CPU time = 0h 0m 5s, Elapsed time = 0h 0m 5s
+    Routing Phase 1: CPU time = 0h 0m 0.58s, Elapsed time = 0h 0m 0.58s
+    Routing Phase 2: CPU time = 0h 0m 7s, Elapsed time = 0h 0m 7s
     Routing Phase 3: CPU time = 0h 0m 0s, Elapsed time = 0h 0m 0s
-    Total Routing: CPU time = 0h 0m 6s, Elapsed time = 0h 0m 6s
+    Total Routing: CPU time = 0h 0m 8s, Elapsed time = 0h 0m 8s
  Generate output files:
     CPU time = 0h 0m 3s, Elapsed time = 0h 0m 3s
 
- Total Time and Memory Usage: CPU time = 0h 0m 16s, Elapsed time = 0h 0m 16s, Peak memory usage = 530MB
+ Total Time and Memory Usage: CPU time = 0h 0m 19s, Elapsed time = 0h 0m 19s, Peak memory usage = 489MB
 
 
 3. Resource Usage Summary
@@ -40,15 +40,15 @@
   --------------------------------------------------------------------------------
   Resources                   | Usage                               | Utilization
   --------------------------------------------------------------------------------
-  Logic                       | 5818/20736                          |  29%
-    --LUT,ALU,ROM16           | 5548(5070 LUT, 478 ALU, 0 ROM16)    | -
+  Logic                       | 5835/20736                          |  29%
+    --LUT,ALU,ROM16           | 5565(5081 LUT, 484 ALU, 0 ROM16)    | -
     --SSRAM(RAM16)            | 45                                  | -
   Register                    | 2760/15915                          |  18%
     --Logic Register as Latch | 0/15552                             |  0%
     --Logic Register as FF    | 2738/15552                          |  18%
     --I/O Register as Latch   | 0/363                               |  0%
     --I/O Register as FF      | 22/363                              |  7%
-  CLS                         | 3969/10368                          |  39%
+  CLS                         | 3958/10368                          |  39%
   I/O Port                    | 29/66                               |  44%
   I/O Buf                     | 22                                  | -
     --Input Buf               | 10                                  | -
@@ -104,7 +104,7 @@
   -------------------------------------------
   clk3_579m_d    | PRIMARY        |  BR BL
   w_video_clk    | PRIMARY        |  TR TL BR BL
-  clk21m         | PRIMARY        |  TL BR BL
+  clk21m         | PRIMARY        |  TR TL BR BL
   w_cpu_enable   | LW             |  -
   ff_reset1_n    | LW             |  -
   n1710_5        | LW             |  -

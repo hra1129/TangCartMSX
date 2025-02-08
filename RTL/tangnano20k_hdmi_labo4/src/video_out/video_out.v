@@ -101,13 +101,13 @@ module video_out #(
 	// ff_disp_start_x + disp_width < clocks_per_line/2 = 684
 	localparam			disp_start_y	= 3;
 	localparam			prb_height		= 25;
-	localparam			right_x			= 684 - disp_width - 2;				// 106
-	localparam			pal_right_x		= 87;								// 87
-	localparam			center_x		= right_x - 32 - 2;					// 72
-	localparam			base_left_x		= center_x - 32 - 2 - 3;			// 35
-	localparam	[7:0]	reg_left_offset	= (800 - 780) / 8;					//	0 ..... 112
-	localparam	[7:0]	reg_denominator	= 780 / 4;							//	144 ... 200
-	localparam	[5:0]	reg_normalize	= 8192 / reg_denominator;			//	8192 / reg_denominator : 57 ... 40
+	localparam			right_x			= 684 - disp_width - 2;						// 106
+	localparam			pal_right_x		= 87;										// 87
+	localparam			center_x		= right_x - 32 - 2;							// 72
+	localparam			base_left_x		= center_x - 32 - 2 - 3;					// 35
+	localparam	[7:0]	reg_left_offset	= (800 - 780) / 2;							//	0 ..... 112
+	localparam	[7:0]	reg_denominator	= 780 / 4;									//	144 ... 200
+	localparam	[5:0]	reg_normalize	= 8192 / reg_denominator;					//	8192 / reg_denominator : 57 ... 40
 
 	reg				ff_v_sync;
 	wire	[7:0]	w_data_r_out;
@@ -265,6 +265,7 @@ module video_out #(
 		.enable				( enable			),
 		.vdp_hcounter		( vdp_hcounter		),
 		.vdp_vcounter		( vdp_vcounter[1:0]	),
+		.h_cnt				( ff_h_cnt			),
 		.vdp_r				( vdp_r				),
 		.vdp_g				( vdp_g				),
 		.vdp_b				( vdp_b				),

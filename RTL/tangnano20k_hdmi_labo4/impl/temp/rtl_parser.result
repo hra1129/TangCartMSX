@@ -683,7 +683,7 @@
       "SubInsts" : [
        {
         "InstFile" : "D:/github/HRA_product/TangCartMSX/RTL/tangnano20k_hdmi_labo4/src/video_out/video_out_hmag.v",
-        "InstLine" : 168,
+        "InstLine" : 169,
         "InstName" : "u_sigmoid",
         "ModuleFile" : "D:/github/HRA_product/TangCartMSX/RTL/tangnano20k_hdmi_labo4/src/video_out/video_out_sigmoid.v",
         "ModuleLine" : 60,
@@ -691,7 +691,7 @@
        },
        {
         "InstFile" : "D:/github/HRA_product/TangCartMSX/RTL/tangnano20k_hdmi_labo4/src/video_out/video_out_hmag.v",
-        "InstLine" : 198,
+        "InstLine" : 199,
         "InstName" : "u_double_buffer",
         "ModuleFile" : "D:/github/HRA_product/TangCartMSX/RTL/tangnano20k_hdmi_labo4/src/video_out/video_double_buffer.v",
         "ModuleLine" : 58,
@@ -717,7 +717,7 @@
        },
        {
         "InstFile" : "D:/github/HRA_product/TangCartMSX/RTL/tangnano20k_hdmi_labo4/src/video_out/video_out_hmag.v",
-        "InstLine" : 226,
+        "InstLine" : 227,
         "InstName" : "u_bilinear_r",
         "ModuleFile" : "D:/github/HRA_product/TangCartMSX/RTL/tangnano20k_hdmi_labo4/src/video_out/video_out_bilinear.v",
         "ModuleLine" : 60,
@@ -725,7 +725,7 @@
        },
        {
         "InstFile" : "D:/github/HRA_product/TangCartMSX/RTL/tangnano20k_hdmi_labo4/src/video_out/video_out_hmag.v",
-        "InstLine" : 233,
+        "InstLine" : 234,
         "InstName" : "u_bilinear_g",
         "ModuleFile" : "D:/github/HRA_product/TangCartMSX/RTL/tangnano20k_hdmi_labo4/src/video_out/video_out_bilinear.v",
         "ModuleLine" : 60,
@@ -733,7 +733,7 @@
        },
        {
         "InstFile" : "D:/github/HRA_product/TangCartMSX/RTL/tangnano20k_hdmi_labo4/src/video_out/video_out_hmag.v",
-        "InstLine" : 240,
+        "InstLine" : 241,
         "InstName" : "u_bilinear_b",
         "ModuleFile" : "D:/github/HRA_product/TangCartMSX/RTL/tangnano20k_hdmi_labo4/src/video_out/video_out_bilinear.v",
         "ModuleLine" : 60,

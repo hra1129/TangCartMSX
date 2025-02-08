@@ -63,6 +63,7 @@ module video_out_hmag (
 	input			enable,
 	input	[10:0]	vdp_hcounter,
 	input	[1:0]	vdp_vcounter,
+	input	[10:0]	h_cnt,
 	// write side
 	input	[5:0]	vdp_r,
 	input	[5:0]	vdp_g,
@@ -114,7 +115,7 @@ module video_out_hmag (
 		if( !reset_n ) begin
 			ff_x_position_r <= 10'd0;
 		end
-		else if( vdp_hcounter == (clocks_per_line - 1) ) begin
+		else if( h_cnt == (clocks_per_line - 1) ) begin
 			ff_x_position_r <= 10'd0;
 		end
 		else if( ff_active ) begin
@@ -174,7 +175,7 @@ module video_out_hmag (
 	// --------------------------------------------------------------------
 	//	Active period
 	// --------------------------------------------------------------------
-	assign w_active_start	= (vdp_hcounter    == { 1'b0, reg_left_offset, 2'd0 } );
+	assign w_active_start	= (h_cnt           == { 1'b0, reg_left_offset, 2'd0 } );
 	assign w_active_end		= (ff_x_position_r == c_active_end);
 
 	always @( posedge clk ) begin

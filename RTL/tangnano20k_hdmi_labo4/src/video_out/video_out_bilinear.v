@@ -69,8 +69,8 @@ module video_out_bilinear (
 	reg		[7:0]	ff_out;
 	wire	[6:0]	w_sub;
 	wire	[13:0]	w_mul;
-	reg		[8:0]	ff_mul;
-	wire	[8:0]	w_add;
+	reg		[9:0]	ff_mul;
+	wire	[9:0]	w_add;
 
 	// --------------------------------------------------------------------
 	//	----[ff_tap0]-----[ff_tap1]----   ※画像表示上は tap1 の方が左画素。
@@ -83,15 +83,23 @@ module video_out_bilinear (
 		ff_tap0	<= pixel_in;
 		ff_tap1	<= ff_tap0;
 		ff_tap2	<= ff_tap1;
-		ff_mul	<= w_mul[12:4];
+		ff_mul	<= w_mul[13:4];		//	小数部6bit → 小数部2bit
 	end
 
-	assign w_sub		= { 1'b0, ff_tap0 } - { 1'b0, ff_tap1 };
-	assign w_mul		= $signed( w_sub ) * $signed( { 1'b0, coeff } );
-	assign w_add		= ff_mul + { 1'b0, ff_tap2, 2'd0 };
+	assign w_sub		= { 1'b0, ff_tap0 } - { 1'b0, ff_tap1 };			//	小数部0bit - 小数部0bit
+	assign w_mul		= $signed( w_sub ) * $signed( { 1'b0, coeff } );	//	小数部0bit * 小数部6bit
+	assign w_add		= ff_mul + { 2'd0, ff_tap2, 2'd0 };					//	小数部2bit + 小数部2bit
 
 	always @( posedge clk ) begin
-		ff_out	<= w_add[7:0];
+		if( w_add[9] ) begin
+			ff_out <= 8'd0;
+		end
+		else if( w_add[8] ) begin
+			ff_out <= 8'd255;
+		end
+		else begin
+			ff_out	<= w_add[7:0];
+		end
 	end
 
 	assign pixel_out	= ff_out;
