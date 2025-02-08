@@ -123,7 +123,7 @@ module video_double_buffer (
 			ff_addr_o	<= (  is_odd ) ? x_position_w : x_position_r;
 			ff_d		<= { wdata_r, wdata_g, wdata_b };
 			ff_rdata_r	<= (  is_odd ) ? out_e[17:12] : out_o[17:12];
-			ff_rdata_g	<= (  is_odd ) ? out_e[11: 5] : out_o[11: 6];
+			ff_rdata_g	<= (  is_odd ) ? out_e[11: 6] : out_o[11: 6];
 			ff_rdata_b	<= (  is_odd ) ? out_e[ 5: 0] : out_o[ 5: 0];
 		end
 	end
