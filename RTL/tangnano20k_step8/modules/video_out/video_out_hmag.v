@@ -93,6 +93,7 @@ module video_out_hmag (
 	wire	[8:0]	w_sub_numerator;
 	wire			w_active_start;
 	wire			w_active_end;
+	wire			w_h_cnt_end;
 	wire			w_is_odd;
 	wire			w_we_buf;
 	wire	[5:0]	w_pixel_r;
@@ -101,7 +102,6 @@ module video_out_hmag (
 	wire			w_hold;
 	wire	[15:0]	w_normalized_numerator;
 	reg		[5:0]	ff_coeff;
-	wire	[5:0]	w_coeff;
 	reg		[5:0]	ff_coeff1;
 	reg		[5:0]	ff_coeff2;
 	reg		[5:0]	ff_coeff3;
@@ -127,7 +127,7 @@ module video_out_hmag (
 		if( !reset_n ) begin
 			ff_x_position_r <= 10'd0;
 		end
-		else if( h_cnt == (clocks_per_line - 1) ) begin
+		else if( w_h_cnt_end ) begin
 			ff_x_position_r <= 10'd0;
 		end
 		else if( ff_active ) begin
@@ -165,7 +165,7 @@ module video_out_hmag (
 	assign w_sub_numerator		= w_next_numerator - { 1'b0, reg_denominator };
 
 	always @( posedge clk ) begin
-		ff_hold0 <= w_hold;
+		ff_hold0 <= w_hold & ff_active;
 		ff_hold1 <= ff_hold0;
 		ff_hold2 <= ff_hold1;
 		ff_hold3 <= ff_hold2;
@@ -198,12 +198,13 @@ module video_out_hmag (
 	// --------------------------------------------------------------------
 	assign w_active_start	= (h_cnt           == { 1'b0, reg_left_offset, 2'd0 } );
 	assign w_active_end		= (ff_x_position_r == c_active_end);
+	assign w_h_cnt_end		= (h_cnt           == (clocks_per_line - 1));
 
 	always @( posedge clk ) begin
 		if( !reset_n ) begin
 			ff_active <= 1'b0;
 		end
-		else if( w_active_end ) begin
+		else if( w_active_end || w_h_cnt_end ) begin
 			ff_active <= 1'b0;
 		end
 		else if( w_active_start ) begin

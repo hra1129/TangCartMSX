@@ -105,7 +105,7 @@ module video_out #(
 	localparam			pal_right_x		= 87;										// 87
 	localparam			center_x		= right_x - 32 - 2;							// 72
 	localparam			base_left_x		= center_x - 32 - 2 - 3;					// 35
-	localparam	[7:0]	reg_left_offset	= 16;										//	0 ..... 112
+	localparam	[7:0]	reg_left_offset	= 20;										//	0 ..... 112
 	localparam	[7:0]	reg_denominator	= 700 / 4;									//	144 ... 200
 	localparam	[7:0]	reg_normalize	= 32768 / reg_denominator;					//	228 ... 160
 

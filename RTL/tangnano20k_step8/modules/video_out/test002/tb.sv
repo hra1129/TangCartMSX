@@ -59,7 +59,7 @@ module tb ();
 	reg				reset_n;
 	reg				enable;
 	reg		[10:0]	vdp_hcounter;
-	reg		[1:0]	vdp_vcounter;
+	reg		[10:0]	vdp_vcounter;
 	reg		[10:0]	h_cnt;
 	reg		[5:0]	vdp_r;
 	reg		[5:0]	vdp_g;
@@ -80,7 +80,7 @@ module tb ();
 		.reset_n				( reset_n				),
 		.enable					( enable				),
 		.vdp_hcounter			( vdp_hcounter			),
-		.vdp_vcounter			( vdp_vcounter			),
+		.vdp_vcounter			( vdp_vcounter[1:0]		),
 		.h_cnt					( h_cnt					),
 		.vdp_r					( vdp_r					),
 		.vdp_g					( vdp_g					),
@@ -102,44 +102,44 @@ module tb ();
 
 	always @( posedge clk ) begin
 		if( !reset_n ) begin
-			h_cnt <= 0;
+			h_cnt <= 11'd0;
 		end
-		else if( vdp_hcounter == 1367 ) begin
-			h_cnt <= 0;
+		else if( h_cnt == 11'd1367 ) begin
+			h_cnt <= 11'd0;
 		end
 		else begin
-			h_cnt <= h_cnt + 1;
+			h_cnt <= h_cnt + 11'd1;
 		end
 	end
 
 	always @( posedge clk ) begin
 		if( !reset_n ) begin
-			vdp_hcounter <= 0;
+			vdp_hcounter <= 11'd0;
 		end
 		else if( !enable ) begin
 			//	hold
 		end
-		else if( vdp_hcounter == 1367 ) begin
-			vdp_hcounter <= 0;
+		else if( vdp_hcounter == 11'd1367 ) begin
+			vdp_hcounter <= 11'd0;
 		end
 		else begin
-			vdp_hcounter <= vdp_hcounter + 1;
+			vdp_hcounter <= vdp_hcounter + 11'd1;
 		end
 	end
 
 	always @( posedge clk ) begin
 		if( !reset_n ) begin
-			vdp_vcounter <= 0;
+			vdp_vcounter <= 11'd0;
 		end
 		else if( !enable ) begin
 			//	hold
 		end
-		else if( vdp_hcounter == 1367 ) begin
-			if( vdp_vcounter == 523 ) begin
-				vdp_vcounter <= 0;
+		else if( vdp_hcounter == 11'd1367 ) begin
+			if( vdp_vcounter == 11'd523 ) begin
+				vdp_vcounter <= 11'd0;
 			end
 			else begin
-				vdp_vcounter <= vdp_vcounter + 1;
+				vdp_vcounter <= vdp_vcounter + 11'd1;
 			end
 		end
 	end
@@ -162,8 +162,8 @@ module tb ();
 		vdp_r			= 0;
 		vdp_g			= 0;
 		vdp_b			= 0;
-		reg_left_offset	= 0;			//	0 ..... 112
-		reg_denominator	= 180;			//	144 ... 200
+		reg_left_offset	= 16;			//	0 ..... 112
+		reg_denominator	= 640 / 4;		//	144 ... 200
 		reg_normalize	= 32768 / reg_denominator;
 		
 		@( negedge clk );
@@ -206,9 +206,9 @@ module tb ();
 					end
 				default:
 					begin
-						vdp_r	<= 6'h00;
-						vdp_g	<= 6'h00;
-						vdp_b	<= 6'h00;
+						vdp_r	<= 6'h01;
+						vdp_g	<= 6'h01;
+						vdp_b	<= 6'h01;
 					end
 				endcase
 			end

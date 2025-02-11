@@ -194,6 +194,14 @@
    "Type" : "verilog"
   },
   {
+   "Path" : "D:/github/HRA_product/TangCartMSX/RTL/tangnano20k_step8/modules/video_out/video_double_buffer.v",
+   "Type" : "verilog"
+  },
+  {
+   "Path" : "D:/github/HRA_product/TangCartMSX/RTL/tangnano20k_step8/modules/video_out/video_out.v",
+   "Type" : "verilog"
+  },
+  {
    "Path" : "D:/github/HRA_product/TangCartMSX/RTL/tangnano20k_step8/modules/video_out/video_out_bilinear.v",
    "Type" : "verilog"
   },
@@ -202,15 +210,7 @@
    "Type" : "verilog"
   },
   {
-   "Path" : "D:/github/HRA_product/TangCartMSX/RTL/tangnano20k_step8/modules/video_out/video_double_buffer.v",
-   "Type" : "verilog"
-  },
-  {
    "Path" : "D:/github/HRA_product/TangCartMSX/RTL/tangnano20k_step8/modules/video_out/video_ram_line_buffer.v",
-   "Type" : "verilog"
-  },
-  {
-   "Path" : "D:/github/HRA_product/TangCartMSX/RTL/tangnano20k_step8/modules/video_out/video_out.v",
    "Type" : "verilog"
   },
   {
