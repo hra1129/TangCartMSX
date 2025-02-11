@@ -101,10 +101,11 @@ module video_out_hmag (
 	wire			w_hold;
 	wire	[15:0]	w_normalized_numerator;
 	reg		[5:0]	ff_coeff;
-	wire	[5:0]	w_sigmoid;
-	reg		[5:0]	ff_sigmoid2;
-	reg		[5:0]	ff_sigmoid3;
-	reg		[5:0]	ff_sigmoid4;
+	wire	[5:0]	w_coeff;
+	reg		[5:0]	ff_coeff1;
+	reg		[5:0]	ff_coeff2;
+	reg		[5:0]	ff_coeff3;
+	reg		[5:0]	ff_coeff4;
 	reg				ff_hold0;
 	reg				ff_hold1;
 	reg				ff_hold2;
@@ -185,16 +186,11 @@ module video_out_hmag (
 		end
 	end
 
-	video_out_sigmoid u_sigmoid (
-		.clk			( clk				),
-		.coeff			( ff_coeff			),
-		.sigmoid		( w_sigmoid			)
-	);
-
 	always @( posedge clk ) begin
-		ff_sigmoid2	<= w_sigmoid;
-		ff_sigmoid3	<= ff_sigmoid2;
-		ff_sigmoid4	<= ff_sigmoid3;
+		ff_coeff1	<= ff_coeff;
+		ff_coeff2	<= ff_coeff1;
+		ff_coeff3	<= ff_coeff2;
+		ff_coeff4	<= ff_coeff3;
 	end
 
 	// --------------------------------------------------------------------
@@ -228,6 +224,7 @@ module video_out_hmag (
 		.x_position_w	( w_x_position_w	),
 		.x_position_r	( ff_x_position_r	),
 		.is_odd			( w_is_odd			),
+		.re				( ff_active			),
 		.we				( w_we_buf			),
 		.wdata_r		( vdp_r				),
 		.wdata_g		( vdp_g				),
@@ -259,7 +256,7 @@ module video_out_hmag (
 
 	video_out_bilinear u_bilinear_r (
 		.clk			( clk					),
-		.coeff			( ff_sigmoid4			),
+		.coeff			( ff_coeff4				),
 		.tap0			( ff_tap0_r				),
 		.tap1			( ff_tap1_r				),
 		.pixel_out		( video_r				)
@@ -267,7 +264,7 @@ module video_out_hmag (
 
 	video_out_bilinear u_bilinear_g (
 		.clk			( clk					),
-		.coeff			( ff_sigmoid4			),
+		.coeff			( ff_coeff4				),
 		.tap0			( ff_tap0_g				),
 		.tap1			( ff_tap1_g				),
 		.pixel_out		( video_g				)
@@ -275,7 +272,7 @@ module video_out_hmag (
 
 	video_out_bilinear u_bilinear_b (
 		.clk			( clk					),
-		.coeff			( ff_sigmoid4			),
+		.coeff			( ff_coeff4				),
 		.tap0			( ff_tap0_b				),
 		.tap1			( ff_tap1_b				),
 		.pixel_out		( video_b				)

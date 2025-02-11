@@ -52,7 +52,6 @@
         <File path="D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_step8\modules\v9918\vdp_ssg.v" type="verilog"/>
         <File path="D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_step8\modules\v9918\vdp_text12.v" type="verilog"/>
         <File path="D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_step8\modules\v9918\vdp_wait_control.v" type="verilog"/>
-        <File path="D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_step8\modules\video_out\video_out_sigmoid.v" type="verilog"/>
         <File path="D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_step8\modules\video_out\video_out_bilinear.v" type="verilog"/>
         <File path="D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_step8\modules\video_out\video_out_hmag.v" type="verilog"/>
         <File path="D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_step8\modules\video_out\video_double_buffer.v" type="verilog"/>

@@ -59,11 +59,13 @@ module video_ram_line_buffer (
 	input			clk,
 	input			enable,
 	input	[9:0]	address,
+	input			re,
 	input			we,
 	input	[17:0]	d,
 	output	[17:0]	q
 );
 	reg		[9:0]	ff_address;
+	reg				ff_re;
 	reg				ff_we;
 	reg		[17:0]	ff_d;
 	reg		[17:0]	ff_imem [0:1023];
@@ -82,11 +84,18 @@ module video_ram_line_buffer (
 	end
 
 	always @( posedge clk ) begin
+			ff_re		<= re;
+	end
+
+	always @( posedge clk ) begin
 		if( ff_we ) begin
 			ff_imem[ ff_address ]	<= ff_d;
 		end
-		else begin
+		else if( ff_re ) begin
 			ff_q					<= ff_imem[ ff_address ];
+		end
+		else begin
+			ff_q					<= 18'd0;
 		end
 	end
 

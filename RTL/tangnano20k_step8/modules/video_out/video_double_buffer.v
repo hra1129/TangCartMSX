@@ -62,6 +62,7 @@ module video_double_buffer (
 	input	[9:0]	x_position_w,
 	input	[9:0]	x_position_r,
 	input			is_odd,				//	write access mode is odd
+	input			re,
 	input			we,
 	input	[5:0]	wdata_r,
 	input	[5:0]	wdata_g,
@@ -75,6 +76,7 @@ module video_double_buffer (
 	reg				ff_enable;
 	reg				ff_we_e;
 	reg				ff_we_o;
+	reg				ff_re;
 	reg		[9:0]	ff_addr_e;
 	reg		[9:0]	ff_addr_o;
 	reg		[17:0]	ff_d;
@@ -92,6 +94,7 @@ module video_double_buffer (
 		.clk		( clk			),
 		.enable		( w_even_enable	),
 		.address	( ff_addr_e		),
+		.re			( ff_re			),
 		.we			( ff_we_e		),
 		.d			( ff_d			),
 		.q			( out_e			)
@@ -102,6 +105,7 @@ module video_double_buffer (
 		.clk		( clk			),
 		.enable		( w_odd_enable	),
 		.address	( ff_addr_o		),
+		.re			( ff_re			),
 		.we			( ff_we_o		),
 		.d			( ff_d			),
 		.q			( out_o			)
@@ -129,6 +133,7 @@ module video_double_buffer (
 	end
 
 	always @( posedge clk ) begin
+		ff_re		<= re;
 		ff_addr_e	<= ( is_odd ) ? x_position_r : x_position_w;
 		ff_addr_o	<= ( is_odd ) ? x_position_w : x_position_r;
 		ff_rdata_r	<= ( is_odd ) ? out_e[17:12] : out_o[17:12];
