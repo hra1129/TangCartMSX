@@ -1,26 +1,48 @@
 onerror {resume}
 quietly WaveActivateNextPane {} 0
-add wave -noupdate /tb/timing
-add wave -noupdate /tb/u_vdp/u_v9918_core/u_vdp_register/vdp_mode_graphic1
-add wave -noupdate -radix binary /tb/u_vdp/u_v9918_core/u_vdp_graphic123m/dot_state
-add wave -noupdate -radix hexadecimal /tb/u_vdp/u_v9918_core/u_vdp_graphic123m/eight_dot_state
-add wave -noupdate -radix hexadecimal /tb/u_vdp/u_v9918_core/u_vdp_graphic123m/dot_counter_x
-add wave -noupdate -radix hexadecimal /tb/u_vdp/u_v9918_core/u_vdp_graphic123m/w_pattern_name_address
-add wave -noupdate -radix hexadecimal -childformat {{{/tb/u_vdp/u_v9918_core/u_vdp_graphic123m/w_pattern_generator_address[13]} -radix hexadecimal} {{/tb/u_vdp/u_v9918_core/u_vdp_graphic123m/w_pattern_generator_address[12]} -radix hexadecimal} {{/tb/u_vdp/u_v9918_core/u_vdp_graphic123m/w_pattern_generator_address[11]} -radix hexadecimal} {{/tb/u_vdp/u_v9918_core/u_vdp_graphic123m/w_pattern_generator_address[10]} -radix hexadecimal} {{/tb/u_vdp/u_v9918_core/u_vdp_graphic123m/w_pattern_generator_address[9]} -radix hexadecimal} {{/tb/u_vdp/u_v9918_core/u_vdp_graphic123m/w_pattern_generator_address[8]} -radix hexadecimal} {{/tb/u_vdp/u_v9918_core/u_vdp_graphic123m/w_pattern_generator_address[7]} -radix hexadecimal} {{/tb/u_vdp/u_v9918_core/u_vdp_graphic123m/w_pattern_generator_address[6]} -radix hexadecimal} {{/tb/u_vdp/u_v9918_core/u_vdp_graphic123m/w_pattern_generator_address[5]} -radix hexadecimal} {{/tb/u_vdp/u_v9918_core/u_vdp_graphic123m/w_pattern_generator_address[4]} -radix hexadecimal} {{/tb/u_vdp/u_v9918_core/u_vdp_graphic123m/w_pattern_generator_address[3]} -radix hexadecimal} {{/tb/u_vdp/u_v9918_core/u_vdp_graphic123m/w_pattern_generator_address[2]} -radix hexadecimal} {{/tb/u_vdp/u_v9918_core/u_vdp_graphic123m/w_pattern_generator_address[1]} -radix hexadecimal} {{/tb/u_vdp/u_v9918_core/u_vdp_graphic123m/w_pattern_generator_address[0]} -radix hexadecimal}} -subitemconfig {{/tb/u_vdp/u_v9918_core/u_vdp_graphic123m/w_pattern_generator_address[13]} {-height 15 -radix hexadecimal} {/tb/u_vdp/u_v9918_core/u_vdp_graphic123m/w_pattern_generator_address[12]} {-height 15 -radix hexadecimal} {/tb/u_vdp/u_v9918_core/u_vdp_graphic123m/w_pattern_generator_address[11]} {-height 15 -radix hexadecimal} {/tb/u_vdp/u_v9918_core/u_vdp_graphic123m/w_pattern_generator_address[10]} {-height 15 -radix hexadecimal} {/tb/u_vdp/u_v9918_core/u_vdp_graphic123m/w_pattern_generator_address[9]} {-height 15 -radix hexadecimal} {/tb/u_vdp/u_v9918_core/u_vdp_graphic123m/w_pattern_generator_address[8]} {-height 15 -radix hexadecimal} {/tb/u_vdp/u_v9918_core/u_vdp_graphic123m/w_pattern_generator_address[7]} {-height 15 -radix hexadecimal} {/tb/u_vdp/u_v9918_core/u_vdp_graphic123m/w_pattern_generator_address[6]} {-height 15 -radix hexadecimal} {/tb/u_vdp/u_v9918_core/u_vdp_graphic123m/w_pattern_generator_address[5]} {-height 15 -radix hexadecimal} {/tb/u_vdp/u_v9918_core/u_vdp_graphic123m/w_pattern_generator_address[4]} {-height 15 -radix hexadecimal} {/tb/u_vdp/u_v9918_core/u_vdp_graphic123m/w_pattern_generator_address[3]} {-height 15 -radix hexadecimal} {/tb/u_vdp/u_v9918_core/u_vdp_graphic123m/w_pattern_generator_address[2]} {-height 15 -radix hexadecimal} {/tb/u_vdp/u_v9918_core/u_vdp_graphic123m/w_pattern_generator_address[1]} {-height 15 -radix hexadecimal} {/tb/u_vdp/u_v9918_core/u_vdp_graphic123m/w_pattern_generator_address[0]} {-height 15 -radix hexadecimal}} /tb/u_vdp/u_v9918_core/u_vdp_graphic123m/w_pattern_generator_address
-add wave -noupdate -radix hexadecimal /tb/u_vdp/u_v9918_core/u_vdp_graphic123m/w_color_address
-add wave -noupdate -radix hexadecimal /tb/u_vdp/u_v9918_core/u_vdp_graphic123m/ff_vram_address
-add wave -noupdate -radix hexadecimal /tb/u_vdp/u_v9918_core/p_dram_oe_n
-add wave -noupdate -radix hexadecimal /tb/u_vdp/u_v9918_core/p_dram_address
-add wave -noupdate -radix hexadecimal /tb/u_vdp/u_v9918_core/p_dram_rdata
-add wave -noupdate -radix hexadecimal /tb/u_vdp/u_v9918_core/u_vdp_graphic123m/ff_ram_dat
-add wave -noupdate -radix hexadecimal /tb/u_vdp/u_v9918_core/u_vdp_graphic123m/ff_pre_pattern_num
-add wave -noupdate /tb/u_vdp/u_v9918_core/u_vdp_register/reg_r0_disp_mode
-add wave -noupdate /tb/u_vdp/u_v9918_core/u_vdp_register/reg_r1_disp_mode
+add wave -noupdate -radix hexadecimal /tb/u_video_out_hmag/clk
+add wave -noupdate -radix hexadecimal /tb/u_video_out_hmag/reset_n
+add wave -noupdate -radix hexadecimal /tb/u_video_out_hmag/enable
+add wave -noupdate -radix hexadecimal /tb/u_video_out_hmag/vdp_hcounter
+add wave -noupdate -radix hexadecimal /tb/u_video_out_hmag/vdp_vcounter
+add wave -noupdate -radix hexadecimal /tb/u_video_out_hmag/h_cnt
+add wave -noupdate -radix hexadecimal /tb/u_video_out_hmag/vdp_r
+add wave -noupdate -radix hexadecimal /tb/u_video_out_hmag/vdp_g
+add wave -noupdate -radix hexadecimal /tb/u_video_out_hmag/vdp_b
+add wave -noupdate -radix hexadecimal /tb/u_video_out_hmag/video_r
+add wave -noupdate -radix hexadecimal /tb/u_video_out_hmag/video_g
+add wave -noupdate -radix hexadecimal /tb/u_video_out_hmag/video_b
+add wave -noupdate -radix hexadecimal /tb/u_video_out_hmag/reg_left_offset
+add wave -noupdate -radix unsigned /tb/u_video_out_hmag/reg_denominator
+add wave -noupdate -radix unsigned /tb/u_video_out_hmag/reg_normalize
+add wave -noupdate -radix unsigned /tb/u_video_out_hmag/w_x_position_w
+add wave -noupdate -radix unsigned /tb/u_video_out_hmag/ff_numerator
+add wave -noupdate -radix unsigned /tb/u_video_out_hmag/w_next_numerator
+add wave -noupdate -radix decimal /tb/u_video_out_hmag/w_sub_numerator
+add wave -noupdate -radix hexadecimal /tb/u_video_out_hmag/w_hold
+add wave -noupdate -radix unsigned /tb/u_video_out_hmag/ff_x_position_r
+add wave -noupdate -radix unsigned /tb/u_video_out_hmag/w_normalized_numerator
+add wave -noupdate -radix unsigned /tb/u_video_out_hmag/ff_coeff
+add wave -noupdate -radix unsigned /tb/u_video_out_hmag/w_sigmoid
+add wave -noupdate -radix unsigned /tb/u_video_out_hmag/w_pixel_r
+add wave -noupdate -radix unsigned /tb/u_video_out_hmag/u_bilinear_r/ff_tap0
+add wave -noupdate -radix unsigned /tb/u_video_out_hmag/u_bilinear_r/ff_tap1
+add wave -noupdate -radix unsigned /tb/u_video_out_hmag/u_bilinear_r/ff_tap1_delay
+add wave -noupdate -radix unsigned /tb/u_video_out_hmag/u_bilinear_r/ff_out
+add wave -noupdate -radix hexadecimal /tb/u_video_out_hmag/ff_active
+add wave -noupdate -radix hexadecimal /tb/u_video_out_hmag/w_active_start
+add wave -noupdate -radix hexadecimal /tb/u_video_out_hmag/w_active_end
+add wave -noupdate -radix hexadecimal /tb/u_video_out_hmag/w_is_odd
+add wave -noupdate -radix hexadecimal /tb/u_video_out_hmag/w_we_buf
+add wave -noupdate -radix hexadecimal /tb/u_video_out_hmag/w_pixel_g
+add wave -noupdate -radix hexadecimal /tb/u_video_out_hmag/w_pixel_b
+add wave -noupdate -radix hexadecimal /tb/u_video_out_hmag/ff_hold0
+add wave -noupdate -radix hexadecimal /tb/u_video_out_hmag/ff_hold1
 TreeUpdate [SetDefaultTree]
-WaveRestoreCursors {{Cursor 1} {552809 ns} 0}
-quietly wave cursor active 1
-configure wave -namecolwidth 312
-configure wave -valuecolwidth 100
+WaveRestoreCursors {{Cursor 1} {0 ns} 0}
+quietly wave cursor active 0
+configure wave -namecolwidth 291
+configure wave -valuecolwidth 40
 configure wave -justifyvalue left
 configure wave -signalnamewidth 2
 configure wave -snapdistance 10
@@ -33,4 +55,4 @@ configure wave -griddelta 40
 configure wave -timeline 0
 configure wave -timelineunits ps
 update
-WaveRestoreZoom {550969 ns} {552877 ns}
+WaveRestoreZoom {165390 ns} {166151 ns}

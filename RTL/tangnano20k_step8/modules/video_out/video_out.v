@@ -106,8 +106,8 @@ module video_out #(
 	localparam			center_x		= right_x - 32 - 2;							// 72
 	localparam			base_left_x		= center_x - 32 - 2 - 3;					// 35
 	localparam	[7:0]	reg_left_offset	= 24;										//	0 ..... 112
-	localparam	[7:0]	reg_denominator	= 656 / 4;									//	144 ... 200
-	localparam	[5:0]	reg_normalize	= 8192 / reg_denominator;					//	8192 / reg_denominator : 57 ... 40
+	localparam	[7:0]	reg_denominator	= 720 / 4;									//	144 ... 200
+	localparam	[7:0]	reg_normalize	= 32768 / reg_denominator;					//	228 ... 160
 
 	reg				ff_v_sync;
 	wire	[7:0]	w_data_r_out;

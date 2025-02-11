@@ -60,6 +60,7 @@ module tb ();
 	reg				enable;
 	reg		[10:0]	vdp_hcounter;
 	reg		[1:0]	vdp_vcounter;
+	reg		[10:0]	h_cnt;
 	reg		[5:0]	vdp_r;
 	reg		[5:0]	vdp_g;
 	reg		[5:0]	vdp_b;
@@ -68,8 +69,8 @@ module tb ();
 	wire	[7:0]	video_b;
 	reg		[7:0]	reg_left_offset;			//	0 ..... 112
 	reg		[7:0]	reg_denominator;			//	144 ... 200
-	reg		[5:0]	reg_normalize;				//	8192 / reg_denominator
-	int				i;
+	reg		[7:0]	reg_normalize;				//	32768 / reg_denominator
+	int				i, j;
 
 	// --------------------------------------------------------------------
 	//	DUT
@@ -80,6 +81,7 @@ module tb ();
 		.enable					( enable				),
 		.vdp_hcounter			( vdp_hcounter			),
 		.vdp_vcounter			( vdp_vcounter			),
+		.h_cnt					( h_cnt					),
 		.vdp_r					( vdp_r					),
 		.vdp_g					( vdp_g					),
 		.vdp_b					( vdp_b					),
@@ -100,7 +102,22 @@ module tb ();
 
 	always @( posedge clk ) begin
 		if( !reset_n ) begin
+			h_cnt <= 0;
+		end
+		else if( vdp_hcounter == 1367 ) begin
+			h_cnt <= 0;
+		end
+		else begin
+			h_cnt <= h_cnt + 1;
+		end
+	end
+
+	always @( posedge clk ) begin
+		if( !reset_n ) begin
 			vdp_hcounter <= 0;
+		end
+		else if( !enable ) begin
+			//	hold
 		end
 		else if( vdp_hcounter == 1367 ) begin
 			vdp_hcounter <= 0;
@@ -113,6 +130,9 @@ module tb ();
 	always @( posedge clk ) begin
 		if( !reset_n ) begin
 			vdp_vcounter <= 0;
+		end
+		else if( !enable ) begin
+			//	hold
 		end
 		else if( vdp_hcounter == 1367 ) begin
 			if( vdp_vcounter == 523 ) begin
@@ -143,8 +163,8 @@ module tb ();
 		vdp_g			= 0;
 		vdp_b			= 0;
 		reg_left_offset	= 0;			//	0 ..... 112
-		reg_denominator	= 200;			//	144 ... 200
-		reg_normalize	= 8192 / reg_denominator;
+		reg_denominator	= 180;			//	144 ... 200
+		reg_normalize	= 32768 / reg_denominator;
 		
 		@( negedge clk );
 		@( negedge clk );
@@ -154,12 +174,43 @@ module tb ();
 		@( posedge clk );
 
 		i = 0;
+		j = 0;
 		repeat( 1368 * 10 ) begin
-			if( i == 23 ) begin
+			if( i == 3 ) begin
 				i <= 0;
-				vdp_r	<= ~vdp_r;
-				vdp_g	<= ~vdp_g;
-				vdp_b	<= ~vdp_b;
+				if( j == 6 ) begin
+					j <= 0;
+				end
+				else begin
+					j <= j + 1;
+				end
+				
+				case( j )
+				0:
+					begin
+						vdp_r	<= 6'h3F;
+						vdp_g	<= 6'h3F;
+						vdp_b	<= 6'h3F;
+					end
+				1:
+					begin
+						vdp_r	<= 6'h3F;
+						vdp_g	<= 6'h3F;
+						vdp_b	<= 6'h3F;
+					end
+				2:
+					begin
+						vdp_r	<= 6'h3F;
+						vdp_g	<= 6'h3F;
+						vdp_b	<= 6'h3F;
+					end
+				default:
+					begin
+						vdp_r	<= 6'h00;
+						vdp_g	<= 6'h00;
+						vdp_b	<= 6'h00;
+					end
+				endcase
 			end
 			else begin
 				i <= i + 1;

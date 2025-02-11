@@ -5,7 +5,6 @@
 // --------------------------------------------------------------------
 
 #include <Arduino.h>
-#include <FastLED.h>
 #include <SPI.h>
 
 #include "romimage_main.h"
@@ -45,14 +44,12 @@
 #define PIN_RESET_SW	43
 
 #define PIN_LED			21
-#define NUM_LEDS		1
-CRGB leds[NUM_LEDS];
 
 #define HSPI_MISO		13
 #define HSPI_MOSI		11
 #define HSPI_SCLK		12
 #define HSPI_SS			10
-SPISettings spi_settings = SPISettings( 36000000, MSBFIRST, SPI_MODE0 );
+SPISettings spi_settings = SPISettings( 25000000, MSBFIRST, SPI_MODE0 );
 SPIClass *hspi = NULL;
 
 static void (*p_function)( void );
@@ -623,10 +620,6 @@ void setup() {
 	hspi = new SPIClass(HSPI);
 	hspi->begin( HSPI_SCLK, HSPI_MISO, HSPI_MOSI, HSPI_SS );
 	pinMode( hspi->pinSS(), OUTPUT );
-
-	FastLED.addLeds< WS2812, PIN_LED, GRB >( leds, NUM_LEDS );
-	leds[0] = CRGB::Red;
-	FastLED.show();
 
 	memset( keymatrix, 0xFF, sizeof(keymatrix) );
 	p_function	= state0_connection;

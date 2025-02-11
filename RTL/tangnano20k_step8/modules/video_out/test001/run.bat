@@ -1,4 +1,4 @@
-rmdir /f work
+rmdir /S /Q work
 vlib work
 vlog ..\video_ram_line_buffer.v
 vlog ..\video_double_buffer.v
