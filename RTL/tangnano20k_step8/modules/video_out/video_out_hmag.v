@@ -117,6 +117,21 @@ module video_out_hmag (
 	reg		[5:0]	ff_tap1_r;
 	reg		[5:0]	ff_tap1_g;
 	reg		[5:0]	ff_tap1_b;
+	wire	[7:0]	w_video_r;
+	wire	[7:0]	w_video_g;
+	wire	[7:0]	w_video_b;
+	wire	[9:0]	w_odd_gain;
+	wire	[7:0]	w_gain;
+	reg		[7:0]	ff_pre_r;
+	reg		[7:0]	ff_pre_g;
+	reg		[7:0]	ff_pre_b;
+	reg		[7:0]	ff_gain;
+	wire	[15:0]	w_gain_r;
+	wire	[15:0]	w_gain_g;
+	wire	[15:0]	w_gain_b;
+	reg		[7:0]	ff_video_r;
+	reg		[7:0]	ff_video_g;
+	reg		[7:0]	ff_video_b;
 
 	// --------------------------------------------------------------------
 	//	Buffer address
@@ -260,7 +275,7 @@ module video_out_hmag (
 		.coeff			( ff_coeff4				),
 		.tap0			( ff_tap0_r				),
 		.tap1			( ff_tap1_r				),
-		.pixel_out		( video_r				)
+		.pixel_out		( w_video_r				)
 	);
 
 	video_out_bilinear u_bilinear_g (
@@ -268,7 +283,7 @@ module video_out_hmag (
 		.coeff			( ff_coeff4				),
 		.tap0			( ff_tap0_g				),
 		.tap1			( ff_tap1_g				),
-		.pixel_out		( video_g				)
+		.pixel_out		( w_video_g				)
 	);
 
 	video_out_bilinear u_bilinear_b (
@@ -276,6 +291,33 @@ module video_out_hmag (
 		.coeff			( ff_coeff4				),
 		.tap0			( ff_tap0_b				),
 		.tap1			( ff_tap1_b				),
-		.pixel_out		( video_b				)
+		.pixel_out		( w_video_b				)
 	);
+
+	// --------------------------------------------------------------------
+	//	Scanline
+	// --------------------------------------------------------------------
+	assign w_odd_gain	= { 2'd0, w_video_r } + { 2'd0, w_video_g } + { 2'd0, w_video_b };
+	assign w_gain		= vdp_vcounter[0] ? 8'd128 : { 1'b0, w_odd_gain[7:3] };
+
+	always @( posedge clk ) begin
+		ff_pre_r	<= w_video_r;
+		ff_pre_g	<= w_video_g;
+		ff_pre_b	<= w_video_b;
+		ff_gain		<= w_gain;
+	end
+
+	assign w_gain_r		= ff_pre_r * w_gain;
+	assign w_gain_g		= ff_pre_g * w_gain;
+	assign w_gain_b		= ff_pre_b * w_gain;
+
+	always @( posedge clk ) begin
+		ff_video_r	<= w_gain_r[15:7];
+		ff_video_g	<= w_gain_g[15:7];
+		ff_video_b	<= w_gain_b[15:7];
+	end
+
+	assign video_r		= ff_video_r;
+	assign video_g		= ff_video_g;
+	assign video_b		= ff_video_b;
 endmodule

@@ -1,33 +1,33 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<Module name="tangnano20k_step8" Register="29" Alu="13" Lut="216" T_Register="2761(29)" T_Alu="328(13)" T_Lut="4957(216)" T_PADD9="3(0)" T_MULT9X9="4(0)" T_MULT18X18="1(0)" T_MULTADDALU18X18="1(0)" T_Bsram="13(0)" T_Ssram="45(0)">
+<Module name="tangnano20k_step8" Register="29" Alu="13" Lut="213" T_Register="2770(29)" T_Alu="343(13)" T_Lut="4940(213)" T_PADD9="3(0)" T_MULT9X9="7(0)" T_MULT18X18="1(0)" T_MULTADDALU18X18="1(0)" T_Bsram="13(0)" T_Ssram="45(0)">
  <SubModule name="u_pll"/>
- <SubModule name="u_esp32_conn" Register="74" Lut="78" Ssram="2" T_Register="74(74)" T_Lut="78(78)" T_Ssram="2(2)"/>
- <SubModule name="u_z80" Register="24" Lut="57" T_Register="366(24)" T_Alu="81(0)" T_Lut="1848(57)">
-  <SubModule name="u_cz80" Register="214" Alu="70" Lut="1251" T_Register="342(214)" T_Alu="81(70)" T_Lut="1791(1251)">
-   <SubModule name="u_mcode" Lut="228" T_Lut="228(228)"/>
+ <SubModule name="u_esp32_conn" Register="74" Lut="80" Ssram="2" T_Register="74(74)" T_Lut="80(80)" T_Ssram="2(2)"/>
+ <SubModule name="u_z80" Register="24" Lut="53" T_Register="366(24)" T_Alu="81(0)" T_Lut="1817(53)">
+  <SubModule name="u_cz80" Register="214" Alu="70" Lut="1215" T_Register="342(214)" T_Alu="81(70)" T_Lut="1764(1215)">
+   <SubModule name="u_mcode" Lut="226" T_Lut="226(226)"/>
    <SubModule name="u_alu" Alu="11" Lut="11" T_Alu="11(11)" T_Lut="11(11)"/>
-   <SubModule name="u_regs" Register="128" Lut="301" T_Register="128(128)" T_Lut="301(301)"/>
+   <SubModule name="u_regs" Register="128" Lut="312" T_Register="128(128)" T_Lut="312(312)"/>
   </SubModule>
  </SubModule>
- <SubModule name="u_uart" Register="11" Lut="7" T_Register="37(11)" T_Lut="40(7)">
-  <SubModule name="u_uart" Register="26" Lut="33" T_Register="26(26)" T_Lut="33(33)"/>
+ <SubModule name="u_uart" Register="11" Lut="5" T_Register="37(11)" T_Lut="39(5)">
+  <SubModule name="u_uart" Register="26" Lut="34" T_Register="26(26)" T_Lut="34(34)"/>
  </SubModule>
- <SubModule name="u_ppi" T_Register="25(0)" T_Lut="45(0)">
-  <SubModule name="u_ppi" Register="25" Lut="45" T_Register="25(25)" T_Lut="45(45)"/>
+ <SubModule name="u_ppi" T_Register="25(0)" T_Lut="41(0)">
+  <SubModule name="u_ppi" Register="25" Lut="41" T_Register="25(25)" T_Lut="41(41)"/>
  </SubModule>
  <SubModule name="u_exp_slot0" Register="17" Lut="22" T_Register="17(17)" T_Lut="22(22)"/>
- <SubModule name="u_exp_slot3" Register="17" Lut="11" T_Register="17(17)" T_Lut="11(11)"/>
+ <SubModule name="u_exp_slot3" Register="17" Lut="12" T_Register="17(17)" T_Lut="12(12)"/>
  <SubModule name="u_ssg" Register="241" Alu="11" Lut="346" T_Register="241(241)" T_Alu="11(11)" T_Lut="346(346)"/>
- <SubModule name="u_opll" Register="4" Lut="9" T_Register="820(4)" T_Alu="162(0)" T_Lut="1026(9)" T_MULT18X18="1(0)" T_MULTADDALU18X18="1(0)" T_Bsram="1(0)" T_Ssram="33(0)">
-  <SubModule name="u_ikaopll" T_Register="816(0)" T_Alu="162(0)" T_Lut="1017(0)" T_MULT18X18="1(0)" T_MULTADDALU18X18="1(0)" T_Bsram="1(0)" T_Ssram="33(0)">
-   <SubModule name="u_TIMINGGEN" Register="20" Lut="22" T_Register="20(20)" T_Lut="22(22)"/>
-   <SubModule name="u_REG" Register="148" Alu="8" Lut="77" T_Register="279(148)" T_Alu="8(8)" T_Lut="260(77)" T_Ssram="12(0)">
+ <SubModule name="u_opll" Register="4" Lut="9" T_Register="820(4)" T_Alu="162(0)" T_Lut="1029(9)" T_MULT18X18="1(0)" T_MULTADDALU18X18="1(0)" T_Bsram="1(0)" T_Ssram="33(0)">
+  <SubModule name="u_ikaopll" T_Register="816(0)" T_Alu="162(0)" T_Lut="1020(0)" T_MULT18X18="1(0)" T_MULTADDALU18X18="1(0)" T_Bsram="1(0)" T_Ssram="33(0)">
+   <SubModule name="u_TIMINGGEN" Register="20" Lut="24" T_Register="20(20)" T_Lut="24(24)"/>
+   <SubModule name="u_REG" Register="148" Alu="8" Lut="76" T_Register="279(148)" T_Alu="8(8)" T_Lut="263(76)" T_Ssram="12(0)">
     <SubModule name="u_sync_addrreg" Register="3" Lut="3" T_Register="3(3)" T_Lut="3(3)"/>
     <SubModule name="u_sync_datareg" Register="3" Lut="2" T_Register="3(3)" T_Lut="2(2)"/>
     <SubModule name="u_fnum_lsbs" Lut="26" T_Register="8(0)" T_Lut="26(26)" T_Ssram="6(0)">
      <SubModule name="u_d9reg" Register="8" Ssram="6" T_Register="8(8)" T_Ssram="6(6)"/>
     </SubModule>
-    <SubModule name="u_fnum_msb" Lut="5" T_Register="9(0)" T_Lut="5(5)">
+    <SubModule name="u_fnum_msb" Lut="4" T_Register="9(0)" T_Lut="4(4)">
      <SubModule name="u_d9reg" Register="9" T_Register="9(9)"/>
     </SubModule>
     <SubModule name="u_block" Lut="9" T_Register="27(0)" T_Lut="9(9)">
@@ -45,61 +45,61 @@
     <SubModule name="u_inst" Lut="12" T_Register="4(0)" T_Lut="12(12)" T_Ssram="3(0)">
      <SubModule name="u_d9reg" Register="4" Ssram="3" T_Register="4(4)" T_Ssram="3(3)"/>
     </SubModule>
-    <SubModule name="u_instrom" Register="55" Lut="109" T_Register="55(55)" T_Lut="109(109)"/>
+    <SubModule name="u_instrom" Register="55" Lut="114" T_Register="55(55)" T_Lut="114(114)"/>
    </SubModule>
-   <SubModule name="u_LFO" Register="30" Alu="5" Lut="28" T_Register="30(30)" T_Alu="5(5)" T_Lut="28(28)"/>
-   <SubModule name="u_PG" Register="143" Alu="32" Lut="93" MULT18X18="1" T_Register="162(143)" T_Alu="32(32)" T_Lut="93(93)" T_MULT18X18="1(1)">
+   <SubModule name="u_LFO" Register="30" Alu="5" Lut="30" T_Register="30(30)" T_Alu="5(5)" T_Lut="30(30)"/>
+   <SubModule name="u_PG" Register="143" Alu="32" Lut="94" MULT18X18="1" T_Register="162(143)" T_Alu="32(32)" T_Lut="94(94)" T_MULT18X18="1(1)">
     <SubModule name="u_cyc4r_cyc18r_phase_sr" Register="19" T_Register="19(19)"/>
    </SubModule>
    <SubModule name="u_EG" Register="85" Alu="41" Lut="180" Bsram="1" Ssram="10" T_Register="101(85)" T_Alu="41(41)" T_Lut="184(180)" T_Bsram="1(1)" T_Ssram="12(10)">
     <SubModule name="u_cyc2r_cyc19r_envstatreg" Register="4" T_Register="4(4)"/>
     <SubModule name="u_cyc3r_cyc19r_attnlvreg" Register="12" Lut="4" Ssram="2" T_Register="12(12)" T_Lut="4(4)" T_Ssram="2(2)"/>
    </SubModule>
-   <SubModule name="u_OP" Register="60" Alu="52" Lut="193" T_Register="174(60)" T_Alu="52(52)" T_Lut="360(193)" T_Ssram="6(0)">
+   <SubModule name="u_OP" Register="60" Alu="52" Lut="189" T_Register="174(60)" T_Alu="52(52)" T_Lut="356(189)" T_Ssram="6(0)">
     <SubModule name="u_cyc19c_logsinrom" Register="46" Lut="86" T_Register="46(46)" T_Lut="86(86)"/>
     <SubModule name="u_cyc20c_exprom" Register="44" Lut="81" T_Register="44(44)" T_Lut="81(81)"/>
     <SubModule name="u_op_z_reg" Register="12" Ssram="3" T_Register="12(12)" T_Ssram="3(3)"/>
     <SubModule name="u_op_zz_reg" Register="12" Ssram="3" T_Register="12(12)" T_Ssram="3(3)"/>
    </SubModule>
-   <SubModule name="u_DAC" Register="47" Alu="24" Lut="65" MULTADDALU18X18="1" T_Register="50(47)" T_Alu="24(24)" T_Lut="70(65)" T_MULTADDALU18X18="1(1)" T_Ssram="3(0)">
+   <SubModule name="u_DAC" Register="47" Alu="24" Lut="64" MULTADDALU18X18="1" T_Register="50(47)" T_Alu="24(24)" T_Lut="69(64)" T_MULTADDALU18X18="1(1)" T_Ssram="3(0)">
     <SubModule name="u_percussion_sr" Register="3" Lut="5" Ssram="3" T_Register="3(3)" T_Lut="5(5)" T_Ssram="3(3)"/>
    </SubModule>
   </SubModule>
  </SubModule>
  <SubModule name="u_audio" Register="26" Lut="35" T_Register="26(26)" T_Lut="35(35)"/>
- <SubModule name="u_v9918" Register="2" Lut="1" T_Register="629(2)" T_Alu="27(0)" T_Lut="805(1)" T_Bsram="2(0)" T_Ssram="8(0)">
-  <SubModule name="u_v9918_core" Register="4" Lut="21" T_Register="627(4)" T_Alu="27(0)" T_Lut="804(21)" T_Bsram="2(0)" T_Ssram="8(0)">
-   <SubModule name="u_vdp_color_bus" Register="51" Lut="154" T_Register="51(51)" T_Lut="154(154)"/>
-   <SubModule name="u_vdp_interrupt" Register="1" Lut="7" T_Register="1(1)" T_Lut="7(7)"/>
-   <SubModule name="u_vdp_ssg" Register="85" Lut="139" T_Register="85(85)" T_Lut="139(139)"/>
+ <SubModule name="u_v9918" Register="2" Lut="1" T_Register="629(2)" T_Alu="27(0)" T_Lut="810(1)" T_Bsram="2(0)" T_Ssram="8(0)">
+  <SubModule name="u_v9918_core" Register="4" Lut="22" T_Register="627(4)" T_Alu="27(0)" T_Lut="809(22)" T_Bsram="2(0)" T_Ssram="8(0)">
+   <SubModule name="u_vdp_color_bus" Register="51" Lut="155" T_Register="51(51)" T_Lut="155(155)"/>
+   <SubModule name="u_vdp_interrupt" Register="1" Lut="5" T_Register="1(1)" T_Lut="5(5)"/>
+   <SubModule name="u_vdp_ssg" Register="85" Lut="144" T_Register="85(85)" T_Lut="144(144)"/>
    <SubModule name="u_vdp_color_decoder" Register="18" Lut="29" T_Register="18(18)" T_Lut="29(29)"/>
-   <SubModule name="u_vdp_text12" Register="66" Alu="12" Lut="96" T_Register="66(66)" T_Alu="12(12)" T_Lut="96(96)"/>
-   <SubModule name="u_vdp_graphic123m" Register="58" Lut="71" T_Register="58(58)" T_Lut="71(71)"/>
-   <SubModule name="u_vdp_sprite" Register="201" Alu="15" Lut="246" T_Register="237(201)" T_Alu="15(15)" T_Lut="248(246)" T_Bsram="2(0)" T_Ssram="8(0)">
+   <SubModule name="u_vdp_text12" Register="66" Alu="12" Lut="97" T_Register="66(66)" T_Alu="12(12)" T_Lut="97(97)"/>
+   <SubModule name="u_vdp_graphic123m" Register="58" Lut="70" T_Register="58(58)" T_Lut="70(70)"/>
+   <SubModule name="u_vdp_sprite" Register="201" Alu="15" Lut="249" T_Register="237(201)" T_Alu="15(15)" T_Lut="251(249)" T_Bsram="2(0)" T_Ssram="8(0)">
     <SubModule name="u_sprite_info_ram" Register="2" Lut="1" Ssram="8" T_Register="2(2)" T_Lut="1(1)" T_Ssram="8(8)"/>
     <SubModule name="u_even_line_buf" Register="17" Lut="1" Bsram="1" T_Register="17(17)" T_Lut="1(1)" T_Bsram="1(1)"/>
     <SubModule name="u_odd_line_buf" Register="17" Bsram="1" T_Register="17(17)" T_Bsram="1(1)"/>
    </SubModule>
-   <SubModule name="u_vdp_register" Register="107" Lut="39" T_Register="107(107)" T_Lut="39(39)"/>
+   <SubModule name="u_vdp_register" Register="107" Lut="36" T_Register="107(107)" T_Lut="36(36)"/>
   </SubModule>
  </SubModule>
- <SubModule name="u_video_out" Register="23" Alu="10" Lut="48" T_Register="244(23)" T_Alu="34(10)" T_Lut="155(48)" T_PADD9="3(0)" T_MULT9X9="4(0)" T_Bsram="2(0)" T_Ssram="2(0)">
-  <SubModule name="i182" Register="56" Alu="9" Lut="27" MULT9X9="1" Ssram="2" T_Register="221(56)" T_Alu="24(9)" T_Lut="107(27)" T_PADD9="3(0)" T_MULT9X9="4(1)" T_Bsram="2(0)" T_Ssram="2(2)">
+ <SubModule name="u_video_out" Register="23" Alu="10" Lut="49" T_Register="253(23)" T_Alu="49(10)" T_Lut="161(49)" T_PADD9="3(0)" T_MULT9X9="7(0)" T_Bsram="2(0)" T_Ssram="2(0)">
+  <SubModule name="i182" Register="56" Alu="24" Lut="32" MULT9X9="4" Ssram="2" T_Register="230(56)" T_Alu="39(24)" T_Lut="112(32)" T_PADD9="3(0)" T_MULT9X9="7(4)" T_Bsram="2(0)" T_Ssram="2(2)">
    <SubModule name="u_double_buffer" Register="52" Lut="46" T_Register="135(52)" T_Lut="80(46)" T_Bsram="2(0)">
     <SubModule name="u_buf_even" Register="42" Lut="17" Bsram="1" T_Register="42(42)" T_Lut="17(17)" T_Bsram="1(1)"/>
     <SubModule name="u_buf_odd" Register="41" Lut="17" Bsram="1" T_Register="41(41)" T_Lut="17(17)" T_Bsram="1(1)"/>
    </SubModule>
-   <SubModule name="u_bilinear_r" Register="10" Alu="5" PADD9="1" MULT9X9="1" T_Register="10(10)" T_Alu="5(5)" T_PADD9="1(1)" T_MULT9X9="1(1)"/>
-   <SubModule name="u_bilinear_g" Register="10" Alu="5" PADD9="1" MULT9X9="1" T_Register="10(10)" T_Alu="5(5)" T_PADD9="1(1)" T_MULT9X9="1(1)"/>
-   <SubModule name="u_bilinear_b" Register="10" Alu="5" PADD9="1" MULT9X9="1" T_Register="10(10)" T_Alu="5(5)" T_PADD9="1(1)" T_MULT9X9="1(1)"/>
+   <SubModule name="u_bilinear_r" Register="13" Alu="5" PADD9="1" MULT9X9="1" T_Register="13(13)" T_Alu="5(5)" T_PADD9="1(1)" T_MULT9X9="1(1)"/>
+   <SubModule name="u_bilinear_g" Register="13" Alu="5" PADD9="1" MULT9X9="1" T_Register="13(13)" T_Alu="5(5)" T_PADD9="1(1)" T_MULT9X9="1(1)"/>
+   <SubModule name="u_bilinear_b" Register="13" Alu="5" PADD9="1" MULT9X9="1" T_Register="13(13)" T_Alu="5(5)" T_PADD9="1(1)" T_MULT9X9="1(1)"/>
   </SubModule>
  </SubModule>
  <SubModule name="u_vram" Register="2" Lut="10" Bsram="8" T_Register="2(2)" T_Lut="10(10)" T_Bsram="8(8)"/>
- <SubModule name="u_sdram" Register="105" Lut="161" T_Register="105(105)" T_Lut="161(161)"/>
+ <SubModule name="u_sdram" Register="105" Lut="164" T_Register="105(105)" T_Lut="164(164)"/>
  <SubModule name="u_kanji_rom" Register="37" Lut="70" T_Register="37(37)" T_Lut="70(70)"/>
- <SubModule name="u_megarom_slot1" Register="32" Lut="39" T_Register="32(32)" T_Lut="39(39)"/>
- <SubModule name="u_megarom_slot2" Register="28" Lut="27" T_Register="28(28)" T_Lut="27(27)"/>
- <SubModule name="i243" Lut="17" T_Register="32(0)" T_Lut="23(17)">
-  <SubModule name="u_memory_mapper" Register="32" Lut="6" T_Register="32(32)" T_Lut="6(6)"/>
+ <SubModule name="u_megarom_slot1" Register="32" Lut="38" T_Register="32(32)" T_Lut="38(38)"/>
+ <SubModule name="u_megarom_slot2" Register="28" Lut="29" T_Register="28(28)" T_Lut="29(29)"/>
+ <SubModule name="i243" Lut="17" T_Register="32(0)" T_Lut="24(17)">
+  <SubModule name="u_memory_mapper" Register="32" Lut="7" T_Register="32(32)" T_Lut="7(7)"/>
  </SubModule>
 </Module>

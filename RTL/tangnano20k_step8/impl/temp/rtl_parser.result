@@ -693,7 +693,7 @@
       "SubInsts" : [
        {
         "InstFile" : "D:/github/HRA_product/TangCartMSX/RTL/tangnano20k_step8/modules/video_out/video_out_hmag.v",
-        "InstLine" : 221,
+        "InstLine" : 236,
         "InstName" : "u_double_buffer",
         "ModuleFile" : "D:/github/HRA_product/TangCartMSX/RTL/tangnano20k_step8/modules/video_out/video_double_buffer.v",
         "ModuleLine" : 58,
@@ -719,7 +719,7 @@
        },
        {
         "InstFile" : "D:/github/HRA_product/TangCartMSX/RTL/tangnano20k_step8/modules/video_out/video_out_hmag.v",
-        "InstLine" : 258,
+        "InstLine" : 273,
         "InstName" : "u_bilinear_r",
         "ModuleFile" : "D:/github/HRA_product/TangCartMSX/RTL/tangnano20k_step8/modules/video_out/video_out_bilinear.v",
         "ModuleLine" : 60,
@@ -727,7 +727,7 @@
        },
        {
         "InstFile" : "D:/github/HRA_product/TangCartMSX/RTL/tangnano20k_step8/modules/video_out/video_out_hmag.v",
-        "InstLine" : 266,
+        "InstLine" : 281,
         "InstName" : "u_bilinear_g",
         "ModuleFile" : "D:/github/HRA_product/TangCartMSX/RTL/tangnano20k_step8/modules/video_out/video_out_bilinear.v",
         "ModuleLine" : 60,
@@ -735,7 +735,7 @@
        },
        {
         "InstFile" : "D:/github/HRA_product/TangCartMSX/RTL/tangnano20k_step8/modules/video_out/video_out_hmag.v",
-        "InstLine" : 274,
+        "InstLine" : 289,
         "InstName" : "u_bilinear_b",
         "ModuleFile" : "D:/github/HRA_product/TangCartMSX/RTL/tangnano20k_step8/modules/video_out/video_out_bilinear.v",
         "ModuleLine" : 60,
