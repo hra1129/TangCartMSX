@@ -193,6 +193,12 @@ module tangnano20k_step8 (
 
 	wire	[7:0]	w_mapper_segment;
 
+	wire	[7:0]	w_sys_q;
+	wire			w_sys_q_en;
+	wire	[7:0]	w_left_offset;
+	wire	[7:0]	w_denominator;
+	wire	[7:0]	w_normalize;
+
 	// --------------------------------------------------------------------
 	//	clock
 	// --------------------------------------------------------------------
@@ -340,6 +346,9 @@ module tangnano20k_step8 (
 		end
 		else if( w_psg_q_en ) begin
 			ff_d <= w_psg_q;
+		end
+		else if( w_sys_q_en ) begin
+			ff_d <= w_sys_q;
 		end
 		else if( rd_n ) begin
 			ff_d <= 8'hFF;
@@ -547,7 +556,11 @@ module tangnano20k_step8 (
 		.video_vs				( lcd_vs				),
 		.video_r				( w_video_r				),
 		.video_g				( w_video_g				),
-		.video_b				( w_video_b				)
+		.video_b				( w_video_b				),
+		.reg_left_offset		( w_left_offset			),
+		.reg_denominator		( w_denominator			),
+		.reg_normalize			( w_normalize			),
+		.reg_scanline			( w_scanline			)
 	);
 
 	assign lcd_red					= w_video_r[7:3];
@@ -662,7 +675,7 @@ module tangnano20k_step8 (
 	);
 
 	// --------------------------------------------------------------------
-	//	SDRAM memory map
+	//	Memory mapper
 	// --------------------------------------------------------------------
 	memory_mapper_inst(
 		.reset_n				( w_msx_reset_n			),
@@ -716,4 +729,23 @@ module tangnano20k_step8 (
 									  ( w_sltsl00  && (a[15]    == 1'b0)                      ) ? rd_n :				//	MAIN-ROM
 									  ( w_sltsl32  && (a[15:14] == 2'b01 || a[15:14] == 2'b10)) ? rd_n :				//	Nextor
 									                                                              1'b1;
+
+	// --------------------------------------------------------------------
+	//	System control
+	// --------------------------------------------------------------------
+	system_control u_system_control (
+		.reset_n				( w_msx_reset_n			),
+		.clk					( clk42m				),
+		.iorq_n					( iorq_n				),
+		.wr_n					( wr_n					),
+		.rd_n					( rd_n					),
+		.address				( a						),
+		.wdata					( d						),
+		.rdata					( w_sys_q				),
+		.rdata_en				( w_sys_q_en			),
+		.reg_left_offset		( w_left_offset			),
+		.reg_denominator		( w_denominator			),
+		.reg_normalize			( w_normalize			),
+		.reg_scanline			( w_scanline			)
+	);
 endmodule

@@ -214,6 +214,10 @@
    "Type" : "verilog"
   },
   {
+   "Path" : "D:/github/HRA_product/TangCartMSX/RTL/tangnano20k_step8/modules/system_control/system_control.v",
+   "Type" : "verilog"
+  },
+  {
    "Path" : "D:/github/HRA_product/TangCartMSX/RTL/tangnano20k_step8/src/gowin_pll/gowin_pll.v",
    "Type" : "verilog"
   },

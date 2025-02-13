@@ -58,6 +58,7 @@
         <File path="modules/video_out/video_out_bilinear.v" type="file.verilog" enable="1"/>
         <File path="modules/video_out/video_out_hmag.v" type="file.verilog" enable="1"/>
         <File path="modules/video_out/video_ram_line_buffer.v" type="file.verilog" enable="1"/>
+        <File path="modules/system_control/system_control.v" type="file.verilog" enable="1"/>
         <File path="src/gowin_pll/gowin_pll.v" type="file.verilog" enable="1"/>
         <File path="src/ram/ip_ram.v" type="file.verilog" enable="1"/>
         <File path="src/rom/ip_hello_world_rom.v" type="file.verilog" enable="1"/>

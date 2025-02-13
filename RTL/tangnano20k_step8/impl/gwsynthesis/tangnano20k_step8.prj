@@ -57,6 +57,7 @@
         <File path="D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_step8\modules\video_out\video_out_bilinear.v" type="verilog"/>
         <File path="D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_step8\modules\video_out\video_out_hmag.v" type="verilog"/>
         <File path="D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_step8\modules\video_out\video_ram_line_buffer.v" type="verilog"/>
+        <File path="D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_step8\modules\system_control\system_control.v" type="verilog"/>
         <File path="D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_step8\src\gowin_pll\gowin_pll.v" type="verilog"/>
         <File path="D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_step8\src\ram\ip_ram.v" type="verilog"/>
         <File path="D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_step8\src\rom\ip_hello_world_rom.v" type="verilog"/>

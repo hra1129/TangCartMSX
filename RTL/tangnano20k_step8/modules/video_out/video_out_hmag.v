@@ -2,7 +2,7 @@
 //	video_out_hmag.v
 //	 LCD 800x480 up-scan converter.
 //
-//	Copyright (C) 2024 Takayuki Hara.
+//	Copyright (C) 2025 Takayuki Hara.
 //	All rights reserved.
 //									   https://github.com/hra1129
 //
@@ -75,7 +75,8 @@ module video_out_hmag (
 	// parameters
 	input	[7:0]	reg_left_offset,			//	0 ..... 112
 	input	[7:0]	reg_denominator,			//	144 ... 200
-	input	[7:0]	reg_normalize				//	8192 / reg_denominator : 228 ... 160
+	input	[7:0]	reg_normalize,				//	8192 / reg_denominator : 228 ... 160
+	input			reg_scanline
 );
 	localparam		clocks_per_line		= 1368;
 	localparam		disp_width			= 10'd576;
@@ -298,7 +299,8 @@ module video_out_hmag (
 	//	Scanline
 	// --------------------------------------------------------------------
 	assign w_odd_gain	= { 2'd0, w_video_r } + { 2'd0, w_video_g } + { 2'd0, w_video_b };
-	assign w_gain		= vdp_vcounter[0] ? 8'd128 : { 1'b0, w_odd_gain[7:3] };
+	assign w_gain		= (reg_scanline == 1'b0) ? 8'd128:
+						  (~vdp_vcounter[0]    ) ? 8'd128: { 1'b0, w_odd_gain[7:3] };
 
 	always @( posedge clk ) begin
 		ff_pre_r	<= w_video_r;
@@ -307,9 +309,9 @@ module video_out_hmag (
 		ff_gain		<= w_gain;
 	end
 
-	assign w_gain_r		= ff_pre_r * w_gain;
-	assign w_gain_g		= ff_pre_g * w_gain;
-	assign w_gain_b		= ff_pre_b * w_gain;
+	assign w_gain_r		= ff_pre_r * ff_gain;
+	assign w_gain_g		= ff_pre_g * ff_gain;
+	assign w_gain_b		= ff_pre_b * ff_gain;
 
 	always @( posedge clk ) begin
 		ff_video_r	<= w_gain_r[15:7];

@@ -78,7 +78,12 @@ module video_out #(
 	output			video_vs,
 	output	[7:0]	video_r,
 	output	[7:0]	video_g,
-	output	[7:0]	video_b
+	output	[7:0]	video_b,
+	// registers
+	input	[7:0]	reg_left_offset,	//= 20;											//	0 ..... 112
+	input	[7:0]	reg_denominator,	//= 700 / 4;									//	144 ... 200
+	input	[7:0]	reg_normalize,		//= 32768 / reg_denominator;					//	228 ... 160
+	input			reg_scanline
 );
 	// LCD 800x480 parameters
 	// Horizontal timing by ff_h_cnt value : 1368cyc
@@ -105,9 +110,6 @@ module video_out #(
 	localparam			pal_right_x		= 87;										// 87
 	localparam			center_x		= right_x - 32 - 2;							// 72
 	localparam			base_left_x		= center_x - 32 - 2 - 3;					// 35
-	localparam	[7:0]	reg_left_offset	= 20;										//	0 ..... 112
-	localparam	[7:0]	reg_denominator	= 700 / 4;									//	144 ... 200
-	localparam	[7:0]	reg_normalize	= 32768 / reg_denominator;					//	228 ... 160
 
 	reg				ff_v_sync;
 	wire	[7:0]	w_data_r_out;
@@ -274,7 +276,8 @@ module video_out #(
 		.video_b			( w_data_b_out		),
 		.reg_left_offset	( reg_left_offset	),
 		.reg_denominator	( reg_denominator	),
-		.reg_normalize		( reg_normalize		)
+		.reg_normalize		( reg_normalize		),
+		.reg_scanline		( reg_scanline		)
 	);
 
 	// generate v-sync signal

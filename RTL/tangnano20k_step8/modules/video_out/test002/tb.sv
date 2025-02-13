@@ -90,7 +90,8 @@ module tb ();
 		.video_b				( video_b				),
 		.reg_left_offset		( reg_left_offset		),
 		.reg_denominator		( reg_denominator		),
-		.reg_normalize			( reg_normalize			)
+		.reg_normalize			( reg_normalize			),
+		.reg_scanline			( 1'b1					)
 	);
 
 	// --------------------------------------------------------------------
