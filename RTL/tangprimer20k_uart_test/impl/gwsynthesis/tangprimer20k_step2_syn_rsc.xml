@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Module name="tangprimer20k_step2" Register="40" Alu="20" Lut="50" T_Register="65(40)" T_Alu="20(20)" T_Lut="83(50)">
+ <SubModule name="u_uart" Register="25" Lut="33" T_Register="25(25)" T_Lut="33(33)"/>
+</Module>

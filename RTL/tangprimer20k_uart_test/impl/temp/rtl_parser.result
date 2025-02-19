@@ -1,0 +1,20 @@
+[
+ {
+  "InstFile" : "D:/github/HRA_product/TangCartMSX/RTL/tangprimer20k_uart_test/src/tangprimer20k_step2.v",
+  "InstLine" : 24,
+  "InstName" : "tangprimer20k_step2",
+  "ModuleFile" : "D:/github/HRA_product/TangCartMSX/RTL/tangprimer20k_uart_test/src/tangprimer20k_step2.v",
+  "ModuleLine" : 24,
+  "ModuleName" : "tangprimer20k_step2",
+  "SubInsts" : [
+   {
+    "InstFile" : "D:/github/HRA_product/TangCartMSX/RTL/tangprimer20k_uart_test/src/tangprimer20k_step2.v",
+    "InstLine" : 215,
+    "InstName" : "u_uart",
+    "ModuleFile" : "D:/github/HRA_product/TangCartMSX/RTL/tangprimer20k_uart_test/src/uart/ip_uart.v",
+    "ModuleLine" : 27,
+    "ModuleName" : "ip_uart"
+   }
+  ]
+ }
+]
