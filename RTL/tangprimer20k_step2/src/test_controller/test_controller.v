@@ -68,9 +68,31 @@ module test_controller (
 	localparam	[7:0]	st_read					= 8'd12;
 	localparam	[7:0]	st_read_wait			= 8'd13;
 	localparam	[7:0]	st_read_data_wait		= 8'd14;
-	localparam	[7:0]	st_read_error			= 8'd15;
-	localparam	[7:0]	st_read_error_wait		= 8'd16;
-	localparam	[7:0]	st_finish				= 8'd17;
+	localparam	[7:0]	st_byte_wnr_test		= 8'd15;
+	localparam	[7:0]	st_read_wnr_test_wait	= 8'd16;
+	localparam	[7:0]	st_byte_write0			= 8'd17;
+	localparam	[7:0]	st_byte_write1			= 8'd18;
+	localparam	[7:0]	st_byte_write2			= 8'd19;
+	localparam	[7:0]	st_byte_write3			= 8'd20;
+	localparam	[7:0]	st_byte_write4			= 8'd21;
+	localparam	[7:0]	st_byte_write5			= 8'd22;
+	localparam	[7:0]	st_byte_write6			= 8'd23;
+	localparam	[7:0]	st_byte_write7			= 8'd24;
+	localparam	[7:0]	st_byte_write8			= 8'd25;
+	localparam	[7:0]	st_byte_write9			= 8'd26;
+	localparam	[7:0]	st_byte_write10			= 8'd27;
+	localparam	[7:0]	st_byte_write11			= 8'd28;
+	localparam	[7:0]	st_byte_write12			= 8'd29;
+	localparam	[7:0]	st_byte_write13			= 8'd30;
+	localparam	[7:0]	st_byte_write14			= 8'd31;
+	localparam	[7:0]	st_byte_write15			= 8'd32;
+	localparam	[7:0]	st_byte_read			= 8'd33;
+	localparam	[7:0]	st_byte_read_wait		= 8'd34;
+	localparam	[7:0]	st_byte_read_data_wait	= 8'd35;
+	localparam	[7:0]	st_byte_wnr_result		= 8'd36;
+	localparam	[7:0]	st_read_error			= 8'd37;
+	localparam	[7:0]	st_read_error_wait		= 8'd38;
+	localparam	[7:0]	st_finish				= 8'd39;
 
 	localparam	[3:0]	pst_wait				= 4'd0;
 	localparam	[3:0]	pst_putc_chk			= 4'd1;
@@ -89,6 +111,8 @@ module test_controller (
 	localparam	[6:0]	s_write					= 7'd40;
 	localparam	[6:0]	s_read_error			= 7'd46;
 	localparam	[6:0]	s_read					= 7'd62;
+	localparam	[6:0]	s_byte_wr_test			= 7'd68;
+	localparam	[6:0]	s_byte_wr_result		= 7'd79;
 
 	reg		[7:0]	ff_main_state;
 	reg		[3:0]	ff_print_state;
@@ -183,6 +207,26 @@ module test_controller (
 		rom_data[66]	= 8'd10;
 		rom_data[67]	= 8'd0;
 
+		rom_data[68]	= "B";
+		rom_data[69]	= "y";
+		rom_data[70]	= "t";
+		rom_data[71]	= "e";
+		rom_data[72]	= " ";
+		rom_data[73]	= "W";
+		rom_data[74]	= "/";
+		rom_data[75]	= "R";
+		rom_data[76]	= 8'd13;
+		rom_data[77]	= 8'd10;
+		rom_data[78]	= 8'd0;
+
+		rom_data[79]	= "B";
+		rom_data[80]	= ":";
+		rom_data[81]	= "@";
+		rom_data[82]	= "=";
+		rom_data[83]	= "#";
+		rom_data[84]	= 8'd13;
+		rom_data[85]	= 8'd10;
+		rom_data[86]	= 8'd0;
 	end
 
 	function [7:0] func_hex(
@@ -521,7 +565,7 @@ module test_controller (
 							ff_dram_wdata[6]	<= ff_dram_wdata[6] + c_increment_data6;
 							ff_dram_wdata[7]	<= ff_dram_wdata[7] + c_increment_data7;
 							if( ff_dram_address == 27'h7FFFFF8 ) begin
-								ff_main_state		<= st_finish;
+								ff_main_state		<= st_byte_wnr_test;
 							end
 							else begin
 								ff_main_state		<= st_read_loop;
@@ -539,6 +583,339 @@ module test_controller (
 							ff_main_state		<= st_read_error;
 						end
 					end
+				end
+			st_byte_wnr_test:
+				//	Byte W/R の表示要求 ---------------------------------------
+				begin
+					ff_led				<= 6'b110000;
+					ff_print_begin		<= s_byte_wr_test;
+					ff_print_start		<= 1'b1;
+					ff_main_state		<= ff_main_state + 8'd1;
+				end
+			st_read_wnr_test_wait:
+				//	Byte W/R の表示完了待ち -----------------------------------
+				begin
+					ff_led				<= 6'b001111;
+					if( ff_print_state == pst_finish ) begin
+						ff_print_start		<= 1'b0;
+						ff_main_state		<= st_byte_write0;
+					end
+				end
+			st_byte_write0:
+				//	XX-XX-XX-XX-XX-XX-XX-XX-XX-XX-XX-XX-XX-XX-XX-10 を書き込み 
+				begin
+					ff_dram_address		<= 27'd0;
+					ff_dram_write		<= 1'b1;
+					ff_dram_wdata[0]	<= 16'h1010;
+					ff_dram_wdata[1]	<= 16'h1010;
+					ff_dram_wdata[2]	<= 16'h1010;
+					ff_dram_wdata[3]	<= 16'h1010;
+					ff_dram_wdata[4]	<= 16'h1010;
+					ff_dram_wdata[5]	<= 16'h1010;
+					ff_dram_wdata[6]	<= 16'h1010;
+					ff_dram_wdata[7]	<= 16'h1010;
+					ff_dram_wdata_mask	<= 16'hFFFE;
+					ff_main_state		<= ff_main_state + 8'd1;
+					ff_dram_valid		<= 1'b1;
+				end
+			st_byte_write1:
+				//	XX-XX-XX-XX-XX-XX-XX-XX-XX-XX-XX-XX-XX-XX-32-XX を書き込み 
+				if( dram_ready ) begin
+					ff_dram_address		<= 27'd0;
+					ff_dram_write		<= 1'b1;
+					ff_dram_wdata[0]	<= 16'h3232;
+					ff_dram_wdata[1]	<= 16'h3232;
+					ff_dram_wdata[2]	<= 16'h3232;
+					ff_dram_wdata[3]	<= 16'h3232;
+					ff_dram_wdata[4]	<= 16'h3232;
+					ff_dram_wdata[5]	<= 16'h3232;
+					ff_dram_wdata[6]	<= 16'h3232;
+					ff_dram_wdata[7]	<= 16'h3232;
+					ff_dram_wdata_mask	<= 16'hFFFD;
+					ff_main_state		<= ff_main_state + 8'd1;
+					ff_dram_valid		<= 1'b1;
+				end
+			st_byte_write2:
+				//	XX-XX-XX-XX-XX-XX-XX-XX-XX-XX-XX-XX-XX-54-XX-XX を書き込み 
+				if( dram_ready ) begin
+					ff_dram_address		<= 27'd0;
+					ff_dram_write		<= 1'b1;
+					ff_dram_wdata[0]	<= 16'h5454;
+					ff_dram_wdata[1]	<= 16'h5454;
+					ff_dram_wdata[2]	<= 16'h5454;
+					ff_dram_wdata[3]	<= 16'h5454;
+					ff_dram_wdata[4]	<= 16'h5454;
+					ff_dram_wdata[5]	<= 16'h5454;
+					ff_dram_wdata[6]	<= 16'h5454;
+					ff_dram_wdata[7]	<= 16'h5454;
+					ff_dram_wdata_mask	<= 16'hFFFB;
+					ff_main_state		<= ff_main_state + 8'd1;
+					ff_dram_valid		<= 1'b1;
+				end
+			st_byte_write3:
+				//	XX-XX-XX-XX-XX-XX-XX-XX-XX-XX-XX-XX-76-XX-XX-XX を書き込み 
+				if( dram_ready ) begin
+					ff_dram_address		<= 27'd0;
+					ff_dram_write		<= 1'b1;
+					ff_dram_wdata[0]	<= 16'h7676;
+					ff_dram_wdata[1]	<= 16'h7676;
+					ff_dram_wdata[2]	<= 16'h7676;
+					ff_dram_wdata[3]	<= 16'h7676;
+					ff_dram_wdata[4]	<= 16'h7676;
+					ff_dram_wdata[5]	<= 16'h7676;
+					ff_dram_wdata[6]	<= 16'h7676;
+					ff_dram_wdata[7]	<= 16'h7676;
+					ff_dram_wdata_mask	<= 16'hFFF7;
+					ff_main_state		<= ff_main_state + 8'd1;
+					ff_dram_valid		<= 1'b1;
+				end
+			st_byte_write4:
+				//	XX-XX-XX-XX-XX-XX-XX-XX-XX-XX-XX-98-XX-XX-XX-XX を書き込み 
+				if( dram_ready ) begin
+					ff_dram_address		<= 27'd0;
+					ff_dram_write		<= 1'b1;
+					ff_dram_wdata[0]	<= 16'h9898;
+					ff_dram_wdata[1]	<= 16'h9898;
+					ff_dram_wdata[2]	<= 16'h9898;
+					ff_dram_wdata[3]	<= 16'h9898;
+					ff_dram_wdata[4]	<= 16'h9898;
+					ff_dram_wdata[5]	<= 16'h9898;
+					ff_dram_wdata[6]	<= 16'h9898;
+					ff_dram_wdata[7]	<= 16'h9898;
+					ff_dram_wdata_mask	<= 16'hFFEF;
+					ff_main_state		<= ff_main_state + 8'd1;
+					ff_dram_valid		<= 1'b1;
+				end
+			st_byte_write5:
+				//	XX-XX-XX-XX-XX-XX-XX-XX-XX-XX-BA-XX-XX-XX-XX-XX を書き込み 
+				if( dram_ready ) begin
+					ff_dram_address		<= 27'd0;
+					ff_dram_write		<= 1'b1;
+					ff_dram_wdata[0]	<= 16'hBABA;
+					ff_dram_wdata[1]	<= 16'hBABA;
+					ff_dram_wdata[2]	<= 16'hBABA;
+					ff_dram_wdata[3]	<= 16'hBABA;
+					ff_dram_wdata[4]	<= 16'hBABA;
+					ff_dram_wdata[5]	<= 16'hBABA;
+					ff_dram_wdata[6]	<= 16'hBABA;
+					ff_dram_wdata[7]	<= 16'hBABA;
+					ff_dram_wdata_mask	<= 16'hFFDF;
+					ff_main_state		<= ff_main_state + 8'd1;
+					ff_dram_valid		<= 1'b1;
+				end
+			st_byte_write6:
+				//	XX-XX-XX-XX-XX-XX-XX-XX-XX-DC-XX-XX-XX-XX-XX-XX を書き込み 
+				if( dram_ready ) begin
+					ff_dram_address		<= 27'd0;
+					ff_dram_write		<= 1'b1;
+					ff_dram_wdata[0]	<= 16'hDCDC;
+					ff_dram_wdata[1]	<= 16'hDCDC;
+					ff_dram_wdata[2]	<= 16'hDCDC;
+					ff_dram_wdata[3]	<= 16'hDCDC;
+					ff_dram_wdata[4]	<= 16'hDCDC;
+					ff_dram_wdata[5]	<= 16'hDCDC;
+					ff_dram_wdata[6]	<= 16'hDCDC;
+					ff_dram_wdata[7]	<= 16'hDCDC;
+					ff_dram_wdata_mask	<= 16'hFFBF;
+					ff_main_state		<= ff_main_state + 8'd1;
+					ff_dram_valid		<= 1'b1;
+				end
+			st_byte_write7:
+				//	XX-XX-XX-XX-XX-XX-XX-XX-FE-XX-XX-XX-XX-XX-XX-XX を書き込み 
+				if( dram_ready ) begin
+					ff_dram_address		<= 27'd0;
+					ff_dram_write		<= 1'b1;
+					ff_dram_wdata[0]	<= 16'hFEFE;
+					ff_dram_wdata[1]	<= 16'hFEFE;
+					ff_dram_wdata[2]	<= 16'hFEFE;
+					ff_dram_wdata[3]	<= 16'hFEFE;
+					ff_dram_wdata[4]	<= 16'hFEFE;
+					ff_dram_wdata[5]	<= 16'hFEFE;
+					ff_dram_wdata[6]	<= 16'hFEFE;
+					ff_dram_wdata[7]	<= 16'hFEFE;
+					ff_dram_wdata_mask	<= 16'hFF7F;
+					ff_main_state		<= ff_main_state + 8'd1;
+					ff_dram_valid		<= 1'b1;
+				end
+			st_byte_write8:
+				//	XX-XX-XX-XX-XX-XX-XX-01-XX-XX-XX-XX-XX-XX-XX-XX を書き込み 
+				if( dram_ready ) begin
+					ff_dram_address		<= 27'd0;
+					ff_dram_write		<= 1'b1;
+					ff_dram_wdata[0]	<= 16'h0101;
+					ff_dram_wdata[1]	<= 16'h0101;
+					ff_dram_wdata[2]	<= 16'h0101;
+					ff_dram_wdata[3]	<= 16'h0101;
+					ff_dram_wdata[4]	<= 16'h0101;
+					ff_dram_wdata[5]	<= 16'h0101;
+					ff_dram_wdata[6]	<= 16'h0101;
+					ff_dram_wdata[7]	<= 16'h0101;
+					ff_dram_wdata_mask	<= 16'hFEFF;
+					ff_main_state		<= ff_main_state + 8'd1;
+					ff_dram_valid		<= 1'b1;
+				end
+			st_byte_write9:
+				//	XX-XX-XX-XX-XX-XX-23-XX-XX-XX-XX-XX-XX-XX-XX-XX を書き込み 
+				if( dram_ready ) begin
+					ff_dram_address		<= 27'd0;
+					ff_dram_write		<= 1'b1;
+					ff_dram_wdata[0]	<= 16'h2323;
+					ff_dram_wdata[1]	<= 16'h2323;
+					ff_dram_wdata[2]	<= 16'h2323;
+					ff_dram_wdata[3]	<= 16'h2323;
+					ff_dram_wdata[4]	<= 16'h2323;
+					ff_dram_wdata[5]	<= 16'h2323;
+					ff_dram_wdata[6]	<= 16'h2323;
+					ff_dram_wdata[7]	<= 16'h2323;
+					ff_dram_wdata_mask	<= 16'hFDFF;
+					ff_main_state		<= ff_main_state + 8'd1;
+					ff_dram_valid		<= 1'b1;
+				end
+			st_byte_write10:
+				//	XX-XX-XX-XX-XX-45-XX-XX-XX-XX-XX-XX-XX-XX-XX-XX を書き込み 
+				if( dram_ready ) begin
+					ff_dram_address		<= 27'd0;
+					ff_dram_write		<= 1'b1;
+					ff_dram_wdata[0]	<= 16'h4545;
+					ff_dram_wdata[1]	<= 16'h4545;
+					ff_dram_wdata[2]	<= 16'h4545;
+					ff_dram_wdata[3]	<= 16'h4545;
+					ff_dram_wdata[4]	<= 16'h4545;
+					ff_dram_wdata[5]	<= 16'h4545;
+					ff_dram_wdata[6]	<= 16'h4545;
+					ff_dram_wdata[7]	<= 16'h4545;
+					ff_dram_wdata_mask	<= 16'hFBFF;
+					ff_main_state		<= ff_main_state + 8'd1;
+					ff_dram_valid		<= 1'b1;
+				end
+			st_byte_write11:
+				//	XX-XX-XX-XX-67-XX-XX-XX-XX-XX-XX-XX-XX-XX-XX-XX を書き込み 
+				if( dram_ready ) begin
+					ff_dram_address		<= 27'd0;
+					ff_dram_write		<= 1'b1;
+					ff_dram_wdata[0]	<= 16'h6767;
+					ff_dram_wdata[1]	<= 16'h6767;
+					ff_dram_wdata[2]	<= 16'h6767;
+					ff_dram_wdata[3]	<= 16'h6767;
+					ff_dram_wdata[4]	<= 16'h6767;
+					ff_dram_wdata[5]	<= 16'h6767;
+					ff_dram_wdata[6]	<= 16'h6767;
+					ff_dram_wdata[7]	<= 16'h6767;
+					ff_dram_wdata_mask	<= 16'hF7FF;
+					ff_main_state		<= ff_main_state + 8'd1;
+					ff_dram_valid		<= 1'b1;
+				end
+			st_byte_write12:
+				//	XX-XX-XX-89-XX-XX-XX-XX-XX-XX-XX-XX-XX-XX-XX-XX を書き込み 
+				if( dram_ready ) begin
+					ff_dram_address		<= 27'd0;
+					ff_dram_write		<= 1'b1;
+					ff_dram_wdata[0]	<= 16'h8989;
+					ff_dram_wdata[1]	<= 16'h8989;
+					ff_dram_wdata[2]	<= 16'h8989;
+					ff_dram_wdata[3]	<= 16'h8989;
+					ff_dram_wdata[4]	<= 16'h8989;
+					ff_dram_wdata[5]	<= 16'h8989;
+					ff_dram_wdata[6]	<= 16'h8989;
+					ff_dram_wdata[7]	<= 16'h8989;
+					ff_dram_wdata_mask	<= 16'hEFFF;
+					ff_main_state		<= ff_main_state + 8'd1;
+					ff_dram_valid		<= 1'b1;
+				end
+			st_byte_write13:
+				//	XX-XX-AB-XX-XX-XX-XX-XX-XX-XX-XX-XX-XX-XX-XX-XX を書き込み 
+				if( dram_ready ) begin
+					ff_dram_address		<= 27'd0;
+					ff_dram_write		<= 1'b1;
+					ff_dram_wdata[0]	<= 16'hABAB;
+					ff_dram_wdata[1]	<= 16'hABAB;
+					ff_dram_wdata[2]	<= 16'hABAB;
+					ff_dram_wdata[3]	<= 16'hABAB;
+					ff_dram_wdata[4]	<= 16'hABAB;
+					ff_dram_wdata[5]	<= 16'hABAB;
+					ff_dram_wdata[6]	<= 16'hABAB;
+					ff_dram_wdata[7]	<= 16'hABAB;
+					ff_dram_wdata_mask	<= 16'hDFFF;
+					ff_main_state		<= ff_main_state + 8'd1;
+					ff_dram_valid		<= 1'b1;
+				end
+			st_byte_write14:
+				//	XX-CD-XX-XX-XX-XX-XX-XX-XX-XX-XX-XX-XX-XX-XX-XX を書き込み 
+				if( dram_ready ) begin
+					ff_dram_address		<= 27'd0;
+					ff_dram_write		<= 1'b1;
+					ff_dram_wdata[0]	<= 16'hCDCD;
+					ff_dram_wdata[1]	<= 16'hCDCD;
+					ff_dram_wdata[2]	<= 16'hCDCD;
+					ff_dram_wdata[3]	<= 16'hCDCD;
+					ff_dram_wdata[4]	<= 16'hCDCD;
+					ff_dram_wdata[5]	<= 16'hCDCD;
+					ff_dram_wdata[6]	<= 16'hCDCD;
+					ff_dram_wdata[7]	<= 16'hCDCD;
+					ff_dram_wdata_mask	<= 16'hBFFF;
+					ff_main_state		<= ff_main_state + 8'd1;
+					ff_dram_valid		<= 1'b1;
+				end
+			st_byte_write15:
+				//	EF-XX-XX-XX-XX-XX-XX-XX-XX-XX-XX-XX-XX-XX-XX-XX を書き込み 
+				if( dram_ready ) begin
+					ff_dram_address		<= 27'd0;
+					ff_dram_write		<= 1'b1;
+					ff_dram_wdata[0]	<= 16'hEFEF;
+					ff_dram_wdata[1]	<= 16'hEFEF;
+					ff_dram_wdata[2]	<= 16'hEFEF;
+					ff_dram_wdata[3]	<= 16'hEFEF;
+					ff_dram_wdata[4]	<= 16'hEFEF;
+					ff_dram_wdata[5]	<= 16'hEFEF;
+					ff_dram_wdata[6]	<= 16'hEFEF;
+					ff_dram_wdata[7]	<= 16'hEFEF;
+					ff_dram_wdata_mask	<= 16'h7FFF;
+					ff_main_state		<= ff_main_state + 8'd1;
+					ff_dram_valid		<= 1'b1;
+				end
+			st_byte_read:
+				//	読み出し --------------------------------------------------
+				if( dram_ready ) begin
+					ff_dram_address		<= 27'd0;
+					ff_dram_write		<= 1'b0;
+					ff_dram_wdata[0]	<= 16'hAA55;
+					ff_dram_wdata[1]	<= 16'hAA55;
+					ff_dram_wdata[2]	<= 16'hAA55;
+					ff_dram_wdata[3]	<= 16'hAA55;
+					ff_dram_wdata[4]	<= 16'hAA55;
+					ff_dram_wdata[5]	<= 16'hAA55;
+					ff_dram_wdata[6]	<= 16'hAA55;
+					ff_dram_wdata[7]	<= 16'hAA55;
+					ff_dram_wdata_mask	<= 16'h0000;
+					ff_main_state		<= ff_main_state + 8'd1;
+					ff_dram_valid		<= 1'b1;
+				end
+			st_byte_read_wait:
+				//	読み出し完了待ち ------------------------------------------
+				if( dram_ready ) begin
+					ff_dram_valid		<= 1'b0;
+					ff_main_state		<= ff_main_state + 8'd1;
+				end
+			st_byte_read_data_wait:
+				//	読み出し結果受け取りと B:address=data の表示要求 ----------
+				if( dram_rdata_valid ) begin
+					ff_dram_data[0]		<= dram_rdata[ 15:  0];
+					ff_dram_data[1]		<= dram_rdata[ 31: 16];
+					ff_dram_data[2]		<= dram_rdata[ 47: 32];
+					ff_dram_data[3]		<= dram_rdata[ 63: 48];
+					ff_dram_data[4]		<= dram_rdata[ 79: 64];
+					ff_dram_data[5]		<= dram_rdata[ 95: 80];
+					ff_dram_data[6]		<= dram_rdata[111: 96];
+					ff_dram_data[7]		<= dram_rdata[127:112];
+					ff_print_begin		<= s_byte_wr_result;
+					ff_print_start		<= 1'b1;
+					ff_main_state		<= ff_main_state + 8'd1;
+				end
+			st_byte_wnr_result:
+				//	B:address=data の表示完了待ち -----------------------------
+				if( ff_print_state == pst_finish ) begin
+					ff_print_start		<= 1'b0;
+					ff_main_state		<= st_finish;
 				end
 			st_read_error:
 				//	Read Err の表示要求 ---------------------------------------
