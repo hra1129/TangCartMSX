@@ -44,8 +44,14 @@ module test_controller (
 	input	[127:0]	dram_rdata,			//	DDR3 Controller 
 	input			dram_rdata_valid	//	DDR3 Controller 
 );
-//	localparam	[127:0]	c_increment_data		= 128'h0B05_0702_0A00_9001_0007_0004_0200_B001;
-	localparam	[127:0]	c_increment_data		= 128'h0000_0000_0000_0000_0000_0000_0000_0001;
+	localparam	[15:0]	c_increment_data0		= 16'h0001;
+	localparam	[15:0]	c_increment_data1		= 16'h0003;
+	localparam	[15:0]	c_increment_data2		= 16'h0005;
+	localparam	[15:0]	c_increment_data3		= 16'h0007;
+	localparam	[15:0]	c_increment_data4		= 16'h0009;
+	localparam	[15:0]	c_increment_data5		= 16'h000B;
+	localparam	[15:0]	c_increment_data6		= 16'h000D;
+	localparam	[15:0]	c_increment_data7		= 16'h000F;
 
 	localparam	[7:0]	st_init					= 8'd0;
 	localparam	[7:0]	st_print_title			= 8'd1;
@@ -96,11 +102,11 @@ module test_controller (
 	reg		[5:0]	ff_led;
 	reg		[26:0]	ff_dram_address;
 	reg				ff_dram_write;
-	reg		[127:0]	ff_dram_wdata;
+	reg		[15:0]	ff_dram_wdata [0:7];
 	reg		[15:0]	ff_dram_wdata_mask;
 	reg				ff_dram_valid;
-	reg		[127:0]	ff_dram_data;
-	reg		[127:0]	ff_put_data;
+	reg		[15:0]	ff_dram_data [0:7];
+	reg		[15:0]	ff_put_data [0:7];
 	reg		[4:0]	ff_count;
 
 	initial begin
@@ -267,7 +273,14 @@ module test_controller (
 			pst_putc_data:
 				//	データの出力準備 ------------------------------------------
 				begin
-					ff_put_data			<= ff_dram_data;
+					ff_put_data[0]		<= ff_dram_data[0];
+					ff_put_data[1]		<= ff_dram_data[1];
+					ff_put_data[2]		<= ff_dram_data[2];
+					ff_put_data[3]		<= ff_dram_data[3];
+					ff_put_data[4]		<= ff_dram_data[4];
+					ff_put_data[5]		<= ff_dram_data[5];
+					ff_put_data[6]		<= ff_dram_data[6];
+					ff_put_data[7]		<= ff_dram_data[7];
 					ff_count			<= 5'd31;
 					ff_print_ptr		<= ff_print_ptr + 7'd1;
 					ff_print_state		<= pst_putc_data_one;
@@ -275,7 +288,7 @@ module test_controller (
 			pst_putc_data_one:
 				//	データ最上位桁出力要求 ------------------------------------
 				begin
-					ff_put_char			<= func_hex( ff_put_data[127:124] );
+					ff_put_char			<= func_hex( ff_put_data[7][15:12] );
 					ff_put_char_valid	<= 1'b1;
 					ff_print_state		<= pst_putc_data_wait;
 				end
@@ -284,7 +297,14 @@ module test_controller (
 				begin
 					if( bus_ready ) begin
 						ff_put_char_valid	<= 1'b0;
-						ff_put_data			<= { ff_put_data[123:0], 4'd0 };
+						ff_put_data[0]		<= { ff_put_data[0][11:0], 4'd0 };
+						ff_put_data[1]		<= { ff_put_data[1][11:0], ff_put_data[0][15:12] };
+						ff_put_data[2]		<= { ff_put_data[2][11:0], ff_put_data[1][15:12] };
+						ff_put_data[3]		<= { ff_put_data[3][11:0], ff_put_data[2][15:12] };
+						ff_put_data[4]		<= { ff_put_data[4][11:0], ff_put_data[3][15:12] };
+						ff_put_data[5]		<= { ff_put_data[5][11:0], ff_put_data[4][15:12] };
+						ff_put_data[6]		<= { ff_put_data[6][11:0], ff_put_data[5][15:12] };
+						ff_put_data[7]		<= { ff_put_data[7][11:0], ff_put_data[6][15:12] };
 						ff_count			<= ff_count - 5'd1;
 						if( ff_count == 4'd0 ) begin
 							ff_print_state	<= pst_putc_chk;
@@ -312,7 +332,14 @@ module test_controller (
 			ff_print_start		<= 1'b0;
 			ff_dram_address		<= 27'd0;
 			ff_dram_write		<= 1'b0;
-			ff_dram_wdata		<= 128'd0;
+			ff_dram_wdata[0]	<= 16'd0;
+			ff_dram_wdata[1]	<= 16'd0;
+			ff_dram_wdata[2]	<= 16'd0;
+			ff_dram_wdata[3]	<= 16'd0;
+			ff_dram_wdata[4]	<= 16'd0;
+			ff_dram_wdata[5]	<= 16'd0;
+			ff_dram_wdata[6]	<= 16'd0;
+			ff_dram_wdata[7]	<= 16'd0;
 			ff_dram_wdata_mask	<= 16'd0;
 			ff_dram_valid		<= 1'b0;
 			ff_led				<= 6'b101010;
@@ -368,7 +395,14 @@ module test_controller (
 				begin
 					ff_dram_address		<= 27'd0;
 					ff_dram_write		<= 1'b1;
-					ff_dram_wdata		<= 128'd0;
+					ff_dram_wdata[0]	<= 16'd0;
+					ff_dram_wdata[1]	<= 16'd0;
+					ff_dram_wdata[2]	<= 16'd0;
+					ff_dram_wdata[3]	<= 16'd0;
+					ff_dram_wdata[4]	<= 16'd0;
+					ff_dram_wdata[5]	<= 16'd0;
+					ff_dram_wdata[6]	<= 16'd0;
+					ff_dram_wdata[7]	<= 16'd0;
 					ff_dram_wdata_mask	<= 16'h0000;
 					ff_main_state		<= ff_main_state + 8'd1;
 				end
@@ -403,7 +437,14 @@ module test_controller (
 					if( dram_ready ) begin
 						ff_dram_valid		<= 1'b0;
 						ff_dram_address		<= ff_dram_address + 27'd8;
-						ff_dram_wdata		<= ff_dram_wdata + c_increment_data;
+						ff_dram_wdata[0]	<= ff_dram_wdata[0] + c_increment_data0;
+						ff_dram_wdata[1]	<= ff_dram_wdata[1] + c_increment_data1;
+						ff_dram_wdata[2]	<= ff_dram_wdata[2] + c_increment_data2;
+						ff_dram_wdata[3]	<= ff_dram_wdata[3] + c_increment_data3;
+						ff_dram_wdata[4]	<= ff_dram_wdata[4] + c_increment_data4;
+						ff_dram_wdata[5]	<= ff_dram_wdata[5] + c_increment_data5;
+						ff_dram_wdata[6]	<= ff_dram_wdata[6] + c_increment_data6;
+						ff_dram_wdata[7]	<= ff_dram_wdata[7] + c_increment_data7;
 						if( ff_dram_address == 27'h7FFFFF8 ) begin
 							ff_main_state		<= st_read_init;
 						end
@@ -417,7 +458,14 @@ module test_controller (
 				begin
 					ff_dram_address		<= 27'd0;
 					ff_dram_write		<= 1'b0;
-					ff_dram_wdata		<= 128'd0;
+					ff_dram_wdata[0]	<= 16'd0;
+					ff_dram_wdata[1]	<= 16'd0;
+					ff_dram_wdata[2]	<= 16'd0;
+					ff_dram_wdata[3]	<= 16'd0;
+					ff_dram_wdata[4]	<= 16'd0;
+					ff_dram_wdata[5]	<= 16'd0;
+					ff_dram_wdata[6]	<= 16'd0;
+					ff_dram_wdata[7]	<= 16'd0;
 					ff_dram_wdata_mask	<= 16'h0000;
 					ff_main_state		<= ff_main_state + 8'd1;
 					ff_led				<= 6'b111110;
@@ -462,9 +510,16 @@ module test_controller (
 				begin
 					ff_led				<= 6'b111011;
 					if( dram_rdata_valid ) begin
-						if( dram_rdata == ff_dram_wdata ) begin
+						if( dram_rdata == { ff_dram_wdata[7], ff_dram_wdata[6], ff_dram_wdata[5], ff_dram_wdata[4], ff_dram_wdata[3], ff_dram_wdata[2], ff_dram_wdata[1], ff_dram_wdata[0] } ) begin
 							ff_dram_address		<= ff_dram_address + 27'd8;
-							ff_dram_wdata		<= ff_dram_wdata + c_increment_data;
+							ff_dram_wdata[0]	<= ff_dram_wdata[0] + c_increment_data0;
+							ff_dram_wdata[1]	<= ff_dram_wdata[1] + c_increment_data1;
+							ff_dram_wdata[2]	<= ff_dram_wdata[2] + c_increment_data2;
+							ff_dram_wdata[3]	<= ff_dram_wdata[3] + c_increment_data3;
+							ff_dram_wdata[4]	<= ff_dram_wdata[4] + c_increment_data4;
+							ff_dram_wdata[5]	<= ff_dram_wdata[5] + c_increment_data5;
+							ff_dram_wdata[6]	<= ff_dram_wdata[6] + c_increment_data6;
+							ff_dram_wdata[7]	<= ff_dram_wdata[7] + c_increment_data7;
 							if( ff_dram_address == 27'h7FFFFF8 ) begin
 								ff_main_state		<= st_finish;
 							end
@@ -473,7 +528,14 @@ module test_controller (
 							end
 						end
 						else begin
-							ff_dram_data		<= dram_rdata;
+							ff_dram_data[0]		<= dram_rdata[ 15:  0];
+							ff_dram_data[1]		<= dram_rdata[ 31: 16];
+							ff_dram_data[2]		<= dram_rdata[ 47: 32];
+							ff_dram_data[3]		<= dram_rdata[ 63: 48];
+							ff_dram_data[4]		<= dram_rdata[ 79: 64];
+							ff_dram_data[5]		<= dram_rdata[ 95: 80];
+							ff_dram_data[6]		<= dram_rdata[111: 96];
+							ff_dram_data[7]		<= dram_rdata[127:112];
 							ff_main_state		<= st_read_error;
 						end
 					end
@@ -493,7 +555,14 @@ module test_controller (
 					if( ff_print_state == pst_finish ) begin
 						ff_print_start		<= 1'b0;
 						ff_dram_address		<= ff_dram_address + 27'd8;
-						ff_dram_wdata		<= ff_dram_wdata + c_increment_data;
+						ff_dram_wdata[0]	<= ff_dram_wdata[0] + c_increment_data0;
+						ff_dram_wdata[1]	<= ff_dram_wdata[1] + c_increment_data1;
+						ff_dram_wdata[2]	<= ff_dram_wdata[2] + c_increment_data2;
+						ff_dram_wdata[3]	<= ff_dram_wdata[3] + c_increment_data3;
+						ff_dram_wdata[4]	<= ff_dram_wdata[4] + c_increment_data4;
+						ff_dram_wdata[5]	<= ff_dram_wdata[5] + c_increment_data5;
+						ff_dram_wdata[6]	<= ff_dram_wdata[6] + c_increment_data6;
+						ff_dram_wdata[7]	<= ff_dram_wdata[7] + c_increment_data7;
 						if( ff_dram_address == 27'h7FFFFF8 ) begin
 							ff_main_state		<= st_finish;
 						end
@@ -526,6 +595,6 @@ module test_controller (
 	assign dram_address			= ff_dram_address;
 	assign dram_write			= ff_dram_write;
 	assign dram_valid			= ff_dram_valid;
-	assign dram_wdata			= ff_dram_wdata;
+	assign dram_wdata			= { ff_dram_wdata[7], ff_dram_wdata[6], ff_dram_wdata[5], ff_dram_wdata[4], ff_dram_wdata[3], ff_dram_wdata[2], ff_dram_wdata[1], ff_dram_wdata[0] };
 	assign dram_wdata_mask		= ff_dram_wdata_mask;
 endmodule

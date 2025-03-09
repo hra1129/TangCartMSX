@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<Module name="tangprimer20k_step2" Register="2" T_Register="3645(2)" T_Alu="253(0)" T_Lut="3367(0)" T_Ssram="120(0)">
+<Module name="tangprimer20k_step2" Register="2" T_Register="3635(2)" T_Alu="253(0)" T_Lut="2987(0)" T_Ssram="120(0)">
  <SubModule name="u_pll"/>
- <SubModule name="u_test_controller" Register="473" Alu="128" Lut="1344" T_Register="473(473)" T_Alu="128(128)" T_Lut="1344(1344)"/>
+ <SubModule name="u_test_controller" Register="463" Alu="128" Lut="964" T_Register="463(463)" T_Alu="128(128)" T_Lut="964(964)"/>
  <SubModule name="u_uart" Register="8" Lut="3" T_Register="35(8)" T_Lut="38(3)">
   <SubModule name="u_uart" Register="27" Lut="35" T_Register="27(27)" T_Lut="35(35)"/>
  </SubModule>
