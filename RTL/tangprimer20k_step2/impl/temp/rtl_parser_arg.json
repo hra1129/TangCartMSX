@@ -10,7 +10,23 @@
    "Type" : "verilog"
   },
   {
+   "Path" : "D:/github/HRA_product/TangCartMSX/RTL/tangprimer20k_step2/src/sdram/ip_sdram_tangprimer20k.v",
+   "Type" : "verilog"
+  },
+  {
    "Path" : "D:/github/HRA_product/TangCartMSX/RTL/tangprimer20k_step2/src/tangprimer20k_step2.v",
+   "Type" : "verilog"
+  },
+  {
+   "Path" : "D:/github/HRA_product/TangCartMSX/RTL/tangprimer20k_step2/src/test_controller/test_controller.v",
+   "Type" : "verilog"
+  },
+  {
+   "Path" : "D:/github/HRA_product/TangCartMSX/RTL/tangprimer20k_step2/src/uart/ip_uart.v",
+   "Type" : "verilog"
+  },
+  {
+   "Path" : "D:/github/HRA_product/TangCartMSX/RTL/tangprimer20k_step2/src/uart/ip_uart_inst.v",
    "Type" : "verilog"
   }
  ],

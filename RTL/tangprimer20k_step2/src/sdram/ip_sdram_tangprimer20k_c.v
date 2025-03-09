@@ -3,25 +3,25 @@
 //
 //	Copyright (C) 2025 Takayuki Hara
 //
-//	–{ƒ\ƒtƒgƒEƒFƒA‚¨‚æ‚Ñ–{ƒ\ƒtƒgƒEƒFƒA‚ÉŠî‚Ã‚¢‚Äì¬‚³‚ê‚½”h¶•¨‚ÍAˆÈ‰º‚ÌğŒ‚ğ
-//	–‚½‚·ê‡‚ÉŒÀ‚èAÄ”Ğ•z‚¨‚æ‚Ñg—p‚ª‹–‰Â‚³‚ê‚Ü‚·B
+//	æœ¬ã‚½ãƒ•ãƒˆã‚¦ã‚§ã‚¢ãŠã‚ˆã³æœ¬ã‚½ãƒ•ãƒˆã‚¦ã‚§ã‚¢ã«åŸºã¥ã„ã¦ä½œæˆã•ã‚ŒãŸæ´¾ç”Ÿç‰©ã¯ã€ä»¥ä¸‹ã®æ¡ä»¶ã‚’
+//	æº€ãŸã™å ´åˆã«é™ã‚Šã€å†é ’å¸ƒãŠã‚ˆã³ä½¿ç”¨ãŒè¨±å¯ã•ã‚Œã¾ã™ã€‚
 //
-//	1.ƒ\[ƒXƒR[ƒhŒ`®‚ÅÄ”Ğ•z‚·‚éê‡Aã‹L‚Ì’˜ìŒ •\¦A–{ğŒˆê——A‚¨‚æ‚Ñ‰º‹L
-//	  –ÆÓğ€‚ğ‚»‚Ì‚Ü‚Ü‚ÌŒ`‚Å•Û‚·‚é‚±‚ÆB
-//	2.ƒoƒCƒiƒŠŒ`®‚ÅÄ”Ğ•z‚·‚éê‡A”Ğ•z•¨‚É•t‘®‚ÌƒhƒLƒ…ƒƒ“ƒg“™‚Ì‘—¿‚ÉAã‹L‚Ì
-//	  ’˜ìŒ •\¦A–{ğŒˆê——A‚¨‚æ‚Ñ‰º‹L–ÆÓğ€‚ğŠÜ‚ß‚é‚±‚ÆB
-//	3.‘–Ê‚É‚æ‚é–‘O‚Ì‹–‰Â‚È‚µ‚ÉA–{ƒ\ƒtƒgƒEƒFƒA‚ğ”Ì”„A‚¨‚æ‚Ñ¤‹Æ“I‚È»•i‚âŠˆ“®
-//	  ‚Ég—p‚µ‚È‚¢‚±‚ÆB
+//	1.ã‚½ãƒ¼ã‚¹ã‚³ãƒ¼ãƒ‰å½¢å¼ã§å†é ’å¸ƒã™ã‚‹å ´åˆã€ä¸Šè¨˜ã®è‘—ä½œæ¨©è¡¨ç¤ºã€æœ¬æ¡ä»¶ä¸€è¦§ã€ãŠã‚ˆã³ä¸‹è¨˜
+//	  å…è²¬æ¡é …ã‚’ãã®ã¾ã¾ã®å½¢ã§ä¿æŒã™ã‚‹ã“ã¨ã€‚
+//	2.ãƒã‚¤ãƒŠãƒªå½¢å¼ã§å†é ’å¸ƒã™ã‚‹å ´åˆã€é ’å¸ƒç‰©ã«ä»˜å±ã®ãƒ‰ã‚­ãƒ¥ãƒ¡ãƒ³ãƒˆç­‰ã®è³‡æ–™ã«ã€ä¸Šè¨˜ã®
+//	  è‘—ä½œæ¨©è¡¨ç¤ºã€æœ¬æ¡ä»¶ä¸€è¦§ã€ãŠã‚ˆã³ä¸‹è¨˜å…è²¬æ¡é …ã‚’å«ã‚ã‚‹ã“ã¨ã€‚
+//	3.æ›¸é¢ã«ã‚ˆã‚‹äº‹å‰ã®è¨±å¯ãªã—ã«ã€æœ¬ã‚½ãƒ•ãƒˆã‚¦ã‚§ã‚¢ã‚’è²©å£²ã€ãŠã‚ˆã³å•†æ¥­çš„ãªè£½å“ã‚„æ´»å‹•
+//	  ã«ä½¿ç”¨ã—ãªã„ã“ã¨ã€‚
 //
-//	–{ƒ\ƒtƒgƒEƒFƒA‚ÍA’˜ìŒ Ò‚É‚æ‚Á‚ÄuŒ»ó‚Ì‚Ü‚Üv’ñ‹Ÿ‚³‚ê‚Ä‚¢‚Ü‚·B’˜ìŒ Ò‚ÍA
-//	“Á’è–Ú“I‚Ö‚Ì“K‡«‚Ì•ÛØA¤•i«‚Ì•ÛØA‚Ü‚½‚»‚ê‚ÉŒÀ’è‚³‚ê‚È‚¢A‚¢‚©‚È‚é–¾¦
-//	“I‚à‚µ‚­‚ÍˆÃ–Ù‚È•ÛØÓ”C‚à•‰‚¢‚Ü‚¹‚ñB’˜ìŒ Ò‚ÍA–—R‚Ì‚¢‚©‚ñ‚ğ–â‚í‚¸A‘¹ŠQ
-//	”­¶‚ÌŒ´ˆö‚¢‚©‚ñ‚ğ–â‚í‚¸A‚©‚ÂÓ”C‚Ìª‹’‚ªŒ_–ñ‚Å‚ ‚é‚©ŒµŠiÓ”C‚Å‚ ‚é‚©i‰ß¸
-//	‚»‚Ì‘¼‚Ìj•s–@sˆ×‚Å‚ ‚é‚©‚ğ–â‚í‚¸A‰¼‚É‚»‚Ì‚æ‚¤‚È‘¹ŠQ‚ª”­¶‚·‚é‰Â”\«‚ğ’m‚ç
-//	‚³‚ê‚Ä‚¢‚½‚Æ‚µ‚Ä‚àA–{ƒ\ƒtƒgƒEƒFƒA‚Ìg—p‚É‚æ‚Á‚Ä”­¶‚µ‚½i‘ã‘Ö•i‚Ü‚½‚Í‘ã—pƒT
-//	[ƒrƒX‚Ì’²’BAg—p‚Ì‘r¸Aƒf[ƒ^‚Ì‘r¸A—˜‰v‚Ì‘r¸A‹Æ–±‚Ì’†’f‚àŠÜ‚ßA‚Ü‚½‚»
-//	‚ê‚ÉŒÀ’è‚³‚ê‚È‚¢j’¼Ú‘¹ŠQAŠÔÚ‘¹ŠQA‹ô”­“I‚È‘¹ŠQA“Á•Ê‘¹ŠQA’¦”±“I‘¹ŠQA‚Ü
-//	‚½‚ÍŒ‹‰Ê‘¹ŠQ‚É‚Â‚¢‚ÄAˆêØÓ”C‚ğ•‰‚í‚È‚¢‚à‚Ì‚Æ‚µ‚Ü‚·B
+//	æœ¬ã‚½ãƒ•ãƒˆã‚¦ã‚§ã‚¢ã¯ã€è‘—ä½œæ¨©è€…ã«ã‚ˆã£ã¦ã€Œç¾çŠ¶ã®ã¾ã¾ã€æä¾›ã•ã‚Œã¦ã„ã¾ã™ã€‚è‘—ä½œæ¨©è€…ã¯ã€
+//	ç‰¹å®šç›®çš„ã¸ã®é©åˆæ€§ã®ä¿è¨¼ã€å•†å“æ€§ã®ä¿è¨¼ã€ã¾ãŸãã‚Œã«é™å®šã•ã‚Œãªã„ã€ã„ã‹ãªã‚‹æ˜ç¤º
+//	çš„ã‚‚ã—ãã¯æš—é»™ãªä¿è¨¼è²¬ä»»ã‚‚è² ã„ã¾ã›ã‚“ã€‚è‘—ä½œæ¨©è€…ã¯ã€äº‹ç”±ã®ã„ã‹ã‚“ã‚’å•ã‚ãšã€æå®³
+//	ç™ºç”Ÿã®åŸå› ã„ã‹ã‚“ã‚’å•ã‚ãšã€ã‹ã¤è²¬ä»»ã®æ ¹æ‹ ãŒå¥‘ç´„ã§ã‚ã‚‹ã‹å³æ ¼è²¬ä»»ã§ã‚ã‚‹ã‹ï¼ˆéå¤±
+//	ãã®ä»–ã®ï¼‰ä¸æ³•è¡Œç‚ºã§ã‚ã‚‹ã‹ã‚’å•ã‚ãšã€ä»®ã«ãã®ã‚ˆã†ãªæå®³ãŒç™ºç”Ÿã™ã‚‹å¯èƒ½æ€§ã‚’çŸ¥ã‚‰
+//	ã•ã‚Œã¦ã„ãŸã¨ã—ã¦ã‚‚ã€æœ¬ã‚½ãƒ•ãƒˆã‚¦ã‚§ã‚¢ã®ä½¿ç”¨ã«ã‚ˆã£ã¦ç™ºç”Ÿã—ãŸï¼ˆä»£æ›¿å“ã¾ãŸã¯ä»£ç”¨ã‚µ
+//	ãƒ¼ãƒ“ã‚¹ã®èª¿é”ã€ä½¿ç”¨ã®å–ªå¤±ã€ãƒ‡ãƒ¼ã‚¿ã®å–ªå¤±ã€åˆ©ç›Šã®å–ªå¤±ã€æ¥­å‹™ã®ä¸­æ–­ã‚‚å«ã‚ã€ã¾ãŸã
+//	ã‚Œã«é™å®šã•ã‚Œãªã„ï¼‰ç›´æ¥æå®³ã€é–“æ¥æå®³ã€å¶ç™ºçš„ãªæå®³ã€ç‰¹åˆ¥æå®³ã€æ‡²ç½°çš„æå®³ã€ã¾
+//	ãŸã¯çµæœæå®³ã«ã¤ã„ã¦ã€ä¸€åˆ‡è²¬ä»»ã‚’è² ã‚ãªã„ã‚‚ã®ã¨ã—ã¾ã™ã€‚
 //
 //	Note that above Japanese version license is the formal document.
 //	The following translation is only for reference.
@@ -62,15 +62,14 @@ module ip_sdram #(
 	input				clk_n,
 	output				sdram_init_busy,
 	output				sdram_busy,
-	input				cpu_freeze,
 
 	input				mreq_n,
 	input	[26:0]		address,		//	128MB: [26:24]=BANK, [23:11]=ROW, [10:0]=COLUMN
 	input				wr_n,
 	input				rd_n,
 	input				rfsh_n,
-	input	[ 7:0]		wdata,
-	output	[ 7:0]		rdata,
+	input	[127:0]		wdata,
+	output	[127:0]		rdata,
 	output				rdata_en,
 
 	// ddrAM ports
@@ -91,16 +90,14 @@ module ip_sdram #(
 	input	[ 1:0]		ddr3_tdqs_n,	// 
 	input				ddr3_odt
 );
-	//	ddrAM commands
+	//	SDRAM commands { cs_n, ras_n, cas_n, we_n }
 	localparam	[3:0]	c_ddr_command_mode_register_set			= 4'b0000;
-	localparam	[3:0]	c_ddr_command_zqcl						= 4'b0110;
-
 	localparam	[3:0]	c_ddr_command_refresh					= 4'b0001;
 	localparam	[3:0]	c_ddr_command_precharge_all				= 4'b0010;
 	localparam	[3:0]	c_ddr_command_activate					= 4'b0011;
 	localparam	[3:0]	c_ddr_command_write						= 4'b0100;
 	localparam	[3:0]	c_ddr_command_read						= 4'b0101;
-	localparam	[3:0]	c_ddr_command_burst_stop				= 4'b0110;
+	localparam	[3:0]	c_ddr_command_zqcl						= 4'b0110;
 	localparam	[3:0]	c_ddr_command_no_operation				= 4'b0111;
 	localparam	[3:0]	c_ddr_command_deselect					= 4'b1111;
 
@@ -123,36 +120,27 @@ module ip_sdram #(
 	localparam	[5:0]	c_init_state_zqcl_wait					= 6'd15;
 	localparam	[5:0]	c_init_state_precharge_all				= 6'd16;
 	localparam	[5:0]	c_init_state_precharge_all_wait			= 6'd17;
-	localparam	[5:0]	c_init_state_active0					= 6'd18;
-	localparam	[5:0]	c_init_state_active0_wait				= 6'd19;
-	localparam	[5:0]	c_init_state_active1					= 6'd20;
-	localparam	[5:0]	c_init_state_active1_wait				= 6'd21;
-	localparam	[5:0]	c_init_state_active2					= 6'd22;
-	localparam	[5:0]	c_init_state_active2_wait				= 6'd23;
-	localparam	[5:0]	c_init_state_active3					= 6'd24;
-	localparam	[5:0]	c_init_state_active3_wait				= 6'd25;
-	localparam	[5:0]	c_init_state_active4					= 6'd26;
-	localparam	[5:0]	c_init_state_active4_wait				= 6'd27;
-	localparam	[5:0]	c_init_state_active5					= 6'd28;
-	localparam	[5:0]	c_init_state_active5_wait				= 6'd29;
-	localparam	[5:0]	c_init_state_active6					= 6'd30;
-	localparam	[5:0]	c_init_state_active6_wait				= 6'd31;
-	localparam	[5:0]	c_init_state_active7					= 6'd32;
-	localparam	[5:0]	c_init_state_active7_wait				= 6'd33;
-	localparam	[5:0]	c_main_state_ready						= 6'd34;
-	localparam	[5:0]	c_main_state_activate					= 6'd35;
-	localparam	[5:0]	c_main_state_nop1						= 6'd36;
-	localparam	[5:0]	c_main_state_nop2						= 6'd37;
-	localparam	[5:0]	c_main_state_read_or_write				= 6'd38;
-	localparam	[5:0]	c_main_state_nop3						= 6'd39;
-	localparam	[5:0]	c_main_state_nop4						= 6'd40;
-	localparam	[5:0]	c_main_state_data_fetch					= 6'd41;
-	localparam	[5:0]	c_main_state_finish						= 6'd42;
-	localparam	[5:0]	c_main_state_nop5						= 6'd43;
-	localparam	[5:0]	c_main_state_nop6						= 6'd44;
-	localparam	[5:0]	c_main_state_nop7						= 6'd45;
-	localparam	[5:0]	c_main_state_nop8						= 6'd46;
-	localparam	[5:0]	c_main_state_finish2					= 6'd47;
+	localparam	[5:0]	c_main_state_ready						= 6'd18;
+	localparam	[5:0]	c_main_state_precharge_all				= 6'd19;
+	localparam	[5:0]	c_main_state_precharge_all_wait			= 6'd20;
+	localparam	[5:0]	c_main_state_refresh					= 6'd21;
+	localparam	[5:0]	c_main_state_refresh_wait				= 6'd22;
+	localparam	[5:0]	c_main_state_finish						= 6'd23;
+	localparam	[5:0]	c_main_state_read_or_write				= 6'd24;
+	localparam	[5:0]	c_main_state_read_or_write_wait			= 6'd25;
+	localparam	[5:0]	c_main_state_finish2					= 6'd26;
+	localparam	[5:0]	c_main_state_active_n					= 6'd27;
+	localparam	[5:0]	c_main_state_read_or_write2				= 6'd28;
+	localparam	[5:0]	c_main_state_read_or_write2_wait		= 6'd29;
+	localparam	[5:0]	c_main_state_finish3					= 6'd30;
+
+	localparam	[4:0]	c_access_idle							= 3'd0;
+	localparam	[4:0]	c_access_pre							= 3'd1;
+	localparam	[4:0]	c_access_data0							= 3'd2;
+	localparam	[4:0]	c_access_data1							= 3'd3;
+	localparam	[4:0]	c_access_data2							= 3'd4;
+	localparam	[4:0]	c_access_data3							= 3'd5;
+	localparam	[4:0]	c_access_finish							= 3'd6;
 
 	localparam CLOCK_TIME		= 64'd1_000_000_000_000 / FREQ;		// 1sec = 1_000_000_000_000psec
 	localparam TIMER_COUNT		= 64'd510_000_000 / CLOCK_TIME;		// clock
@@ -163,21 +151,26 @@ module ip_sdram #(
 	localparam REFRESH_BITS		= $clog2(REFRESH_COUNT + 1);
 
 	reg		[ 5:0]				ff_main_state;
+	reg		[ 2:0]				ff_access_state;
 	reg		[TIMER_BITS-1:0]	ff_main_timer;
-	reg		[ 7:0]				ff_no_refresh;
+	reg		[11:0]				ff_refresh_wait;
 	wire						w_end_of_main_timer;
 
 	reg							ff_ddr_rst_n			= 1'b0;
 	reg							ff_ddr_cke				= 1'b0;
 	reg							ff_ddr_odt;
 	reg							ff_ddr_ready;
-	reg							ff_do_main_state;
+	reg							ff_accessing;
 	reg							ff_do_refresh;
 
 	reg		[ 3:0]				ff_ddr_command			= c_ddr_command_no_operation;
 	reg		[ 2:0]				ff_ddr_ba;
 	reg		[12:0]				ff_ddr_address			= 13'h0000;
-	reg		[31:0]				ff_ddr_write_data		= 32'd0;
+	reg		[127:0]				ff_pre_write_data		= 128'd0;
+	reg		[127:0]				ff_cur_write_data		= 128'd0;
+	reg							ff_cur_write			= 1'b0;
+	reg							ff_cur_access			= 1'b0;
+	reg		[15:0]				ff_ddr_write_data		= 16'd0;
 	reg		[ 1:0]				ff_ddr_dq_mask			= 2'b11;
 	reg		[ 7:0]				ff_ddr_read_data		= 8'd0;
 	reg							ff_ddr_read_data_en		= 1'b0;
@@ -187,11 +180,12 @@ module ip_sdram #(
 	reg							ff_rd_wr_accept;
 	reg							ff_rfsh_accept;
 	reg							ff_is_write;
-	reg		[ 7:0]				ff_wdata;
-	reg		[22:0]				ff_address;
+	reg		[127:0]				ff_wdata;
+	reg		[26:0]				ff_address;
 	wire						w_busy;
 	wire						w_has_request_latch;
 	reg		[12:0]				ff_bank_row [0:7];
+	reg							ff_bank_active [0:7];
 
 	// --------------------------------------------------------------------
 	//	Request latch
@@ -211,13 +205,13 @@ module ip_sdram #(
 	always @( posedge clk ) begin
 		if( !reset_n ) begin
 			ff_wr_n		<= 1'b1;
-			ff_wdata	<= 8'd0;
+			ff_wdata	<= 128'd0;
 		end
 		else if( !ff_rd_wr_accept && !mreq_n && !wr_n && !w_has_request_latch ) begin
 			ff_wr_n		<= 1'b0;
 			ff_wdata	<= wdata;
 		end
-		else if( ff_main_state == c_main_state_data_fetch ) begin
+		else if( ff_main_state == c_main_state_finish2 || ff_main_state == c_main_state_finish3 ) begin
 			ff_wr_n		<= 1'b1;
 		end
 	end
@@ -226,7 +220,7 @@ module ip_sdram #(
 
 	always @( posedge clk_n ) begin
 		if( !reset_n ) begin
-			ff_address <= 23'd0;
+			ff_address <= 27'd0;
 		end
 		else if( !ff_rd_wr_accept && !mreq_n && !rd_n && !w_has_request_latch ) begin
 			ff_address <= address;
@@ -255,8 +249,8 @@ module ip_sdram #(
 				ff_do_refresh	<= 1'b0;
 			end
 		end
-		else if( ff_main_state == c_main_state_activate ) begin
-			if( (!ff_rfsh_accept && !rfsh_n) || (cpu_freeze && ff_no_refresh == 8'hFF) ) begin
+		else if( ff_main_state == c_main_state_active_n ) begin
+			if( (!ff_rfsh_accept && !rfsh_n) || (ff_refresh_wait == 12'h000) ) begin
 				ff_req			<= 1'b1;
 				ff_do_refresh	<= 1'b1;
 			end
@@ -275,11 +269,11 @@ module ip_sdram #(
 		if( !reset_n ) begin
 			ff_rd_wr_accept <= 1'b0;
 		end
-		else if( ff_rd_wr_accept && (ff_main_state == c_main_state_data_fetch) ) begin
+		else if( ff_rd_wr_accept && (ff_main_state == c_main_state_finish2 || ff_main_state == c_main_state_finish3) ) begin
 			ff_rd_wr_accept <= 1'b0;
 		end
-		else if( ff_main_state == c_main_state_activate ) begin
-			if( (!ff_rfsh_accept && !rfsh_n) || (cpu_freeze && ff_no_refresh == 8'hFF) ) begin
+		else if( ff_main_state == c_main_state_active_n ) begin
+			if( (!ff_rfsh_accept && !rfsh_n) || (ff_refresh_wait == 12'h000) ) begin
 				//	hold
 			end
 			else if( !ff_rd_wr_accept && !ff_rd_n ) begin
@@ -301,7 +295,7 @@ module ip_sdram #(
 		else if( ff_rfsh_accept && rfsh_n ) begin
 			ff_rfsh_accept <= 1'b0;
 		end
-		else if( ff_main_state == c_main_state_activate ) begin
+		else if( ff_main_state == c_main_state_active_n ) begin
 			if( !ff_rfsh_accept && !rfsh_n ) begin
 				ff_rfsh_accept <= 1'b1;
 			end
@@ -316,13 +310,16 @@ module ip_sdram #(
 
 	always @( posedge clk ) begin
 		if( !reset_n ) begin
-			ff_no_refresh <= 8'hFF;
+			ff_refresh_wait <= 12'hFFF;
 		end
-		else if( ff_no_refresh != 8'hFF ) begin
-			ff_no_refresh <= ff_no_refresh + 8'd1;
+		else if( ff_main_state == c_init_state_precharge_all_wait || ff_main_state == c_main_state_precharge_all_wait ) begin
+			ff_refresh_wait <= 12'hFFF;
+		end
+		else if( ff_refresh_wait != 12'h000 ) begin
+			ff_refresh_wait <= ff_refresh_wait - 8'd1;
 		end
 		else if( ff_do_refresh ) begin
-			ff_no_refresh <= 8'h00;
+			ff_refresh_wait <= 12'hFFF;
 		end
 		else begin
 			//	hold
@@ -349,47 +346,47 @@ module ip_sdram #(
 	always @( posedge clk ) begin
 		if( !reset_n ) begin
 			ff_main_state		<= c_init_state_reset_on;
-			ff_do_main_state	<= 1'b0;
+			ff_accessing	<= 1'b0;
 		end
 		else begin
 			case( ff_main_state )
 			c_init_state_reset_on, c_init_state_reset_off,
 			c_init_state_mode_register_set2, c_init_state_mode_register_set3, 
 			c_init_state_mode_register_set1, c_init_state_mode_register_set0, 
-			c_init_state_active0, c_init_state_active1, c_init_state_active2, c_init_state_active3, 
-			c_init_state_active4, c_init_state_active5, c_init_state_active6, c_init_state_active7, 
-			c_init_state_nop, c_init_state_zqcl:
+			c_main_state_active_n, c_main_state_read_or_write, c_main_state_read_or_write2,
+			c_init_state_nop, c_init_state_zqcl, c_main_state_precharge_all, c_main_state_refresh:
 				ff_main_state	<= ff_main_state + 6'd1;
 			c_main_state_ready:
-				if( (!ff_rfsh_accept && !rfsh_n) || (cpu_freeze && ff_no_refresh == 8'hFF) ) begin
-					ff_main_state		<= c_main_state_activate;
-					ff_do_main_state	<= 1'b1;
+				if( (!ff_rfsh_accept && !rfsh_n) || (ff_refresh_wait == 12'h000) ) begin
+					ff_main_state		<= c_main_state_precharge_all;
+					ff_accessing		<= 1'b1;
 				end
 				else if( !ff_rd_wr_accept && (!ff_rd_n || (!mreq_n && !rd_n && !w_busy)) ) begin
-					ff_main_state		<= c_main_state_activate;
-					ff_do_main_state	<= 1'b1;
-				end
-				else if( !ff_rd_wr_accept && (!ff_wr_n || (!mreq_n && !wr_n && !w_busy)) ) begin
-					ff_main_state		<= c_main_state_activate;
-					ff_do_main_state	<= 1'b1;
-				end
-			c_main_state_read_or_write:
-				begin
-					if( ff_do_refresh ) begin
-						ff_main_state		<= c_main_state_nop5;
+					if( ff_bank_active[ ff_address[26:24] ] && ff_bank_row[ ff_address[26:24] ] == ff_address[23:11] ) begin
+						ff_main_state		<= c_main_state_read_or_write;
 					end
 					else begin
-						ff_main_state		<= c_main_state_nop3;
+						ff_main_state		<= c_main_state_active_n;
 					end
+					ff_accessing		<= 1'b1;
 				end
-			c_main_state_finish, c_main_state_finish2:
+				else if( !ff_rd_wr_accept && (!ff_wr_n || (!mreq_n && !wr_n && !w_busy)) ) begin
+					if( ff_bank_active[ ff_address[26:24] ] && ff_bank_row[ ff_address[26:24] ] == ff_address[23:11] ) begin
+						ff_main_state		<= c_main_state_read_or_write;
+					end
+					else begin
+						ff_main_state		<= c_main_state_active_n;
+					end
+					ff_accessing		<= 1'b1;
+				end
+			c_main_state_finish, c_main_state_finish2, c_main_state_finish3:
 				begin
 					ff_main_state		<= c_main_state_ready;
-					ff_do_main_state	<= 1'b0;
+					ff_accessing		<= 1'b0;
 				end
 			default:
-				if( (!ff_ddr_ready && w_end_of_main_timer) || (ff_ddr_ready && ff_do_main_state) ) begin
-					ff_main_state	<= ff_main_state + 5'd1;
+				if( w_end_of_main_timer ) begin
+					ff_main_state	<= ff_main_state + 6'd1;
 				end
 				else begin
 					//	hold
@@ -398,7 +395,34 @@ module ip_sdram #(
 		end
 	end
 
-	assign w_busy			= w_has_request_latch || (cpu_freeze && ff_no_refresh == 8'hFF);
+	always @( posedge clk ) begin
+		if( !reset_n ) begin
+			ff_access_state		<= c_access_idle;
+			ff_cur_access		<= 1'b0;
+		end
+		else begin
+			case( ff_access_state )
+			c_access_idle:
+				begin
+					if( ff_main_state == c_main_state_finish2 || ff_main_state == c_main_state_finish3 ) begin
+						ff_access_state		<= ff_access_state + 3'd1;
+						ff_cur_access		<= 1'b1;
+					end
+				end
+			c_access_finish:
+				begin
+					ff_access_state		<= c_access_idle;
+					ff_cur_access		<= 1'b1;
+				end
+			default:
+				begin
+					ff_access_state		<= ff_access_state + 3'd1;
+				end
+			endcase
+		end
+	end
+
+	assign w_busy			= w_has_request_latch || (ff_refresh_wait == 12'h000);
 	assign sdram_busy		= w_busy;
 	assign sdram_init_busy	= !ff_ddr_ready;
 
@@ -441,7 +465,7 @@ module ip_sdram #(
 		if( !reset_n ) begin
 			ff_ddr_ready	<= 1'b0;
 		end
-		else if( (ff_main_state == c_init_state_active7_wait) && w_end_of_main_timer ) begin
+		else if( (ff_main_state == c_init_state_precharge_all_wait) && w_end_of_main_timer ) begin
 			ff_ddr_ready	<= 1'b1;
 		end
 		else begin
@@ -470,11 +494,14 @@ module ip_sdram #(
 				ff_main_timer	<= 'd12 - 'd2;		//	tMOD = max( 12ck, 15ns ) = 12ck
 			c_init_state_zqcl:
 				ff_main_timer	<= 'd512 - 'd2;		//	tZQinit = 512ck
-			c_init_state_precharge_all:
-				ff_main_timer	<= 'd3 - 'd2;		//	tRP = 3ck
-			c_init_state_active0, c_init_state_active1, c_init_state_active2, c_init_state_active3,
-			c_init_state_active4, c_init_state_active5, c_init_state_active6, c_init_state_active7:
-				ff_main_timer	<= 'd4 - 'd2;		//	tRRD = 4ck
+			c_init_state_precharge_all, c_main_state_precharge_all:
+				ff_main_timer	<= 'd5 - 'd2;		//	tRP = 13.75ns = 5ck
+			c_main_state_active_n:
+				ff_main_timer	<= 'd9 - 'd2;		//	AL + CWL - tWPRE = 9ck
+			c_main_state_read_or_write:
+				ff_main_timer	<= 'd4 - 'd2;		//	AL + CWL - tWPRE = 4ck
+			c_main_state_refresh:
+				ff_main_timer	<= 'd38 - 'd2;		//	tRFC = 38ck
 			default:
 				//	ff_main_timer is decrement counter.
 				if( !w_end_of_main_timer ) begin
@@ -490,23 +517,26 @@ module ip_sdram #(
 	assign w_end_of_main_timer	= (ff_main_timer == 'd0) ? 1'b1 : 1'b0;
 
 	always @( posedge clk ) begin
+		if( !reset_n ) begin
+			ff_bank_active[0] <= 1'b0;
+			ff_bank_active[1] <= 1'b0;
+			ff_bank_active[2] <= 1'b0;
+			ff_bank_active[3] <= 1'b0;
+			ff_bank_active[4] <= 1'b0;
+			ff_bank_active[5] <= 1'b0;
+			ff_bank_active[6] <= 1'b0;
+			ff_bank_active[7] <= 1'b0;
+		end
 		case( ff_main_state )
-		c_init_state_active0:
-			ff_bank_row[0] <= 13'd0;
-		c_init_state_active1:
-			ff_bank_row[1] <= 13'd0;
-		c_init_state_active2:
-			ff_bank_row[2] <= 13'd0;
-		c_init_state_active3:
-			ff_bank_row[3] <= 13'd0;
-		c_init_state_active4:
-			ff_bank_row[4] <= 13'd0;
-		c_init_state_active5:
-			ff_bank_row[5] <= 13'd0;
-		c_init_state_active6:
-			ff_bank_row[6] <= 13'd0;
-		c_init_state_active7:
-			ff_bank_row[7] <= 13'd0;
+		c_main_state_active_n:
+			begin
+				ff_bank_row[ ff_address[26:24] ]	<= ff_address[23:11];
+				ff_bank_active[ ff_address[26:24] ]	<= 1'b1;
+			end
+		c_init_state_precharge_all, c_main_state_precharge_all:
+			begin
+				ff_bank_active[ ff_address[26:24] ]	<= 1'b0;
+			end
 		default:
 			begin
 				//	hold
@@ -533,61 +563,44 @@ module ip_sdram #(
 					ff_ddr_command		<= c_ddr_command_mode_register_set;
 					ff_ddr_dq_mask		<= 2'b11;
 				end
-			c_init_state_active0, c_init_state_active1, c_init_state_active2, c_init_state_active3,
-			c_init_state_active4, c_init_state_active5, c_init_state_active6, c_init_state_active7:
-				begin
-					ff_ddr_command		<= c_ddr_command_activate;
-					ff_ddr_dq_mask		<= 2'b11;
-				end
 			c_init_state_zqcl:
 				begin
 					ff_ddr_command		<= c_ddr_command_zqcl;
 					ff_ddr_dq_mask		<= 2'b11;
 				end
-			c_init_state_precharge_all:
+			c_init_state_precharge_all, c_main_state_precharge_all:
 				begin
+//					$display( "precharge_all" );
 					ff_ddr_command		<= c_ddr_command_precharge_all;
 					ff_ddr_dq_mask		<= 2'b11;
 				end
-			default:
-				if( ff_ddr_ready ) begin
-					case( ff_main_state )
-					c_main_state_activate:
-						if( (!ff_rfsh_accept && !rfsh_n) || (cpu_freeze && ff_no_refresh == 8'hFF) ) begin
-//							$display( "do_refresh: precharge_all" );
-							ff_ddr_command		<= c_ddr_command_precharge_all;
-							ff_ddr_dq_mask		<= 2'b00;
-						end
-						else if( !ff_rd_wr_accept && (!ff_rd_n || !ff_wr_n) ) begin
-//							$display( "activate address %X", ff_address[20:10] );
-							ff_ddr_command		<= c_ddr_command_activate;
-							ff_ddr_dq_mask		<= 2'b11;
-						end
-					c_main_state_read_or_write:
-						if( ff_do_refresh ) begin
-							ff_ddr_command		<= c_ddr_command_refresh;
-							ff_ddr_dq_mask		<= 2'b00;
-						end
-						else if( ff_is_write ) begin
-							ff_ddr_command		<= c_ddr_command_write;
-							case( ff_address[0] )
-							2'd0:		ff_ddr_dq_mask	<= 2'b10;
-							2'd1:		ff_ddr_dq_mask	<= 2'b01;
-							default:	ff_ddr_dq_mask	<= 2'b11;
-							endcase
-						end
-						else begin
-							ff_ddr_command		<= c_ddr_command_read;
-							ff_ddr_dq_mask		<= 4'b00;
-						end
-					default:
-						begin
-							ff_ddr_command		<= c_ddr_command_no_operation;
-							ff_ddr_dq_mask		<= 2'b11;
-						end
+			c_main_state_refresh:
+				begin
+//					$display( "refresh" );
+					ff_ddr_command		<= c_ddr_command_refresh;
+					ff_ddr_dq_mask		<= 2'b11;
+				end
+			c_main_state_active_n:
+				begin
+//					$display( "activate address %X", ff_address[23:11] );
+					ff_ddr_command		<= c_ddr_command_activate;
+					ff_ddr_dq_mask		<= 2'b11;
+				end
+			c_main_state_read_or_write, c_main_state_read_or_write2:
+				if( ff_is_write ) begin
+					ff_ddr_command		<= c_ddr_command_write;
+					case( ff_address[0] )
+					2'd0:		ff_ddr_dq_mask	<= 2'b10;
+					2'd1:		ff_ddr_dq_mask	<= 2'b01;
+					default:	ff_ddr_dq_mask	<= 2'b11;
 					endcase
 				end
 				else begin
+					ff_ddr_command		<= c_ddr_command_read;
+					ff_ddr_dq_mask		<= 4'b00;
+				end
+			default:
+				begin
 					ff_ddr_command		<= c_ddr_command_no_operation;
 					ff_ddr_dq_mask		<= 2'b11;
 				end
@@ -604,7 +617,7 @@ module ip_sdram #(
 			ff_ddr_ba				<= 3'd0;
 			ff_ddr_address			<= 13'd0;
 		end
-		else if( !ff_ddr_ready ) begin
+		else begin
 			case( ff_main_state )
 			c_init_state_mode_register_set0:
 				begin
@@ -675,106 +688,50 @@ module ip_sdram #(
 						2'd0						//	[1:0] : Burst Length 0: Fixed BL8, 1: BL4 or LB8, 2: Fixed BC4(Chop)
 					};
 				end
-			c_init_state_precharge_all:
+			c_init_state_precharge_all, c_main_state_precharge_all:
 				begin
-					ff_ddr_ba		<= 3'd0;		//	MRS1
+					ff_ddr_ba		<= 3'd0;
 					ff_ddr_address	<= {
 						2'd0,						//	[12:11]: N/A
 						1'b1,						//	[10]   : All banks
 						10'b0						//	[9:0]  : N/A
 					};
 				end
-			c_init_state_active0:
+			c_main_state_refresh:
 				begin
-					ff_ddr_ba		<= 3'd0;		//	BANK#0
+					ff_ddr_ba		<= 3'd0;
 					ff_ddr_address	<= 13'd0;
 				end
-			c_init_state_active1:
+			c_main_state_active_n:
 				begin
-					ff_ddr_ba		<= 3'd1;		//	BANK#1
-					ff_ddr_address	<= 13'd0;
-				end
-			c_init_state_active2:
-				begin
-					ff_ddr_ba		<= 3'd2;		//	BANK#2
-					ff_ddr_address	<= 13'd0;
-				end
-			c_init_state_active3:
-				begin
-					ff_ddr_ba		<= 3'd3;		//	BANK#3
-					ff_ddr_address	<= 13'd0;
-				end
-			c_init_state_active4:
-				begin
-					ff_ddr_ba		<= 3'd4;		//	BANK#4
-					ff_ddr_address	<= 13'd0;
-				end
-			c_init_state_active5:
-				begin
-					ff_ddr_ba		<= 3'd5;		//	BANK#5
-					ff_ddr_address	<= 13'd0;
-				end
-			c_init_state_active6:
-				begin
-					ff_ddr_ba		<= 3'd6;		//	BANK#6
-					ff_ddr_address	<= 13'd0;
-				end
-			c_init_state_active7:
-				begin
-					ff_ddr_ba		<= 3'd7;		//	BANK#7
-					ff_ddr_address	<= 13'd0;
-				end
-			default:
-				begin
-					ff_ddr_ba		<= 3'b000;
-					ff_ddr_address	<= 13'd0;
-				end
-			endcase
-		end
-		else begin
-			case( ff_main_state )
-			c_main_state_activate:
-				if( ff_ddr_ready ) begin
-					ff_ddr_ba		<= 3'b000;
-					ff_ddr_address	<= { 
-						ff_address[22:21],			// Bank
-						ff_address[19:9]			// Row address
-					};
-				end
-				else begin
-					ff_ddr_ba		<= 3'b000;
-					ff_ddr_address <= 13'd0;	// Initialize phase
+					ff_ddr_ba		<= ff_address[26:24];		// Bank
+					ff_ddr_address	<= ff_address[23:11];		// Row
 				end
 			c_main_state_read_or_write:
 				begin
-					if( ff_ddr_ready ) begin
-						if( ff_do_refresh ) begin
-//							$display( "do_refresh" );
-							ff_ddr_ba		<= 3'b000;
-							ff_ddr_address	<= { 
-								2'b00,				// Ignore
-								1'b1,				// All banks
-								10'd0				// Ignore
-							};
-						end
-						else begin
-							ff_ddr_ba		<= 3'b000;
-							ff_ddr_address	<= { 
-								ff_address[22:21],	// Bank
-								1'b1,				// Enable auto precharge
-								2'd0,				// 00
-								ff_address[8:1] 	// Column address
-							};
-						end
+					if( ff_do_refresh ) begin
+//						$display( "do_refresh" );
+						ff_ddr_ba		<= 3'b000;
+						ff_ddr_address	<= { 
+							2'b00,				// Ignore
+							1'b1,				// All banks
+							10'd0				// Ignore
+						};
 					end
 					else begin
 						ff_ddr_ba		<= 3'b000;
-						ff_ddr_address	<= 13'd0;
+						ff_ddr_address	<= { 
+							ff_address[22:21],	// Bank
+							1'b1,				// Enable auto precharge
+							2'd0,				// 00
+							ff_address[8:1] 	// Column address
+						};
 					end
 				end
 			default:
 				begin
-					//	hold
+					ff_ddr_ba		<= 3'b000;
+					ff_ddr_address	<= 13'd0;
 				end
 			endcase
 		end
@@ -782,18 +739,24 @@ module ip_sdram #(
 
 	always @( posedge clk ) begin
 		if( !reset_n ) begin
-			ff_ddr_write_data <= 32'dz;
+			ff_pre_write_data <= 128'd0;
 		end
-		else if( ff_ddr_ready && ff_main_state == c_main_state_read_or_write ) begin
-			if( ff_ddr_ready ) begin
-				ff_ddr_write_data <= { ff_wdata, ff_wdata, ff_wdata, ff_wdata };
-			end
-			else begin
-				ff_ddr_write_data <= 32'd0;
-			end
+		else if( ff_main_state == c_main_state_read_or_write ) begin
+			ff_pre_write_data <= ff_wdata;
 		end
 		else begin
-			ff_ddr_write_data <= 32'dz;
+			ff_pre_write_data <= 128'd0;
+		end
+	end
+
+	always @( posedge clk ) begin
+		if( !reset_n ) begin
+			ff_cur_write_data	<= 128'd0;
+			ff_cur_write		<= 1'b0;
+		end
+		else if( ff_main_state == c_main_state_finish2 || ff_main_state == c_main_state_finish3 ) begin
+			ff_cur_write_data	<= ff_pre_write_data;
+			ff_cur_write		<= ff_is_write;
 		end
 	end
 
@@ -802,7 +765,7 @@ module ip_sdram #(
 			ff_ddr_read_data	<= 8'd0;
 			ff_ddr_read_data_en	<= 1'b0;
 		end
-		else if( ff_main_state == c_main_state_data_fetch ) begin
+		else if( ff_main_state == c_main_state_finish2 || ff_main_state == c_main_state_finish3 ) begin
 			case( ff_address[0] )
 			2'd0:		ff_ddr_read_data <= ddr3_dq[7 :0 ];
 			2'd1:		ff_ddr_read_data <= ddr3_dq[15:8 ];

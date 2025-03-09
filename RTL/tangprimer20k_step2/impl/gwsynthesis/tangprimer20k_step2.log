@@ -2,22 +2,21 @@ GowinSynthesis start
 Running parser ...
 Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\tangprimer20k_step2\src\ddr3_memory_interface\ddr3_memory_interface.v'
 Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\tangprimer20k_step2\src\gowin_rpll\gowin_rpll.v'
+Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\tangprimer20k_step2\src\sdram\ip_sdram_tangprimer20k.v'
 Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\tangprimer20k_step2\src\tangprimer20k_step2.v'
+Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\tangprimer20k_step2\src\test_controller\test_controller.v'
+Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\tangprimer20k_step2\src\uart\ip_uart.v'
+Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\tangprimer20k_step2\src\uart\ip_uart_inst.v'
 Compiling module 'tangprimer20k_step2'("D:\github\HRA_product\TangCartMSX\RTL\tangprimer20k_step2\src\tangprimer20k_step2.v":24)
 Compiling module 'Gowin_rPLL'("D:\github\HRA_product\TangCartMSX\RTL\tangprimer20k_step2\src\gowin_rpll\gowin_rpll.v":10)
-Compiling module 'DDR3_Memory_Interface_Top'("D:\github\HRA_product\TangCartMSX\RTL\tangprimer20k_step2\src\ddr3_memory_interface\ddr3_memory_interface.v":18606)
-Compiling module '**'("D:\github\HRA_product\TangCartMSX\RTL\tangprimer20k_step2\src\ddr3_memory_interface\ddr3_memory_interface.v":18605)
-WARN  (EX3670) : Actual bit length 8 differs from formal bit length 16 for port 'wr_data_mask'("D:\github\HRA_product\TangCartMSX\RTL\tangprimer20k_step2\src\tangprimer20k_step2.v":127)
-WARN  (EX1998) : Net 'cmd[2]' does not have a driver("D:\github\HRA_product\TangCartMSX\RTL\tangprimer20k_step2\src\tangprimer20k_step2.v":52)
-WARN  (EX1998) : Net 'cmd_en' does not have a driver("D:\github\HRA_product\TangCartMSX\RTL\tangprimer20k_step2\src\tangprimer20k_step2.v":53)
-WARN  (EX1998) : Net 'addr[27]' does not have a driver("D:\github\HRA_product\TangCartMSX\RTL\tangprimer20k_step2\src\tangprimer20k_step2.v":54)
-WARN  (EX1998) : Net 'wr_data[127]' does not have a driver("D:\github\HRA_product\TangCartMSX\RTL\tangprimer20k_step2\src\tangprimer20k_step2.v":56)
-WARN  (EX1998) : Net 'wr_data_en' does not have a driver("D:\github\HRA_product\TangCartMSX\RTL\tangprimer20k_step2\src\tangprimer20k_step2.v":57)
-WARN  (EX1998) : Net 'wr_data_end' does not have a driver("D:\github\HRA_product\TangCartMSX\RTL\tangprimer20k_step2\src\tangprimer20k_step2.v":58)
-WARN  (EX1998) : Net 'wr_data_mask[7]' does not have a driver("D:\github\HRA_product\TangCartMSX\RTL\tangprimer20k_step2\src\tangprimer20k_step2.v":59)
-WARN  (EX1998) : Net 'sr_req' does not have a driver("D:\github\HRA_product\TangCartMSX\RTL\tangprimer20k_step2\src\tangprimer20k_step2.v":63)
-WARN  (EX1998) : Net 'ref_req' does not have a driver("D:\github\HRA_product\TangCartMSX\RTL\tangprimer20k_step2\src\tangprimer20k_step2.v":64)
-WARN  (EX1998) : Net 'burst' does not have a driver("D:\github\HRA_product\TangCartMSX\RTL\tangprimer20k_step2\src\tangprimer20k_step2.v":67)
+Compiling module 'test_controller'("D:\github\HRA_product\TangCartMSX\RTL\tangprimer20k_step2\src\test_controller\test_controller.v":27)
+Extracting RAM for identifier 'rom_data'("D:\github\HRA_product\TangCartMSX\RTL\tangprimer20k_step2\src\test_controller\test_controller.v":89)
+Compiling module 'ip_uart_inst(clk_freq=74250000)'("D:\github\HRA_product\TangCartMSX\RTL\tangprimer20k_step2\src\uart\ip_uart_inst.v":27)
+Compiling module 'ip_uart(clk_freq=74250000)'("D:\github\HRA_product\TangCartMSX\RTL\tangprimer20k_step2\src\uart\ip_uart.v":27)
+WARN  (EX3791) : Expression size 32 truncated to fit in target size 12("D:\github\HRA_product\TangCartMSX\RTL\tangprimer20k_step2\src\uart\ip_uart.v":68)
+Compiling module 'ip_sdram'("D:\github\HRA_product\TangCartMSX\RTL\tangprimer20k_step2\src\sdram\ip_sdram_tangprimer20k.v":57)
+Compiling module 'DDR3_Memory_Interface_Top'("D:\github\HRA_product\TangCartMSX\RTL\tangprimer20k_step2\src\ddr3_memory_interface\ddr3_memory_interface.v":16733)
+Compiling module '**'("D:\github\HRA_product\TangCartMSX\RTL\tangprimer20k_step2\src\ddr3_memory_interface\ddr3_memory_interface.v":16732)
 NOTE  (EX0101) : Current top module is "tangprimer20k_step2"
 [5%] Running netlist conversion ...
 Running device independent optimization ...

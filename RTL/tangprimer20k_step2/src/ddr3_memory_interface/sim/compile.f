@@ -1,0 +1,12 @@
+./prim_sim.v
+../../tb/tb.v
+../../project/src/top.v
+../../project/src/ddrtest.v
+../../project/src/button.v
+../../project/src/ddr3_memory_interface/ddr3_memory_interface.vo
+../../project/src/gowin_rpll/gowin_rpll.v
+../../tb/sim_model/ddr3_model.v
++incdir+../../project/src/
++incdir+../../project/src/ddr3_memory_interface/
++incdir+../../tb/sim_model/
++incdir+../../tb/

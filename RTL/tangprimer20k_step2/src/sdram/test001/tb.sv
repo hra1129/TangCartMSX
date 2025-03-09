@@ -63,15 +63,14 @@ module tb ();
 	reg				clk_n;				//	171.81816MHz
 	wire			sdram_init_busy;
 	wire			sdram_busy;
-	reg				cpu_freeze;
 
 	reg				mreq_n;
 	reg		[26:0]	address;
 	reg				wr_n;
 	reg				rd_n;
 	reg				rfsh_n;
-	reg		[ 7:0]	wdata;
-	wire	[ 7:0]	rdata;
+	reg		[127:0]	wdata;
+	wire	[127:0]	rdata;
 	wire			rdata_en;
 
 	wire			ddr3_rst_n;
@@ -102,7 +101,6 @@ module tb ();
 		.clk_n				( clk_n				),
 		.sdram_init_busy	( sdram_init_busy	),
 		.sdram_busy			( sdram_busy		),
-		.cpu_freeze			( cpu_freeze		),
 		.mreq_n				( mreq_n			),
 		.address			( address			),
 		.wr_n				( wr_n				),
@@ -162,9 +160,9 @@ module tb ();
 	// --------------------------------------------------------------------
 	task write_data(
 		input	[26:0]	p_address,
-		input	[7:0]	p_data
+		input	[127:0]	p_data
 	);
-		$display( "write_data( 0x%07X, 0x%02X )", p_address, p_data );
+		$display( "write_data( 0x%07X )", p_address, p_data );
 		address		<= p_address;
 		wdata		<= p_data;
 		mreq_n		<= 1'b0;
@@ -187,11 +185,11 @@ module tb ();
 	// --------------------------------------------------------------------
 	task read_data(
 		input	[26:0]	p_address,
-		input	[15:0]	p_data
+		input	[127:0]	p_data
 	);
 		int time_out;
 
-		$display( "read_data( 0x%07X, 0x%02X )", p_address, p_data );
+		$display( "read_data( 0x%07X )", p_address );
 		address		<= p_address;
 		mreq_n		<= 1'b0;
 		rd_n		<= 1'b0;
@@ -211,7 +209,16 @@ module tb ();
 		end
 		assert( rdata == p_data );
 		if( rdata != p_data ) begin
-			$display( "-- p_data = %08X", p_data );
+			$display( "-- p_data = %02X:%02X:%02X:%02X:%02X:%02X:%02X:%02X:%02X:%02X:%02X:%02X:%02X:%02X:%02X:%02X", 
+				p_data[  7: 0], p_data[ 15:  8], p_data[ 23: 16], p_data[ 31: 24],
+				p_data[ 39:32], p_data[ 47: 40], p_data[ 55: 48], p_data[ 63: 56],
+				p_data[ 71:64], p_data[ 79: 72], p_data[ 87: 80], p_data[ 95: 88],
+				p_data[103:96], p_data[111:104], p_data[119:112], p_data[127:120] );
+			$display( "-- rdata  = %02X:%02X:%02X:%02X:%02X:%02X:%02X:%02X:%02X:%02X:%02X:%02X:%02X:%02X:%02X:%02X", 
+				rdata[  7: 0], rdata[ 15:  8], rdata[ 23: 16], rdata[ 31: 24],
+				rdata[ 39:32], rdata[ 47: 40], rdata[ 55: 48], rdata[ 63: 56],
+				rdata[ 71:64], rdata[ 79: 72], rdata[ 87: 80], rdata[ 95: 88],
+				rdata[103:96], rdata[111:104], rdata[119:112], rdata[127:120] );
 		end
 		@( posedge clk );
 	endtask: read_data
@@ -219,11 +226,11 @@ module tb ();
 	// --------------------------------------------------------------------
 	task cpu_read_data(
 		input	[26:0]	p_address,
-		input	[15:0]	p_data
+		input	[127:0]	p_data
 	);
 		int time_out;
 
-		$display( "cpu_read_data( 0x%07X, 0x%02X )", p_address, p_data );
+		$display( "cpu_read_data( 0x%07X )", p_address );
 		address		<= p_address;
 		mreq_n		<= 1'b0;
 		rd_n		<= 1'b0;
@@ -243,7 +250,16 @@ module tb ();
 		end
 		assert( rdata == p_data );
 		if( rdata != p_data ) begin
-			$display( "-- p_data = %08X", p_data );
+			$display( "-- p_data = %02X:%02X:%02X:%02X:%02X:%02X:%02X:%02X:%02X:%02X:%02X:%02X:%02X:%02X:%02X:%02X", 
+				p_data[  7: 0], p_data[ 15:  8], p_data[ 23: 16], p_data[ 31: 24],
+				p_data[ 39:32], p_data[ 47: 40], p_data[ 55: 48], p_data[ 63: 56],
+				p_data[ 71:64], p_data[ 79: 72], p_data[ 87: 80], p_data[ 95: 88],
+				p_data[103:96], p_data[111:104], p_data[119:112], p_data[127:120] );
+			$display( "-- rdata  = %02X:%02X:%02X:%02X:%02X:%02X:%02X:%02X:%02X:%02X:%02X:%02X:%02X:%02X:%02X:%02X", 
+				rdata[  7: 0], rdata[ 15:  8], rdata[ 23: 16], rdata[ 31: 24],
+				rdata[ 39:32], rdata[ 47: 40], rdata[ 55: 48], rdata[ 63: 56],
+				rdata[ 71:64], rdata[ 79: 72], rdata[ 87: 80], rdata[ 95: 88],
+				rdata[103:96], rdata[111:104], rdata[119:112], rdata[127:120] );
 		end
 		@( posedge clk );
 
@@ -274,7 +290,6 @@ module tb ();
 		rfsh_n			= 1'b1;
 		address			= 1'b0;
 		wdata			= 1'b0;
-		cpu_freeze		= 1'b1;
 
 		repeat( 8 ) @( negedge clk );
 
@@ -289,10 +304,6 @@ module tb ();
 
 		repeat( 16 ) @( posedge clk );
 		repeat( 7 ) @( posedge clk );
-
-		$display( "====================================" );
-		$display( "=       cpu_freeze = 1;            =" );
-		$display( "====================================" );
 
 		$display( "write -------------------------" );
 		write_data( 'h000000, 'h12 );
@@ -425,11 +436,6 @@ module tb ();
 				read_data( (j << 21) | i, (i + j * 10) & 255 );
 			end
 		end
-
-		$display( "====================================" );
-		$display( "=       cpu_freeze = 0;            =" );
-		$display( "====================================" );
-		cpu_freeze	<= 1'b0;
 
 		repeat( 100 ) @( posedge clk );
 
