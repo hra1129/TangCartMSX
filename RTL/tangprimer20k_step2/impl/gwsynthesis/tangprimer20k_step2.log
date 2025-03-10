@@ -10,7 +10,7 @@ Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\tangprimer20k_step
 Compiling module 'tangprimer20k_step2'("D:\github\HRA_product\TangCartMSX\RTL\tangprimer20k_step2\src\tangprimer20k_step2.v":24)
 Compiling module 'Gowin_rPLL'("D:\github\HRA_product\TangCartMSX\RTL\tangprimer20k_step2\src\gowin_rpll\gowin_rpll.v":10)
 Compiling module 'test_controller'("D:\github\HRA_product\TangCartMSX\RTL\tangprimer20k_step2\src\test_controller\test_controller.v":27)
-Extracting RAM for identifier 'rom_data'("D:\github\HRA_product\TangCartMSX\RTL\tangprimer20k_step2\src\test_controller\test_controller.v":119)
+Extracting RAM for identifier 'rom_data'("D:\github\HRA_product\TangCartMSX\RTL\tangprimer20k_step2\src\test_controller\test_controller.v":140)
 Compiling module 'ip_uart_inst(clk_freq=74250000)'("D:\github\HRA_product\TangCartMSX\RTL\tangprimer20k_step2\src\uart\ip_uart_inst.v":27)
 Compiling module 'ip_uart(clk_freq=74250000)'("D:\github\HRA_product\TangCartMSX\RTL\tangprimer20k_step2\src\uart\ip_uart.v":27)
 WARN  (EX3791) : Expression size 32 truncated to fit in target size 12("D:\github\HRA_product\TangCartMSX\RTL\tangprimer20k_step2\src\uart\ip_uart.v":68)
