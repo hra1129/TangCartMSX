@@ -1,0 +1,9 @@
+BDOS equ 05h
+GETKEY equ 02bh
+PUTS equ 02eh
+PUTS:EXIT equ 038h
+PUTS:LOOP equ 02fh
+START equ 08h
+S_HELLO equ 01bh
+UART equ 010h
+WAIT_KEY equ 0bh

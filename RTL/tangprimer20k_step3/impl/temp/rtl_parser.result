@@ -1,0 +1,74 @@
+[
+ {
+  "InstFile" : "D:/github/HRA_product/TangCartMSX/RTL/tangprimer20k_step3/src/tangprimer20k_step3.v",
+  "InstLine" : 24,
+  "InstName" : "tangprimer20k_step3",
+  "ModuleFile" : "D:/github/HRA_product/TangCartMSX/RTL/tangprimer20k_step3/src/tangprimer20k_step3.v",
+  "ModuleLine" : 24,
+  "ModuleName" : "tangprimer20k_step3",
+  "SubInsts" : [
+   {
+    "InstFile" : "D:/github/HRA_product/TangCartMSX/RTL/tangprimer20k_step3/src/tangprimer20k_step3.v",
+    "InstLine" : 75,
+    "InstName" : "u_pll",
+    "ModuleFile" : "D:/github/HRA_product/TangCartMSX/RTL/tangprimer20k_step3/src/gowin_rpll/gowin_rpll.v",
+    "ModuleLine" : 10,
+    "ModuleName" : "Gowin_rPLL"
+   },
+   {
+    "InstFile" : "D:/github/HRA_product/TangCartMSX/RTL/tangprimer20k_step3/src/tangprimer20k_step3.v",
+    "InstLine" : 85,
+    "InstName" : "u_test_controller",
+    "ModuleFile" : "D:/github/HRA_product/TangCartMSX/RTL/tangprimer20k_step3/src/test_controller/test_controller.v",
+    "ModuleLine" : 27,
+    "ModuleName" : "test_controller"
+   },
+   {
+    "InstFile" : "D:/github/HRA_product/TangCartMSX/RTL/tangprimer20k_step3/src/tangprimer20k_step3.v",
+    "InstLine" : 112,
+    "InstName" : "u_uart",
+    "ModuleFile" : "D:/github/HRA_product/TangCartMSX/RTL/tangprimer20k_step3/src/uart/ip_uart_inst.v",
+    "ModuleLine" : 27,
+    "ModuleName" : "ip_uart_inst",
+    "SubInsts" : [
+     {
+      "InstFile" : "D:/github/HRA_product/TangCartMSX/RTL/tangprimer20k_step3/src/uart/ip_uart_inst.v",
+      "InstLine" : 76,
+      "InstName" : "u_uart",
+      "ModuleFile" : "D:/github/HRA_product/TangCartMSX/RTL/tangprimer20k_step3/src/uart/ip_uart.v",
+      "ModuleLine" : 27,
+      "ModuleName" : "ip_uart"
+     }
+    ]
+   },
+   {
+    "InstFile" : "D:/github/HRA_product/TangCartMSX/RTL/tangprimer20k_step3/src/tangprimer20k_step3.v",
+    "InstLine" : 126,
+    "InstName" : "u_sdram",
+    "ModuleFile" : "D:/github/HRA_product/TangCartMSX/RTL/tangprimer20k_step3/src/sdram/ip_sdram_tangprimer20k.v",
+    "ModuleLine" : 57,
+    "ModuleName" : "ip_sdram",
+    "SubInsts" : [
+     {
+      "InstFile" : "D:/github/HRA_product/TangCartMSX/RTL/tangprimer20k_step3/src/sdram/ip_sdram_tangprimer20k.v",
+      "InstLine" : 106,
+      "InstName" : "u_ddr3_controller",
+      "ModuleFile" : "D:/github/HRA_product/TangCartMSX/RTL/tangprimer20k_step3/src/ddr3_memory_interface/ddr3_memory_interface.v",
+      "ModuleLine" : 16733,
+      "ModuleName" : "DDR3_Memory_Interface_Top",
+      "SubInsts" : [
+       {
+        "InstFile" : "D:/github/HRA_product/TangCartMSX/RTL/tangprimer20k_step3/src/ddr3_memory_interface/ddr3_memory_interface.v",
+        "InstLine" : 16816,
+        "InstName" : "gw3_top",
+        "ModuleFile" : "D:/github/HRA_product/TangCartMSX/RTL/tangprimer20k_step3/src/ddr3_memory_interface/ddr3_memory_interface.v",
+        "ModuleLine" : 10,
+        "ModuleName" : "~GW_DDR3_PHY_MC.DDR3_Memory_Interface_Top"
+       }
+      ]
+     }
+    ]
+   }
+  ]
+ }
+]

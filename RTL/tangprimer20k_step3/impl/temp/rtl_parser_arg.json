@@ -1,0 +1,41 @@
+{
+ "Device" : "GW2A-18C",
+ "Files" : [
+  {
+   "Path" : "D:/github/HRA_product/TangCartMSX/RTL/tangprimer20k_step3/src/ddr3_memory_interface/ddr3_memory_interface.v",
+   "Type" : "verilog"
+  },
+  {
+   "Path" : "D:/github/HRA_product/TangCartMSX/RTL/tangprimer20k_step3/src/gowin_rpll/gowin_rpll.v",
+   "Type" : "verilog"
+  },
+  {
+   "Path" : "D:/github/HRA_product/TangCartMSX/RTL/tangprimer20k_step3/src/sdram/ip_sdram_tangprimer20k.v",
+   "Type" : "verilog"
+  },
+  {
+   "Path" : "D:/github/HRA_product/TangCartMSX/RTL/tangprimer20k_step3/src/tangprimer20k_step3.v",
+   "Type" : "verilog"
+  },
+  {
+   "Path" : "D:/github/HRA_product/TangCartMSX/RTL/tangprimer20k_step3/src/test_controller/test_controller.v",
+   "Type" : "verilog"
+  },
+  {
+   "Path" : "D:/github/HRA_product/TangCartMSX/RTL/tangprimer20k_step3/src/uart/ip_uart.v",
+   "Type" : "verilog"
+  },
+  {
+   "Path" : "D:/github/HRA_product/TangCartMSX/RTL/tangprimer20k_step3/src/uart/ip_uart_inst.v",
+   "Type" : "verilog"
+  }
+ ],
+ "IncludePath" : [
+
+ ],
+ "LoopLimit" : 20000,
+ "ResultFile" : "D:/github/HRA_product/TangCartMSX/RTL/tangprimer20k_step3/impl/temp/rtl_parser.result",
+ "Top" : "tangprimer20k_step3",
+ "VerilogStd" : "verilog_2001",
+ "VhdlStd" : "vhdl_93"
+}
