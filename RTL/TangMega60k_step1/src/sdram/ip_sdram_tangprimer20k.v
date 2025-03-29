@@ -58,7 +58,7 @@ module ip_sdram (
 	input				reset_n,
 	input				clk,				//	50MHz
 	input				memory_clk,			//	343.63632MHz
-	output				clk_out,			//	42.95454MHz
+	output				clk_out,			//	85.90908MHz
 	input				pll_lock,
 	output				sdram_init_busy,	//	0: Normal, 1: Busy
 
@@ -90,68 +90,25 @@ module ip_sdram (
 );
 	localparam	[2:0]	cmd_write		= 3'b000;
 	localparam	[2:0]	cmd_read		= 3'b001;
-	wire				clk85m;
-	wire				clk42m;
 	wire				w_init_complete;
 	wire				w_wr_data_ready;
 	wire				w_cmd_ready;
 	wire		[2:0]	w_cmd;
 	wire				w_write;
 	wire				w_cmd_en;
-	reg					ff_enable;
-	wire				w_dram_valid;
-	wire		[127:0]	w_rdata;
-	wire				w_rdata_en;
-	reg			[127:0]	ff_rdata;
-	reg					ff_rdata_en;
 
-	always @( posedge clk85m ) begin
-		if( !reset_n ) begin
-			ff_enable <= 1'b0;
-		end
-		else begin
-			ff_enable <= ~ff_enable;
-		end
-	end
-
-	always @( posedge clk85m ) begin
-		if( !reset_n ) begin
-			ff_rdata	<= 128'd0;
-			ff_rdata_en	<= 1'b0;
-		end
-		else if( w_rdata_en ) begin
-			ff_rdata	<= w_rdata;
-			ff_rdata_en	<= w_rdata_en;
-		end
-		else if( ff_enable ) begin
-			ff_rdata	<= 128'd0;
-			ff_rdata_en	<= 1'b0;
-		end
-	end
-
-	assign clk_out				= clk42m;
-	assign w_dram_valid			= bus_valid & ~ff_enable;
 	assign bus_ready			= w_cmd_ready & w_wr_data_ready;
-	assign w_cmd_en				= w_cmd_ready & w_wr_data_ready & w_dram_valid;
+	assign w_cmd_en				= w_cmd_ready & w_wr_data_ready & bus_valid;
 	assign sdram_init_busy		= ~w_init_complete;
 	assign w_cmd				= bus_write ? cmd_write : cmd_read;
 	assign w_write				= w_cmd_en & bus_write;
-
-	assign bus_rdata			= ff_rdata;
-	assign bus_rdata_en			= ff_rdata_en;
-
-	Gowin_CLKDIV2 your_instance_name(
-		.clkout					( clk42m				),		//	output clkout					42.95454MHz
-		.hclkin					( clk85m				),		//	input hclkin					85.90908MHz
-		.resetn					( reset_n				)		//	input resetn
-	);
 
 	DDR3_Memory_Interface_Top u_ddr3_controller (
 		.clk					( clk					),		//	input clk						50MHz
 		.memory_clk				( memory_clk			),		//	input memory_clk				343.63632MHz
 		.pll_lock				( pll_lock				),		//	input pll_lock					
 		.rst_n					( reset_n				),		//	input rst_n						
-		.clk_out				( clk85m				),		//	output clk_out					85.90908MHz
+		.clk_out				( clk_out				),		//	output clk_out					85.90908MHz
 		.ddr_rst				( 						),		//	output ddr_rst					
 		.init_calib_complete	( w_init_complete		),		//	output init_calib_complete		初期化が完了すると 1 になる
 		.cmd_ready				( w_cmd_ready			),		//	output cmd_ready				0: busy, 1: ready
@@ -163,8 +120,8 @@ module ip_sdram (
 		.wr_data_en				( w_write				),		//	input wr_data_en				
 		.wr_data_end			( w_write				),		//	input wr_data_end				
 		.wr_data_mask			( bus_wdata_mask		),		//	input [15:0] wr_data_mask		各ビットが 1byte に対応するデータマスク 0:無効, 1:有効
-		.rd_data				( w_rdata				),		//	output [127:0] rd_data			
-		.rd_data_valid			( w_rdata_en			),		//	output rd_data_valid			
+		.rd_data				( bus_rdata				),		//	output [127:0] rd_data			
+		.rd_data_valid			( bus_rdata_en			),		//	output rd_data_valid			
 		.rd_data_end			( 						),		//	output rd_data_end				
 		.sr_req					( 1'b0					),		//	input sr_req					セルフリフレッシュ要求
 		.ref_req				( 1'b0					),		//	input ref_req					ユーザーリフレッシュ要求

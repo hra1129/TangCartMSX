@@ -1,5 +1,5 @@
 // -----------------------------------------------------------------------------
-//	tangprimer20k_step3.v
+//	tangmega60k_step3.v
 //	Copyright (C)2025 Takayuki Hara (HRA!)
 //	
 //	 Permission is hereby granted, free of charge, to any person obtaining a 
@@ -21,33 +21,34 @@
 //	in the Software.
 // -----------------------------------------------------------------------------
 
-module tangprimer20k_step3 (
-	input			clk27m,				//	clk27m			H11
-	input	[4:0]	button,				//	button[4:0]		C7,  D7,  T2,  T3,  T10
-	output	[5:0]	led,				//	led[5:0]		L16, L14, N14, N16, A13, C13
-	output			uart_tx,			//	uart_tx			M11
+module tangmega60k_step3 (
+	input			clk27m,				//	clk27m			
+	input	[4:0]	button,				//	button[4:0]		
+	output	[5:0]	led,				//	led[5:0]		
+	output			uart_tx,			//	uart_tx			
 	//	DDR3-SDRAM I/F
-	output	[13:0]	ddr_addr,			//	DDR3_A[13:0]	C8, A3, B7, K3, F9, A5, D8, B1, E6, C4, F8, D6, A4, F7
-	output	[2:0]	ddr_ba,				//	DDR3_BA[2:0]	H5, D3, H4
-	output			ddr_cs_n,			//	DDR3_CS_N		P5
-	output			ddr_ras_n,			//	DDR3_RAS_N		J3
-	output			ddr_cas_n,			//	DDR3_CAS_N		K3
-	output			ddr_we_n,			//	DDR3_WE_N		L3
-	output			ddr_clk,			//	DDR3_CK_P		J1
-	output			ddr_clk_n,			//	DDR3_CK_N		J3
-	output			ddr_cke,			//	DDR3_CKEN		J2
-	output			ddr_odt,			//	DDR3_ODT0_N		R3
-	output			ddr_reset_n,		//	DDR3_RST_N		B9
-	output	[1:0]	ddr_dqm,			//	DDR3_DQM[1:0]	K5, G1
-	inout	[15:0]	ddr_dq,				//	DDR3_DQ[15:0]	M2, R1, H3, P4, L1, N2, K4, M3, B3, E1, C1, E2, F3, F4, F5, G5
-	inout	[1:0]	ddr_dqs,			//	DDR3_DQS_P[1:0]	J5, G2
-	inout	[1:0]	ddr_dqs_n			//	DDR3_DQS_N[1:0]	K6, G3
+	output	[13:0]	ddr_addr,			//	DDR3_A[13:0]	
+	output	[2:0]	ddr_ba,				//	DDR3_BA[2:0]	
+	output			ddr_cs_n,			//	DDR3_CS_N		
+	output			ddr_ras_n,			//	DDR3_RAS_N		
+	output			ddr_cas_n,			//	DDR3_CAS_N		
+	output			ddr_we_n,			//	DDR3_WE_N		
+	output			ddr_clk,			//	DDR3_CK_P		
+	output			ddr_clk_n,			//	DDR3_CK_N		
+	output			ddr_cke,			//	DDR3_CKEN		
+	output			ddr_odt,			//	DDR3_ODT0_N		
+	output			ddr_reset_n,		//	DDR3_RST_N		
+	output	[1:0]	ddr_dqm,			//	DDR3_DQM[1:0]	
+	inout	[15:0]	ddr_dq,				//	DDR3_DQ[15:0]	
+	inout	[1:0]	ddr_dqs,			//	DDR3_DQS_P[1:0]	
+	inout	[1:0]	ddr_dqs_n			//	DDR3_DQS_N[1:0]	
 );
 	reg				ff_reset_n0 = 1'b0;
 	reg				ff_reset_n = 1'b0;
 	wire			clk49m;				//	49.5MHz from PLL
 	wire			clk297m;			//	297MHz from PLL
-	wire			clk37m;				//	37.125MHz from DDR3 Controller
+	wire			clk;				//	74.25MHz from DDR3 Controller
+	wire			clk37m;				//	37.125MHz
 	wire			pll_lock;
 	wire			sdram_init_busy;	//	0: Normal, 1: DDR3 SDRAM Initialization phase.
 	wire			bus_memreq;			//	cZ80 --> device 0: none, 1: memory request
@@ -80,7 +81,7 @@ module tangprimer20k_step3 (
 	wire	[127:0]	dram_rdata;			//	test_module --> DDR3 Controller 
 	wire			dram_rdata_en;	//	test_module --> DDR3 Controller 
 
-	always @( posedge clk27m ) begin
+	always @( posedge clk49m ) begin
 		ff_reset_n0	<= 1'b1;
 		ff_reset_n	<= ff_reset_n0;
 	end
@@ -95,6 +96,12 @@ module tangprimer20k_step3 (
 		.lock					( pll_lock				),		//	output lock
 		.clkoutd				( clk49m				),		//	output clkoutd
 		.clkin					( clk27m				)		//	input clkin
+	);
+
+	Gowin_CLKDIV2 your_instance_name(
+		.clkout					( clk37m				),		//	output clkout
+		.hclkin					( clk					),		//	input hclkin
+		.resetn					( ff_reset_n			)		//	input resetn
 	);
 
 	// --------------------------------------------------------------------
@@ -203,7 +210,7 @@ module tangprimer20k_step3 (
 		.reset_n				( ff_reset_n			),
 		.clk					( clk49m				),
 		.memory_clk				( clk297m				),
-		.clk_out				( clk37m				),
+		.clk_out				( clk					),
 		.pll_lock				( pll_lock				),
 		.sdram_init_busy		( sdram_init_busy		),
 		.bus_address			( dram_address			),

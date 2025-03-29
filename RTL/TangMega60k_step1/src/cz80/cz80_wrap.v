@@ -89,7 +89,6 @@ module cz80_wrap (
 	wire			w_wr_n;
 	wire	[15:0]	w_a;
 	wire	[7:0]	w_d;
-	wire			w_enable;
 
 	assign bus_address	= ff_bus_address;
 	assign bus_memreq	= ff_bus_memreq;

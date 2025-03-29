@@ -24,12 +24,13 @@
     <OptionList>
         <Option type="disable_insert_pad" value="0"/>
         <Option type="global_freq" value="100.000"/>
-        <Option type="looplimit" value="40000"/>
+        <Option type="looplimit" value="20000"/>
         <Option type="output_file" value="D:\github\HRA_product\TangCartMSX\RTL\tangprimer20k_step3\impl\gwsynthesis\tangprimer20k_step3.vg"/>
-        <Option type="print_all_synthesis_warning" value="1"/>
-        <Option type="ram_rw_check" value="1"/>
+        <Option type="print_all_synthesis_warning" value="0"/>
+        <Option type="ram_rw_check" value="0"/>
         <Option type="top_module" value="tangprimer20k_step3"/>
         <Option type="vcc" value="1.0"/>
+        <Option type="vccx" value="3.3"/>
         <Option type="verilog_language" value="verilog-2001"/>
         <Option type="vhdl_language" value="vhdl-1993"/>
     </OptionList>
