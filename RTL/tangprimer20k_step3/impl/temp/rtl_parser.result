@@ -9,7 +9,7 @@
   "SubInsts" : [
    {
     "InstFile" : "D:/github/HRA_product/TangCartMSX/RTL/tangprimer20k_step3/src/tangprimer20k_step3.v",
-    "InstLine" : 93,
+    "InstLine" : 94,
     "InstName" : "u_pll",
     "ModuleFile" : "D:/github/HRA_product/TangCartMSX/RTL/tangprimer20k_step3/src/gowin_rpll/gowin_rpll.v",
     "ModuleLine" : 10,
@@ -17,7 +17,15 @@
    },
    {
     "InstFile" : "D:/github/HRA_product/TangCartMSX/RTL/tangprimer20k_step3/src/tangprimer20k_step3.v",
-    "InstLine" : 103,
+    "InstLine" : 101,
+    "InstName" : "your_instance_name",
+    "ModuleFile" : "D:/github/HRA_product/TangCartMSX/RTL/tangprimer20k_step3/src/gowin_clkdiv2/gowin_clkdiv2.v",
+    "ModuleLine" : 10,
+    "ModuleName" : "Gowin_CLKDIV2"
+   },
+   {
+    "InstFile" : "D:/github/HRA_product/TangCartMSX/RTL/tangprimer20k_step3/src/tangprimer20k_step3.v",
+    "InstLine" : 110,
     "InstName" : "u_cz80",
     "ModuleFile" : "D:/github/HRA_product/TangCartMSX/RTL/tangprimer20k_step3/src/cz80/cz80_wrap.v",
     "ModuleLine" : 63,
@@ -71,7 +79,7 @@
    },
    {
     "InstFile" : "D:/github/HRA_product/TangCartMSX/RTL/tangprimer20k_step3/src/tangprimer20k_step3.v",
-    "InstLine" : 125,
+    "InstLine" : 132,
     "InstName" : "u_test_controller",
     "ModuleFile" : "D:/github/HRA_product/TangCartMSX/RTL/tangprimer20k_step3/src/test_controller/test_controller.v",
     "ModuleLine" : 27,
@@ -79,7 +87,7 @@
    },
    {
     "InstFile" : "D:/github/HRA_product/TangCartMSX/RTL/tangprimer20k_step3/src/tangprimer20k_step3.v",
-    "InstLine" : 153,
+    "InstLine" : 160,
     "InstName" : "u_uart",
     "ModuleFile" : "D:/github/HRA_product/TangCartMSX/RTL/tangprimer20k_step3/src/uart/ip_uart_inst.v",
     "ModuleLine" : 27,
@@ -97,7 +105,7 @@
    },
    {
     "InstFile" : "D:/github/HRA_product/TangCartMSX/RTL/tangprimer20k_step3/src/tangprimer20k_step3.v",
-    "InstLine" : 171,
+    "InstLine" : 178,
     "InstName" : "u_rom",
     "ModuleFile" : "D:/github/HRA_product/TangCartMSX/RTL/tangprimer20k_step3/src/rom/ddr3_test_rom.v",
     "ModuleLine" : 5,
@@ -105,7 +113,7 @@
    },
    {
     "InstFile" : "D:/github/HRA_product/TangCartMSX/RTL/tangprimer20k_step3/src/tangprimer20k_step3.v",
-    "InstLine" : 186,
+    "InstLine" : 193,
     "InstName" : "u_ram",
     "ModuleFile" : "D:/github/HRA_product/TangCartMSX/RTL/tangprimer20k_step3/src/ram/ip_ram.v",
     "ModuleLine" : 5,
@@ -113,7 +121,7 @@
    },
    {
     "InstFile" : "D:/github/HRA_product/TangCartMSX/RTL/tangprimer20k_step3/src/tangprimer20k_step3.v",
-    "InstLine" : 202,
+    "InstLine" : 209,
     "InstName" : "u_sdram",
     "ModuleFile" : "D:/github/HRA_product/TangCartMSX/RTL/tangprimer20k_step3/src/sdram/ip_sdram_tangprimer20k.v",
     "ModuleLine" : 57,

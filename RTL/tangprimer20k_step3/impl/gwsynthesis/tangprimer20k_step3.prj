@@ -11,6 +11,7 @@
         <File path="D:\github\HRA_product\TangCartMSX\RTL\tangprimer20k_step3\src\cz80\cz80_reg.v" type="verilog"/>
         <File path="D:\github\HRA_product\TangCartMSX\RTL\tangprimer20k_step3\src\cz80\cz80_wrap.v" type="verilog"/>
         <File path="D:\github\HRA_product\TangCartMSX\RTL\tangprimer20k_step3\src\ddr3_memory_interface\ddr3_memory_interface.v" type="verilog"/>
+        <File path="D:\github\HRA_product\TangCartMSX\RTL\tangprimer20k_step3\src\gowin_clkdiv2\gowin_clkdiv2.v" type="verilog"/>
         <File path="D:\github\HRA_product\TangCartMSX\RTL\tangprimer20k_step3\src\gowin_rpll\gowin_rpll.v" type="verilog"/>
         <File path="D:\github\HRA_product\TangCartMSX\RTL\tangprimer20k_step3\src\ram\ip_ram.v" type="verilog"/>
         <File path="D:\github\HRA_product\TangCartMSX\RTL\tangprimer20k_step3\src\rom\ddr3_test_rom.v" type="verilog"/>
@@ -23,10 +24,10 @@
     <OptionList>
         <Option type="disable_insert_pad" value="0"/>
         <Option type="global_freq" value="100.000"/>
-        <Option type="looplimit" value="20000"/>
+        <Option type="looplimit" value="40000"/>
         <Option type="output_file" value="D:\github\HRA_product\TangCartMSX\RTL\tangprimer20k_step3\impl\gwsynthesis\tangprimer20k_step3.vg"/>
-        <Option type="print_all_synthesis_warning" value="0"/>
-        <Option type="ram_rw_check" value="0"/>
+        <Option type="print_all_synthesis_warning" value="1"/>
+        <Option type="ram_rw_check" value="1"/>
         <Option type="top_module" value="tangprimer20k_step3"/>
         <Option type="vcc" value="1.0"/>
         <Option type="verilog_language" value="verilog-2001"/>

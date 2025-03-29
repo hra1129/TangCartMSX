@@ -43,11 +43,11 @@ module test_controller (
 	output	[127:0]	dram_wdata,			//	DDR3 Controller 
 	output	[15:0]	dram_wdata_mask,	//	DDR3 Controller 
 	input	[127:0]	dram_rdata,			//	DDR3 Controller 
-	input			dram_rdata_valid	//	DDR3 Controller 
+	input			dram_rdata_en		//	DDR3 Controller 
 );
 	reg		[7:0]	ff_busy_count;		//	dram_ready が来るまでの時間
-	reg		[7:0]	ff_delay_count;		//	dram_rdata_valid が来るまでの時間
-	reg				ff_delay_end;		//	dram_rdata_valid が来ると 1 になる
+	reg		[7:0]	ff_delay_count;		//	dram_rdata_en が来るまでの時間
+	reg				ff_delay_end;		//	dram_rdata_en が来ると 1 になる
 	reg		[26:0]	ff_address;
 	reg		[127:0]	ff_wdata;
 	reg		[15:0]	ff_wdata_mask;
@@ -169,7 +169,7 @@ module test_controller (
 			ff_delay_count	<= 8'd0;
 			ff_delay_end	<= 1'b0;
 		end
-		else if( dram_valid ) begin
+		else if( dram_rdata_en ) begin
 			ff_delay_end	<= 1'b1;
 		end
 		else if( !ff_delay_end ) begin
@@ -187,7 +187,7 @@ module test_controller (
 		if( !reset_n ) begin
 			ff_rdata <= 128'd0;
 		end
-		else if( dram_valid ) begin
+		else if( dram_rdata_en ) begin
 			ff_rdata <= dram_rdata;
 		end
 	end

@@ -12,6 +12,7 @@
         <File path="src/cz80/cz80_reg.v" type="file.verilog" enable="1"/>
         <File path="src/cz80/cz80_wrap.v" type="file.verilog" enable="1"/>
         <File path="src/ddr3_memory_interface/ddr3_memory_interface.v" type="file.verilog" enable="1"/>
+        <File path="src/gowin_clkdiv2/gowin_clkdiv2.v" type="file.verilog" enable="1"/>
         <File path="src/gowin_rpll/gowin_rpll.v" type="file.verilog" enable="1"/>
         <File path="src/ram/ip_ram.v" type="file.verilog" enable="1"/>
         <File path="src/rom/ddr3_test_rom.v" type="file.verilog" enable="1"/>

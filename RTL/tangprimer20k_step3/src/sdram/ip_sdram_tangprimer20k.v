@@ -69,7 +69,7 @@ module ip_sdram (
 	input	[127:0]		bus_wdata,
 	input	[15:0]		bus_wdata_mask,
 	output	[127:0]		bus_rdata,
-	output				bus_rdata_valid,
+	output				bus_rdata_en,
 
 	// DDR3-SDRAM ports
 	output				ddr3_rst_n,
@@ -121,7 +121,7 @@ module ip_sdram (
 		.wr_data_end			( w_write				),		//	input wr_data_end				
 		.wr_data_mask			( bus_wdata_mask		),		//	input [15:0] wr_data_mask		各ビットが 1byte に対応するデータマスク 0:無効, 1:有効
 		.rd_data				( bus_rdata				),		//	output [127:0] rd_data			
-		.rd_data_valid			( bus_rdata_valid		),		//	output rd_data_valid			
+		.rd_data_valid			( bus_rdata_en			),		//	output rd_data_valid			
 		.rd_data_end			( 						),		//	output rd_data_end				
 		.sr_req					( 1'b0					),		//	input sr_req					セルフリフレッシュ要求
 		.ref_req				( 1'b0					),		//	input ref_req					ユーザーリフレッシュ要求

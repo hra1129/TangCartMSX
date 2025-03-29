@@ -2,7 +2,7 @@
 # coding=utf-8
 
 with open( "ddr3_test.bin", "rb" ) as f:
-	rom_image = f.read( 16384 )
+	rom_image = f.read( 1024 )
 
 with open( "ddr3_test_rom.v", "wt" ) as f:
 	f.write( "// --------------------------------------------------------------------\n" )
@@ -29,11 +29,11 @@ with open( "ddr3_test_rom.v", "wt" ) as f:
 	f.write( "			ff_rdata_en	<= 1'b0;\n" )
 	f.write( "		end\n" )
 	f.write( "		else if( bus_address[15:13] == 3'b000 && bus_memreq && bus_valid && !bus_write ) begin\n" )
-	f.write( "			case( bus_address[12:0] )\n" )
+	f.write( "			case( bus_address[9:0] )\n" )
 
 	i = 0
 	for d in rom_image:
-		f.write( "			13'd%d: ff_rdata <= 8'h%02X;\n" % ( i, d ) )
+		f.write( "			10'd%d: ff_rdata <= 8'h%02X;\n" % ( i, d ) )
 		i = i + 1
 	f.write( "			default: ff_rdata <= 8'd0;\n" )
 	f.write( "			endcase\n" )

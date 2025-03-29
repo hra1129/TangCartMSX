@@ -48,6 +48,7 @@ module tangprimer20k_step3 (
 	wire			clk49m;				//	49.5MHz from PLL
 	wire			clk297m;			//	297MHz from PLL
 	wire			clk;				//	74.25MHz from DDR3 Controller
+	wire			clk37m;				//	37.125MHz
 	wire			pll_lock;
 	wire			sdram_init_busy;	//	0: Normal, 1: DDR3 SDRAM Initialization phase.
 	wire			bus_memreq;			//	cZ80 --> device 0: none, 1: memory request
@@ -78,9 +79,9 @@ module tangprimer20k_step3 (
 	wire	[127:0]	dram_wdata;			//	test_module --> DDR3 Controller 
 	wire	[15:0]	dram_wdata_mask;	//	test_module --> DDR3 Controller 
 	wire	[127:0]	dram_rdata;			//	test_module --> DDR3 Controller 
-	wire			dram_rdata_valid;	//	test_module --> DDR3 Controller 
+	wire			dram_rdata_en;	//	test_module --> DDR3 Controller 
 
-	always @( posedge clk27m ) begin
+	always @( posedge clk49m ) begin
 		ff_reset_n0	<= 1'b1;
 		ff_reset_n	<= ff_reset_n0;
 	end
@@ -97,12 +98,18 @@ module tangprimer20k_step3 (
 		.clkin					( clk27m				)		//	input clkin
 	);
 
+	Gowin_CLKDIV2 your_instance_name(
+		.clkout					( clk37m				),		//	output clkout
+		.hclkin					( clk					),		//	input hclkin
+		.resetn					( ff_reset_n			)		//	input resetn
+	);
+
 	// --------------------------------------------------------------------
 	//	Z80 core
 	// --------------------------------------------------------------------
 	cz80_wrap u_cz80 (
 		.reset_n				( ff_reset_n			),
-		.clk_n					( clk					),
+		.clk_n					( clk37m				),
 		.int_n					( 1'b1					),
 		.bus_address			( bus_address			),
 		.bus_memreq				( bus_memreq			),
@@ -124,7 +131,7 @@ module tangprimer20k_step3 (
 	// --------------------------------------------------------------------
 	test_controller u_test_controller (
 		.reset_n				( ff_reset_n			),
-		.clk					( clk					),
+		.clk					( clk37m				),
 		.sdram_init_busy		( sdram_init_busy		),
 		.bus_address			( bus_address[7:0]		),
 		.bus_ioreq				( bus_ioreq				),
@@ -141,18 +148,18 @@ module tangprimer20k_step3 (
 		.dram_wdata				( dram_wdata			),
 		.dram_wdata_mask		( dram_wdata_mask		),
 		.dram_rdata				( dram_rdata			),
-		.dram_rdata_valid		( dram_rdata_valid		)
+		.dram_rdata_en			( dram_rdata_en			)
 	);
 
 	// --------------------------------------------------------------------
 	//	UART
 	// --------------------------------------------------------------------
 	ip_uart_inst #(
-		.clk_freq				( 74250000				),
+		.clk_freq				( 37125000				),
 		.uart_freq				( 115200				)
 	) u_uart (
 		.reset_n				( ff_reset_n			),
-		.clk					( clk					),
+		.clk					( clk37m				),
 		.bus_address			( bus_address[7:0]		),
 		.bus_ioreq				( bus_ioreq				),
 		.bus_write				( bus_write				),
@@ -169,8 +176,8 @@ module tangprimer20k_step3 (
 	//	ROM
 	// --------------------------------------------------------------------
 	ip_rom u_rom (
-		.reset_n				( reset_n				),
-		.clk					( clk					),
+		.reset_n				( ff_reset_n			),
+		.clk					( clk37m				),
 		.bus_address			( bus_address			),
 		.bus_memreq				( bus_memreq			),
 		.bus_valid				( bus_valid				),
@@ -184,8 +191,8 @@ module tangprimer20k_step3 (
 	//	RAM
 	// --------------------------------------------------------------------
 	ip_ram u_ram (
-		.reset_n				( reset_n				),
-		.clk					( clk					),
+		.reset_n				( ff_reset_n			),
+		.clk					( clk37m				),
 		.bus_address			( bus_address			),
 		.bus_memreq				( bus_memreq			),
 		.bus_valid				( bus_valid				),
@@ -213,7 +220,7 @@ module tangprimer20k_step3 (
 		.bus_wdata				( dram_wdata			),
 		.bus_wdata_mask			( dram_wdata_mask		),
 		.bus_rdata				( dram_rdata			),
-		.bus_rdata_valid		( dram_rdata_valid		),
+		.bus_rdata_en			( dram_rdata_en			),
 		.ddr3_rst_n				( ddr_reset_n			),
 		.ddr3_clk				( ddr_clk				),
 		.ddr3_clk_n				( ddr_clk_n				),
