@@ -1,2 +1,3 @@
-zma hello_world.asm hello_world.bin
+zma ddr3_test.asm ddr3_test.bin
+python3 make_rom.py
 pause

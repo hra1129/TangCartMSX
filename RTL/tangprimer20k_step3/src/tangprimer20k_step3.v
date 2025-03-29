@@ -50,19 +50,27 @@ module tangprimer20k_step3 (
 	wire			clk;				//	74.25MHz from DDR3 Controller
 	wire			pll_lock;
 	wire			sdram_init_busy;	//	0: Normal, 1: DDR3 SDRAM Initialization phase.
-	wire	[15:0]	bus_address;		//	cZ80 --> uart Peripheral device address
-	wire			bus_write;			//	cZ80 --> uart Direction 0: Read, 1: Write
-	wire			bus_valid;			//	cZ80 --> uart 
-	wire			bus_ready;			//	cZ80 --> uart 0: Busy, 1: Ready
-	wire	[7:0]	bus_wdata;			//	cZ80 --> uart 
+	wire			bus_memreq;			//	cZ80 --> device 0: none, 1: memory request
+	wire			bus_ioreq;			//	cZ80 --> device 0: none, 1: io request
+	wire	[15:0]	bus_address;		//	cZ80 --> device Peripheral device address
+	wire			bus_write;			//	cZ80 --> device Direction 0: Read, 1: Write
+	wire			bus_valid;			//	cZ80 --> device 
+	wire			bus_ready;			//	cZ80 --> device 0: Busy, 1: Ready
+	wire	[7:0]	bus_wdata;			//	cZ80 --> device 
 	wire	[7:0]	bus_rdata;			//	device --> cZ80
 	wire			bus_rdata_en;		//	device --> cZ80
+	wire			bus_rom_ready;		//	rom --> cZ80 0: Busy, 1: Ready
 	wire	[7:0]	bus_rom_rdata;		//	rom --> cZ80
 	wire			bus_rom_rdata_en;	//	rom --> cZ80
+	wire			bus_ram_ready;		//	ram --> cZ80 0: Busy, 1: Ready
 	wire	[7:0]	bus_ram_rdata;		//	ram --> cZ80
 	wire			bus_ram_rdata_en;	//	ram --> cZ80
+	wire			bus_uart_ready;		//	uart --> cZ80 0: Busy, 1: Ready
 	wire	[7:0]	bus_uart_rdata;		//	uart --> cZ80
 	wire			bus_uart_rdata_en;	//	uart --> cZ80
+	wire			bus_test_ready;		//	test controller --> cZ80 0: Busy, 1: Ready
+	wire	[7:0]	bus_test_rdata;		//	test controller --> cZ80
+	wire			bus_test_rdata_en;	//	test controller --> cZ80
 	wire	[26:0]	dram_address;		//	test_module --> DDR3 Controller 64Mword/16bit: [26:24]=BANK, [23:10]=ROW, [9:0]=COLUMN
 	wire			dram_write;			//	test_module --> DDR3 Controller Direction 0: Read, 1: Write
 	wire			dram_valid;			//	test_module --> DDR3 Controller 
@@ -76,6 +84,8 @@ module tangprimer20k_step3 (
 		ff_reset_n0	<= 1'b1;
 		ff_reset_n	<= ff_reset_n0;
 	end
+
+	assign led		= 6'd0;
 
 	// --------------------------------------------------------------------
 	//	CLOCK
@@ -92,8 +102,8 @@ module tangprimer20k_step3 (
 	// --------------------------------------------------------------------
 	cz80_wrap u_cz80 (
 		.reset_n				( ff_reset_n			),
-		.clk_n					( clk49m				),
-		.int_n					( 						),
+		.clk_n					( clk					),
+		.int_n					( 1'b1					),
 		.bus_address			( bus_address			),
 		.bus_memreq				( bus_memreq			),
 		.bus_ioreq				( bus_ioreq				),
@@ -105,8 +115,34 @@ module tangprimer20k_step3 (
 		.bus_rdata_en			( bus_rdata_en			)
 	);
 
-	assign bus_rdata	= bus_uart_rdata    | bus_rom_rdata    | bus_ram_rdata   ;
-	assign bus_rdata_en	= bus_uart_rdata_en | bus_rom_rdata_en | bus_ram_rdata_en;
+	assign bus_ready	= bus_uart_ready    | bus_rom_ready    | bus_ram_ready    | bus_test_ready;
+	assign bus_rdata	= bus_uart_rdata    | bus_rom_rdata    | bus_ram_rdata    | bus_test_rdata;
+	assign bus_rdata_en	= bus_uart_rdata_en | bus_rom_rdata_en | bus_ram_rdata_en | bus_test_rdata_en;
+
+	// --------------------------------------------------------------------
+	//	TEST Module
+	// --------------------------------------------------------------------
+	test_controller u_test_controller (
+		.reset_n				( ff_reset_n			),
+		.clk					( clk					),
+		.sdram_init_busy		( sdram_init_busy		),
+		.bus_address			( bus_address[7:0]		),
+		.bus_ioreq				( bus_ioreq				),
+		.bus_write				( bus_write				),
+		.bus_valid				( bus_valid				),
+		.bus_ready				( bus_test_ready		),
+		.bus_wdata				( bus_wdata				),
+		.bus_rdata				( bus_test_rdata		),
+		.bus_rdata_en			( bus_test_rdata_en		),
+		.dram_address			( dram_address			),
+		.dram_write				( dram_write			),
+		.dram_valid				( dram_valid			),
+		.dram_ready				( dram_ready			),
+		.dram_wdata				( dram_wdata			),
+		.dram_wdata_mask		( dram_wdata_mask		),
+		.dram_rdata				( dram_rdata			),
+		.dram_rdata_valid		( dram_rdata_valid		)
+	);
 
 	// --------------------------------------------------------------------
 	//	UART
@@ -121,7 +157,7 @@ module tangprimer20k_step3 (
 		.bus_ioreq				( bus_ioreq				),
 		.bus_write				( bus_write				),
 		.bus_valid				( bus_valid				),
-		.bus_ready				( bus_ready				),
+		.bus_ready				( bus_uart_ready		),
 		.bus_wdata				( bus_wdata				),
 		.bus_rdata				( bus_uart_rdata		),
 		.bus_rdata_en			( bus_uart_rdata_en		),
@@ -132,13 +168,13 @@ module tangprimer20k_step3 (
 	// --------------------------------------------------------------------
 	//	ROM
 	// --------------------------------------------------------------------
-	ip_hello_world_rom u_rom (
+	ip_rom u_rom (
 		.reset_n				( reset_n				),
 		.clk					( clk					),
 		.bus_address			( bus_address			),
 		.bus_memreq				( bus_memreq			),
 		.bus_valid				( bus_valid				),
-		.bus_ready				( bus_ready				),
+		.bus_ready				( bus_rom_ready			),
 		.bus_write				( bus_write				),
 		.bus_rdata				( bus_rom_rdata			),
 		.bus_rdata_en			( bus_rom_rdata_en		)
@@ -153,7 +189,7 @@ module tangprimer20k_step3 (
 		.bus_address			( bus_address			),
 		.bus_memreq				( bus_memreq			),
 		.bus_valid				( bus_valid				),
-		.bus_ready				( bus_ready				),
+		.bus_ready				( bus_ram_ready			),
 		.bus_write				( bus_write				),
 		.bus_wdata				( bus_wdata				),
 		.bus_rdata				( bus_ram_rdata			),

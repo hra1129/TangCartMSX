@@ -5,8 +5,16 @@
     <Version>5</Version>
     <Device name="GW2A-18C" pn="GW2A-LV18PG256C8/I7">gw2a18c-011</Device>
     <FileList>
+        <File path="src/cz80/cz80.v" type="file.verilog" enable="1"/>
+        <File path="src/cz80/cz80_alu.v" type="file.verilog" enable="1"/>
+        <File path="src/cz80/cz80_inst.v" type="file.verilog" enable="1"/>
+        <File path="src/cz80/cz80_mcode.v" type="file.verilog" enable="1"/>
+        <File path="src/cz80/cz80_reg.v" type="file.verilog" enable="1"/>
+        <File path="src/cz80/cz80_wrap.v" type="file.verilog" enable="1"/>
         <File path="src/ddr3_memory_interface/ddr3_memory_interface.v" type="file.verilog" enable="1"/>
         <File path="src/gowin_rpll/gowin_rpll.v" type="file.verilog" enable="1"/>
+        <File path="src/ram/ip_ram.v" type="file.verilog" enable="1"/>
+        <File path="src/rom/ddr3_test_rom.v" type="file.verilog" enable="1"/>
         <File path="src/sdram/ip_sdram_tangprimer20k.v" type="file.verilog" enable="1"/>
         <File path="src/tangprimer20k_step3.v" type="file.verilog" enable="1"/>
         <File path="src/test_controller/test_controller.v" type="file.verilog" enable="1"/>

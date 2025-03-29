@@ -52,7 +52,7 @@ module ip_uart_inst #(
 
 	assign w_dec		= ( bus_address == c_io_port && bus_ioreq );
 	assign bus_ready	= ~(w_busy | ff_req) & w_dec;
-	assign bus_rdata	= ff_q_en ? ff_rdata : 8'd0;
+	assign bus_rdata	= ff_q_en ? ff_q : 8'd0;
 	assign bus_rdata_en	= ff_q_en;
 
 	always @( posedge clk ) begin
@@ -77,8 +77,8 @@ module ip_uart_inst #(
 				ff_req	<= 1'b1;
 				ff_q_en	<= 1'b0;
 			end
-			else if( w_dec && bus_read && bus_valid && !w_busy ) begin
-				ff_q	<= bus_wdata;
+			else if( w_dec && !bus_write && bus_valid && !w_busy ) begin
+				ff_q	<= { 3'd0, button };
 				ff_req	<= 1'b1;
 				ff_q_en	<= 1'b0;
 			end

@@ -12,27 +12,27 @@
   <Part Number>: GW2A-LV18PG256C8/I7
   <Device>: GW2A-18
   <Device Version>: C
-  <Created Time>:Mon Mar 10 21:32:20 2025
+  <Created Time>:Sat Mar 29 10:01:27 2025
 
 
 2. PnR Details
 
   Running placement:
     Placement Phase 0: CPU time = 0h 0m 1s, Elapsed time = 0h 0m 1s
-    Placement Phase 1: CPU time = 0h 0m 0.42s, Elapsed time = 0h 0m 0.419s
+    Placement Phase 1: CPU time = 0h 0m 0.478s, Elapsed time = 0h 0m 0.478s
     Placement Phase 2: CPU time = 0h 0m 4s, Elapsed time = 0h 0m 4s
-    Placement Phase 3: CPU time = 0h 0m 3s, Elapsed time = 0h 0m 3s
-    Total Placement: CPU time = 0h 0m 9s, Elapsed time = 0h 0m 9s
+    Placement Phase 3: CPU time = 0h 0m 4s, Elapsed time = 0h 0m 4s
+    Total Placement: CPU time = 0h 0m 10s, Elapsed time = 0h 0m 10s
  Running routing:
-    Routing Phase 0: CPU time = 0h 0m 0.004s, Elapsed time = 0h 0m 0.005s
-    Routing Phase 1: CPU time = 0h 0m 0.498s, Elapsed time = 0h 0m 0.498s
-    Routing Phase 2: CPU time = 0h 0m 4s, Elapsed time = 0h 0m 4s
+    Routing Phase 0: CPU time = 0h 0m 0.004s, Elapsed time = 0h 0m 0.004s
+    Routing Phase 1: CPU time = 0h 0m 0.538s, Elapsed time = 0h 0m 0.537s
+    Routing Phase 2: CPU time = 0h 0m 6s, Elapsed time = 0h 0m 6s
     Routing Phase 3: CPU time = 0h 0m 0s, Elapsed time = 0h 0m 0s
-    Total Routing: CPU time = 0h 0m 5s, Elapsed time = 0h 0m 5s
+    Total Routing: CPU time = 0h 0m 6s, Elapsed time = 0h 0m 6s
  Generate output files:
     CPU time = 0h 0m 2s, Elapsed time = 0h 0m 2s
 
- Total Time and Memory Usage: CPU time = 0h 0m 16s, Elapsed time = 0h 0m 16s, Peak memory usage = 499MB
+ Total Time and Memory Usage: CPU time = 0h 0m 18s, Elapsed time = 0h 0m 18s, Peak memory usage = 520MB
 
 
 3. Resource Usage Summary
@@ -40,15 +40,15 @@
   --------------------------------------------------------------------------------
   Resources                   | Usage                               | Utilization
   --------------------------------------------------------------------------------
-  Logic                       | 4082/20736                          |  20%
-    --LUT,ALU,ROM16           | 3362(3077 LUT, 285 ALU, 0 ROM16)    | -
+  Logic                       | 4780/20736                          |  24%
+    --LUT,ALU,ROM16           | 4060(3811 LUT, 249 ALU, 0 ROM16)    | -
     --SSRAM(RAM16)            | 120                                 | -
-  Register                    | 3666/16173                          |  23%
+  Register                    | 3436/16173                          |  22%
     --Logic Register as Latch | 0/15552                             |  0%
-    --Logic Register as FF    | 3664/15552                          |  24%
+    --Logic Register as FF    | 3433/15552                          |  23%
     --I/O Register as Latch   | 0/621                               |  0%
-    --I/O Register as FF      | 2/621                               |  <1%
-  CLS                         | 3235/10368                          |  32%
+    --I/O Register as FF      | 3/621                               |  <1%
+  CLS                         | 3540/10368                          |  35%
   I/O Port                    | 61/207                              |  30%
   I/O Buf                     | 58                                  | -
     --Input Buf               | 6                                   | -
@@ -85,7 +85,7 @@
   Clock Resource| Usage         | Utilization 
   ------------------------------------------
   PRIMARY       | 3/8           | 38%
-  LW            | 6/8           | 75%
+  LW            | 4/8           | 50%
   GCLK_PIN      | 4/8           | 50%
   CLKDIV        | 1/8           | 13%
   DHCEN         | 1/16          | 7%
@@ -101,12 +101,10 @@
   Signal         | Global Clock   | Location
   -------------------------------------------
   clk27m_d       | PRIMARY        |  TL
-  clk49m         | PRIMARY        |  TR TL BL
+  clk49m         | PRIMARY        |  TR TL BR BL
   clk            | PRIMARY        |  TR TL BR BL
   ff_reset_n     | LW             |  -
-  u_test_controller/ff_put_data[0]_15_6| LW             |  -
-  u_test_controller/ff_dram_data[0]_15_9| LW             |  -
-  u_test_controller/n8770_32| LW             |  -
+  u_cz80/w_enable| LW             |  -
   u_sdram/u_ddr3_controller/gw3_top/ddr_rst| LW             |  -
   u_sdram/u_ddr3_controller/gw3_top/u_gwmc_top/gw_wr_data0/wr_fifo/n28_3| LW             |  -
   clk297m        | HCLK           | BOTTOM[0] LEFT[0]

@@ -37,10 +37,10 @@ module ip_ram (
 
 	always @( posedge clk ) begin
 		if( bus_address[15:13] == 3'b001 && bus_memreq && bus_valid && bus_write ) begin
-			ff_ram[ bus_address[12:0] ] <= wdata;
+			ff_ram[ bus_address[12:0] ] <= bus_wdata;
 		end
 	end
 
-	assign rdata	= ff_rdata_en ? ff_rdata: 8'd0;
-	assign rdata_en	= ff_rdata_en;
+	assign bus_rdata	= ff_rdata_en ? ff_rdata: 8'd0;
+	assign bus_rdata_en	= ff_rdata_en;
 endmodule

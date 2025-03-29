@@ -2,11 +2,43 @@
  "Device" : "GW2A-18C",
  "Files" : [
   {
+   "Path" : "D:/github/HRA_product/TangCartMSX/RTL/tangprimer20k_step3/src/cz80/cz80.v",
+   "Type" : "verilog"
+  },
+  {
+   "Path" : "D:/github/HRA_product/TangCartMSX/RTL/tangprimer20k_step3/src/cz80/cz80_alu.v",
+   "Type" : "verilog"
+  },
+  {
+   "Path" : "D:/github/HRA_product/TangCartMSX/RTL/tangprimer20k_step3/src/cz80/cz80_inst.v",
+   "Type" : "verilog"
+  },
+  {
+   "Path" : "D:/github/HRA_product/TangCartMSX/RTL/tangprimer20k_step3/src/cz80/cz80_mcode.v",
+   "Type" : "verilog"
+  },
+  {
+   "Path" : "D:/github/HRA_product/TangCartMSX/RTL/tangprimer20k_step3/src/cz80/cz80_reg.v",
+   "Type" : "verilog"
+  },
+  {
+   "Path" : "D:/github/HRA_product/TangCartMSX/RTL/tangprimer20k_step3/src/cz80/cz80_wrap.v",
+   "Type" : "verilog"
+  },
+  {
    "Path" : "D:/github/HRA_product/TangCartMSX/RTL/tangprimer20k_step3/src/ddr3_memory_interface/ddr3_memory_interface.v",
    "Type" : "verilog"
   },
   {
    "Path" : "D:/github/HRA_product/TangCartMSX/RTL/tangprimer20k_step3/src/gowin_rpll/gowin_rpll.v",
+   "Type" : "verilog"
+  },
+  {
+   "Path" : "D:/github/HRA_product/TangCartMSX/RTL/tangprimer20k_step3/src/ram/ip_ram.v",
+   "Type" : "verilog"
+  },
+  {
+   "Path" : "D:/github/HRA_product/TangCartMSX/RTL/tangprimer20k_step3/src/rom/ddr3_test_rom.v",
    "Type" : "verilog"
   },
   {

@@ -379,7 +379,7 @@ module cz80 (
 					r[6:0] <= r[6:0] + 7'd1;
 
 					if( jump == 1'b0 && call == 1'b0 && nmicycle == 1'b0 && intcycle == 1'b0 && ~(halt_ff == 1'b1 || halt == 1'b1) ) begin
-						pc <= pc + 1;
+						pc <= pc + 16'd1;
 					end
 
 					if( intcycle == 1'b1 && istatus == 2'b01 ) begin
@@ -525,10 +525,10 @@ module cz80 (
 						pc <= pc + { { 8 { di_reg[7] } }, di_reg };
 					end
 					else if( inc_pc == 1'b1 ) begin
-						pc <= pc + 1;
+						pc <= pc + 16'd1;
 					end
 					if( btr_r == 1'b1 ) begin
-						pc <= pc - 2;
+						pc <= pc - 16'd2;
 					end
 					if( rstp == 1'b1 ) begin
 						tmpaddr <= { 9'd0, ir[5:3], 3'd0 };
@@ -541,10 +541,10 @@ module cz80 (
 				if( (tstate == 3'd2 && wait_n == 1'b1) || (tstate == 3'd4 && mcycle == 3'd1) ) begin
 					if( incdec_16[2:0] == 3'd7 ) begin
 						if( incdec_16[3] == 1'b1 ) begin
-							sp <= sp - 1;
+							sp <= sp - 16'd1;
 						end
 						else begin
-							sp <= sp + 1;
+							sp <= sp + 16'd1;
 						end
 					end
 				end
@@ -990,7 +990,7 @@ module cz80 (
 						end
 						else if( (mcycle == mcycles) || no_btr || (mcycle == 3'd2 && i_djnz && incdecz) ) begin
 							ff_m1_n <= 1'b0;
-							mcycle <= 3'b001;
+							mcycle <= 3'd1;
 							if( nmi_s && prefix == 2'd0 ) begin
 								intcycle <= 1'b0;
 								nmicycle <= 1'b1;
@@ -1008,7 +1008,7 @@ module cz80 (
 							end
 						end
 						else begin
-							mcycle <= mcycle + 1;
+							mcycle <= mcycle + 3'd1;
 						end
 					end
 				end
