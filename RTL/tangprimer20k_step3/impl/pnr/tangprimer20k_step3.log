@@ -8,6 +8,7 @@ Running placement......
 [20%] Placement Phase 1 completed
 [30%] Placement Phase 2 completed
 WARN  (TA1132) :  'u_sdram/u_ddr3_controller/gw3_top/u_ddr_phy_top/fclkdiv/CLKOUT.default_gen_clk' was determined to be a clock but was not created.
+WARN  (TA1132) :  'u_sdram/u_clkdiv/clkdiv_inst/CLKOUT.default_gen_clk' was determined to be a clock but was not created.
 [50%] Placement Phase 3 completed
 Running routing......
 [60%] Routing Phase 0 completed
@@ -26,5 +27,5 @@ Generate file "D:\github\HRA_product\TangCartMSX\RTL\tangprimer20k_step3\impl\pn
 Generate file "D:\github\HRA_product\TangCartMSX\RTL\tangprimer20k_step3\impl\pnr\tangprimer20k_step3.rpt.html" completed
 Generate file "D:\github\HRA_product\TangCartMSX\RTL\tangprimer20k_step3\impl\pnr\tangprimer20k_step3.rpt.txt" completed
 Generate file "D:\github\HRA_product\TangCartMSX\RTL\tangprimer20k_step3\impl\pnr\tangprimer20k_step3.tr.html" completed
-Sat Mar 29 21:03:54 2025
+Thu Apr  3 20:24:16 2025
 

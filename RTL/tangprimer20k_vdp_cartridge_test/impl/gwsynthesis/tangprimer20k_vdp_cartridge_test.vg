@@ -1,0 +1,1025 @@
+//
+//Written by GowinSynthesis
+//Tool Version "V1.9.11.01 (64-bit)"
+//Sun Apr  6 20:59:09 2025
+
+//Source file index table:
+//file0 "\D:/github/HRA_product/TangCartMSX/RTL/tangprimer20k_vdp_cartridge_test/src/gowin_clkdiv/gowin_clkdiv.v"
+//file1 "\D:/github/HRA_product/TangCartMSX/RTL/tangprimer20k_vdp_cartridge_test/src/gowin_rpll/gowin_rpll.v"
+//file2 "\D:/github/HRA_product/TangCartMSX/RTL/tangprimer20k_vdp_cartridge_test/src/msx_slot/msx_slot.v"
+//file3 "\D:/github/HRA_product/TangCartMSX/RTL/tangprimer20k_vdp_cartridge_test/src/test_controller/test_controller.v"
+//file4 "\D:/github/HRA_product/TangCartMSX/RTL/tangprimer20k_vdp_cartridge_test/src/tangprimer20k_vdp_cartridge_test.v"
+`timescale 100 ps/100 ps
+module Gowin_rPLL (
+  clk21m_d,
+  clk86m
+)
+;
+input clk21m_d;
+output clk86m;
+wire clkoutp_o;
+wire clkoutd_o;
+wire clkoutd3_o;
+wire pll_lock;
+wire VCC;
+wire GND;
+  rPLL rpll_inst (
+    .CLKOUT(clk86m),
+    .CLKOUTP(clkoutp_o),
+    .CLKOUTD(clkoutd_o),
+    .CLKOUTD3(clkoutd3_o),
+    .LOCK(pll_lock),
+    .CLKIN(clk21m_d),
+    .CLKFB(GND),
+    .FBDSEL({GND,GND,GND,GND,GND,GND}),
+    .IDSEL({GND,GND,GND,GND,GND,GND}),
+    .ODSEL({GND,GND,GND,GND,GND,GND}),
+    .DUTYDA({GND,GND,GND,GND}),
+    .PSDA({GND,GND,GND,GND}),
+    .FDLY({GND,GND,GND,GND}),
+    .RESET(GND),
+    .RESET_P(GND) 
+);
+defparam rpll_inst.CLKFB_SEL="internal";
+defparam rpll_inst.CLKOUTD3_SRC="CLKOUT";
+defparam rpll_inst.CLKOUTD_BYPASS="false";
+defparam rpll_inst.CLKOUTD_SRC="CLKOUT";
+defparam rpll_inst.CLKOUTP_BYPASS="false";
+defparam rpll_inst.CLKOUTP_DLY_STEP=0;
+defparam rpll_inst.CLKOUTP_FT_DIR=1'b1;
+defparam rpll_inst.CLKOUT_BYPASS="false";
+defparam rpll_inst.CLKOUT_DLY_STEP=0;
+defparam rpll_inst.CLKOUT_FT_DIR=1'b1;
+defparam rpll_inst.DEVICE="GW2A-18C";
+defparam rpll_inst.DUTYDA_SEL="1000";
+defparam rpll_inst.DYN_DA_EN="true";
+defparam rpll_inst.DYN_FBDIV_SEL="false";
+defparam rpll_inst.DYN_IDIV_SEL="false";
+defparam rpll_inst.DYN_ODIV_SEL="false";
+defparam rpll_inst.DYN_SDIV_SEL=2;
+defparam rpll_inst.FBDIV_SEL=3;
+defparam rpll_inst.FCLKIN="21.477";
+defparam rpll_inst.IDIV_SEL=0;
+defparam rpll_inst.ODIV_SEL=8;
+defparam rpll_inst.PSDA_SEL="0000";
+  VCC VCC_cZ (
+    .V(VCC)
+);
+  GND GND_cZ (
+    .G(GND)
+);
+endmodule /* Gowin_rPLL */
+module Gowin_CLKDIV (
+  clk86m,
+  p_slot_reset_n_d,
+  clk42m
+)
+;
+input clk86m;
+input p_slot_reset_n_d;
+output clk42m;
+wire VCC;
+wire GND;
+  CLKDIV clkdiv_inst (
+    .CLKOUT(clk42m),
+    .CALIB(GND),
+    .HCLKIN(clk86m),
+    .RESETN(p_slot_reset_n_d) 
+);
+defparam clkdiv_inst.DIV_MODE="2";
+defparam clkdiv_inst.GSREN="false";
+  VCC VCC_cZ (
+    .V(VCC)
+);
+  GND GND_cZ (
+    .G(GND)
+);
+endmodule /* Gowin_CLKDIV */
+module msx_slot (
+  clk42m,
+  bus_rdata_en,
+  p_slot_mreq_n_d,
+  p_slot_sltsl_n_d,
+  p_slot_ioreq_n_d,
+  p_slot_rd_n_d,
+  p_slot_wr_n_d,
+  p_slot_reset_n_d,
+  p_slot_address_d,
+  p_slot_data_in,
+  bus_rdata,
+  bus_ioreq,
+  bus_write,
+  bus_valid,
+  n124_5,
+  n16_6,
+  p_slot_data_dir_d_4,
+  bus_address_0,
+  bus_address_5,
+  bus_address_6,
+  bus_address_7,
+  bus_wdata,
+  ff_rdata
+)
+;
+input clk42m;
+input bus_rdata_en;
+input p_slot_mreq_n_d;
+input p_slot_sltsl_n_d;
+input p_slot_ioreq_n_d;
+input p_slot_rd_n_d;
+input p_slot_wr_n_d;
+input p_slot_reset_n_d;
+input [7:0] p_slot_address_d;
+input [4:0] p_slot_data_in;
+input [4:0] bus_rdata;
+output bus_ioreq;
+output bus_write;
+output bus_valid;
+output n124_5;
+output n16_6;
+output p_slot_data_dir_d_4;
+output bus_address_0;
+output bus_address_5;
+output bus_address_6;
+output bus_address_7;
+output [4:0] bus_wdata;
+output [4:0] ff_rdata;
+wire n252_5;
+wire n124_3;
+wire n135_7;
+wire n124_4;
+wire n77_7;
+wire n270_5;
+wire ff_active;
+wire n125_7;
+wire [4:1] bus_address_1;
+wire VCC;
+wire GND;
+  LUT3 n252_s1 (
+    .F(n252_5),
+    .I0(p_slot_mreq_n_d),
+    .I1(p_slot_sltsl_n_d),
+    .I2(p_slot_ioreq_n_d) 
+);
+defparam n252_s1.INIT=8'h1F;
+  LUT4 n124_s0 (
+    .F(n124_3),
+    .I0(n124_4),
+    .I1(n124_5),
+    .I2(n252_5),
+    .I3(ff_active) 
+);
+defparam n124_s0.INIT=16'h88F0;
+  LUT3 n135_s3 (
+    .F(n135_7),
+    .I0(p_slot_mreq_n_d),
+    .I1(p_slot_sltsl_n_d),
+    .I2(p_slot_ioreq_n_d) 
+);
+defparam n135_s3.INIT=8'h0E;
+  LUT4 n124_s1 (
+    .F(n124_4),
+    .I0(bus_address_5),
+    .I1(bus_address_6),
+    .I2(bus_address_7),
+    .I3(bus_ioreq) 
+);
+defparam n124_s1.INIT=16'h0100;
+  LUT4 n124_s2 (
+    .F(n124_5),
+    .I0(bus_address_1[1]),
+    .I1(bus_address_1[2]),
+    .I2(bus_address_1[3]),
+    .I3(bus_address_1[4]) 
+);
+defparam n124_s2.INIT=16'h0100;
+  LUT4 n77_s2 (
+    .F(n77_7),
+    .I0(p_slot_rd_n_d),
+    .I1(p_slot_mreq_n_d),
+    .I2(p_slot_sltsl_n_d),
+    .I3(p_slot_ioreq_n_d) 
+);
+defparam n77_s2.INIT=16'hFEAA;
+  LUT4 n270_s1 (
+    .F(n270_5),
+    .I0(p_slot_wr_n_d),
+    .I1(p_slot_mreq_n_d),
+    .I2(p_slot_sltsl_n_d),
+    .I3(p_slot_ioreq_n_d) 
+);
+defparam n270_s1.INIT=16'h0155;
+  DFFCE ff_address_7_s0 (
+    .Q(bus_address_7),
+    .D(p_slot_address_d[7]),
+    .CLK(clk42m),
+    .CE(n252_5),
+    .CLEAR(n16_6) 
+);
+  DFFCE ff_address_6_s0 (
+    .Q(bus_address_6),
+    .D(p_slot_address_d[6]),
+    .CLK(clk42m),
+    .CE(n252_5),
+    .CLEAR(n16_6) 
+);
+  DFFCE ff_address_5_s0 (
+    .Q(bus_address_5),
+    .D(p_slot_address_d[5]),
+    .CLK(clk42m),
+    .CE(n252_5),
+    .CLEAR(n16_6) 
+);
+  DFFCE ff_address_4_s0 (
+    .Q(bus_address_1[4]),
+    .D(p_slot_address_d[4]),
+    .CLK(clk42m),
+    .CE(n252_5),
+    .CLEAR(n16_6) 
+);
+  DFFCE ff_address_3_s0 (
+    .Q(bus_address_1[3]),
+    .D(p_slot_address_d[3]),
+    .CLK(clk42m),
+    .CE(n252_5),
+    .CLEAR(n16_6) 
+);
+  DFFCE ff_address_2_s0 (
+    .Q(bus_address_1[2]),
+    .D(p_slot_address_d[2]),
+    .CLK(clk42m),
+    .CE(n252_5),
+    .CLEAR(n16_6) 
+);
+  DFFCE ff_address_1_s0 (
+    .Q(bus_address_1[1]),
+    .D(p_slot_address_d[1]),
+    .CLK(clk42m),
+    .CE(n252_5),
+    .CLEAR(n16_6) 
+);
+  DFFCE ff_address_0_s0 (
+    .Q(bus_address_0),
+    .D(p_slot_address_d[0]),
+    .CLK(clk42m),
+    .CE(n252_5),
+    .CLEAR(n16_6) 
+);
+  DFFCE ff_wdata_4_s0 (
+    .Q(bus_wdata[4]),
+    .D(p_slot_data_in[4]),
+    .CLK(clk42m),
+    .CE(n270_5),
+    .CLEAR(n16_6) 
+);
+  DFFCE ff_wdata_3_s0 (
+    .Q(bus_wdata[3]),
+    .D(p_slot_data_in[3]),
+    .CLK(clk42m),
+    .CE(n270_5),
+    .CLEAR(n16_6) 
+);
+  DFFCE ff_wdata_2_s0 (
+    .Q(bus_wdata[2]),
+    .D(p_slot_data_in[2]),
+    .CLK(clk42m),
+    .CE(n270_5),
+    .CLEAR(n16_6) 
+);
+  DFFCE ff_wdata_1_s0 (
+    .Q(bus_wdata[1]),
+    .D(p_slot_data_in[1]),
+    .CLK(clk42m),
+    .CE(n270_5),
+    .CLEAR(n16_6) 
+);
+  DFFCE ff_wdata_0_s0 (
+    .Q(bus_wdata[0]),
+    .D(p_slot_data_in[0]),
+    .CLK(clk42m),
+    .CE(n270_5),
+    .CLEAR(n16_6) 
+);
+  DFFC ff_ioreq_s0 (
+    .Q(bus_ioreq),
+    .D(n135_7),
+    .CLK(clk42m),
+    .CLEAR(n16_6) 
+);
+  DFFCE ff_rdata_4_s0 (
+    .Q(ff_rdata[4]),
+    .D(bus_rdata[4]),
+    .CLK(clk42m),
+    .CE(bus_rdata_en),
+    .CLEAR(n16_6) 
+);
+  DFFCE ff_rdata_3_s0 (
+    .Q(ff_rdata[3]),
+    .D(bus_rdata[3]),
+    .CLK(clk42m),
+    .CE(bus_rdata_en),
+    .CLEAR(n16_6) 
+);
+  DFFCE ff_rdata_2_s0 (
+    .Q(ff_rdata[2]),
+    .D(bus_rdata[2]),
+    .CLK(clk42m),
+    .CE(bus_rdata_en),
+    .CLEAR(n16_6) 
+);
+  DFFCE ff_rdata_1_s0 (
+    .Q(ff_rdata[1]),
+    .D(bus_rdata[1]),
+    .CLK(clk42m),
+    .CE(bus_rdata_en),
+    .CLEAR(n16_6) 
+);
+  DFFCE ff_rdata_0_s0 (
+    .Q(ff_rdata[0]),
+    .D(bus_rdata[0]),
+    .CLK(clk42m),
+    .CE(bus_rdata_en),
+    .CLEAR(n16_6) 
+);
+  DFFC ff_active_s0 (
+    .Q(ff_active),
+    .D(n252_5),
+    .CLK(clk42m),
+    .CLEAR(n16_6) 
+);
+  DFFP ff_write_s0 (
+    .Q(bus_write),
+    .D(n77_7),
+    .CLK(clk42m),
+    .PRESET(n16_6) 
+);
+  DFFCE ff_valid_s1 (
+    .Q(bus_valid),
+    .D(n125_7),
+    .CLK(clk42m),
+    .CE(n124_3),
+    .CLEAR(n16_6) 
+);
+defparam ff_valid_s1.INIT=1'b0;
+  INV n16_s2 (
+    .O(n16_6),
+    .I(p_slot_reset_n_d) 
+);
+  INV p_slot_data_dir_d_s0 (
+    .O(p_slot_data_dir_d_4),
+    .I(bus_write) 
+);
+  INV n125_s3 (
+    .O(n125_7),
+    .I(ff_active) 
+);
+  VCC VCC_cZ (
+    .V(VCC)
+);
+  GND GND_cZ (
+    .G(GND)
+);
+endmodule /* msx_slot */
+module test_controller (
+  clk42m,
+  n16_6,
+  n124_5,
+  bus_write,
+  bus_valid,
+  bus_ioreq,
+  bus_wdata,
+  dipsw_d,
+  bus_address_0,
+  bus_address_5,
+  bus_address_6,
+  bus_address_7,
+  bus_rdata_en,
+  bus_rdata
+)
+;
+input clk42m;
+input n16_6;
+input n124_5;
+input bus_write;
+input bus_valid;
+input bus_ioreq;
+input [4:0] bus_wdata;
+input [4:0] dipsw_d;
+input bus_address_0;
+input bus_address_5;
+input bus_address_6;
+input bus_address_7;
+output bus_rdata_en;
+output [4:0] bus_rdata;
+wire n25_3;
+wire n26_3;
+wire n27_3;
+wire n28_3;
+wire n29_3;
+wire n44_3;
+wire n30_5;
+wire n25_4;
+wire n25_5;
+wire n25_6;
+wire n26_4;
+wire n27_4;
+wire n28_4;
+wire n29_4;
+wire n44_4;
+wire [4:0] ff_latch;
+wire VCC;
+wire GND;
+  LUT4 n25_s0 (
+    .F(n25_3),
+    .I0(n25_4),
+    .I1(n25_5),
+    .I2(n124_5),
+    .I3(n25_6) 
+);
+defparam n25_s0.INIT=16'h4000;
+  LUT4 n26_s0 (
+    .F(n26_3),
+    .I0(n26_4),
+    .I1(n25_5),
+    .I2(n124_5),
+    .I3(n25_6) 
+);
+defparam n26_s0.INIT=16'h4000;
+  LUT4 n27_s0 (
+    .F(n27_3),
+    .I0(n27_4),
+    .I1(n25_5),
+    .I2(n124_5),
+    .I3(n25_6) 
+);
+defparam n27_s0.INIT=16'h4000;
+  LUT4 n28_s0 (
+    .F(n28_3),
+    .I0(n28_4),
+    .I1(n25_5),
+    .I2(n124_5),
+    .I3(n25_6) 
+);
+defparam n28_s0.INIT=16'h4000;
+  LUT4 n29_s0 (
+    .F(n29_3),
+    .I0(n29_4),
+    .I1(n25_5),
+    .I2(n124_5),
+    .I3(n25_6) 
+);
+defparam n29_s0.INIT=16'h4000;
+  LUT4 n44_s0 (
+    .F(n44_3),
+    .I0(n44_4),
+    .I1(bus_write),
+    .I2(n25_5),
+    .I3(n124_5) 
+);
+defparam n44_s0.INIT=16'h8000;
+  LUT3 n30_s1 (
+    .F(n30_5),
+    .I0(n25_5),
+    .I1(n124_5),
+    .I2(n25_6) 
+);
+defparam n30_s1.INIT=8'h80;
+  LUT3 n25_s1 (
+    .F(n25_4),
+    .I0(ff_latch[4]),
+    .I1(dipsw_d[4]),
+    .I2(bus_address_0) 
+);
+defparam n25_s1.INIT=8'h53;
+  LUT3 n25_s2 (
+    .F(n25_5),
+    .I0(bus_address_5),
+    .I1(bus_address_6),
+    .I2(bus_address_7) 
+);
+defparam n25_s2.INIT=8'h01;
+  LUT3 n25_s3 (
+    .F(n25_6),
+    .I0(bus_write),
+    .I1(bus_valid),
+    .I2(bus_ioreq) 
+);
+defparam n25_s3.INIT=8'h40;
+  LUT3 n26_s1 (
+    .F(n26_4),
+    .I0(ff_latch[3]),
+    .I1(dipsw_d[3]),
+    .I2(bus_address_0) 
+);
+defparam n26_s1.INIT=8'h53;
+  LUT3 n27_s1 (
+    .F(n27_4),
+    .I0(ff_latch[2]),
+    .I1(dipsw_d[2]),
+    .I2(bus_address_0) 
+);
+defparam n27_s1.INIT=8'h53;
+  LUT3 n28_s1 (
+    .F(n28_4),
+    .I0(ff_latch[1]),
+    .I1(dipsw_d[1]),
+    .I2(bus_address_0) 
+);
+defparam n28_s1.INIT=8'h53;
+  LUT3 n29_s1 (
+    .F(n29_4),
+    .I0(ff_latch[0]),
+    .I1(dipsw_d[0]),
+    .I2(bus_address_0) 
+);
+defparam n29_s1.INIT=8'h53;
+  LUT3 n44_s1 (
+    .F(n44_4),
+    .I0(bus_valid),
+    .I1(bus_address_0),
+    .I2(bus_ioreq) 
+);
+defparam n44_s1.INIT=8'h80;
+  DFFC ff_rdata_4_s0 (
+    .Q(bus_rdata[4]),
+    .D(n25_3),
+    .CLK(clk42m),
+    .CLEAR(n16_6) 
+);
+  DFFC ff_rdata_3_s0 (
+    .Q(bus_rdata[3]),
+    .D(n26_3),
+    .CLK(clk42m),
+    .CLEAR(n16_6) 
+);
+  DFFC ff_rdata_2_s0 (
+    .Q(bus_rdata[2]),
+    .D(n27_3),
+    .CLK(clk42m),
+    .CLEAR(n16_6) 
+);
+  DFFC ff_rdata_1_s0 (
+    .Q(bus_rdata[1]),
+    .D(n28_3),
+    .CLK(clk42m),
+    .CLEAR(n16_6) 
+);
+  DFFC ff_rdata_0_s0 (
+    .Q(bus_rdata[0]),
+    .D(n29_3),
+    .CLK(clk42m),
+    .CLEAR(n16_6) 
+);
+  DFFC ff_rdata_en_s0 (
+    .Q(bus_rdata_en),
+    .D(n30_5),
+    .CLK(clk42m),
+    .CLEAR(n16_6) 
+);
+  DFFCE ff_latch_4_s0 (
+    .Q(ff_latch[4]),
+    .D(bus_wdata[4]),
+    .CLK(clk42m),
+    .CE(n44_3),
+    .CLEAR(n16_6) 
+);
+  DFFCE ff_latch_3_s0 (
+    .Q(ff_latch[3]),
+    .D(bus_wdata[3]),
+    .CLK(clk42m),
+    .CE(n44_3),
+    .CLEAR(n16_6) 
+);
+  DFFCE ff_latch_2_s0 (
+    .Q(ff_latch[2]),
+    .D(bus_wdata[2]),
+    .CLK(clk42m),
+    .CE(n44_3),
+    .CLEAR(n16_6) 
+);
+  DFFCE ff_latch_1_s0 (
+    .Q(ff_latch[1]),
+    .D(bus_wdata[1]),
+    .CLK(clk42m),
+    .CE(n44_3),
+    .CLEAR(n16_6) 
+);
+  DFFCE ff_latch_0_s0 (
+    .Q(ff_latch[0]),
+    .D(bus_wdata[0]),
+    .CLK(clk42m),
+    .CE(n44_3),
+    .CLEAR(n16_6) 
+);
+  VCC VCC_cZ (
+    .V(VCC)
+);
+  GND GND_cZ (
+    .G(GND)
+);
+endmodule /* test_controller */
+module tangprimer20k_vdp_cartridge_test (
+  clk21m,
+  clk27m,
+  dipsw,
+  p_slot_reset_n,
+  p_slot_sltsl_n,
+  p_slot_mreq_n,
+  p_slot_ioreq_n,
+  p_slot_wr_n,
+  p_slot_rd_n,
+  p_slot_m1_n,
+  p_slot_rfsh_n,
+  p_slot_address,
+  p_slot_data,
+  p_slot_data_dir,
+  p_slot_oe_n,
+  p_slot_int,
+  p_slot_wait,
+  ddr_addr,
+  ddr_ba,
+  ddr_cs_n,
+  ddr_ras_n,
+  ddr_cas_n,
+  ddr_we_n,
+  ddr_clk,
+  ddr_clk_n,
+  ddr_cke,
+  ddr_odt,
+  ddr_reset_n,
+  ddr_dqm,
+  ddr_dq,
+  ddr_dqs,
+  ddr_dqs_n
+)
+;
+input clk21m;
+input clk27m;
+input [4:0] dipsw;
+input p_slot_reset_n;
+input p_slot_sltsl_n;
+input p_slot_mreq_n;
+input p_slot_ioreq_n;
+input p_slot_wr_n;
+input p_slot_rd_n;
+input p_slot_m1_n;
+input p_slot_rfsh_n;
+input [15:0] p_slot_address;
+inout [7:0] p_slot_data;
+output p_slot_data_dir;
+output p_slot_oe_n;
+output p_slot_int;
+output p_slot_wait;
+output [13:0] ddr_addr;
+output [2:0] ddr_ba;
+output ddr_cs_n;
+output ddr_ras_n;
+output ddr_cas_n;
+output ddr_we_n;
+output ddr_clk;
+output ddr_clk_n;
+output ddr_cke;
+output ddr_odt;
+output ddr_reset_n;
+output [1:0] ddr_dqm;
+inout [15:0] ddr_dq;
+inout [1:0] ddr_dqs;
+inout [1:0] ddr_dqs_n;
+wire clk21m_d;
+wire p_slot_reset_n_d;
+wire p_slot_sltsl_n_d;
+wire p_slot_mreq_n_d;
+wire p_slot_ioreq_n_d;
+wire p_slot_wr_n_d;
+wire p_slot_rd_n_d;
+wire clk86m;
+wire clk42m;
+wire bus_ioreq;
+wire bus_write;
+wire bus_valid;
+wire n124_5;
+wire n16_6;
+wire p_slot_data_dir_d_4;
+wire bus_rdata_en;
+wire [4:0] dipsw_d;
+wire [7:0] p_slot_address_d;
+wire [4:0] p_slot_data_in;
+wire [7:0] bus_address;
+wire [4:0] bus_wdata;
+wire [4:0] ff_rdata;
+wire [4:0] bus_rdata;
+wire VCC;
+wire GND;
+  IBUF clk21m_ibuf (
+    .O(clk21m_d),
+    .I(clk21m) 
+);
+  IBUF dipsw_0_ibuf (
+    .O(dipsw_d[0]),
+    .I(dipsw[0]) 
+);
+  IBUF dipsw_1_ibuf (
+    .O(dipsw_d[1]),
+    .I(dipsw[1]) 
+);
+  IBUF dipsw_2_ibuf (
+    .O(dipsw_d[2]),
+    .I(dipsw[2]) 
+);
+  IBUF dipsw_3_ibuf (
+    .O(dipsw_d[3]),
+    .I(dipsw[3]) 
+);
+  IBUF dipsw_4_ibuf (
+    .O(dipsw_d[4]),
+    .I(dipsw[4]) 
+);
+  IBUF p_slot_reset_n_ibuf (
+    .O(p_slot_reset_n_d),
+    .I(p_slot_reset_n) 
+);
+  IBUF p_slot_sltsl_n_ibuf (
+    .O(p_slot_sltsl_n_d),
+    .I(p_slot_sltsl_n) 
+);
+  IBUF p_slot_mreq_n_ibuf (
+    .O(p_slot_mreq_n_d),
+    .I(p_slot_mreq_n) 
+);
+  IBUF p_slot_ioreq_n_ibuf (
+    .O(p_slot_ioreq_n_d),
+    .I(p_slot_ioreq_n) 
+);
+  IBUF p_slot_wr_n_ibuf (
+    .O(p_slot_wr_n_d),
+    .I(p_slot_wr_n) 
+);
+  IBUF p_slot_rd_n_ibuf (
+    .O(p_slot_rd_n_d),
+    .I(p_slot_rd_n) 
+);
+  IBUF p_slot_address_0_ibuf (
+    .O(p_slot_address_d[0]),
+    .I(p_slot_address[0]) 
+);
+  IBUF p_slot_address_1_ibuf (
+    .O(p_slot_address_d[1]),
+    .I(p_slot_address[1]) 
+);
+  IBUF p_slot_address_2_ibuf (
+    .O(p_slot_address_d[2]),
+    .I(p_slot_address[2]) 
+);
+  IBUF p_slot_address_3_ibuf (
+    .O(p_slot_address_d[3]),
+    .I(p_slot_address[3]) 
+);
+  IBUF p_slot_address_4_ibuf (
+    .O(p_slot_address_d[4]),
+    .I(p_slot_address[4]) 
+);
+  IBUF p_slot_address_5_ibuf (
+    .O(p_slot_address_d[5]),
+    .I(p_slot_address[5]) 
+);
+  IBUF p_slot_address_6_ibuf (
+    .O(p_slot_address_d[6]),
+    .I(p_slot_address[6]) 
+);
+  IBUF p_slot_address_7_ibuf (
+    .O(p_slot_address_d[7]),
+    .I(p_slot_address[7]) 
+);
+  IOBUF p_slot_data_0_iobuf (
+    .O(p_slot_data_in[0]),
+    .IO(p_slot_data[0]),
+    .I(ff_rdata[0]),
+    .OEN(bus_write) 
+);
+  IOBUF p_slot_data_1_iobuf (
+    .O(p_slot_data_in[1]),
+    .IO(p_slot_data[1]),
+    .I(ff_rdata[1]),
+    .OEN(bus_write) 
+);
+  IOBUF p_slot_data_2_iobuf (
+    .O(p_slot_data_in[2]),
+    .IO(p_slot_data[2]),
+    .I(ff_rdata[2]),
+    .OEN(bus_write) 
+);
+  IOBUF p_slot_data_3_iobuf (
+    .O(p_slot_data_in[3]),
+    .IO(p_slot_data[3]),
+    .I(ff_rdata[3]),
+    .OEN(bus_write) 
+);
+  IOBUF p_slot_data_4_iobuf (
+    .O(p_slot_data_in[4]),
+    .IO(p_slot_data[4]),
+    .I(ff_rdata[4]),
+    .OEN(bus_write) 
+);
+  TBUF p_slot_data_7_s0 (
+    .O(p_slot_data[5]),
+    .I(GND),
+    .OEN(bus_write) 
+);
+  TBUF p_slot_data_7_s1 (
+    .O(p_slot_data[6]),
+    .I(GND),
+    .OEN(bus_write) 
+);
+  TBUF p_slot_data_7_s2 (
+    .O(p_slot_data[7]),
+    .I(GND),
+    .OEN(bus_write) 
+);
+  OBUF p_slot_data_dir_obuf (
+    .O(p_slot_data_dir),
+    .I(p_slot_data_dir_d_4) 
+);
+  OBUF p_slot_oe_n_obuf (
+    .O(p_slot_oe_n),
+    .I(GND) 
+);
+  OBUF p_slot_int_obuf (
+    .O(p_slot_int),
+    .I(GND) 
+);
+  OBUF p_slot_wait_obuf (
+    .O(p_slot_wait),
+    .I(GND) 
+);
+  OBUF ddr_addr_0_obuf (
+    .O(ddr_addr[0]),
+    .I(GND) 
+);
+  OBUF ddr_addr_1_obuf (
+    .O(ddr_addr[1]),
+    .I(GND) 
+);
+  OBUF ddr_addr_2_obuf (
+    .O(ddr_addr[2]),
+    .I(GND) 
+);
+  OBUF ddr_addr_3_obuf (
+    .O(ddr_addr[3]),
+    .I(GND) 
+);
+  OBUF ddr_addr_4_obuf (
+    .O(ddr_addr[4]),
+    .I(GND) 
+);
+  OBUF ddr_addr_5_obuf (
+    .O(ddr_addr[5]),
+    .I(GND) 
+);
+  OBUF ddr_addr_6_obuf (
+    .O(ddr_addr[6]),
+    .I(GND) 
+);
+  OBUF ddr_addr_7_obuf (
+    .O(ddr_addr[7]),
+    .I(GND) 
+);
+  OBUF ddr_addr_8_obuf (
+    .O(ddr_addr[8]),
+    .I(GND) 
+);
+  OBUF ddr_addr_9_obuf (
+    .O(ddr_addr[9]),
+    .I(GND) 
+);
+  OBUF ddr_addr_10_obuf (
+    .O(ddr_addr[10]),
+    .I(GND) 
+);
+  OBUF ddr_addr_11_obuf (
+    .O(ddr_addr[11]),
+    .I(GND) 
+);
+  OBUF ddr_addr_12_obuf (
+    .O(ddr_addr[12]),
+    .I(GND) 
+);
+  OBUF ddr_addr_13_obuf (
+    .O(ddr_addr[13]),
+    .I(GND) 
+);
+  OBUF ddr_ba_0_obuf (
+    .O(ddr_ba[0]),
+    .I(GND) 
+);
+  OBUF ddr_ba_1_obuf (
+    .O(ddr_ba[1]),
+    .I(GND) 
+);
+  OBUF ddr_ba_2_obuf (
+    .O(ddr_ba[2]),
+    .I(GND) 
+);
+  OBUF ddr_cs_n_obuf (
+    .O(ddr_cs_n),
+    .I(VCC) 
+);
+  OBUF ddr_ras_n_obuf (
+    .O(ddr_ras_n),
+    .I(VCC) 
+);
+  OBUF ddr_cas_n_obuf (
+    .O(ddr_cas_n),
+    .I(VCC) 
+);
+  OBUF ddr_we_n_obuf (
+    .O(ddr_we_n),
+    .I(VCC) 
+);
+  OBUF ddr_clk_obuf (
+    .O(ddr_clk),
+    .I(GND) 
+);
+  OBUF ddr_clk_n_obuf (
+    .O(ddr_clk_n),
+    .I(VCC) 
+);
+  OBUF ddr_cke_obuf (
+    .O(ddr_cke),
+    .I(GND) 
+);
+  OBUF ddr_odt_obuf (
+    .O(ddr_odt),
+    .I(GND) 
+);
+  OBUF ddr_reset_n_obuf (
+    .O(ddr_reset_n),
+    .I(GND) 
+);
+  OBUF ddr_dqm_0_obuf (
+    .O(ddr_dqm[0]),
+    .I(GND) 
+);
+  OBUF ddr_dqm_1_obuf (
+    .O(ddr_dqm[1]),
+    .I(GND) 
+);
+  Gowin_rPLL u_pll (
+    .clk21m_d(clk21m_d),
+    .clk86m(clk86m)
+);
+  Gowin_CLKDIV u_clkdiv (
+    .clk86m(clk86m),
+    .p_slot_reset_n_d(p_slot_reset_n_d),
+    .clk42m(clk42m)
+);
+  msx_slot u_msx_slot (
+    .clk42m(clk42m),
+    .bus_rdata_en(bus_rdata_en),
+    .p_slot_mreq_n_d(p_slot_mreq_n_d),
+    .p_slot_sltsl_n_d(p_slot_sltsl_n_d),
+    .p_slot_ioreq_n_d(p_slot_ioreq_n_d),
+    .p_slot_rd_n_d(p_slot_rd_n_d),
+    .p_slot_wr_n_d(p_slot_wr_n_d),
+    .p_slot_reset_n_d(p_slot_reset_n_d),
+    .p_slot_address_d(p_slot_address_d[7:0]),
+    .p_slot_data_in(p_slot_data_in[4:0]),
+    .bus_rdata(bus_rdata[4:0]),
+    .bus_ioreq(bus_ioreq),
+    .bus_write(bus_write),
+    .bus_valid(bus_valid),
+    .n124_5(n124_5),
+    .n16_6(n16_6),
+    .p_slot_data_dir_d_4(p_slot_data_dir_d_4),
+    .bus_address_0(bus_address[0]),
+    .bus_address_5(bus_address[5]),
+    .bus_address_6(bus_address[6]),
+    .bus_address_7(bus_address[7]),
+    .bus_wdata(bus_wdata[4:0]),
+    .ff_rdata(ff_rdata[4:0])
+);
+  test_controller u_test_controller (
+    .clk42m(clk42m),
+    .n16_6(n16_6),
+    .n124_5(n124_5),
+    .bus_write(bus_write),
+    .bus_valid(bus_valid),
+    .bus_ioreq(bus_ioreq),
+    .bus_wdata(bus_wdata[4:0]),
+    .dipsw_d(dipsw_d[4:0]),
+    .bus_address_0(bus_address[0]),
+    .bus_address_5(bus_address[5]),
+    .bus_address_6(bus_address[6]),
+    .bus_address_7(bus_address[7]),
+    .bus_rdata_en(bus_rdata_en),
+    .bus_rdata(bus_rdata[4:0])
+);
+  VCC VCC_cZ (
+    .V(VCC)
+);
+  GND GND_cZ (
+    .G(GND)
+);
+  GSR GSR (
+    .GSRI(VCC) 
+);
+endmodule /* tangprimer20k_vdp_cartridge_test */

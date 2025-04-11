@@ -25,7 +25,7 @@
     "SubInsts" : [
      {
       "InstFile" : "D:/github/HRA_product/TangCartMSX/RTL/tangprimer20k_step3/src/cz80/cz80_wrap.v",
-      "InstLine" : 163,
+      "InstLine" : 164,
       "InstName" : "u_cz80_inst",
       "ModuleFile" : "D:/github/HRA_product/TangCartMSX/RTL/tangprimer20k_step3/src/cz80/cz80_inst.v",
       "ModuleLine" : 63,
@@ -122,10 +122,10 @@
      {
       "InstFile" : "D:/github/HRA_product/TangCartMSX/RTL/tangprimer20k_step3/src/sdram/ip_sdram_tangprimer20k.v",
       "InstLine" : 143,
-      "InstName" : "your_instance_name",
-      "ModuleFile" : "D:/github/HRA_product/TangCartMSX/RTL/tangprimer20k_step3/src/gowin_clkdiv2/gowin_clkdiv2.v",
+      "InstName" : "u_clkdiv",
+      "ModuleFile" : "D:/github/HRA_product/TangCartMSX/RTL/tangprimer20k_step3/src/gowin_clkdiv/gowin_clkdiv.v",
       "ModuleLine" : 10,
-      "ModuleName" : "Gowin_CLKDIV2"
+      "ModuleName" : "Gowin_CLKDIV"
      },
      {
       "InstFile" : "D:/github/HRA_product/TangCartMSX/RTL/tangprimer20k_step3/src/sdram/ip_sdram_tangprimer20k.v",

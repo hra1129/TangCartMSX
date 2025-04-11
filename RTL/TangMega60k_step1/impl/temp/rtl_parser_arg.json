@@ -26,6 +26,14 @@
    "Type" : "verilog"
   },
   {
+   "Path" : "D:/github/HRA_product/TangCartMSX/RTL/TangMega60k_step1/src/ddr3_memory_interface/ddr3_memory_interface.v",
+   "Type" : "verilog"
+  },
+  {
+   "Path" : "D:/github/HRA_product/TangCartMSX/RTL/TangMega60k_step1/src/gowin_clkdiv2/gowin_clkdiv2.v",
+   "Type" : "verilog"
+  },
+  {
    "Path" : "D:/github/HRA_product/TangCartMSX/RTL/TangMega60k_step1/src/ram/ip_ram.v",
    "Type" : "verilog"
   },
@@ -35,6 +43,10 @@
   },
   {
    "Path" : "D:/github/HRA_product/TangCartMSX/RTL/TangMega60k_step1/src/sdram/ip_sdram_tangprimer20k.v",
+   "Type" : "verilog"
+  },
+  {
+   "Path" : "D:/github/HRA_product/TangCartMSX/RTL/TangMega60k_step1/src/tangmega60k_step3.v",
    "Type" : "verilog"
   },
   {
@@ -50,15 +62,7 @@
    "Type" : "verilog"
   },
   {
-   "Path" : "D:/github/HRA_product/TangCartMSX/RTL/TangMega60k_step1/src/tangmega60k_step3.v",
-   "Type" : "verilog"
-  },
-  {
-   "Path" : "D:/github/HRA_product/TangCartMSX/RTL/TangMega60k_step1/src/gowin_clkdiv2/gowin_clkdiv2.v",
-   "Type" : "verilog"
-  },
-  {
-   "Path" : "D:/github/HRA_product/TangCartMSX/RTL/TangMega60k_step1/src/ddr3_memory_interface/ddr3_memory_interface.v",
+   "Path" : "D:/github/HRA_product/TangCartMSX/RTL/TangMega60k_step1/src/gowin_pll/gowin_pll.v",
    "Type" : "verilog"
   }
  ],

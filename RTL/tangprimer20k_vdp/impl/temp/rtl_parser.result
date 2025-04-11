@@ -1,0 +1,36 @@
+[
+ {
+  "InstFile" : "D:/github/HRA_product/TangCartMSX/RTL/tangprimer20k_vdp/src/ddr3_memory_interface/ddr3_memory_interface.v",
+  "InstLine" : 16733,
+  "InstName" : "DDR3_Memory_Interface_Top",
+  "ModuleFile" : "D:/github/HRA_product/TangCartMSX/RTL/tangprimer20k_vdp/src/ddr3_memory_interface/ddr3_memory_interface.v",
+  "ModuleLine" : 16733,
+  "ModuleName" : "DDR3_Memory_Interface_Top",
+  "SubInsts" : [
+   {
+    "InstFile" : "D:/github/HRA_product/TangCartMSX/RTL/tangprimer20k_vdp/src/ddr3_memory_interface/ddr3_memory_interface.v",
+    "InstLine" : 16816,
+    "InstName" : "gw3_top",
+    "ModuleFile" : "D:/github/HRA_product/TangCartMSX/RTL/tangprimer20k_vdp/src/ddr3_memory_interface/ddr3_memory_interface.v",
+    "ModuleLine" : 10,
+    "ModuleName" : "~GW_DDR3_PHY_MC.DDR3_Memory_Interface_Top"
+   }
+  ]
+ },
+ {
+  "InstFile" : "D:/github/HRA_product/TangCartMSX/RTL/tangprimer20k_vdp/src/gowin_clkdiv2/gowin_clkdiv2.v",
+  "InstLine" : 10,
+  "InstName" : "Gowin_CLKDIV2",
+  "ModuleFile" : "D:/github/HRA_product/TangCartMSX/RTL/tangprimer20k_vdp/src/gowin_clkdiv2/gowin_clkdiv2.v",
+  "ModuleLine" : 10,
+  "ModuleName" : "Gowin_CLKDIV2"
+ },
+ {
+  "InstFile" : "D:/github/HRA_product/TangCartMSX/RTL/tangprimer20k_vdp/src/v9918/vdp_wait_control.v",
+  "InstLine" : 31,
+  "InstName" : "vdp_wait_control",
+  "ModuleFile" : "D:/github/HRA_product/TangCartMSX/RTL/tangprimer20k_vdp/src/v9918/vdp_wait_control.v",
+  "ModuleLine" : 31,
+  "ModuleName" : "vdp_wait_control"
+ }
+]

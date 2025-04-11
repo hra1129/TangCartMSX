@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Module name="tangprimer20k_vdp_cartridge_test" T_Register="33(0)" T_Lut="25(0)">
+ <SubModule name="u_pll"/>
+ <SubModule name="u_clkdiv"/>
+ <SubModule name="u_msx_slot" Register="22" Lut="10" T_Register="22(22)" T_Lut="10(10)"/>
+ <SubModule name="u_test_controller" Register="11" Lut="15" T_Register="11(11)" T_Lut="15(15)"/>
+</Module>

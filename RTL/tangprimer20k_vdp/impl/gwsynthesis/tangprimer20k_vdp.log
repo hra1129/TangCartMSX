@@ -1,0 +1,43 @@
+GowinSynthesis start
+Running parser ...
+Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\tangprimer20k_vdp\src\ddr3_memory_interface\ddr3_memory_interface.v'
+Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\tangprimer20k_vdp\src\gowin_clkdiv2\gowin_clkdiv2.v'
+Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\tangprimer20k_vdp\src\gowin_rpll\gowin_rpll.v'
+Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\tangprimer20k_vdp\src\ram\ip_ram.v'
+Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\tangprimer20k_vdp\src\tangprimer20k_vdp.v'
+Undeclared symbol 'clk', assumed default net type 'wire'("D:\github\HRA_product\TangCartMSX\RTL\tangprimer20k_vdp\src\tangprimer20k_vdp.v":161)
+Undeclared symbol 'w_vdram_address', assumed default net type 'wire'("D:\github\HRA_product\TangCartMSX\RTL\tangprimer20k_vdp\src\tangprimer20k_vdp.v":172)
+Undeclared symbol 'w_vdram_write', assumed default net type 'wire'("D:\github\HRA_product\TangCartMSX\RTL\tangprimer20k_vdp\src\tangprimer20k_vdp.v":173)
+Undeclared symbol 'w_vdram_valid', assumed default net type 'wire'("D:\github\HRA_product\TangCartMSX\RTL\tangprimer20k_vdp\src\tangprimer20k_vdp.v":174)
+Undeclared symbol 'w_vdram_ready', assumed default net type 'wire'("D:\github\HRA_product\TangCartMSX\RTL\tangprimer20k_vdp\src\tangprimer20k_vdp.v":175)
+Undeclared symbol 'w_vdram_wdata', assumed default net type 'wire'("D:\github\HRA_product\TangCartMSX\RTL\tangprimer20k_vdp\src\tangprimer20k_vdp.v":176)
+Undeclared symbol 'w_vdram_rdata', assumed default net type 'wire'("D:\github\HRA_product\TangCartMSX\RTL\tangprimer20k_vdp\src\tangprimer20k_vdp.v":177)
+Undeclared symbol 'w_vdram_rdata_en', assumed default net type 'wire'("D:\github\HRA_product\TangCartMSX\RTL\tangprimer20k_vdp\src\tangprimer20k_vdp.v":178)
+Undeclared symbol 'w_vdp_ioreq', assumed default net type 'wire'("D:\github\HRA_product\TangCartMSX\RTL\tangprimer20k_vdp\src\tangprimer20k_vdp.v":187)
+Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\tangprimer20k_vdp\src\v9918\vdp.v'
+Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\tangprimer20k_vdp\src\v9918\vdp_color_bus.v'
+Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\tangprimer20k_vdp\src\v9918\vdp_color_decoder.v'
+Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\tangprimer20k_vdp\src\v9918\vdp_graphic123m.v'
+Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\tangprimer20k_vdp\src\v9918\vdp_inst.v'
+Undeclared symbol 'iorq_n', assumed default net type 'wire'("D:\github\HRA_product\TangCartMSX\RTL\tangprimer20k_vdp\src\v9918\vdp_inst.v":179)
+Undeclared symbol 'wr_n', assumed default net type 'wire'("D:\github\HRA_product\TangCartMSX\RTL\tangprimer20k_vdp\src\v9918\vdp_inst.v":180)
+Undeclared symbol 'rd_n', assumed default net type 'wire'("D:\github\HRA_product\TangCartMSX\RTL\tangprimer20k_vdp\src\v9918\vdp_inst.v":181)
+Undeclared symbol 'address', assumed default net type 'wire'("D:\github\HRA_product\TangCartMSX\RTL\tangprimer20k_vdp\src\v9918\vdp_inst.v":182)
+Undeclared symbol 'rdata', assumed default net type 'wire'("D:\github\HRA_product\TangCartMSX\RTL\tangprimer20k_vdp\src\v9918\vdp_inst.v":183)
+Undeclared symbol 'rdata_en', assumed default net type 'wire'("D:\github\HRA_product\TangCartMSX\RTL\tangprimer20k_vdp\src\v9918\vdp_inst.v":184)
+Undeclared symbol 'wdata', assumed default net type 'wire'("D:\github\HRA_product\TangCartMSX\RTL\tangprimer20k_vdp\src\v9918\vdp_inst.v":185)
+Undeclared symbol 'p_video_dh_clk', assumed default net type 'wire'("D:\github\HRA_product\TangCartMSX\RTL\tangprimer20k_vdp\src\v9918\vdp_inst.v":197)
+Undeclared symbol 'p_video_dl_clk', assumed default net type 'wire'("D:\github\HRA_product\TangCartMSX\RTL\tangprimer20k_vdp\src\v9918\vdp_inst.v":198)
+Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\tangprimer20k_vdp\src\v9918\vdp_interrupt.v'
+Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\tangprimer20k_vdp\src\v9918\vdp_ram_256byte.v'
+Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\tangprimer20k_vdp\src\v9918\vdp_register.v'
+Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\tangprimer20k_vdp\src\v9918\vdp_spinforam.v'
+Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\tangprimer20k_vdp\src\v9918\vdp_sprite.v'
+Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\tangprimer20k_vdp\src\v9918\vdp_ssg.v'
+Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\tangprimer20k_vdp\src\v9918\vdp_text12.v'
+Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\tangprimer20k_vdp\src\v9918\vdp_wait_control.v'
+Compiling module 'tangprimer20k_vdp'("D:\github\HRA_product\TangCartMSX\RTL\tangprimer20k_vdp\src\tangprimer20k_vdp.v":24)
+Compiling module 'Gowin_rPLL'("D:\github\HRA_product\TangCartMSX\RTL\tangprimer20k_vdp\src\gowin_rpll\gowin_rpll.v":10)
+ERROR (EX3937) : Instantiating unknown module 'msx_slot'("D:\github\HRA_product\TangCartMSX\RTL\tangprimer20k_vdp\src\tangprimer20k_vdp.v":155)
+Module 'tangprimer20k_vdp' remains a black box due to errors in its contents("D:\github\HRA_product\TangCartMSX\RTL\tangprimer20k_vdp\src\tangprimer20k_vdp.v":24)
+GowinSynthesis finish

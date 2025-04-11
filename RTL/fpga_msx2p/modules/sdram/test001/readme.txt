@@ -1,0 +1,1 @@
+Micron ‚Ì SDRAMƒ‚ƒfƒ‹ MT48LC2M32B2.v ‚ð—˜—p‚µ‚Ä‚¢‚Ü‚·B

@@ -140,7 +140,7 @@ module ip_sdram (
 	assign bus_rdata			= ff_rdata;
 	assign bus_rdata_en			= ff_rdata_en;
 
-	Gowin_CLKDIV2 your_instance_name(
+	Gowin_CLKDIV u_clkdiv(
 		.clkout					( clk42m				),		//	output clkout					42.95454MHz
 		.hclkin					( clk85m				),		//	input hclkin					85.90908MHz
 		.resetn					( reset_n				)		//	input resetn

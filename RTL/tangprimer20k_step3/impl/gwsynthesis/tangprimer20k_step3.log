@@ -7,7 +7,6 @@ Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\tangprimer20k_step
 Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\tangprimer20k_step3\src\cz80\cz80_reg.v'
 Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\tangprimer20k_step3\src\cz80\cz80_wrap.v'
 Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\tangprimer20k_step3\src\ddr3_memory_interface\ddr3_memory_interface.v'
-Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\tangprimer20k_step3\src\gowin_clkdiv2\gowin_clkdiv2.v'
 Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\tangprimer20k_step3\src\gowin_rpll\gowin_rpll.v'
 Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\tangprimer20k_step3\src\ram\ip_ram.v'
 Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\tangprimer20k_step3\src\rom\ddr3_test_rom.v'
@@ -16,6 +15,7 @@ Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\tangprimer20k_step
 Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\tangprimer20k_step3\src\test_controller\test_controller.v'
 Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\tangprimer20k_step3\src\uart\ip_uart.v'
 Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\tangprimer20k_step3\src\uart\ip_uart_inst.v'
+Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\tangprimer20k_step3\src\gowin_clkdiv\gowin_clkdiv.v'
 Compiling module 'tangprimer20k_step3'("D:\github\HRA_product\TangCartMSX\RTL\tangprimer20k_step3\src\tangprimer20k_step3.v":24)
 Compiling module 'Gowin_rPLL'("D:\github\HRA_product\TangCartMSX\RTL\tangprimer20k_step3\src\gowin_rpll\gowin_rpll.v":10)
 Compiling module 'cz80_wrap'("D:\github\HRA_product\TangCartMSX\RTL\tangprimer20k_step3\src\cz80\cz80_wrap.v":63)
@@ -32,12 +32,15 @@ Compiling module 'ip_rom'("D:\github\HRA_product\TangCartMSX\RTL\tangprimer20k_s
 Compiling module 'ip_ram'("D:\github\HRA_product\TangCartMSX\RTL\tangprimer20k_step3\src\ram\ip_ram.v":5)
 Extracting RAM for identifier 'ff_ram'("D:\github\HRA_product\TangCartMSX\RTL\tangprimer20k_step3\src\ram\ip_ram.v":17)
 Compiling module 'ip_sdram'("D:\github\HRA_product\TangCartMSX\RTL\tangprimer20k_step3\src\sdram\ip_sdram_tangprimer20k.v":57)
-Compiling module 'Gowin_CLKDIV2'("D:\github\HRA_product\TangCartMSX\RTL\tangprimer20k_step3\src\gowin_clkdiv2\gowin_clkdiv2.v":10)
+Compiling module 'Gowin_CLKDIV'("D:\github\HRA_product\TangCartMSX\RTL\tangprimer20k_step3\src\gowin_clkdiv\gowin_clkdiv.v":10)
 Compiling module 'DDR3_Memory_Interface_Top'("D:\github\HRA_product\TangCartMSX\RTL\tangprimer20k_step3\src\ddr3_memory_interface\ddr3_memory_interface.v":16733)
 Compiling module '**'("D:\github\HRA_product\TangCartMSX\RTL\tangprimer20k_step3\src\ddr3_memory_interface\ddr3_memory_interface.v":16732)
 NOTE  (EX0101) : Current top module is "tangprimer20k_step3"
+WARN  (NL0001) : Sweep user defined dangling instance "u_sdram/u_ddr3_controller/gw3_top/u_gwmc_top/gwmc_bank_ctrl/cmd_accept_ref_Z_s1"("D:\github\HRA_product\TangCartMSX\RTL\tangprimer20k_step3\src\ddr3_memory_interface\ddr3_memory_interface.v":16732)
+WARN  (NL0001) : Sweep user defined dangling instance "u_sdram/u_ddr3_controller/gw3_top/u_gwmc_top/gwmc_timing_ctrl/ref_accepted_s0"("D:\github\HRA_product\TangCartMSX\RTL\tangprimer20k_step3\src\ddr3_memory_interface\ddr3_memory_interface.v":16732)
 [5%] Running netlist conversion ...
 Running device independent optimization ...
+WARN  (NL0001) : Sweep user defined dangling instance "u_sdram/u_ddr3_controller/gw3_top/u_gwmc_top/gw_cmd0/cmd_ready_d_s0"("D:\github\HRA_product\TangCartMSX\RTL\tangprimer20k_step3\src\ddr3_memory_interface\ddr3_memory_interface.v":16732)
 [10%] Optimizing Phase 0 completed
 [15%] Optimizing Phase 1 completed
 [25%] Optimizing Phase 2 completed
@@ -52,3 +55,6 @@ Running technical mapping ...
 [75%] Tech-Mapping Phase 2 completed
 [80%] Tech-Mapping Phase 3 completed
 [90%] Tech-Mapping Phase 4 completed
+[95%] Generate netlist file "D:\github\HRA_product\TangCartMSX\RTL\tangprimer20k_step3\impl\gwsynthesis\tangprimer20k_step3.vg" completed
+[100%] Generate report file "D:\github\HRA_product\TangCartMSX\RTL\tangprimer20k_step3\impl\gwsynthesis\tangprimer20k_step3_syn.rpt.html" completed
+GowinSynthesis finish

@@ -1,0 +1,15 @@
+[General]
+ipc_version=4
+file=gowin_prom
+module=Gowin_pROM
+target_device=gw2a18c-011
+type=ram_prom
+version=1.0
+
+[Config]
+DEPTH=1023
+LANG=0
+MEM_FILE=../rom/ddr3_test.bin
+READ=1
+RESET_MODE=true
+WIDTH=8

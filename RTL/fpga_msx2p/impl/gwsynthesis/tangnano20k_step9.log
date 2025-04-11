@@ -1,0 +1,235 @@
+GowinSynthesis start
+Running parser ...
+Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\fpga_msx2p\modules\cz80\cz80.v'
+Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\fpga_msx2p\modules\cz80\cz80_alu.v'
+Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\fpga_msx2p\modules\cz80\cz80_inst.v'
+Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\fpga_msx2p\modules\cz80\cz80_mcode.v'
+Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\fpga_msx2p\modules\cz80\cz80_reg.v'
+Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\fpga_msx2p\modules\i2s_audio\i2s_audio.v'
+Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\fpga_msx2p\modules\kanji_rom\kanji_rom.v'
+Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\fpga_msx2p\modules\megarom\megarom.v'
+Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\fpga_msx2p\modules\megarom\megarom_wo_scc.v'
+Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\fpga_msx2p\modules\megarom\scc\scc_channel_mixer.v'
+Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\fpga_msx2p\modules\megarom\scc\scc_channel_volume.v'
+Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\fpga_msx2p\modules\megarom\scc\scc_core.v'
+Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\fpga_msx2p\modules\megarom\scc\scc_inst.v'
+Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\fpga_msx2p\modules\megarom\scc\scc_ram.v'
+Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\fpga_msx2p\modules\megarom\scc\scc_register.v'
+Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\fpga_msx2p\modules\megarom\scc\scc_selector.v'
+Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\fpga_msx2p\modules\megarom\scc\scc_tone_generator_5ch.v'
+Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\fpga_msx2p\modules\memory_mapper\memory_mapper.v'
+Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\fpga_msx2p\modules\memory_mapper\memory_mapper_inst.v'
+Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\fpga_msx2p\modules\micom_connect\micom_connect.v'
+Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\fpga_msx2p\modules\rtc\rtc.v'
+Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\fpga_msx2p\modules\opll\ikaopll\IKAOPLL.v'
+Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\fpga_msx2p\modules\opll\ikaopll\IKAOPLL_modules\IKAOPLL_dac.v'
+Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\fpga_msx2p\modules\opll\ikaopll\IKAOPLL_modules\IKAOPLL_eg.v'
+Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\fpga_msx2p\modules\opll\ikaopll\IKAOPLL_modules\IKAOPLL_lfo.v'
+Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\fpga_msx2p\modules\opll\ikaopll\IKAOPLL_modules\IKAOPLL_op.v'
+Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\fpga_msx2p\modules\opll\ikaopll\IKAOPLL_modules\IKAOPLL_pg.v'
+Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\fpga_msx2p\modules\opll\ikaopll\IKAOPLL_modules\IKAOPLL_primitives.v'
+Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\fpga_msx2p\modules\opll\ikaopll\IKAOPLL_modules\IKAOPLL_reg.v'
+Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\fpga_msx2p\modules\opll\ikaopll\IKAOPLL_modules\IKAOPLL_timinggen.v'
+Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\fpga_msx2p\modules\opll\opll.v'
+Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\fpga_msx2p\modules\ppi\ppi.v'
+Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\fpga_msx2p\modules\ppi\ppi_inst.v'
+Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\fpga_msx2p\modules\sdram\ip_sdram_tangnano20k_c.v'
+Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\fpga_msx2p\modules\secondary_slot\secondary_slot_inst.v'
+Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\fpga_msx2p\modules\ssg\ssg.v'
+Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\fpga_msx2p\modules\v9958\vdp.v'
+Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\fpga_msx2p\modules\v9958\vdp_color_bus.v'
+Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\fpga_msx2p\modules\v9958\vdp_color_decoder.v'
+Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\fpga_msx2p\modules\v9958\vdp_command.v'
+Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\fpga_msx2p\modules\v9958\vdp_graphic123m.v'
+Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\fpga_msx2p\modules\v9958\vdp_graphic4567.v'
+Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\fpga_msx2p\modules\v9958\vdp_inst.v'
+Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\fpga_msx2p\modules\v9958\vdp_interrupt.v'
+Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\fpga_msx2p\modules\v9958\vdp_ram_256byte.v'
+Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\fpga_msx2p\modules\v9958\vdp_ram_palette.v'
+Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\fpga_msx2p\modules\v9958\vdp_register.v'
+Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\fpga_msx2p\modules\v9958\vdp_spinforam.v'
+Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\fpga_msx2p\modules\v9958\vdp_sprite.v'
+Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\fpga_msx2p\modules\v9958\vdp_ssg.v'
+Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\fpga_msx2p\modules\v9958\vdp_text12.v'
+Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\fpga_msx2p\modules\v9958\vdp_wait_control.v'
+Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\fpga_msx2p\modules\video_out\video_double_buffer.v'
+Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\fpga_msx2p\modules\video_out\video_out.v'
+Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\fpga_msx2p\modules\video_out\video_out_bilinear.v'
+Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\fpga_msx2p\modules\video_out\video_out_hmag.v'
+Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\fpga_msx2p\modules\video_out\video_ram_line_buffer.v'
+Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\fpga_msx2p\modules\system_control\system_control.v'
+Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\fpga_msx2p\src\gowin_pll\gowin_pll.v'
+Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\fpga_msx2p\src\ram\ip_ram.v'
+Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\fpga_msx2p\src\rom\ip_hello_world_rom.v'
+Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\fpga_msx2p\src\tangnano20k_step9.v'
+Undeclared symbol 'w_scanline', assumed default net type 'wire'("D:\github\HRA_product\TangCartMSX\RTL\fpga_msx2p\src\tangnano20k_step9.v":555)
+Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\fpga_msx2p\src\uart\ip_uart.v'
+Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\fpga_msx2p\src\uart\ip_uart_inst.v'
+Compiling module 'tangnano20k_step9'("D:\github\HRA_product\TangCartMSX\RTL\fpga_msx2p\src\tangnano20k_step9.v":24)
+Compiling module 'Gowin_PLL'("D:\github\HRA_product\TangCartMSX\RTL\fpga_msx2p\src\gowin_pll\gowin_pll.v":10)
+Compiling module 'micom_connect'("D:\github\HRA_product\TangCartMSX\RTL\fpga_msx2p\modules\micom_connect\micom_connect.v":60)
+Extracting RAM for identifier 'ff_key_matrix'("D:\github\HRA_product\TangCartMSX\RTL\fpga_msx2p\modules\micom_connect\micom_connect.v":112)
+Compiling module 'cz80_inst'("D:\github\HRA_product\TangCartMSX\RTL\fpga_msx2p\modules\cz80\cz80_inst.v":63)
+Compiling module 'cz80'("D:\github\HRA_product\TangCartMSX\RTL\fpga_msx2p\modules\cz80\cz80.v":63)
+Compiling module 'cz80_mcode'("D:\github\HRA_product\TangCartMSX\RTL\fpga_msx2p\modules\cz80\cz80_mcode.v":63)
+Compiling module 'cz80_alu'("D:\github\HRA_product\TangCartMSX\RTL\fpga_msx2p\modules\cz80\cz80_alu.v":63)
+WARN  (EX3791) : Expression size 17 truncated to fit in target size 16("D:\github\HRA_product\TangCartMSX\RTL\fpga_msx2p\modules\cz80\cz80.v":382)
+WARN  (EX3791) : Expression size 17 truncated to fit in target size 16("D:\github\HRA_product\TangCartMSX\RTL\fpga_msx2p\modules\cz80\cz80.v":528)
+WARN  (EX3791) : Expression size 32 truncated to fit in target size 16("D:\github\HRA_product\TangCartMSX\RTL\fpga_msx2p\modules\cz80\cz80.v":531)
+WARN  (EX3791) : Expression size 32 truncated to fit in target size 16("D:\github\HRA_product\TangCartMSX\RTL\fpga_msx2p\modules\cz80\cz80.v":544)
+WARN  (EX3791) : Expression size 17 truncated to fit in target size 16("D:\github\HRA_product\TangCartMSX\RTL\fpga_msx2p\modules\cz80\cz80.v":547)
+Compiling module 'cz80_registers'("D:\github\HRA_product\TangCartMSX\RTL\fpga_msx2p\modules\cz80\cz80_reg.v":55)
+WARN  (EX3791) : Expression size 4 truncated to fit in target size 3("D:\github\HRA_product\TangCartMSX\RTL\fpga_msx2p\modules\cz80\cz80.v":1011)
+Compiling module 'rtc'("D:\github\HRA_product\TangCartMSX\RTL\fpga_msx2p\modules\rtc\rtc.v":53)
+Extracting RAM for identifier 'ff_ram'("D:\github\HRA_product\TangCartMSX\RTL\fpga_msx2p\modules\rtc\rtc.v":88)
+Compiling module 'ppi_inst'("D:\github\HRA_product\TangCartMSX\RTL\fpga_msx2p\modules\ppi\ppi_inst.v":58)
+Compiling module 'ppi'("D:\github\HRA_product\TangCartMSX\RTL\fpga_msx2p\modules\ppi\ppi.v":58)
+Compiling module 'secondary_slot_inst'("D:\github\HRA_product\TangCartMSX\RTL\fpga_msx2p\modules\secondary_slot\secondary_slot_inst.v":58)
+Compiling module 'ssg'("D:\github\HRA_product\TangCartMSX\RTL\fpga_msx2p\modules\ssg\ssg.v":58)
+WARN  (EX3791) : Expression size 32 truncated to fit in target size 5("D:\github\HRA_product\TangCartMSX\RTL\fpga_msx2p\modules\ssg\ssg.v":429)
+WARN  (EX3791) : Expression size 32 truncated to fit in target size 5("D:\github\HRA_product\TangCartMSX\RTL\fpga_msx2p\modules\ssg\ssg.v":432)
+WARN  (EX3791) : Expression size 32 truncated to fit in target size 16("D:\github\HRA_product\TangCartMSX\RTL\fpga_msx2p\modules\ssg\ssg.v":480)
+WARN  (EX3791) : Expression size 32 truncated to fit in target size 16("D:\github\HRA_product\TangCartMSX\RTL\fpga_msx2p\modules\ssg\ssg.v":483)
+WARN  (EX3791) : Expression size 32 truncated to fit in target size 6("D:\github\HRA_product\TangCartMSX\RTL\fpga_msx2p\modules\ssg\ssg.v":500)
+WARN  (EX3791) : Expression size 6 truncated to fit in target size 5("D:\github\HRA_product\TangCartMSX\RTL\fpga_msx2p\modules\ssg\ssg.v":517)
+WARN  (EX3791) : Expression size 6 truncated to fit in target size 5("D:\github\HRA_product\TangCartMSX\RTL\fpga_msx2p\modules\ssg\ssg.v":520)
+Compiling module 'ip_opll'("D:\github\HRA_product\TangCartMSX\RTL\fpga_msx2p\modules\opll\opll.v":7)
+Compiling module 'IKAOPLL(FAST_RESET=1,USE_PIPELINED_MULTIPLIER=1)'("D:\github\HRA_product\TangCartMSX\RTL\fpga_msx2p\modules\opll\ikaopll\IKAOPLL.v":1)
+Compiling module 'IKAOPLL_timinggen(FAST_RESET=1)'("D:\github\HRA_product\TangCartMSX\RTL\fpga_msx2p\modules\opll\ikaopll\IKAOPLL_modules\IKAOPLL_timinggen.v":1)
+Compiling module 'IKAOPLL_reg'("D:\github\HRA_product\TangCartMSX\RTL\fpga_msx2p\modules\opll\ikaopll\IKAOPLL_modules\IKAOPLL_reg.v":1)
+Compiling module 'IKAOPLL_rw_synchronizer'("D:\github\HRA_product\TangCartMSX\RTL\fpga_msx2p\modules\opll\ikaopll\IKAOPLL_modules\IKAOPLL_reg.v":467)
+Compiling module 'IKAOPLL_d9reg(WIDTH=8)'("D:\github\HRA_product\TangCartMSX\RTL\fpga_msx2p\modules\opll\ikaopll\IKAOPLL_modules\IKAOPLL_reg.v":525)
+Compiling module 'IKAOPLL_sr(WIDTH=8,TAP0=2,TAP1=5,TAP2=8)'("D:\github\HRA_product\TangCartMSX\RTL\fpga_msx2p\modules\opll\ikaopll\IKAOPLL_modules\IKAOPLL_primitives.v":31)
+Compiling module 'IKAOPLL_d9reg'("D:\github\HRA_product\TangCartMSX\RTL\fpga_msx2p\modules\opll\ikaopll\IKAOPLL_modules\IKAOPLL_reg.v":525)
+Compiling module 'IKAOPLL_sr(TAP0=2,TAP1=5,TAP2=8)'("D:\github\HRA_product\TangCartMSX\RTL\fpga_msx2p\modules\opll\ikaopll\IKAOPLL_modules\IKAOPLL_primitives.v":31)
+Compiling module 'IKAOPLL_d9reg(WIDTH=3)'("D:\github\HRA_product\TangCartMSX\RTL\fpga_msx2p\modules\opll\ikaopll\IKAOPLL_modules\IKAOPLL_reg.v":525)
+Compiling module 'IKAOPLL_sr(WIDTH=3,TAP0=2,TAP1=5,TAP2=8)'("D:\github\HRA_product\TangCartMSX\RTL\fpga_msx2p\modules\opll\ikaopll\IKAOPLL_modules\IKAOPLL_primitives.v":31)
+Compiling module 'IKAOPLL_d9reg(WIDTH=4)'("D:\github\HRA_product\TangCartMSX\RTL\fpga_msx2p\modules\opll\ikaopll\IKAOPLL_modules\IKAOPLL_reg.v":525)
+Compiling module 'IKAOPLL_sr(WIDTH=4,TAP0=2,TAP1=5,TAP2=8)'("D:\github\HRA_product\TangCartMSX\RTL\fpga_msx2p\modules\opll\ikaopll\IKAOPLL_modules\IKAOPLL_primitives.v":31)
+Compiling module 'IKAOPLL_instrom'("D:\github\HRA_product\TangCartMSX\RTL\fpga_msx2p\modules\opll\ikaopll\IKAOPLL_modules\IKAOPLL_reg.v":554)
+Compiling module 'IKAOPLL_lfo'("D:\github\HRA_product\TangCartMSX\RTL\fpga_msx2p\modules\opll\ikaopll\IKAOPLL_modules\IKAOPLL_lfo.v":1)
+Compiling module 'IKAOPLL_pg'("D:\github\HRA_product\TangCartMSX\RTL\fpga_msx2p\modules\opll\ikaopll\IKAOPLL_modules\IKAOPLL_pg.v":1)
+Compiling module 'IKAOPLL_sr(WIDTH=19,LENGTH=15)'("D:\github\HRA_product\TangCartMSX\RTL\fpga_msx2p\modules\opll\ikaopll\IKAOPLL_modules\IKAOPLL_primitives.v":31)
+Compiling module 'IKAOPLL_eg'("D:\github\HRA_product\TangCartMSX\RTL\fpga_msx2p\modules\opll\ikaopll\IKAOPLL_modules\IKAOPLL_eg.v":1)
+Compiling module 'IKAOPLL_sr(WIDTH=2,LENGTH=18,TAP0=16)'("D:\github\HRA_product\TangCartMSX\RTL\fpga_msx2p\modules\opll\ikaopll\IKAOPLL_modules\IKAOPLL_primitives.v":31)
+Compiling module 'IKAOPLL_sr(WIDTH=7,LENGTH=17,TAP0=15,TAP1=16)'("D:\github\HRA_product\TangCartMSX\RTL\fpga_msx2p\modules\opll\ikaopll\IKAOPLL_modules\IKAOPLL_primitives.v":31)
+Compiling module 'IKAOPLL_op'("D:\github\HRA_product\TangCartMSX\RTL\fpga_msx2p\modules\opll\ikaopll\IKAOPLL_modules\IKAOPLL_op.v":1)
+Compiling module 'IKAOPLL_logsinrom'("D:\github\HRA_product\TangCartMSX\RTL\fpga_msx2p\modules\opll\ikaopll\IKAOPLL_modules\IKAOPLL_op.v":277)
+Compiling module 'IKAOPLL_exprom'("D:\github\HRA_product\TangCartMSX\RTL\fpga_msx2p\modules\opll\ikaopll\IKAOPLL_modules\IKAOPLL_op.v":325)
+Compiling module 'IKAOPLL_sr(WIDTH=12,TAP0=6)'("D:\github\HRA_product\TangCartMSX\RTL\fpga_msx2p\modules\opll\ikaopll\IKAOPLL_modules\IKAOPLL_primitives.v":31)
+Compiling module 'IKAOPLL_dac'("D:\github\HRA_product\TangCartMSX\RTL\fpga_msx2p\modules\opll\ikaopll\IKAOPLL_modules\IKAOPLL_dac.v":1)
+Compiling module 'IKAOPLL_sr(WIDTH=9,LENGTH=5)'("D:\github\HRA_product\TangCartMSX\RTL\fpga_msx2p\modules\opll\ikaopll\IKAOPLL_modules\IKAOPLL_primitives.v":31)
+Compiling module 'i2s_audio'("D:\github\HRA_product\TangCartMSX\RTL\fpga_msx2p\modules\i2s_audio\i2s_audio.v":58)
+WARN  (EX3791) : Expression size 17 truncated to fit in target size 16("D:\github\HRA_product\TangCartMSX\RTL\fpga_msx2p\src\tangnano20k_step9.v":496)
+Compiling module 'vdp_inst'("D:\github\HRA_product\TangCartMSX\RTL\fpga_msx2p\modules\v9958\vdp_inst.v":58)
+Compiling module 'vdp'("D:\github\HRA_product\TangCartMSX\RTL\fpga_msx2p\modules\v9958\vdp.v":58)
+Compiling module 'vdp_color_bus'("D:\github\HRA_product\TangCartMSX\RTL\fpga_msx2p\modules\v9958\vdp_color_bus.v":56)
+WARN  (EX3791) : Expression size 18 truncated to fit in target size 17("D:\github\HRA_product\TangCartMSX\RTL\fpga_msx2p\modules\v9958\vdp_color_bus.v":313)
+WARN  (EX3791) : Expression size 15 truncated to fit in target size 14("D:\github\HRA_product\TangCartMSX\RTL\fpga_msx2p\modules\v9958\vdp_color_bus.v":340)
+WARN  (EX3791) : Expression size 18 truncated to fit in target size 17("D:\github\HRA_product\TangCartMSX\RTL\fpga_msx2p\modules\v9958\vdp_color_bus.v":343)
+Compiling module 'vdp_interrupt'("D:\github\HRA_product\TangCartMSX\RTL\fpga_msx2p\modules\v9958\vdp_interrupt.v":57)
+Compiling module 'vdp_ssg'("D:\github\HRA_product\TangCartMSX\RTL\fpga_msx2p\modules\v9958\vdp_ssg.v":58)
+WARN  (EX3791) : Expression size 12 truncated to fit in target size 11("D:\github\HRA_product\TangCartMSX\RTL\fpga_msx2p\modules\v9958\vdp_ssg.v":170)
+WARN  (EX3791) : Expression size 11 truncated to fit in target size 10("D:\github\HRA_product\TangCartMSX\RTL\fpga_msx2p\modules\v9958\vdp_ssg.v":205)
+WARN  (EX3791) : Expression size 12 truncated to fit in target size 11("D:\github\HRA_product\TangCartMSX\RTL\fpga_msx2p\modules\v9958\vdp_ssg.v":225)
+WARN  (EX3791) : Expression size 4 truncated to fit in target size 3("D:\github\HRA_product\TangCartMSX\RTL\fpga_msx2p\modules\v9958\vdp_ssg.v":394)
+WARN  (EX3791) : Expression size 10 truncated to fit in target size 9("D:\github\HRA_product\TangCartMSX\RTL\fpga_msx2p\modules\v9958\vdp_ssg.v":434)
+WARN  (EX3791) : Expression size 10 truncated to fit in target size 9("D:\github\HRA_product\TangCartMSX\RTL\fpga_msx2p\modules\v9958\vdp_ssg.v":457)
+WARN  (EX3791) : Expression size 10 truncated to fit in target size 9("D:\github\HRA_product\TangCartMSX\RTL\fpga_msx2p\modules\v9958\vdp_ssg.v":571)
+Compiling module 'vdp_color_decoder'("D:\github\HRA_product\TangCartMSX\RTL\fpga_msx2p\modules\v9958\vdp_color_decoder.v":56)
+Compiling module 'vdp_text12'("D:\github\HRA_product\TangCartMSX\RTL\fpga_msx2p\modules\v9958\vdp_text12.v":58)
+WARN  (EX3791) : Expression size 3 truncated to fit in target size 2("D:\github\HRA_product\TangCartMSX\RTL\fpga_msx2p\modules\v9958\vdp_text12.v":162)
+WARN  (EX3791) : Expression size 4 truncated to fit in target size 3("D:\github\HRA_product\TangCartMSX\RTL\fpga_msx2p\modules\v9958\vdp_text12.v":166)
+WARN  (EX3791) : Expression size 8 truncated to fit in target size 7("D:\github\HRA_product\TangCartMSX\RTL\fpga_msx2p\modules\v9958\vdp_text12.v":245)
+WARN  (EX3791) : Expression size 8 truncated to fit in target size 7("D:\github\HRA_product\TangCartMSX\RTL\fpga_msx2p\modules\v9958\vdp_text12.v":260)
+WARN  (EX3791) : Expression size 5 truncated to fit in target size 4("D:\github\HRA_product\TangCartMSX\RTL\fpga_msx2p\modules\v9958\vdp_text12.v":454)
+WARN  (EX3791) : Expression size 5 truncated to fit in target size 4("D:\github\HRA_product\TangCartMSX\RTL\fpga_msx2p\modules\v9958\vdp_text12.v":471)
+Compiling module 'vdp_graphic123m'("D:\github\HRA_product\TangCartMSX\RTL\fpga_msx2p\modules\v9958\vdp_graphic123m.v":62)
+Compiling module 'vdp_graphic4567'("D:\github\HRA_product\TangCartMSX\RTL\fpga_msx2p\modules\v9958\vdp_graphic4567.v":58)
+Compiling module 'vdp_ram_256byte'("D:\github\HRA_product\TangCartMSX\RTL\fpga_msx2p\modules\v9958\vdp_ram_256byte.v":32)
+Extracting RAM for identifier 'ff_block_ram'("D:\github\HRA_product\TangCartMSX\RTL\fpga_msx2p\modules\v9958\vdp_ram_256byte.v":43)
+WARN  (EX3791) : Expression size 9 truncated to fit in target size 8("D:\github\HRA_product\TangCartMSX\RTL\fpga_msx2p\modules\v9958\vdp_graphic4567.v":221)
+WARN  (EX3791) : Expression size 9 truncated to fit in target size 8("D:\github\HRA_product\TangCartMSX\RTL\fpga_msx2p\modules\v9958\vdp_graphic4567.v":241)
+WARN  (EX3791) : Expression size 9 truncated to fit in target size 8("D:\github\HRA_product\TangCartMSX\RTL\fpga_msx2p\modules\v9958\vdp_graphic4567.v":245)
+WARN  (EX3791) : Expression size 10 truncated to fit in target size 9("D:\github\HRA_product\TangCartMSX\RTL\fpga_msx2p\modules\v9958\vdp_graphic4567.v":465)
+WARN  (EX3791) : Expression size 5 truncated to fit in target size 4("D:\github\HRA_product\TangCartMSX\RTL\fpga_msx2p\modules\v9958\vdp_graphic4567.v":491)
+WARN  (EX3791) : Expression size 5 truncated to fit in target size 4("D:\github\HRA_product\TangCartMSX\RTL\fpga_msx2p\modules\v9958\vdp_graphic4567.v":494)
+Compiling module 'vdp_sprite'("D:\github\HRA_product\TangCartMSX\RTL\fpga_msx2p\modules\v9958\vdp_sprite.v":58)
+Compiling module 'vdp_spinforam'("D:\github\HRA_product\TangCartMSX\RTL\fpga_msx2p\modules\v9958\vdp_spinforam.v":58)
+Extracting RAM for identifier 'ff_memory'("D:\github\HRA_product\TangCartMSX\RTL\fpga_msx2p\modules\v9958\vdp_spinforam.v":66)
+WARN  (EX3791) : Expression size 32 truncated to fit in target size 9("D:\github\HRA_product\TangCartMSX\RTL\fpga_msx2p\modules\v9958\vdp_sprite.v":730)
+WARN  (EX3791) : Expression size 4 truncated to fit in target size 3("D:\github\HRA_product\TangCartMSX\RTL\fpga_msx2p\modules\v9958\vdp_sprite.v":741)
+WARN  (EX3791) : Expression size 10 truncated to fit in target size 9("D:\github\HRA_product\TangCartMSX\RTL\fpga_msx2p\modules\v9958\vdp_sprite.v":828)
+WARN  (EX3791) : Expression size 10 truncated to fit in target size 9("D:\github\HRA_product\TangCartMSX\RTL\fpga_msx2p\modules\v9958\vdp_sprite.v":866)
+WARN  (EX3791) : Expression size 10 truncated to fit in target size 9("D:\github\HRA_product\TangCartMSX\RTL\fpga_msx2p\modules\v9958\vdp_sprite.v":868)
+WARN  (EX3791) : Expression size 4 truncated to fit in target size 3("D:\github\HRA_product\TangCartMSX\RTL\fpga_msx2p\modules\v9958\vdp_sprite.v":879)
+Compiling module 'vdp_ram_palette'("D:\github\HRA_product\TangCartMSX\RTL\fpga_msx2p\modules\v9958\vdp_ram_palette.v":32)
+Extracting RAM for identifier 'ff_block_ram_r'("D:\github\HRA_product\TangCartMSX\RTL\fpga_msx2p\modules\v9958\vdp_ram_palette.v":60)
+Extracting RAM for identifier 'ff_block_ram_g'("D:\github\HRA_product\TangCartMSX\RTL\fpga_msx2p\modules\v9958\vdp_ram_palette.v":61)
+Extracting RAM for identifier 'ff_block_ram_b'("D:\github\HRA_product\TangCartMSX\RTL\fpga_msx2p\modules\v9958\vdp_ram_palette.v":62)
+WARN  (EX3791) : Expression size 7 truncated to fit in target size 5("D:\github\HRA_product\TangCartMSX\RTL\fpga_msx2p\modules\v9958\vdp_ram_palette.v":152)
+WARN  (EX3791) : Expression size 7 truncated to fit in target size 5("D:\github\HRA_product\TangCartMSX\RTL\fpga_msx2p\modules\v9958\vdp_ram_palette.v":153)
+WARN  (EX3791) : Expression size 7 truncated to fit in target size 5("D:\github\HRA_product\TangCartMSX\RTL\fpga_msx2p\modules\v9958\vdp_ram_palette.v":154)
+Compiling module 'vdp_register'("D:\github\HRA_product\TangCartMSX\RTL\fpga_msx2p\modules\v9958\vdp_register.v":56)
+Compiling module 'vdp_command'("D:\github\HRA_product\TangCartMSX\RTL\fpga_msx2p\modules\v9958\vdp_command.v":56)
+WARN  (EX3791) : Expression size 32 truncated to fit in target size 10("D:\github\HRA_product\TangCartMSX\RTL\fpga_msx2p\modules\v9958\vdp_command.v":515)
+WARN  (EX3791) : Expression size 32 truncated to fit in target size 10("D:\github\HRA_product\TangCartMSX\RTL\fpga_msx2p\modules\v9958\vdp_command.v":621)
+WARN  (EX3791) : Expression size 32 truncated to fit in target size 10("D:\github\HRA_product\TangCartMSX\RTL\fpga_msx2p\modules\v9958\vdp_command.v":703)
+WARN  (EX3791) : Expression size 11 truncated to fit in target size 10("D:\github\HRA_product\TangCartMSX\RTL\fpga_msx2p\modules\v9958\vdp_command.v":735)
+WARN  (EX3791) : Expression size 32 truncated to fit in target size 10("D:\github\HRA_product\TangCartMSX\RTL\fpga_msx2p\modules\v9958\vdp_command.v":822)
+Compiling module 'vdp_wait_control'("D:\github\HRA_product\TangCartMSX\RTL\fpga_msx2p\modules\v9958\vdp_wait_control.v":31)
+Extracting RAM for identifier 'c_wait_table_501'("D:\github\HRA_product\TangCartMSX\RTL\fpga_msx2p\modules\v9958\vdp_wait_control.v":50)
+Extracting RAM for identifier 'c_wait_table_502'("D:\github\HRA_product\TangCartMSX\RTL\fpga_msx2p\modules\v9958\vdp_wait_control.v":52)
+Extracting RAM for identifier 'c_wait_table_503'("D:\github\HRA_product\TangCartMSX\RTL\fpga_msx2p\modules\v9958\vdp_wait_control.v":54)
+Extracting RAM for identifier 'c_wait_table_504'("D:\github\HRA_product\TangCartMSX\RTL\fpga_msx2p\modules\v9958\vdp_wait_control.v":56)
+Extracting RAM for identifier 'c_wait_table_505'("D:\github\HRA_product\TangCartMSX\RTL\fpga_msx2p\modules\v9958\vdp_wait_control.v":58)
+Extracting RAM for identifier 'c_wait_table_601'("D:\github\HRA_product\TangCartMSX\RTL\fpga_msx2p\modules\v9958\vdp_wait_control.v":60)
+Extracting RAM for identifier 'c_wait_table_602'("D:\github\HRA_product\TangCartMSX\RTL\fpga_msx2p\modules\v9958\vdp_wait_control.v":62)
+Extracting RAM for identifier 'c_wait_table_603'("D:\github\HRA_product\TangCartMSX\RTL\fpga_msx2p\modules\v9958\vdp_wait_control.v":64)
+Extracting RAM for identifier 'c_wait_table_604'("D:\github\HRA_product\TangCartMSX\RTL\fpga_msx2p\modules\v9958\vdp_wait_control.v":66)
+Extracting RAM for identifier 'c_wait_table_605'("D:\github\HRA_product\TangCartMSX\RTL\fpga_msx2p\modules\v9958\vdp_wait_control.v":68)
+WARN  (EX3670) : Actual bit length 8 differs from formal bit length 16 for port 'p_dram_rdata'("D:\github\HRA_product\TangCartMSX\RTL\fpga_msx2p\src\tangnano20k_step9.v":516)
+Compiling module 'video_out(hs_positive=1'b0,vs_positive=1'b0)'("D:\github\HRA_product\TangCartMSX\RTL\fpga_msx2p\modules\video_out\video_out.v":60)
+WARN  (EX3771) : Module instantiation should have an instance name("D:\github\HRA_product\TangCartMSX\RTL\fpga_msx2p\modules\video_out\video_out.v":264)
+Compiling module 'video_out_hmag'("D:\github\HRA_product\TangCartMSX\RTL\fpga_msx2p\modules\video_out\video_out_hmag.v":60)
+WARN  (EX3791) : Expression size 32 truncated to fit in target size 10("D:\github\HRA_product\TangCartMSX\RTL\fpga_msx2p\modules\video_out\video_out_hmag.v":140)
+Compiling module 'video_double_buffer'("D:\github\HRA_product\TangCartMSX\RTL\fpga_msx2p\modules\video_out\video_double_buffer.v":58)
+Compiling module 'video_ram_line_buffer'("D:\github\HRA_product\TangCartMSX\RTL\fpga_msx2p\modules\video_out\video_ram_line_buffer.v":58)
+Extracting RAM for identifier 'ff_imem'("D:\github\HRA_product\TangCartMSX\RTL\fpga_msx2p\modules\video_out\video_ram_line_buffer.v":71)
+Compiling module 'video_out_bilinear'("D:\github\HRA_product\TangCartMSX\RTL\fpga_msx2p\modules\video_out\video_out_bilinear.v":60)
+WARN  (EX3791) : Expression size 9 truncated to fit in target size 8("D:\github\HRA_product\TangCartMSX\RTL\fpga_msx2p\modules\video_out\video_out_hmag.v":317)
+WARN  (EX3791) : Expression size 9 truncated to fit in target size 8("D:\github\HRA_product\TangCartMSX\RTL\fpga_msx2p\modules\video_out\video_out_hmag.v":318)
+WARN  (EX3791) : Expression size 9 truncated to fit in target size 8("D:\github\HRA_product\TangCartMSX\RTL\fpga_msx2p\modules\video_out\video_out_hmag.v":319)
+Compiling module 'ip_ram'("D:\github\HRA_product\TangCartMSX\RTL\fpga_msx2p\src\ram\ip_ram.v":5)
+Extracting RAM for identifier 'ff_ram'("D:\github\HRA_product\TangCartMSX\RTL\fpga_msx2p\src\ram\ip_ram.v":15)
+Compiling module 'ip_sdram'("D:\github\HRA_product\TangCartMSX\RTL\fpga_msx2p\modules\sdram\ip_sdram_tangnano20k_c.v":57)
+WARN  (EX3791) : Expression size 32 truncated to fit in target size 14("D:\github\HRA_product\TangCartMSX\RTL\fpga_msx2p\modules\sdram\ip_sdram_tangnano20k_c.v":389)
+Compiling module 'kanji_rom'("D:\github\HRA_product\TangCartMSX\RTL\fpga_msx2p\modules\kanji_rom\kanji_rom.v":58)
+Compiling module 'megarom_wo_scc'("D:\github\HRA_product\TangCartMSX\RTL\fpga_msx2p\modules\megarom\megarom_wo_scc.v":58)
+WARN  (EX3771) : Module instantiation should have an instance name("D:\github\HRA_product\TangCartMSX\RTL\fpga_msx2p\src\tangnano20k_step9.v":672)
+Compiling module 'memory_mapper_inst'("D:\github\HRA_product\TangCartMSX\RTL\fpga_msx2p\modules\memory_mapper\memory_mapper_inst.v":58)
+Compiling module 'memory_mapper'("D:\github\HRA_product\TangCartMSX\RTL\fpga_msx2p\modules\memory_mapper\memory_mapper.v":58)
+Compiling module 'system_control'("D:\github\HRA_product\TangCartMSX\RTL\fpga_msx2p\modules\system_control\system_control.v":58)
+WARN  (EX3670) : Actual bit length 16 differs from formal bit length 8 for port 'address'("D:\github\HRA_product\TangCartMSX\RTL\fpga_msx2p\src\tangnano20k_step9.v":734)
+NOTE  (EX0101) : Current top module is "tangnano20k_step9"
+[5%] Running netlist conversion ...
+WARN  (CV0016) : Input clk27m is unused("D:\github\HRA_product\TangCartMSX\RTL\fpga_msx2p\src\tangnano20k_step9.v":25)
+WARN  (CV0016) : Input button is unused("D:\github\HRA_product\TangCartMSX\RTL\fpga_msx2p\src\tangnano20k_step9.v":27)
+Running device independent optimization ...
+[10%] Optimizing Phase 0 completed
+[15%] Optimizing Phase 1 completed
+[25%] Optimizing Phase 2 completed
+Running inference ...
+[30%] Inferring Phase 0 completed
+[40%] Inferring Phase 1 completed
+[50%] Inferring Phase 2 completed
+[55%] Inferring Phase 3 completed
+Running technical mapping ...
+[60%] Tech-Mapping Phase 0 completed
+[65%] Tech-Mapping Phase 1 completed
+[75%] Tech-Mapping Phase 2 completed
+[80%] Tech-Mapping Phase 3 completed
+[90%] Tech-Mapping Phase 4 completed
+[95%] Generate netlist file "D:\github\HRA_product\TangCartMSX\RTL\fpga_msx2p\impl\gwsynthesis\tangnano20k_step9.vg" completed
+[100%] Generate report file "D:\github\HRA_product\TangCartMSX\RTL\fpga_msx2p\impl\gwsynthesis\tangnano20k_step9_syn.rpt.html" completed
+GowinSynthesis finish

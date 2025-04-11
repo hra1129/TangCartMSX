@@ -1,0 +1,627 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//ENhttp://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+<head>
+<title>Power Analysis Report</title>
+<style type="text/css">
+body { font-family: Verdana, Arial, sans-serif; font-size: 12px; }
+div#main_wrapper { width: 100%; }
+div#content { margin-left: 350px; margin-right: 30px; }
+div#catalog_wrapper {position: fixed; top: 30px; width: 350px; float: left; }
+div#catalog ul { list-style-type: none; }
+div#catalog li { text-align: left; list-style-type:circle; color: #0084ff; margin-top: 3px; margin-bottom: 3px; }
+div#catalog a { display:inline-block; text-decoration: none; color: #0084ff; font-weight: bold; padding: 3px; }
+div#catalog a:visited { color: #0084ff; }
+div#catalog a:hover { color: #fff; background: #0084ff; }
+hr { margin-top: 30px; margin-bottom: 30px; }
+h1, h3 { text-align: center; }
+h1 {margin-top: 50px; }
+table, th, td {white-space:pre;  border: 1px solid #aaa; }
+table { border-collapse:collapse; margin-top: 10px; margin-bottom: 20px; width: 100%; }
+th, td { padding: 5px 5px 5px 5px; }
+th { color: #fff; font-weight: bold; background-color: #0084ff; }
+table.summary_table td.label { width: 24%; min-width: 200px; background-color: #dee8f4; }
+table.thermal_table td.label { width: 24%; min-width: 200px; background-color: #dee8f4; }
+table.Configure_table td.label { width: 24%; min-width: 200px; background-color: #dee8f4; }
+table.detail_table th.label {  min-width: 8%; width: 8%; }
+</style>
+</head>
+<body>
+<div id="main_wrapper">
+<div id="catalog_wrapper">
+<div id="catalog">
+<ul>
+<li><a href="#Message" style=" font-size: 16px;">Power Messages</a>
+<ul>
+<li><a href="#Configure_Info" style=" font-size: 14px;">Configure Information</a></li>
+</ul>
+</li>
+<li><a href="#Summary" style=" font-size: 16px;">Power Summary</a>
+<ul>
+<li><a href="#Power_Info" style=" font-size: 14px;">Power Information</a></li>
+<li><a href="#Thermal_Info" style=" font-size: 14px;">Thermal Information</a></li>
+<li><a href="#Supply_Summary" style=" font-size: 14px;">Supply Information</a></li>
+</ul>
+</li>
+<li><a href="#Detail" style=" font-size: 16px;">Power Details</a>
+<ul>
+<li><a href="#By_Block_Type" style=" font-size: 14px;">Power By Block Type</a></li>
+<li><a href="#By_Hierarchy" style=" font-size: 14px;">Power By Hierarchy</a></li>
+<li><a href="#By_Clock_Domain" style=" font-size: 14px;">Power By Clock Domain</a></li>
+</ul>
+</li>
+</ul>
+</div><!-- catalog -->
+</div><!-- catalog_wrapper -->
+<div id="content">
+<h1><a name="Message">Power Messages</a></h1>
+<table class="summary_table">
+<tr>
+<td class="label">Report Title</td>
+<td>Power Analysis Report</td>
+</tr>
+<tr>
+<td class="label">Design File</td>
+<td>D:\github\HRA_product\TangCartMSX\RTL\fpga_msx2p\impl\gwsynthesis\tangnano20k_step9.vg</td>
+</tr>
+<tr>
+<td class="label">Physical Constraints File</td>
+<td>D:\github\HRA_product\TangCartMSX\RTL\fpga_msx2p\src\tangnano20k_step9.cst</td>
+</tr>
+<tr>
+<td class="label">Timing Constraints File</td>
+<td>---</td>
+</tr>
+<tr>
+<td class="label">Tool Version</td>
+<td>V1.9.11.01 (64-bit)</td>
+</tr>
+<tr>
+<td class="label">Part Number</td>
+<td>GW2AR-LV18QN88C8/I7</td>
+</tr>
+<tr>
+<td class="label">Device</td>
+<td>GW2AR-18</td>
+</tr>
+<tr>
+<td class="label">Device Version</td>
+<td>C</td>
+</tr>
+<tr>
+<td class="label">Created Time</td>
+<td>Sat Apr 12 08:14:32 2025
+</td>
+</tr>
+<tr>
+<td class="label">Legal Announcement</td>
+<td>Copyright (C)2014-2025 Gowin Semiconductor Corporation. All rights reserved.</td>
+</tr>
+</table>
+<h2><a name="Configure_Info">Configure Information:</a></h2>
+<table class="summary_table">
+<tr>
+<td class="label">Grade</td>
+<td>Commercial</td>
+</tr>
+<tr>
+<td class="label">Process</td>
+<td>Typical</td>
+</tr>
+<tr>
+<td class="label">Ambient Temperature</td>
+<td>25.000
+</tr>
+<tr>
+<td class="label">Use Custom Theta JA</td>
+<td>false</td>
+</tr>
+<tr>
+<td class="label">Heat Sink</td>
+<td>None</td>
+</tr>
+<tr>
+<td class="label">Air Flow</td>
+<td>LFM_0</td>
+</tr>
+<tr>
+<td class="label">Use Custom Theta SA</td>
+<td>false</td>
+</tr>
+<tr>
+<td class="label">Board Thermal Model</td>
+<td>None</td>
+</tr>
+<tr>
+<td class="label">Use Custom Theta JB</td>
+<td>false</td>
+</tr>
+<tr>
+<td class="label">Related Vcd File</td>
+<td></td>
+</tr>
+<tr>
+<td class="label">Related Saif File</td>
+<td></td>
+</tr>
+<tr>
+<td class="label">Filter Glitches</td>
+<td>false</td>
+</tr>
+<tr>
+<td class="label">Default IO Toggle Rate</td>
+<td>0.125</td>
+</tr>
+<tr>
+<td class="label">Default Remain Toggle Rate</td>
+<td>0.125</td>
+</tr>
+</table>
+<h1><a name="Summary">Power Summary</a></h1>
+<h2><a name="Power_Info">Power Information:</a></h2>
+<table class="summary_table">
+<tr>
+<td class="label">Total Power (mW)</td>
+<td>199.338</td>
+</tr>
+<tr>
+<td class="label">Quiescent Power (mW)</td>
+<td>122.800</td>
+</tr>
+<tr>
+<td class="label">Dynamic Power (mW)</td>
+<td>76.538</td>
+</tr>
+</table>
+<h2><a name="Thermal_Info">Thermal Information:</a></h2>
+<table class="summary_table">
+<tr>
+<td class="label">Junction Temperature</td>
+<td>30.948</td>
+</tr>
+<tr>
+<td class="label">Theta JA</td>
+<td>29.840</td>
+</tr>
+<tr>
+<td class="label">Max Allowed Ambient Temperature</td>
+<td>79.052</td>
+</tr>
+</table>
+<h2><a name="Supply_Summary">Supply Information:</a></h2>
+<table class="summary_table">
+<tr>
+<th class="label">Voltage Source</th>
+<th class="label">Voltage</th>
+<th class="label">Dynamic Current(mA)</th>
+<th class="label">Quiescent Current(mA)</th>
+<th class="label">Power(mW)</th>
+</tr>
+<tr>
+<td>VCC</td>
+<td>1.000</td>
+<td>40.012</td>
+<td>70.000</td>
+<td>110.012</td>
+</tr>
+<tr>
+<td>VCCX</td>
+<td>3.300</td>
+<td>5.534</td>
+<td>15.000</td>
+<td>67.763</td>
+</tr>
+<tr>
+<td>VCCIO33</td>
+<td>3.300</td>
+<td>5.534</td>
+<td>1.000</td>
+<td>21.563</td>
+</tr>
+</table>
+<h1><a name="Detail">Power Details</a></h1>
+<h2><a name="By_Block_Type">Power By Block Type:</a></h2>
+<table class="detail_table">
+<tr>
+<th class="label">Block Type</th>
+<th class="label">Total Power(mW)</th>
+<th class="label">Static Power(mW)</th>
+<th class="label">Average Toggle Rate(millions of transitions/sec)</th>
+</tr>
+<tr>
+<td>Logic</td>
+<td>5.875</td>
+<td>NA</td>
+<td>5.617</td>
+</tr>
+<tr>
+<td>IO</td>
+<td>60.929
+<td>18.870
+<td>9.104
+</tr>
+<tr>
+<td>BSRAM</td>
+<td>15.972
+<td>NA</td>
+<td>NA</td>
+</tr>
+<tr>
+<td>PLL</td>
+<td>8.985
+<td>NA</td>
+<td>NA</td>
+</tr>
+<tr>
+<td>DSP</td>
+<td>3.624
+<td>NA</td>
+<td>3.047
+</tr>
+</table>
+<h2><a name="By_Hierarchy">Power By Hierarchy:</a></h2>
+<table class="detail_table">
+<tr>
+<th class="label">Hierarchy Entity</th>
+<th class="label">Total Power(mW)</th>
+<th class="label">Block Dynamic Power(mW)</th>
+</tr>
+<tr>
+<td>tangnano20k_step9</td>
+<td>34.455</td>
+<td>34.455(34.277)</td>
+<tr>
+<td>tangnano20k_step9/i251/</td>
+<td>0.017</td>
+<td>0.017(0.010)</td>
+<tr>
+<td>tangnano20k_step9/i251/u_memory_mapper/</td>
+<td>0.010</td>
+<td>0.010(0.000)</td>
+<tr>
+<td>tangnano20k_step9/u_audio/</td>
+<td>0.021</td>
+<td>0.021(0.000)</td>
+<tr>
+<td>tangnano20k_step9/u_esp32_conn/</td>
+<td>0.105</td>
+<td>0.105(0.000)</td>
+<tr>
+<td>tangnano20k_step9/u_exp_slot0/</td>
+<td>0.015</td>
+<td>0.015(0.000)</td>
+<tr>
+<td>tangnano20k_step9/u_exp_slot3/</td>
+<td>0.010</td>
+<td>0.010(0.000)</td>
+<tr>
+<td>tangnano20k_step9/u_kanji_rom/</td>
+<td>0.038</td>
+<td>0.038(0.000)</td>
+<tr>
+<td>tangnano20k_step9/u_megarom_slot1/</td>
+<td>0.027</td>
+<td>0.027(0.000)</td>
+<tr>
+<td>tangnano20k_step9/u_megarom_slot2/</td>
+<td>0.022</td>
+<td>0.022(0.000)</td>
+<tr>
+<td>tangnano20k_step9/u_opll/</td>
+<td>9.865</td>
+<td>9.865(9.859)</td>
+<tr>
+<td>tangnano20k_step9/u_opll/u_ikaopll/</td>
+<td>9.859</td>
+<td>9.859(9.859)</td>
+<tr>
+<td>tangnano20k_step9/u_opll/u_ikaopll/u_DAC/</td>
+<td>1.622</td>
+<td>1.622(0.007)</td>
+<tr>
+<td>tangnano20k_step9/u_opll/u_ikaopll/u_DAC/u_percussion_sr/</td>
+<td>0.007</td>
+<td>0.007(0.000)</td>
+<tr>
+<td>tangnano20k_step9/u_opll/u_ikaopll/u_EG/</td>
+<td>7.090</td>
+<td>7.090(0.007)</td>
+<tr>
+<td>tangnano20k_step9/u_opll/u_ikaopll/u_EG/u_cyc2r_cyc19r_envstatreg/</td>
+<td>0.001</td>
+<td>0.001(0.000)</td>
+<tr>
+<td>tangnano20k_step9/u_opll/u_ikaopll/u_EG/u_cyc3r_cyc19r_attnlvreg/</td>
+<td>0.007</td>
+<td>0.007(0.000)</td>
+<tr>
+<td>tangnano20k_step9/u_opll/u_ikaopll/u_LFO/</td>
+<td>0.034</td>
+<td>0.034(0.000)</td>
+<tr>
+<td>tangnano20k_step9/u_opll/u_ikaopll/u_OP/</td>
+<td>0.371</td>
+<td>0.371(0.107)</td>
+<tr>
+<td>tangnano20k_step9/u_opll/u_ikaopll/u_OP/u_cyc19c_logsinrom/</td>
+<td>0.047</td>
+<td>0.047(0.000)</td>
+<tr>
+<td>tangnano20k_step9/u_opll/u_ikaopll/u_OP/u_cyc20c_exprom/</td>
+<td>0.044</td>
+<td>0.044(0.000)</td>
+<tr>
+<td>tangnano20k_step9/u_opll/u_ikaopll/u_OP/u_op_z_reg/</td>
+<td>0.008</td>
+<td>0.008(0.000)</td>
+<tr>
+<td>tangnano20k_step9/u_opll/u_ikaopll/u_OP/u_op_zz_reg/</td>
+<td>0.008</td>
+<td>0.008(0.000)</td>
+<tr>
+<td>tangnano20k_step9/u_opll/u_ikaopll/u_PG/</td>
+<td>0.516</td>
+<td>0.516(0.004)</td>
+<tr>
+<td>tangnano20k_step9/u_opll/u_ikaopll/u_PG/u_cyc4r_cyc18r_phase_sr/</td>
+<td>0.004</td>
+<td>0.004(0.000)</td>
+<tr>
+<td>tangnano20k_step9/u_opll/u_ikaopll/u_REG/</td>
+<td>0.212</td>
+<td>0.212(0.127)</td>
+<tr>
+<td>tangnano20k_step9/u_opll/u_ikaopll/u_REG/u_block/</td>
+<td>0.010</td>
+<td>0.010(0.006)</td>
+<tr>
+<td>tangnano20k_step9/u_opll/u_ikaopll/u_REG/u_block/u_d9reg/</td>
+<td>0.006</td>
+<td>0.006(0.000)</td>
+<tr>
+<td>tangnano20k_step9/u_opll/u_ikaopll/u_REG/u_fnum_lsbs/</td>
+<td>0.023</td>
+<td>0.023(0.012)</td>
+<tr>
+<td>tangnano20k_step9/u_opll/u_ikaopll/u_REG/u_fnum_lsbs/u_d9reg/</td>
+<td>0.012</td>
+<td>0.012(0.000)</td>
+<tr>
+<td>tangnano20k_step9/u_opll/u_ikaopll/u_REG/u_fnum_msb/</td>
+<td>0.004</td>
+<td>0.004(0.002)</td>
+<tr>
+<td>tangnano20k_step9/u_opll/u_ikaopll/u_REG/u_fnum_msb/u_d9reg/</td>
+<td>0.002</td>
+<td>0.002(0.000)</td>
+<tr>
+<td>tangnano20k_step9/u_opll/u_ikaopll/u_REG/u_inst/</td>
+<td>0.011</td>
+<td>0.011(0.006)</td>
+<tr>
+<td>tangnano20k_step9/u_opll/u_ikaopll/u_REG/u_inst/u_d9reg/</td>
+<td>0.006</td>
+<td>0.006(0.000)</td>
+<tr>
+<td>tangnano20k_step9/u_opll/u_ikaopll/u_REG/u_instrom/</td>
+<td>0.058</td>
+<td>0.058(0.000)</td>
+<tr>
+<td>tangnano20k_step9/u_opll/u_ikaopll/u_REG/u_kon/</td>
+<td>0.002</td>
+<td>0.002(0.002)</td>
+<tr>
+<td>tangnano20k_step9/u_opll/u_ikaopll/u_REG/u_kon/u_d9reg/</td>
+<td>0.002</td>
+<td>0.002(0.000)</td>
+<tr>
+<td>tangnano20k_step9/u_opll/u_ikaopll/u_REG/u_susen/</td>
+<td>0.002</td>
+<td>0.002(0.002)</td>
+<tr>
+<td>tangnano20k_step9/u_opll/u_ikaopll/u_REG/u_susen/u_d9reg/</td>
+<td>0.002</td>
+<td>0.002(0.000)</td>
+<tr>
+<td>tangnano20k_step9/u_opll/u_ikaopll/u_REG/u_sync_addrreg/</td>
+<td>0.002</td>
+<td>0.002(0.000)</td>
+<tr>
+<td>tangnano20k_step9/u_opll/u_ikaopll/u_REG/u_sync_datareg/</td>
+<td>0.002</td>
+<td>0.002(0.000)</td>
+<tr>
+<td>tangnano20k_step9/u_opll/u_ikaopll/u_REG/u_vol/</td>
+<td>0.013</td>
+<td>0.013(0.007)</td>
+<tr>
+<td>tangnano20k_step9/u_opll/u_ikaopll/u_REG/u_vol/u_d9reg/</td>
+<td>0.007</td>
+<td>0.007(0.000)</td>
+<tr>
+<td>tangnano20k_step9/u_opll/u_ikaopll/u_TIMINGGEN/</td>
+<td>0.014</td>
+<td>0.014(0.000)</td>
+<tr>
+<td>tangnano20k_step9/u_pll/</td>
+<td>8.985</td>
+<td>8.985(0.000)</td>
+<tr>
+<td>tangnano20k_step9/u_ppi/</td>
+<td>0.038</td>
+<td>0.038(0.038)</td>
+<tr>
+<td>tangnano20k_step9/u_ppi/u_ppi_0/</td>
+<td>0.038</td>
+<td>0.038(0.000)</td>
+<tr>
+<td>tangnano20k_step9/u_rtc/</td>
+<td>0.114</td>
+<td>0.114(0.000)</td>
+<tr>
+<td>tangnano20k_step9/u_sdram/</td>
+<td>0.172</td>
+<td>0.172(0.000)</td>
+<tr>
+<td>tangnano20k_step9/u_ssg/</td>
+<td>0.241</td>
+<td>0.241(0.000)</td>
+<tr>
+<td>tangnano20k_step9/u_system_control/</td>
+<td>0.027</td>
+<td>0.027(0.000)</td>
+<tr>
+<td>tangnano20k_step9/u_v9958/</td>
+<td>6.358</td>
+<td>6.358(6.357)</td>
+<tr>
+<td>tangnano20k_step9/u_v9958/u_v9958_core/</td>
+<td>6.357</td>
+<td>6.357(6.340)</td>
+<tr>
+<td>tangnano20k_step9/u_v9958/u_v9958_core/u_vdp_color_bus/</td>
+<td>0.137</td>
+<td>0.137(0.000)</td>
+<tr>
+<td>tangnano20k_step9/u_v9958/u_v9958_core/u_vdp_color_decoder/</td>
+<td>0.057</td>
+<td>0.057(0.000)</td>
+<tr>
+<td>tangnano20k_step9/u_v9958/u_v9958_core/u_vdp_command/</td>
+<td>0.501</td>
+<td>0.501(0.000)</td>
+<tr>
+<td>tangnano20k_step9/u_v9958/u_v9958_core/u_vdp_graphic123m/</td>
+<td>0.061</td>
+<td>0.061(0.000)</td>
+<tr>
+<td>tangnano20k_step9/u_v9958/u_v9958_core/u_vdp_graphic4567/</td>
+<td>0.770</td>
+<td>0.770(0.553)</td>
+<tr>
+<td>tangnano20k_step9/u_v9958/u_v9958_core/u_vdp_graphic4567/u_fifo_ram/</td>
+<td>0.553</td>
+<td>0.553(0.000)</td>
+<tr>
+<td>tangnano20k_step9/u_v9958/u_v9958_core/u_vdp_interrupt/</td>
+<td>0.017</td>
+<td>0.017(0.000)</td>
+<tr>
+<td>tangnano20k_step9/u_v9958/u_v9958_core/u_vdp_palette_ram/</td>
+<td>0.050</td>
+<td>0.050(0.000)</td>
+<tr>
+<td>tangnano20k_step9/u_v9958/u_v9958_core/u_vdp_register/</td>
+<td>0.118</td>
+<td>0.118(0.000)</td>
+<tr>
+<td>tangnano20k_step9/u_v9958/u_v9958_core/u_vdp_sprite/</td>
+<td>1.391</td>
+<td>1.391(1.120)</td>
+<tr>
+<td>tangnano20k_step9/u_v9958/u_v9958_core/u_vdp_sprite/u_even_line_buf/</td>
+<td>0.553</td>
+<td>0.553(0.000)</td>
+<tr>
+<td>tangnano20k_step9/u_v9958/u_v9958_core/u_vdp_sprite/u_odd_line_buf/</td>
+<td>0.553</td>
+<td>0.553(0.000)</td>
+<tr>
+<td>tangnano20k_step9/u_v9958/u_v9958_core/u_vdp_sprite/u_sprite_info_ram/</td>
+<td>0.015</td>
+<td>0.015(0.000)</td>
+<tr>
+<td>tangnano20k_step9/u_v9958/u_v9958_core/u_vdp_ssg/</td>
+<td>0.182</td>
+<td>0.182(0.000)</td>
+<tr>
+<td>tangnano20k_step9/u_v9958/u_v9958_core/u_vdp_text12/</td>
+<td>0.125</td>
+<td>0.125(0.000)</td>
+<tr>
+<td>tangnano20k_step9/u_v9958/u_v9958_core/u_vdp_wait_control/</td>
+<td>2.929</td>
+<td>2.929(0.000)</td>
+<tr>
+<td>tangnano20k_step9/u_video_out/</td>
+<td>3.340</td>
+<td>3.340(3.280)</td>
+<tr>
+<td>tangnano20k_step9/u_video_out/i182/</td>
+<td>3.280</td>
+<td>3.280(2.301)</td>
+<tr>
+<td>tangnano20k_step9/u_video_out/i182/u_bilinear_b/</td>
+<td>0.336</td>
+<td>0.336(0.000)</td>
+<tr>
+<td>tangnano20k_step9/u_video_out/i182/u_bilinear_g/</td>
+<td>0.336</td>
+<td>0.336(0.000)</td>
+<tr>
+<td>tangnano20k_step9/u_video_out/i182/u_bilinear_r/</td>
+<td>0.336</td>
+<td>0.336(0.000)</td>
+<tr>
+<td>tangnano20k_step9/u_video_out/i182/u_double_buffer/</td>
+<td>1.294</td>
+<td>1.294(1.260)</td>
+<tr>
+<td>tangnano20k_step9/u_video_out/i182/u_double_buffer/u_buf_even/</td>
+<td>0.630</td>
+<td>0.630(0.000)</td>
+<tr>
+<td>tangnano20k_step9/u_video_out/i182/u_double_buffer/u_buf_odd/</td>
+<td>0.630</td>
+<td>0.630(0.000)</td>
+<tr>
+<td>tangnano20k_step9/u_vram/</td>
+<td>3.777</td>
+<td>3.777(0.000)</td>
+<tr>
+<td>tangnano20k_step9/u_z80/</td>
+<td>1.105</td>
+<td>1.105(1.079)</td>
+<tr>
+<td>tangnano20k_step9/u_z80/u_cz80/</td>
+<td>1.079</td>
+<td>1.079(0.299)</td>
+<tr>
+<td>tangnano20k_step9/u_z80/u_cz80/u_alu/</td>
+<td>0.037</td>
+<td>0.037(0.000)</td>
+<tr>
+<td>tangnano20k_step9/u_z80/u_cz80/u_mcode/</td>
+<td>0.096</td>
+<td>0.096(0.000)</td>
+<tr>
+<td>tangnano20k_step9/u_z80/u_cz80/u_regs/</td>
+<td>0.166</td>
+<td>0.166(0.000)</td>
+</table>
+<h2><a name="By_Clock_Domain">Power By Clock Domain:</a></h2>
+<table class="detail_table">
+<tr>
+<th class="label">Clock Domain</th>
+<th class="label">Clock Frequency(Mhz)</th>
+<th class="label">Total Dynamic Power(mW)</th>
+</tr>
+<tr>
+<td>u_pll/pll_inst/CLKOUT.default_gen_clk</td>
+<td>85.896</td>
+<td>0.382</td>
+</tr>
+<tr>
+<td>u_pll/pll_inst/CLKOUTD.default_gen_clk</td>
+<td>42.948</td>
+<td>25.111</td>
+</tr>
+<tr>
+<td>clk3_579m</td>
+<td>3.579</td>
+<td>8.985</td>
+</tr>
+</table>
+</div><!-- content -->
+</div><!-- main_wrapper -->
+</body>
+</html>

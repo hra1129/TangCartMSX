@@ -1,0 +1,44 @@
+[
+ {
+  "InstFile" : "D:/github/HRA_product/TangCartMSX/RTL/tangprimer20k_vdp_cartridge_test/src/tangprimer20k_vdp_cartridge_test.v",
+  "InstLine" : 24,
+  "InstName" : "tangprimer20k_vdp_cartridge_test",
+  "ModuleFile" : "D:/github/HRA_product/TangCartMSX/RTL/tangprimer20k_vdp_cartridge_test/src/tangprimer20k_vdp_cartridge_test.v",
+  "ModuleLine" : 24,
+  "ModuleName" : "tangprimer20k_vdp_cartridge_test",
+  "SubInsts" : [
+   {
+    "InstFile" : "D:/github/HRA_product/TangCartMSX/RTL/tangprimer20k_vdp_cartridge_test/src/tangprimer20k_vdp_cartridge_test.v",
+    "InstLine" : 80,
+    "InstName" : "u_pll",
+    "ModuleFile" : "D:/github/HRA_product/TangCartMSX/RTL/tangprimer20k_vdp_cartridge_test/src/gowin_rpll/gowin_rpll.v",
+    "ModuleLine" : 10,
+    "ModuleName" : "Gowin_rPLL"
+   },
+   {
+    "InstFile" : "D:/github/HRA_product/TangCartMSX/RTL/tangprimer20k_vdp_cartridge_test/src/tangprimer20k_vdp_cartridge_test.v",
+    "InstLine" : 86,
+    "InstName" : "u_clkdiv",
+    "ModuleFile" : "D:/github/HRA_product/TangCartMSX/RTL/tangprimer20k_vdp_cartridge_test/src/gowin_clkdiv/gowin_clkdiv.v",
+    "ModuleLine" : 10,
+    "ModuleName" : "Gowin_CLKDIV"
+   },
+   {
+    "InstFile" : "D:/github/HRA_product/TangCartMSX/RTL/tangprimer20k_vdp_cartridge_test/src/tangprimer20k_vdp_cartridge_test.v",
+    "InstLine" : 95,
+    "InstName" : "u_msx_slot",
+    "ModuleFile" : "D:/github/HRA_product/TangCartMSX/RTL/tangprimer20k_vdp_cartridge_test/src/msx_slot/msx_slot.v",
+    "ModuleLine" : 58,
+    "ModuleName" : "msx_slot"
+   },
+   {
+    "InstFile" : "D:/github/HRA_product/TangCartMSX/RTL/tangprimer20k_vdp_cartridge_test/src/tangprimer20k_vdp_cartridge_test.v",
+    "InstLine" : 127,
+    "InstName" : "u_test_controller",
+    "ModuleFile" : "D:/github/HRA_product/TangCartMSX/RTL/tangprimer20k_vdp_cartridge_test/src/test_controller/test_controller.v",
+    "ModuleLine" : 58,
+    "ModuleName" : "test_controller"
+   }
+  ]
+ }
+]

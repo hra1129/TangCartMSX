@@ -30,10 +30,6 @@
    "Type" : "verilog"
   },
   {
-   "Path" : "D:/github/HRA_product/TangCartMSX/RTL/tangprimer20k_step3/src/gowin_clkdiv2/gowin_clkdiv2.v",
-   "Type" : "verilog"
-  },
-  {
    "Path" : "D:/github/HRA_product/TangCartMSX/RTL/tangprimer20k_step3/src/gowin_rpll/gowin_rpll.v",
    "Type" : "verilog"
   },
@@ -63,6 +59,10 @@
   },
   {
    "Path" : "D:/github/HRA_product/TangCartMSX/RTL/tangprimer20k_step3/src/uart/ip_uart_inst.v",
+   "Type" : "verilog"
+  },
+  {
+   "Path" : "D:/github/HRA_product/TangCartMSX/RTL/tangprimer20k_step3/src/gowin_clkdiv/gowin_clkdiv.v",
    "Type" : "verilog"
   }
  ],

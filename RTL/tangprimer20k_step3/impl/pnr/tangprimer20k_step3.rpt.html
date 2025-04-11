@@ -83,7 +83,7 @@ table.detail_table th.label {  min-width: 8%; width: 8%; }
 </tr>
 <tr>
 <td class="label">Created Time</td>
-<td>Sat Mar 29 21:03:53 2025
+<td>Thu Apr  3 20:24:15 2025
 </td>
 </tr>
 <tr>
@@ -97,24 +97,24 @@ table.detail_table th.label {  min-width: 8%; width: 8%; }
 <tr>
 <td class="label">Place & Route Process</td>
 <td>Running placement:
-   Placement Phase 0: CPU time = 0h 0m 1s, Elapsed time = 0h 0m 1s
-   Placement Phase 1: CPU time = 0h 0m 0.402s, Elapsed time = 0h 0m 0.402s
-   Placement Phase 2: CPU time = 0h 0m 4s, Elapsed time = 0h 0m 4s
-   Placement Phase 3: CPU time = 0h 0m 4s, Elapsed time = 0h 0m 4s
-   Total Placement: CPU time = 0h 0m 9s, Elapsed time = 0h 0m 9s
+   Placement Phase 0: CPU time = 0h 0m 2s, Elapsed time = 0h 0m 2s
+   Placement Phase 1: CPU time = 0h 0m 0.471s, Elapsed time = 0h 0m 0.471s
+   Placement Phase 2: CPU time = 0h 0m 5s, Elapsed time = 0h 0m 5s
+   Placement Phase 3: CPU time = 0h 0m 7s, Elapsed time = 0h 0m 7s
+   Total Placement: CPU time = 0h 0m 14s, Elapsed time = 0h 0m 14s
 Running routing:
    Routing Phase 0: CPU time = 0h 0m 0.004s, Elapsed time = 0h 0m 0.004s
-   Routing Phase 1: CPU time = 0h 0m 0.53s, Elapsed time = 0h 0m 0.53s
+   Routing Phase 1: CPU time = 0h 0m 0.548s, Elapsed time = 0h 0m 0.548s
    Routing Phase 2: CPU time = 0h 0m 6s, Elapsed time = 0h 0m 6s
    Routing Phase 3: CPU time = 0h 0m 0s, Elapsed time = 0h 0m 0s
-   Total Routing: CPU time = 0h 0m 7s, Elapsed time = 0h 0m 7s
+   Total Routing: CPU time = 0h 0m 6s, Elapsed time = 0h 0m 6s
 Generate output files:
-   CPU time = 0h 0m 2s, Elapsed time = 0h 0m 2s
+   CPU time = 0h 0m 3s, Elapsed time = 0h 0m 3s
 </td>
 </tr>
 <tr>
 <td class="label">Total Time and Memory Usage</td>
-<td>CPU time = 0h 0m 18s, Elapsed time = 0h 0m 18s, Peak memory usage = 483MB</td>
+<td>CPU time = 0h 0m 23s, Elapsed time = 0h 0m 23s, Peak memory usage = 550MB</td>
 </tr>
 </table>
 <br/>
@@ -129,12 +129,12 @@ Generate output files:
 </tr>
 <tr>
 <td class="label">Logic</td>
-<td>4780/20736</td>
-<td>24%</td>
+<td>5239/20736</td>
+<td>26%</td>
 </tr>
 <tr>
 <td class="label">&nbsp &nbsp --LUT,ALU,ROM16</td>
-<td>4060(3811 LUT, 249 ALU, 0 ROM16)</td>
+<td>4519(4254 LUT, 265 ALU, 0 ROM16)</td>
 <td>-</td>
 </tr>
 <tr>
@@ -144,8 +144,8 @@ Generate output files:
 </tr>
 <tr>
 <td class="label">Register</td>
-<td>3436/16173</td>
-<td>22%</td>
+<td>4045/16173</td>
+<td>26%</td>
 </tr>
 <tr>
 <td class="label">&nbsp &nbsp --Logic Register as Latch</td>
@@ -154,8 +154,8 @@ Generate output files:
 </tr>
 <tr>
 <td class="label">&nbsp &nbsp --Logic Register as FF</td>
-<td>3433/15552</td>
-<td>23%</td>
+<td>4042/15552</td>
+<td>26%</td>
 </tr>
 <tr>
 <td class="label">&nbsp &nbsp --I/O Register as Latch</td>
@@ -169,8 +169,8 @@ Generate output files:
 </tr>
 <tr>
 <td class="label">CLS</td>
-<td>3540/10368</td>
-<td>35%</td>
+<td>4082/10368</td>
+<td>40%</td>
 </tr>
 <tr>
 <td class="label">I/O Port</td>
@@ -201,6 +201,11 @@ Generate output files:
 <td class="label">IOLOGIC</td>
 <td>16 IDES8_MEM<br/>24 OSER8<br/>20 OSER8_MEM<br/>16 IODELAY<br/></td>
 <td>58%</td>
+</tr>
+<tr>
+<td class="label">BSRAM</td>
+<td>4 SP<br/></td>
+<td>9%</td>
 </tr>
 </table>
 <h2><a name="I/O_Bank_Usage_Summary">I/O Bank Usage Summary:</a></h2>
@@ -257,8 +262,8 @@ Generate output files:
 </tr>
 <tr>
 <td class="label">LW</td>
-<td>4/8</td>
-<td>50%</td>
+<td>5/8</td>
+<td>63%</td>
 </tr>
 <tr>
 <td class="label">GCLK_PIN</td>
@@ -267,8 +272,8 @@ Generate output files:
 </tr>
 <tr>
 <td class="label">CLKDIV</td>
-<td>1/8</td>
-<td>13%</td>
+<td>2/8</td>
+<td>25%</td>
 </tr>
 <tr>
 <td class="label">DHCEN</td>
@@ -307,15 +312,20 @@ Generate output files:
 <tr>
 <td class="label">clk49m</td>
 <td>PRIMARY</td>
-<td> TR TL BR BL</td>
+<td> TR TL BL</td>
 </tr>
 <tr>
-<td class="label">clk</td>
+<td class="label">clk37m</td>
 <td>PRIMARY</td>
-<td> TR TL BR BL</td>
+<td> TR TL BR</td>
 </tr>
 <tr>
 <td class="label">ff_reset_n</td>
+<td>LW</td>
+<td> -</td>
+</tr>
+<tr>
+<td class="label">dram_rdata_en</td>
 <td>LW</td>
 <td> -</td>
 </tr>
@@ -338,6 +348,11 @@ Generate output files:
 <td class="label">clk297m</td>
 <td>HCLK</td>
 <td>BOTTOM[0] LEFT[0]</td>
+</tr>
+<tr>
+<td class="label">u_sdram/clk85m</td>
+<td>HCLK</td>
+<td>RIGHT[0]</td>
 </tr>
 </table>
 <br/>
