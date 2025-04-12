@@ -58,7 +58,7 @@
 module vdp(
 	input					reset,
 	input					initial_busy,
-	input					clk,				//	85.90908MHz
+	input					clk,				//	42.95454MHz
 	input					enable,
 	input					iorq_n,
 	input					wr_n,
@@ -193,7 +193,7 @@ module vdp(
 	wire			w_vdp_mode_graphic6;				// graphic mode 6	(screen7)
 	wire			w_vdp_mode_graphic7;				// graphic mode 7	(screen8,10,11,12)
 	wire			w_vdp_mode_is_highres;				// true when mode graphic5, 6
-	wire			w_vram_interleave_mode;		// true when mode graphic6, 7
+	wire			w_vram_interleave_mode;				// true when mode graphic6, 7
 
 	// for palette
 	wire	[3:0]	w_palette_wr_address;
@@ -498,7 +498,7 @@ module vdp(
 		.clk							( clk							),
 		.enable							( enable						),
 
-		.h_cnt							( w_hcounter						),
+		.h_cnt							( w_hcounter					),
 		.y_cnt							( w_pre_dot_counter_y[7:0]		),
 		.active_line					( ff_active_line				),
 		.v_blanking_start				( w_v_blanking_start			),
