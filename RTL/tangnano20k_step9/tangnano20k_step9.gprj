@@ -1,0 +1,74 @@
+<?xml version="1" encoding="UTF-8"?>
+<!DOCTYPE gowin-fpga-project>
+<Project>
+    <Template>FPGA</Template>
+    <Version>5</Version>
+    <Device name="GW2AR-18C" pn="GW2AR-LV18QN88C8/I7">gw2ar18c-000</Device>
+    <FileList>
+        <File path="modules/cz80/cz80.v" type="file.verilog" enable="1"/>
+        <File path="modules/cz80/cz80_alu.v" type="file.verilog" enable="1"/>
+        <File path="modules/cz80/cz80_inst.v" type="file.verilog" enable="1"/>
+        <File path="modules/cz80/cz80_mcode.v" type="file.verilog" enable="1"/>
+        <File path="modules/cz80/cz80_reg.v" type="file.verilog" enable="1"/>
+        <File path="modules/i2s_audio/i2s_audio.v" type="file.verilog" enable="1"/>
+        <File path="modules/kanji_rom/kanji_rom.v" type="file.verilog" enable="1"/>
+        <File path="modules/megarom/megarom.v" type="file.verilog" enable="1"/>
+        <File path="modules/megarom/megarom_wo_scc.v" type="file.verilog" enable="1"/>
+        <File path="modules/megarom/scc/scc_channel_mixer.v" type="file.verilog" enable="1"/>
+        <File path="modules/megarom/scc/scc_channel_volume.v" type="file.verilog" enable="1"/>
+        <File path="modules/megarom/scc/scc_core.v" type="file.verilog" enable="1"/>
+        <File path="modules/megarom/scc/scc_inst.v" type="file.verilog" enable="1"/>
+        <File path="modules/megarom/scc/scc_ram.v" type="file.verilog" enable="1"/>
+        <File path="modules/megarom/scc/scc_register.v" type="file.verilog" enable="1"/>
+        <File path="modules/megarom/scc/scc_selector.v" type="file.verilog" enable="1"/>
+        <File path="modules/megarom/scc/scc_tone_generator_5ch.v" type="file.verilog" enable="1"/>
+        <File path="modules/memory_mapper/memory_mapper.v" type="file.verilog" enable="1"/>
+        <File path="modules/memory_mapper/memory_mapper_inst.v" type="file.verilog" enable="1"/>
+        <File path="modules/micom_connect/micom_connect.v" type="file.verilog" enable="1"/>
+        <File path="modules/rtc/rtc.v" type="file.verilog" enable="1"/>
+        <File path="modules/opll/ikaopll/IKAOPLL.v" type="file.verilog" enable="1"/>
+        <File path="modules/opll/ikaopll/IKAOPLL_modules/IKAOPLL_dac.v" type="file.verilog" enable="1"/>
+        <File path="modules/opll/ikaopll/IKAOPLL_modules/IKAOPLL_eg.v" type="file.verilog" enable="1"/>
+        <File path="modules/opll/ikaopll/IKAOPLL_modules/IKAOPLL_lfo.v" type="file.verilog" enable="1"/>
+        <File path="modules/opll/ikaopll/IKAOPLL_modules/IKAOPLL_op.v" type="file.verilog" enable="1"/>
+        <File path="modules/opll/ikaopll/IKAOPLL_modules/IKAOPLL_pg.v" type="file.verilog" enable="1"/>
+        <File path="modules/opll/ikaopll/IKAOPLL_modules/IKAOPLL_primitives.v" type="file.verilog" enable="1"/>
+        <File path="modules/opll/ikaopll/IKAOPLL_modules/IKAOPLL_reg.v" type="file.verilog" enable="1"/>
+        <File path="modules/opll/ikaopll/IKAOPLL_modules/IKAOPLL_timinggen.v" type="file.verilog" enable="1"/>
+        <File path="modules/opll/opll.v" type="file.verilog" enable="1"/>
+        <File path="modules/ppi/ppi.v" type="file.verilog" enable="1"/>
+        <File path="modules/ppi/ppi_inst.v" type="file.verilog" enable="1"/>
+        <File path="modules/sdram/ip_sdram_tangnano20k_c.v" type="file.verilog" enable="1"/>
+        <File path="modules/secondary_slot/secondary_slot_inst.v" type="file.verilog" enable="1"/>
+        <File path="modules/ssg/ssg.v" type="file.verilog" enable="1"/>
+        <File path="modules/v9958/vdp.v" type="file.verilog" enable="1"/>
+        <File path="modules/v9958/vdp_color_bus.v" type="file.verilog" enable="1"/>
+        <File path="modules/v9958/vdp_color_decoder.v" type="file.verilog" enable="1"/>
+        <File path="modules/v9958/vdp_command.v" type="file.verilog" enable="1"/>
+        <File path="modules/v9958/vdp_graphic123m.v" type="file.verilog" enable="1"/>
+        <File path="modules/v9958/vdp_graphic4567.v" type="file.verilog" enable="1"/>
+        <File path="modules/v9958/vdp_inst.v" type="file.verilog" enable="1"/>
+        <File path="modules/v9958/vdp_interrupt.v" type="file.verilog" enable="1"/>
+        <File path="modules/v9958/vdp_ram_256byte.v" type="file.verilog" enable="1"/>
+        <File path="modules/v9958/vdp_ram_palette.v" type="file.verilog" enable="1"/>
+        <File path="modules/v9958/vdp_register.v" type="file.verilog" enable="1"/>
+        <File path="modules/v9958/vdp_spinforam.v" type="file.verilog" enable="1"/>
+        <File path="modules/v9958/vdp_sprite.v" type="file.verilog" enable="1"/>
+        <File path="modules/v9958/vdp_ssg.v" type="file.verilog" enable="1"/>
+        <File path="modules/v9958/vdp_text12.v" type="file.verilog" enable="1"/>
+        <File path="modules/v9958/vdp_wait_control.v" type="file.verilog" enable="1"/>
+        <File path="modules/video_out/video_double_buffer.v" type="file.verilog" enable="1"/>
+        <File path="modules/video_out/video_out.v" type="file.verilog" enable="1"/>
+        <File path="modules/video_out/video_out_bilinear.v" type="file.verilog" enable="1"/>
+        <File path="modules/video_out/video_out_hmag.v" type="file.verilog" enable="1"/>
+        <File path="modules/video_out/video_ram_line_buffer.v" type="file.verilog" enable="1"/>
+        <File path="modules/system_control/system_control.v" type="file.verilog" enable="1"/>
+        <File path="src/gowin_pll/gowin_pll.v" type="file.verilog" enable="1"/>
+        <File path="src/ram/ip_ram.v" type="file.verilog" enable="1"/>
+        <File path="src/rom/ip_hello_world_rom.v" type="file.verilog" enable="1"/>
+        <File path="src/tangnano20k_step9.v" type="file.verilog" enable="1"/>
+        <File path="src/uart/ip_uart.v" type="file.verilog" enable="1"/>
+        <File path="src/uart/ip_uart_inst.v" type="file.verilog" enable="1"/>
+        <File path="src/tangnano20k_step9.cst" type="file.cst" enable="1"/>
+    </FileList>
+</Project>
