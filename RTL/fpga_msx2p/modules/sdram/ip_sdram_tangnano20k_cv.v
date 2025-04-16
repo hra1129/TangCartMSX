@@ -55,28 +55,32 @@
 //-----------------------------------------------------------------------------
 
 module ip_sdram #(
-	parameter		FREQ = 85_909_080	//	Hz
+	parameter		FREQ				= 85_909_080,		//	Hz
+	parameter		c_vram_high_address	= 6'b000_111		//	[22:17]
 ) (
-	input				n_reset,
+	input				reset_n,
 	input				clk,				//	85.90908MHz
 	input				clk_sdram,
+	output				sdram_init_busy,
 	output				sdram_busy,
-
-	input				dh_clk,				//	10.738635MHz: VideoDHClk
-	input				dl_clk,				//	 5.369318MHz: VideoDLClk : 0=CPU phase, 1=VDP phase
-	input	[22:0]		vdp_address,
-	input				vdp_is_write,		//	0:Read, 1:Write
-	input	[ 7:0]		vdp_wdata,
-	output	[15:0]		vdp_rdata,
-
-	input				cpu_req,
-	output				cpu_ack,
-	input				cpu_refresh,		//	Refresh timing : 0=normal, 1=do refresh
+	input				cpu_freeze,
+	//	CPU port
+	input				cpu_mreq_n,
 	input	[22:0]		cpu_address,
-	input				cpu_is_write,		//	0:Read, 1:Write
+	input				cpu_wr_n,
+	input				cpu_rd_n,
+	input				cpu_rfsh_n,
 	input	[ 7:0]		cpu_wdata,
 	output	[ 7:0]		cpu_rdata,
-
+	output				cpu_rdata_en,
+	//	VDP port
+	input				vdp_access,
+	input	[16:0]		vdp_address,
+	input				vdp_wr_n,
+	input				vdp_rd_n,
+	input	[ 7:0]		vdp_wdata,
+	output	[15:0]		vdp_rdata,
+	output				vdp_rdata_en,
 	// SDRAM ports
 	output				O_sdram_clk,
 	output				O_sdram_cke,
@@ -111,14 +115,18 @@ module ip_sdram #(
 	localparam	[4:0]	c_init_state_wait_refresh_all2		= 5'd7;
 	localparam	[4:0]	c_init_state_send_mode_register_set	= 5'd8;
 	localparam	[4:0]	c_init_state_wait_mode_register_set	= 5'd9;
-	localparam	[4:0]	c_main_state_activate				= 5'd10;
-	localparam	[4:0]	c_main_state_nop1					= 5'd11;
-	localparam	[4:0]	c_main_state_nop2					= 5'd12;
-	localparam	[4:0]	c_main_state_read_or_write			= 5'd13;
-	localparam	[4:0]	c_main_state_nop3					= 5'd14;
-	localparam	[4:0]	c_main_state_nop4					= 5'd15;
-	localparam	[4:0]	c_main_state_data_fetch				= 5'd16;
+	localparam	[4:0]	c_main_state_ready					= 5'd10;
+	localparam	[4:0]	c_main_state_activate				= 5'd11;
+	localparam	[4:0]	c_main_state_nop1					= 5'd12;
+	localparam	[4:0]	c_main_state_nop2					= 5'd13;
+	localparam	[4:0]	c_main_state_read_or_write			= 5'd14;
+	localparam	[4:0]	c_main_state_nop3					= 5'd15;
+	localparam	[4:0]	c_main_state_nop4					= 5'd16;
 	localparam	[4:0]	c_main_state_finish					= 5'd17;
+	localparam	[4:0]	c_main_state_nop5					= 5'd18;
+	localparam	[4:0]	c_main_state_nop6					= 5'd19;
+	localparam	[4:0]	c_main_state_nop7					= 5'd20;
+	localparam	[4:0]	c_main_state_finish2				= 5'd21;
 
 	localparam CLOCK_TIME		= 1_000_000_000 / FREQ;		// nsec
 	localparam TIMER_COUNT		= 120_000 / CLOCK_TIME;		// clock
@@ -129,64 +137,200 @@ module ip_sdram #(
 
 	reg		[ 4:0]				ff_main_state;
 	reg		[TIMER_BITS-1:0]	ff_main_timer;
+	reg		[ 7:0]				ff_no_refresh;
 	wire						w_end_of_main_timer;
-	wire						w_start_of_main_state;
-	wire						w_finish_of_main_state;
 
 	reg							ff_sdr_ready;
 	reg							ff_do_main_state;
 	reg							ff_do_refresh;
-	wire						w_vdp_phase;
+	reg							ff_vdp_access;
 
 	reg		[ 3:0]				ff_sdr_command			= c_sdr_command_no_operation;
 	reg		[12:0]				ff_sdr_address			= 13'h0000;
 	reg		[31:0]				ff_sdr_write_data		= 32'd0;
 	reg		[ 3:0]				ff_sdr_dq_mask			= 4'b1111;
-	reg		[15:0]				ff_sdr_vdp_read_data	= 16'd0;
 	reg		[ 7:0]				ff_sdr_cpu_read_data	= 8'd0;
-
-	wire						w_refresh;
-
-	reg		[REFRESH_BITS-1:0]	ff_refresh_timer;
+	reg							ff_sdr_cpu_read_data_en	= 1'b0;
+	reg		[15:0]				ff_sdr_vdp_read_data	= 16'd0;
+	reg							ff_sdr_vdp_read_data_en	= 1'b0;
+	reg							ff_req;
+	reg							ff_cpu_rd_n;
+	reg							ff_cpu_wr_n;
+	reg		[ 7:0]				ff_cpu_wdata;
+	reg		[ 7:0]				ff_vdp_wdata;
+	reg							ff_rd_wr_accept;
+	reg							ff_rfsh_accept;
+	reg							ff_is_write;
+	reg		[22:0]				ff_address;
+	wire	[22:0]				w_address;
+	wire						w_busy;
+	wire						w_cpu_access_busy;
+	wire						w_has_request_latch;
 
 	// --------------------------------------------------------------------
-	//	Refresh counter
+	//	Access busy
 	// --------------------------------------------------------------------
 	always @( posedge clk ) begin
-		if( !n_reset ) begin
-			ff_refresh_timer	<= 'd0;
+		ff_vdp_access <= vdp_access;
+	end
+
+	assign w_cpu_access_busy	= ~(~vdp_access & ff_vdp_access);
+
+	// --------------------------------------------------------------------
+	//	Request latch for CPU
+	// --------------------------------------------------------------------
+	always @( posedge clk ) begin
+		if( !reset_n ) begin
+			ff_cpu_rd_n		<= 1'b1;
 		end
-		else if( w_refresh ) begin
-			if( !dl_clk && ff_do_refresh ) begin
-				ff_refresh_timer	<= 'd0;
-			end
+		else if( !ff_rd_wr_accept && !cpu_mreq_n && !cpu_rd_n && !w_has_request_latch ) begin
+			ff_cpu_rd_n		<= 1'b0;
 		end
-		else begin
-			ff_refresh_timer	<= ff_refresh_timer + 'd1;
+		else if( ff_sdr_cpu_read_data_en ) begin
+			ff_cpu_rd_n		<= 1'b1;
 		end
 	end
 
-	assign w_refresh	= (ff_refresh_timer == REFRESH_COUNT);
+	always @( posedge clk ) begin
+		if( !reset_n ) begin
+			ff_cpu_wr_n		<= 1'b1;
+			ff_cpu_wdata	<= 8'd0;
+		end
+		else if( !ff_rd_wr_accept && !cpu_mreq_n && !cpu_wr_n && !w_has_request_latch ) begin
+			ff_cpu_wr_n		<= 1'b0;
+			ff_cpu_wdata	<= cpu_wdata;
+		end
+		else if( ff_main_state == c_main_state_finish ) begin
+			ff_cpu_wr_n		<= 1'b1;
+		end
+	end
+
+	// --------------------------------------------------------------------
+	//	Request latch for VDP
+	// --------------------------------------------------------------------
+	always @( posedge clk ) begin
+		if( !reset_n ) begin
+			ff_vdp_wdata	<= 8'd0;
+		end
+		else if( !vdp_wr_n && ff_main_state == c_main_state_ready ) begin
+			ff_vdp_wdata	<= vdp_wdata;
+		end
+	end
+
+	assign w_has_request_latch	= (!ff_cpu_rd_n) | (!ff_cpu_wr_n);
 
 	always @( posedge clk ) begin
-		if( !n_reset ) begin
+		if( !reset_n ) begin
+			ff_address <= 23'd0;
+		end
+		else if( ff_main_state == c_main_state_ready ) begin
+			ff_address <= w_address;
+		end
+		else begin
+			//	hold
+		end
+	end
+
+	assign w_address	= vdp_access ? { c_vram_high_address, vdp_address } : cpu_address;
+
+	// --------------------------------------------------------------------
+	//	Request
+	// --------------------------------------------------------------------
+	always @( posedge clk ) begin
+		if( !reset_n ) begin
+			ff_req			<= 1'b0;
+			ff_is_write		<= 1'b0;
 			ff_do_refresh	<= 1'b0;
 		end
-		else if( ff_sdr_ready ) begin
-			if( ff_main_state == c_main_state_finish ) begin
-				if( w_refresh == 1'b1 && dl_clk == 1'b1 ) begin
-					ff_do_refresh	<= 1'b1;
-				end
-				else begin
-					ff_do_refresh	<= 1'b0;
-				end
+		else if( ff_req ) begin
+			if( ff_main_state == c_main_state_finish || ff_main_state == c_main_state_finish2 ) begin
+				ff_req			<= 1'b0;
+				ff_is_write		<= 1'b0;
+				ff_do_refresh	<= 1'b0;
+			end
+		end
+		else if( ff_main_state == c_main_state_ready ) begin
+			if(      !vdp_rd_n ) begin
+				ff_req			<= 1'b1;
+				ff_is_write		<= 1'b0;
+			end
+			else if( !vdp_wr_n ) begin
+				ff_req			<= 1'b1;
+				ff_is_write		<= 1'b1;
+			end
+			else if( !w_cpu_access_busy && ((!ff_rfsh_accept && !cpu_rfsh_n) || (cpu_freeze && ff_no_refresh == 8'hFF)) ) begin
+				ff_req			<= 1'b1;
+				ff_do_refresh	<= 1'b1;
+			end
+			else if( !ff_rd_wr_accept && (!ff_cpu_rd_n || (!cpu_mreq_n && !cpu_rd_n)) ) begin
+				ff_req			<= 1'b1;
+				ff_is_write		<= 1'b0;
+			end
+			else if( !ff_rd_wr_accept && (!ff_cpu_wr_n || (!cpu_mreq_n && !cpu_wr_n)) ) begin
+				ff_req			<= 1'b1;
+				ff_is_write		<= 1'b1;
+			end
+		end
+	end
+
+	always @( posedge clk ) begin
+		if( !reset_n ) begin
+			ff_rd_wr_accept <= 1'b0;
+		end
+		else if( ff_rd_wr_accept && (ff_main_state == c_main_state_finish) ) begin
+			ff_rd_wr_accept <= 1'b0;
+		end
+		else if( ff_main_state == c_main_state_ready ) begin
+			if( !w_cpu_access_busy && ((!ff_rfsh_accept && !cpu_rfsh_n) || (cpu_freeze && ff_no_refresh == 8'hFF)) ) begin
+				//	hold
+			end
+			else if( !ff_rd_wr_accept && !ff_cpu_wr_n ) begin
+				ff_rd_wr_accept <= 1'b1;
+			end
+			else if( !ff_rd_wr_accept && !ff_cpu_wr_n ) begin
+				ff_rd_wr_accept <= 1'b1;
+			end
+			else begin
+				//	hold
+			end
+		end
+	end
+
+	always @( posedge clk ) begin
+		if( !reset_n ) begin
+			ff_rfsh_accept <= 1'b0;
+		end
+		else if( ff_rfsh_accept && cpu_rfsh_n ) begin
+			ff_rfsh_accept <= 1'b0;
+		end
+		else if( ff_main_state == c_main_state_ready ) begin
+			if( !vdp_rd_n || !vdp_wr_n ) begin
+				//	hold
+			end
+			else if( !w_cpu_access_busy && !ff_rfsh_accept && !cpu_rfsh_n ) begin
+				ff_rfsh_accept <= 1'b1;
 			end
 			else begin
 				//	hold
 			end
 		end
 		else begin
-			ff_do_refresh	<= 1'b0;
+			//	hold
+		end
+	end
+
+	always @( posedge clk ) begin
+		if( !reset_n ) begin
+			ff_no_refresh <= 8'hFF;
+		end
+		else if( ff_no_refresh != 8'hFF ) begin
+			ff_no_refresh <= ff_no_refresh + 8'd1;
+		end
+		else if( ff_do_refresh ) begin
+			ff_no_refresh <= 8'h00;
+		end
+		else begin
+			//	hold
 		end
 	end
 
@@ -194,7 +338,7 @@ module ip_sdram #(
 	//	Main State
 	// --------------------------------------------------------------------
 	always @( posedge clk ) begin
-		if( !n_reset ) begin
+		if( !reset_n ) begin
 			ff_main_state		<= c_init_state_begin_first_wait;
 			ff_do_main_state	<= 1'b0;
 		end
@@ -210,14 +354,39 @@ module ip_sdram #(
 				ff_main_state	<= c_init_state_wait_refresh_all2;
 			c_init_state_send_mode_register_set:
 				ff_main_state	<= c_init_state_wait_mode_register_set;
-			c_main_state_activate:
-				if( w_start_of_main_state ) begin
+			c_main_state_ready:
+				if(      !vdp_rd_n && vdp_access ) begin
+					ff_main_state		<= c_main_state_activate;
+					ff_do_main_state	<= 1'b1;
+				end
+				else if( !vdp_wr_n && vdp_access ) begin
+					ff_main_state		<= c_main_state_activate;
+					ff_do_main_state	<= 1'b1;
+				end
+				else if( !w_cpu_access_busy && ((!ff_rfsh_accept && !cpu_rfsh_n) || (cpu_freeze && ff_no_refresh == 8'hFF)) ) begin
 					ff_main_state		<= c_main_state_nop1;
 					ff_do_main_state	<= 1'b1;
 				end
-			c_main_state_finish:
-				if( w_finish_of_main_state ) begin
+				else if( !ff_rd_wr_accept && (!ff_cpu_rd_n || (!cpu_mreq_n && !cpu_rd_n && !w_busy)) ) begin
 					ff_main_state		<= c_main_state_activate;
+					ff_do_main_state	<= 1'b1;
+				end
+				else if( !ff_rd_wr_accept && (!ff_cpu_wr_n || (!cpu_mreq_n && !cpu_wr_n && !w_busy)) ) begin
+					ff_main_state		<= c_main_state_activate;
+					ff_do_main_state	<= 1'b1;
+				end
+			c_main_state_read_or_write:
+				begin
+					if( vdp_access || !ff_do_refresh ) begin
+						ff_main_state		<= c_main_state_nop3;
+					end
+					else begin
+						ff_main_state		<= c_main_state_nop5;
+					end
+				end
+			c_main_state_finish, c_main_state_finish2:
+				begin
+					ff_main_state		<= c_main_state_ready;
 					ff_do_main_state	<= 1'b0;
 				end
 			default:
@@ -231,16 +400,15 @@ module ip_sdram #(
 		end
 	end
 
-	assign w_start_of_main_state	=  dh_clk;
-	assign w_finish_of_main_state	= !dh_clk;
-
-	assign sdram_busy	= !ff_sdr_ready;
+	assign w_busy			= w_has_request_latch || (cpu_freeze && ff_no_refresh == 8'hFF) || w_cpu_access_busy;
+	assign sdram_busy		= w_busy;
+	assign sdram_init_busy	= !ff_sdr_ready;
 
 	// --------------------------------------------------------------------
 	//	Sub State
 	// --------------------------------------------------------------------
 	always @( posedge clk ) begin
-		if( !n_reset ) begin
+		if( !reset_n ) begin
 			ff_sdr_ready	<= 1'b0;
 		end
 		else if( (ff_main_state == c_init_state_wait_mode_register_set) && w_end_of_main_timer ) begin
@@ -282,10 +450,8 @@ module ip_sdram #(
 	// --------------------------------------------------------------------
 	//	SDRAM Command Signal
 	// --------------------------------------------------------------------
-	assign w_vdp_phase	= dl_clk;
-
 	always @( posedge clk ) begin
-		if( !n_reset ) begin
+		if( !reset_n ) begin
 			ff_sdr_command	<= c_sdr_command_no_operation;
 		end
 		else begin
@@ -306,73 +472,53 @@ module ip_sdram #(
 					ff_sdr_dq_mask		<= 4'b1111;
 				end
 			default:
-				if( ff_sdr_ready ) begin
-					case( ff_main_state )
-					c_main_state_activate:
-						if( !w_start_of_main_state ) begin
-						end
-						else begin
-							if( w_vdp_phase ) begin
-//								$display( "activate address %X", { address[20:17], address[15:9] } );
-								ff_sdr_command		<= c_sdr_command_activate;
-								ff_sdr_dq_mask		<= 4'b1111;
-							end
-							else begin
-								ff_sdr_command		<= c_sdr_command_no_operation;
-								ff_sdr_dq_mask		<= 4'b1111;
-							end
-						end
-					c_main_state_read_or_write:
-						if( ff_do_refresh ) begin
-//							$display( "do_refresh: precharge_all" );
-							ff_sdr_command		<= c_sdr_command_refresh;
-							ff_sdr_dq_mask		<= 4'b0000;
-						end
-						else begin
-							if( w_vdp_phase ) begin
-								if( vdp_is_write ) begin
-									ff_sdr_command		<= c_sdr_command_write;
-									case( { vdp_address[0], vdp_address[16] } )
-									2'b00:		ff_sdr_dq_mask	<= 4'b1110;
-									2'b01:		ff_sdr_dq_mask	<= 4'b1101;
-									2'b10:		ff_sdr_dq_mask	<= 4'b1011;
-									2'b11:		ff_sdr_dq_mask	<= 4'b0111;
-									default:	ff_sdr_dq_mask	<= 4'b1111;
-									endcase
-								end
-								else begin
-									ff_sdr_command		<= c_sdr_command_read;
-									ff_sdr_dq_mask		<= 4'b0000;
-								end
-							end
-							else begin
-								if( cpu_is_write ) begin
-									ff_sdr_command		<= c_sdr_command_write;
-									case( { cpu_address[1:0] } )
-									2'b00:		ff_sdr_dq_mask	<= 4'b1110;
-									2'b01:		ff_sdr_dq_mask	<= 4'b1101;
-									2'b10:		ff_sdr_dq_mask	<= 4'b1011;
-									2'b11:		ff_sdr_dq_mask	<= 4'b0111;
-									default:	ff_sdr_dq_mask	<= 4'b1111;
-									endcase
-								end
-								else begin
-									ff_sdr_command		<= c_sdr_command_no_operation;
-									ff_sdr_dq_mask		<= 4'b1111;
-								end
-							end
-						end
-					default:
-						begin
-							ff_sdr_command		<= c_sdr_command_no_operation;
-							ff_sdr_dq_mask		<= 4'b1111;
-						end
-					endcase
-				end
-				else begin
-					ff_sdr_command		<= c_sdr_command_no_operation;
-					ff_sdr_dq_mask		<= 4'b1111;
-				end
+				case( ff_main_state )
+				c_main_state_ready:
+					if( !vdp_rd_n || !vdp_wr_n ) begin
+//						$display( "activate address %X", w_address[20:10] );
+						ff_sdr_command		<= c_sdr_command_no_operation;
+						ff_sdr_dq_mask		<= 4'b1111;
+					end
+					else if( !w_cpu_access_busy && ((!ff_rfsh_accept && !cpu_rfsh_n) || (cpu_freeze && ff_no_refresh == 8'hFF)) ) begin
+//						$display( "do_refresh: precharge_all" );
+						ff_sdr_command		<= c_sdr_command_precharge_all;
+						ff_sdr_dq_mask		<= 4'b0000;
+					end
+					else if( !ff_rd_wr_accept && (!cpu_rd_n || !cpu_wr_n) ) begin
+//						$display( "activate address %X", w_address[20:10] );
+						ff_sdr_command		<= c_sdr_command_no_operation;
+						ff_sdr_dq_mask		<= 4'b1111;
+					end
+				c_main_state_activate:
+					begin
+						ff_sdr_command		<= c_sdr_command_activate;
+						ff_sdr_dq_mask		<= 4'b1111;
+					end
+				c_main_state_read_or_write:
+					if( ff_do_refresh ) begin
+						ff_sdr_command		<= c_sdr_command_refresh;
+						ff_sdr_dq_mask		<= 4'b0000;
+					end
+					else if( ff_is_write ) begin
+						ff_sdr_command		<= c_sdr_command_write;
+						case( ff_address[1:0] )
+						2'd0:		ff_sdr_dq_mask	<= 4'b1110;
+						2'd1:		ff_sdr_dq_mask	<= 4'b1101;
+						2'd2:		ff_sdr_dq_mask	<= 4'b1011;
+						2'd3:		ff_sdr_dq_mask	<= 4'b0111;
+						default:	ff_sdr_dq_mask	<= 4'b1111;
+						endcase
+					end
+					else begin
+						ff_sdr_command		<= c_sdr_command_read;
+						ff_sdr_dq_mask		<= 4'b0000;
+					end
+				default:
+					begin
+						ff_sdr_command		<= c_sdr_command_no_operation;
+						ff_sdr_dq_mask		<= 4'b1111;
+					end
+				endcase
 			endcase
 		end
 	end
@@ -382,10 +528,10 @@ module ip_sdram #(
 	//	[Bank1][Bank0][RSV][WB][OP1][OP0][CAS2][CAS1][CAS0][BT][BL2][BL1][BL0] : mode
 	//	
 	always @( posedge clk ) begin
-		if( !n_reset ) begin
+		if( !reset_n ) begin
 			ff_sdr_address			<= 13'd0;
 		end
-		else if( !ff_sdr_ready ) begin
+		else begin
 			case( ff_main_state )
 			c_init_state_send_precharge_all:
 				ff_sdr_address <= { 
@@ -393,7 +539,29 @@ module ip_sdram #(
 					1'b1,						//	All banks
 					10'd0						//	Ignore
 				};
-			default:
+			c_main_state_ready:
+				ff_sdr_address <= { 
+					w_address[22:21],			// Bank
+					w_address[20:10]			// Row address
+				};
+			c_main_state_read_or_write:
+				if( ff_do_refresh ) begin
+//					$display( "do_refresh" );
+					ff_sdr_address <= { 
+						2'b00,				// Ignore
+						1'b1,				// All banks
+						10'd0				// Ignore
+					};
+				end
+				else begin
+					ff_sdr_address <= { 
+						ff_address[22:21],	// Bank
+						1'b1,				// Enable auto precharge
+						2'd0,				// 00
+						ff_address[9:2] 	// Column address
+					};
+				end
+			c_init_state_send_mode_register_set:
 				ff_sdr_address <= { 
 				    2'b00,						//	Bank
 					1'b0,						//	Reserved
@@ -403,62 +571,6 @@ module ip_sdram #(
 					1'b0,						//	Burst type        0: Sequential Access, 1: Interleave Access
 					3'b000						//	Burst length      000: 1, 001: 2, 010: 4, 011: 8, 111: full page (Sequential Access only), others: Reserved
 				};
-			endcase
-		end
-		else begin
-			case( ff_main_state )
-			c_main_state_activate:
-				if( ff_sdr_ready ) begin
-					if( w_vdp_phase ) begin
-						ff_sdr_address <= { 
-							vdp_address[22:21],							// Bank
-							vdp_address[20:17], vdp_address[15:9]		// Row address
-						};
-					end
-					else begin
-						ff_sdr_address <= { 
-							cpu_address[22:21],							// Bank
-							cpu_address[20:17], cpu_address[16:10]		// Row address
-						};
-					end
-				end
-				else begin
-					ff_sdr_address <= 13'd0;	// Initialize phase
-				end
-			c_main_state_read_or_write:
-				begin
-					if( ff_sdr_ready ) begin
-						if( w_vdp_phase ) begin
-							ff_sdr_address <= { 
-								vdp_address[22:21],		// Bank
-								1'b1,					// Enable auto precharge
-								2'd0,					// 00
-								vdp_address[8:1] 		// Column address
-							};
-						end
-						else begin
-							if( ff_do_refresh ) begin
-//								$display( "do_refresh" );
-								ff_sdr_address <= { 
-									2'b00,				// Ignore
-									1'b1,				// All banks
-									10'd0				// Ignore
-								};
-							end
-							else begin
-								ff_sdr_address <= { 
-									cpu_address[22:21],		// Bank
-									1'b1,					// Enable auto precharge
-									2'd0,					// 00
-									cpu_address[9:2] 		// Column address
-								};
-							end
-						end
-					end
-					else begin
-						ff_sdr_address <= 13'd0;
-					end
-				end
 			default:
 				begin
 					//	hold
@@ -468,20 +580,15 @@ module ip_sdram #(
 	end
 
 	always @( posedge clk ) begin
-		if( !n_reset ) begin
+		if( !reset_n ) begin
 			ff_sdr_write_data <= 32'dz;
 		end
-		else if( ff_sdr_ready && ff_main_state == c_main_state_read_or_write ) begin
-			if( ff_sdr_ready ) begin
-				if( w_vdp_phase ) begin
-					ff_sdr_write_data <= { vdp_wdata, vdp_wdata, vdp_wdata, vdp_wdata };
-				end
-				else begin
-					ff_sdr_write_data <= { cpu_wdata, cpu_wdata, cpu_wdata, cpu_wdata };
-				end
+		else if( ff_main_state == c_main_state_read_or_write ) begin
+			if( vdp_access ) begin
+				ff_sdr_write_data <= { ff_vdp_wdata, ff_vdp_wdata, ff_vdp_wdata, ff_vdp_wdata };
 			end
 			else begin
-				ff_sdr_write_data <= 32'd0;
+				ff_sdr_write_data <= { ff_cpu_wdata, ff_cpu_wdata, ff_cpu_wdata, ff_cpu_wdata };
 			end
 		end
 		else begin
@@ -490,28 +597,40 @@ module ip_sdram #(
 	end
 
 	always @( posedge clk_sdram ) begin
-		if( !n_reset ) begin
-			ff_sdr_vdp_read_data <= 16'd0;
-			ff_sdr_cpu_read_data <= 8'd0;
+		if( !reset_n ) begin
+			ff_sdr_cpu_read_data	<= 8'd0;
+			ff_sdr_cpu_read_data_en	<= 1'b0;
 		end
-		else if( ff_main_state == c_main_state_data_fetch ) begin
-			if( w_vdp_phase ) begin
-				if( vdp_address[0] == 1'b0 ) begin
-					ff_sdr_vdp_read_data <= IO_sdram_dq[15:0];
-				end
-				else begin
-					ff_sdr_vdp_read_data <= IO_sdram_dq[31:16];
-				end
-			end
-			else begin
-				case( cpu_address[1:0] )
-				2'd0:		ff_sdr_cpu_read_data <= IO_sdram_dq[ 7: 0];
-				2'd1:		ff_sdr_cpu_read_data <= IO_sdram_dq[15: 8];
-				2'd2:		ff_sdr_cpu_read_data <= IO_sdram_dq[23:16];
-				2'd3:		ff_sdr_cpu_read_data <= IO_sdram_dq[31:24];
-				default:	ff_sdr_cpu_read_data <= IO_sdram_dq[ 7: 0];
-				endcase
-			end
+		else if( !vdp_access && ff_main_state == c_main_state_finish ) begin
+			case( ff_address[1:0] )
+			2'd0:		ff_sdr_cpu_read_data <= IO_sdram_dq[7 :0 ];
+			2'd1:		ff_sdr_cpu_read_data <= IO_sdram_dq[15:8 ];
+			2'd2:		ff_sdr_cpu_read_data <= IO_sdram_dq[23:16];
+			2'd3:		ff_sdr_cpu_read_data <= IO_sdram_dq[31:24];
+			default:	ff_sdr_cpu_read_data <= 8'd0;
+			endcase
+			ff_sdr_cpu_read_data_en	<= ~ff_cpu_rd_n;
+		end
+		else begin
+			ff_sdr_cpu_read_data_en	<= 1'b0;
+		end
+	end
+
+	always @( posedge clk_sdram ) begin
+		if( !reset_n ) begin
+			ff_sdr_vdp_read_data	<= 16'd0;
+			ff_sdr_vdp_read_data_en	<= 1'b0;
+		end
+		else if( vdp_access && ff_main_state == c_main_state_finish ) begin
+			case( ff_address[1] )
+			1'b0:		ff_sdr_vdp_read_data	<= IO_sdram_dq[15: 0];
+			1'b1:		ff_sdr_vdp_read_data	<= IO_sdram_dq[31:16];
+			default:	ff_sdr_vdp_read_data	<= 16'd0;
+			endcase
+			ff_sdr_vdp_read_data_en	<= ~ff_is_write;
+		end
+		else begin
+			ff_sdr_vdp_read_data_en	<= 1'b0;
 		end
 	end
 
@@ -528,6 +647,8 @@ module ip_sdram #(
 	assign O_sdram_addr			= ff_sdr_address[10:0];
 	assign IO_sdram_dq			= ff_sdr_write_data;
 
-	assign vdp_rdata			= ff_sdr_vdp_read_data;
 	assign cpu_rdata			= ff_sdr_cpu_read_data;
+	assign cpu_rdata_en			= ff_sdr_cpu_read_data_en;
+	assign vdp_rdata			= ff_sdr_vdp_read_data;
+	assign vdp_rdata_en			= ff_sdr_vdp_read_data_en;
 endmodule
