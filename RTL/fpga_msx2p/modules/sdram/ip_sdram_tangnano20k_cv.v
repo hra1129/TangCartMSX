@@ -183,11 +183,11 @@ module ip_sdram #(
 		if( !reset_n ) begin
 			ff_cpu_rd_n		<= 1'b1;
 		end
-		else if( !ff_rd_wr_accept && !cpu_mreq_n && !cpu_rd_n && !w_has_request_latch ) begin
-			ff_cpu_rd_n		<= 1'b0;
-		end
 		else if( ff_sdr_cpu_read_data_en ) begin
 			ff_cpu_rd_n		<= 1'b1;
+		end
+		else if( !w_busy && !ff_rd_wr_accept && !cpu_mreq_n && !cpu_rd_n && !w_has_request_latch ) begin
+			ff_cpu_rd_n		<= 1'b0;
 		end
 	end
 
@@ -196,12 +196,12 @@ module ip_sdram #(
 			ff_cpu_wr_n		<= 1'b1;
 			ff_cpu_wdata	<= 8'd0;
 		end
-		else if( !ff_rd_wr_accept && !cpu_mreq_n && !cpu_wr_n && !w_has_request_latch ) begin
-			ff_cpu_wr_n		<= 1'b0;
-			ff_cpu_wdata	<= cpu_wdata;
-		end
 		else if( ff_main_state == c_main_state_finish ) begin
 			ff_cpu_wr_n		<= 1'b1;
+		end
+		else if( !w_busy && !ff_rd_wr_accept && !cpu_mreq_n && !cpu_wr_n && !w_has_request_latch ) begin
+			ff_cpu_wr_n		<= 1'b0;
+			ff_cpu_wdata	<= cpu_wdata;
 		end
 	end
 
