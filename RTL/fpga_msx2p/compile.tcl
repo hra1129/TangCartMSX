@@ -41,7 +41,7 @@ add_file ../modules/opll/ikaopll/IKAOPLL_modules/IKAOPLL_timinggen.v
 add_file ../modules/opll/opll.v
 add_file ../modules/ppi/ppi.v
 add_file ../modules/ppi/ppi_inst.v
-add_file ../modules/sdram/ip_sdram_tangnano20k_c.v
+add_file ../modules/sdram/ip_sdram_tangnano20k_cv.v
 add_file ../modules/secondary_slot/secondary_slot_inst.v
 add_file ../modules/ssg/ssg.v
 add_file ../modules/v9958/vdp.v

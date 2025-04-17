@@ -106,9 +106,8 @@ module tangnano20k_step9 (
 	wire			w_vram_write_n;
 	wire	[16:0]	w_vram_address;
 	wire	[7:0]	w_vram_wdata;
-	wire	[7:0]	w_vram_rdata;
+	wire	[15:0]	w_vram_rdata;
 	wire			w_vram_rdata_en;
-	reg		[7:0]	ff_vram_rdata;
 
 	wire	[7:0]	w_video_r;
 	wire	[7:0]	w_video_g;
@@ -287,7 +286,8 @@ module tangnano20k_step9 (
 		.address				( w_spi_address				),
 		.req_n					( w_spi_mreq_n				),
 		.wdata					( w_spi_d					),
-		.sdram_busy				( w_sdram_init_busy			),
+		.sdram_busy				( w_sdram_busy				),
+		.sdram_init_busy		( w_sdram_init_busy			),
 		.keyboard_caps_led_off	( w_keyboard_caps_led_off	),
 		.keyboard_kana_led_off	( w_keyboard_kana_led_off	),
 		.keyboard_type			( w_keyboard_type			),
@@ -500,7 +500,7 @@ module tangnano20k_step9 (
 	// --------------------------------------------------------------------
 	vdp_inst u_v9958 (
 		.clk					( clk42m				),
-		.reset_n				( w_msx_reset_n			),
+		.reset_n				( ff_reset_n			),
 		.initial_busy			( w_sdram_init_busy		),
 		.iorq_n					( w_vdp_cs_n			),
 		.wr_n					( wr_n					),
@@ -513,7 +513,7 @@ module tangnano20k_step9 (
 		.p_dram_oe_n			( w_vram_read_n			),		
 		.p_dram_we_n			( w_vram_write_n		),		
 		.p_dram_address			( w_vram_address		),		//	[16: 0];
-		.p_dram_rdata			( ff_vram_rdata			),		//	[ 7: 0];
+		.p_dram_rdata			( w_vram_rdata			),		//	[15: 0];
 		.p_dram_wdata			( w_vram_wdata			),		//	[ 7: 0];
 		.p_vdp_enable			( w_vdp_enable			),
 		.p_vdp_r				( w_vdp_r				),		//	[ 5: 0];
@@ -535,7 +535,7 @@ module tangnano20k_step9 (
 		.vs_positive			( 1'b0					)		//	If video_vs is positive logic, set to 1.
 	) u_video_out (
 		.clk					( clk42m				),
-		.reset_n				( w_msx_reset_n			),
+		.reset_n				( ff_reset_n			),
 		.enable					( w_vdp_enable			),
 		.vdp_r					( w_vdp_r				),
 		.vdp_g					( w_vdp_g				),
@@ -561,48 +561,38 @@ module tangnano20k_step9 (
 	assign lcd_bl					= !w_cpu_freeze;
 
 	// --------------------------------------------------------------------
-	//	VRAM
-	// --------------------------------------------------------------------
-	ip_ram u_vram (
-		.clk					( clk42m				),
-		.n_cs					( 1'b0					),
-		.n_wr					( w_vram_write_n		),
-		.n_rd					( w_vram_read_n			),
-		.address				( w_vram_address		),
-		.wdata					( w_vram_wdata			),
-		.rdata					( w_vram_rdata			),
-		.rdata_en				( w_vram_rdata_en		)
-	);
-
-	always @( posedge clk42m ) begin
-		if( w_vram_rdata_en ) begin
-			ff_vram_rdata <= w_vram_rdata;
-		end
-	end
-
-	// --------------------------------------------------------------------
 	//	SDRAM
 	// --------------------------------------------------------------------
-	ip_sdram u_sdram (
+	ip_sdram #(
+		.FREQ					( 85_909_080			),		//	Hz
+		.c_vram_high_address	( 6'b000_111			)	//	[22:17]
+	) u_sdram (
 		.reset_n				( ff_reset_n			),
 		.clk					( clk					),
 		.clk_sdram				( clk					),
 		.sdram_init_busy		( w_sdram_init_busy		),
 		.sdram_busy				( w_sdram_busy			),
 		.cpu_freeze				( w_cpu_freeze			),
-		.mreq_n					( w_sdram_mreq_n		),
-		.address				( w_sdram_address		),
-		.wr_n					( w_sdram_wr_n			),
-		.rd_n					( w_sdram_rd_n			),
-		.rfsh_n					( rfsh_n				),
-		.wdata					( w_sdram_d				),
-		.rdata					( w_sdram_q				),
-		.rdata_en				( w_sdram_q_en			),
+		.cpu_mreq_n				( w_sdram_mreq_n		),
+		.cpu_address			( w_sdram_address		),
+		.cpu_wr_n				( w_sdram_wr_n			),
+		.cpu_rd_n				( w_sdram_rd_n			),
+		.cpu_rfsh_n				( rfsh_n				),
+		.cpu_wdata				( w_sdram_d				),
+		.cpu_rdata				( w_sdram_q				),
+		.cpu_rdata_en			( w_sdram_q_en			),
+		.vdp_access				( w_dl_clk				),
+		.vdp_address			( w_vram_address		),
+		.vdp_wr_n				( w_vram_write_n		),
+		.vdp_rd_n				( w_vram_read_n			),
+		.vdp_wdata				( w_vram_wdata			),
+		.vdp_rdata				( w_vram_rdata			),
+		.vdp_rdata_en			( w_vram_rdata_en		),
 		.O_sdram_clk			( O_sdram_clk			),
 		.O_sdram_cke			( O_sdram_cke			),
 		.O_sdram_cs_n			( O_sdram_cs_n			),
-		.O_sdram_cas_n			( O_sdram_cas_n			),
 		.O_sdram_ras_n			( O_sdram_ras_n			),
+		.O_sdram_cas_n			( O_sdram_cas_n			),
 		.O_sdram_wen_n			( O_sdram_wen_n			),
 		.IO_sdram_dq			( IO_sdram_dq			),
 		.O_sdram_addr			( O_sdram_addr			),
@@ -669,7 +659,7 @@ module tangnano20k_step9 (
 	// --------------------------------------------------------------------
 	//	Memory mapper
 	// --------------------------------------------------------------------
-	memory_mapper_inst(
+	memory_mapper_inst u_memory_mapper (
 		.reset_n				( w_msx_reset_n			),
 		.clk					( clk42m				),
 		.iorq_n					( iorq_n				),

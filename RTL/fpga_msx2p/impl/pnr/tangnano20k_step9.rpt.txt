@@ -12,27 +12,27 @@
   <Part Number>: GW2AR-LV18QN88C8/I7
   <Device>: GW2AR-18
   <Device Version>: C
-  <Created Time>:Sat Apr 12 10:09:44 2025
+  <Created Time>:Thu Apr 17 22:22:56 2025
 
 
 2. PnR Details
 
   Running placement:
     Placement Phase 0: CPU time = 0h 0m 2s, Elapsed time = 0h 0m 2s
-    Placement Phase 1: CPU time = 0h 0m 0.506s, Elapsed time = 0h 0m 0.506s
+    Placement Phase 1: CPU time = 0h 0m 0.471s, Elapsed time = 0h 0m 0.471s
     Placement Phase 2: CPU time = 0h 0m 6s, Elapsed time = 0h 0m 6s
     Placement Phase 3: CPU time = 0h 0m 4s, Elapsed time = 0h 0m 4s
     Total Placement: CPU time = 0h 0m 12s, Elapsed time = 0h 0m 12s
  Running routing:
     Routing Phase 0: CPU time = 0h 0m 0.005s, Elapsed time = 0h 0m 0.005s
-    Routing Phase 1: CPU time = 0h 0m 0.369s, Elapsed time = 0h 0m 0.369s
-    Routing Phase 2: CPU time = 0h 0m 11s, Elapsed time = 0h 0m 11s
+    Routing Phase 1: CPU time = 0h 0m 0.362s, Elapsed time = 0h 0m 0.362s
+    Routing Phase 2: CPU time = 0h 0m 10s, Elapsed time = 0h 0m 10s
     Routing Phase 3: CPU time = 0h 0m 0s, Elapsed time = 0h 0m 0s
-    Total Routing: CPU time = 0h 0m 12s, Elapsed time = 0h 0m 12s
+    Total Routing: CPU time = 0h 0m 11s, Elapsed time = 0h 0m 11s
  Generate output files:
     CPU time = 0h 0m 3s, Elapsed time = 0h 0m 3s
 
- Total Time and Memory Usage: CPU time = 0h 0m 27s, Elapsed time = 0h 0m 27s, Peak memory usage = 1306MB
+ Total Time and Memory Usage: CPU time = 0h 0m 26s, Elapsed time = 0h 0m 26s, Peak memory usage = 557MB
 
 
 3. Resource Usage Summary
@@ -40,22 +40,22 @@
   --------------------------------------------------------------------------------
   Resources                   | Usage                               | Utilization
   --------------------------------------------------------------------------------
-  Logic                       | 7711/20736                          |  38%
-    --LUT,ALU,ROM16           | 7393(6636 LUT, 757 ALU, 0 ROM16)    | -
+  Logic                       | 7790/20736                          |  38%
+    --LUT,ALU,ROM16           | 7472(6722 LUT, 750 ALU, 0 ROM16)    | -
     --SSRAM(RAM16)            | 53                                  | -
-  Register                    | 3638/15915                          |  23%
+  Register                    | 3707/15915                          |  24%
     --Logic Register as Latch | 0/15552                             |  0%
-    --Logic Register as FF    | 3615/15552                          |  24%
+    --Logic Register as FF    | 3682/15552                          |  24%
     --I/O Register as Latch   | 0/363                               |  0%
-    --I/O Register as FF      | 23/363                              |  7%
-  CLS                         | 5261/10368                          |  51%
+    --I/O Register as FF      | 25/363                              |  7%
+  CLS                         | 5315/10368                          |  52%
   I/O Port                    | 42/66                               |  64%
   I/O Buf                     | 39                                  | -
     --Input Buf               | 10                                  | -
     --Output Buf              | 29                                  | -
     --Inout Buf               | 0                                   | -
-  BSRAM                       | 18/46                               | 40%
-    --SP                      | 11
+  BSRAM                       | 10/46                               | 22%
+    --SP                      | 3
     --SPX9                    | 2
     --SDPB                    | 1
     --pROM                    | 4
@@ -90,7 +90,7 @@
   Clock Resource| Usage         | Utilization 
   ------------------------------------------
   PRIMARY       | 3/8           | 38%
-  LW            | 8/8           | 100%
+  LW            | 7/8           | 88%
   GCLK_PIN      | 2/5           | 40%
   PLL           | 1/2           | 50%
   ==========================================
@@ -102,13 +102,12 @@
   Signal         | Global Clock   | Location
   -------------------------------------------
   clk3_579m_d    | PRIMARY        |  BR
-  O_sdram_clk_d  | PRIMARY        |  TR TL
+  O_sdram_clk_d  | PRIMARY        |  TR TL BR BL
   lcd_clk_d      | PRIMARY        |  TR TL BR BL
   w_cpu_enable   | LW             |  -
-  ff_reset_n     | LW             |  -
-  n1710_5        | LW             |  -
+  i2s_audio_en_d | LW             |  -
+  n34_5          | LW             |  -
   w_vdp_enable   | LW             |  -
-  u_rtc/ff_mem_q_3_6| LW             |  -
   u_opll/u_ikaopll/n86_4| LW             |  -
   u_opll/u_ikaopll/m_nc_sel_z_6| LW             |  -
   u_opll/u_ikaopll/n672_5| LW             |  -

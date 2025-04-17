@@ -114,6 +114,14 @@
   "ModuleName" : "scc_inst"
  },
  {
+  "InstFile" : "D:/github/HRA_product/TangCartMSX/RTL/fpga_msx2p/src/ram/ip_ram.v",
+  "InstLine" : 5,
+  "InstName" : "ip_ram",
+  "ModuleFile" : "D:/github/HRA_product/TangCartMSX/RTL/fpga_msx2p/src/ram/ip_ram.v",
+  "ModuleLine" : 5,
+  "ModuleName" : "ip_ram"
+ },
+ {
   "InstFile" : "D:/github/HRA_product/TangCartMSX/RTL/fpga_msx2p/src/rom/ip_hello_world_rom.v",
   "InstLine" : 5,
   "InstName" : "ip_hello_world_rom",
@@ -131,7 +139,7 @@
   "SubInsts" : [
    {
     "InstFile" : "D:/github/HRA_product/TangCartMSX/RTL/fpga_msx2p/src/tangnano20k_step9.v",
-    "InstLine" : 203,
+    "InstLine" : 202,
     "InstName" : "u_pll",
     "ModuleFile" : "D:/github/HRA_product/TangCartMSX/RTL/fpga_msx2p/src/gowin_pll/gowin_pll.v",
     "ModuleLine" : 10,
@@ -139,7 +147,7 @@
    },
    {
     "InstFile" : "D:/github/HRA_product/TangCartMSX/RTL/fpga_msx2p/src/tangnano20k_step9.v",
-    "InstLine" : 276,
+    "InstLine" : 275,
     "InstName" : "u_esp32_conn",
     "ModuleFile" : "D:/github/HRA_product/TangCartMSX/RTL/fpga_msx2p/modules/micom_connect/micom_connect.v",
     "ModuleLine" : 60,
@@ -710,7 +718,7 @@
      {
       "InstFile" : "D:/github/HRA_product/TangCartMSX/RTL/fpga_msx2p/modules/video_out/video_out.v",
       "InstLine" : 264,
-      "InstName" : "i182",
+      "InstName" : "u_video_out_hmag",
       "ModuleFile" : "D:/github/HRA_product/TangCartMSX/RTL/fpga_msx2p/modules/video_out/video_out_hmag.v",
       "ModuleLine" : 60,
       "ModuleName" : "video_out_hmag",
@@ -771,23 +779,15 @@
    },
    {
     "InstFile" : "D:/github/HRA_product/TangCartMSX/RTL/fpga_msx2p/src/tangnano20k_step9.v",
-    "InstLine" : 566,
-    "InstName" : "u_vram",
-    "ModuleFile" : "D:/github/HRA_product/TangCartMSX/RTL/fpga_msx2p/src/ram/ip_ram.v",
-    "ModuleLine" : 5,
-    "ModuleName" : "ip_ram"
-   },
-   {
-    "InstFile" : "D:/github/HRA_product/TangCartMSX/RTL/fpga_msx2p/src/tangnano20k_step9.v",
-    "InstLine" : 586,
+    "InstLine" : 569,
     "InstName" : "u_sdram",
-    "ModuleFile" : "D:/github/HRA_product/TangCartMSX/RTL/fpga_msx2p/modules/sdram/ip_sdram_tangnano20k_c.v",
+    "ModuleFile" : "D:/github/HRA_product/TangCartMSX/RTL/fpga_msx2p/modules/sdram/ip_sdram_tangnano20k_cv.v",
     "ModuleLine" : 57,
     "ModuleName" : "ip_sdram"
    },
    {
     "InstFile" : "D:/github/HRA_product/TangCartMSX/RTL/fpga_msx2p/src/tangnano20k_step9.v",
-    "InstLine" : 616,
+    "InstLine" : 606,
     "InstName" : "u_kanji_rom",
     "ModuleFile" : "D:/github/HRA_product/TangCartMSX/RTL/fpga_msx2p/modules/kanji_rom/kanji_rom.v",
     "ModuleLine" : 58,
@@ -795,7 +795,7 @@
    },
    {
     "InstFile" : "D:/github/HRA_product/TangCartMSX/RTL/fpga_msx2p/src/tangnano20k_step9.v",
-    "InstLine" : 633,
+    "InstLine" : 623,
     "InstName" : "u_megarom_slot1",
     "ModuleFile" : "D:/github/HRA_product/TangCartMSX/RTL/fpga_msx2p/modules/megarom/megarom_wo_scc.v",
     "ModuleLine" : 58,
@@ -803,7 +803,7 @@
    },
    {
     "InstFile" : "D:/github/HRA_product/TangCartMSX/RTL/fpga_msx2p/src/tangnano20k_step9.v",
-    "InstLine" : 651,
+    "InstLine" : 641,
     "InstName" : "u_megarom_slot2",
     "ModuleFile" : "D:/github/HRA_product/TangCartMSX/RTL/fpga_msx2p/modules/megarom/megarom_wo_scc.v",
     "ModuleLine" : 58,
@@ -811,8 +811,8 @@
    },
    {
     "InstFile" : "D:/github/HRA_product/TangCartMSX/RTL/fpga_msx2p/src/tangnano20k_step9.v",
-    "InstLine" : 672,
-    "InstName" : "i251",
+    "InstLine" : 662,
+    "InstName" : "u_memory_mapper",
     "ModuleFile" : "D:/github/HRA_product/TangCartMSX/RTL/fpga_msx2p/modules/memory_mapper/memory_mapper_inst.v",
     "ModuleLine" : 58,
     "ModuleName" : "memory_mapper_inst",
@@ -829,7 +829,7 @@
    },
    {
     "InstFile" : "D:/github/HRA_product/TangCartMSX/RTL/fpga_msx2p/src/tangnano20k_step9.v",
-    "InstLine" : 728,
+    "InstLine" : 718,
     "InstName" : "u_system_control",
     "ModuleFile" : "D:/github/HRA_product/TangCartMSX/RTL/fpga_msx2p/modules/system_control/system_control.v",
     "ModuleLine" : 58,

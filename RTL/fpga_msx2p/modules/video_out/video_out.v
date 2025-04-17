@@ -261,7 +261,7 @@ module video_out #(
 	// --------------------------------------------------------------------
 	assign w_lcd_de		= ff_h_active && ff_v_active;
 
-	video_out_hmag (
+	video_out_hmag u_video_out_hmag (
 		.clk				( clk				),
 		.reset_n			( reset_n			),
 		.enable				( enable			),

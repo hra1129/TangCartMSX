@@ -38,7 +38,7 @@
         <File path="modules/opll/opll.v" type="file.verilog" enable="1"/>
         <File path="modules/ppi/ppi.v" type="file.verilog" enable="1"/>
         <File path="modules/ppi/ppi_inst.v" type="file.verilog" enable="1"/>
-        <File path="modules/sdram/ip_sdram_tangnano20k_c.v" type="file.verilog" enable="1"/>
+        <File path="modules/sdram/ip_sdram_tangnano20k_cv.v" type="file.verilog" enable="1"/>
         <File path="modules/secondary_slot/secondary_slot_inst.v" type="file.verilog" enable="1"/>
         <File path="modules/ssg/ssg.v" type="file.verilog" enable="1"/>
         <File path="modules/v9958/vdp.v" type="file.verilog" enable="1"/>

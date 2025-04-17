@@ -677,7 +677,7 @@ module tangnano20k_step8 (
 	// --------------------------------------------------------------------
 	//	Memory mapper
 	// --------------------------------------------------------------------
-	memory_mapper_inst(
+	memory_mapper_inst u_memory_mapper (
 		.reset_n				( w_msx_reset_n			),
 		.clk					( clk42m				),
 		.iorq_n					( iorq_n				),

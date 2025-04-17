@@ -33,7 +33,7 @@ Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\fpga_msx2p\modules
 Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\fpga_msx2p\modules\opll\opll.v'
 Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\fpga_msx2p\modules\ppi\ppi.v'
 Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\fpga_msx2p\modules\ppi\ppi_inst.v'
-Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\fpga_msx2p\modules\sdram\ip_sdram_tangnano20k_c.v'
+Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\fpga_msx2p\modules\sdram\ip_sdram_tangnano20k_cv.v'
 Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\fpga_msx2p\modules\secondary_slot\secondary_slot_inst.v'
 Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\fpga_msx2p\modules\ssg\ssg.v'
 Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\fpga_msx2p\modules\v9958\vdp.v'
@@ -68,7 +68,7 @@ Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\fpga_msx2p\src\uar
 Compiling module 'tangnano20k_step9'("D:\github\HRA_product\TangCartMSX\RTL\fpga_msx2p\src\tangnano20k_step9.v":24)
 Compiling module 'Gowin_PLL'("D:\github\HRA_product\TangCartMSX\RTL\fpga_msx2p\src\gowin_pll\gowin_pll.v":10)
 Compiling module 'micom_connect'("D:\github\HRA_product\TangCartMSX\RTL\fpga_msx2p\modules\micom_connect\micom_connect.v":60)
-Extracting RAM for identifier 'ff_key_matrix'("D:\github\HRA_product\TangCartMSX\RTL\fpga_msx2p\modules\micom_connect\micom_connect.v":112)
+Extracting RAM for identifier 'ff_key_matrix'("D:\github\HRA_product\TangCartMSX\RTL\fpga_msx2p\modules\micom_connect\micom_connect.v":116)
 Compiling module 'cz80_inst'("D:\github\HRA_product\TangCartMSX\RTL\fpga_msx2p\modules\cz80\cz80_inst.v":63)
 Compiling module 'cz80'("D:\github\HRA_product\TangCartMSX\RTL\fpga_msx2p\modules\cz80\cz80.v":63)
 Compiling module 'cz80_mcode'("D:\github\HRA_product\TangCartMSX\RTL\fpga_msx2p\modules\cz80\cz80_mcode.v":63)
@@ -188,9 +188,7 @@ Extracting RAM for identifier 'c_wait_table_602'("D:\github\HRA_product\TangCart
 Extracting RAM for identifier 'c_wait_table_603'("D:\github\HRA_product\TangCartMSX\RTL\fpga_msx2p\modules\v9958\vdp_wait_control.v":64)
 Extracting RAM for identifier 'c_wait_table_604'("D:\github\HRA_product\TangCartMSX\RTL\fpga_msx2p\modules\v9958\vdp_wait_control.v":66)
 Extracting RAM for identifier 'c_wait_table_605'("D:\github\HRA_product\TangCartMSX\RTL\fpga_msx2p\modules\v9958\vdp_wait_control.v":68)
-WARN  (EX3670) : Actual bit length 8 differs from formal bit length 16 for port 'p_dram_rdata'("D:\github\HRA_product\TangCartMSX\RTL\fpga_msx2p\src\tangnano20k_step9.v":516)
 Compiling module 'video_out(hs_positive=1'b0,vs_positive=1'b0)'("D:\github\HRA_product\TangCartMSX\RTL\fpga_msx2p\modules\video_out\video_out.v":60)
-WARN  (EX3771) : Module instantiation should have an instance name("D:\github\HRA_product\TangCartMSX\RTL\fpga_msx2p\modules\video_out\video_out.v":264)
 Compiling module 'video_out_hmag'("D:\github\HRA_product\TangCartMSX\RTL\fpga_msx2p\modules\video_out\video_out_hmag.v":60)
 WARN  (EX3791) : Expression size 32 truncated to fit in target size 10("D:\github\HRA_product\TangCartMSX\RTL\fpga_msx2p\modules\video_out\video_out_hmag.v":140)
 Compiling module 'video_double_buffer'("D:\github\HRA_product\TangCartMSX\RTL\fpga_msx2p\modules\video_out\video_double_buffer.v":58)
@@ -200,18 +198,14 @@ Compiling module 'video_out_bilinear'("D:\github\HRA_product\TangCartMSX\RTL\fpg
 WARN  (EX3791) : Expression size 9 truncated to fit in target size 8("D:\github\HRA_product\TangCartMSX\RTL\fpga_msx2p\modules\video_out\video_out_hmag.v":317)
 WARN  (EX3791) : Expression size 9 truncated to fit in target size 8("D:\github\HRA_product\TangCartMSX\RTL\fpga_msx2p\modules\video_out\video_out_hmag.v":318)
 WARN  (EX3791) : Expression size 9 truncated to fit in target size 8("D:\github\HRA_product\TangCartMSX\RTL\fpga_msx2p\modules\video_out\video_out_hmag.v":319)
-Compiling module 'ip_ram'("D:\github\HRA_product\TangCartMSX\RTL\fpga_msx2p\src\ram\ip_ram.v":5)
-Extracting RAM for identifier 'ff_ram'("D:\github\HRA_product\TangCartMSX\RTL\fpga_msx2p\src\ram\ip_ram.v":15)
-WARN  (EX3670) : Actual bit length 17 differs from formal bit length 14 for port 'address'("D:\github\HRA_product\TangCartMSX\RTL\fpga_msx2p\src\tangnano20k_step9.v":571)
-Compiling module 'ip_sdram'("D:\github\HRA_product\TangCartMSX\RTL\fpga_msx2p\modules\sdram\ip_sdram_tangnano20k_c.v":57)
-WARN  (EX3791) : Expression size 32 truncated to fit in target size 14("D:\github\HRA_product\TangCartMSX\RTL\fpga_msx2p\modules\sdram\ip_sdram_tangnano20k_c.v":389)
+Compiling module 'ip_sdram'("D:\github\HRA_product\TangCartMSX\RTL\fpga_msx2p\modules\sdram\ip_sdram_tangnano20k_cv.v":57)
+WARN  (EX3791) : Expression size 32 truncated to fit in target size 14("D:\github\HRA_product\TangCartMSX\RTL\fpga_msx2p\modules\sdram\ip_sdram_tangnano20k_cv.v":440)
 Compiling module 'kanji_rom'("D:\github\HRA_product\TangCartMSX\RTL\fpga_msx2p\modules\kanji_rom\kanji_rom.v":58)
 Compiling module 'megarom_wo_scc'("D:\github\HRA_product\TangCartMSX\RTL\fpga_msx2p\modules\megarom\megarom_wo_scc.v":58)
-WARN  (EX3771) : Module instantiation should have an instance name("D:\github\HRA_product\TangCartMSX\RTL\fpga_msx2p\src\tangnano20k_step9.v":672)
 Compiling module 'memory_mapper_inst'("D:\github\HRA_product\TangCartMSX\RTL\fpga_msx2p\modules\memory_mapper\memory_mapper_inst.v":58)
 Compiling module 'memory_mapper'("D:\github\HRA_product\TangCartMSX\RTL\fpga_msx2p\modules\memory_mapper\memory_mapper.v":58)
 Compiling module 'system_control'("D:\github\HRA_product\TangCartMSX\RTL\fpga_msx2p\modules\system_control\system_control.v":58)
-WARN  (EX3670) : Actual bit length 16 differs from formal bit length 8 for port 'address'("D:\github\HRA_product\TangCartMSX\RTL\fpga_msx2p\src\tangnano20k_step9.v":734)
+WARN  (EX3670) : Actual bit length 16 differs from formal bit length 8 for port 'address'("D:\github\HRA_product\TangCartMSX\RTL\fpga_msx2p\src\tangnano20k_step9.v":724)
 NOTE  (EX0101) : Current top module is "tangnano20k_step9"
 [5%] Running netlist conversion ...
 WARN  (CV0016) : Input clk27m is unused("D:\github\HRA_product\TangCartMSX\RTL\fpga_msx2p\src\tangnano20k_step9.v":25)

@@ -74,8 +74,9 @@ module micom_connect (
 	output	[22:0]	address,
 	output			req_n,
 	output	[7:0]	wdata,
-	//	Status
 	input			sdram_busy,
+	//	Status
+	input			sdram_init_busy,
 	input			keyboard_caps_led_off,
 	input			keyboard_kana_led_off,
 	output			keyboard_type,
@@ -105,7 +106,10 @@ module micom_connect (
 	reg		[7:0]	ff_recv_data;
 	reg		[7:0]	ff_send_data;
 	reg		[7:0]	ff_command;
+	reg		[7:0]	ff_wdata;
+	reg				ff_req_n;
 	reg		[13:0]	ff_address;
+	reg		[13:0]	ff_address_latch;
 	reg				ff_address_msb;
 	reg				ff_msx_reset_n;
 	reg				ff_cpu_freeze;
@@ -213,7 +217,7 @@ module micom_connect (
 			ff_send_data <= dt_signature;
 		end
 		else if( ff_state == st_command && ff_serial_state == sst_byte_end && ff_recv_data == 8'h05 ) begin
-			ff_send_data <= { 5'd0, keyboard_kana_led_off, keyboard_caps_led_off, sdram_busy };
+			ff_send_data <= { 5'd0, keyboard_kana_led_off, keyboard_caps_led_off, sdram_init_busy };
 		end
 		else if( ff_serial_state == sst_clk_hi && ff_spi_clk == 1'b0 ) begin
 			ff_send_data <= { ff_send_data[6:0], ff_send_data[7] };
@@ -432,6 +436,25 @@ module micom_connect (
 		end
 	end
 
+	always @( posedge clk ) begin
+		if( ff_state == st_data && ff_serial_state == sst_byte_end ) begin
+			ff_address_latch <= ff_address;
+			ff_wdata <= ff_recv_data;
+		end
+	end
+
+	always @( posedge clk ) begin
+		if( !reset_n ) begin
+			ff_req_n <= 1'b1;
+		end
+		else if( (ff_state == st_data) && (ff_serial_state == sst_byte_end) ) begin
+			ff_req_n <= 1'b0;
+		end
+		else if( sdram_busy == 1'b0 ) begin
+			ff_req_n <= 1'b1;
+		end
+	end
+
 	// --------------------------------------------------------------------
 	//	MegaROM mode
 	// --------------------------------------------------------------------
@@ -456,9 +479,9 @@ module micom_connect (
 		end
 	end
 
-	assign address			= { ff_address_msb, ff_operand1, ff_address };
-	assign req_n			= !((ff_state == st_data) && (ff_serial_state == sst_byte_end));
-	assign wdata			= ff_recv_data;
+	assign address			= { ff_address_msb, ff_operand1, ff_address_latch };
+	assign req_n			= ff_req_n;
+	assign wdata			= ff_wdata;
 	assign keyboard_type	= 1'b0;
 	assign megarom1_mode	= ff_megarom1_mode;
 	assign megarom2_mode	= ff_megarom2_mode;

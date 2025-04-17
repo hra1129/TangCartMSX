@@ -134,7 +134,7 @@
    "Type" : "verilog"
   },
   {
-   "Path" : "D:/github/HRA_product/TangCartMSX/RTL/fpga_msx2p/modules/sdram/ip_sdram_tangnano20k_c.v",
+   "Path" : "D:/github/HRA_product/TangCartMSX/RTL/fpga_msx2p/modules/sdram/ip_sdram_tangnano20k_cv.v",
    "Type" : "verilog"
   },
   {

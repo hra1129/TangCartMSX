@@ -44,7 +44,6 @@ module tb ();
 	reg				spi_clk;		//	PIN73
 	reg				spi_mosi;		//	PIN74
 	wire			spi_miso;		//	PIN75
-	wire			uart_tx;		//	uart_tx		PIN69_SYS_TX
 	wire			O_sdram_clk;	//	Internal
 	wire			O_sdram_cke;	//	Internal
 	wire			O_sdram_cs_n;	//	Internal
@@ -90,7 +89,6 @@ module tb ();
 		.spi_miso			( spi_miso			),
 		.ssg_ioa			( ssg_ioa			),
 		.ssg_iob			( ssg_iob			),
-		.uart_tx			( uart_tx			),
 		.O_sdram_clk		( O_sdram_clk		),
 		.O_sdram_cke		( O_sdram_cke		),
 		.O_sdram_cs_n		( O_sdram_cs_n		),

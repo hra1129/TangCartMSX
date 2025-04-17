@@ -623,8 +623,8 @@ module ip_sdram #(
 		end
 		else if( vdp_access && ff_main_state == c_main_state_finish ) begin
 			case( ff_address[1] )
-			1'b0:		ff_sdr_vdp_read_data	<= IO_sdram_dq[15: 0];
-			1'b1:		ff_sdr_vdp_read_data	<= IO_sdram_dq[31:16];
+			1'b0:		ff_sdr_vdp_read_data	<= ff_address[0] ? { IO_sdram_dq[ 7: 0], IO_sdram_dq[15: 8] } : IO_sdram_dq[15: 0];
+			1'b1:		ff_sdr_vdp_read_data	<= ff_address[0] ? { IO_sdram_dq[23:16], IO_sdram_dq[31:24] } : IO_sdram_dq[31:16];
 			default:	ff_sdr_vdp_read_data	<= 16'd0;
 			endcase
 			ff_sdr_vdp_read_data_en	<= ~ff_is_write;
