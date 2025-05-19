@@ -1,7 +1,7 @@
 //
 //Written by GowinSynthesis
-//Tool Version "V1.9.11.01 (64-bit)"
-//Sun Apr  6 20:59:09 2025
+//Tool Version "V1.9.11.02 (64-bit)"
+//Tue May 20 07:05:25 2025
 
 //Source file index table:
 //file0 "\D:/github/HRA_product/TangCartMSX/RTL/tangprimer20k_vdp_cartridge_test/src/gowin_clkdiv/gowin_clkdiv.v"
@@ -11,11 +11,11 @@
 //file4 "\D:/github/HRA_product/TangCartMSX/RTL/tangprimer20k_vdp_cartridge_test/src/tangprimer20k_vdp_cartridge_test.v"
 `timescale 100 ps/100 ps
 module Gowin_rPLL (
-  clk21m_d,
+  clk14m_d,
   clk86m
 )
 ;
-input clk21m_d;
+input clk14m_d;
 output clk86m;
 wire clkoutp_o;
 wire clkoutd_o;
@@ -29,7 +29,7 @@ wire GND;
     .CLKOUTD(clkoutd_o),
     .CLKOUTD3(clkoutd3_o),
     .LOCK(pll_lock),
-    .CLKIN(clk21m_d),
+    .CLKIN(clk14m_d),
     .CLKFB(GND),
     .FBDSEL({GND,GND,GND,GND,GND,GND}),
     .IDSEL({GND,GND,GND,GND,GND,GND}),
@@ -57,8 +57,8 @@ defparam rpll_inst.DYN_FBDIV_SEL="false";
 defparam rpll_inst.DYN_IDIV_SEL="false";
 defparam rpll_inst.DYN_ODIV_SEL="false";
 defparam rpll_inst.DYN_SDIV_SEL=2;
-defparam rpll_inst.FBDIV_SEL=3;
-defparam rpll_inst.FCLKIN="21.477";
+defparam rpll_inst.FBDIV_SEL=5;
+defparam rpll_inst.FCLKIN="14.32";
 defparam rpll_inst.IDIV_SEL=0;
 defparam rpll_inst.ODIV_SEL=8;
 defparam rpll_inst.PSDA_SEL="0000";
@@ -146,12 +146,12 @@ output [4:0] bus_wdata;
 output [4:0] ff_rdata;
 wire n252_5;
 wire n124_3;
-wire n135_7;
+wire n135_8;
 wire n124_4;
-wire n77_7;
+wire n77_8;
 wire n270_5;
 wire ff_active;
-wire n125_7;
+wire n125_8;
 wire [4:1] bus_address_1;
 wire VCC;
 wire GND;
@@ -171,7 +171,7 @@ defparam n252_s1.INIT=8'h1F;
 );
 defparam n124_s0.INIT=16'h88F0;
   LUT3 n135_s3 (
-    .F(n135_7),
+    .F(n135_8),
     .I0(p_slot_mreq_n_d),
     .I1(p_slot_sltsl_n_d),
     .I2(p_slot_ioreq_n_d) 
@@ -194,7 +194,7 @@ defparam n124_s1.INIT=16'h0100;
 );
 defparam n124_s2.INIT=16'h0100;
   LUT4 n77_s2 (
-    .F(n77_7),
+    .F(n77_8),
     .I0(p_slot_rd_n_d),
     .I1(p_slot_mreq_n_d),
     .I2(p_slot_sltsl_n_d),
@@ -302,7 +302,7 @@ defparam n270_s1.INIT=16'h0155;
 );
   DFFC ff_ioreq_s0 (
     .Q(bus_ioreq),
-    .D(n135_7),
+    .D(n135_8),
     .CLK(clk42m),
     .CLEAR(n16_6) 
 );
@@ -349,13 +349,13 @@ defparam n270_s1.INIT=16'h0155;
 );
   DFFP ff_write_s0 (
     .Q(bus_write),
-    .D(n77_7),
+    .D(n77_8),
     .CLK(clk42m),
     .PRESET(n16_6) 
 );
   DFFCE ff_valid_s1 (
     .Q(bus_valid),
-    .D(n125_7),
+    .D(n125_8),
     .CLK(clk42m),
     .CE(n124_3),
     .CLEAR(n16_6) 
@@ -370,7 +370,7 @@ defparam ff_valid_s1.INIT=1'b0;
     .I(bus_write) 
 );
   INV n125_s3 (
-    .O(n125_7),
+    .O(n125_8),
     .I(ff_active) 
 );
   VCC VCC_cZ (
@@ -417,7 +417,7 @@ wire n27_3;
 wire n28_3;
 wire n29_3;
 wire n44_3;
-wire n30_5;
+wire n30_6;
 wire n25_4;
 wire n25_5;
 wire n25_6;
@@ -478,7 +478,7 @@ defparam n29_s0.INIT=16'h4000;
 );
 defparam n44_s0.INIT=16'h8000;
   LUT3 n30_s1 (
-    .F(n30_5),
+    .F(n30_6),
     .I0(n25_5),
     .I1(n124_5),
     .I2(n25_6) 
@@ -572,7 +572,7 @@ defparam n44_s1.INIT=8'h80;
 );
   DFFC ff_rdata_en_s0 (
     .Q(bus_rdata_en),
-    .D(n30_5),
+    .D(n30_6),
     .CLK(clk42m),
     .CLEAR(n16_6) 
 );
@@ -619,7 +619,7 @@ defparam n44_s1.INIT=8'h80;
 );
 endmodule /* test_controller */
 module tangprimer20k_vdp_cartridge_test (
-  clk21m,
+  clk14m,
   clk27m,
   dipsw,
   p_slot_reset_n,
@@ -653,7 +653,7 @@ module tangprimer20k_vdp_cartridge_test (
   ddr_dqs_n
 )
 ;
-input clk21m;
+input clk14m;
 input clk27m;
 input [4:0] dipsw;
 input p_slot_reset_n;
@@ -685,7 +685,7 @@ output [1:0] ddr_dqm;
 inout [15:0] ddr_dq;
 inout [1:0] ddr_dqs;
 inout [1:0] ddr_dqs_n;
-wire clk21m_d;
+wire clk14m_d;
 wire p_slot_reset_n_d;
 wire p_slot_sltsl_n_d;
 wire p_slot_mreq_n_d;
@@ -710,9 +710,9 @@ wire [4:0] ff_rdata;
 wire [4:0] bus_rdata;
 wire VCC;
 wire GND;
-  IBUF clk21m_ibuf (
-    .O(clk21m_d),
-    .I(clk21m) 
+  IBUF clk14m_ibuf (
+    .O(clk14m_d),
+    .I(clk14m) 
 );
   IBUF dipsw_0_ibuf (
     .O(dipsw_d[0]),
@@ -964,7 +964,7 @@ wire GND;
     .I(GND) 
 );
   Gowin_rPLL u_pll (
-    .clk21m_d(clk21m_d),
+    .clk14m_d(clk14m_d),
     .clk86m(clk86m)
 );
   Gowin_CLKDIV u_clkdiv (

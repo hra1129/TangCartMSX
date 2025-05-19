@@ -22,7 +22,7 @@
 // -----------------------------------------------------------------------------
 
 module tangprimer20k_vdp_cartridge_test (
-	input			clk21m,				//	clk21m			M15 (21.47727MHz)
+	input			clk14m,				//	clk14m			T7 (14.318180MHz)
 	input			clk27m,				//	clk27m			H11
 	input	[4:0]	dipsw,				//	dipsw[4:0]		T5, T4, T3, T2, D7
 	//	MSX SLOT
@@ -80,7 +80,7 @@ module tangprimer20k_vdp_cartridge_test (
 	Gowin_rPLL u_pll (
 		.clkout					( clk86m				),		//	output	85.90908MHz
 		.lock					( pll_lock				),		//	output	lock
-		.clkin					( clk21m				)		//	input	21.47727MHz
+		.clkin					( clk14m				)		//	input	14.318180MHz
 	);
 
 	Gowin_CLKDIV u_clkdiv (
