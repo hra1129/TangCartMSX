@@ -1,0 +1,523 @@
+//
+//Written by GowinSynthesis
+//Tool Version "V1.9.11.02 (64-bit)"
+//Fri May 23 06:46:34 2025
+
+//Source file index table:
+//file0 "\D:/github/HRA_product/TangCartMSX/RTL/tangprimer20k_vdp_cartridge_test/src/tangprimer20k_vdp_cartridge_test.v"
+`timescale 100 ps/100 ps
+module tangprimer20k_vdp_cartridge_test (
+  clk14m,
+  clk27m,
+  dipsw,
+  p_slot_reset_n,
+  p_slot_sltsl_n,
+  p_slot_mreq_n,
+  p_slot_ioreq_n,
+  p_slot_wr_n,
+  p_slot_rd_n,
+  p_slot_m1_n,
+  p_slot_rfsh_n,
+  p_slot_address,
+  p_slot_data,
+  p_slot_data_dir,
+  p_slot_oe_n,
+  p_slot_int,
+  p_slot_wait,
+  p_video_hs,
+  p_video_vs,
+  p_video_r,
+  p_video_g,
+  p_video_b
+)
+;
+input clk14m;
+input clk27m;
+input [4:0] dipsw;
+input p_slot_reset_n;
+input p_slot_sltsl_n;
+input p_slot_mreq_n;
+input p_slot_ioreq_n;
+input p_slot_wr_n;
+input p_slot_rd_n;
+input p_slot_m1_n;
+input p_slot_rfsh_n;
+input [15:0] p_slot_address;
+inout [7:0] p_slot_data;
+output p_slot_data_dir;
+output p_slot_oe_n;
+output p_slot_int;
+output p_slot_wait;
+output p_video_hs;
+output p_video_vs;
+output [4:0] p_video_r;
+output [4:0] p_video_g;
+output [4:0] p_video_b;
+wire clk27m_d;
+wire n17_4;
+wire n14_4;
+wire n16_5;
+wire n15_6;
+wire n16_7;
+wire p_video_vs_d;
+wire n11_1;
+wire n11_2;
+wire n10_1;
+wire n10_2;
+wire n9_1;
+wire n9_2;
+wire n8_1;
+wire n8_0_COUT;
+wire n23_1;
+wire n23_2;
+wire n22_1;
+wire n22_2;
+wire n21_1;
+wire n21_2;
+wire n20_1;
+wire n20_0_COUT;
+wire n32_1;
+wire n32_2;
+wire n31_1;
+wire n31_2;
+wire n30_1;
+wire n30_2;
+wire n29_1;
+wire n29_2;
+wire n28_1;
+wire n28_2;
+wire n27_1;
+wire n27_2;
+wire n26_1;
+wire n26_0_COUT;
+wire n6_7;
+wire [4:1] p_video_r_d;
+wire [4:1] p_video_g_d;
+wire [4:1] p_video_b_d;
+wire [7:1] p_slot_data_d;
+wire VCC;
+wire GND;
+  IBUF clk27m_ibuf (
+    .O(clk27m_d),
+    .I(clk27m) 
+);
+  OBUF p_slot_data_0_obuf (
+    .O(p_slot_data[0]),
+    .I(p_video_vs_d) 
+);
+  OBUF p_slot_data_1_obuf (
+    .O(p_slot_data[1]),
+    .I(p_slot_data_d[1]) 
+);
+  OBUF p_slot_data_2_obuf (
+    .O(p_slot_data[2]),
+    .I(p_slot_data_d[2]) 
+);
+  OBUF p_slot_data_3_obuf (
+    .O(p_slot_data[3]),
+    .I(p_slot_data_d[3]) 
+);
+  OBUF p_slot_data_4_obuf (
+    .O(p_slot_data[4]),
+    .I(p_slot_data_d[4]) 
+);
+  OBUF p_slot_data_5_obuf (
+    .O(p_slot_data[5]),
+    .I(p_slot_data_d[5]) 
+);
+  OBUF p_slot_data_6_obuf (
+    .O(p_slot_data[6]),
+    .I(p_slot_data_d[6]) 
+);
+  OBUF p_slot_data_7_obuf (
+    .O(p_slot_data[7]),
+    .I(p_slot_data_d[7]) 
+);
+  OBUF p_slot_data_dir_obuf (
+    .O(p_slot_data_dir),
+    .I(GND) 
+);
+  OBUF p_slot_oe_n_obuf (
+    .O(p_slot_oe_n),
+    .I(GND) 
+);
+  OBUF p_slot_int_obuf (
+    .O(p_slot_int),
+    .I(p_video_vs_d) 
+);
+  OBUF p_slot_wait_obuf (
+    .O(p_slot_wait),
+    .I(p_video_vs_d) 
+);
+  OBUF p_video_hs_obuf (
+    .O(p_video_hs),
+    .I(p_video_vs_d) 
+);
+  OBUF p_video_vs_obuf (
+    .O(p_video_vs),
+    .I(p_video_vs_d) 
+);
+  OBUF p_video_r_0_obuf (
+    .O(p_video_r[0]),
+    .I(p_video_vs_d) 
+);
+  OBUF p_video_r_1_obuf (
+    .O(p_video_r[1]),
+    .I(p_video_r_d[1]) 
+);
+  OBUF p_video_r_2_obuf (
+    .O(p_video_r[2]),
+    .I(p_video_r_d[2]) 
+);
+  OBUF p_video_r_3_obuf (
+    .O(p_video_r[3]),
+    .I(p_video_r_d[3]) 
+);
+  OBUF p_video_r_4_obuf (
+    .O(p_video_r[4]),
+    .I(p_video_r_d[4]) 
+);
+  OBUF p_video_g_0_obuf (
+    .O(p_video_g[0]),
+    .I(p_video_vs_d) 
+);
+  OBUF p_video_g_1_obuf (
+    .O(p_video_g[1]),
+    .I(p_video_g_d[1]) 
+);
+  OBUF p_video_g_2_obuf (
+    .O(p_video_g[2]),
+    .I(p_video_g_d[2]) 
+);
+  OBUF p_video_g_3_obuf (
+    .O(p_video_g[3]),
+    .I(p_video_g_d[3]) 
+);
+  OBUF p_video_g_4_obuf (
+    .O(p_video_g[4]),
+    .I(p_video_g_d[4]) 
+);
+  OBUF p_video_b_0_obuf (
+    .O(p_video_b[0]),
+    .I(p_video_vs_d) 
+);
+  OBUF p_video_b_1_obuf (
+    .O(p_video_b[1]),
+    .I(p_video_b_d[1]) 
+);
+  OBUF p_video_b_2_obuf (
+    .O(p_video_b[2]),
+    .I(p_video_b_d[2]) 
+);
+  OBUF p_video_b_3_obuf (
+    .O(p_video_b[3]),
+    .I(p_video_b_d[3]) 
+);
+  OBUF p_video_b_4_obuf (
+    .O(p_video_b[4]),
+    .I(p_video_b_d[4]) 
+);
+  LUT2 n17_s0 (
+    .F(n17_4),
+    .I0(p_video_vs_d),
+    .I1(p_video_g_d[1]) 
+);
+defparam n17_s0.INIT=4'h9;
+  LUT4 n14_s0 (
+    .F(n14_4),
+    .I0(n16_5),
+    .I1(p_video_g_d[2]),
+    .I2(p_video_g_d[3]),
+    .I3(p_video_g_d[4]) 
+);
+defparam n14_s0.INIT=16'hBF40;
+  LUT2 n16_s1 (
+    .F(n16_5),
+    .I0(p_video_vs_d),
+    .I1(p_video_g_d[1]) 
+);
+defparam n16_s1.INIT=4'h1;
+  LUT4 n15_s1 (
+    .F(n15_6),
+    .I0(p_video_vs_d),
+    .I1(p_video_g_d[1]),
+    .I2(p_video_g_d[2]),
+    .I3(p_video_g_d[3]) 
+);
+defparam n15_s1.INIT=16'h1FE0;
+  LUT3 n16_s2 (
+    .F(n16_7),
+    .I0(p_video_g_d[2]),
+    .I1(p_video_vs_d),
+    .I2(p_video_g_d[1]) 
+);
+defparam n16_s2.INIT=8'h56;
+  DFF ff_video_vs_s0 (
+    .Q(p_video_vs_d),
+    .D(n6_7),
+    .CLK(clk27m_d) 
+);
+defparam ff_video_vs_s0.INIT=1'b0;
+  DFF ff_video_r_4_s0 (
+    .Q(p_video_r_d[4]),
+    .D(n8_1),
+    .CLK(clk27m_d) 
+);
+defparam ff_video_r_4_s0.INIT=1'b0;
+  DFF ff_video_r_3_s0 (
+    .Q(p_video_r_d[3]),
+    .D(n9_1),
+    .CLK(clk27m_d) 
+);
+defparam ff_video_r_3_s0.INIT=1'b0;
+  DFF ff_video_r_2_s0 (
+    .Q(p_video_r_d[2]),
+    .D(n10_1),
+    .CLK(clk27m_d) 
+);
+defparam ff_video_r_2_s0.INIT=1'b0;
+  DFF ff_video_r_1_s0 (
+    .Q(p_video_r_d[1]),
+    .D(n11_1),
+    .CLK(clk27m_d) 
+);
+defparam ff_video_r_1_s0.INIT=1'b0;
+  DFF ff_video_g_4_s0 (
+    .Q(p_video_g_d[4]),
+    .D(n14_4),
+    .CLK(clk27m_d) 
+);
+defparam ff_video_g_4_s0.INIT=1'b0;
+  DFF ff_video_g_3_s0 (
+    .Q(p_video_g_d[3]),
+    .D(n15_6),
+    .CLK(clk27m_d) 
+);
+defparam ff_video_g_3_s0.INIT=1'b0;
+  DFF ff_video_g_2_s0 (
+    .Q(p_video_g_d[2]),
+    .D(n16_7),
+    .CLK(clk27m_d) 
+);
+defparam ff_video_g_2_s0.INIT=1'b0;
+  DFF ff_video_g_1_s0 (
+    .Q(p_video_g_d[1]),
+    .D(n17_4),
+    .CLK(clk27m_d) 
+);
+defparam ff_video_g_1_s0.INIT=1'b0;
+  DFF ff_video_b_4_s0 (
+    .Q(p_video_b_d[4]),
+    .D(n20_1),
+    .CLK(clk27m_d) 
+);
+defparam ff_video_b_4_s0.INIT=1'b0;
+  DFF ff_video_b_3_s0 (
+    .Q(p_video_b_d[3]),
+    .D(n21_1),
+    .CLK(clk27m_d) 
+);
+defparam ff_video_b_3_s0.INIT=1'b0;
+  DFF ff_video_b_2_s0 (
+    .Q(p_video_b_d[2]),
+    .D(n22_1),
+    .CLK(clk27m_d) 
+);
+defparam ff_video_b_2_s0.INIT=1'b0;
+  DFF ff_video_b_1_s0 (
+    .Q(p_video_b_d[1]),
+    .D(n23_1),
+    .CLK(clk27m_d) 
+);
+defparam ff_video_b_1_s0.INIT=1'b0;
+  DFF ff_data_7_s0 (
+    .Q(p_slot_data_d[7]),
+    .D(n26_1),
+    .CLK(clk27m_d) 
+);
+defparam ff_data_7_s0.INIT=1'b0;
+  DFF ff_data_6_s0 (
+    .Q(p_slot_data_d[6]),
+    .D(n27_1),
+    .CLK(clk27m_d) 
+);
+defparam ff_data_6_s0.INIT=1'b0;
+  DFF ff_data_5_s0 (
+    .Q(p_slot_data_d[5]),
+    .D(n28_1),
+    .CLK(clk27m_d) 
+);
+defparam ff_data_5_s0.INIT=1'b0;
+  DFF ff_data_4_s0 (
+    .Q(p_slot_data_d[4]),
+    .D(n29_1),
+    .CLK(clk27m_d) 
+);
+defparam ff_data_4_s0.INIT=1'b0;
+  DFF ff_data_3_s0 (
+    .Q(p_slot_data_d[3]),
+    .D(n30_1),
+    .CLK(clk27m_d) 
+);
+defparam ff_data_3_s0.INIT=1'b0;
+  DFF ff_data_2_s0 (
+    .Q(p_slot_data_d[2]),
+    .D(n31_1),
+    .CLK(clk27m_d) 
+);
+defparam ff_data_2_s0.INIT=1'b0;
+  DFF ff_data_1_s0 (
+    .Q(p_slot_data_d[1]),
+    .D(n32_1),
+    .CLK(clk27m_d) 
+);
+defparam ff_data_1_s0.INIT=1'b0;
+  ALU n11_s (
+    .SUM(n11_1),
+    .COUT(n11_2),
+    .I0(p_video_r_d[1]),
+    .I1(p_video_vs_d),
+    .I3(GND),
+    .CIN(GND) 
+);
+defparam n11_s.ALU_MODE=0;
+  ALU n10_s (
+    .SUM(n10_1),
+    .COUT(n10_2),
+    .I0(p_video_r_d[2]),
+    .I1(GND),
+    .I3(GND),
+    .CIN(n11_2) 
+);
+defparam n10_s.ALU_MODE=0;
+  ALU n9_s (
+    .SUM(n9_1),
+    .COUT(n9_2),
+    .I0(p_video_r_d[3]),
+    .I1(GND),
+    .I3(GND),
+    .CIN(n10_2) 
+);
+defparam n9_s.ALU_MODE=0;
+  ALU n8_s (
+    .SUM(n8_1),
+    .COUT(n8_0_COUT),
+    .I0(p_video_r_d[4]),
+    .I1(GND),
+    .I3(GND),
+    .CIN(n9_2) 
+);
+defparam n8_s.ALU_MODE=0;
+  ALU n23_s (
+    .SUM(n23_1),
+    .COUT(n23_2),
+    .I0(p_video_b_d[1]),
+    .I1(p_video_vs_d),
+    .I3(GND),
+    .CIN(GND) 
+);
+defparam n23_s.ALU_MODE=0;
+  ALU n22_s (
+    .SUM(n22_1),
+    .COUT(n22_2),
+    .I0(p_video_b_d[2]),
+    .I1(VCC),
+    .I3(GND),
+    .CIN(n23_2) 
+);
+defparam n22_s.ALU_MODE=0;
+  ALU n21_s (
+    .SUM(n21_1),
+    .COUT(n21_2),
+    .I0(p_video_b_d[3]),
+    .I1(GND),
+    .I3(GND),
+    .CIN(n22_2) 
+);
+defparam n21_s.ALU_MODE=0;
+  ALU n20_s (
+    .SUM(n20_1),
+    .COUT(n20_0_COUT),
+    .I0(p_video_b_d[4]),
+    .I1(GND),
+    .I3(GND),
+    .CIN(n21_2) 
+);
+defparam n20_s.ALU_MODE=0;
+  ALU n32_s (
+    .SUM(n32_1),
+    .COUT(n32_2),
+    .I0(p_slot_data_d[1]),
+    .I1(p_video_vs_d),
+    .I3(GND),
+    .CIN(GND) 
+);
+defparam n32_s.ALU_MODE=0;
+  ALU n31_s (
+    .SUM(n31_1),
+    .COUT(n31_2),
+    .I0(p_slot_data_d[2]),
+    .I1(GND),
+    .I3(GND),
+    .CIN(n32_2) 
+);
+defparam n31_s.ALU_MODE=0;
+  ALU n30_s (
+    .SUM(n30_1),
+    .COUT(n30_2),
+    .I0(p_slot_data_d[3]),
+    .I1(GND),
+    .I3(GND),
+    .CIN(n31_2) 
+);
+defparam n30_s.ALU_MODE=0;
+  ALU n29_s (
+    .SUM(n29_1),
+    .COUT(n29_2),
+    .I0(p_slot_data_d[4]),
+    .I1(GND),
+    .I3(GND),
+    .CIN(n30_2) 
+);
+defparam n29_s.ALU_MODE=0;
+  ALU n28_s (
+    .SUM(n28_1),
+    .COUT(n28_2),
+    .I0(p_slot_data_d[5]),
+    .I1(GND),
+    .I3(GND),
+    .CIN(n29_2) 
+);
+defparam n28_s.ALU_MODE=0;
+  ALU n27_s (
+    .SUM(n27_1),
+    .COUT(n27_2),
+    .I0(p_slot_data_d[6]),
+    .I1(GND),
+    .I3(GND),
+    .CIN(n28_2) 
+);
+defparam n27_s.ALU_MODE=0;
+  ALU n26_s (
+    .SUM(n26_1),
+    .COUT(n26_0_COUT),
+    .I0(p_slot_data_d[7]),
+    .I1(GND),
+    .I3(GND),
+    .CIN(n27_2) 
+);
+defparam n26_s.ALU_MODE=0;
+  INV n6_s2 (
+    .O(n6_7),
+    .I(p_video_vs_d) 
+);
+  VCC VCC_cZ (
+    .V(VCC)
+);
+  GND GND_cZ (
+    .G(GND)
+);
+  GSR GSR (
+    .GSRI(VCC) 
+);
+endmodule /* tangprimer20k_vdp_cartridge_test */

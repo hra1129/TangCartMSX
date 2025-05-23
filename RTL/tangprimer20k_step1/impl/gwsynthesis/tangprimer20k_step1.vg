@@ -1,7 +1,7 @@
 //
 //Written by GowinSynthesis
-//Tool Version "V1.9.10.03 (64-bit)"
-//Sun Jan 26 15:02:12 2025
+//Tool Version "V1.9.11.02 (64-bit)"
+//Fri May 23 07:04:02 2025
 
 //Source file index table:
 //file0 "\D:/github/HRA_product/TangCartMSX/RTL/tangprimer20k_step1/src/tangprimer20k_step1.v"
@@ -21,8 +21,8 @@ wire n89_5;
 wire n90_5;
 wire n91_4;
 wire ff_led_0_7;
-wire n87_5;
-wire n86_5;
+wire n87_6;
+wire n86_6;
 wire n88_8;
 wire n88_9;
 wire n88_10;
@@ -32,8 +32,8 @@ wire n89_7;
 wire n90_6;
 wire n90_7;
 wire n91_5;
-wire n87_6;
-wire n86_6;
+wire n87_7;
+wire n86_7;
 wire n88_12;
 wire n88_13;
 wire n88_14;
@@ -180,16 +180,16 @@ defparam n91_s1.INIT=16'h5CCC;
 );
 defparam ff_led_5_s3.INIT=16'h8FFF;
   LUT4 n87_s1 (
-    .F(n87_5),
-    .I0(n87_6),
+    .F(n87_6),
+    .I0(n87_7),
     .I1(ff_led[4]),
     .I2(n88_10),
     .I3(n88_11) 
 );
 defparam n87_s1.INIT=16'h6000;
   LUT4 n86_s1 (
-    .F(n86_5),
-    .I0(n86_6),
+    .F(n86_6),
+    .I0(n86_7),
     .I1(ff_led[5]),
     .I2(n88_10),
     .I3(n88_11) 
@@ -261,7 +261,7 @@ defparam n90_s4.INIT=8'h40;
 );
 defparam n91_s2.INIT=4'h4;
   LUT4 n87_s2 (
-    .F(n87_6),
+    .F(n87_7),
     .I0(ff_led[0]),
     .I1(ff_led[3]),
     .I2(ff_led[2]),
@@ -269,8 +269,8 @@ defparam n91_s2.INIT=4'h4;
 );
 defparam n87_s2.INIT=16'h8000;
   LUT2 n86_s2 (
-    .F(n86_6),
-    .I0(n87_6),
+    .F(n86_7),
+    .I0(n87_7),
     .I1(ff_led[4]) 
 );
 defparam n86_s2.INIT=4'h8;
@@ -441,14 +441,14 @@ defparam ff_timer_0_s0.INIT=1'b0;
 defparam ff_timer_20_s0.INIT=1'b0;
   DFFE ff_led_5_s1 (
     .Q(ff_led[5]),
-    .D(n86_5),
+    .D(n86_6),
     .CLK(clk27m_d),
     .CE(ff_led_0_7) 
 );
 defparam ff_led_5_s1.INIT=1'b0;
   DFFE ff_led_4_s1 (
     .Q(ff_led[4]),
-    .D(n87_5),
+    .D(n87_6),
     .CLK(clk27m_d),
     .CE(ff_led_0_7) 
 );

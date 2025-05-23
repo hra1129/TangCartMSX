@@ -15,7 +15,6 @@
         <Option type="ram_rw_check" value="0"/>
         <Option type="top_module" value="tangprimer20k_step1"/>
         <Option type="vcc" value="1.0"/>
-        <Option type="vccx" value="3.3"/>
         <Option type="verilog_language" value="verilog-2001"/>
         <Option type="vhdl_language" value="vhdl-1993"/>
     </OptionList>
