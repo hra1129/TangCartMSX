@@ -59,12 +59,17 @@ module ip_vga (
 	reg		[9:0]	ff_v_cnt;
 	reg				ff_h_active;
 	reg				ff_v_active;
-	wire			w_h_cnt_end;
 	reg				ff_hs;
 	reg				ff_vs;
 	reg		[3:0]	ff_r;
 	reg		[3:0]	ff_g;
 	reg		[3:0]	ff_b;
+	wire			w_h_active;
+	wire			w_h_cnt_end;
+	wire			w_h_top;
+	wire			w_v_active;
+	wire			w_v_cnt_end;
+	wire			w_v_top;
 
 	// --------------------------------------------------------------------
 	//	Clock divider
