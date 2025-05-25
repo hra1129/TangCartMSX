@@ -68,7 +68,8 @@ module test_controller(
 	output	[7:0]	bus_rdata,
 	output			bus_rdata_en,
 	//	SIGNAL
-	input	[4:0]	dipsw
+	input	[4:0]	dipsw,
+	output	[7:0]	latch_data
 );
 	wire			w_decode0;
 	wire			w_decode1;
@@ -97,10 +98,10 @@ module test_controller(
 
 	always @( posedge clk42m or negedge reset_n ) begin
 		if( !reset_n ) begin
-			ff_latch	<= 5'd0;
+			ff_latch	<= 8'd0;
 		end
 		else if( w_decode1 && bus_write && bus_valid ) begin
-			ff_latch	<= bus_wdata[4:0];
+			ff_latch	<= bus_wdata[7:0];
 		end
 	end
 
@@ -109,4 +110,5 @@ module test_controller(
 	assign bus_ready	= w_decode0 | w_decode1;
 	assign bus_rdata	= ff_rdata;
 	assign bus_rdata_en	= ff_rdata_en;
+	assign latch_data	= ff_latch;
 endmodule

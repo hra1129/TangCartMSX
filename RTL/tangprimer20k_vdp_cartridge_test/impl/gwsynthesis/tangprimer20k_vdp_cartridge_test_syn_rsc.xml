@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<Module name="tangprimer20k_vdp_cartridge_test" Register="2" T_Register="62(2)" T_Lut="98(0)">
- <SubModule name="i33" Register="37" Lut="71" T_Register="37(37)" T_Lut="71(71)"/>
+<Module name="tangprimer20k_vdp_cartridge_test" Lut="3" T_Register="106(0)" T_Lut="133(3)">
+ <SubModule name="u_vga" Register="38" Lut="82" T_Register="38(38)" T_Lut="82(82)"/>
  <SubModule name="u_uart" Register="23" Lut="27" T_Register="23(23)" T_Lut="27(27)"/>
  <SubModule name="u_pll"/>
  <SubModule name="u_clkdiv"/>
+ <SubModule name="u_msx_slot" Register="28" Lut="8" T_Register="28(28)" T_Lut="8(8)"/>
+ <SubModule name="u_test_controller" Register="17" Lut="13" T_Register="17(17)" T_Lut="13(13)"/>
 </Module>

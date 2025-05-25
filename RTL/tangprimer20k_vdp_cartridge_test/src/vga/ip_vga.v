@@ -31,7 +31,8 @@ module ip_vga (
 	output	[2:0]	video_g,
 	output	[2:0]	video_b,
 	output			video_hs,
-	output			video_vs
+	output			video_vs,
+	input	[7:0]	latch_data
 );
 	//	Horizontal timing values
 	localparam c_h_blank	= 10'd79;	//	(1)
@@ -54,6 +55,11 @@ module ip_vga (
 	//	               :    :___________:   :
 	//	ff_v_active____:____|           |___:
 	//	              [1]  [2]         [3] [4]
+
+	//	Latch data position
+	localparam c_latch_data_x	= c_h_top + 100;
+	localparam c_latch_data_y	= c_v_top + 100;
+
 	reg				ff_enable;
 	reg		[9:0]	ff_h_cnt;
 	reg		[9:0]	ff_v_cnt;
@@ -70,6 +76,10 @@ module ip_vga (
 	wire			w_v_active;
 	wire			w_v_cnt_end;
 	wire			w_v_top;
+	wire	[9:0]	w_x;
+	wire	[9:0]	w_y;
+	wire			w_digit;
+	reg				ff_pixel;
 
 	// --------------------------------------------------------------------
 	//	Clock divider
@@ -259,9 +269,47 @@ module ip_vga (
 		end
 	end
 
-	assign video_r	= (ff_h_active && ff_v_active) ? ff_r[3:1]: 3'd0;
-	assign video_g	= (ff_h_active && ff_v_active) ? ff_g[3:1]: 3'd0;
-	assign video_b	= (ff_h_active && ff_v_active) ? ff_b[3:1]: 3'd0;
+	assign video_r	= (ff_pixel) ? 3'd7: ((ff_h_active && ff_v_active) ? { 1'b0, ff_r[3:2] }: 3'd0);
+	assign video_g	= (ff_pixel) ? 3'd7: ((ff_h_active && ff_v_active) ? { 1'b0, ff_g[3:2] }: 3'd0);
+	assign video_b	= (ff_pixel) ? 3'd7: ((ff_h_active && ff_v_active) ? { 1'b0, ff_b[3:2] }: 3'd0);
 	assign video_hs	= ff_hs;
 	assign video_vs	= ff_vs;
+
+	// --------------------------------------------------------------------
+	//	Latch data
+	//		+-8-+-8-+-8-+-8-+-8-+-8-+-8-+-8-+ total 64 pixels
+	//		|   |   |   |   |   |   |   |   |
+	//		8   |   |   |   |   |   |   |   |
+	//		|   |   |   |   |   |   |   |   |
+	//		+-8-+-8-+-8-+-8-+-8-+-8-+-8-+-8-+
+	// --------------------------------------------------------------------
+	assign w_x		= ff_h_cnt - c_latch_data_x;
+	assign w_y		= ff_v_cnt - c_latch_data_y;
+	assign w_digit	= latch_data[ ~w_x[5:3] ];
+	always @( posedge clk42m ) begin
+		if( w_x[9:6] != 5'd0 || w_y[9:3] != 8'd0 || w_x[2:0] == 3'd7 ) begin
+			ff_pixel <= 1'b0;
+		end
+		else if( !w_digit ) begin
+			//	Case of '0'
+			if( w_y[2:0] == 3'd0 || w_y[2:0] == 3'd7 ) begin
+				ff_pixel <= 1'b1;
+			end
+			else if( w_x[2:0] == 3'd0 || w_x[2:0] == 3'd6 ) begin
+				ff_pixel <= 1'b1;
+			end
+			else begin
+				ff_pixel <= 1'b0;
+			end
+		end
+		else begin
+			//	Case of '1'
+			if( w_x[2:0] == 3'd4 ) begin
+				ff_pixel <= 1'b1;
+			end
+			else begin
+				ff_pixel <= 1'b0;
+			end
+		end
+	end
 endmodule

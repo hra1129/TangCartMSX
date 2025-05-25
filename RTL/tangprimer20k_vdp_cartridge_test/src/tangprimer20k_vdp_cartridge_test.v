@@ -38,6 +38,7 @@ module tangprimer20k_vdp_cartridge_test (
 										//					T8,  P8,  N16, N14, L16, L14, K15, K14
 	inout	[7:0]	p_slot_data,		//	p_slot_data		P11, T11, R11, T12, R12, P13, R13, T14
 	output			p_slot_data_dir,	//	p_slot_data_dir	L8
+	output			p_slot_busdir,		//	p_slot_busdir	T6
 	output			p_slot_oe_n,		//	p_slot_oe_n		M6
 	output			p_slot_int,			//	p_slot_int		J16
 	output			p_slot_wait,		//	p_slot_wait		J14
@@ -69,66 +70,42 @@ module tangprimer20k_vdp_cartridge_test (
 	wire			clk86m;				//	85.90908MHz from PLL
 	wire			clk42m;				//	42.95454MHz from PLL
 	wire			pll_lock;
-//	wire			reset_n;
-//	wire			sdram_init_busy;	//	0: Normal, 1: DDR3 SDRAM Initialization phase.
-//	wire			bus_memreq;			//	MSX Slot --> device 0: none, 1: memory request
-//	wire			bus_ioreq;			//	MSX Slot --> device 0: none, 1: io request
-//	wire	[15:0]	bus_address;		//	MSX Slot --> device Peripheral device address
-//	wire			bus_write;			//	MSX Slot --> device Direction 0: Read, 1: Write
-//	wire			bus_valid;			//	MSX Slot --> device 
-//	wire			bus_ready;			//	MSX Slot --> device 0: Busy, 1: Ready
-//	wire	[7:0]	bus_wdata;			//	MSX Slot --> device 
-//	wire	[7:0]	bus_rdata;			//	device --> MSX Slot
-//	wire			bus_rdata_en;		//	device --> MSX Slot
-//	wire			w_slot_int_n;		//	VDP --> MSX Slot
+	wire			reset_n;
+	wire			sdram_init_busy;	//	0: Normal, 1: DDR3 SDRAM Initialization phase.
+	wire			bus_memreq;			//	MSX Slot --> device 0: none, 1: memory request
+	wire			bus_ioreq;			//	MSX Slot --> device 0: none, 1: io request
+	wire	[15:0]	bus_address;		//	MSX Slot --> device Peripheral device address
+	wire			bus_write;			//	MSX Slot --> device Direction 0: Read, 1: Write
+	wire			bus_valid;			//	MSX Slot --> device 
+	wire			bus_ready;			//	MSX Slot --> device 0: Busy, 1: Ready
+	wire	[7:0]	bus_wdata;			//	MSX Slot --> device 
+	wire	[7:0]	bus_rdata;			//	device --> MSX Slot
+	wire			bus_rdata_en;		//	device --> MSX Slot
+	wire			w_slot_int_n;		//	VDP --> MSX Slot
+	wire			w_slot_data_dir;
+	wire	[7:0]	w_latch_data;
 
-	reg				ff_slot_wait	= 1'b0;
-	reg				ff_slot_int		= 1'b0;
-	reg				ff_reset_n		= 1'b0;
-	reg		[4:0]	ff_video_r		= 5'd0;
-
-	always @( posedge clk14m ) begin
-		ff_reset_n <= 1'b1;
-	end
-
-	always @( posedge clk14m ) begin
-		if( !ff_reset_n ) begin
-			ff_slot_wait		<= 1'b0;
-			ff_slot_int			<= 1'b0;
-			ff_video_r			<= 5'd0;
-		end
-		else begin
-			ff_slot_wait		<= ~ff_slot_wait;
-			ff_slot_int			<= ~ff_slot_int;
-			ff_video_r[2:0]		<= ff_video_r[2:0] + 3'd1;
-			ff_video_r[4:3]		<= 2'd0;
-		end
-	end
-
-	assign p_slot_wait		= ff_slot_wait;
-	assign p_slot_int		= ff_slot_int;
-
-	assign p_slot_data_dir	= 1'b0;
 	assign p_slot_oe_n		= 1'b0;
 	assign p_video_r[4:3]	= 2'd0;
 	assign p_video_g[4:3]	= 2'd0;
 	assign p_video_b[4:3]	= 2'd0;
 
-	ip_vga (
-		.n_reset		( ff_reset_n		),
+	ip_vga u_vga (
+		.n_reset		( p_slot_reset_n	),
 		.clk42m			( clk42m			),
 		.video_r		( p_video_r[2:0]	),
 		.video_g		( p_video_g[2:0]	),
 		.video_b		( p_video_b[2:0]	),
 		.video_hs		( p_video_hs		),
-		.video_vs		( p_video_vs		)
+		.video_vs		( p_video_vs		),
+		.latch_data		( w_latch_data		)
 	);
 
 	ip_uart #(
 		.clk_freq		( 14318180			),
 		.uart_freq		( 115200			)
 	) u_uart (
-		.n_reset		( ff_reset_n		),
+		.n_reset		( p_slot_reset_n	),
 		.clk			( clk14m			),
 		.send_data		( 8'h41				),
 		.send_req		( 1'b1				),
@@ -148,65 +125,72 @@ module tangprimer20k_vdp_cartridge_test (
 	Gowin_CLKDIV u_clkdiv (
 		.clkout					( clk42m				),		//	output	42.95454MHz
 		.hclkin					( clk86m				),		//	input	85.90908MHz
-		.resetn					( ff_reset_n			)		//	input	resetn
+		.resetn					( p_slot_reset_n		)		//	input	resetn
 	);
 
 	// --------------------------------------------------------------------
 	//	MSX slot connector
 	// --------------------------------------------------------------------
-//	msx_slot u_msx_slot (
-//		.clk42m					( clk42m				),
-//		.reset_n				( reset_n				),
-//		.initial_busy			( sdram_init_busy		),
-//		.p_slot_reset_n			( p_slot_reset_n		),
-//		.p_slot_sltsl_n			( p_slot_sltsl_n		),
-//		.p_slot_mreq_n			( p_slot_mreq_n			),
-//		.p_slot_ioreq_n			( p_slot_ioreq_n		),
-//		.p_slot_wr_n			( p_slot_wr_n			),
-//		.p_slot_rd_n			( p_slot_rd_n			),
-//		.p_slot_address			( p_slot_address		),
-////		.p_slot_data			( p_slot_data			),
-////		.p_slot_data_dir		( p_slot_data_dir		),
-////		.p_slot_int				( p_slot_int			),
-////		.p_slot_wait			( p_slot_wait			),
-//		.p_slot_data			( 						),
-//		.p_slot_data_dir		( 						),
-//		.p_slot_int				( 						),
-//		.p_slot_wait			( 						),
-//		.int_n					( w_slot_int_n			),
-//		.bus_address			( bus_address			),
-//		.bus_memreq				( bus_memreq			),
-//		.bus_ioreq				( bus_ioreq				),
-//		.bus_valid				( bus_valid				),
-//		.bus_ready				( bus_ready				),
-//		.bus_write				( bus_write				),
-//		.bus_wdata				( bus_wdata				),
-//		.bus_rdata				( bus_rdata				),
-//		.bus_rdata_en			( bus_rdata_en			)
-//	);
+	msx_slot u_msx_slot (
+		.clk42m					( clk42m				),
+		.reset_n				( reset_n				),
+		.initial_busy			( sdram_init_busy		),
+		.p_slot_reset_n			( p_slot_reset_n		),
+		.p_slot_sltsl_n			( p_slot_sltsl_n		),
+		.p_slot_mreq_n			( p_slot_mreq_n			),
+		.p_slot_ioreq_n			( p_slot_ioreq_n		),
+		.p_slot_wr_n			( p_slot_wr_n			),
+		.p_slot_rd_n			( p_slot_rd_n			),
+		.p_slot_address			( p_slot_address		),
+		.p_slot_data			( p_slot_data			),
+		.p_slot_data_dir		( w_slot_data_dir		),
+		.p_slot_int				( p_slot_int			),
+		.p_slot_wait			( p_slot_wait			),
+		.int_n					( w_slot_int_n			),
+		.bus_address			( bus_address			),
+		.bus_memreq				( bus_memreq			),
+		.bus_ioreq				( bus_ioreq				),
+		.bus_valid				( bus_valid				),
+		.bus_ready				( bus_ready				),
+		.bus_write				( bus_write				),
+		.bus_wdata				( bus_wdata				),
+		.bus_rdata				( bus_rdata				),
+		.bus_rdata_en			( bus_rdata_en			)
+	);
 
-//	assign p_slot_oe_n		= 1'b0;
+	assign p_slot_data_dir	= w_slot_data_dir;
+
+	// --------------------------------------------------------------------
+	//	p_slot_busdir
+	//		0 ... Write from CPU
+	//		1 ... Read by CPU
+	// --------------------------------------------------------------------
+	assign p_slot_busdir	= 
+			(!p_slot_ioreq_n && !p_slot_rd_n && { p_slot_address[7:2], 2'd0 } == 8'h88 ) ? 1'b1: 
+			(!p_slot_ioreq_n && !p_slot_rd_n && { p_slot_address[7:1], 1'd0 } == 8'h10 ) ? 1'b1: 
+			1'b0;
 
 	// --------------------------------------------------------------------
 	//	GPIO for test
 	// --------------------------------------------------------------------
-//	test_controller u_test_controller (
-//		.clk42m					( clk42m				),
-//		.reset_n				( reset_n				),
-//		.initial_busy			( sdram_init_busy		),
-//		.bus_address			( bus_address			),
-//		.bus_ioreq				( bus_ioreq				),
-//		.bus_write				( bus_write				),
-//		.bus_valid				( bus_valid				),
-//		.bus_ready				( bus_ready				),
-//		.bus_wdata				( bus_wdata				),
-//		.bus_rdata				( bus_rdata				),
-//		.bus_rdata_en			( bus_rdata_en			),
-//		.dipsw					( dipsw					)
-//	);
-//
-//	assign w_slot_int_n		= 1'b1;
-//	assign sdram_init_busy	= 1'b0;
+	test_controller u_test_controller (
+		.clk42m					( clk42m				),
+		.reset_n				( reset_n				),
+		.initial_busy			( sdram_init_busy		),
+		.bus_address			( bus_address			),
+		.bus_ioreq				( bus_ioreq				),
+		.bus_write				( bus_write				),
+		.bus_valid				( bus_valid				),
+		.bus_ready				( bus_ready				),
+		.bus_wdata				( bus_wdata				),
+		.bus_rdata				( bus_rdata				),
+		.bus_rdata_en			( bus_rdata_en			),
+		.dipsw					( dipsw					),
+		.latch_data				( w_latch_data			)
+	);
+
+	assign w_slot_int_n		= 1'b1;
+	assign sdram_init_busy	= 1'b0;
 
 //	assign ddr_addr			= 14'd0;
 //	assign ddr_ba			= 3'd0;

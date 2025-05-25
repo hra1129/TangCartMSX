@@ -2,7 +2,23 @@
  "Device" : "GW2A-18C",
  "Files" : [
   {
+   "Path" : "D:/github/HRA_product/TangCartMSX/RTL/tangprimer20k_vdp_cartridge_test/src/gowin_clkdiv/gowin_clkdiv.v",
+   "Type" : "verilog"
+  },
+  {
+   "Path" : "D:/github/HRA_product/TangCartMSX/RTL/tangprimer20k_vdp_cartridge_test/src/gowin_rpll/gowin_rpll.v",
+   "Type" : "verilog"
+  },
+  {
+   "Path" : "D:/github/HRA_product/TangCartMSX/RTL/tangprimer20k_vdp_cartridge_test/src/msx_slot/msx_slot.v",
+   "Type" : "verilog"
+  },
+  {
    "Path" : "D:/github/HRA_product/TangCartMSX/RTL/tangprimer20k_vdp_cartridge_test/src/tangprimer20k_vdp_cartridge_test.v",
+   "Type" : "verilog"
+  },
+  {
+   "Path" : "D:/github/HRA_product/TangCartMSX/RTL/tangprimer20k_vdp_cartridge_test/src/test_controller/test_controller.v",
    "Type" : "verilog"
   },
   {
@@ -11,14 +27,6 @@
   },
   {
    "Path" : "D:/github/HRA_product/TangCartMSX/RTL/tangprimer20k_vdp_cartridge_test/src/vga/ip_vga.v",
-   "Type" : "verilog"
-  },
-  {
-   "Path" : "D:/github/HRA_product/TangCartMSX/RTL/tangprimer20k_vdp_cartridge_test/src/gowin_clkdiv/gowin_clkdiv.v",
-   "Type" : "verilog"
-  },
-  {
-   "Path" : "D:/github/HRA_product/TangCartMSX/RTL/tangprimer20k_vdp_cartridge_test/src/gowin_rpll/gowin_rpll.v",
    "Type" : "verilog"
   }
  ],

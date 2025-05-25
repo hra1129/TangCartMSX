@@ -83,6 +83,11 @@ module msx_slot(
 	input	[7:0]	bus_rdata,
 	input			bus_rdata_en
 );
+	wire			w_iorq_wr;
+	wire			w_iorq_rd;
+	wire			w_merq_wr;
+	wire			w_merq_rd;
+	wire			w_active;
 	reg				ff_active;
 	reg		[15:0]	ff_address;
 	reg				ff_write;
@@ -92,6 +97,12 @@ module msx_slot(
 	reg		[7:0]	ff_wdata;
 	reg		[7:0]	ff_rdata;
 
+	assign w_iorq_wr	= ~p_slot_ioreq_n & ~p_slot_wr_n;
+	assign w_iorq_rd	= ~p_slot_ioreq_n & ~p_slot_rd_n;
+	assign w_merq_wr	= ~p_slot_mreq_n  & ~p_slot_wr_n & ~p_slot_sltsl_n;
+	assign w_merq_rd	= ~p_slot_mreq_n  & ~p_slot_rd_n & ~p_slot_sltsl_n;
+	assign w_active		= w_iorq_wr | w_iorq_rd | w_merq_wr | w_merq_rd;
+
 	// --------------------------------------------------------------------
 	//	Transaction active signal
 	// --------------------------------------------------------------------
@@ -99,59 +110,8 @@ module msx_slot(
 		if( !p_slot_reset_n ) begin
 			ff_active <= 1'b0;
 		end
-		else if( !p_slot_sltsl_n && !p_slot_mreq_n ) begin
-			ff_active <= 1'b1;
-		end
-		else if( !p_slot_ioreq_n ) begin
-			ff_active <= 1'b1;
-		end
 		else begin
-			ff_active <= 1'b0;
-		end
-	end
-
-	// --------------------------------------------------------------------
-	//	Address latch
-	// --------------------------------------------------------------------
-	always @( posedge clk42m or negedge p_slot_reset_n ) begin
-		if( !p_slot_reset_n ) begin
-			ff_address <= 16'd0;
-		end
-		else if( !p_slot_sltsl_n && !p_slot_mreq_n ) begin
-			ff_address <= p_slot_address;
-		end
-		else if( !p_slot_ioreq_n ) begin
-			ff_address <= p_slot_address;
-		end
-	end
-
-	// --------------------------------------------------------------------
-	//	Write access
-	// --------------------------------------------------------------------
-	always @( posedge clk42m or negedge p_slot_reset_n ) begin
-		if( !p_slot_reset_n ) begin
-			ff_write <= 1'b1;
-		end
-		else if( !p_slot_sltsl_n && !p_slot_mreq_n ) begin
-			ff_write <= p_slot_rd_n;
-		end
-		else if( !p_slot_ioreq_n ) begin
-			ff_write <= p_slot_rd_n;
-		end
-		else begin
-			ff_write <= 1'b1;
-		end
-	end
-
-	always @( posedge clk42m or negedge p_slot_reset_n ) begin
-		if( !p_slot_reset_n ) begin
-			ff_wdata <= 8'd0;
-		end
-		else if( !p_slot_sltsl_n && !p_slot_mreq_n && !p_slot_wr_n ) begin
-			ff_wdata <= p_slot_data;
-		end
-		else if( !p_slot_ioreq_n && !p_slot_wr_n ) begin
-			ff_wdata <= p_slot_data;
+			ff_active <= w_active;
 		end
 	end
 
@@ -163,12 +123,7 @@ module msx_slot(
 			ff_valid <= 1'b0;
 		end
 		else if( !ff_active ) begin
-			if( !p_slot_sltsl_n && !p_slot_mreq_n ) begin
-				ff_valid <= 1'b1;
-			end
-			else if( !p_slot_ioreq_n ) begin
-				ff_valid <= 1'b1;
-			end
+			ff_valid <= w_active;
 		end
 		else begin
 			if( bus_ready ) begin
@@ -178,24 +133,27 @@ module msx_slot(
 	end
 
 	// --------------------------------------------------------------------
-	//	Valid signal
+	//	Address latch
 	// --------------------------------------------------------------------
 	always @( posedge clk42m or negedge p_slot_reset_n ) begin
 		if( !p_slot_reset_n ) begin
+			ff_address	<= 16'd0;
+			ff_write	<= 1'b1;
+			ff_wdata	<= 8'd0;
 			ff_ioreq	<= 1'b0;
 			ff_memreq	<= 1'b0;
 		end
-		else if( !p_slot_sltsl_n && !p_slot_mreq_n ) begin
-			ff_ioreq	<= 1'b0;
-			ff_memreq	<= 1'b1;
+		else if( !ff_active && w_active ) begin
+			ff_address	<= p_slot_address;
+			ff_write	<= w_iorq_wr | w_merq_wr;
+			ff_ioreq	<= w_iorq_wr | w_iorq_rd;
+			ff_memreq	<= w_merq_wr | w_merq_rd;
+			if( w_iorq_wr | w_merq_wr ) begin
+				ff_wdata <= p_slot_data;
+			end
 		end
-		else if( !p_slot_ioreq_n ) begin
-			ff_ioreq	<= 1'b1;
-			ff_memreq	<= 1'b0;
-		end
-		else begin
-			ff_ioreq	<= 1'b0;
-			ff_memreq	<= 1'b0;
+		else if( !ff_active ) begin
+			ff_write	<= 1'b1;
 		end
 	end
 
@@ -218,8 +176,10 @@ module msx_slot(
 	assign bus_write		= ff_write;
 	assign bus_valid		= ff_valid;
 	assign bus_wdata		= ff_wdata;
-	assign p_slot_data_dir	= ~ff_write;
 	assign p_slot_data		= ff_write ? 8'hZZ: ff_rdata;
 	assign p_slot_int		= ~int_n;
 	assign p_slot_wait		= 1'b0;
+
+	//	0: Cartridge <- CPU, 1: Cartridge -> CPU
+	assign p_slot_data_dir	= ~ff_write;
 endmodule

@@ -7,7 +7,9 @@
     <FileList>
         <File path="src/gowin_clkdiv/gowin_clkdiv.v" type="file.verilog" enable="1"/>
         <File path="src/gowin_rpll/gowin_rpll.v" type="file.verilog" enable="1"/>
+        <File path="src/msx_slot/msx_slot.v" type="file.verilog" enable="1"/>
         <File path="src/tangprimer20k_vdp_cartridge_test.v" type="file.verilog" enable="1"/>
+        <File path="src/test_controller/test_controller.v" type="file.verilog" enable="1"/>
         <File path="src/uart/ip_uart.v" type="file.verilog" enable="1"/>
         <File path="src/vga/ip_vga.v" type="file.verilog" enable="1"/>
         <File path="src/tangprimer20k_vdp_cartridge_test.cst" type="file.cst" enable="1"/>
