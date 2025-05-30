@@ -1,0 +1,2 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Module name="vdp_wait_control" Register="14" Alu="118" Lut="170" T_Register="14(14)" T_Alu="118(118)" T_Lut="170(170)"/>

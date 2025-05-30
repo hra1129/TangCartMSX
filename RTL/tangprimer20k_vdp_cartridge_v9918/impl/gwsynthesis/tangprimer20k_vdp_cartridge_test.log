@@ -1,0 +1,65 @@
+GowinSynthesis start
+Running parser ...
+Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\tangprimer20k_vdp_cartridge_v9918\src\gowin_clkdiv\gowin_clkdiv.v'
+Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\tangprimer20k_vdp_cartridge_v9918\src\gowin_rpll\gowin_rpll.v'
+Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\tangprimer20k_vdp_cartridge_v9918\src\msx_slot\msx_slot.v'
+Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\tangprimer20k_vdp_cartridge_v9918\src\ram\ip_ram.v'
+Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\tangprimer20k_vdp_cartridge_v9918\src\tangprimer20k_vdp_cartridge_test.v'
+Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\tangprimer20k_vdp_cartridge_v9918\src\v9918\vdp.v'
+Undeclared symbol 'w_wr_n', assumed default net type 'wire'("D:\github\HRA_product\TangCartMSX\RTL\tangprimer20k_vdp_cartridge_v9918\src\v9918\vdp.v":209)
+Undeclared symbol 'w_rd_n', assumed default net type 'wire'("D:\github\HRA_product\TangCartMSX\RTL\tangprimer20k_vdp_cartridge_v9918\src\v9918\vdp.v":210)
+Undeclared symbol 'address', assumed default net type 'wire'("D:\github\HRA_product\TangCartMSX\RTL\tangprimer20k_vdp_cartridge_v9918\src\v9918\vdp.v":517)
+Undeclared symbol 'rdata', assumed default net type 'wire'("D:\github\HRA_product\TangCartMSX\RTL\tangprimer20k_vdp_cartridge_v9918\src\v9918\vdp.v":518)
+Undeclared symbol 'rdata_en', assumed default net type 'wire'("D:\github\HRA_product\TangCartMSX\RTL\tangprimer20k_vdp_cartridge_v9918\src\v9918\vdp.v":519)
+Undeclared symbol 'wdata', assumed default net type 'wire'("D:\github\HRA_product\TangCartMSX\RTL\tangprimer20k_vdp_cartridge_v9918\src\v9918\vdp.v":520)
+Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\tangprimer20k_vdp_cartridge_v9918\src\v9918\vdp_color_bus.v'
+Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\tangprimer20k_vdp_cartridge_v9918\src\v9918\vdp_color_decoder.v'
+Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\tangprimer20k_vdp_cartridge_v9918\src\v9918\vdp_graphic123m.v'
+Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\tangprimer20k_vdp_cartridge_v9918\src\v9918\vdp_inst.v'
+Undeclared symbol 'p_video_dh_clk', assumed default net type 'wire'("D:\github\HRA_product\TangCartMSX\RTL\tangprimer20k_vdp_cartridge_v9918\src\v9918\vdp_inst.v":206)
+Undeclared symbol 'p_video_dl_clk', assumed default net type 'wire'("D:\github\HRA_product\TangCartMSX\RTL\tangprimer20k_vdp_cartridge_v9918\src\v9918\vdp_inst.v":207)
+Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\tangprimer20k_vdp_cartridge_v9918\src\v9918\vdp_interrupt.v'
+Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\tangprimer20k_vdp_cartridge_v9918\src\v9918\vdp_ram_256byte.v'
+Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\tangprimer20k_vdp_cartridge_v9918\src\v9918\vdp_register.v'
+Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\tangprimer20k_vdp_cartridge_v9918\src\v9918\vdp_spinforam.v'
+Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\tangprimer20k_vdp_cartridge_v9918\src\v9918\vdp_sprite.v'
+Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\tangprimer20k_vdp_cartridge_v9918\src\v9918\vdp_ssg.v'
+Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\tangprimer20k_vdp_cartridge_v9918\src\v9918\vdp_text12.v'
+Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\tangprimer20k_vdp_cartridge_v9918\src\v9918\vdp_wait_control.v'
+Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\tangprimer20k_vdp_cartridge_v9918\src\video_out\video_double_buffer.v'
+Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\tangprimer20k_vdp_cartridge_v9918\src\video_out\video_out.v'
+Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\tangprimer20k_vdp_cartridge_v9918\src\video_out\video_out_bilinear.v'
+Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\tangprimer20k_vdp_cartridge_v9918\src\video_out\video_out_hmag.v'
+Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\tangprimer20k_vdp_cartridge_v9918\src\video_out\video_out_sigmoid.v'
+Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\tangprimer20k_vdp_cartridge_v9918\src\video_out\video_ram_line_buffer.v'
+Compiling module 'vdp_wait_control'("D:\github\HRA_product\TangCartMSX\RTL\tangprimer20k_vdp_cartridge_v9918\src\v9918\vdp_wait_control.v":31)
+Extracting RAM for identifier 'c_wait_table_501'("D:\github\HRA_product\TangCartMSX\RTL\tangprimer20k_vdp_cartridge_v9918\src\v9918\vdp_wait_control.v":50)
+Extracting RAM for identifier 'c_wait_table_502'("D:\github\HRA_product\TangCartMSX\RTL\tangprimer20k_vdp_cartridge_v9918\src\v9918\vdp_wait_control.v":52)
+Extracting RAM for identifier 'c_wait_table_503'("D:\github\HRA_product\TangCartMSX\RTL\tangprimer20k_vdp_cartridge_v9918\src\v9918\vdp_wait_control.v":54)
+Extracting RAM for identifier 'c_wait_table_504'("D:\github\HRA_product\TangCartMSX\RTL\tangprimer20k_vdp_cartridge_v9918\src\v9918\vdp_wait_control.v":56)
+Extracting RAM for identifier 'c_wait_table_505'("D:\github\HRA_product\TangCartMSX\RTL\tangprimer20k_vdp_cartridge_v9918\src\v9918\vdp_wait_control.v":58)
+Extracting RAM for identifier 'c_wait_table_601'("D:\github\HRA_product\TangCartMSX\RTL\tangprimer20k_vdp_cartridge_v9918\src\v9918\vdp_wait_control.v":60)
+Extracting RAM for identifier 'c_wait_table_602'("D:\github\HRA_product\TangCartMSX\RTL\tangprimer20k_vdp_cartridge_v9918\src\v9918\vdp_wait_control.v":62)
+Extracting RAM for identifier 'c_wait_table_603'("D:\github\HRA_product\TangCartMSX\RTL\tangprimer20k_vdp_cartridge_v9918\src\v9918\vdp_wait_control.v":64)
+Extracting RAM for identifier 'c_wait_table_604'("D:\github\HRA_product\TangCartMSX\RTL\tangprimer20k_vdp_cartridge_v9918\src\v9918\vdp_wait_control.v":66)
+Extracting RAM for identifier 'c_wait_table_605'("D:\github\HRA_product\TangCartMSX\RTL\tangprimer20k_vdp_cartridge_v9918\src\v9918\vdp_wait_control.v":68)
+NOTE  (EX0101) : Current top module is "vdp_wait_control"
+[5%] Running netlist conversion ...
+Running device independent optimization ...
+[10%] Optimizing Phase 0 completed
+[15%] Optimizing Phase 1 completed
+[25%] Optimizing Phase 2 completed
+Running inference ...
+[30%] Inferring Phase 0 completed
+[40%] Inferring Phase 1 completed
+[50%] Inferring Phase 2 completed
+[55%] Inferring Phase 3 completed
+Running technical mapping ...
+[60%] Tech-Mapping Phase 0 completed
+[65%] Tech-Mapping Phase 1 completed
+[75%] Tech-Mapping Phase 2 completed
+[80%] Tech-Mapping Phase 3 completed
+[90%] Tech-Mapping Phase 4 completed
+[95%] Generate netlist file "D:\github\HRA_product\TangCartMSX\RTL\tangprimer20k_vdp_cartridge_v9918\impl\gwsynthesis\tangprimer20k_vdp_cartridge_test.vg" completed
+[100%] Generate report file "D:\github\HRA_product\TangCartMSX\RTL\tangprimer20k_vdp_cartridge_v9918\impl\gwsynthesis\tangprimer20k_vdp_cartridge_test_syn.rpt.html" completed
+GowinSynthesis finish

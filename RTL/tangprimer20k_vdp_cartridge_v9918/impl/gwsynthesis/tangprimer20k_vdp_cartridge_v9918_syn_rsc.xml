@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Module name="tangprimer20k_vdp_cartridge_test" T_Register="849(0)" T_Alu="57(0)" T_Lut="943(0)" T_PADD9="3(0)" T_MULT9X9="3(0)" T_Bsram="12(0)" T_Ssram="8(0)">
+ <SubModule name="u_pll"/>
+ <SubModule name="u_clkdiv"/>
+ <SubModule name="u_msx_slot" Register="22" Lut="5" T_Register="22(22)" T_Lut="5(5)"/>
+ <SubModule name="u_v9918" Register="34" Lut="4" T_Register="622(34)" T_Alu="27(0)" T_Lut="782(4)" T_Bsram="2(0)" T_Ssram="8(0)">
+  <SubModule name="u_v9918_core" Register="4" Lut="27" T_Register="588(4)" T_Alu="27(0)" T_Lut="778(27)" T_Bsram="2(0)" T_Ssram="8(0)">
+   <SubModule name="u_vdp_color_bus" Register="41" Lut="162" T_Register="41(41)" T_Lut="162(162)"/>
+   <SubModule name="u_vdp_ssg" Register="85" Lut="138" T_Register="85(85)" T_Lut="138(138)"/>
+   <SubModule name="u_vdp_color_decoder" Register="18" Lut="29" T_Register="18(18)" T_Lut="29(29)"/>
+   <SubModule name="u_vdp_text12" Register="66" Alu="12" Lut="94" T_Register="66(66)" T_Alu="12(12)" T_Lut="94(94)"/>
+   <SubModule name="u_vdp_graphic123m" Register="58" Lut="73" T_Register="58(58)" T_Lut="73(73)"/>
+   <SubModule name="u_vdp_sprite" Register="191" Alu="15" Lut="233" T_Register="227(191)" T_Alu="15(15)" T_Lut="235(233)" T_Bsram="2(0)" T_Ssram="8(0)">
+    <SubModule name="u_sprite_info_ram" Register="2" Lut="1" Ssram="8" T_Register="2(2)" T_Lut="1(1)" T_Ssram="8(8)"/>
+    <SubModule name="u_even_line_buf" Register="17" Lut="1" Bsram="1" T_Register="17(17)" T_Lut="1(1)" T_Bsram="1(1)"/>
+    <SubModule name="u_odd_line_buf" Register="17" Bsram="1" T_Register="17(17)" T_Bsram="1(1)"/>
+   </SubModule>
+   <SubModule name="u_vdp_register" Register="89" Lut="20" T_Register="89(89)" T_Lut="20(20)"/>
+  </SubModule>
+ </SubModule>
+ <SubModule name="u_vram16k" Register="2" Lut="11" Bsram="8" T_Register="2(2)" T_Lut="11(11)" T_Bsram="8(8)"/>
+ <SubModule name="u_video_out" Register="22" Lut="68" T_Register="203(22)" T_Alu="30(0)" T_Lut="145(68)" T_PADD9="3(0)" T_MULT9X9="3(0)" T_Bsram="2(0)">
+  <SubModule name="i187" Register="34" Alu="9" Lut="17" T_Register="181(34)" T_Alu="30(9)" T_Lut="77(17)" T_PADD9="3(0)" T_MULT9X9="3(0)" T_Bsram="2(0)">
+   <SubModule name="u_double_buffer" Register="51" Lut="45" T_Register="87(51)" T_Lut="45(45)" T_Bsram="2(0)">
+    <SubModule name="u_buf_even" Register="25" Bsram="1" T_Register="25(25)" T_Bsram="1(1)"/>
+    <SubModule name="u_buf_odd" Register="11" Bsram="1" T_Register="11(11)" T_Bsram="1(1)"/>
+   </SubModule>
+   <SubModule name="u_bilinear_r" Register="20" Alu="7" Lut="5" PADD9="1" MULT9X9="1" T_Register="20(20)" T_Alu="7(7)" T_Lut="5(5)" T_PADD9="1(1)" T_MULT9X9="1(1)"/>
+   <SubModule name="u_bilinear_g" Register="20" Alu="7" Lut="5" PADD9="1" MULT9X9="1" T_Register="20(20)" T_Alu="7(7)" T_Lut="5(5)" T_PADD9="1(1)" T_MULT9X9="1(1)"/>
+   <SubModule name="u_bilinear_b" Register="20" Alu="7" Lut="5" PADD9="1" MULT9X9="1" T_Register="20(20)" T_Alu="7(7)" T_Lut="5(5)" T_PADD9="1(1)" T_MULT9X9="1(1)"/>
+  </SubModule>
+ </SubModule>
+</Module>
