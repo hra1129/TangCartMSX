@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE gowin-synthesis-project>
+<Project>
+    <Version>beta</Version>
+    <Device id="GW2A-18C" package="PBGA256" speed="8" partNumber="GW2A-LV18PG256C8/I7"/>
+    <FileList>
+        <File path="D:\github\HRA_product\TangCartMSX\RTL\tangprimer20k_vdp_cartridge_v9958_16K\src\gowin_clkdiv\gowin_clkdiv.v" type="verilog"/>
+        <File path="D:\github\HRA_product\TangCartMSX\RTL\tangprimer20k_vdp_cartridge_v9958_16K\src\gowin_rpll\gowin_rpll.v" type="verilog"/>
+        <File path="D:\github\HRA_product\TangCartMSX\RTL\tangprimer20k_vdp_cartridge_v9958_16K\src\msx_slot\msx_slot.v" type="verilog"/>
+        <File path="D:\github\HRA_product\TangCartMSX\RTL\tangprimer20k_vdp_cartridge_v9958_16K\src\ram\ip_ram.v" type="verilog"/>
+        <File path="D:\github\HRA_product\TangCartMSX\RTL\tangprimer20k_vdp_cartridge_v9958_16K\src\tangprimer20k_vdp_cartridge_test.v" type="verilog"/>
+        <File path="D:\github\HRA_product\TangCartMSX\RTL\tangprimer20k_vdp_cartridge_v9958_16K\src\v9958\vdp.v" type="verilog"/>
+        <File path="D:\github\HRA_product\TangCartMSX\RTL\tangprimer20k_vdp_cartridge_v9958_16K\src\v9958\vdp_color_bus.v" type="verilog"/>
+        <File path="D:\github\HRA_product\TangCartMSX\RTL\tangprimer20k_vdp_cartridge_v9958_16K\src\v9958\vdp_color_decoder.v" type="verilog"/>
+        <File path="D:\github\HRA_product\TangCartMSX\RTL\tangprimer20k_vdp_cartridge_v9958_16K\src\v9958\vdp_command.v" type="verilog"/>
+        <File path="D:\github\HRA_product\TangCartMSX\RTL\tangprimer20k_vdp_cartridge_v9958_16K\src\v9958\vdp_graphic123m.v" type="verilog"/>
+        <File path="D:\github\HRA_product\TangCartMSX\RTL\tangprimer20k_vdp_cartridge_v9958_16K\src\v9958\vdp_graphic4567.v" type="verilog"/>
+        <File path="D:\github\HRA_product\TangCartMSX\RTL\tangprimer20k_vdp_cartridge_v9958_16K\src\v9958\vdp_inst.v" type="verilog"/>
+        <File path="D:\github\HRA_product\TangCartMSX\RTL\tangprimer20k_vdp_cartridge_v9958_16K\src\v9958\vdp_interrupt.v" type="verilog"/>
+        <File path="D:\github\HRA_product\TangCartMSX\RTL\tangprimer20k_vdp_cartridge_v9958_16K\src\v9958\vdp_ram_256byte.v" type="verilog"/>
+        <File path="D:\github\HRA_product\TangCartMSX\RTL\tangprimer20k_vdp_cartridge_v9958_16K\src\v9958\vdp_ram_palette.v" type="verilog"/>
+        <File path="D:\github\HRA_product\TangCartMSX\RTL\tangprimer20k_vdp_cartridge_v9958_16K\src\v9958\vdp_register.v" type="verilog"/>
+        <File path="D:\github\HRA_product\TangCartMSX\RTL\tangprimer20k_vdp_cartridge_v9958_16K\src\v9958\vdp_spinforam.v" type="verilog"/>
+        <File path="D:\github\HRA_product\TangCartMSX\RTL\tangprimer20k_vdp_cartridge_v9958_16K\src\v9958\vdp_sprite.v" type="verilog"/>
+        <File path="D:\github\HRA_product\TangCartMSX\RTL\tangprimer20k_vdp_cartridge_v9958_16K\src\v9958\vdp_ssg.v" type="verilog"/>
+        <File path="D:\github\HRA_product\TangCartMSX\RTL\tangprimer20k_vdp_cartridge_v9958_16K\src\v9958\vdp_text12.v" type="verilog"/>
+        <File path="D:\github\HRA_product\TangCartMSX\RTL\tangprimer20k_vdp_cartridge_v9958_16K\src\v9958\vdp_wait_control.v" type="verilog"/>
+        <File path="D:\github\HRA_product\TangCartMSX\RTL\tangprimer20k_vdp_cartridge_v9958_16K\src\video_out\video_double_buffer.v" type="verilog"/>
+        <File path="D:\github\HRA_product\TangCartMSX\RTL\tangprimer20k_vdp_cartridge_v9958_16K\src\video_out\video_out.v" type="verilog"/>
+        <File path="D:\github\HRA_product\TangCartMSX\RTL\tangprimer20k_vdp_cartridge_v9958_16K\src\video_out\video_out_bilinear.v" type="verilog"/>
+        <File path="D:\github\HRA_product\TangCartMSX\RTL\tangprimer20k_vdp_cartridge_v9958_16K\src\video_out\video_out_hmag.v" type="verilog"/>
+        <File path="D:\github\HRA_product\TangCartMSX\RTL\tangprimer20k_vdp_cartridge_v9958_16K\src\video_out\video_ram_line_buffer.v" type="verilog"/>
+    </FileList>
+    <OptionList>
+        <Option type="disable_insert_pad" value="0"/>
+        <Option type="global_freq" value="100.000"/>
+        <Option type="looplimit" value="2000"/>
+        <Option type="output_file" value="D:\github\HRA_product\TangCartMSX\RTL\tangprimer20k_vdp_cartridge_v9958_16K\impl\gwsynthesis\tangprimer20k_vdp_cartridge_v9918.vg"/>
+        <Option type="print_all_synthesis_warning" value="0"/>
+        <Option type="ram_rw_check" value="0"/>
+        <Option type="top_module" value="tangprimer20k_vdp_cartridge_test"/>
+        <Option type="vcc" value="1.0"/>
+        <Option type="verilog_language" value="verilog-2001"/>
+        <Option type="vhdl_language" value="vhdl-1993"/>
+    </OptionList>
+</Project>
