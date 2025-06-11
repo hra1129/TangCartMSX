@@ -9,7 +9,7 @@
   "SubInsts" : [
    {
     "InstFile" : "D:/github/HRA_product/TangCartMSX/RTL/tangprimer20k_step2/src/tangprimer20k_step2.v",
-    "InstLine" : 75,
+    "InstLine" : 77,
     "InstName" : "u_pll",
     "ModuleFile" : "D:/github/HRA_product/TangCartMSX/RTL/tangprimer20k_step2/src/gowin_rpll/gowin_rpll.v",
     "ModuleLine" : 10,
@@ -17,7 +17,7 @@
    },
    {
     "InstFile" : "D:/github/HRA_product/TangCartMSX/RTL/tangprimer20k_step2/src/tangprimer20k_step2.v",
-    "InstLine" : 85,
+    "InstLine" : 87,
     "InstName" : "u_test_controller",
     "ModuleFile" : "D:/github/HRA_product/TangCartMSX/RTL/tangprimer20k_step2/src/test_controller/test_controller.v",
     "ModuleLine" : 27,
@@ -25,7 +25,7 @@
    },
    {
     "InstFile" : "D:/github/HRA_product/TangCartMSX/RTL/tangprimer20k_step2/src/tangprimer20k_step2.v",
-    "InstLine" : 112,
+    "InstLine" : 116,
     "InstName" : "u_uart",
     "ModuleFile" : "D:/github/HRA_product/TangCartMSX/RTL/tangprimer20k_step2/src/uart/ip_uart_inst.v",
     "ModuleLine" : 27,
@@ -43,7 +43,7 @@
    },
    {
     "InstFile" : "D:/github/HRA_product/TangCartMSX/RTL/tangprimer20k_step2/src/tangprimer20k_step2.v",
-    "InstLine" : 126,
+    "InstLine" : 130,
     "InstName" : "u_sdram",
     "ModuleFile" : "D:/github/HRA_product/TangCartMSX/RTL/tangprimer20k_step2/src/sdram/ip_sdram_tangprimer20k.v",
     "ModuleLine" : 57,
@@ -51,15 +51,15 @@
     "SubInsts" : [
      {
       "InstFile" : "D:/github/HRA_product/TangCartMSX/RTL/tangprimer20k_step2/src/sdram/ip_sdram_tangprimer20k.v",
-      "InstLine" : 106,
+      "InstLine" : 108,
       "InstName" : "u_ddr3_controller",
       "ModuleFile" : "D:/github/HRA_product/TangCartMSX/RTL/tangprimer20k_step2/src/ddr3_memory_interface/ddr3_memory_interface.v",
-      "ModuleLine" : 16733,
+      "ModuleLine" : 16855,
       "ModuleName" : "DDR3_Memory_Interface_Top",
       "SubInsts" : [
        {
         "InstFile" : "D:/github/HRA_product/TangCartMSX/RTL/tangprimer20k_step2/src/ddr3_memory_interface/ddr3_memory_interface.v",
-        "InstLine" : 16816,
+        "InstLine" : 16938,
         "InstName" : "gw3_top",
         "ModuleFile" : "D:/github/HRA_product/TangCartMSX/RTL/tangprimer20k_step2/src/ddr3_memory_interface/ddr3_memory_interface.v",
         "ModuleLine" : 10,

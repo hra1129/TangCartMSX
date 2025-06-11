@@ -35,6 +35,8 @@ module test_controller (
 	output			bus_valid,			//	uart 
 	input			bus_ready,			//	uart 0: Busy, 1: Ready
 	output	[7:0]	bus_wdata,			//	uart 
+	output			refresh_req,
+	input			refresh_ack,
 	output	[26:0]	dram_address,		//	DDR3 Controller 64Mword/16bit: [26:24]=BANK, [23:10]=ROW, [9:0]=COLUMN
 	output			dram_write,			//	DDR3 Controller Direction 0: Read, 1: Write
 	output			dram_valid,			//	DDR3 Controller 
@@ -44,96 +46,99 @@ module test_controller (
 	input	[127:0]	dram_rdata,			//	DDR3 Controller 
 	input			dram_rdata_valid	//	DDR3 Controller 
 );
-	localparam	[15:0]	c_increment_data0		= 16'h0001;
-	localparam	[15:0]	c_increment_data1		= 16'h0003;
-	localparam	[15:0]	c_increment_data2		= 16'h0005;
-	localparam	[15:0]	c_increment_data3		= 16'h0007;
-	localparam	[15:0]	c_increment_data4		= 16'h0009;
-	localparam	[15:0]	c_increment_data5		= 16'h000B;
-	localparam	[15:0]	c_increment_data6		= 16'h000D;
-	localparam	[15:0]	c_increment_data7		= 16'h000F;
+	localparam	[15:0]	c_increment_data0			= 16'h0001;
+	localparam	[15:0]	c_increment_data1			= 16'h0003;
+	localparam	[15:0]	c_increment_data2			= 16'h0005;
+	localparam	[15:0]	c_increment_data3			= 16'h0007;
+	localparam	[15:0]	c_increment_data4			= 16'h0009;
+	localparam	[15:0]	c_increment_data5			= 16'h000B;
+	localparam	[15:0]	c_increment_data6			= 16'h000D;
+	localparam	[15:0]	c_increment_data7			= 16'h000F;
 
-	localparam	[7:0]	st_init					= 8'd0;
-	localparam	[7:0]	st_print_title			= 8'd1;
-	localparam	[7:0]	st_print_title_wait		= 8'd2;
-	localparam	[7:0]	st_wait_init			= 8'd3;
-	localparam	[7:0]	st_print_init_ok		= 8'd4;
-	localparam	[7:0]	st_print_init_ok_wait	= 8'd5;
-	localparam	[7:0]	st_write_init			= 8'd6;
-	localparam	[7:0]	st_write_loop			= 8'd7;
-	localparam	[7:0]	st_write				= 8'd8;
-	localparam	[7:0]	st_write_wait			= 8'd9;
-	localparam	[7:0]	st_read_init			= 8'd10;
-	localparam	[7:0]	st_read_loop			= 8'd11;
-	localparam	[7:0]	st_read					= 8'd12;
-	localparam	[7:0]	st_read_wait			= 8'd13;
-	localparam	[7:0]	st_read_data_wait		= 8'd14;
-	localparam	[7:0]	st_byte_wnr_test		= 8'd15;
-	localparam	[7:0]	st_read_wnr_test_wait	= 8'd16;
-	localparam	[7:0]	st_byte_write0			= 8'd17;
-	localparam	[7:0]	st_byte_write1			= 8'd18;
-	localparam	[7:0]	st_byte_write2			= 8'd19;
-	localparam	[7:0]	st_byte_write3			= 8'd20;
-	localparam	[7:0]	st_byte_write4			= 8'd21;
-	localparam	[7:0]	st_byte_write5			= 8'd22;
-	localparam	[7:0]	st_byte_write6			= 8'd23;
-	localparam	[7:0]	st_byte_write7			= 8'd24;
-	localparam	[7:0]	st_byte_write8			= 8'd25;
-	localparam	[7:0]	st_byte_write9			= 8'd26;
-	localparam	[7:0]	st_byte_write10			= 8'd27;
-	localparam	[7:0]	st_byte_write11			= 8'd28;
-	localparam	[7:0]	st_byte_write12			= 8'd29;
-	localparam	[7:0]	st_byte_write13			= 8'd30;
-	localparam	[7:0]	st_byte_write14			= 8'd31;
-	localparam	[7:0]	st_byte_write15			= 8'd32;
-	localparam	[7:0]	st_byte_write16			= 8'd33;
-	localparam	[7:0]	st_byte_read			= 8'd34;
-	localparam	[7:0]	st_byte_read_wait		= 8'd35;
-	localparam	[7:0]	st_byte_read_data_wait	= 8'd36;
-	localparam	[7:0]	st_byte_wnr_result		= 8'd37;
-	localparam	[7:0]	st_byte_read2			= 8'd38;
-	localparam	[7:0]	st_byte_read_wait2		= 8'd39;
-	localparam	[7:0]	st_byte_read_data_wait2	= 8'd40;
-	localparam	[7:0]	st_byte_wnr_result2		= 8'd41;
-	localparam	[7:0]	st_byte_read3			= 8'd42;
-	localparam	[7:0]	st_byte_read_wait3		= 8'd43;
-	localparam	[7:0]	st_byte_read_data_wait3	= 8'd44;
-	localparam	[7:0]	st_byte_wnr_result3		= 8'd45;
-	localparam	[7:0]	st_byte_read4			= 8'd46;
-	localparam	[7:0]	st_byte_read_wait4		= 8'd47;
-	localparam	[7:0]	st_byte_read_data_wait4	= 8'd48;
-	localparam	[7:0]	st_byte_wnr_result4		= 8'd49;
-	localparam	[7:0]	st_byte_read5			= 8'd50;
-	localparam	[7:0]	st_byte_read_wait5		= 8'd51;
-	localparam	[7:0]	st_byte_read_data_wait5	= 8'd52;
-	localparam	[7:0]	st_byte_wnr_result5		= 8'd53;
-	localparam	[7:0]	st_byte_read6			= 8'd54;
-	localparam	[7:0]	st_byte_read_wait6		= 8'd55;
-	localparam	[7:0]	st_byte_read_data_wait6	= 8'd56;
-	localparam	[7:0]	st_byte_wnr_result6		= 8'd57;
-	localparam	[7:0]	st_read_error			= 8'd58;
-	localparam	[7:0]	st_read_error_wait		= 8'd59;
-	localparam	[7:0]	st_finish				= 8'd60;
+	localparam	[7:0]	st_init						= 8'd0;
+	localparam	[7:0]	st_print_title				= 8'd1;
+	localparam	[7:0]	st_print_title_wait			= 8'd2;
+	localparam	[7:0]	st_wait_init				= 8'd3;
+	localparam	[7:0]	st_print_init_ok			= 8'd4;
+	localparam	[7:0]	st_print_init_ok_wait		= 8'd5;
+	localparam	[7:0]	st_write_init				= 8'd6;
+	localparam	[7:0]	st_write_loop				= 8'd7;
+	localparam	[7:0]	st_write					= 8'd8;
+	localparam	[7:0]	st_write_wait				= 8'd9;
+	localparam	[7:0]	st_read_init				= 8'd10;
+	localparam	[7:0]	st_read_loop				= 8'd11;
+	localparam	[7:0]	st_read						= 8'd12;
+	localparam	[7:0]	st_read_wait				= 8'd13;
+	localparam	[7:0]	st_read_data_wait			= 8'd14;
+	localparam	[7:0]	st_byte_wnr_test			= 8'd15;
+	localparam	[7:0]	st_read_wnr_test_wait		= 8'd16;
+	localparam	[7:0]	st_byte_write0				= 8'd17;
+	localparam	[7:0]	st_byte_write1				= 8'd18;
+	localparam	[7:0]	st_byte_write2				= 8'd19;
+	localparam	[7:0]	st_byte_write3				= 8'd20;
+	localparam	[7:0]	st_byte_write4				= 8'd21;
+	localparam	[7:0]	st_byte_write5				= 8'd22;
+	localparam	[7:0]	st_byte_write6				= 8'd23;
+	localparam	[7:0]	st_byte_write7				= 8'd24;
+	localparam	[7:0]	st_byte_write8				= 8'd25;
+	localparam	[7:0]	st_byte_write9				= 8'd26;
+	localparam	[7:0]	st_byte_write10				= 8'd27;
+	localparam	[7:0]	st_byte_write11				= 8'd28;
+	localparam	[7:0]	st_byte_write12				= 8'd29;
+	localparam	[7:0]	st_byte_write13				= 8'd30;
+	localparam	[7:0]	st_byte_write14				= 8'd31;
+	localparam	[7:0]	st_byte_write15				= 8'd32;
+	localparam	[7:0]	st_byte_write16				= 8'd33;
+	localparam	[7:0]	st_byte_read				= 8'd34;
+	localparam	[7:0]	st_byte_read_wait			= 8'd35;
+	localparam	[7:0]	st_byte_read_data_wait		= 8'd36;
+	localparam	[7:0]	st_byte_wnr_result			= 8'd37;
+	localparam	[7:0]	st_byte_read2				= 8'd38;
+	localparam	[7:0]	st_byte_read_wait2			= 8'd39;
+	localparam	[7:0]	st_byte_read_data_wait2		= 8'd40;
+	localparam	[7:0]	st_byte_wnr_result2			= 8'd41;
+	localparam	[7:0]	st_byte_read3				= 8'd42;
+	localparam	[7:0]	st_byte_read_wait3			= 8'd43;
+	localparam	[7:0]	st_byte_read_data_wait3		= 8'd44;
+	localparam	[7:0]	st_byte_wnr_result3			= 8'd45;
+	localparam	[7:0]	st_byte_read4				= 8'd46;
+	localparam	[7:0]	st_byte_read_wait4			= 8'd47;
+	localparam	[7:0]	st_byte_read_data_wait4		= 8'd48;
+	localparam	[7:0]	st_byte_wnr_result4			= 8'd49;
+	localparam	[7:0]	st_byte_read5				= 8'd50;
+	localparam	[7:0]	st_byte_read_wait5			= 8'd51;
+	localparam	[7:0]	st_byte_read_data_wait5		= 8'd52;
+	localparam	[7:0]	st_byte_wnr_result5			= 8'd53;
+	localparam	[7:0]	st_byte_read6				= 8'd54;
+	localparam	[7:0]	st_byte_read_wait6			= 8'd55;
+	localparam	[7:0]	st_byte_read_data_wait6		= 8'd56;
+	localparam	[7:0]	st_byte_wnr_result6			= 8'd57;
+	localparam	[7:0]	st_print_read_wait_count	= 8'd58;
+	localparam	[7:0]	st_print_read_wait_count_end= 8'd59;
+	localparam	[7:0]	st_read_error				= 8'd60;
+	localparam	[7:0]	st_read_error_wait			= 8'd61;
+	localparam	[7:0]	st_finish					= 8'd62;
 
-	localparam	[3:0]	pst_wait				= 4'd0;
-	localparam	[3:0]	pst_putc_chk			= 4'd1;
-	localparam	[3:0]	pst_putc				= 4'd2;
-	localparam	[3:0]	pst_putc_wait			= 4'd3;
-	localparam	[3:0]	pst_putc_address		= 4'd4;
-	localparam	[3:0]	pst_putc_address_one	= 4'd5;
-	localparam	[3:0]	pst_putc_address_wait	= 4'd6;
-	localparam	[3:0]	pst_putc_data			= 4'd7;
-	localparam	[3:0]	pst_putc_data_one		= 4'd8;
-	localparam	[3:0]	pst_putc_data_wait		= 4'd9;
-	localparam	[3:0]	pst_finish				= 4'd10;
+	localparam	[3:0]	pst_wait					= 4'd0;
+	localparam	[3:0]	pst_putc_chk				= 4'd1;
+	localparam	[3:0]	pst_putc					= 4'd2;
+	localparam	[3:0]	pst_putc_wait				= 4'd3;
+	localparam	[3:0]	pst_putc_address			= 4'd4;
+	localparam	[3:0]	pst_putc_address_one		= 4'd5;
+	localparam	[3:0]	pst_putc_address_wait		= 4'd6;
+	localparam	[3:0]	pst_putc_data				= 4'd7;
+	localparam	[3:0]	pst_putc_data_one			= 4'd8;
+	localparam	[3:0]	pst_putc_data_wait			= 4'd9;
+	localparam	[3:0]	pst_finish					= 4'd10;
 
-	localparam	[6:0]	s_title					= 7'd0;
-	localparam	[6:0]	s_init_ok				= 7'd23;
-	localparam	[6:0]	s_write					= 7'd40;
-	localparam	[6:0]	s_read_error			= 7'd46;
-	localparam	[6:0]	s_read					= 7'd62;
-	localparam	[6:0]	s_byte_wr_test			= 7'd68;
-	localparam	[6:0]	s_byte_wr_result		= 7'd79;
+	localparam	[6:0]	s_title						= 7'd0;
+	localparam	[6:0]	s_init_ok					= 7'd23;
+	localparam	[6:0]	s_write						= 7'd40;
+	localparam	[6:0]	s_read_error				= 7'd46;
+	localparam	[6:0]	s_read						= 7'd62;
+	localparam	[6:0]	s_byte_wr_test				= 7'd68;
+	localparam	[6:0]	s_byte_wr_result			= 7'd79;
+	localparam	[6:0]	s_count						= 7'd87;
 
 	reg		[7:0]	ff_main_state;
 	reg		[3:0]	ff_print_state;
@@ -145,6 +150,7 @@ module test_controller (
 	reg				ff_put_char_valid;
 	reg		[27:0]	ff_put_address;
 	reg		[5:0]	ff_led;
+	reg				ff_refresh_req;
 	reg		[26:0]	ff_dram_address;
 	reg				ff_dram_write;
 	reg		[15:0]	ff_dram_wdata [0:7];
@@ -153,6 +159,9 @@ module test_controller (
 	reg		[15:0]	ff_dram_data [0:7];
 	reg		[15:0]	ff_put_data [0:7];
 	reg		[4:0]	ff_count;
+	reg		[7:0]	ff_read_wait_count;
+	reg		[7:0]	ff_read_wait_count_max;
+	reg				ff_read_active;
 
 	initial begin
 		rom_data[0]		= "D";
@@ -248,6 +257,14 @@ module test_controller (
 		rom_data[84]	= 8'd13;
 		rom_data[85]	= 8'd10;
 		rom_data[86]	= 8'd0;
+
+		rom_data[87]	= "C";
+		rom_data[88]	= ":";
+		rom_data[89]	= "#";
+		rom_data[90]	= 8'd13;
+		rom_data[91]	= 8'd10;
+		rom_data[92]	= 8'd0;
+
 	end
 
 	function [7:0] func_hex(
@@ -262,6 +279,54 @@ module test_controller (
 	endfunction
 
 	// --------------------------------------------------------------------
+	//	Read wait counter
+	// --------------------------------------------------------------------
+	always @( posedge clk ) begin
+		if( !reset_n ) begin
+			ff_read_wait_count	<= 8'd0;
+			ff_read_active		<= 1'b0;
+		end
+		else if( ff_read_active ) begin
+			if( dram_rdata_valid ) begin
+				ff_read_active	<= 1'b0;
+			end
+			else begin
+				ff_read_wait_count	<= ff_read_wait_count + 8'd1;
+			end
+		end
+		else if( !ff_dram_write && ff_dram_valid && dram_ready ) begin
+			ff_read_wait_count	<= 8'd1;
+			ff_read_active		<= 1'b1;
+		end
+	end
+
+	always @( posedge clk ) begin
+		if( !reset_n ) begin
+			ff_read_wait_count_max	<= 8'b0;
+		end
+		else if( ff_read_wait_count_max < ff_read_wait_count ) begin
+			ff_read_wait_count_max	<= ff_read_wait_count;
+		end
+	end
+
+	always @( posedge clk ) begin
+		if( !reset_n ) begin
+			ff_refresh_req <= 1'b0;
+		end
+		else if( ff_refresh_req ) begin
+			if( refresh_ack ) begin
+				ff_refresh_req <= 1'b0;
+			end
+		end
+		else if( dram_rdata_valid ) begin
+			ff_refresh_req <= 1'b1;
+		end
+		else if( ff_dram_write && ff_dram_valid && dram_ready ) begin
+			ff_refresh_req <= 1'b1;
+		end
+	end
+
+	// --------------------------------------------------------------------
 	//	Print procedure
 	// --------------------------------------------------------------------
 	always @( posedge clk ) begin
@@ -272,7 +337,7 @@ module test_controller (
 		else begin
 			case( ff_print_state )
 			pst_wait:
-				//	printŠJŽn‘Ò‚¿ ---------------------------------------------
+				//	printé–‹å§‹å¾…ã¡ ---------------------------------------------
 				begin
 					if( ff_print_start ) begin
 						ff_print_state	<= pst_putc_chk;
@@ -280,7 +345,7 @@ module test_controller (
 					end
 				end
 			pst_putc_chk:
-				//	print•¶Žšƒ`ƒFƒbƒN -----------------------------------------
+				//	printæ–‡å­—ãƒã‚§ãƒƒã‚¯ -----------------------------------------
 				begin
 					case( rom_data[ ff_print_ptr ] )
 					8'd0:		ff_print_state		<= pst_finish;
@@ -290,14 +355,14 @@ module test_controller (
 					endcase
 				end
 			pst_putc:
-				//	’Êí•¶Žš‚Ìo—Í --------------------------------------------
+				//	é€šå¸¸æ–‡å­—ã®å‡ºåŠ› --------------------------------------------
 				begin
 					ff_put_char			<= rom_data[ ff_print_ptr ];
 					ff_put_char_valid	<= 1'b1;
 					ff_print_state		<= pst_putc_wait;
 				end
 			pst_putc_wait:
-				//	’Êí•¶Žš‚Ìo—ÍŠ®—¹‘Ò‚¿ ------------------------------------
+				//	é€šå¸¸æ–‡å­—ã®å‡ºåŠ›å®Œäº†å¾…ã¡ ------------------------------------
 				begin
 					if( bus_ready ) begin
 						ff_put_char_valid	<= 1'b0;
@@ -306,7 +371,7 @@ module test_controller (
 					end
 				end
 			pst_putc_address:
-				//	ƒAƒhƒŒƒX‚Ìo—Í€”õ ----------------------------------------
+				//	ã‚¢ãƒ‰ãƒ¬ã‚¹ã®å‡ºåŠ›æº–å‚™ ----------------------------------------
 				begin
 					ff_put_address		<= { 1'b0, ff_dram_address };
 					ff_count			<= 5'd6;
@@ -314,14 +379,14 @@ module test_controller (
 					ff_print_state		<= pst_putc_address_one;
 				end
 			pst_putc_address_one:
-				//	ƒAƒhƒŒƒXÅãˆÊŒ…o—Í—v‹ ----------------------------------
+				//	ã‚¢ãƒ‰ãƒ¬ã‚¹æœ€ä¸Šä½æ¡å‡ºåŠ›è¦æ±‚ ----------------------------------
 				begin
 					ff_put_char			<= func_hex( ff_put_address[27:24] );
 					ff_put_char_valid	<= 1'b1;
 					ff_print_state		<= pst_putc_address_wait;
 				end
 			pst_putc_address_wait:
-				//	ƒAƒhƒŒƒXÅãˆÊŒ…o—ÍŠ®—¹‘Ò‚¿ ------------------------------
+				//	ã‚¢ãƒ‰ãƒ¬ã‚¹æœ€ä¸Šä½æ¡å‡ºåŠ›å®Œäº†å¾…ã¡ ------------------------------
 				begin
 					if( bus_ready ) begin
 						ff_put_char_valid	<= 1'b0;
@@ -336,7 +401,7 @@ module test_controller (
 					end
 				end
 			pst_putc_data:
-				//	ƒf[ƒ^‚Ìo—Í€”õ ------------------------------------------
+				//	ãƒ‡ãƒ¼ã‚¿ã®å‡ºåŠ›æº–å‚™ ------------------------------------------
 				begin
 					ff_put_data[0]		<= ff_dram_data[0];
 					ff_put_data[1]		<= ff_dram_data[1];
@@ -351,14 +416,14 @@ module test_controller (
 					ff_print_state		<= pst_putc_data_one;
 				end
 			pst_putc_data_one:
-				//	ƒf[ƒ^ÅãˆÊŒ…o—Í—v‹ ------------------------------------
+				//	ãƒ‡ãƒ¼ã‚¿æœ€ä¸Šä½æ¡å‡ºåŠ›è¦æ±‚ ------------------------------------
 				begin
 					ff_put_char			<= func_hex( ff_put_data[7][15:12] );
 					ff_put_char_valid	<= 1'b1;
 					ff_print_state		<= pst_putc_data_wait;
 				end
 			pst_putc_data_wait:
-				//	ƒf[ƒ^ÅãˆÊŒ…o—ÍŠ®—¹‘Ò‚¿ --------------------------------
+				//	ãƒ‡ãƒ¼ã‚¿æœ€ä¸Šä½æ¡å‡ºåŠ›å®Œäº†å¾…ã¡ --------------------------------
 				begin
 					if( bus_ready ) begin
 						ff_put_char_valid	<= 1'b0;
@@ -380,7 +445,7 @@ module test_controller (
 					end
 				end
 			pst_finish:
-				//	printI—¹ -------------------------------------------------
+				//	printçµ‚äº† -------------------------------------------------
 				begin
 					ff_print_state		<= pst_wait;
 				end
@@ -412,19 +477,19 @@ module test_controller (
 		else begin
 			case( ff_main_state )
 			st_init:
-				//	ƒ{ƒ^ƒ“‰Ÿ‰º‘Ò‚¿ --------------------------------------------
+				//	ãƒœã‚¿ãƒ³æŠ¼ä¸‹å¾…ã¡ --------------------------------------------
 				if( button != 5'b11111 ) begin
 					ff_main_state	<= ff_main_state + 8'd1;
 				end
 			st_print_title:
-				//	DDR3 Test/Wait init ‚ð•\Ž¦—v‹ ----------------------------
+				//	DDR3 Test/Wait init ã‚’è¡¨ç¤ºè¦æ±‚ ----------------------------
 				begin
 					ff_main_state	<= ff_main_state + 8'd1;
 					ff_print_begin	<= s_title;
 					ff_print_start	<= 1'b1;
 				end
 			st_print_title_wait:
-				//	DDR3 Test/Wait init ‚Ì•\Ž¦Š®—¹‘Ò‚¿ ------------------------
+				//	DDR3 Test/Wait init ã®è¡¨ç¤ºå®Œäº†å¾…ã¡ ------------------------
 				begin
 					if( ff_print_state == pst_finish ) begin
 						ff_print_start	<= 1'b0;
@@ -433,7 +498,7 @@ module test_controller (
 					end
 				end
 			st_wait_init:
-				//	sdram_init_busy ‚ª L ‚É‚È‚é‚Ì‚ð‘Ò‹@ -----------------------
+				//	sdram_init_busy ãŒ L ã«ãªã‚‹ã®ã‚’å¾…æ©Ÿ -----------------------
 				begin
 					if( !sdram_init_busy ) begin
 						ff_main_state	<= ff_main_state + 8'd1;
@@ -441,14 +506,14 @@ module test_controller (
 					end
 				end
 			st_print_init_ok:
-				//	Init OK ‚ð•\Ž¦—v‹ ----------------------------------------
+				//	Init OK ã‚’è¡¨ç¤ºè¦æ±‚ ----------------------------------------
 				begin
 					ff_main_state	<= ff_main_state + 8'd1;
 					ff_print_begin	<= s_init_ok;
 					ff_print_start	<= 1'b1;
 				end
 			st_print_init_ok_wait:
-				//	Init OK ‚Ì•\Ž¦Š®—¹‘Ò‚¿ ------------------------------------
+				//	Init OK ã®è¡¨ç¤ºå®Œäº†å¾…ã¡ ------------------------------------
 				begin
 					if( ff_print_state == pst_finish ) begin
 						ff_print_start	<= 1'b0;
@@ -456,7 +521,7 @@ module test_controller (
 					end
 				end
 			st_write_init:
-				//	˜A‘±‘‚«ž‚ÝƒeƒXƒg‚Ì‰º€”õ --------------------------------
+				//	é€£ç¶šæ›¸ãè¾¼ã¿ãƒ†ã‚¹ãƒˆã®ä¸‹æº–å‚™ --------------------------------
 				begin
 					ff_dram_address		<= 27'd0;
 					ff_dram_write		<= 1'b1;
@@ -472,32 +537,32 @@ module test_controller (
 					ff_main_state		<= ff_main_state + 8'd1;
 				end
 			st_write_loop:
-				//	˜A‘±‘‚«ž‚Ýƒ‹[ƒv ----------------------------------------
+				//	é€£ç¶šæ›¸ãè¾¼ã¿ãƒ«ãƒ¼ãƒ— ----------------------------------------
 				begin
 					if( ff_dram_address[15:0] == 16'd0 ) begin
-						//	ƒAƒhƒŒƒX‚Ì‰ºˆÊ 16bit ‚ª all 0 ‚È‚çAƒAƒhƒŒƒX‚ð•\Ž¦—v‹‚ðo‚· 
+						//	ã‚¢ãƒ‰ãƒ¬ã‚¹ã®ä¸‹ä½ 16bit ãŒ all 0 ãªã‚‰ã€ã‚¢ãƒ‰ãƒ¬ã‚¹ã‚’è¡¨ç¤ºè¦æ±‚ã‚’å‡ºã™ 
 						ff_print_begin		<= s_write;
 						ff_print_start		<= 1'b1;
 						ff_main_state		<= ff_main_state + 8'd1;
 					end
 					else begin
-						//	‚»‚êˆÈŠO‚ÍA‘¦‘‚«ž‚Ý—v‹‚ð”­s ------------------ 
+						//	ãã‚Œä»¥å¤–ã¯ã€å³æ›¸ãè¾¼ã¿è¦æ±‚ã‚’ç™ºè¡Œ ------------------ 
 						ff_main_state		<= st_write_wait;
 						ff_dram_valid		<= 1'b1;
 					end
 				end
 			st_write:
-				//	ƒAƒhƒŒƒX‚Ì•\Ž¦Š®—¹‘Ò‚¿ ------------------------------------
+				//	ã‚¢ãƒ‰ãƒ¬ã‚¹ã®è¡¨ç¤ºå®Œäº†å¾…ã¡ ------------------------------------
 				begin
 					if( ff_print_state == pst_finish ) begin
-						//	•\Ž¦Š®—¹‚Æ‚Æ‚à‚ÉA‘‚«ž‚Ý—v‹‚ð”­s --------------
+						//	è¡¨ç¤ºå®Œäº†ã¨ã¨ã‚‚ã«ã€æ›¸ãè¾¼ã¿è¦æ±‚ã‚’ç™ºè¡Œ --------------
 						ff_print_start		<= 1'b0;
 						ff_main_state		<= ff_main_state + 8'd1;
 						ff_dram_valid		<= 1'b1;
 					end
 				end
 			st_write_wait:
-				//	Œ»Ý‚ÌƒAƒhƒŒƒX‚Ö‘‚«ž‚ÝŠ®—¹‘Ò‚¿ --------------------------
+				//	ç¾åœ¨ã®ã‚¢ãƒ‰ãƒ¬ã‚¹ã¸æ›¸ãè¾¼ã¿å®Œäº†å¾…ã¡ --------------------------
 				begin
 					if( dram_ready ) begin
 						ff_dram_valid		<= 1'b0;
@@ -519,7 +584,7 @@ module test_controller (
 					end
 				end
 			st_read_init:
-				//	˜A‘±“Ç‚Ýo‚µƒeƒXƒg‚Ì‰º€”õ --------------------------------
+				//	é€£ç¶šèª­ã¿å‡ºã—ãƒ†ã‚¹ãƒˆã®ä¸‹æº–å‚™ --------------------------------
 				begin
 					ff_dram_address		<= 27'd0;
 					ff_dram_write		<= 1'b0;
@@ -536,33 +601,33 @@ module test_controller (
 					ff_led				<= 6'b111110;
 				end
 			st_read_loop:
-				//	˜A‘±‘‚«ž‚Ýƒ‹[ƒv ----------------------------------------
+				//	é€£ç¶šæ›¸ãè¾¼ã¿ãƒ«ãƒ¼ãƒ— ----------------------------------------
 				begin
 					if( ff_dram_address[15:0] == 16'd0 ) begin
-						//	ƒAƒhƒŒƒX‚Ì‰ºˆÊ 16bit ‚ª all 0 ‚È‚çAƒAƒhƒŒƒX‚ð•\Ž¦—v‹‚ðo‚· 
+						//	ã‚¢ãƒ‰ãƒ¬ã‚¹ã®ä¸‹ä½ 16bit ãŒ all 0 ãªã‚‰ã€ã‚¢ãƒ‰ãƒ¬ã‚¹ã‚’è¡¨ç¤ºè¦æ±‚ã‚’å‡ºã™ 
 						ff_print_begin		<= s_read;
 						ff_print_start		<= 1'b1;
 						ff_main_state		<= ff_main_state + 8'd1;
 					end
 					else begin
-						//	‚»‚êˆÈŠO‚ÍA‘¦‘‚«ž‚Ý—v‹‚ð”­s ------------------ 
+						//	ãã‚Œä»¥å¤–ã¯ã€å³æ›¸ãè¾¼ã¿è¦æ±‚ã‚’ç™ºè¡Œ ------------------ 
 						ff_main_state		<= st_read_wait;
 						ff_dram_valid		<= 1'b1;
 					end
 				end
 			st_read:
-				//	ƒAƒhƒŒƒX‚Ì•\Ž¦Š®—¹‘Ò‚¿ ------------------------------------
+				//	ã‚¢ãƒ‰ãƒ¬ã‚¹ã®è¡¨ç¤ºå®Œäº†å¾…ã¡ ------------------------------------
 				begin
 					ff_led				<= 6'b111101;
 					if( ff_print_state == pst_finish ) begin
-						//	•\Ž¦Š®—¹‚Æ‚Æ‚à‚ÉA‘‚«ž‚Ý—v‹‚ð”­s --------------
+						//	è¡¨ç¤ºå®Œäº†ã¨ã¨ã‚‚ã«ã€æ›¸ãè¾¼ã¿è¦æ±‚ã‚’ç™ºè¡Œ --------------
 						ff_print_start		<= 1'b0;
 						ff_main_state		<= ff_main_state + 8'd1;
 						ff_dram_valid		<= 1'b1;
 					end
 				end
 			st_read_wait:
-				//	Œ»Ý‚ÌƒAƒhƒŒƒX‚Ö“Ç‚Ýž‚ÝŽó—‘Ò‚¿ --------------------------
+				//	ç¾åœ¨ã®ã‚¢ãƒ‰ãƒ¬ã‚¹ã¸èª­ã¿è¾¼ã¿å—ç†å¾…ã¡ --------------------------
 				begin
 					ff_led				<= 6'b111100;
 					if( dram_ready ) begin
@@ -571,10 +636,10 @@ module test_controller (
 					end
 				end
 			st_read_data_wait:
-				//	ƒf[ƒ^Žó‚¯Žæ‚è‘Ò‚¿ ----------------------------------------
+				//	ãƒ‡ãƒ¼ã‚¿å—ã‘å–ã‚Šå¾…ã¡ ----------------------------------------
 				begin
 					ff_led				<= 6'b111011;
-					if( dram_rdata_valid ) begin
+					if( refresh_ack ) begin
 						if( dram_rdata == { ff_dram_wdata[7], ff_dram_wdata[6], ff_dram_wdata[5], ff_dram_wdata[4], ff_dram_wdata[3], ff_dram_wdata[2], ff_dram_wdata[1], ff_dram_wdata[0] } ) begin
 							ff_dram_address		<= ff_dram_address + 27'd8;
 							ff_dram_wdata[0]	<= ff_dram_wdata[0] + c_increment_data0;
@@ -606,7 +671,7 @@ module test_controller (
 					end
 				end
 			st_byte_wnr_test:
-				//	Byte W/R ‚Ì•\Ž¦—v‹ ---------------------------------------
+				//	Byte W/R ã®è¡¨ç¤ºè¦æ±‚ ---------------------------------------
 				begin
 					ff_led				<= 6'b110000;
 					ff_print_begin		<= s_byte_wr_test;
@@ -614,7 +679,7 @@ module test_controller (
 					ff_main_state		<= ff_main_state + 8'd1;
 				end
 			st_read_wnr_test_wait:
-				//	Byte W/R ‚Ì•\Ž¦Š®—¹‘Ò‚¿ -----------------------------------
+				//	Byte W/R ã®è¡¨ç¤ºå®Œäº†å¾…ã¡ -----------------------------------
 				begin
 					ff_led				<= 6'b001111;
 					if( ff_print_state == pst_finish ) begin
@@ -623,7 +688,7 @@ module test_controller (
 					end
 				end
 			st_byte_write0:
-				//	XX-XX-XX-XX-XX-XX-XX-XX-XX-XX-XX-XX-XX-XX-XX-10 ‚ð‘‚«ž‚Ý 
+				//	XX-XX-XX-XX-XX-XX-XX-XX-XX-XX-XX-XX-XX-XX-XX-10 ã‚’æ›¸ãè¾¼ã¿ 
 				begin
 					ff_dram_address		<= 27'd0;
 					ff_dram_write		<= 1'b1;
@@ -640,7 +705,7 @@ module test_controller (
 					ff_dram_valid		<= 1'b1;
 				end
 			st_byte_write1:
-				//	XX-XX-XX-XX-XX-XX-XX-XX-XX-XX-XX-XX-XX-XX-32-XX ‚ð‘‚«ž‚Ý 
+				//	XX-XX-XX-XX-XX-XX-XX-XX-XX-XX-XX-XX-XX-XX-32-XX ã‚’æ›¸ãè¾¼ã¿ 
 				if( dram_ready ) begin
 					ff_dram_address		<= 27'd0;
 					ff_dram_write		<= 1'b1;
@@ -657,7 +722,7 @@ module test_controller (
 					ff_dram_valid		<= 1'b1;
 				end
 			st_byte_write2:
-				//	XX-XX-XX-XX-XX-XX-XX-XX-XX-XX-XX-XX-XX-54-XX-XX ‚ð‘‚«ž‚Ý 
+				//	XX-XX-XX-XX-XX-XX-XX-XX-XX-XX-XX-XX-XX-54-XX-XX ã‚’æ›¸ãè¾¼ã¿ 
 				if( dram_ready ) begin
 					ff_dram_address		<= 27'd0;
 					ff_dram_write		<= 1'b1;
@@ -674,7 +739,7 @@ module test_controller (
 					ff_dram_valid		<= 1'b1;
 				end
 			st_byte_write3:
-				//	XX-XX-XX-XX-XX-XX-XX-XX-XX-XX-XX-XX-76-XX-XX-XX ‚ð‘‚«ž‚Ý 
+				//	XX-XX-XX-XX-XX-XX-XX-XX-XX-XX-XX-XX-76-XX-XX-XX ã‚’æ›¸ãè¾¼ã¿ 
 				if( dram_ready ) begin
 					ff_dram_address		<= 27'd0;
 					ff_dram_write		<= 1'b1;
@@ -691,7 +756,7 @@ module test_controller (
 					ff_dram_valid		<= 1'b1;
 				end
 			st_byte_write4:
-				//	XX-XX-XX-XX-XX-XX-XX-XX-XX-XX-XX-98-XX-XX-XX-XX ‚ð‘‚«ž‚Ý 
+				//	XX-XX-XX-XX-XX-XX-XX-XX-XX-XX-XX-98-XX-XX-XX-XX ã‚’æ›¸ãè¾¼ã¿ 
 				if( dram_ready ) begin
 					ff_dram_address		<= 27'd0;
 					ff_dram_write		<= 1'b1;
@@ -708,7 +773,7 @@ module test_controller (
 					ff_dram_valid		<= 1'b1;
 				end
 			st_byte_write5:
-				//	XX-XX-XX-XX-XX-XX-XX-XX-XX-XX-BA-XX-XX-XX-XX-XX ‚ð‘‚«ž‚Ý 
+				//	XX-XX-XX-XX-XX-XX-XX-XX-XX-XX-BA-XX-XX-XX-XX-XX ã‚’æ›¸ãè¾¼ã¿ 
 				if( dram_ready ) begin
 					ff_dram_address		<= 27'd0;
 					ff_dram_write		<= 1'b1;
@@ -725,7 +790,7 @@ module test_controller (
 					ff_dram_valid		<= 1'b1;
 				end
 			st_byte_write6:
-				//	XX-XX-XX-XX-XX-XX-XX-XX-XX-DC-XX-XX-XX-XX-XX-XX ‚ð‘‚«ž‚Ý 
+				//	XX-XX-XX-XX-XX-XX-XX-XX-XX-DC-XX-XX-XX-XX-XX-XX ã‚’æ›¸ãè¾¼ã¿ 
 				if( dram_ready ) begin
 					ff_dram_address		<= 27'd0;
 					ff_dram_write		<= 1'b1;
@@ -742,7 +807,7 @@ module test_controller (
 					ff_dram_valid		<= 1'b1;
 				end
 			st_byte_write7:
-				//	XX-XX-XX-XX-XX-XX-XX-XX-FE-XX-XX-XX-XX-XX-XX-XX ‚ð‘‚«ž‚Ý 
+				//	XX-XX-XX-XX-XX-XX-XX-XX-FE-XX-XX-XX-XX-XX-XX-XX ã‚’æ›¸ãè¾¼ã¿ 
 				if( dram_ready ) begin
 					ff_dram_address		<= 27'd0;
 					ff_dram_write		<= 1'b1;
@@ -759,7 +824,7 @@ module test_controller (
 					ff_dram_valid		<= 1'b1;
 				end
 			st_byte_write8:
-				//	XX-XX-XX-XX-XX-XX-XX-01-XX-XX-XX-XX-XX-XX-XX-XX ‚ð‘‚«ž‚Ý 
+				//	XX-XX-XX-XX-XX-XX-XX-01-XX-XX-XX-XX-XX-XX-XX-XX ã‚’æ›¸ãè¾¼ã¿ 
 				if( dram_ready ) begin
 					ff_dram_address		<= 27'd0;
 					ff_dram_write		<= 1'b1;
@@ -776,7 +841,7 @@ module test_controller (
 					ff_dram_valid		<= 1'b1;
 				end
 			st_byte_write9:
-				//	XX-XX-XX-XX-XX-XX-23-XX-XX-XX-XX-XX-XX-XX-XX-XX ‚ð‘‚«ž‚Ý 
+				//	XX-XX-XX-XX-XX-XX-23-XX-XX-XX-XX-XX-XX-XX-XX-XX ã‚’æ›¸ãè¾¼ã¿ 
 				if( dram_ready ) begin
 					ff_dram_address		<= 27'd0;
 					ff_dram_write		<= 1'b1;
@@ -793,7 +858,7 @@ module test_controller (
 					ff_dram_valid		<= 1'b1;
 				end
 			st_byte_write10:
-				//	XX-XX-XX-XX-XX-45-XX-XX-XX-XX-XX-XX-XX-XX-XX-XX ‚ð‘‚«ž‚Ý 
+				//	XX-XX-XX-XX-XX-45-XX-XX-XX-XX-XX-XX-XX-XX-XX-XX ã‚’æ›¸ãè¾¼ã¿ 
 				if( dram_ready ) begin
 					ff_dram_address		<= 27'd0;
 					ff_dram_write		<= 1'b1;
@@ -810,7 +875,7 @@ module test_controller (
 					ff_dram_valid		<= 1'b1;
 				end
 			st_byte_write11:
-				//	XX-XX-XX-XX-67-XX-XX-XX-XX-XX-XX-XX-XX-XX-XX-XX ‚ð‘‚«ž‚Ý 
+				//	XX-XX-XX-XX-67-XX-XX-XX-XX-XX-XX-XX-XX-XX-XX-XX ã‚’æ›¸ãè¾¼ã¿ 
 				if( dram_ready ) begin
 					ff_dram_address		<= 27'd0;
 					ff_dram_write		<= 1'b1;
@@ -827,7 +892,7 @@ module test_controller (
 					ff_dram_valid		<= 1'b1;
 				end
 			st_byte_write12:
-				//	XX-XX-XX-89-XX-XX-XX-XX-XX-XX-XX-XX-XX-XX-XX-XX ‚ð‘‚«ž‚Ý 
+				//	XX-XX-XX-89-XX-XX-XX-XX-XX-XX-XX-XX-XX-XX-XX-XX ã‚’æ›¸ãè¾¼ã¿ 
 				if( dram_ready ) begin
 					ff_dram_address		<= 27'd0;
 					ff_dram_write		<= 1'b1;
@@ -844,7 +909,7 @@ module test_controller (
 					ff_dram_valid		<= 1'b1;
 				end
 			st_byte_write13:
-				//	XX-XX-AB-XX-XX-XX-XX-XX-XX-XX-XX-XX-XX-XX-XX-XX ‚ð‘‚«ž‚Ý 
+				//	XX-XX-AB-XX-XX-XX-XX-XX-XX-XX-XX-XX-XX-XX-XX-XX ã‚’æ›¸ãè¾¼ã¿ 
 				if( dram_ready ) begin
 					ff_dram_address		<= 27'd0;
 					ff_dram_write		<= 1'b1;
@@ -861,7 +926,7 @@ module test_controller (
 					ff_dram_valid		<= 1'b1;
 				end
 			st_byte_write14:
-				//	XX-CD-XX-XX-XX-XX-XX-XX-XX-XX-XX-XX-XX-XX-XX-XX ‚ð‘‚«ž‚Ý 
+				//	XX-CD-XX-XX-XX-XX-XX-XX-XX-XX-XX-XX-XX-XX-XX-XX ã‚’æ›¸ãè¾¼ã¿ 
 				if( dram_ready ) begin
 					ff_dram_address		<= 27'd0;
 					ff_dram_write		<= 1'b1;
@@ -878,7 +943,7 @@ module test_controller (
 					ff_dram_valid		<= 1'b1;
 				end
 			st_byte_write15:
-				//	EF-XX-XX-XX-XX-XX-XX-XX-XX-XX-XX-XX-XX-XX-XX-XX ‚ð‘‚«ž‚Ý 
+				//	EF-XX-XX-XX-XX-XX-XX-XX-XX-XX-XX-XX-XX-XX-XX-XX ã‚’æ›¸ãè¾¼ã¿ 
 				if( dram_ready ) begin
 					ff_dram_address		<= 27'd0;
 					ff_dram_write		<= 1'b1;
@@ -895,7 +960,7 @@ module test_controller (
 					ff_dram_valid		<= 1'b1;
 				end
 			st_byte_write16:
-				//	6F-FF-5E-EE-4D-DD-3C-CC-2V-VV-1A-AA-BE-EF-DE-AD ‚ð‘‚«ž‚Ý 
+				//	6F-FF-5E-EE-4D-DD-3C-CC-2V-VV-1A-AA-BE-EF-DE-AD ã‚’æ›¸ãè¾¼ã¿ 
 				if( dram_ready ) begin
 					ff_dram_address		<= 27'h4000000;
 					ff_dram_write		<= 1'b1;
@@ -912,7 +977,7 @@ module test_controller (
 					ff_dram_valid		<= 1'b1;
 				end
 			st_byte_read:
-				//	“Ç‚Ýo‚µ --------------------------------------------------
+				//	èª­ã¿å‡ºã— --------------------------------------------------
 				if( dram_ready ) begin
 					ff_dram_address		<= 27'd0;
 					ff_dram_write		<= 1'b0;
@@ -929,14 +994,14 @@ module test_controller (
 					ff_dram_valid		<= 1'b1;
 				end
 			st_byte_read_wait:
-				//	“Ç‚Ýo‚µŠ®—¹‘Ò‚¿ ------------------------------------------
+				//	èª­ã¿å‡ºã—å®Œäº†å¾…ã¡ ------------------------------------------
 				if( dram_ready ) begin
 					ff_dram_valid		<= 1'b0;
 					ff_main_state		<= ff_main_state + 8'd1;
 				end
 			st_byte_read_data_wait:
-				//	“Ç‚Ýo‚µŒ‹‰ÊŽó‚¯Žæ‚è‚Æ B:address=data ‚Ì•\Ž¦—v‹ ----------
-				if( dram_rdata_valid ) begin
+				//	èª­ã¿å‡ºã—çµæžœå—ã‘å–ã‚Šã¨ B:address=data ã®è¡¨ç¤ºè¦æ±‚ ----------
+				if( refresh_ack ) begin
 					ff_dram_data[0]		<= dram_rdata[ 15:  0];
 					ff_dram_data[1]		<= dram_rdata[ 31: 16];
 					ff_dram_data[2]		<= dram_rdata[ 47: 32];
@@ -950,13 +1015,13 @@ module test_controller (
 					ff_main_state		<= ff_main_state + 8'd1;
 				end
 			st_byte_wnr_result:
-				//	B:address=data ‚Ì•\Ž¦Š®—¹‘Ò‚¿ -----------------------------
+				//	B:address=data ã®è¡¨ç¤ºå®Œäº†å¾…ã¡ -----------------------------
 				if( ff_print_state == pst_finish ) begin
 					ff_print_start		<= 1'b0;
 					ff_main_state		<= ff_main_state + 8'd1;
 				end
 			st_byte_read2:
-				//	“Ç‚Ýo‚µ --------------------------------------------------
+				//	èª­ã¿å‡ºã— --------------------------------------------------
 				if( dram_ready ) begin
 					ff_dram_address		<= 27'd1;
 					ff_dram_write		<= 1'b0;
@@ -973,14 +1038,14 @@ module test_controller (
 					ff_dram_valid		<= 1'b1;
 				end
 			st_byte_read_wait2:
-				//	“Ç‚Ýo‚µŠ®—¹‘Ò‚¿ ------------------------------------------
+				//	èª­ã¿å‡ºã—å®Œäº†å¾…ã¡ ------------------------------------------
 				if( dram_ready ) begin
 					ff_dram_valid		<= 1'b0;
 					ff_main_state		<= ff_main_state + 8'd1;
 				end
 			st_byte_read_data_wait2:
-				//	“Ç‚Ýo‚µŒ‹‰ÊŽó‚¯Žæ‚è‚Æ B:address=data ‚Ì•\Ž¦—v‹ ----------
-				if( dram_rdata_valid ) begin
+				//	èª­ã¿å‡ºã—çµæžœå—ã‘å–ã‚Šã¨ B:address=data ã®è¡¨ç¤ºè¦æ±‚ ----------
+				if( refresh_ack ) begin
 					ff_dram_data[0]		<= dram_rdata[ 15:  0];
 					ff_dram_data[1]		<= dram_rdata[ 31: 16];
 					ff_dram_data[2]		<= dram_rdata[ 47: 32];
@@ -994,13 +1059,13 @@ module test_controller (
 					ff_main_state		<= ff_main_state + 8'd1;
 				end
 			st_byte_wnr_result2:
-				//	B:address=data ‚Ì•\Ž¦Š®—¹‘Ò‚¿ -----------------------------
+				//	B:address=data ã®è¡¨ç¤ºå®Œäº†å¾…ã¡ -----------------------------
 				if( ff_print_state == pst_finish ) begin
 					ff_print_start		<= 1'b0;
 					ff_main_state		<= ff_main_state + 8'd1;
 				end
 			st_byte_read3:
-				//	“Ç‚Ýo‚µ --------------------------------------------------
+				//	èª­ã¿å‡ºã— --------------------------------------------------
 				if( dram_ready ) begin
 					ff_dram_address		<= 27'd2;
 					ff_dram_write		<= 1'b0;
@@ -1017,14 +1082,14 @@ module test_controller (
 					ff_dram_valid		<= 1'b1;
 				end
 			st_byte_read_wait3:
-				//	“Ç‚Ýo‚µŠ®—¹‘Ò‚¿ ------------------------------------------
+				//	èª­ã¿å‡ºã—å®Œäº†å¾…ã¡ ------------------------------------------
 				if( dram_ready ) begin
 					ff_dram_valid		<= 1'b0;
 					ff_main_state		<= ff_main_state + 8'd1;
 				end
 			st_byte_read_data_wait3:
-				//	“Ç‚Ýo‚µŒ‹‰ÊŽó‚¯Žæ‚è‚Æ B:address=data ‚Ì•\Ž¦—v‹ ----------
-				if( dram_rdata_valid ) begin
+				//	èª­ã¿å‡ºã—çµæžœå—ã‘å–ã‚Šã¨ B:address=data ã®è¡¨ç¤ºè¦æ±‚ ----------
+				if( refresh_ack ) begin
 					ff_dram_data[0]		<= dram_rdata[ 15:  0];
 					ff_dram_data[1]		<= dram_rdata[ 31: 16];
 					ff_dram_data[2]		<= dram_rdata[ 47: 32];
@@ -1038,13 +1103,13 @@ module test_controller (
 					ff_main_state		<= ff_main_state + 8'd1;
 				end
 			st_byte_wnr_result3:
-				//	B:address=data ‚Ì•\Ž¦Š®—¹‘Ò‚¿ -----------------------------
+				//	B:address=data ã®è¡¨ç¤ºå®Œäº†å¾…ã¡ -----------------------------
 				if( ff_print_state == pst_finish ) begin
 					ff_print_start		<= 1'b0;
 					ff_main_state		<= ff_main_state + 8'd1;
 				end
 			st_byte_read4:
-				//	“Ç‚Ýo‚µ --------------------------------------------------
+				//	èª­ã¿å‡ºã— --------------------------------------------------
 				if( dram_ready ) begin
 					ff_dram_address		<= 27'h4000000;
 					ff_dram_write		<= 1'b0;
@@ -1061,14 +1126,14 @@ module test_controller (
 					ff_dram_valid		<= 1'b1;
 				end
 			st_byte_read_wait4:
-				//	“Ç‚Ýo‚µŠ®—¹‘Ò‚¿ ------------------------------------------
+				//	èª­ã¿å‡ºã—å®Œäº†å¾…ã¡ ------------------------------------------
 				if( dram_ready ) begin
 					ff_dram_valid		<= 1'b0;
 					ff_main_state		<= ff_main_state + 8'd1;
 				end
 			st_byte_read_data_wait4:
-				//	“Ç‚Ýo‚µŒ‹‰ÊŽó‚¯Žæ‚è‚Æ B:address=data ‚Ì•\Ž¦—v‹ ----------
-				if( dram_rdata_valid ) begin
+				//	èª­ã¿å‡ºã—çµæžœå—ã‘å–ã‚Šã¨ B:address=data ã®è¡¨ç¤ºè¦æ±‚ ----------
+				if( refresh_ack ) begin
 					ff_dram_data[0]		<= dram_rdata[ 15:  0];
 					ff_dram_data[1]		<= dram_rdata[ 31: 16];
 					ff_dram_data[2]		<= dram_rdata[ 47: 32];
@@ -1082,13 +1147,13 @@ module test_controller (
 					ff_main_state		<= ff_main_state + 8'd1;
 				end
 			st_byte_wnr_result4:
-				//	B:address=data ‚Ì•\Ž¦Š®—¹‘Ò‚¿ -----------------------------
+				//	B:address=data ã®è¡¨ç¤ºå®Œäº†å¾…ã¡ -----------------------------
 				if( ff_print_state == pst_finish ) begin
 					ff_print_start		<= 1'b0;
 					ff_main_state		<= ff_main_state + 8'd1;
 				end
 			st_byte_read5:
-				//	“Ç‚Ýo‚µ --------------------------------------------------
+				//	èª­ã¿å‡ºã— --------------------------------------------------
 				if( dram_ready ) begin
 					ff_dram_address		<= 27'h4000001;
 					ff_dram_write		<= 1'b0;
@@ -1105,14 +1170,14 @@ module test_controller (
 					ff_dram_valid		<= 1'b1;
 				end
 			st_byte_read_wait5:
-				//	“Ç‚Ýo‚µŠ®—¹‘Ò‚¿ ------------------------------------------
+				//	èª­ã¿å‡ºã—å®Œäº†å¾…ã¡ ------------------------------------------
 				if( dram_ready ) begin
 					ff_dram_valid		<= 1'b0;
 					ff_main_state		<= ff_main_state + 8'd1;
 				end
 			st_byte_read_data_wait5:
-				//	“Ç‚Ýo‚µŒ‹‰ÊŽó‚¯Žæ‚è‚Æ B:address=data ‚Ì•\Ž¦—v‹ ----------
-				if( dram_rdata_valid ) begin
+				//	èª­ã¿å‡ºã—çµæžœå—ã‘å–ã‚Šã¨ B:address=data ã®è¡¨ç¤ºè¦æ±‚ ----------
+				if( refresh_ack ) begin
 					ff_dram_data[0]		<= dram_rdata[ 15:  0];
 					ff_dram_data[1]		<= dram_rdata[ 31: 16];
 					ff_dram_data[2]		<= dram_rdata[ 47: 32];
@@ -1126,13 +1191,13 @@ module test_controller (
 					ff_main_state		<= ff_main_state + 8'd1;
 				end
 			st_byte_wnr_result5:
-				//	B:address=data ‚Ì•\Ž¦Š®—¹‘Ò‚¿ -----------------------------
+				//	B:address=data ã®è¡¨ç¤ºå®Œäº†å¾…ã¡ -----------------------------
 				if( ff_print_state == pst_finish ) begin
 					ff_print_start		<= 1'b0;
 					ff_main_state		<= ff_main_state + 8'd1;
 				end
 			st_byte_read6:
-				//	“Ç‚Ýo‚µ --------------------------------------------------
+				//	èª­ã¿å‡ºã— --------------------------------------------------
 				if( dram_ready ) begin
 					ff_dram_address		<= 27'h4000002;
 					ff_dram_write		<= 1'b0;
@@ -1149,14 +1214,14 @@ module test_controller (
 					ff_dram_valid		<= 1'b1;
 				end
 			st_byte_read_wait6:
-				//	“Ç‚Ýo‚µŠ®—¹‘Ò‚¿ ------------------------------------------
+				//	èª­ã¿å‡ºã—å®Œäº†å¾…ã¡ ------------------------------------------
 				if( dram_ready ) begin
 					ff_dram_valid		<= 1'b0;
 					ff_main_state		<= ff_main_state + 8'd1;
 				end
 			st_byte_read_data_wait6:
-				//	“Ç‚Ýo‚µŒ‹‰ÊŽó‚¯Žæ‚è‚Æ B:address=data ‚Ì•\Ž¦—v‹ ----------
-				if( dram_rdata_valid ) begin
+				//	èª­ã¿å‡ºã—çµæžœå—ã‘å–ã‚Šã¨ B:address=data ã®è¡¨ç¤ºè¦æ±‚ ----------
+				if( refresh_ack ) begin
 					ff_dram_data[0]		<= dram_rdata[ 15:  0];
 					ff_dram_data[1]		<= dram_rdata[ 31: 16];
 					ff_dram_data[2]		<= dram_rdata[ 47: 32];
@@ -1170,13 +1235,33 @@ module test_controller (
 					ff_main_state		<= ff_main_state + 8'd1;
 				end
 			st_byte_wnr_result6:
-				//	B:address=data ‚Ì•\Ž¦Š®—¹‘Ò‚¿ -----------------------------
+				//	B:address=data ã®è¡¨ç¤ºå®Œäº†å¾…ã¡ -----------------------------
+				if( ff_print_state == pst_finish ) begin
+					ff_print_start		<= 1'b0;
+					ff_main_state		<= st_print_read_wait_count;
+				end
+			st_print_read_wait_count:
+				//	Read Wait Count ã®è¡¨ç¤º ----------------------------------------
+				begin
+					ff_dram_data[0]			<= { 8'd0, ff_read_wait_count_max };
+					ff_dram_data[1]			<= { 8'd0, ff_read_wait_count     };
+					ff_dram_data[2]			<= 16'd0;
+					ff_dram_data[3]			<= 16'd0;
+					ff_dram_data[4]			<= 16'd0;
+					ff_dram_data[5]			<= 16'd0;
+					ff_dram_data[6]			<= 16'd0;
+					ff_dram_data[7]			<= 16'd0;
+					ff_print_begin			<= s_count;
+					ff_print_start			<= 1'b1;
+					ff_main_state			<= ff_main_state + 8'd1;
+				end
+			st_print_read_wait_count_end:
 				if( ff_print_state == pst_finish ) begin
 					ff_print_start		<= 1'b0;
 					ff_main_state		<= st_finish;
 				end
 			st_read_error:
-				//	Read Err ‚Ì•\Ž¦—v‹ ---------------------------------------
+				//	Read Err ã®è¡¨ç¤ºè¦æ±‚ ---------------------------------------
 				begin
 					ff_led				<= 6'b111010;
 					ff_print_begin		<= s_read_error;
@@ -1184,7 +1269,7 @@ module test_controller (
 					ff_main_state		<= ff_main_state + 8'd1;
 				end
 			st_read_error_wait:
-				//	Read Err ‚Ì•\Ž¦Š®—¹‘Ò‚¿ -----------------------------------
+				//	Read Err ã®è¡¨ç¤ºå®Œäº†å¾…ã¡ -----------------------------------
 				begin
 					ff_led				<= 6'b111001;
 					if( ff_print_state == pst_finish ) begin

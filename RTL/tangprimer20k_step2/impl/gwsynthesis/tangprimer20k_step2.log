@@ -10,14 +10,15 @@ Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\tangprimer20k_step
 Compiling module 'tangprimer20k_step2'("D:\github\HRA_product\TangCartMSX\RTL\tangprimer20k_step2\src\tangprimer20k_step2.v":24)
 Compiling module 'Gowin_rPLL'("D:\github\HRA_product\TangCartMSX\RTL\tangprimer20k_step2\src\gowin_rpll\gowin_rpll.v":10)
 Compiling module 'test_controller'("D:\github\HRA_product\TangCartMSX\RTL\tangprimer20k_step2\src\test_controller\test_controller.v":27)
-Extracting RAM for identifier 'rom_data'("D:\github\HRA_product\TangCartMSX\RTL\tangprimer20k_step2\src\test_controller\test_controller.v":140)
-Compiling module 'ip_uart_inst(clk_freq=74250000)'("D:\github\HRA_product\TangCartMSX\RTL\tangprimer20k_step2\src\uart\ip_uart_inst.v":27)
-Compiling module 'ip_uart(clk_freq=74250000)'("D:\github\HRA_product\TangCartMSX\RTL\tangprimer20k_step2\src\uart\ip_uart.v":27)
+Extracting RAM for identifier 'rom_data'("D:\github\HRA_product\TangCartMSX\RTL\tangprimer20k_step2\src\test_controller\test_controller.v":145)
+Compiling module 'ip_uart_inst(clk_freq=75600000)'("D:\github\HRA_product\TangCartMSX\RTL\tangprimer20k_step2\src\uart\ip_uart_inst.v":27)
+Compiling module 'ip_uart(clk_freq=75600000)'("D:\github\HRA_product\TangCartMSX\RTL\tangprimer20k_step2\src\uart\ip_uart.v":27)
 WARN  (EX3791) : Expression size 32 truncated to fit in target size 12("D:\github\HRA_product\TangCartMSX\RTL\tangprimer20k_step2\src\uart\ip_uart.v":68)
 Compiling module 'ip_sdram'("D:\github\HRA_product\TangCartMSX\RTL\tangprimer20k_step2\src\sdram\ip_sdram_tangprimer20k.v":57)
-Compiling module 'DDR3_Memory_Interface_Top'("D:\github\HRA_product\TangCartMSX\RTL\tangprimer20k_step2\src\ddr3_memory_interface\ddr3_memory_interface.v":16733)
-Compiling module '**'("D:\github\HRA_product\TangCartMSX\RTL\tangprimer20k_step2\src\ddr3_memory_interface\ddr3_memory_interface.v":16732)
+Compiling module 'DDR3_Memory_Interface_Top'("D:\github\HRA_product\TangCartMSX\RTL\tangprimer20k_step2\src\ddr3_memory_interface\ddr3_memory_interface.v":16855)
+Compiling module '**'("D:\github\HRA_product\TangCartMSX\RTL\tangprimer20k_step2\src\ddr3_memory_interface\ddr3_memory_interface.v":16854)
 NOTE  (EX0101) : Current top module is "tangprimer20k_step2"
+WARN  (EX0211) : The output port "refresh_req" of module "test_controller" has no driver, assigning undriven bits to Z, simulation mismatch possible("D:\github\HRA_product\TangCartMSX\RTL\tangprimer20k_step2\src\test_controller\test_controller.v":38)
 [5%] Running netlist conversion ...
 Running device independent optimization ...
 [10%] Optimizing Phase 0 completed

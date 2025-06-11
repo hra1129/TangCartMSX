@@ -45,9 +45,9 @@ module tangprimer20k_step2 (
 );
 	reg				ff_reset_n0 = 1'b0;
 	reg				ff_reset_n = 1'b0;
-	wire			clk49m;				//	49.5MHz from PLL
-	wire			clk297m;			//	297MHz from PLL
-	wire			clk;				//	74.25MHz from DDR3 Controller
+	wire			clk50m;				//	49.5MHz from PLL
+	wire			clk302m;			//	297MHz from PLL
+	wire			clk76m;				//	74.25MHz from DDR3 Controller
 	wire			pll_lock;
 	wire			sdram_init_busy;	//	0: Normal, 1: DDR3 SDRAM Initialization phase.
 	wire	[7:0]	bus_address;		//	controller --> uart Peripheral device address
@@ -55,6 +55,8 @@ module tangprimer20k_step2 (
 	wire			bus_valid;			//	controller --> uart 
 	wire			bus_ready;			//	controller --> uart 0: Busy, 1: Ready
 	wire	[7:0]	bus_wdata;			//	controller --> uart 
+	wire			refresh_req;
+	wire			refresh_ack;
 	wire	[26:0]	dram_address;		//	controller --> DDR3 Controller 64Mword/16bit: [26:24]=BANK, [23:10]=ROW, [9:0]=COLUMN
 	wire			dram_write;			//	controller --> DDR3 Controller Direction 0: Read, 1: Write
 	wire			dram_valid;			//	controller --> DDR3 Controller 
@@ -73,9 +75,9 @@ module tangprimer20k_step2 (
 	//	CLOCK
 	// --------------------------------------------------------------------
 	Gowin_rPLL u_pll (
-		.clkout					( clk297m				),		//	output clkout
+		.clkout					( clk302m				),		//	output clkout
 		.lock					( pll_lock				),		//	output lock
-		.clkoutd				( clk49m				),		//	output clkoutd
+		.clkoutd				( clk50m				),		//	output clkoutd
 		.clkin					( clk27m				)		//	input clkin
 	);
 
@@ -84,7 +86,7 @@ module tangprimer20k_step2 (
 	// --------------------------------------------------------------------
 	test_controller u_test_controller (
 		.reset_n				( ff_reset_n			),
-		.clk					( clk					),
+		.clk					( clk76m				),
 		.button					( button				),
 		.led					( led					),
 		.sdram_init_busy		( sdram_init_busy		),
@@ -93,6 +95,8 @@ module tangprimer20k_step2 (
 		.bus_valid				( bus_valid				),
 		.bus_ready				( bus_ready				),
 		.bus_wdata				( bus_wdata				),
+		.refresh_req			( refresh_req			),
+		.refresh_ack			( refresh_ack			),
 		.dram_address			( dram_address			),
 		.dram_write				( dram_write			),
 		.dram_valid				( dram_valid			),
@@ -107,11 +111,11 @@ module tangprimer20k_step2 (
 	//	UART
 	// --------------------------------------------------------------------
 	ip_uart_inst #(
-		.clk_freq				( 74250000				),
+		.clk_freq				( 75600000				),
 		.uart_freq				( 115200				)
 	) u_uart (
 		.reset_n				( ff_reset_n			),
-		.clk					( clk					),
+		.clk					( clk76m				),
 		.bus_address			( bus_address			),
 		.bus_write				( bus_write				),
 		.bus_valid				( bus_valid				),
@@ -125,9 +129,9 @@ module tangprimer20k_step2 (
 	// --------------------------------------------------------------------
 	ip_sdram u_sdram (
 		.reset_n				( ff_reset_n			),
-		.clk					( clk49m				),
-		.memory_clk				( clk297m				),
-		.clk_out				( clk					),
+		.clk					( clk50m				),
+		.memory_clk				( clk302m				),
+		.clk_out				( clk76m				),
 		.pll_lock				( pll_lock				),
 		.sdram_init_busy		( sdram_init_busy		),
 		.bus_address			( dram_address			),
@@ -138,6 +142,8 @@ module tangprimer20k_step2 (
 		.bus_wdata_mask			( dram_wdata_mask		),
 		.bus_rdata				( dram_rdata			),
 		.bus_rdata_valid		( dram_rdata_valid		),
+		.refresh_req			( refresh_req			),
+		.refresh_ack			( refresh_ack			),
 		.ddr3_rst_n				( ddr_reset_n			),
 		.ddr3_clk				( ddr_clk				),
 		.ddr3_clk_n				( ddr_clk_n				),

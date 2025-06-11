@@ -11,6 +11,7 @@
         <File path="D:\github\HRA_product\TangCartMSX\RTL\tangprimer20k_step3\src\cz80\cz80_reg.v" type="verilog"/>
         <File path="D:\github\HRA_product\TangCartMSX\RTL\tangprimer20k_step3\src\cz80\cz80_wrap.v" type="verilog"/>
         <File path="D:\github\HRA_product\TangCartMSX\RTL\tangprimer20k_step3\src\ddr3_memory_interface\ddr3_memory_interface.v" type="verilog"/>
+        <File path="D:\github\HRA_product\TangCartMSX\RTL\tangprimer20k_step3\src\gowin_clkdiv\gowin_clkdiv.v" type="verilog"/>
         <File path="D:\github\HRA_product\TangCartMSX\RTL\tangprimer20k_step3\src\gowin_rpll\gowin_rpll.v" type="verilog"/>
         <File path="D:\github\HRA_product\TangCartMSX\RTL\tangprimer20k_step3\src\ram\ip_ram.v" type="verilog"/>
         <File path="D:\github\HRA_product\TangCartMSX\RTL\tangprimer20k_step3\src\rom\ddr3_test_rom.v" type="verilog"/>
@@ -19,7 +20,6 @@
         <File path="D:\github\HRA_product\TangCartMSX\RTL\tangprimer20k_step3\src\test_controller\test_controller.v" type="verilog"/>
         <File path="D:\github\HRA_product\TangCartMSX\RTL\tangprimer20k_step3\src\uart\ip_uart.v" type="verilog"/>
         <File path="D:\github\HRA_product\TangCartMSX\RTL\tangprimer20k_step3\src\uart\ip_uart_inst.v" type="verilog"/>
-        <File path="D:\github\HRA_product\TangCartMSX\RTL\tangprimer20k_step3\src\gowin_clkdiv\gowin_clkdiv.v" type="verilog"/>
     </FileList>
     <OptionList>
         <Option type="disable_insert_pad" value="0"/>

@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<Module name="tangprimer20k_step2" Register="2" T_Register="3666(2)" T_Alu="253(0)" T_Lut="3080(0)" T_Ssram="120(0)">
+<Module name="tangprimer20k_step2" Register="2" T_Register="3698(2)" T_Alu="260(0)" T_Lut="3252(0)" T_Ssram="120(0)">
  <SubModule name="u_pll"/>
- <SubModule name="u_test_controller" Register="494" Alu="128" Lut="1057" T_Register="494(494)" T_Alu="128(128)" T_Lut="1057(1057)"/>
+ <SubModule name="u_test_controller" Register="512" Alu="135" Lut="1210" T_Register="512(512)" T_Alu="135(135)" T_Lut="1210(1210)"/>
  <SubModule name="u_uart" Register="8" Lut="3" T_Register="35(8)" T_Lut="38(3)">
   <SubModule name="u_uart" Register="27" Lut="35" T_Register="27(27)" T_Lut="35(35)"/>
  </SubModule>
- <SubModule name="u_sdram" Lut="4" T_Register="3135(0)" T_Alu="125(0)" T_Lut="1985(4)" T_Ssram="120(0)">
-  <SubModule name="u_ddr3_controller" Register="3135" Alu="125" Lut="1981" Ssram="120" T_Register="3135(3135)" T_Alu="125(125)" T_Lut="1981(1981)" T_Ssram="120(120)"/>
+ <SubModule name="u_sdram" Lut="4" T_Register="3149(0)" T_Alu="125(0)" T_Lut="2004(4)" T_Ssram="120(0)">
+  <SubModule name="u_ddr3_controller" Register="3149" Alu="125" Lut="2000" Ssram="120" T_Register="3149(3149)" T_Alu="125(125)" T_Lut="2000(2000)" T_Ssram="120(120)"/>
  </SubModule>
 </Module>

@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Module name="tangprimer20k_vdp_cartridge_test" T_Register="4583(0)" T_Alu="467(0)" T_Lut="4207(0)" T_PADD9="3(0)" T_MULT9X9="3(0)" T_Bsram="9(0)" T_Ssram="138(0)">
+ <SubModule name="u_pll"/>
+ <SubModule name="u_pll50"/>
+ <SubModule name="u_msx_slot" Register="22" Lut="4" T_Register="22(22)" T_Lut="4(4)"/>
+ <SubModule name="u_v9958" Register="34" Lut="4" T_Register="1317(34)" T_Alu="309(0)" T_Lut="2055(4)" T_Bsram="7(0)" T_Ssram="12(0)">
+  <SubModule name="u_v9958_core" Register="4" Lut="39" T_Register="1283(4)" T_Alu="309(0)" T_Lut="2051(39)" T_Bsram="7(0)" T_Ssram="12(0)">
+   <SubModule name="u_vdp_color_bus" Register="65" Lut="287" T_Register="65(65)" T_Lut="287(287)"/>
+   <SubModule name="u_vdp_ssg" Register="98" Alu="29" Lut="170" T_Register="98(98)" T_Alu="29(29)" T_Lut="170(170)"/>
+   <SubModule name="u_vdp_color_decoder" Register="65" Lut="104" T_Register="65(65)" T_Lut="104(104)"/>
+   <SubModule name="u_vdp_text12" Register="93" Alu="12" Lut="152" T_Register="93(93)" T_Alu="12(12)" T_Lut="152(152)"/>
+   <SubModule name="u_vdp_graphic123m" Register="67" Alu="5" Lut="72" T_Register="67(67)" T_Alu="5(5)" T_Lut="72(72)"/>
+   <SubModule name="u_vdp_graphic4567" Register="139" Alu="40" Lut="142" T_Register="156(139)" T_Alu="40(40)" T_Lut="143(142)" T_Bsram="1(0)">
+    <SubModule name="u_fifo_ram" Register="17" Lut="1" Bsram="1" T_Register="17(17)" T_Lut="1(1)" T_Bsram="1(1)"/>
+   </SubModule>
+   <SubModule name="u_vdp_sprite" Register="228" Alu="21" Lut="285" T_Register="265(228)" T_Alu="21(21)" T_Lut="286(285)" T_Bsram="2(0)" T_Ssram="8(0)">
+    <SubModule name="u_sprite_info_ram" Register="3" Lut="1" Ssram="8" T_Register="3(3)" T_Lut="1(1)" T_Ssram="8(8)"/>
+    <SubModule name="u_even_line_buf" Register="17" Bsram="1" T_Register="17(17)" T_Bsram="1(1)"/>
+    <SubModule name="u_odd_line_buf" Register="17" Bsram="1" T_Register="17(17)" T_Bsram="1(1)"/>
+   </SubModule>
+   <SubModule name="u_vdp_palette_ram" Register="72" Alu="4" Lut="39" Ssram="4" T_Register="72(72)" T_Alu="4(4)" T_Lut="39(39)" T_Ssram="4(4)"/>
+   <SubModule name="u_vdp_register" Register="199" Lut="78" T_Register="199(199)" T_Lut="78(78)"/>
+   <SubModule name="u_vdp_command" Register="185" Alu="80" Lut="588" T_Register="185(185)" T_Alu="80(80)" T_Lut="588(588)"/>
+   <SubModule name="u_vdp_wait_control" Register="14" Alu="118" Lut="93" Bsram="4" T_Register="14(14)" T_Alu="118(118)" T_Lut="93(93)" T_Bsram="4(4)"/>
+  </SubModule>
+ </SubModule>
+ <SubModule name="u_video_out" Register="22" Lut="66" T_Register="191(22)" T_Alu="33(0)" T_Lut="146(66)" T_PADD9="3(0)" T_MULT9X9="3(0)" T_Bsram="2(0)" T_Ssram="6(0)">
+  <SubModule name="i187" Register="37" Alu="9" Lut="17" T_Register="169(37)" T_Alu="33(9)" T_Lut="80(17)" T_PADD9="3(0)" T_MULT9X9="3(0)" T_Bsram="2(0)" T_Ssram="6(0)">
+   <SubModule name="u_double_buffer" Register="58" Lut="47" T_Register="98(58)" T_Lut="47(47)" T_Bsram="2(0)">
+    <SubModule name="u_buf_even" Register="29" Bsram="1" T_Register="29(29)" T_Bsram="1(1)"/>
+    <SubModule name="u_buf_odd" Register="11" Bsram="1" T_Register="11(11)" T_Bsram="1(1)"/>
+   </SubModule>
+   <SubModule name="u_bilinear_r" Register="11" Alu="8" Lut="5" PADD9="1" MULT9X9="1" Ssram="2" T_Register="11(11)" T_Alu="8(8)" T_Lut="5(5)" T_PADD9="1(1)" T_MULT9X9="1(1)" T_Ssram="2(2)"/>
+   <SubModule name="u_bilinear_g" Register="11" Alu="8" Lut="5" PADD9="1" MULT9X9="1" Ssram="2" T_Register="11(11)" T_Alu="8(8)" T_Lut="5(5)" T_PADD9="1(1)" T_MULT9X9="1(1)" T_Ssram="2(2)"/>
+   <SubModule name="u_bilinear_b" Register="12" Alu="8" Lut="6" PADD9="1" MULT9X9="1" Ssram="2" T_Register="12(12)" T_Alu="8(8)" T_Lut="6(6)" T_PADD9="1(1)" T_MULT9X9="1(1)" T_Ssram="2(2)"/>
+  </SubModule>
+ </SubModule>
+ <SubModule name="u_sdram" Register="10" Lut="12" T_Register="3053(10)" T_Alu="125(0)" T_Lut="2002(12)" T_Ssram="120(0)">
+  <SubModule name="u_div2"/>
+  <SubModule name="u_ddr3_controller" Register="3043" Alu="125" Lut="1990" Ssram="120" T_Register="3043(3043)" T_Alu="125(125)" T_Lut="1990(1990)" T_Ssram="120(120)"/>
+ </SubModule>
+</Module>

@@ -70,6 +70,8 @@ module ip_sdram (
 	input	[15:0]		bus_wdata_mask,
 	output	[127:0]		bus_rdata,
 	output				bus_rdata_valid,
+	input				refresh_req,
+	output				refresh_ack,
 
 	// DDR3-SDRAM ports
 	output				ddr3_rst_n,
@@ -123,9 +125,9 @@ module ip_sdram (
 		.rd_data				( bus_rdata				),		//	output [127:0] rd_data			
 		.rd_data_valid			( bus_rdata_valid		),		//	output rd_data_valid			
 		.rd_data_end			( 						),		//	output rd_data_end				
-		.sr_req					( 1'b0					),		//	input sr_req					セルフリフレッシュ要求
+		.sr_req					( refresh_req			),		//	input sr_req					セルフリフレッシュ要求
 		.ref_req				( 1'b0					),		//	input ref_req					ユーザーリフレッシュ要求
-		.sr_ack					( 						),		//	output sr_ack					セルフリフレッシュ応用
+		.sr_ack					( refresh_ack			),		//	output sr_ack					セルフリフレッシュ応答
 		.ref_ack				( 						),		//	output ref_ack					ユーザーリフレッシュ応答
 		.burst					( 1'b1					),		//	input burst						0: BC4, 1: BL8
 		.O_ddr_addr				( ddr3_addr				),		//	output [13:0] O_ddr_addr		DDR3へ繋ぐ信号

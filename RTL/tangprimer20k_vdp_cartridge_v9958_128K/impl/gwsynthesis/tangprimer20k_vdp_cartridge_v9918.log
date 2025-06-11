@@ -1,0 +1,86 @@
+GowinSynthesis start
+Running parser ...
+Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\tangprimer20k_vdp_cartridge_v9958\src\gowin_rpll\gowin_rpll.v'
+Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\tangprimer20k_vdp_cartridge_v9958\src\msx_slot\msx_slot.v'
+Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\tangprimer20k_vdp_cartridge_v9958\src\ram\ip_ram.v'
+Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\tangprimer20k_vdp_cartridge_v9958\src\tangprimer20k_vdp_cartridge_test.v'
+Undeclared symbol 'ff_reset_n', assumed default net type 'wire'("D:\github\HRA_product\TangCartMSX\RTL\tangprimer20k_vdp_cartridge_v9958\src\tangprimer20k_vdp_cartridge_test.v":232)
+Undeclared symbol 'ddr_reset_n', assumed default net type 'wire'("D:\github\HRA_product\TangCartMSX\RTL\tangprimer20k_vdp_cartridge_v9958\src\tangprimer20k_vdp_cartridge_test.v":246)
+Undeclared symbol 'ddr_clk', assumed default net type 'wire'("D:\github\HRA_product\TangCartMSX\RTL\tangprimer20k_vdp_cartridge_v9958\src\tangprimer20k_vdp_cartridge_test.v":247)
+Undeclared symbol 'ddr_clk_n', assumed default net type 'wire'("D:\github\HRA_product\TangCartMSX\RTL\tangprimer20k_vdp_cartridge_v9958\src\tangprimer20k_vdp_cartridge_test.v":248)
+Undeclared symbol 'ddr_cke', assumed default net type 'wire'("D:\github\HRA_product\TangCartMSX\RTL\tangprimer20k_vdp_cartridge_v9958\src\tangprimer20k_vdp_cartridge_test.v":249)
+Undeclared symbol 'ddr_cs_n', assumed default net type 'wire'("D:\github\HRA_product\TangCartMSX\RTL\tangprimer20k_vdp_cartridge_v9958\src\tangprimer20k_vdp_cartridge_test.v":250)
+Undeclared symbol 'ddr_ras_n', assumed default net type 'wire'("D:\github\HRA_product\TangCartMSX\RTL\tangprimer20k_vdp_cartridge_v9958\src\tangprimer20k_vdp_cartridge_test.v":251)
+Undeclared symbol 'ddr_cas_n', assumed default net type 'wire'("D:\github\HRA_product\TangCartMSX\RTL\tangprimer20k_vdp_cartridge_v9958\src\tangprimer20k_vdp_cartridge_test.v":252)
+Undeclared symbol 'ddr_we_n', assumed default net type 'wire'("D:\github\HRA_product\TangCartMSX\RTL\tangprimer20k_vdp_cartridge_v9958\src\tangprimer20k_vdp_cartridge_test.v":253)
+Undeclared symbol 'ddr_dq', assumed default net type 'wire'("D:\github\HRA_product\TangCartMSX\RTL\tangprimer20k_vdp_cartridge_v9958\src\tangprimer20k_vdp_cartridge_test.v":254)
+Undeclared symbol 'ddr_addr', assumed default net type 'wire'("D:\github\HRA_product\TangCartMSX\RTL\tangprimer20k_vdp_cartridge_v9958\src\tangprimer20k_vdp_cartridge_test.v":255)
+Undeclared symbol 'ddr_ba', assumed default net type 'wire'("D:\github\HRA_product\TangCartMSX\RTL\tangprimer20k_vdp_cartridge_v9958\src\tangprimer20k_vdp_cartridge_test.v":256)
+Undeclared symbol 'ddr_dqm', assumed default net type 'wire'("D:\github\HRA_product\TangCartMSX\RTL\tangprimer20k_vdp_cartridge_v9958\src\tangprimer20k_vdp_cartridge_test.v":257)
+Undeclared symbol 'ddr_dqs', assumed default net type 'wire'("D:\github\HRA_product\TangCartMSX\RTL\tangprimer20k_vdp_cartridge_v9958\src\tangprimer20k_vdp_cartridge_test.v":258)
+Undeclared symbol 'ddr_dqs_n', assumed default net type 'wire'("D:\github\HRA_product\TangCartMSX\RTL\tangprimer20k_vdp_cartridge_v9958\src\tangprimer20k_vdp_cartridge_test.v":259)
+Undeclared symbol 'ddr_odt', assumed default net type 'wire'("D:\github\HRA_product\TangCartMSX\RTL\tangprimer20k_vdp_cartridge_v9958\src\tangprimer20k_vdp_cartridge_test.v":260)
+Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\tangprimer20k_vdp_cartridge_v9958\src\v9958\vdp.v'
+Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\tangprimer20k_vdp_cartridge_v9958\src\v9958\vdp_color_bus.v'
+Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\tangprimer20k_vdp_cartridge_v9958\src\v9958\vdp_color_decoder.v'
+Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\tangprimer20k_vdp_cartridge_v9958\src\v9958\vdp_command.v'
+Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\tangprimer20k_vdp_cartridge_v9958\src\v9958\vdp_graphic123m.v'
+Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\tangprimer20k_vdp_cartridge_v9958\src\v9958\vdp_graphic4567.v'
+Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\tangprimer20k_vdp_cartridge_v9958\src\v9958\vdp_inst.v'
+Undeclared symbol 'p_video_dh_clk', assumed default net type 'wire'("D:\github\HRA_product\TangCartMSX\RTL\tangprimer20k_vdp_cartridge_v9958\src\v9958\vdp_inst.v":210)
+Undeclared symbol 'p_video_dl_clk', assumed default net type 'wire'("D:\github\HRA_product\TangCartMSX\RTL\tangprimer20k_vdp_cartridge_v9958\src\v9958\vdp_inst.v":211)
+Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\tangprimer20k_vdp_cartridge_v9958\src\v9958\vdp_interrupt.v'
+Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\tangprimer20k_vdp_cartridge_v9958\src\v9958\vdp_ram_256byte.v'
+Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\tangprimer20k_vdp_cartridge_v9958\src\v9958\vdp_ram_palette.v'
+Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\tangprimer20k_vdp_cartridge_v9958\src\v9958\vdp_register.v'
+Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\tangprimer20k_vdp_cartridge_v9958\src\v9958\vdp_spinforam.v'
+Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\tangprimer20k_vdp_cartridge_v9958\src\v9958\vdp_sprite.v'
+Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\tangprimer20k_vdp_cartridge_v9958\src\v9958\vdp_ssg.v'
+Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\tangprimer20k_vdp_cartridge_v9958\src\v9958\vdp_text12.v'
+Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\tangprimer20k_vdp_cartridge_v9958\src\v9958\vdp_wait_control.v'
+Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\tangprimer20k_vdp_cartridge_v9958\src\video_out\video_double_buffer.v'
+Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\tangprimer20k_vdp_cartridge_v9958\src\video_out\video_out.v'
+Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\tangprimer20k_vdp_cartridge_v9958\src\video_out\video_out_bilinear.v'
+Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\tangprimer20k_vdp_cartridge_v9958\src\video_out\video_out_hmag.v'
+Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\tangprimer20k_vdp_cartridge_v9958\src\video_out\video_ram_line_buffer.v'
+Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\tangprimer20k_vdp_cartridge_v9958\src\sdram\ip_sdram_tangprimer20k_c.v'
+ERROR (EX3990) : Cannot find port 'memory_clk' on this module("D:\github\HRA_product\TangCartMSX\RTL\tangprimer20k_vdp_cartridge_v9958\src\tangprimer20k_vdp_cartridge_test.v":234)
+'ip_sdram' is declared here("D:\github\HRA_product\TangCartMSX\RTL\tangprimer20k_vdp_cartridge_v9958\src\sdram\ip_sdram_tangprimer20k_c.v":57)
+ERROR (EX3990) : Cannot find port 'clk_out' on this module("D:\github\HRA_product\TangCartMSX\RTL\tangprimer20k_vdp_cartridge_v9958\src\tangprimer20k_vdp_cartridge_test.v":235)
+'ip_sdram' is declared here("D:\github\HRA_product\TangCartMSX\RTL\tangprimer20k_vdp_cartridge_v9958\src\sdram\ip_sdram_tangprimer20k_c.v":57)
+ERROR (EX3990) : Cannot find port 'pll_lock' on this module("D:\github\HRA_product\TangCartMSX\RTL\tangprimer20k_vdp_cartridge_v9958\src\tangprimer20k_vdp_cartridge_test.v":236)
+'ip_sdram' is declared here("D:\github\HRA_product\TangCartMSX\RTL\tangprimer20k_vdp_cartridge_v9958\src\sdram\ip_sdram_tangprimer20k_c.v":57)
+ERROR (EX3990) : Cannot find port 'bus_address' on this module("D:\github\HRA_product\TangCartMSX\RTL\tangprimer20k_vdp_cartridge_v9958\src\tangprimer20k_vdp_cartridge_test.v":238)
+'ip_sdram' is declared here("D:\github\HRA_product\TangCartMSX\RTL\tangprimer20k_vdp_cartridge_v9958\src\sdram\ip_sdram_tangprimer20k_c.v":57)
+ERROR (EX3990) : Cannot find port 'bus_write' on this module("D:\github\HRA_product\TangCartMSX\RTL\tangprimer20k_vdp_cartridge_v9958\src\tangprimer20k_vdp_cartridge_test.v":239)
+'ip_sdram' is declared here("D:\github\HRA_product\TangCartMSX\RTL\tangprimer20k_vdp_cartridge_v9958\src\sdram\ip_sdram_tangprimer20k_c.v":57)
+ERROR (EX3990) : Cannot find port 'bus_valid' on this module("D:\github\HRA_product\TangCartMSX\RTL\tangprimer20k_vdp_cartridge_v9958\src\tangprimer20k_vdp_cartridge_test.v":240)
+'ip_sdram' is declared here("D:\github\HRA_product\TangCartMSX\RTL\tangprimer20k_vdp_cartridge_v9958\src\sdram\ip_sdram_tangprimer20k_c.v":57)
+ERROR (EX3990) : Cannot find port 'bus_ready' on this module("D:\github\HRA_product\TangCartMSX\RTL\tangprimer20k_vdp_cartridge_v9958\src\tangprimer20k_vdp_cartridge_test.v":241)
+'ip_sdram' is declared here("D:\github\HRA_product\TangCartMSX\RTL\tangprimer20k_vdp_cartridge_v9958\src\sdram\ip_sdram_tangprimer20k_c.v":57)
+ERROR (EX3990) : Cannot find port 'bus_wdata' on this module("D:\github\HRA_product\TangCartMSX\RTL\tangprimer20k_vdp_cartridge_v9958\src\tangprimer20k_vdp_cartridge_test.v":242)
+'ip_sdram' is declared here("D:\github\HRA_product\TangCartMSX\RTL\tangprimer20k_vdp_cartridge_v9958\src\sdram\ip_sdram_tangprimer20k_c.v":57)
+ERROR (EX3990) : Cannot find port 'bus_wdata_mask' on this module("D:\github\HRA_product\TangCartMSX\RTL\tangprimer20k_vdp_cartridge_v9958\src\tangprimer20k_vdp_cartridge_test.v":243)
+'ip_sdram' is declared here("D:\github\HRA_product\TangCartMSX\RTL\tangprimer20k_vdp_cartridge_v9958\src\sdram\ip_sdram_tangprimer20k_c.v":57)
+ERROR (EX3990) : Cannot find port 'bus_rdata' on this module("D:\github\HRA_product\TangCartMSX\RTL\tangprimer20k_vdp_cartridge_v9958\src\tangprimer20k_vdp_cartridge_test.v":244)
+'ip_sdram' is declared here("D:\github\HRA_product\TangCartMSX\RTL\tangprimer20k_vdp_cartridge_v9958\src\sdram\ip_sdram_tangprimer20k_c.v":57)
+ERROR (EX3990) : Cannot find port 'bus_rdata_en' on this module("D:\github\HRA_product\TangCartMSX\RTL\tangprimer20k_vdp_cartridge_v9958\src\tangprimer20k_vdp_cartridge_test.v":245)
+'ip_sdram' is declared here("D:\github\HRA_product\TangCartMSX\RTL\tangprimer20k_vdp_cartridge_v9958\src\sdram\ip_sdram_tangprimer20k_c.v":57)
+ERROR (EX3990) : Cannot find port 'ddr3_rst_n' on this module("D:\github\HRA_product\TangCartMSX\RTL\tangprimer20k_vdp_cartridge_v9958\src\tangprimer20k_vdp_cartridge_test.v":246)
+'ip_sdram' is declared here("D:\github\HRA_product\TangCartMSX\RTL\tangprimer20k_vdp_cartridge_v9958\src\sdram\ip_sdram_tangprimer20k_c.v":57)
+ERROR (EX3990) : Cannot find port 'ddr3_clk' on this module("D:\github\HRA_product\TangCartMSX\RTL\tangprimer20k_vdp_cartridge_v9958\src\tangprimer20k_vdp_cartridge_test.v":247)
+'ip_sdram' is declared here("D:\github\HRA_product\TangCartMSX\RTL\tangprimer20k_vdp_cartridge_v9958\src\sdram\ip_sdram_tangprimer20k_c.v":57)
+ERROR (EX3990) : Cannot find port 'ddr3_clk_n' on this module("D:\github\HRA_product\TangCartMSX\RTL\tangprimer20k_vdp_cartridge_v9958\src\tangprimer20k_vdp_cartridge_test.v":248)
+'ip_sdram' is declared here("D:\github\HRA_product\TangCartMSX\RTL\tangprimer20k_vdp_cartridge_v9958\src\sdram\ip_sdram_tangprimer20k_c.v":57)
+ERROR (EX3990) : Cannot find port 'ddr3_cke' on this module("D:\github\HRA_product\TangCartMSX\RTL\tangprimer20k_vdp_cartridge_v9958\src\tangprimer20k_vdp_cartridge_test.v":249)
+'ip_sdram' is declared here("D:\github\HRA_product\TangCartMSX\RTL\tangprimer20k_vdp_cartridge_v9958\src\sdram\ip_sdram_tangprimer20k_c.v":57)
+ERROR (EX3990) : Cannot find port 'ddr3_cs_n' on this module("D:\github\HRA_product\TangCartMSX\RTL\tangprimer20k_vdp_cartridge_v9958\src\tangprimer20k_vdp_cartridge_test.v":250)
+'ip_sdram' is declared here("D:\github\HRA_product\TangCartMSX\RTL\tangprimer20k_vdp_cartridge_v9958\src\sdram\ip_sdram_tangprimer20k_c.v":57)
+ERROR (EX3990) : Cannot find port 'ddr3_ras_n' on this module("D:\github\HRA_product\TangCartMSX\RTL\tangprimer20k_vdp_cartridge_v9958\src\tangprimer20k_vdp_cartridge_test.v":251)
+'ip_sdram' is declared here("D:\github\HRA_product\TangCartMSX\RTL\tangprimer20k_vdp_cartridge_v9958\src\sdram\ip_sdram_tangprimer20k_c.v":57)
+ERROR (EX3990) : Cannot find port 'ddr3_cas_n' on this module("D:\github\HRA_product\TangCartMSX\RTL\tangprimer20k_vdp_cartridge_v9958\src\tangprimer20k_vdp_cartridge_test.v":252)
+'ip_sdram' is declared here("D:\github\HRA_product\TangCartMSX\RTL\tangprimer20k_vdp_cartridge_v9958\src\sdram\ip_sdram_tangprimer20k_c.v":57)
+ERROR (EX3990) : Cannot find port 'ddr3_we_n' on this module("D:\github\HRA_product\TangCartMSX\RTL\tangprimer20k_vdp_cartridge_v9958\src\tangprimer20k_vdp_cartridge_test.v":253)
+'ip_sdram' is declared here("D:\github\HRA_product\TangCartMSX\RTL\tangprimer20k_vdp_cartridge_v9958\src\sdram\ip_sdram_tangprimer20k_c.v":57)
+Sorry, too many errors..
+GowinSynthesis finish

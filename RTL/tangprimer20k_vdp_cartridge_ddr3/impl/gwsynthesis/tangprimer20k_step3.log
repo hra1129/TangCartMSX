@@ -1,0 +1,70 @@
+GowinSynthesis start
+Running parser ...
+Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\tangprimer20k_vdp_cartridge_ddr3\src\cz80\cz80.v'
+Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\tangprimer20k_vdp_cartridge_ddr3\src\cz80\cz80_alu.v'
+Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\tangprimer20k_vdp_cartridge_ddr3\src\cz80\cz80_inst.v'
+Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\tangprimer20k_vdp_cartridge_ddr3\src\cz80\cz80_mcode.v'
+Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\tangprimer20k_vdp_cartridge_ddr3\src\cz80\cz80_reg.v'
+Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\tangprimer20k_vdp_cartridge_ddr3\src\cz80\cz80_wrap.v'
+Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\tangprimer20k_vdp_cartridge_ddr3\src\ddr3_memory_interface\ddr3_memory_interface.v'
+Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\tangprimer20k_vdp_cartridge_ddr3\src\gowin_clkdiv\gowin_clkdiv.v'
+Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\tangprimer20k_vdp_cartridge_ddr3\src\gowin_rpll\gowin_rpll.v'
+Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\tangprimer20k_vdp_cartridge_ddr3\src\gowin_rpll50\gowin_rpll50.v'
+Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\tangprimer20k_vdp_cartridge_ddr3\src\ram\ip_ram.v'
+Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\tangprimer20k_vdp_cartridge_ddr3\src\rom\ddr3_test_rom.v'
+Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\tangprimer20k_vdp_cartridge_ddr3\src\sdram\ip_sdram_tangprimer20k.v'
+Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\tangprimer20k_vdp_cartridge_ddr3\src\tangprimer20k_step3.v'
+Undeclared symbol 'led', assumed default net type 'wire'("D:\github\HRA_product\TangCartMSX\RTL\tangprimer20k_vdp_cartridge_ddr3\src\tangprimer20k_step3.v":88)
+Undeclared symbol 'clk344m', assumed default net type 'wire'("D:\github\HRA_product\TangCartMSX\RTL\tangprimer20k_vdp_cartridge_ddr3\src\tangprimer20k_step3.v":94)
+Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\tangprimer20k_vdp_cartridge_ddr3\src\test_controller\test_controller.v'
+Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\tangprimer20k_vdp_cartridge_ddr3\src\uart\ip_uart.v'
+Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\tangprimer20k_vdp_cartridge_ddr3\src\uart\ip_uart_inst.v'
+Compiling module 'tangprimer20k_step3'("D:\github\HRA_product\TangCartMSX\RTL\tangprimer20k_vdp_cartridge_ddr3\src\tangprimer20k_step3.v":24)
+Compiling module 'Gowin_rPLL'("D:\github\HRA_product\TangCartMSX\RTL\tangprimer20k_vdp_cartridge_ddr3\src\gowin_rpll\gowin_rpll.v":10)
+Compiling module 'Gowin_rPLL50'("D:\github\HRA_product\TangCartMSX\RTL\tangprimer20k_vdp_cartridge_ddr3\src\gowin_rpll50\gowin_rpll50.v":10)
+Compiling module 'cz80_wrap'("D:\github\HRA_product\TangCartMSX\RTL\tangprimer20k_vdp_cartridge_ddr3\src\cz80\cz80_wrap.v":63)
+Compiling module 'cz80_inst'("D:\github\HRA_product\TangCartMSX\RTL\tangprimer20k_vdp_cartridge_ddr3\src\cz80\cz80_inst.v":63)
+Compiling module 'cz80'("D:\github\HRA_product\TangCartMSX\RTL\tangprimer20k_vdp_cartridge_ddr3\src\cz80\cz80.v":63)
+Compiling module 'cz80_mcode'("D:\github\HRA_product\TangCartMSX\RTL\tangprimer20k_vdp_cartridge_ddr3\src\cz80\cz80_mcode.v":63)
+Compiling module 'cz80_alu'("D:\github\HRA_product\TangCartMSX\RTL\tangprimer20k_vdp_cartridge_ddr3\src\cz80\cz80_alu.v":63)
+Compiling module 'cz80_registers'("D:\github\HRA_product\TangCartMSX\RTL\tangprimer20k_vdp_cartridge_ddr3\src\cz80\cz80_reg.v":55)
+Compiling module 'test_controller'("D:\github\HRA_product\TangCartMSX\RTL\tangprimer20k_vdp_cartridge_ddr3\src\test_controller\test_controller.v":27)
+Compiling module 'ip_uart_inst(clk_freq=42954540)'("D:\github\HRA_product\TangCartMSX\RTL\tangprimer20k_vdp_cartridge_ddr3\src\uart\ip_uart_inst.v":27)
+Compiling module 'ip_uart(clk_freq=42954540)'("D:\github\HRA_product\TangCartMSX\RTL\tangprimer20k_vdp_cartridge_ddr3\src\uart\ip_uart.v":27)
+WARN  (EX3791) : Expression size 32 truncated to fit in target size 11("D:\github\HRA_product\TangCartMSX\RTL\tangprimer20k_vdp_cartridge_ddr3\src\uart\ip_uart.v":68)
+Compiling module 'ip_rom'("D:\github\HRA_product\TangCartMSX\RTL\tangprimer20k_vdp_cartridge_ddr3\src\rom\ddr3_test_rom.v":5)
+Compiling module 'ip_ram'("D:\github\HRA_product\TangCartMSX\RTL\tangprimer20k_vdp_cartridge_ddr3\src\ram\ip_ram.v":5)
+Extracting RAM for identifier 'ff_ram'("D:\github\HRA_product\TangCartMSX\RTL\tangprimer20k_vdp_cartridge_ddr3\src\ram\ip_ram.v":17)
+Compiling module 'ip_sdram'("D:\github\HRA_product\TangCartMSX\RTL\tangprimer20k_vdp_cartridge_ddr3\src\sdram\ip_sdram_tangprimer20k.v":57)
+Compiling module 'DDR3_Memory_Interface_Top'("D:\github\HRA_product\TangCartMSX\RTL\tangprimer20k_vdp_cartridge_ddr3\src\ddr3_memory_interface\ddr3_memory_interface.v":16989)
+Compiling module '**'("D:\github\HRA_product\TangCartMSX\RTL\tangprimer20k_vdp_cartridge_ddr3\src\ddr3_memory_interface\ddr3_memory_interface.v":16988)
+WARN  (EX1998) : Net 'clk172m' does not have a driver("D:\github\HRA_product\TangCartMSX\RTL\tangprimer20k_vdp_cartridge_ddr3\src\tangprimer20k_step3.v":48)
+WARN  (EX1998) : Net 'bus_uart_ready' does not have a driver("D:\github\HRA_product\TangCartMSX\RTL\tangprimer20k_vdp_cartridge_ddr3\src\tangprimer20k_step3.v":68)
+WARN  (EX1998) : Net 'bus_uart_rdata[7]' does not have a driver("D:\github\HRA_product\TangCartMSX\RTL\tangprimer20k_vdp_cartridge_ddr3\src\tangprimer20k_step3.v":69)
+WARN  (EX1998) : Net 'bus_uart_rdata_en' does not have a driver("D:\github\HRA_product\TangCartMSX\RTL\tangprimer20k_vdp_cartridge_ddr3\src\tangprimer20k_step3.v":70)
+NOTE  (EX0101) : Current top module is "tangprimer20k_step3"
+WARN  (NL0001) : Sweep user defined dangling instance "u_sdram/u_ddr3_controller/gw3_top/u_gwmc_top/gwmc_bank_ctrl/cmd_accept_ref_Z_s1"("D:\github\HRA_product\TangCartMSX\RTL\tangprimer20k_vdp_cartridge_ddr3\src\ddr3_memory_interface\ddr3_memory_interface.v":16988)
+WARN  (NL0001) : Sweep user defined dangling instance "u_sdram/u_ddr3_controller/gw3_top/u_gwmc_top/gwmc_timing_ctrl/ref_accepted_s0"("D:\github\HRA_product\TangCartMSX\RTL\tangprimer20k_vdp_cartridge_ddr3\src\ddr3_memory_interface\ddr3_memory_interface.v":16988)
+[5%] Running netlist conversion ...
+WARN  (CV0016) : Input clk27m is unused("D:\github\HRA_product\TangCartMSX\RTL\tangprimer20k_vdp_cartridge_ddr3\src\tangprimer20k_step3.v":26)
+WARN  (CV0016) : Input dipsw is unused("D:\github\HRA_product\TangCartMSX\RTL\tangprimer20k_vdp_cartridge_ddr3\src\tangprimer20k_step3.v":27)
+Running device independent optimization ...
+WARN  (NL0001) : Sweep user defined dangling instance "u_sdram/u_ddr3_controller/gw3_top/u_gwmc_top/gw_cmd0/cmd_ready_d_s0"("D:\github\HRA_product\TangCartMSX\RTL\tangprimer20k_vdp_cartridge_ddr3\src\ddr3_memory_interface\ddr3_memory_interface.v":16988)
+[10%] Optimizing Phase 0 completed
+[15%] Optimizing Phase 1 completed
+[25%] Optimizing Phase 2 completed
+Running inference ...
+[30%] Inferring Phase 0 completed
+[40%] Inferring Phase 1 completed
+[50%] Inferring Phase 2 completed
+[55%] Inferring Phase 3 completed
+Running technical mapping ...
+[60%] Tech-Mapping Phase 0 completed
+[65%] Tech-Mapping Phase 1 completed
+[75%] Tech-Mapping Phase 2 completed
+[80%] Tech-Mapping Phase 3 completed
+[90%] Tech-Mapping Phase 4 completed
+[95%] Generate netlist file "D:\github\HRA_product\TangCartMSX\RTL\tangprimer20k_vdp_cartridge_ddr3\impl\gwsynthesis\tangprimer20k_step3.vg" completed
+ERROR (CK2060) : The connection between instance 'u_sdram/u_ddr3_controller/gw3_top/u_ddr_phy_top/fclk_dhcen' and instance 'GND_cZ' is incorrect
+WARN  (ST0001) : Ignored static timing analysis because of the failure of circuit analysis checking
+GowinSynthesis finish
