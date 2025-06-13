@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE gowin-synthesis-project>
+<Project>
+    <Version>beta</Version>
+    <Device id="GW5AT-60B" package="PBGA484A" speed="1" partNumber="GW5AT-LV60PG484AC1/I0"/>
+    <FileList>
+        <File path="D:\github\HRA_product\TangCartMSX\RTL\tangconsole_step3\src\tangconsole.v" type="verilog"/>
+        <File path="D:\github\HRA_product\TangCartMSX\RTL\tangconsole_step3\src\pll_init.v" type="verilog"/>
+        <File path="D:\github\HRA_product\TangCartMSX\RTL\tangconsole_step3\src\sscpll\sscpll.v" type="verilog"/>
+        <File path="D:\github\HRA_product\TangCartMSX\RTL\tangconsole_step3\src\cz80\cz80.v" type="verilog"/>
+        <File path="D:\github\HRA_product\TangCartMSX\RTL\tangconsole_step3\src\cz80\cz80_alu.v" type="verilog"/>
+        <File path="D:\github\HRA_product\TangCartMSX\RTL\tangconsole_step3\src\cz80\cz80_inst.v" type="verilog"/>
+        <File path="D:\github\HRA_product\TangCartMSX\RTL\tangconsole_step3\src\cz80\cz80_mcode.v" type="verilog"/>
+        <File path="D:\github\HRA_product\TangCartMSX\RTL\tangconsole_step3\src\cz80\cz80_reg.v" type="verilog"/>
+        <File path="D:\github\HRA_product\TangCartMSX\RTL\tangconsole_step3\src\gpio\ip_gpio.v" type="verilog"/>
+        <File path="D:\github\HRA_product\TangCartMSX\RTL\tangconsole_step3\src\ram\ip_ram.v" type="verilog"/>
+        <File path="D:\github\HRA_product\TangCartMSX\RTL\tangconsole_step3\src\rom\ip_led_count_rom.v" type="verilog"/>
+    </FileList>
+    <OptionList>
+        <Option type="disable_insert_pad" value="0"/>
+        <Option type="global_freq" value="100.000"/>
+        <Option type="looplimit" value="2000"/>
+        <Option type="output_file" value="D:\github\HRA_product\TangCartMSX\RTL\tangconsole_step3\impl\gwsynthesis\tangconsole_step3.vg"/>
+        <Option type="print_all_synthesis_warning" value="0"/>
+        <Option type="ram_rw_check" value="0"/>
+        <Option type="top_module" value="tangconsole_step3"/>
+        <Option type="vcc" value="0.9"/>
+        <Option type="verilog_language" value="verilog-2001"/>
+        <Option type="vhdl_language" value="vhdl-1993"/>
+    </OptionList>
+</Project>

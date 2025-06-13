@@ -1,0 +1,106 @@
+[
+ {
+  "InstFile" : "D:/github/HRA_product/TangCartMSX/RTL/tangconsole_step3/src/tangconsole.v",
+  "InstLine" : 24,
+  "InstName" : "tangconsole_step3",
+  "ModuleFile" : "D:/github/HRA_product/TangCartMSX/RTL/tangconsole_step3/src/tangconsole.v",
+  "ModuleLine" : 24,
+  "ModuleName" : "tangconsole_step3",
+  "SubInsts" : [
+   {
+    "InstFile" : "D:/github/HRA_product/TangCartMSX/RTL/tangconsole_step3/src/tangconsole.v",
+    "InstLine" : 76,
+    "InstName" : "u_pll",
+    "ModuleFile" : "D:/github/HRA_product/TangCartMSX/RTL/tangconsole_step3/src/sscpll/sscpll.v",
+    "ModuleLine" : 1634,
+    "ModuleName" : "SSCPLL_Top",
+    "SubInsts" : [
+     {
+      "InstFile" : "D:/github/HRA_product/TangCartMSX/RTL/tangconsole_step3/src/sscpll/sscpll.v",
+      "InstLine" : 1647,
+      "InstName" : "u_gwfpll",
+      "ModuleFile" : "D:/github/HRA_product/TangCartMSX/RTL/tangconsole_step3/src/sscpll/sscpll.v",
+      "ModuleLine" : 10,
+      "ModuleName" : "~gwfpll.SSCPLL_Top"
+     }
+    ]
+   },
+   {
+    "InstFile" : "D:/github/HRA_product/TangCartMSX/RTL/tangconsole_step3/src/tangconsole.v",
+    "InstLine" : 85,
+    "InstName" : "u_z80",
+    "ModuleFile" : "D:/github/HRA_product/TangCartMSX/RTL/tangconsole_step3/src/cz80/cz80_inst.v",
+    "ModuleLine" : 63,
+    "ModuleName" : "cz80_inst",
+    "SubInsts" : [
+     {
+      "InstFile" : "D:/github/HRA_product/TangCartMSX/RTL/tangconsole_step3/src/cz80/cz80_inst.v",
+      "InstLine" : 132,
+      "InstName" : "u_cz80",
+      "ModuleFile" : "D:/github/HRA_product/TangCartMSX/RTL/tangconsole_step3/src/cz80/cz80.v",
+      "ModuleLine" : 63,
+      "ModuleName" : "cz80",
+      "SubInsts" : [
+       {
+        "InstFile" : "D:/github/HRA_product/TangCartMSX/RTL/tangconsole_step3/src/cz80/cz80.v",
+        "InstLine" : 237,
+        "InstName" : "u_mcode",
+        "ModuleFile" : "D:/github/HRA_product/TangCartMSX/RTL/tangconsole_step3/src/cz80/cz80_mcode.v",
+        "ModuleLine" : 63,
+        "ModuleName" : "cz80_mcode"
+       },
+       {
+        "InstFile" : "D:/github/HRA_product/TangCartMSX/RTL/tangconsole_step3/src/cz80/cz80.v",
+        "InstLine" : 296,
+        "InstName" : "u_alu",
+        "ModuleFile" : "D:/github/HRA_product/TangCartMSX/RTL/tangconsole_step3/src/cz80/cz80_alu.v",
+        "ModuleLine" : 63,
+        "ModuleName" : "cz80_alu"
+       },
+       {
+        "InstFile" : "D:/github/HRA_product/TangCartMSX/RTL/tangconsole_step3/src/cz80/cz80.v",
+        "InstLine" : 784,
+        "InstName" : "u_regs",
+        "ModuleFile" : "D:/github/HRA_product/TangCartMSX/RTL/tangconsole_step3/src/cz80/cz80_reg.v",
+        "ModuleLine" : 55,
+        "ModuleName" : "cz80_registers"
+       }
+      ]
+     }
+    ]
+   },
+   {
+    "InstFile" : "D:/github/HRA_product/TangCartMSX/RTL/tangconsole_step3/src/tangconsole.v",
+    "InstLine" : 113,
+    "InstName" : "u_rom",
+    "ModuleFile" : "D:/github/HRA_product/TangCartMSX/RTL/tangconsole_step3/src/rom/ip_led_count_rom.v",
+    "ModuleLine" : 5,
+    "ModuleName" : "ip_led_count_rom"
+   },
+   {
+    "InstFile" : "D:/github/HRA_product/TangCartMSX/RTL/tangconsole_step3/src/tangconsole.v",
+    "InstLine" : 127,
+    "InstName" : "u_ram",
+    "ModuleFile" : "D:/github/HRA_product/TangCartMSX/RTL/tangconsole_step3/src/ram/ip_ram.v",
+    "ModuleLine" : 5,
+    "ModuleName" : "ip_ram"
+   },
+   {
+    "InstFile" : "D:/github/HRA_product/TangCartMSX/RTL/tangconsole_step3/src/tangconsole.v",
+    "InstLine" : 145,
+    "InstName" : "u_gpio",
+    "ModuleFile" : "D:/github/HRA_product/TangCartMSX/RTL/tangconsole_step3/src/gpio/ip_gpio.v",
+    "ModuleLine" : 27,
+    "ModuleName" : "ip_gpio"
+   }
+  ]
+ },
+ {
+  "InstFile" : "D:/github/HRA_product/TangCartMSX/RTL/tangconsole_step3/src/pll_init.v",
+  "InstLine" : 4,
+  "InstName" : "PLL_INIT",
+  "ModuleFile" : "D:/github/HRA_product/TangCartMSX/RTL/tangconsole_step3/src/pll_init.v",
+  "ModuleLine" : 4,
+  "ModuleName" : "PLL_INIT"
+ }
+]

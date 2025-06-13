@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Module name="tangconsole_step3" Register="22" Alu="20" Lut="1" T_Register="240(22)" T_Alu="153(20)" T_Lut="188(1)" T_Bsram="1(0)">
+ <SubModule name="u_pll" Register="218" Alu="133" Lut="187" Bsram="1" T_Register="218(218)" T_Alu="133(133)" T_Lut="187(187)" T_Bsram="1(1)"/>
+</Module>

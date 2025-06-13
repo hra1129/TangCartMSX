@@ -1,0 +1,65 @@
+GowinSynthesis start
+Running parser ...
+Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\tangconsole_step3\src\tangconsole.v'
+Undeclared symbol 'wdata', assumed default net type 'wire'("D:\github\HRA_product\TangCartMSX\RTL\tangconsole_step3\src\tangconsole.v":133)
+Undeclared symbol 'd', assumed default net type 'wire'("D:\github\HRA_product\TangCartMSX\RTL\tangconsole_step3\src\tangconsole.v":152)
+Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\tangconsole_step3\src\pll_init.v'
+Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\tangconsole_step3\src\sscpll\sscpll.v'
+Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\tangconsole_step3\src\cz80\cz80.v'
+Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\tangconsole_step3\src\cz80\cz80_alu.v'
+Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\tangconsole_step3\src\cz80\cz80_inst.v'
+Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\tangconsole_step3\src\cz80\cz80_mcode.v'
+Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\tangconsole_step3\src\cz80\cz80_reg.v'
+Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\tangconsole_step3\src\gpio\ip_gpio.v'
+Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\tangconsole_step3\src\ram\ip_ram.v'
+Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\tangconsole_step3\src\rom\ip_led_count_rom.v'
+Compiling module 'tangconsole_step3'("D:\github\HRA_product\TangCartMSX\RTL\tangconsole_step3\src\tangconsole.v":24)
+Compiling module 'SSCPLL_Top'("D:\github\HRA_product\TangCartMSX\RTL\tangconsole_step3\src\sscpll\sscpll.v":1634)
+Compiling module '**'("D:\github\HRA_product\TangCartMSX\RTL\tangconsole_step3\src\sscpll\sscpll.v":1633)
+Compiling module 'cz80_inst'("D:\github\HRA_product\TangCartMSX\RTL\tangconsole_step3\src\cz80\cz80_inst.v":63)
+Compiling module 'cz80'("D:\github\HRA_product\TangCartMSX\RTL\tangconsole_step3\src\cz80\cz80.v":63)
+Compiling module 'cz80_mcode'("D:\github\HRA_product\TangCartMSX\RTL\tangconsole_step3\src\cz80\cz80_mcode.v":63)
+Compiling module 'cz80_alu'("D:\github\HRA_product\TangCartMSX\RTL\tangconsole_step3\src\cz80\cz80_alu.v":63)
+WARN  (EX3791) : Expression size 17 truncated to fit in target size 16("D:\github\HRA_product\TangCartMSX\RTL\tangconsole_step3\src\cz80\cz80.v":382)
+WARN  (EX3791) : Expression size 17 truncated to fit in target size 16("D:\github\HRA_product\TangCartMSX\RTL\tangconsole_step3\src\cz80\cz80.v":528)
+WARN  (EX3791) : Expression size 32 truncated to fit in target size 16("D:\github\HRA_product\TangCartMSX\RTL\tangconsole_step3\src\cz80\cz80.v":531)
+WARN  (EX3791) : Expression size 32 truncated to fit in target size 16("D:\github\HRA_product\TangCartMSX\RTL\tangconsole_step3\src\cz80\cz80.v":544)
+WARN  (EX3791) : Expression size 17 truncated to fit in target size 16("D:\github\HRA_product\TangCartMSX\RTL\tangconsole_step3\src\cz80\cz80.v":547)
+Compiling module 'cz80_registers'("D:\github\HRA_product\TangCartMSX\RTL\tangconsole_step3\src\cz80\cz80_reg.v":55)
+WARN  (EX3791) : Expression size 4 truncated to fit in target size 3("D:\github\HRA_product\TangCartMSX\RTL\tangconsole_step3\src\cz80\cz80.v":1011)
+Compiling module 'ip_led_count_rom'("D:\github\HRA_product\TangCartMSX\RTL\tangconsole_step3\src\rom\ip_led_count_rom.v":5)
+Compiling module 'ip_ram'("D:\github\HRA_product\TangCartMSX\RTL\tangconsole_step3\src\ram\ip_ram.v":5)
+Extracting RAM for identifier 'ff_ram'("D:\github\HRA_product\TangCartMSX\RTL\tangconsole_step3\src\ram\ip_ram.v":15)
+WARN  (EX3670) : Actual bit length 1 differs from formal bit length 8 for port 'wdata'("D:\github\HRA_product\TangCartMSX\RTL\tangconsole_step3\src\tangconsole.v":133)
+Compiling module 'ip_gpio'("D:\github\HRA_product\TangCartMSX\RTL\tangconsole_step3\src\gpio\ip_gpio.v":27)
+WARN  (EX3670) : Actual bit length 1 differs from formal bit length 8 for port 'd'("D:\github\HRA_product\TangCartMSX\RTL\tangconsole_step3\src\tangconsole.v":152)
+WARN  (EX1998) : Net 'wdata' does not have a driver("D:\github\HRA_product\TangCartMSX\RTL\tangconsole_step3\src\tangconsole.v":133)
+WARN  (EX1998) : Net 'd' does not have a driver("D:\github\HRA_product\TangCartMSX\RTL\tangconsole_step3\src\tangconsole.v":152)
+NOTE  (EX0101) : Current top module is "tangconsole_step3"
+[5%] Running netlist conversion ...
+Running device independent optimization ...
+[10%] Optimizing Phase 0 completed
+[15%] Optimizing Phase 1 completed
+[25%] Optimizing Phase 2 completed
+Running inference ...
+[30%] Inferring Phase 0 completed
+[40%] Inferring Phase 1 completed
+[50%] Inferring Phase 2 completed
+[55%] Inferring Phase 3 completed
+Running technical mapping ...
+[60%] Tech-Mapping Phase 0 completed
+[65%] Tech-Mapping Phase 1 completed
+[75%] Tech-Mapping Phase 2 completed
+[80%] Tech-Mapping Phase 3 completed
+[90%] Tech-Mapping Phase 4 completed
+WARN  (NL0002) : The module "ip_gpio" instantiated to "u_gpio" is swept in optimizing("D:\github\HRA_product\TangCartMSX\RTL\tangconsole_step3\src\tangconsole.v":157)
+WARN  (NL0002) : The module "ip_ram" instantiated to "u_ram" is swept in optimizing("D:\github\HRA_product\TangCartMSX\RTL\tangconsole_step3\src\tangconsole.v":136)
+WARN  (NL0002) : The module "ip_led_count_rom" instantiated to "u_rom" is swept in optimizing("D:\github\HRA_product\TangCartMSX\RTL\tangconsole_step3\src\tangconsole.v":120)
+WARN  (NL0002) : The module "cz80_inst" instantiated to "u_z80" is swept in optimizing("D:\github\HRA_product\TangCartMSX\RTL\tangconsole_step3\src\tangconsole.v":103)
+WARN  (NL0002) : The module "cz80" instantiated to "u_cz80" is swept in optimizing("D:\github\HRA_product\TangCartMSX\RTL\tangconsole_step3\src\cz80\cz80_inst.v":156)
+WARN  (NL0002) : The module "cz80_alu" instantiated to "u_alu" is swept in optimizing("D:\github\HRA_product\TangCartMSX\RTL\tangconsole_step3\src\cz80\cz80.v":308)
+WARN  (NL0002) : The module "cz80_mcode" instantiated to "u_mcode" is swept in optimizing("D:\github\HRA_product\TangCartMSX\RTL\tangconsole_step3\src\cz80\cz80.v":293)
+WARN  (NL0002) : The module "cz80_registers" instantiated to "u_regs" is swept in optimizing("D:\github\HRA_product\TangCartMSX\RTL\tangconsole_step3\src\cz80\cz80.v":801)
+[95%] Generate netlist file "D:\github\HRA_product\TangCartMSX\RTL\tangconsole_step3\impl\gwsynthesis\tangconsole_step3.vg" completed
+[100%] Generate report file "D:\github\HRA_product\TangCartMSX\RTL\tangconsole_step3\impl\gwsynthesis\tangconsole_step3_syn.rpt.html" completed
+GowinSynthesis finish

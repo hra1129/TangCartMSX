@@ -1,0 +1,17 @@
+[General]
+ipc_version=4
+file=sscpll
+module=SSCPLL_Top
+target_device=gw5at60b-002
+type=sscpll
+version=1.0
+
+[Config]
+Initialization_Clock_Frequency=50
+Input_Clock_Frequency=50
+LANG=0
+Modulation_Depth=10000
+Modulation_Direction=Down
+Modulation_Frequency=33
+Output_Clock_Frequency=7.158
+Synthesis_tool=GowinSynthesis

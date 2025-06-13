@@ -1,0 +1,2 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Module name="PLL_INIT" Register="101" Alu="18" Lut="178" Bsram="1" T_Register="101(101)" T_Alu="18(18)" T_Lut="178(178)" T_Bsram="1(1)"/>

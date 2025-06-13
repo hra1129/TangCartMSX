@@ -1,0 +1,7 @@
+END_MARK equ 0e9h
+LED_DATA equ 01fh
+LED_PORT equ 010h
+MAIN_LOOP equ 07h
+START equ 04h
+WAIT_LOOP equ 017h
+WAIT_TIME equ 014h

@@ -1,0 +1,23 @@
+Reading netlist file: "D:\github\HRA_product\TangCartMSX\RTL\tangconsole_step3\impl\gwsynthesis\tangconsole_step1.vg"
+Parsing netlist file "D:\github\HRA_product\TangCartMSX\RTL\tangconsole_step3\impl\gwsynthesis\tangconsole_step1.vg" completed
+Processing netlist completed
+Reading constraint file: "D:\github\HRA_product\TangCartMSX\RTL\tangconsole_step3\src\tangconsole.cst"
+ERROR  (CT1135) : "D:\github\HRA_product\TangCartMSX\RTL\tangconsole_step3\src\tangconsole.cst":1 | Can't find object named 'clk'
+ERROR  (CT1135) : "D:\github\HRA_product\TangCartMSX\RTL\tangconsole_step3\src\tangconsole.cst":2 | Can't find object named 'clk'
+ERROR  (CT1135) : "D:\github\HRA_product\TangCartMSX\RTL\tangconsole_step3\src\tangconsole.cst":65 | Can't find object named 'led[0]'
+ERROR  (CT1135) : "D:\github\HRA_product\TangCartMSX\RTL\tangconsole_step3\src\tangconsole.cst":66 | Can't find object named 'led[1]'
+ERROR  (CT1135) : "D:\github\HRA_product\TangCartMSX\RTL\tangconsole_step3\src\tangconsole.cst":67 | Can't find object named 'led[2]'
+ERROR  (CT1135) : "D:\github\HRA_product\TangCartMSX\RTL\tangconsole_step3\src\tangconsole.cst":68 | Can't find object named 'led[3]'
+ERROR  (CT1135) : "D:\github\HRA_product\TangCartMSX\RTL\tangconsole_step3\src\tangconsole.cst":69 | Can't find object named 'led[4]'
+ERROR  (CT1135) : "D:\github\HRA_product\TangCartMSX\RTL\tangconsole_step3\src\tangconsole.cst":70 | Can't find object named 'led[5]'
+ERROR  (CT1135) : "D:\github\HRA_product\TangCartMSX\RTL\tangconsole_step3\src\tangconsole.cst":71 | Can't find object named 'led[6]'
+ERROR  (CT1135) : "D:\github\HRA_product\TangCartMSX\RTL\tangconsole_step3\src\tangconsole.cst":72 | Can't find object named 'led[7]'
+ERROR  (CT1135) : "D:\github\HRA_product\TangCartMSX\RTL\tangconsole_step3\src\tangconsole.cst":73 | Can't find object named 'led[0]'
+ERROR  (CT1135) : "D:\github\HRA_product\TangCartMSX\RTL\tangconsole_step3\src\tangconsole.cst":74 | Can't find object named 'led[1]'
+ERROR  (CT1135) : "D:\github\HRA_product\TangCartMSX\RTL\tangconsole_step3\src\tangconsole.cst":75 | Can't find object named 'led[2]'
+ERROR  (CT1135) : "D:\github\HRA_product\TangCartMSX\RTL\tangconsole_step3\src\tangconsole.cst":76 | Can't find object named 'led[3]'
+ERROR  (CT1135) : "D:\github\HRA_product\TangCartMSX\RTL\tangconsole_step3\src\tangconsole.cst":77 | Can't find object named 'led[4]'
+ERROR  (CT1135) : "D:\github\HRA_product\TangCartMSX\RTL\tangconsole_step3\src\tangconsole.cst":78 | Can't find object named 'led[5]'
+ERROR  (CT1135) : "D:\github\HRA_product\TangCartMSX\RTL\tangconsole_step3\src\tangconsole.cst":79 | Can't find object named 'led[6]'
+ERROR  (CT1135) : "D:\github\HRA_product\TangCartMSX\RTL\tangconsole_step3\src\tangconsole.cst":80 | Can't find object named 'led[7]'
+Physical Constraint parsed completed with errors

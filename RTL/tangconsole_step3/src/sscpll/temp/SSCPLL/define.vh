@@ -1,0 +1,2 @@
+`define MODULE_NAME SSCPLL_Top
+`define DEVICE_25
