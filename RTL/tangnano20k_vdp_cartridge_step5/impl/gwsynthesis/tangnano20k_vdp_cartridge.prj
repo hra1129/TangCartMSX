@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE gowin-synthesis-project>
+<Project>
+    <Version>beta</Version>
+    <Device id="GW2AR-18C" package="QFN88" speed="8" partNumber="GW2AR-LV18QN88C8/I7"/>
+    <FileList>
+        <File path="D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_vdp_cartridge_step5\src\gowin_clkdiv\gowin_clkdiv.v" type="verilog"/>
+        <File path="D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_vdp_cartridge_step5\src\gowin_rpll\gowin_rpll.v" type="verilog"/>
+        <File path="D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_vdp_cartridge_step5\src\gowin_rpll2\gowin_rpll2.v" type="verilog"/>
+        <File path="D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_vdp_cartridge_step5\src\gpio\ip_gpio.v" type="verilog"/>
+        <File path="D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_vdp_cartridge_step5\src\msx_slot\msx_slot.v" type="verilog"/>
+        <File path="D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_vdp_cartridge_step5\src\tangnano20k_vdp_cartridge.v" type="verilog"/>
+        <File path="D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_vdp_cartridge_step5\src\ws2812_led\ip_ws2812_led.v" type="verilog"/>
+        <File path="D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_vdp_cartridge_step5\src\dvi_tx\dvi_tx.v" type="verilog"/>
+        <File path="D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_vdp_cartridge_step5\src\v9918\vdp.v" type="verilog"/>
+        <File path="D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_vdp_cartridge_step5\src\v9918\vdp_color_bus.v" type="verilog"/>
+        <File path="D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_vdp_cartridge_step5\src\v9918\vdp_color_decoder.v" type="verilog"/>
+        <File path="D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_vdp_cartridge_step5\src\v9918\vdp_graphic123m.v" type="verilog"/>
+        <File path="D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_vdp_cartridge_step5\src\v9918\vdp_inst.v" type="verilog"/>
+        <File path="D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_vdp_cartridge_step5\src\v9918\vdp_interrupt.v" type="verilog"/>
+        <File path="D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_vdp_cartridge_step5\src\v9918\vdp_ram_256byte.v" type="verilog"/>
+        <File path="D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_vdp_cartridge_step5\src\v9918\vdp_register.v" type="verilog"/>
+        <File path="D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_vdp_cartridge_step5\src\v9918\vdp_spinforam.v" type="verilog"/>
+        <File path="D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_vdp_cartridge_step5\src\v9918\vdp_sprite.v" type="verilog"/>
+        <File path="D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_vdp_cartridge_step5\src\v9918\vdp_ssg.v" type="verilog"/>
+        <File path="D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_vdp_cartridge_step5\src\v9918\vdp_text12.v" type="verilog"/>
+        <File path="D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_vdp_cartridge_step5\src\v9918\vdp_wait_control.v" type="verilog"/>
+        <File path="D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_vdp_cartridge_step5\src\ram\ip_ram.v" type="verilog"/>
+        <File path="D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_vdp_cartridge_step5\src\video_out\video_double_buffer.v" type="verilog"/>
+        <File path="D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_vdp_cartridge_step5\src\video_out\video_out.v" type="verilog"/>
+        <File path="D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_vdp_cartridge_step5\src\video_out\video_out_bilinear.v" type="verilog"/>
+        <File path="D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_vdp_cartridge_step5\src\video_out\video_out_hmag.v" type="verilog"/>
+        <File path="D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_vdp_cartridge_step5\src\video_out\video_out_sigmoid.v" type="verilog"/>
+        <File path="D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_vdp_cartridge_step5\src\video_out\video_ram_line_buffer.v" type="verilog"/>
+    </FileList>
+    <OptionList>
+        <Option type="disable_insert_pad" value="0"/>
+        <Option type="global_freq" value="100.000"/>
+        <Option type="looplimit" value="2000"/>
+        <Option type="output_file" value="D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_vdp_cartridge_step5\impl\gwsynthesis\tangnano20k_vdp_cartridge.vg"/>
+        <Option type="print_all_synthesis_warning" value="0"/>
+        <Option type="ram_rw_check" value="0"/>
+        <Option type="top_module" value="tangnano20k_vdp_cartridge"/>
+        <Option type="vcc" value="1.0"/>
+        <Option type="verilog_language" value="verilog-2001"/>
+        <Option type="vhdl_language" value="vhdl-1993"/>
+    </OptionList>
+</Project>
