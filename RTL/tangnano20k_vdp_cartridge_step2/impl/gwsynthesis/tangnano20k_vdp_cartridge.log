@@ -1,0 +1,39 @@
+GowinSynthesis start
+Running parser ...
+Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_vdp_cartridge_step2\src\tangnano20k_vdp_cartridge.v'
+Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_vdp_cartridge_step2\src\ws2812_led\ip_ws2812_led.v'
+Compiling module 'tangnano20k_vdp_cartridge'("D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_vdp_cartridge_step2\src\tangnano20k_vdp_cartridge.v":24)
+Compiling module 'ip_ws2812_led'("D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_vdp_cartridge_step2\src\ws2812_led\ip_ws2812_led.v":57)
+WARN  (EX3791) : Expression size 32 truncated to fit in target size 12("D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_vdp_cartridge_step2\src\ws2812_led\ip_ws2812_led.v":184)
+NOTE  (EX0101) : Current top module is "tangnano20k_vdp_cartridge"
+WARN  (EX0211) : The output port "slot_data_dir" of module "tangnano20k_vdp_cartridge" has no driver, assigning undriven bits to Z, simulation mismatch possible("D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_vdp_cartridge_step2\src\tangnano20k_vdp_cartridge.v":33)
+WARN  (EX0211) : The output port "busdir" of module "tangnano20k_vdp_cartridge" has no driver, assigning undriven bits to Z, simulation mismatch possible("D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_vdp_cartridge_step2\src\tangnano20k_vdp_cartridge.v":36)
+WARN  (EX0211) : The output port "oe_n" of module "tangnano20k_vdp_cartridge" has no driver, assigning undriven bits to Z, simulation mismatch possible("D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_vdp_cartridge_step2\src\tangnano20k_vdp_cartridge.v":37)
+WARN  (EX0211) : The output port "uart_tx" of module "tangnano20k_vdp_cartridge" has no driver, assigning undriven bits to Z, simulation mismatch possible("D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_vdp_cartridge_step2\src\tangnano20k_vdp_cartridge.v":41)
+[5%] Running netlist conversion ...
+WARN  (CV0016) : Input clk is unused("D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_vdp_cartridge_step2\src\tangnano20k_vdp_cartridge.v":25)
+WARN  (CV0016) : Input slot_reset_n is unused("D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_vdp_cartridge_step2\src\tangnano20k_vdp_cartridge.v":27)
+WARN  (CV0016) : Input slot_iorq_n is unused("D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_vdp_cartridge_step2\src\tangnano20k_vdp_cartridge.v":28)
+WARN  (CV0016) : Input slot_rd_n is unused("D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_vdp_cartridge_step2\src\tangnano20k_vdp_cartridge.v":29)
+WARN  (CV0016) : Input slot_wr_n is unused("D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_vdp_cartridge_step2\src\tangnano20k_vdp_cartridge.v":30)
+WARN  (CV0016) : Input slot_a is unused("D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_vdp_cartridge_step2\src\tangnano20k_vdp_cartridge.v":34)
+WARN  (CV0016) : Input dipsw is unused("D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_vdp_cartridge_step2\src\tangnano20k_vdp_cartridge.v":38)
+WARN  (CV0017) : Inout slot_d is unused("D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_vdp_cartridge_step2\src\tangnano20k_vdp_cartridge.v":35)
+Running device independent optimization ...
+[10%] Optimizing Phase 0 completed
+[15%] Optimizing Phase 1 completed
+[25%] Optimizing Phase 2 completed
+Running inference ...
+[30%] Inferring Phase 0 completed
+[40%] Inferring Phase 1 completed
+[50%] Inferring Phase 2 completed
+[55%] Inferring Phase 3 completed
+Running technical mapping ...
+[60%] Tech-Mapping Phase 0 completed
+[65%] Tech-Mapping Phase 1 completed
+[75%] Tech-Mapping Phase 2 completed
+[80%] Tech-Mapping Phase 3 completed
+[90%] Tech-Mapping Phase 4 completed
+[95%] Generate netlist file "D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_vdp_cartridge_step2\impl\gwsynthesis\tangnano20k_vdp_cartridge.vg" completed
+[100%] Generate report file "D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_vdp_cartridge_step2\impl\gwsynthesis\tangnano20k_vdp_cartridge_syn.rpt.html" completed
+GowinSynthesis finish
