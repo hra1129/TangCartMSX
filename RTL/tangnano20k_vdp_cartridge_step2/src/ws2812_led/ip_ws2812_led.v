@@ -72,10 +72,6 @@ module ip_ws2812_led(
 
 	reg		[11:0]	ff_count;
 	reg		[23:0]	ff_send_data;
-	reg		[7:0]	ff_req_red;
-	reg		[7:0]	ff_req_green;
-	reg		[7:0]	ff_req_blue;
-	reg				ff_req;
 	reg				ff_sending;
 	reg		[5:0]	ff_state;
 	localparam		c_st_idle		= 0;
@@ -136,37 +132,12 @@ module ip_ws2812_led(
 	// --------------------------------------------------------------------
 	always @( posedge clk or negedge reset_n ) begin
 		if( !reset_n ) begin
-			ff_req_red		<= 8'd0;
-			ff_req_green	<= 8'd0;
-			ff_req_blue		<= 8'd0;
-		end
-		else if( wr ) begin
-			ff_req_red		<= red;
-			ff_req_green	<= green;
-			ff_req_blue		<= blue;
-		end
-	end
-
-	always @( posedge clk or negedge reset_n ) begin
-		if( !reset_n ) begin
-			ff_req			<= 1'b0;
-		end
-		else if( wr ) begin
-			ff_req			<= 1'b1;
-		end
-		else if( ff_state == c_st_idle ) begin
-			ff_req			<= 1'b0;
-		end
-	end
-
-	always @( posedge clk or negedge reset_n ) begin
-		if( !reset_n ) begin
 			ff_sending		<= 1'b0;
 		end
-		else if( ff_state == c_st_idle && wr ) begin
+		else if( (ff_state == c_st_idle) && wr ) begin
 			ff_sending		<= 1'b1;
 		end
-		else if( ff_state == c_st_finish && ff_count == 'd0 ) begin
+		else if( (ff_state == c_st_finish) && (ff_count == 'd0) ) begin
 			ff_sending		<= 1'b0;
 		end
 	end
@@ -178,7 +149,7 @@ module ip_ws2812_led(
 		if( !reset_n ) begin
 			ff_state	<= c_st_idle;
 			ff_count	<= 'd0;
-			ff_led		<= 1'b1;
+			ff_led		<= 1'b0;
 		end
 		else if( ff_count != 'd0 ) begin
 			ff_count <= ff_count - 'd1;
@@ -186,7 +157,7 @@ module ip_ws2812_led(
 		else begin
 			case( ff_state )
 			c_st_idle:
-				if( ff_req ) begin
+				if( wr ) begin
 					ff_state	<= c_st_reset;
 					ff_count	<= c_res_count;
 					ff_led		<= 1'b0;
@@ -197,7 +168,7 @@ module ip_ws2812_led(
 			c_st_send08_l, c_st_send09_l, c_st_send10_l, c_st_send11_l, 
 			c_st_send12_l, c_st_send13_l, c_st_send14_l, c_st_send15_l, 
 			c_st_send16_l, c_st_send17_l, c_st_send18_l, c_st_send19_l, 
-			c_st_send20_l, c_st_send21_l, c_st_send22_l, c_st_send23_l:
+			c_st_send20_l, c_st_send21_l, c_st_send22_l:
 				if( ff_count == 'd0 ) begin
 					if( ff_send_data[23] ) begin
 						ff_count <= c_t1h_count;
@@ -208,6 +179,7 @@ module ip_ws2812_led(
 					ff_state	<= ff_state + 1'd1;
 					ff_led		<= 1'b1;
 				end
+			c_st_send23_l,
 			c_st_send00_h, c_st_send01_h, c_st_send02_h, c_st_send03_h, 
 			c_st_send04_h, c_st_send05_h, c_st_send06_h, c_st_send07_h, 
 			c_st_send08_h, c_st_send09_h, c_st_send10_h, c_st_send11_h, 
@@ -227,12 +199,12 @@ module ip_ws2812_led(
 			c_st_finish:
 				begin
 					ff_state	<= c_st_idle;
-					ff_led		<= 1'b1;
+					ff_led		<= 1'b0;
 				end
 			default:
 				begin
 					ff_state	<= c_st_idle;
-					ff_led		<= 1'b1;
+					ff_led		<= 1'b0;
 				end
 			endcase
 		end
@@ -245,8 +217,8 @@ module ip_ws2812_led(
 		if( !reset_n ) begin
 			ff_send_data <= 24'd0;
 		end
-		else if( ff_req && ff_state == c_st_idle ) begin
-			ff_send_data <= { ff_req_green, ff_req_red, ff_req_blue };
+		else if( (ff_state == c_st_idle) && wr ) begin
+			ff_send_data <= { green, red, blue };
 		end
 		else if( ff_count == 'd1 ) begin
 			case( ff_state )
@@ -256,7 +228,7 @@ module ip_ws2812_led(
 			c_st_send12_l, c_st_send13_l, c_st_send14_l, c_st_send15_l, 
 			c_st_send16_l, c_st_send17_l, c_st_send18_l, c_st_send19_l, 
 			c_st_send20_l, c_st_send21_l, c_st_send22_l, c_st_send23_l:
-				ff_send_data <= { ff_send_data[22:0], 1'b1 };
+				ff_send_data <= { ff_send_data[22:0], 1'b0 };
 			default:
 				begin
 					//	hold

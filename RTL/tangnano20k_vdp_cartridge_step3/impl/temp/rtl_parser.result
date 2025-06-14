@@ -1,0 +1,60 @@
+[
+ {
+  "InstFile" : "D:/github/HRA_product/TangCartMSX/RTL/tangnano20k_vdp_cartridge_step3/src/tangnano20k_vdp_cartridge.v",
+  "InstLine" : 24,
+  "InstName" : "tangnano20k_vdp_cartridge",
+  "ModuleFile" : "D:/github/HRA_product/TangCartMSX/RTL/tangnano20k_vdp_cartridge_step3/src/tangnano20k_vdp_cartridge.v",
+  "ModuleLine" : 24,
+  "ModuleName" : "tangnano20k_vdp_cartridge",
+  "SubInsts" : [
+   {
+    "InstFile" : "D:/github/HRA_product/TangCartMSX/RTL/tangnano20k_vdp_cartridge_step3/src/tangnano20k_vdp_cartridge.v",
+    "InstLine" : 71,
+    "InstName" : "u_pll",
+    "ModuleFile" : "D:/github/HRA_product/TangCartMSX/RTL/tangnano20k_vdp_cartridge_step3/src/gowin_rpll/gowin_rpll.v",
+    "ModuleLine" : 10,
+    "ModuleName" : "Gowin_rPLL"
+   },
+   {
+    "InstFile" : "D:/github/HRA_product/TangCartMSX/RTL/tangnano20k_vdp_cartridge_step3/src/tangnano20k_vdp_cartridge.v",
+    "InstLine" : 77,
+    "InstName" : "u_pll2",
+    "ModuleFile" : "D:/github/HRA_product/TangCartMSX/RTL/tangnano20k_vdp_cartridge_step3/src/gowin_rpll2/gowin_rpll2.v",
+    "ModuleLine" : 10,
+    "ModuleName" : "Gowin_rPLL2"
+   },
+   {
+    "InstFile" : "D:/github/HRA_product/TangCartMSX/RTL/tangnano20k_vdp_cartridge_step3/src/tangnano20k_vdp_cartridge.v",
+    "InstLine" : 83,
+    "InstName" : "u_clkdiv",
+    "ModuleFile" : "D:/github/HRA_product/TangCartMSX/RTL/tangnano20k_vdp_cartridge_step3/src/gowin_clkdiv/gowin_clkdiv.v",
+    "ModuleLine" : 10,
+    "ModuleName" : "Gowin_CLKDIV"
+   },
+   {
+    "InstFile" : "D:/github/HRA_product/TangCartMSX/RTL/tangnano20k_vdp_cartridge_step3/src/tangnano20k_vdp_cartridge.v",
+    "InstLine" : 92,
+    "InstName" : "u_msx_slot",
+    "ModuleFile" : "D:/github/HRA_product/TangCartMSX/RTL/tangnano20k_vdp_cartridge_step3/src/msx_slot/msx_slot.v",
+    "ModuleLine" : 58,
+    "ModuleName" : "msx_slot"
+   },
+   {
+    "InstFile" : "D:/github/HRA_product/TangCartMSX/RTL/tangnano20k_vdp_cartridge_step3/src/tangnano20k_vdp_cartridge.v",
+    "InstLine" : 122,
+    "InstName" : "u_gpio",
+    "ModuleFile" : "D:/github/HRA_product/TangCartMSX/RTL/tangnano20k_vdp_cartridge_step3/src/gpio/ip_gpio.v",
+    "ModuleLine" : 57,
+    "ModuleName" : "ip_gpio"
+   },
+   {
+    "InstFile" : "D:/github/HRA_product/TangCartMSX/RTL/tangnano20k_vdp_cartridge_step3/src/tangnano20k_vdp_cartridge.v",
+    "InstLine" : 142,
+    "InstName" : "u_fullcolor_led",
+    "ModuleFile" : "D:/github/HRA_product/TangCartMSX/RTL/tangnano20k_vdp_cartridge_step3/src/ws2812_led/ip_ws2812_led.v",
+    "ModuleLine" : 57,
+    "ModuleName" : "ip_ws2812_led"
+   }
+  ]
+ }
+]

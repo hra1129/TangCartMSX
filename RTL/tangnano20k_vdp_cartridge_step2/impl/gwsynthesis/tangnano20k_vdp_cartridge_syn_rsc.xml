@@ -1,4 +1,4 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<Module name="tangnano20k_vdp_cartridge" Register="8" Lut="4" T_Register="56(8)" T_Lut="85(4)">
- <SubModule name="u_fullcolor_led" Register="48" Lut="81" T_Register="48(48)" T_Lut="81(81)"/>
+<Module name="tangnano20k_vdp_cartridge" Register="8" Lut="4" T_Register="49(8)" T_Lut="73(4)">
+ <SubModule name="u_fullcolor_led" Register="41" Lut="69" T_Register="41(41)" T_Lut="69(69)"/>
 </Module>

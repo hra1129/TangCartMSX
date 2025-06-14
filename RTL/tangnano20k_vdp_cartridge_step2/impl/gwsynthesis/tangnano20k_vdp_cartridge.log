@@ -4,7 +4,7 @@ Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_vdp_ca
 Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_vdp_cartridge_step2\src\ws2812_led\ip_ws2812_led.v'
 Compiling module 'tangnano20k_vdp_cartridge'("D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_vdp_cartridge_step2\src\tangnano20k_vdp_cartridge.v":24)
 Compiling module 'ip_ws2812_led'("D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_vdp_cartridge_step2\src\ws2812_led\ip_ws2812_led.v":57)
-WARN  (EX3791) : Expression size 32 truncated to fit in target size 12("D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_vdp_cartridge_step2\src\ws2812_led\ip_ws2812_led.v":184)
+WARN  (EX3791) : Expression size 32 truncated to fit in target size 12("D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_vdp_cartridge_step2\src\ws2812_led\ip_ws2812_led.v":155)
 NOTE  (EX0101) : Current top module is "tangnano20k_vdp_cartridge"
 WARN  (EX0211) : The output port "slot_data_dir" of module "tangnano20k_vdp_cartridge" has no driver, assigning undriven bits to Z, simulation mismatch possible("D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_vdp_cartridge_step2\src\tangnano20k_vdp_cartridge.v":33)
 WARN  (EX0211) : The output port "busdir" of module "tangnano20k_vdp_cartridge" has no driver, assigning undriven bits to Z, simulation mismatch possible("D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_vdp_cartridge_step2\src\tangnano20k_vdp_cartridge.v":36)

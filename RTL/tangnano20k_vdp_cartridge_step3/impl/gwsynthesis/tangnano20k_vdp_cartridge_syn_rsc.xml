@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Module name="tangnano20k_vdp_cartridge" Lut="2" T_Register="111(0)" T_Lut="131(2)">
+ <SubModule name="u_pll"/>
+ <SubModule name="u_clkdiv"/>
+ <SubModule name="u_msx_slot" Register="32" Lut="9" T_Register="32(32)" T_Lut="9(9)"/>
+ <SubModule name="u_gpio" Register="34" Lut="44" T_Register="34(34)" T_Lut="44(44)"/>
+ <SubModule name="u_fullcolor_led" Register="45" Lut="76" T_Register="45(45)" T_Lut="76(76)"/>
+</Module>

@@ -1,0 +1,41 @@
+{
+ "Device" : "GW2AR-18C",
+ "Files" : [
+  {
+   "Path" : "D:/github/HRA_product/TangCartMSX/RTL/tangnano20k_vdp_cartridge_step3/src/gowin_clkdiv/gowin_clkdiv.v",
+   "Type" : "verilog"
+  },
+  {
+   "Path" : "D:/github/HRA_product/TangCartMSX/RTL/tangnano20k_vdp_cartridge_step3/src/gowin_rpll/gowin_rpll.v",
+   "Type" : "verilog"
+  },
+  {
+   "Path" : "D:/github/HRA_product/TangCartMSX/RTL/tangnano20k_vdp_cartridge_step3/src/gowin_rpll2/gowin_rpll2.v",
+   "Type" : "verilog"
+  },
+  {
+   "Path" : "D:/github/HRA_product/TangCartMSX/RTL/tangnano20k_vdp_cartridge_step3/src/gpio/ip_gpio.v",
+   "Type" : "verilog"
+  },
+  {
+   "Path" : "D:/github/HRA_product/TangCartMSX/RTL/tangnano20k_vdp_cartridge_step3/src/msx_slot/msx_slot.v",
+   "Type" : "verilog"
+  },
+  {
+   "Path" : "D:/github/HRA_product/TangCartMSX/RTL/tangnano20k_vdp_cartridge_step3/src/tangnano20k_vdp_cartridge.v",
+   "Type" : "verilog"
+  },
+  {
+   "Path" : "D:/github/HRA_product/TangCartMSX/RTL/tangnano20k_vdp_cartridge_step3/src/ws2812_led/ip_ws2812_led.v",
+   "Type" : "verilog"
+  }
+ ],
+ "IncludePath" : [
+
+ ],
+ "LoopLimit" : 2000,
+ "ResultFile" : "D:/github/HRA_product/TangCartMSX/RTL/tangnano20k_vdp_cartridge_step3/impl/temp/rtl_parser.result",
+ "Top" : "tangnano20k_vdp_cartridge",
+ "VerilogStd" : "verilog_2001",
+ "VhdlStd" : "vhdl_93"
+}

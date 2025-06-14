@@ -71,13 +71,13 @@ module tangnano20k_vdp_cartridge (
 			ff_green	<= 8'd0;
 			ff_blue		<= 8'd0;
 		end
-		else if( ff_button1[0] && !w_sending ) begin
+		else if( ff_button1[0] && !ff_button0[0] ) begin
 			ff_wr		<= 1'b1;
 			ff_red		<= 8'd100;
 			ff_green	<= 8'd20;
 			ff_blue		<= 8'd0;
 		end
-		else if( ff_button1[1] && !w_sending ) begin
+		else if( ff_button1[1] && !ff_button0[1] ) begin
 			ff_wr		<= 1'b1;
 			ff_red		<= 8'd0;
 			ff_green	<= 8'd70;
