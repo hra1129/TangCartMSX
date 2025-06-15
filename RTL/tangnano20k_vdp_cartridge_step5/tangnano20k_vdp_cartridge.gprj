@@ -30,7 +30,6 @@
         <File path="src/video_out/video_out.v" type="file.verilog" enable="1"/>
         <File path="src/video_out/video_out_bilinear.v" type="file.verilog" enable="1"/>
         <File path="src/video_out/video_out_hmag.v" type="file.verilog" enable="1"/>
-        <File path="src/video_out/video_out_sigmoid.v" type="file.verilog" enable="1"/>
         <File path="src/video_out/video_ram_line_buffer.v" type="file.verilog" enable="1"/>
         <File path="src/ws2812_led/ip_ws2812_led.v" type="file.verilog" enable="1"/>
         <File path="src/tangnano20k_vdp_cartridge.cst" type="file.cst" enable="1"/>

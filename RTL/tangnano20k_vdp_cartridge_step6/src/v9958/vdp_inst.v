@@ -101,7 +101,7 @@ module vdp_inst(
 	wire	[7:0]	w_dram_wdata;
 	wire			w_ioreq;
 
-	assign w_ioreq	= ( { bus_address[7:1], 1'b0 } == 8'h98 || { bus_address[7:2], 2'b0 } == 8'h88 );
+	assign w_ioreq	= ( { bus_address[7:2], 2'b0 } == 8'h98 || { bus_address[7:2], 2'b0 } == 8'h88 );
 
 
 	//--------------------------------------------------------------
@@ -209,6 +209,8 @@ module vdp_inst(
 		.p_vdp_vcounter		( p_vdp_vcounter			),	// OUT	[10: 0 ];
 		.p_video_dh_clk		( p_video_dh_clk			),	// OUT	
 		.p_video_dl_clk		( p_video_dl_clk			),	// OUT	
+        .vdp_speed_mode     ( 1'b0                      ),  // IN
+        .centeryjk_r25_n    ( 1'b1                      ),  // IN
 		.dispreso			( 1'b1						),	// IN	
 		.legacy_vga			( 1'b0						),	// IN	
 		.vdp_id				( c_vdpid					)	// IN	[ 4: 0 ];

@@ -2,7 +2,7 @@
 //	vdp.v
 //	 FPGA9918 top entity
 //
-//	Copyright (C) 2024 Takayuki Hara
+//	Copyright (C) 2024-2025 Takayuki Hara
 //
 //	本ソフトウェアおよび本ソフトウェアに基づいて作成された派生物は、以下の条件を
 //	満たす場合に限り、再頒布および使用が許可されます。
@@ -181,12 +181,6 @@ module vdp(
 	wire	[5:0]	w_video_g_vdp;
 	wire	[5:0]	w_video_b_vdp;
 	wire			w_video_vsync_n;
-
-	wire	[7:0]	w_video_r_lcd;
-	wire	[7:0]	w_video_g_lcd;
-	wire	[7:0]	w_video_b_lcd;
-	wire			w_video_hs_n_lcd;
-	wire			w_video_vs_n_lcd;
 
 	wire			w_hsync;
 	wire			w_hsync_en;

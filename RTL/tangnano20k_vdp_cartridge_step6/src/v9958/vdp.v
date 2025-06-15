@@ -85,7 +85,6 @@ module vdp(
 	output					p_video_dl_clk,
 
 	input					vdp_speed_mode,
-	input		[2:0]		ratio_mode,
 	input					centeryjk_r25_n,
 
 	// display resolution (0=15kHz, 1=31kHz)
@@ -144,7 +143,6 @@ module vdp(
 	wire	[8:0]	w_pre_dot_counter_yp;
 
 	// vdp register access
-	reg		[16:0]	ff_vram_access_address;
 	wire	[3:1]	w_vdpr0dispnum;
 	wire	[7:0]	w_vram_wdata_cpu;
 	wire	[7:0]	w_vram_rdata_cpu;
@@ -362,30 +360,30 @@ module vdp(
 		else if( !reg_r9_interlace_mode ) begin
 			// non-interlace
 			// 3+3+16 = 19
-			if( (w_vcounter == 20*2) ||
-					((w_vcounter == 524+20*2) && !reg_r9_pal_mode) ||
-					((w_vcounter == 626+20*2) &&  reg_r9_pal_mode) ) begin
+			if( (w_vcounter == 11'd40) ||
+					((w_vcounter == 11'd564) && !reg_r9_pal_mode) ||
+					((w_vcounter == 11'd666) &&  reg_r9_pal_mode) ) begin
 				ff_bwindow_y <= 1'b1;
 			end
-			else if(((w_vcounter == 524) && !reg_r9_pal_mode) ||
-					((w_vcounter == 626) &&  reg_r9_pal_mode) ||
+			else if(((w_vcounter == 11'd564) && !reg_r9_pal_mode) ||
+					((w_vcounter == 11'd666) &&  reg_r9_pal_mode) ||
 					 (w_vcounter == 0) ) begin
 				ff_bwindow_y <= 1'b0;
 			end
 		end
 		else begin
 			// interlace
-			if( (w_vcounter == 20*2) ||
+			if( (w_vcounter == 11'd40) ||
 					// +1 should be needed.
 					// because odd field's start is delayed half line.
 					// so the start position of display time should be
 					// delayed more half line.
-					((w_vcounter == 525+20*2 + 1) && !reg_r9_pal_mode) ||
-					((w_vcounter == 625+20*2 + 1) &&  reg_r9_pal_mode) ) begin
+					((w_vcounter == 11'd566) && !reg_r9_pal_mode) ||
+					((w_vcounter == 11'd666) &&  reg_r9_pal_mode) ) begin
 				ff_bwindow_y <= 1'b1;
 			end
-			else if( ((w_vcounter == 525) && !reg_r9_pal_mode) ||
-					 ((w_vcounter == 625) &&  reg_r9_pal_mode) ||
+			else if( ((w_vcounter == 11'd525) && !reg_r9_pal_mode) ||
+					 ((w_vcounter == 11'd625) &&  reg_r9_pal_mode) ||
 					  (w_vcounter == 0) ) begin
 				ff_bwindow_y <= 1'b0;
 			end

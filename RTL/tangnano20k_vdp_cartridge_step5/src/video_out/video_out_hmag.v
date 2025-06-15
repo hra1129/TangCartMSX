@@ -79,10 +79,6 @@ module video_out_hmag (
 );
 	localparam		clocks_per_line		= 1368;
 	localparam		disp_width			= 10'd576;
-	localparam		h_back_porch_end	= 45;
-	localparam		h_active_end		= h_back_porch_end + 800;
-	localparam		h_front_porch_end	= h_active_end + 502;
-	localparam		h_vdp_active_start	= h_back_porch_end + 112;
 	localparam		c_active_end		= disp_width - 1;
 	localparam		c_numerator			= disp_width / 4;
 	wire	[9:0]	w_x_position_w;
@@ -101,7 +97,6 @@ module video_out_hmag (
 	wire			w_no_increment;
 	wire	[13:0]	w_normalized_numerator;
 	reg		[5:0]	ff_coeff;
-	wire	[5:0]	w_sigmoid;
 	reg		[5:0]	ff_pixel_r;
 	reg		[5:0]	ff_pixel_g;
 	reg		[5:0]	ff_pixel_b;
@@ -166,12 +161,6 @@ module video_out_hmag (
 		end
 	end
 
-	video_out_sigmoid u_sigmoid (
-		.clk			( clk				),
-		.coeff			( ff_coeff			),
-		.sigmoid		( w_sigmoid			)
-	);
-
 	// --------------------------------------------------------------------
 	//	Active period
 	// --------------------------------------------------------------------
@@ -226,21 +215,21 @@ module video_out_hmag (
 	// --------------------------------------------------------------------
 	video_out_bilinear u_bilinear_r (
 		.clk			( clk				),
-		.coeff			( w_sigmoid			),
+		.coeff			( ff_coeff			),
 		.pixel_in		( ff_pixel_r		),
 		.pixel_out		( video_r			)
 	);
 
 	video_out_bilinear u_bilinear_g (
 		.clk			( clk				),
-		.coeff			( w_sigmoid			),
+		.coeff			( ff_coeff			),
 		.pixel_in		( ff_pixel_g		),
 		.pixel_out		( video_g			)
 	);
 
 	video_out_bilinear u_bilinear_b (
 		.clk			( clk				),
-		.coeff			( w_sigmoid			),
+		.coeff			( ff_coeff			),
 		.pixel_in		( ff_pixel_b		),
 		.pixel_out		( video_b			)
 	);

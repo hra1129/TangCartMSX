@@ -41,18 +41,16 @@ Compiling module 'msx_slot'("D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_v
 Compiling module 'ip_gpio'("D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_vdp_cartridge_step6\src\gpio\ip_gpio.v":57)
 Compiling module 'ip_ws2812_led'("D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_vdp_cartridge_step6\src\ws2812_led\ip_ws2812_led.v":57)
 WARN  (EX3791) : Expression size 32 truncated to fit in target size 14("D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_vdp_cartridge_step6\src\ws2812_led\ip_ws2812_led.v":155)
-WARN  (EX3073) : Port 'centeryjk_r25_n' remains unconnected for this instance("D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_vdp_cartridge_step6\src\v9958\vdp_inst.v":215)
 Compiling module 'vdp_inst'("D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_vdp_cartridge_step6\src\v9958\vdp_inst.v":58)
 Compiling module 'vdp'("D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_vdp_cartridge_step6\src\v9958\vdp.v":58)
 Compiling module 'vdp_color_bus'("D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_vdp_cartridge_step6\src\v9958\vdp_color_bus.v":56)
-WARN  (EX3791) : Expression size 18 truncated to fit in target size 17("D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_vdp_cartridge_step6\src\v9958\vdp_color_bus.v":325)
-WARN  (EX3791) : Expression size 15 truncated to fit in target size 14("D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_vdp_cartridge_step6\src\v9958\vdp_color_bus.v":352)
-WARN  (EX3791) : Expression size 18 truncated to fit in target size 17("D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_vdp_cartridge_step6\src\v9958\vdp_color_bus.v":355)
-WARN  (EX3670) : Actual bit length 8 differs from formal bit length 16 for port 'p_dram_rdata'("D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_vdp_cartridge_step6\src\v9958\vdp.v":448)
+WARN  (EX3791) : Expression size 18 truncated to fit in target size 17("D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_vdp_cartridge_step6\src\v9958\vdp_color_bus.v":314)
+WARN  (EX3791) : Expression size 15 truncated to fit in target size 14("D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_vdp_cartridge_step6\src\v9958\vdp_color_bus.v":341)
+WARN  (EX3791) : Expression size 18 truncated to fit in target size 17("D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_vdp_cartridge_step6\src\v9958\vdp_color_bus.v":344)
+WARN  (EX3670) : Actual bit length 8 differs from formal bit length 16 for port 'p_dram_rdata'("D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_vdp_cartridge_step6\src\v9958\vdp.v":446)
 Compiling module 'vdp_interrupt'("D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_vdp_cartridge_step6\src\v9958\vdp_interrupt.v":57)
 Compiling module 'vdp_ssg'("D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_vdp_cartridge_step6\src\v9958\vdp_ssg.v":58)
 WARN  (EX3791) : Expression size 12 truncated to fit in target size 11("D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_vdp_cartridge_step6\src\v9958\vdp_ssg.v":170)
-WARN  (EX3791) : Expression size 11 truncated to fit in target size 10("D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_vdp_cartridge_step6\src\v9958\vdp_ssg.v":205)
 WARN  (EX3791) : Expression size 12 truncated to fit in target size 11("D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_vdp_cartridge_step6\src\v9958\vdp_ssg.v":225)
 WARN  (EX3791) : Expression size 4 truncated to fit in target size 3("D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_vdp_cartridge_step6\src\v9958\vdp_ssg.v":394)
 WARN  (EX3791) : Expression size 10 truncated to fit in target size 9("D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_vdp_cartridge_step6\src\v9958\vdp_ssg.v":434)
@@ -110,11 +108,6 @@ Extracting RAM for identifier 'c_wait_table_602'("D:\github\HRA_product\TangCart
 Extracting RAM for identifier 'c_wait_table_603'("D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_vdp_cartridge_step6\src\v9958\vdp_wait_control.v":64)
 Extracting RAM for identifier 'c_wait_table_604'("D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_vdp_cartridge_step6\src\v9958\vdp_wait_control.v":66)
 Extracting RAM for identifier 'c_wait_table_605'("D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_vdp_cartridge_step6\src\v9958\vdp_wait_control.v":68)
-WARN  (EX2565) : Input 'vdp_speed_mode' on this instance is undriven. Assigning to 0, simulation mismatch possible. Please assign the input or remove the declaration("D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_vdp_cartridge_step6\src\v9958\vdp_inst.v":215)
-WARN  (EX2565) : Input 'ratio_mode[2]' on this instance is undriven. Assigning to 0, simulation mismatch possible. Please assign the input or remove the declaration("D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_vdp_cartridge_step6\src\v9958\vdp_inst.v":215)
-WARN  (EX2565) : Input 'ratio_mode[1]' on this instance is undriven. Assigning to 0, simulation mismatch possible. Please assign the input or remove the declaration("D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_vdp_cartridge_step6\src\v9958\vdp_inst.v":215)
-WARN  (EX2565) : Input 'ratio_mode[0]' on this instance is undriven. Assigning to 0, simulation mismatch possible. Please assign the input or remove the declaration("D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_vdp_cartridge_step6\src\v9958\vdp_inst.v":215)
-WARN  (EX2565) : Input 'centeryjk_r25_n' on this instance is undriven. Assigning to 0, simulation mismatch possible. Please assign the input or remove the declaration("D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_vdp_cartridge_step6\src\v9958\vdp_inst.v":215)
 Compiling module 'video_out'("D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_vdp_cartridge_step6\src\video_out\video_out.v":60)
 WARN  (EX3771) : Module instantiation should have an instance name("D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_vdp_cartridge_step6\src\video_out\video_out.v":252)
 Compiling module 'video_out_hmag'("D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_vdp_cartridge_step6\src\video_out\video_out_hmag.v":60)
@@ -149,7 +142,7 @@ Running technical mapping ...
 [80%] Tech-Mapping Phase 3 completed
 [90%] Tech-Mapping Phase 4 completed
 WARN  (NL0002) : The module "Gowin_rPLL2" instantiated to "u_pll2" is swept in optimizing("D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_vdp_cartridge_step6\src\tangnano20k_vdp_cartridge.v":120)
-WARN  (NL0002) : The module "vdp_interrupt" instantiated to "u_vdp_interrupt" is swept in optimizing("D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_vdp_cartridge_step6\src\v9958\vdp.v":510)
+WARN  (NL0002) : The module "vdp_interrupt" instantiated to "u_vdp_interrupt" is swept in optimizing("D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_vdp_cartridge_step6\src\v9958\vdp.v":508)
 [95%] Generate netlist file "D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_vdp_cartridge_step6\impl\gwsynthesis\tangnano20k_vdp_cartridge.vg" completed
 [100%] Generate report file "D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_vdp_cartridge_step6\impl\gwsynthesis\tangnano20k_vdp_cartridge_syn.rpt.html" completed
 GowinSynthesis finish

@@ -85,7 +85,6 @@ module vdp_graphic123m (
 	output	[16:0]		p_ram_adr,
 	output	[3:0]		p_color_code
 );
-	reg		[7:0]		ff_ram_dat;
 	reg		[16:0]		ff_vram_address;
 	reg		[3:0]		ff_color_code;
 	reg		[7:0]		ff_pre_pattern_num;
@@ -119,18 +118,6 @@ module vdp_graphic123m (
 	assign p_color_code					= ff_color_code;
 
 	// --------------------------------------------------------------------
-	//	VRAM latch
-	// --------------------------------------------------------------------
-	always @( posedge clk ) begin
-		if( !enable ) begin
-			//	hold
-		end
-		else if( dot_state == 2'b10 ) begin
-			ff_ram_dat <= p_ram_dat;
-		end
-	end
-
-	// --------------------------------------------------------------------
 	//	[memo]
 	//	dot_state:   00 -> 01 -> 11 -> 10 -> 00 (gray code)
 	// --------------------------------------------------------------------
@@ -144,8 +131,8 @@ module vdp_graphic123m (
 		else if( dot_state == 2'b11 )begin
 			case( eight_dot_state )
 			3'd0:		ff_vram_address <= w_pattern_name_address;
-			3'd2:		ff_vram_address <= w_pattern_generator_address;
-			3'd3:		ff_vram_address <= w_color_address;
+			3'd1:		ff_vram_address <= w_pattern_generator_address;
+			3'd2:		ff_vram_address <= w_color_address;
 			default:
 				begin
 					//	hold
@@ -183,8 +170,8 @@ module vdp_graphic123m (
 		else if( !enable )begin
 			//	hold
 		end
-		else if( dot_state == 2'b00 && eight_dot_state == 3'd2 )begin
-			ff_pre_pattern_num <= ff_ram_dat;
+		else if( dot_state == 2'b01 && eight_dot_state == 3'd1 )begin
+			ff_pre_pattern_num <= p_ram_dat;
 		end
 	end
 
@@ -200,8 +187,8 @@ module vdp_graphic123m (
 		else if( !enable )begin
 			//	hold
 		end
-		else if( dot_state == 2'b00 && eight_dot_state == 3'd4 )begin
-			ff_pre_pattern_generator <= ff_ram_dat;
+		else if( dot_state == 2'b01 && eight_dot_state == 3'd2 )begin
+			ff_pre_pattern_generator <= p_ram_dat;
 		end
 	end
 
@@ -215,8 +202,8 @@ module vdp_graphic123m (
 		else if( !enable )begin
 			//	hold
 		end
-		else if( dot_state == 2'b00 && eight_dot_state == 3'd5 )begin
-			ff_pre_color <= ff_ram_dat;
+		else if( dot_state == 2'b01 && eight_dot_state == 3'd3 )begin
+			ff_pre_color <= p_ram_dat;
 		end
 	end
 

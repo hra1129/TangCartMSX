@@ -202,7 +202,7 @@ module vdp_ssg (
 				ff_v_cnt_in_field <= 10'd0;
 			end
 			else begin
-				ff_v_cnt_in_field <= ff_v_cnt_in_field + 1;
+				ff_v_cnt_in_field <= ff_v_cnt_in_field + 10'd1;
 			end
 		end
 	end

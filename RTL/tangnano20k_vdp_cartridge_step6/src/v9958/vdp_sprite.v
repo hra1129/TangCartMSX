@@ -489,7 +489,7 @@ module vdp_sprite (
 			//	hold
 		end
 		else if( dot_state == 2'b01 ) begin
-			if( dot_counter_x == 0 ) begin
+			if( dot_counter_x == 9'd0 ) begin
 				// initialize
 				ff_y_test_listup_addr <= 4'd0;
 			end

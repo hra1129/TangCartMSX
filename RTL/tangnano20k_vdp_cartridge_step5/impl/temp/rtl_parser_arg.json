@@ -2,6 +2,10 @@
  "Device" : "GW2AR-18C",
  "Files" : [
   {
+   "Path" : "D:/github/HRA_product/TangCartMSX/RTL/tangnano20k_vdp_cartridge_step5/src/dvi_tx/dvi_tx.v",
+   "Type" : "verilog"
+  },
+  {
    "Path" : "D:/github/HRA_product/TangCartMSX/RTL/tangnano20k_vdp_cartridge_step5/src/gowin_clkdiv/gowin_clkdiv.v",
    "Type" : "verilog"
   },
@@ -22,15 +26,11 @@
    "Type" : "verilog"
   },
   {
+   "Path" : "D:/github/HRA_product/TangCartMSX/RTL/tangnano20k_vdp_cartridge_step5/src/ram/ip_ram.v",
+   "Type" : "verilog"
+  },
+  {
    "Path" : "D:/github/HRA_product/TangCartMSX/RTL/tangnano20k_vdp_cartridge_step5/src/tangnano20k_vdp_cartridge.v",
-   "Type" : "verilog"
-  },
-  {
-   "Path" : "D:/github/HRA_product/TangCartMSX/RTL/tangnano20k_vdp_cartridge_step5/src/ws2812_led/ip_ws2812_led.v",
-   "Type" : "verilog"
-  },
-  {
-   "Path" : "D:/github/HRA_product/TangCartMSX/RTL/tangnano20k_vdp_cartridge_step5/src/dvi_tx/dvi_tx.v",
    "Type" : "verilog"
   },
   {
@@ -86,10 +86,6 @@
    "Type" : "verilog"
   },
   {
-   "Path" : "D:/github/HRA_product/TangCartMSX/RTL/tangnano20k_vdp_cartridge_step5/src/ram/ip_ram.v",
-   "Type" : "verilog"
-  },
-  {
    "Path" : "D:/github/HRA_product/TangCartMSX/RTL/tangnano20k_vdp_cartridge_step5/src/video_out/video_double_buffer.v",
    "Type" : "verilog"
   },
@@ -106,11 +102,11 @@
    "Type" : "verilog"
   },
   {
-   "Path" : "D:/github/HRA_product/TangCartMSX/RTL/tangnano20k_vdp_cartridge_step5/src/video_out/video_out_sigmoid.v",
+   "Path" : "D:/github/HRA_product/TangCartMSX/RTL/tangnano20k_vdp_cartridge_step5/src/video_out/video_ram_line_buffer.v",
    "Type" : "verilog"
   },
   {
-   "Path" : "D:/github/HRA_product/TangCartMSX/RTL/tangnano20k_vdp_cartridge_step5/src/video_out/video_ram_line_buffer.v",
+   "Path" : "D:/github/HRA_product/TangCartMSX/RTL/tangnano20k_vdp_cartridge_step5/src/ws2812_led/ip_ws2812_led.v",
    "Type" : "verilog"
   }
  ],

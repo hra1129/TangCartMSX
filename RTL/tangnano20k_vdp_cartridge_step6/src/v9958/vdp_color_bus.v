@@ -169,21 +169,9 @@ module vdp_color_bus (
 	// --------------------------------------------------------------------
 	//	internal signals
 	// --------------------------------------------------------------------
-	always @( posedge clk ) begin
-		if( reset ) begin
-			ff_dram_rdata <= 16'd0;
-		end
-		else if( !enable ) begin
-			//	hold
-		end
-		else if( dot_state == 2'b11 ) begin
-			ff_dram_rdata <= p_dram_rdata;
-		end
-	end
-
 	assign w_vram_rdata_sel		= ff_dram_address[16];
-	assign w_vram_data			= ( !w_vram_rdata_sel ) ? ff_dram_rdata[ 7:0] : ff_dram_rdata[15:8];
-	assign w_vram_data_pair		= (  w_vram_rdata_sel ) ? ff_dram_rdata[ 7:0] : ff_dram_rdata[15:8];
+	assign w_vram_data			= ( !w_vram_rdata_sel ) ? p_dram_rdata[ 7:0] : p_dram_rdata[15:8];
+	assign w_vram_data_pair		= (  w_vram_rdata_sel ) ? p_dram_rdata[ 7:0] : p_dram_rdata[15:8];
 	assign w_text_mode			= p_vdp_mode_text1 | p_vdp_mode_text1q | p_vdp_mode_text2;
 
 	// --------------------------------------------------------------------
@@ -194,7 +182,7 @@ module vdp_color_bus (
 			ff_dram_rdata_cpu		<= 8'd0;
 			ff_vram_reading_ack		<= 1'b0;
 		end
-		else if( dot_state == 2'b10 ) begin
+		else if( dot_state == 2'b01 ) begin
 			if( ff_vram_reading_req != ff_vram_reading_ack ) begin
 				ff_dram_rdata_cpu		<= w_vram_data;
 				ff_vram_reading_ack		<= ~ff_vram_reading_ack;
@@ -308,6 +296,7 @@ module vdp_color_bus (
 
 			// --------------------------------------------------------------------
 			// vram access address switch
+			//
 			if( ff_color_bus_state == state_cpuw ) begin
 				// vram write by cpu
 				// jp: graphic6,7ではvram上のアドレスと ram上のアドレスの関係が

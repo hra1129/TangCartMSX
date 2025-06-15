@@ -2,7 +2,7 @@
 //	video_out.v
 //	 LCD 800x480 up-scan converter.
 //
-//	Copyright (C) 2024 Takayuki Hara.
+//	Copyright (C) 2025 Takayuki Hara.
 //	All rights reserved.
 //									   https://github.com/hra1129
 //
@@ -80,51 +80,49 @@ module video_out #(
 	output	[7:0]	video_g,
 	output	[7:0]	video_b
 );
-	// LCD 800x480 parameters
-	// Horizontal timing by ff_h_cnt value : 1368cyc
-	localparam		clocks_per_line		= 1368;
-	localparam		disp_width			= 576;
-	localparam		h_pulse_start		= clocks_per_line - 21;
-	localparam		h_pulse_end			= clocks_per_line - 1;
-	localparam		h_back_porch_end	= 45;
-	localparam		h_active_end		= h_back_porch_end + 800;
-	localparam		h_front_porch_end	= h_active_end + 502;
-	localparam		h_vdp_active_start	= h_back_porch_end + 112;
-	localparam		h_vdp_active_end	= h_vdp_active_start + disp_width;
+	// LCD 640x480 parameters
+	// Horizontal timing by ff_h_cnt value : 684cyc @ 21.47727MHz
+	localparam	[9:0]	clocks_per_line		= 684;
+	localparam	[9:0]	disp_width			= 550;
+	localparam	[9:0]	h_pulse_start		= 684;						//	(4)
+	localparam	[9:0]	h_pulse_end			= 80;						//	(1)
+	localparam	[9:0]	h_back_porch_end	= 121;						//	(2)
+	localparam	[9:0]	h_active_end		= 671;						//	(3)
+	//	                  _________________ 
+	//	video_hs   ______| :            :  |
+	//	                 : :____________:  :
+	//	ff_h_active______:_|            |__:
+	//	                (1)(2)          (3)(4)
+
 	// Vertical timing by ff_v_cnt value
-	localparam		v_pulse_start		= 14;
-	localparam		v_pulse_end			= v_pulse_start + 6;			//	min 0 ... max 19
-	localparam		v_back_porch_end	= v_pulse_end + 21;
-	localparam		v_active_end		= v_back_porch_end + 480;
-	localparam		v_front_porch_end	= 524;
+	localparam	[9:0]	v_pulse_start		= 516;						//	[4]
+	localparam	[9:0]	v_pulse_end			= 24;						//	[1]
+	localparam	[9:0]	v_back_porch_end	= v_pulse_end + 6;			//	[2]
+	localparam	[9:0]	v_active_end		= v_back_porch_end + 480;	//	[3]
+	localparam	[9:0]	v_front_porch_end	= 524;						//	[4]
+	//	                ____________________
+	//	video_vs   ____|    :           :   |
+	//	               :    :___________:   :
+	//	ff_v_active____:____|           |___:
+	//	              [1]  [2]         [3] [4]
 
 	// ff_disp_start_x + disp_width < clocks_per_line/2 = 684
-	localparam			disp_start_y	= 3;
-	localparam			prb_height		= 25;
-	localparam			right_x			= 684 - disp_width - 2;						// 106
-	localparam			pal_right_x		= 87;										// 87
-	localparam			center_x		= right_x - 32 - 2;							// 72
-	localparam			base_left_x		= center_x - 32 - 2 - 3;					// 35
-	localparam	[7:0]	reg_left_offset	= (800 - 780) / 2;							//	0 ..... 112
-	localparam	[7:0]	reg_denominator	= 780 / 4;									//	144 ... 200
+	localparam	[7:0]	reg_left_offset	= 114;										//	0 ..... 112
+	localparam	[7:0]	reg_denominator	= 240;										//	144 ... 200
 	localparam	[5:0]	reg_normalize	= 8192 / reg_denominator;					//	8192 / reg_denominator : 57 ... 40
 
 	reg				ff_v_sync;
 	wire	[7:0]	w_data_r_out;
 	wire	[7:0]	w_data_g_out;
 	wire	[7:0]	w_data_b_out;
-	reg		[10:0]	ff_h_cnt;
+	reg		[9:0]	ff_h_cnt;
 	reg				ff_h_sync;
 	reg				ff_h_active;
-	reg				ff_h_vdp_active;
 	wire			w_h_pulse_start;
 	wire			w_h_pulse_end;
 	wire			w_h_back_porch_end;
 	wire			w_h_active_end;
-	wire			w_h_front_porch_end;
 	wire			w_h_line_end;
-	wire			w_h_vdp_active_start;
-	wire			w_h_vdp_active_end;
 	reg		[9:0]	ff_v_cnt;
 	reg				ff_v_active;
 	wire			w_v_pulse_start;
@@ -137,32 +135,32 @@ module video_out #(
 	// --------------------------------------------------------------------
 	//	Timing signals
 	// --------------------------------------------------------------------
-	assign w_h_pulse_start		= (ff_h_cnt == h_pulse_start);
-	assign w_h_pulse_end		= (ff_h_cnt == h_pulse_end);
-	assign w_h_back_porch_end	= (ff_h_cnt == h_back_porch_end);
-	assign w_h_active_end		= (ff_h_cnt == h_active_end);
-	assign w_h_front_porch_end	= (ff_h_cnt == h_front_porch_end);
+	assign w_h_pulse_start		= (ff_h_cnt == h_pulse_start - 1);
+	assign w_h_pulse_end		= (ff_h_cnt == h_pulse_end - 1);
+	assign w_h_back_porch_end	= (ff_h_cnt == h_back_porch_end - 1);
+	assign w_h_active_end		= (ff_h_cnt == h_active_end - 1);
 	assign w_h_line_end			= (ff_h_cnt == clocks_per_line - 1);
 	assign w_v_pulse_start		= (ff_v_cnt == v_pulse_start - 1);
 	assign w_v_pulse_end		= (ff_v_cnt == v_pulse_end - 1);
 	assign w_v_back_porch_end	= (ff_v_cnt == v_back_porch_end - 1);
 	assign w_v_active_end		= (ff_v_cnt == v_active_end - 1);
 	assign w_v_front_porch_end	= (ff_v_cnt == v_front_porch_end - 1);
-	assign w_h_vdp_active_start	= (ff_h_cnt == h_vdp_active_start);
-	assign w_h_vdp_active_end	= (ff_h_cnt == h_vdp_active_end);
 
 	// --------------------------------------------------------------------
 	//	H Counter
 	// --------------------------------------------------------------------
 	always @( posedge clk ) begin
 		if( !reset_n ) begin
-			ff_h_cnt <= 11'd0;
+			ff_h_cnt <= 10'd0;
+		end
+		else if( !enable ) begin
+			//	hold
 		end
 		else if( w_h_line_end ) begin
-			ff_h_cnt <= 11'd0;
+			ff_h_cnt <= 10'd0;
 		end
 		else begin
-			ff_h_cnt <= ff_h_cnt + 11'd1;
+			ff_h_cnt <= ff_h_cnt + 10'd1;
 		end
 	end
 
@@ -172,6 +170,9 @@ module video_out #(
 	always @( posedge clk ) begin
 		if( !reset_n ) begin
 			ff_h_sync <= ~hs_positive;
+		end
+		else if( !enable ) begin
+			//	hold
 		end
 		else if( w_h_pulse_start ) begin
 			ff_h_sync <= hs_positive;
@@ -191,29 +192,14 @@ module video_out #(
 		if( !reset_n ) begin
 			ff_h_active <= 1'b0;
 		end
+		else if( !enable ) begin
+			//	hold
+		end
 		else if( w_h_active_end ) begin
 			ff_h_active <= 1'b0;
 		end
 		else if( w_h_back_porch_end ) begin
 			ff_h_active <= 1'b1;
-		end
-		else begin
-			//	hold
-		end
-	end
-
-	// --------------------------------------------------------------------
-	//	H VDP Active
-	// --------------------------------------------------------------------
-	always @( posedge clk ) begin
-		if( !reset_n ) begin
-			ff_h_vdp_active <= 1'b0;
-		end
-		else if( w_h_vdp_active_start ) begin
-			ff_h_vdp_active <= 1'b1;
-		end
-		else if( w_h_vdp_active_end ) begin
-			ff_h_vdp_active <= 1'b0;
 		end
 		else begin
 			//	hold
@@ -227,7 +213,10 @@ module video_out #(
 		if( !reset_n ) begin
 			ff_v_cnt <= 10'd0;
 		end
-		else if( w_h_front_porch_end ) begin
+		else if( !enable ) begin
+			//	hold
+		end
+		else if( w_h_line_end ) begin
 			if( w_v_front_porch_end ) begin
 				ff_v_cnt <= 10'd0;
 			end
@@ -244,7 +233,10 @@ module video_out #(
 		if( !reset_n )begin
 			ff_v_active <= 1'b0;
 		end
-		else if( w_h_front_porch_end ) begin
+		else if( !enable ) begin
+			//	hold
+		end
+		else if( w_h_line_end ) begin
 			if( w_v_back_porch_end )begin
 				ff_v_active <= 1'b1;
 			end
@@ -257,9 +249,7 @@ module video_out #(
 	// --------------------------------------------------------------------
 	//	Color
 	// --------------------------------------------------------------------
-	assign w_lcd_de		= ff_h_active && ff_v_active;
-
-	video_out_hmag u_hmag (
+	video_out_hmag (
 		.clk				( clk				),
 		.reset_n			( reset_n			),
 		.enable				( enable			),
@@ -282,7 +272,10 @@ module video_out #(
 		if( !reset_n )begin
 			ff_v_sync <= vs_positive;
 		end
-		else if( w_h_front_porch_end ) begin
+		else if( !enable ) begin
+			//	hold
+		end
+		else if( w_h_line_end ) begin
 			if( w_v_pulse_start )begin
 				ff_v_sync <= vs_positive;
 			end
@@ -291,6 +284,8 @@ module video_out #(
 			end
 		end
 	end
+
+	assign w_lcd_de		= ff_h_active & ff_v_active;
 
 	assign video_clk	= clk;
 	assign video_de		= w_lcd_de;

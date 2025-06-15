@@ -61,7 +61,7 @@ module vdp_text12 (
 	input			enable						,
 
 	input	[1:0]	dot_state					,
-	input	[8:0]	dot_counter_x					,
+	input	[8:0]	dot_counter_x				,
 	input	[8:0]	dotcountery					,
 	input	[8:0]	dot_counter_yp				,
 
@@ -76,11 +76,11 @@ module vdp_text12 (
 	input	[7:0]	reg_r13_blink_period		,
 
 	input	[6:0]	reg_r2_pattern_name			,
-	input	[5:0]	reg_r4_pattern_generator			,
-	input	[10:0]	reg_r10r3_color			,
+	input	[5:0]	reg_r4_pattern_generator	,
+	input	[10:0]	reg_r10r3_color				,
 	//
-	input	[7:0]	p_vram_rdata						,
-	output	[16:0]	p_vram_address						,
+	input	[7:0]	p_vram_rdata				,
+	output	[16:0]	p_vram_address				,
 	output			txvramreaden				,
 
 	output	[3:0]	pcolorcode					
