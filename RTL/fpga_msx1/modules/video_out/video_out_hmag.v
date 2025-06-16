@@ -123,6 +123,7 @@ module video_out_hmag (
 	wire	[7:0]	w_video_b;
 	wire	[9:0]	w_odd_gain;
 	wire	[7:0]	w_gain;
+	wire	[7:0]	w_gain2;
 	reg		[7:0]	ff_pre_r;
 	reg		[7:0]	ff_pre_g;
 	reg		[7:0]	ff_pre_b;
@@ -298,15 +299,16 @@ module video_out_hmag (
 	// --------------------------------------------------------------------
 	//	Scanline
 	// --------------------------------------------------------------------
-	assign w_odd_gain	= { 2'd0, w_video_r } + { 2'd0, w_video_g } + { 2'd0, w_video_b };
+	assign w_odd_gain	= { 2'd0, w_video_r } + { 1'd0, w_video_g, 1'd0 } + { 2'd0, w_video_b };
 	assign w_gain		= (reg_scanline == 1'b0) ? 8'd128:
-						  (~vdp_vcounter[0]    ) ? 8'd128: { 1'b0, w_odd_gain[7:3] };
+						  (~vdp_vcounter[0]    ) ? 8'd128: w_odd_gain[7:2];
+	assign w_gain2		= ( w_gain[7] == 1'b1  ) ? 8'd128: w_gain[7:0];
 
 	always @( posedge clk ) begin
 		ff_pre_r	<= w_video_r;
 		ff_pre_g	<= w_video_g;
 		ff_pre_b	<= w_video_b;
-		ff_gain		<= w_gain;
+		ff_gain		<= w_gain2;
 	end
 
 	assign w_gain_r		= ff_pre_r * ff_gain;

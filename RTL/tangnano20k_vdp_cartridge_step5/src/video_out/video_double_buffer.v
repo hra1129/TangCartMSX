@@ -61,7 +61,8 @@ module video_double_buffer (
 	input			enable,
 	input	[9:0]	x_position_w,
 	input	[9:0]	x_position_r,
-	input			is_odd,
+	input			is_odd,				//	write access mode is odd
+	input			re,
 	input			we,
 	input	[5:0]	wdata_r,
 	input	[5:0]	wdata_g,
@@ -75,18 +76,25 @@ module video_double_buffer (
 	reg				ff_enable;
 	reg				ff_we_e;
 	reg				ff_we_o;
+	reg				ff_re;
 	reg		[9:0]	ff_addr_e;
 	reg		[9:0]	ff_addr_o;
 	reg		[17:0]	ff_d;
 	reg		[5:0]	ff_rdata_r;
 	reg		[5:0]	ff_rdata_g;
 	reg		[5:0]	ff_rdata_b;
+	wire			w_odd_enable;
+	wire			w_even_enable;
+
+	assign w_odd_enable		= is_odd ? enable: 1'b1;
+	assign w_even_enable	= is_odd ? 1'b1  : enable;
 
 	// even line
 	video_ram_line_buffer u_buf_even (
 		.clk		( clk			),
-		.enable		( !enable		),
+		.enable		( w_even_enable	),
 		.address	( ff_addr_e		),
+		.re			( ff_re			),
 		.we			( ff_we_e		),
 		.d			( ff_d			),
 		.q			( out_e			)
@@ -95,8 +103,9 @@ module video_double_buffer (
 	// odd line
 	video_ram_line_buffer u_buf_odd (
 		.clk		( clk			),
-		.enable		( !enable		),
+		.enable		( w_odd_enable	),
 		.address	( ff_addr_o		),
+		.re			( ff_re			),
 		.we			( ff_we_o		),
 		.d			( ff_d			),
 		.q			( out_o			)
@@ -119,12 +128,16 @@ module video_double_buffer (
 		if( enable ) begin
 			ff_we_e		<= ( !is_odd ) ? we : 1'b0;
 			ff_we_o		<= (  is_odd ) ? we : 1'b0;
-			ff_addr_e	<= ( !is_odd ) ? x_position_w : x_position_r;
-			ff_addr_o	<= (  is_odd ) ? x_position_w : x_position_r;
 			ff_d		<= { wdata_r, wdata_g, wdata_b };
-			ff_rdata_r	<= (  is_odd ) ? out_e[17:12] : out_o[17:12];
-			ff_rdata_g	<= (  is_odd ) ? out_e[11: 6] : out_o[11: 6];
-			ff_rdata_b	<= (  is_odd ) ? out_e[ 5: 0] : out_o[ 5: 0];
 		end
+	end
+
+	always @( posedge clk ) begin
+		ff_re		<= re;
+		ff_addr_e	<= ( is_odd ) ? x_position_r : x_position_w;
+		ff_addr_o	<= ( is_odd ) ? x_position_w : x_position_r;
+		ff_rdata_r	<= ( is_odd ) ? out_e[17:12] : out_o[17:12];
+		ff_rdata_g	<= ( is_odd ) ? out_e[11: 6] : out_o[11: 6];
+		ff_rdata_b	<= ( is_odd ) ? out_e[ 5: 0] : out_o[ 5: 0];
 	end
 endmodule

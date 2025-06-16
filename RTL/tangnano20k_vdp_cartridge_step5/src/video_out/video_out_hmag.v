@@ -2,7 +2,7 @@
 //	video_out_hmag.v
 //	 LCD 800x480 up-scan converter.
 //
-//	Copyright (C) 2024 Takayuki Hara.
+//	Copyright (C) 2025 Takayuki Hara.
 //	All rights reserved.
 //									   https://github.com/hra1129
 //
@@ -75,10 +75,15 @@ module video_out_hmag (
 	// parameters
 	input	[7:0]	reg_left_offset,			//	0 ..... 112
 	input	[7:0]	reg_denominator,			//	144 ... 200
-	input	[5:0]	reg_normalize				//	8192 / reg_denominator : 57 ... 40
+	input	[7:0]	reg_normalize,				//	8192 / reg_denominator : 228 ... 160
+	input			reg_scanline
 );
 	localparam		clocks_per_line		= 1368;
 	localparam		disp_width			= 10'd576;
+	localparam		h_back_porch_end	= 45;
+	localparam		h_active_end		= h_back_porch_end + 800;
+	localparam		h_front_porch_end	= h_active_end + 502;
+	localparam		h_vdp_active_start	= h_back_porch_end + 112;
 	localparam		c_active_end		= disp_width - 1;
 	localparam		c_numerator			= disp_width / 4;
 	wire	[9:0]	w_x_position_w;
@@ -89,17 +94,46 @@ module video_out_hmag (
 	wire	[8:0]	w_sub_numerator;
 	wire			w_active_start;
 	wire			w_active_end;
+	wire			w_h_cnt_end;
 	wire			w_is_odd;
 	wire			w_we_buf;
 	wire	[5:0]	w_pixel_r;
 	wire	[5:0]	w_pixel_g;
 	wire	[5:0]	w_pixel_b;
-	wire			w_no_increment;
-	wire	[13:0]	w_normalized_numerator;
+	wire			w_hold;
+	wire	[15:0]	w_normalized_numerator;
 	reg		[5:0]	ff_coeff;
-	reg		[5:0]	ff_pixel_r;
-	reg		[5:0]	ff_pixel_g;
-	reg		[5:0]	ff_pixel_b;
+	reg		[5:0]	ff_coeff1;
+	reg		[5:0]	ff_coeff2;
+	reg		[5:0]	ff_coeff3;
+	reg		[5:0]	ff_coeff4;
+	reg				ff_hold0;
+	reg				ff_hold1;
+	reg				ff_hold2;
+	reg				ff_hold3;
+	reg				ff_hold4;
+	reg		[5:0]	ff_tap0_r;
+	reg		[5:0]	ff_tap0_g;
+	reg		[5:0]	ff_tap0_b;
+	reg		[5:0]	ff_tap1_r;
+	reg		[5:0]	ff_tap1_g;
+	reg		[5:0]	ff_tap1_b;
+	wire	[7:0]	w_video_r;
+	wire	[7:0]	w_video_g;
+	wire	[7:0]	w_video_b;
+	wire	[9:0]	w_odd_gain;
+	wire	[7:0]	w_gain;
+	wire	[7:0]	w_gain2;
+	reg		[7:0]	ff_pre_r;
+	reg		[7:0]	ff_pre_g;
+	reg		[7:0]	ff_pre_b;
+	reg		[7:0]	ff_gain;
+	wire	[15:0]	w_gain_r;
+	wire	[15:0]	w_gain_g;
+	wire	[15:0]	w_gain_b;
+	reg		[7:0]	ff_video_r;
+	reg		[7:0]	ff_video_g;
+	reg		[7:0]	ff_video_b;
 
 	// --------------------------------------------------------------------
 	//	Buffer address
@@ -110,11 +144,11 @@ module video_out_hmag (
 		if( !reset_n ) begin
 			ff_x_position_r <= 10'd0;
 		end
-		else if( h_cnt == (clocks_per_line - 1) ) begin
+		else if( w_h_cnt_end ) begin
 			ff_x_position_r <= 10'd0;
 		end
 		else if( ff_active ) begin
-			if( w_no_increment ) begin
+			if( w_hold ) begin
 				//	hold
 			end
 			else begin
@@ -134,7 +168,7 @@ module video_out_hmag (
 			ff_numerator <= 8'b0;
 		end
 		else if( ff_active ) begin
-			if( w_no_increment ) begin
+			if( w_hold ) begin
 				ff_numerator <= w_next_numerator[7:0];
 			end
 			else begin
@@ -143,22 +177,37 @@ module video_out_hmag (
 		end
 	end
 
-	assign w_no_increment			= w_sub_numerator[8];
-	assign w_next_numerator			= { 1'b0, ff_numerator } + c_numerator;
-	assign w_sub_numerator			= w_next_numerator - { 1'b0, reg_denominator };
+	assign w_hold				= w_sub_numerator[8];
+	assign w_next_numerator		= { 1'b0, ff_numerator } + c_numerator;
+	assign w_sub_numerator		= w_next_numerator - { 1'b0, reg_denominator };
+
+	always @( posedge clk ) begin
+		ff_hold0 <= w_hold & ff_active;
+		ff_hold1 <= ff_hold0;
+		ff_hold2 <= ff_hold1;
+		ff_hold3 <= ff_hold2;
+		ff_hold4 <= ff_hold3;
+	end
 
 	// --------------------------------------------------------------------
 	//	Filter coefficient
 	// --------------------------------------------------------------------
-	assign w_normalized_numerator	= ff_numerator * reg_normalize;
+	assign w_normalized_numerator	= ff_numerator * reg_normalize;		//	8bit * 8bit = 16bit
 
 	always @( posedge clk ) begin
 		if( !reset_n ) begin
 			ff_coeff <= 6'd0;
 		end
 		else begin
-			ff_coeff <= w_normalized_numerator[13:8];
+			ff_coeff <= w_normalized_numerator[14:9];					//	0 ... 63
 		end
+	end
+
+	always @( posedge clk ) begin
+		ff_coeff1	<= ff_coeff;
+		ff_coeff2	<= ff_coeff1;
+		ff_coeff3	<= ff_coeff2;
+		ff_coeff4	<= ff_coeff3;
 	end
 
 	// --------------------------------------------------------------------
@@ -166,12 +215,13 @@ module video_out_hmag (
 	// --------------------------------------------------------------------
 	assign w_active_start	= (h_cnt           == { 1'b0, reg_left_offset, 2'd0 } );
 	assign w_active_end		= (ff_x_position_r == c_active_end);
+	assign w_h_cnt_end		= (h_cnt           == (clocks_per_line - 1));
 
 	always @( posedge clk ) begin
 		if( !reset_n ) begin
 			ff_active <= 1'b0;
 		end
-		else if( w_active_end ) begin
+		else if( w_active_end || w_h_cnt_end ) begin
 			ff_active <= 1'b0;
 		end
 		else if( w_active_start ) begin
@@ -192,6 +242,7 @@ module video_out_hmag (
 		.x_position_w	( w_x_position_w	),
 		.x_position_r	( ff_x_position_r	),
 		.is_odd			( w_is_odd			),
+		.re				( ff_active			),
 		.we				( w_we_buf			),
 		.wdata_r		( vdp_r				),
 		.wdata_g		( vdp_g				),
@@ -204,33 +255,73 @@ module video_out_hmag (
 	assign w_is_odd			= vdp_vcounter[1];
 	assign w_we_buf			= (w_x_position_w < disp_width);
 
-	always @( posedge clk ) begin
-		ff_pixel_r	<= w_pixel_r;
-		ff_pixel_g	<= w_pixel_g;
-		ff_pixel_b	<= w_pixel_b;
-	end
-
 	// --------------------------------------------------------------------
 	//	Bilinear interpolation
 	// --------------------------------------------------------------------
+	always @( posedge clk ) begin
+		if( ff_hold4 ) begin
+			//	hold
+		end
+		else begin
+			ff_tap0_r	<= w_pixel_r;
+			ff_tap0_g	<= w_pixel_g;
+			ff_tap0_b	<= w_pixel_b;
+			ff_tap1_r	<= ff_tap0_r;
+			ff_tap1_g	<= ff_tap0_g;
+			ff_tap1_b	<= ff_tap0_b;
+		end
+	end
+
 	video_out_bilinear u_bilinear_r (
-		.clk			( clk				),
-		.coeff			( ff_coeff			),
-		.pixel_in		( ff_pixel_r		),
-		.pixel_out		( video_r			)
+		.clk			( clk					),
+		.coeff			( ff_coeff4				),
+		.tap0			( ff_tap0_r				),
+		.tap1			( ff_tap1_r				),
+		.pixel_out		( w_video_r				)
 	);
 
 	video_out_bilinear u_bilinear_g (
-		.clk			( clk				),
-		.coeff			( ff_coeff			),
-		.pixel_in		( ff_pixel_g		),
-		.pixel_out		( video_g			)
+		.clk			( clk					),
+		.coeff			( ff_coeff4				),
+		.tap0			( ff_tap0_g				),
+		.tap1			( ff_tap1_g				),
+		.pixel_out		( w_video_g				)
 	);
 
 	video_out_bilinear u_bilinear_b (
-		.clk			( clk				),
-		.coeff			( ff_coeff			),
-		.pixel_in		( ff_pixel_b		),
-		.pixel_out		( video_b			)
+		.clk			( clk					),
+		.coeff			( ff_coeff4				),
+		.tap0			( ff_tap0_b				),
+		.tap1			( ff_tap1_b				),
+		.pixel_out		( w_video_b				)
 	);
+
+	// --------------------------------------------------------------------
+	//	Scanline
+	// --------------------------------------------------------------------
+	assign w_odd_gain	= { 2'd0, w_video_r } + { 1'd0, w_video_g, 1'd0 } + { 2'd0, w_video_b };
+	assign w_gain		= (reg_scanline == 1'b0) ? 8'd128:
+						  (~vdp_vcounter[0]    ) ? 8'd128: w_odd_gain[7:2];
+	assign w_gain2		= ( w_gain[7] == 1'b1  ) ? 8'd128: w_gain[7:0];
+
+	always @( posedge clk ) begin
+		ff_pre_r	<= w_video_r;
+		ff_pre_g	<= w_video_g;
+		ff_pre_b	<= w_video_b;
+		ff_gain		<= w_gain2;
+	end
+
+	assign w_gain_r		= ff_pre_r * ff_gain;
+	assign w_gain_g		= ff_pre_g * ff_gain;
+	assign w_gain_b		= ff_pre_b * ff_gain;
+
+	always @( posedge clk ) begin
+		ff_video_r	<= w_gain_r[15:7];
+		ff_video_g	<= w_gain_g[15:7];
+		ff_video_b	<= w_gain_b[15:7];
+	end
+
+	assign video_r		= ff_video_r;
+	assign video_g		= ff_video_g;
+	assign video_b		= ff_video_b;
 endmodule

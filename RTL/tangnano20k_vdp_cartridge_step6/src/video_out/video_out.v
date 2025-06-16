@@ -81,13 +81,13 @@ module video_out #(
 	output	[7:0]	video_b
 );
 	// LCD 640x480 parameters
-	// Horizontal timing by ff_h_cnt value : 684cyc @ 21.47727MHz
-	localparam	[9:0]	clocks_per_line		= 684;
-	localparam	[9:0]	disp_width			= 550;
-	localparam	[9:0]	h_pulse_start		= 684;						//	(4)
-	localparam	[9:0]	h_pulse_end			= 80;						//	(1)
-	localparam	[9:0]	h_back_porch_end	= 121;						//	(2)
-	localparam	[9:0]	h_active_end		= 671;						//	(3)
+	// Horizontal timing by ff_h_cnt value : 1368cyc @ 42.95454MHz
+	localparam	[10:0]	clocks_per_line		= 1368;
+	localparam	[10:0]	disp_width			= 800;
+	localparam	[10:0]	h_pulse_start		= 1368;						//	(4)
+	localparam	[10:0]	h_pulse_end			= 284;						//	(1)
+	localparam	[10:0]	h_back_porch_end	= 375;						//	(2)
+	localparam	[10:0]	h_active_end		= 1175;						//	(3)
 	//	                  _________________ 
 	//	video_hs   ______| :            :  |
 	//	                 : :____________:  :
@@ -95,9 +95,9 @@ module video_out #(
 	//	                (1)(2)          (3)(4)
 
 	// Vertical timing by ff_v_cnt value
-	localparam	[9:0]	v_pulse_start		= 516;						//	[4]
-	localparam	[9:0]	v_pulse_end			= 24;						//	[1]
-	localparam	[9:0]	v_back_porch_end	= v_pulse_end + 6;			//	[2]
+	localparam	[9:0]	v_pulse_start		= 14;						//	[4]
+	localparam	[9:0]	v_pulse_end			= v_pulse_start + 6;		//	[1]
+	localparam	[9:0]	v_back_porch_end	= v_pulse_end + 21;			//	[2]
 	localparam	[9:0]	v_active_end		= v_back_porch_end + 480;	//	[3]
 	localparam	[9:0]	v_front_porch_end	= 524;						//	[4]
 	//	                ____________________
@@ -107,15 +107,16 @@ module video_out #(
 	//	              [1]  [2]         [3] [4]
 
 	// ff_disp_start_x + disp_width < clocks_per_line/2 = 684
-	localparam	[7:0]	reg_left_offset	= 114;										//	0 ..... 112
-	localparam	[7:0]	reg_denominator	= 240;										//	144 ... 200
+	localparam	[7:0]	reg_left_offset	= 90;										//	0 ..... 112
+	localparam	[7:0]	reg_denominator	= 200;										//	144 ... 200
 	localparam	[5:0]	reg_normalize	= 8192 / reg_denominator;					//	8192 / reg_denominator : 57 ... 40
+	localparam			reg_scanline	= 1'b1;
 
 	reg				ff_v_sync;
 	wire	[7:0]	w_data_r_out;
 	wire	[7:0]	w_data_g_out;
 	wire	[7:0]	w_data_b_out;
-	reg		[9:0]	ff_h_cnt;
+	reg		[10:0]	ff_h_cnt;
 	reg				ff_h_sync;
 	reg				ff_h_active;
 	wire			w_h_pulse_start;
@@ -151,16 +152,13 @@ module video_out #(
 	// --------------------------------------------------------------------
 	always @( posedge clk ) begin
 		if( !reset_n ) begin
-			ff_h_cnt <= 10'd0;
-		end
-		else if( !enable ) begin
-			//	hold
+			ff_h_cnt <= 11'd0;
 		end
 		else if( w_h_line_end ) begin
-			ff_h_cnt <= 10'd0;
+			ff_h_cnt <= 11'd0;
 		end
 		else begin
-			ff_h_cnt <= ff_h_cnt + 10'd1;
+			ff_h_cnt <= ff_h_cnt + 11'd1;
 		end
 	end
 
@@ -170,9 +168,6 @@ module video_out #(
 	always @( posedge clk ) begin
 		if( !reset_n ) begin
 			ff_h_sync <= ~hs_positive;
-		end
-		else if( !enable ) begin
-			//	hold
 		end
 		else if( w_h_pulse_start ) begin
 			ff_h_sync <= hs_positive;
@@ -192,9 +187,6 @@ module video_out #(
 		if( !reset_n ) begin
 			ff_h_active <= 1'b0;
 		end
-		else if( !enable ) begin
-			//	hold
-		end
 		else if( w_h_active_end ) begin
 			ff_h_active <= 1'b0;
 		end
@@ -213,9 +205,6 @@ module video_out #(
 		if( !reset_n ) begin
 			ff_v_cnt <= 10'd0;
 		end
-		else if( !enable ) begin
-			//	hold
-		end
 		else if( w_h_line_end ) begin
 			if( w_v_front_porch_end ) begin
 				ff_v_cnt <= 10'd0;
@@ -233,9 +222,6 @@ module video_out #(
 		if( !reset_n )begin
 			ff_v_active <= 1'b0;
 		end
-		else if( !enable ) begin
-			//	hold
-		end
 		else if( w_h_line_end ) begin
 			if( w_v_back_porch_end )begin
 				ff_v_active <= 1'b1;
@@ -249,7 +235,7 @@ module video_out #(
 	// --------------------------------------------------------------------
 	//	Color
 	// --------------------------------------------------------------------
-	video_out_hmag (
+	video_out_hmag u_hmag (
 		.clk				( clk				),
 		.reset_n			( reset_n			),
 		.enable				( enable			),
@@ -264,16 +250,14 @@ module video_out #(
 		.video_b			( w_data_b_out		),
 		.reg_left_offset	( reg_left_offset	),
 		.reg_denominator	( reg_denominator	),
-		.reg_normalize		( reg_normalize		)
+		.reg_normalize		( reg_normalize		),
+		.reg_scanline		( reg_scanline		)
 	);
 
 	// generate v-sync signal
 	always @( posedge clk ) begin
 		if( !reset_n )begin
 			ff_v_sync <= vs_positive;
-		end
-		else if( !enable ) begin
-			//	hold
 		end
 		else if( w_h_line_end ) begin
 			if( w_v_pulse_start )begin
