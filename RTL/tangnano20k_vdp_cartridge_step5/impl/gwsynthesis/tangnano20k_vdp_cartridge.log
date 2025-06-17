@@ -23,7 +23,6 @@ Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_vdp_ca
 Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_vdp_cartridge_step5\src\v9918\vdp_sprite.v'
 Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_vdp_cartridge_step5\src\v9918\vdp_ssg.v'
 Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_vdp_cartridge_step5\src\v9918\vdp_text12.v'
-Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_vdp_cartridge_step5\src\v9918\vdp_wait_control.v'
 Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_vdp_cartridge_step5\src\video_out\video_double_buffer.v'
 Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_vdp_cartridge_step5\src\video_out\video_out.v'
 Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_vdp_cartridge_step5\src\video_out\video_out_bilinear.v'
@@ -62,17 +61,13 @@ Compiling module 'vdp_ram_256byte'("D:\github\HRA_product\TangCartMSX\RTL\tangna
 Extracting RAM for identifier 'ff_block_ram'("D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_vdp_cartridge_step5\src\v9918\vdp_ram_256byte.v":43)
 WARN  (EX3791) : Expression size 10 truncated to fit in target size 9("D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_vdp_cartridge_step5\src\v9918\vdp_sprite.v":780)
 Compiling module 'vdp_register'("D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_vdp_cartridge_step5\src\v9918\vdp_register.v":56)
-Compiling module 'video_out'("D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_vdp_cartridge_step5\src\video_out\video_out.v":60)
+Compiling module 'video_out(hs_positive=1'b0,vs_positive=1'b0)'("D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_vdp_cartridge_step5\src\video_out\video_out.v":60)
 Compiling module 'video_out_hmag'("D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_vdp_cartridge_step5\src\video_out\video_out_hmag.v":60)
 WARN  (EX3791) : Expression size 32 truncated to fit in target size 10("D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_vdp_cartridge_step5\src\video_out\video_out_hmag.v":141)
 Compiling module 'video_double_buffer'("D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_vdp_cartridge_step5\src\video_out\video_double_buffer.v":58)
 Compiling module 'video_ram_line_buffer'("D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_vdp_cartridge_step5\src\video_out\video_ram_line_buffer.v":58)
 Extracting RAM for identifier 'ff_imem'("D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_vdp_cartridge_step5\src\video_out\video_ram_line_buffer.v":71)
 Compiling module 'video_out_bilinear'("D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_vdp_cartridge_step5\src\video_out\video_out_bilinear.v":60)
-WARN  (EX3791) : Expression size 9 truncated to fit in target size 8("D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_vdp_cartridge_step5\src\video_out\video_out_hmag.v":319)
-WARN  (EX3791) : Expression size 9 truncated to fit in target size 8("D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_vdp_cartridge_step5\src\video_out\video_out_hmag.v":320)
-WARN  (EX3791) : Expression size 9 truncated to fit in target size 8("D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_vdp_cartridge_step5\src\video_out\video_out_hmag.v":321)
-WARN  (EX3670) : Actual bit length 6 differs from formal bit length 8 for port 'reg_normalize'("D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_vdp_cartridge_step5\src\video_out\video_out.v":253)
 Compiling module 'DVI_TX_Top'("D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_vdp_cartridge_step5\src\dvi_tx\dvi_tx.v":1072)
 Compiling module '**'("D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_vdp_cartridge_step5\src\dvi_tx\dvi_tx.v":1071)
 Compiling module 'ip_ram'("D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_vdp_cartridge_step5\src\ram\ip_ram.v":5)

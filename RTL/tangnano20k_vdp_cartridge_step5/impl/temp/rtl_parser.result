@@ -262,13 +262,5 @@
     "ModuleName" : "ip_ram"
    }
   ]
- },
- {
-  "InstFile" : "D:/github/HRA_product/TangCartMSX/RTL/tangnano20k_vdp_cartridge_step5/src/v9918/vdp_wait_control.v",
-  "InstLine" : 31,
-  "InstName" : "vdp_wait_control",
-  "ModuleFile" : "D:/github/HRA_product/TangCartMSX/RTL/tangnano20k_vdp_cartridge_step5/src/v9918/vdp_wait_control.v",
-  "ModuleLine" : 31,
-  "ModuleName" : "vdp_wait_control"
  }
 ]

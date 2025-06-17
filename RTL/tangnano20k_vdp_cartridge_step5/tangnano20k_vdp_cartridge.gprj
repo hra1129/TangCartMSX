@@ -25,7 +25,6 @@
         <File path="src/v9918/vdp_sprite.v" type="file.verilog" enable="1"/>
         <File path="src/v9918/vdp_ssg.v" type="file.verilog" enable="1"/>
         <File path="src/v9918/vdp_text12.v" type="file.verilog" enable="1"/>
-        <File path="src/v9918/vdp_wait_control.v" type="file.verilog" enable="1"/>
         <File path="src/video_out/video_double_buffer.v" type="file.verilog" enable="1"/>
         <File path="src/video_out/video_out.v" type="file.verilog" enable="1"/>
         <File path="src/video_out/video_out_bilinear.v" type="file.verilog" enable="1"/>

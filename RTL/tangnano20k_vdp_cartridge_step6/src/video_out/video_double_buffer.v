@@ -125,11 +125,9 @@ module video_double_buffer (
 	end
 
 	always @( posedge clk ) begin
-		if( enable ) begin
-			ff_we_e		<= ( !is_odd ) ? we : 1'b0;
-			ff_we_o		<= (  is_odd ) ? we : 1'b0;
-			ff_d		<= { wdata_r, wdata_g, wdata_b };
-		end
+		ff_we_e		<= ( !is_odd ) ? we : 1'b0;
+		ff_we_o		<= (  is_odd ) ? we : 1'b0;
+		ff_d		<= { wdata_r, wdata_g, wdata_b };
 	end
 
 	always @( posedge clk ) begin

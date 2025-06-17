@@ -82,10 +82,6 @@
    "Type" : "verilog"
   },
   {
-   "Path" : "D:/github/HRA_product/TangCartMSX/RTL/tangnano20k_vdp_cartridge_step5/src/v9918/vdp_wait_control.v",
-   "Type" : "verilog"
-  },
-  {
    "Path" : "D:/github/HRA_product/TangCartMSX/RTL/tangnano20k_vdp_cartridge_step5/src/video_out/video_double_buffer.v",
    "Type" : "verilog"
   },

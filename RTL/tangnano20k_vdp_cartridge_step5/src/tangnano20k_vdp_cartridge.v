@@ -227,8 +227,8 @@ module tangnano20k_vdp_cartridge (
 	//	Video output
 	// --------------------------------------------------------------------
 	video_out #(
-		.hs_positive		( 1'b1					),		//	If video_hs is positive logic, set to 1.
-		.vs_positive		( 1'b1					)		//	If video_vs is positive logic, set to 1.
+		.hs_positive		( 1'b0					),		//	If video_hs is positive logic, set to 1.
+		.vs_positive		( 1'b0					)		//	If video_vs is positive logic, set to 1.
 	) u_video_out (
 		.clk				( clk42m				),
 		.reset_n			( reset_n   			),

@@ -199,9 +199,9 @@ module vdp_inst(
 		.p_dram_address		( w_dram_address			),	// OUT	[13: 0 ];
 		.p_dram_rdata		( ff_rdata					),	// IN	[ 7: 0 ];
 		.p_dram_wdata		( w_dram_wdata				),	// OUT	[ 7: 0 ];
-		.p_vdp_r			( p_vdp_r					),	// OUT	[ 7: 0 ];
-		.p_vdp_g			( p_vdp_g					),	// OUT	[ 7: 0 ];
-		.p_vdp_b			( p_vdp_b					),	// OUT	[ 7: 0 ];
+		.p_vdp_r			( p_vdp_r					),	// OUT	[ 5: 0 ];
+		.p_vdp_g			( p_vdp_g					),	// OUT	[ 5: 0 ];
+		.p_vdp_b			( p_vdp_b					),	// OUT	[ 5: 0 ];
 		.p_vdp_hcounter		( p_vdp_hcounter			),	// OUT	[10: 0 ];
 		.p_vdp_vcounter		( p_vdp_vcounter			),	// OUT	[10: 0 ];
 		.p_video_dh_clk		( p_video_dh_clk			),	// OUT	

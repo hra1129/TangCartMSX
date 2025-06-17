@@ -109,7 +109,7 @@ module video_out #(
 	// ff_disp_start_x + disp_width < clocks_per_line/2 = 684
 	localparam	[7:0]	reg_left_offset	= 90;										//	0 ..... 112
 	localparam	[7:0]	reg_denominator	= 200;										//	144 ... 200
-	localparam	[5:0]	reg_normalize	= 8192 / reg_denominator;					//	8192 / reg_denominator : 57 ... 40
+	localparam	[7:0]	reg_normalize	= 8192 / reg_denominator;					//	8192 / reg_denominator : 57 ... 40
 	localparam			reg_scanline	= 1'b1;
 
 	reg				ff_v_sync;

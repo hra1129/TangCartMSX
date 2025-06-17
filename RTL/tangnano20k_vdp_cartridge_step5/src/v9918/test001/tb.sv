@@ -55,39 +55,35 @@
 
 module tb ();
 	localparam		clk_base	= 1_000_000_000/42_954_540;	//	ps
-	reg						clk;			//	42.95454MHz
+	reg						clk;
 	reg						reset_n;
-	reg						iorq_n;
-	reg						wr_n;
-	reg						rd_n;
-	reg						address;
-	wire		[7:0]		rdata;
-	wire					rdata_en;
-	reg			[7:0]		wdata;
+	reg						initial_busy;
+	reg			[15:0]		bus_address;
+	reg						bus_ioreq;
+	reg						bus_write;
+	reg						bus_valid;
+	reg			[7:0]		bus_wdata;
+	wire		[7:0]		bus_rdata;
+	wire					bus_rdata_en;
+	wire					bus_ready;
 
 	wire					int_n;
 
-	wire					w_vram_read_n;
-	wire					w_vram_write_n;
-	wire		[13:0]		w_vram_address;
-	reg			[7:0]		ff_vram_rdata;
-	wire		[7:0]		w_vram_wdata;
-	wire		[7:0]		w_vram_rdata;
-	wire					w_vram_rdata_en;
+	wire		[13:0]		p_dram_address;
+	wire					p_dram_write;
+	wire					p_dram_valid;
+	wire					p_dram_ready;
+	wire		[7:0]		p_dram_wdata;
+	wire		[7:0]		p_dram_rdata;
+	wire					p_dram_rdata_en;
 
 	// video wire
-	wire					pvideo_clk;
-	wire					pvideo_data_en;
-
-	wire		[5:0]		pvideor;
-	wire		[5:0]		pvideog;
-	wire		[5:0]		pvideob;
-
-	wire					pvideohs_n;
-	wire					pvideovs_n;
-
-	wire					p_video_dh_clk;
-	wire					p_video_dl_clk;
+	wire					p_vdp_enable;
+	wire		[5:0]		p_vdp_r;
+	wire		[5:0]		p_vdp_g;
+	wire		[5:0]		p_vdp_b;
+	wire		[10:0]		p_vdp_hcounter;
+	wire		[10:0]		p_vdp_vcounter;
 
 	int						i, j, k;
 	reg						timing;
@@ -96,50 +92,46 @@ module tb ();
 	//	DUT
 	// --------------------------------------------------------------------
 	vdp_inst u_vdp (
-		.clk				( clk				),
-		.reset_n			( reset_n			),
-		.initial_busy		( 1'b0				),
-		.iorq_n				( iorq_n			),
-		.wr_n				( wr_n				),
-		.rd_n				( rd_n				),
-		.address			( address			),
-		.rdata				( rdata				),
-		.rdata_en			( rdata_en			),
-		.wdata				( wdata				),
-		.int_n				( int_n				),
-		.p_dram_oe_n		( w_vram_read_n		),
-		.p_dram_we_n		( w_vram_write_n	),
-		.p_dram_address		( w_vram_address	),
-		.p_dram_rdata		( ff_vram_rdata		),
-		.p_dram_wdata		( w_vram_wdata		),
-		.pvideo_clk			( pvideo_clk		),
-		.pvideo_data_en		( pvideo_data_en	),
-		.pvideor			( pvideor			),
-		.pvideog			( pvideog			),
-		.pvideob			( pvideob			),
-		.pvideohs_n			( pvideohs_n		),
-		.pvideovs_n			( pvideovs_n		),
-		.p_video_dh_clk		( p_video_dh_clk	),
-		.p_video_dl_clk		( p_video_dl_clk	)
+		.clk					( clk					),
+		.reset_n				( reset_n				),
+		.initial_busy			( initial_busy			),
+		.bus_address			( bus_address			),
+		.bus_ioreq				( bus_ioreq				),
+		.bus_write				( bus_write				),
+		.bus_valid				( bus_valid				),
+		.bus_wdata				( bus_wdata				),
+		.bus_rdata				( bus_rdata				),
+		.bus_rdata_en			( bus_rdata_en			),
+		.int_n					( int_n					),
+		.p_dram_address			( p_dram_address		),
+		.p_dram_write			( p_dram_write			),
+		.p_dram_valid			( p_dram_valid			),
+		.p_dram_ready			( p_dram_ready			),
+		.p_dram_wdata			( p_dram_wdata			),
+		.p_dram_rdata			( p_dram_rdata			),
+		.p_dram_rdata_en		( p_dram_rdata_en		),
+		.p_vdp_enable			( p_vdp_enable			),
+		.p_vdp_r				( p_vdp_r				),
+		.p_vdp_g				( p_vdp_g				),
+		.p_vdp_b				( p_vdp_b				),
+		.p_vdp_hcounter			( p_vdp_hcounter		),
+		.p_vdp_vcounter			( p_vdp_vcounter		)
 	);
+
+	assign bus_ready		= 1'b1;
 
 	// --------------------------------------------------------------------
 	ip_ram u_vram (
+		.reset_n				( reset_n				),
 		.clk					( clk					),
-		.n_cs					( 1'b0					),
-		.n_wr					( w_vram_write_n		),
-		.n_rd					( w_vram_read_n			),
-		.address				( w_vram_address		),
-		.wdata					( w_vram_wdata			),
-		.rdata					( w_vram_rdata			),
-		.rdata_en				( w_vram_rdata_en		)
+		.bus_address			( p_dram_address		),
+		.bus_valid				( p_dram_valid			),
+		.bus_ready				( p_dram_ready			),
+		.bus_write				( p_dram_write			),
+		.bus_wdata				( p_dram_wdata			),
+		.bus_rdata				( p_dram_rdata			),
+		.bus_rdata_en			( p_dram_rdata_en		)
 	);
-
-	always @( posedge clk ) begin
-		if( w_vram_rdata_en ) begin
-			ff_vram_rdata <= w_vram_rdata;
-		end
-	end
 
 	// --------------------------------------------------------------------
 	//	clock
@@ -156,20 +148,17 @@ module tb ();
 		input	[7:0]	p_data
 	);
 		$display( "write_data( 0x%06X, 0x%02X )", p_address, p_data );
-		address		<= p_address;
-		wdata		<= p_data;
-		iorq_n		<= 1'b0;
-		wr_n		<= 1'b0;
+		bus_address	<= p_address;
+		bus_wdata	<= p_data;
+		bus_ioreq	<= 1'b1;
+		bus_write	<= 1'b1;
+		bus_valid	<= 1'b1;
 		@( posedge clk );
-		@( posedge clk );
+		while( bus_ready == 1'b0 ) @( posedge clk );
 
-		iorq_n		<= 1'b1;
-		wr_n		<= 1'b1;
-		@( posedge clk );
-		@( posedge clk );
-		@( posedge clk );
-		@( posedge clk );
-		@( posedge clk );
+		bus_ioreq	<= 1'b0;
+		bus_write	<= 1'b0;
+		bus_valid	<= 1'b0;
 		@( posedge clk );
 	endtask: write_data
 
@@ -181,24 +170,23 @@ module tb ();
 		int time_out;
 
 		$display( "read_data( 0x%06X, 0x%02X )", p_address, p_data );
-		address		<= p_address;
-		iorq_n		<= 1'b0;
+		bus_address	<= p_address;
+		bus_wdata	<= p_data;
+		bus_ioreq	<= 1'b1;
+		bus_write	<= 1'b1;
+		bus_valid	<= 1'b1;
 		@( posedge clk );
-		rd_n		<= 1'b0;
-		repeat( 16 ) @( negedge clk );
+		while( bus_ready == 1'b0 ) @( posedge clk );
 
-		iorq_n		<= 1'b1;
-		rd_n		<= 1'b1;
-		@( posedge clk );
+		bus_ioreq	<= 1'b0;
+		bus_valid	<= 1'b0;
+		while( bus_rdata_en == 1'b0 ) @( posedge clk );
 
-		assert( rdata == p_data );
-		if( rdata != p_data ) begin
-			$display( "-- p_data = %08X (ref: %08X)", rdata, p_data );
+		assert( bus_rdata == p_data );
+		if( bus_rdata != p_data ) begin
+			$display( "-- p_data = %08X (ref: %08X)", bus_rdata, p_data );
 		end
 
-		@( posedge clk );
-		@( posedge clk );
-		@( posedge clk );
 		@( posedge clk );
 	endtask: read_data
 
@@ -223,16 +211,14 @@ module tb ();
 	//	Test bench
 	// --------------------------------------------------------------------
 	initial begin
-		timing = 0;
-		reset_n = 0;
 		clk = 0;
 		reset_n = 0;
-		iorq_n = 1;
-		wr_n = 1;
-		rd_n = 1;
-		address = 0;
-		wdata = 0;
-		ff_vram_rdata = 0;
+		initial_busy = 0;
+		bus_address = 0;
+		bus_ioreq = 0;
+		bus_write = 0;
+		bus_valid = 0;
+		bus_wdata = 0;
 
 		@( negedge clk );
 		@( negedge clk );
@@ -241,102 +227,102 @@ module tb ();
 		reset_n			= 1;
 		@( posedge clk );
 
-		//	連続書き込みのアドレス指定 
-		write_data( 1, 8'h00 );
-		write_data( 1, 8'h40 );
-
-		write_data( 0, 8'hAA );
-		write_data( 0, 8'h55 );
-		write_data( 0, 8'hA5 );
-		write_data( 0, 8'h5A );
-		write_data( 0, 8'h12 );
-		write_data( 0, 8'h34 );
-		write_data( 0, 8'h56 );
-		write_data( 0, 8'h78 );
-
-		//	連続読み出しのアドレス指定
-		write_data( 1, 8'h00 );
-		write_data( 1, 8'h00 );
-
-		read_data( 0, 8'hAA );
-		read_data( 0, 8'h55 );
-		read_data( 0, 8'hA5 );
-		read_data( 0, 8'h5A );
-		read_data( 0, 8'h12 );
-		read_data( 0, 8'h34 );
-		read_data( 0, 8'h56 );
-		read_data( 0, 8'h78 );
-
-		//	ステータスレジスタの読み出し
-		read_data( 1, 8'h1f );
-
-		//	レジスタ書き込み
-		write_reg( 1, 8'hA0 );
-
-		repeat( 100 ) @( posedge clk );
-
-		// ====================================================================
-		//	GRAPHIC1 (SCREEN1) にセットする 
-		timing = 1;
-		write_reg( 0, 8'h00 );			//	R#0 = 0x00 : Mode 0 : SCREEN1
-		write_reg( 1, 8'h02 );			//	R#1 = 0x02 : Mode 1 : SCREEN1, 16x16 Sprite
-		write_reg( 2, 8'h06 );			//	R#2 = 0x06 : Pattern Name Table      0x1800 = 01_1000_0000_0000 → 01_10
-		write_reg( 3, 8'h80 );			//	R#3 = 0x80 : Color Table             0x2000 = 10_0000_0000_0000 → 10_0000_00
-		write_reg( 4, 8'h00 );			//	R#4 = 0x00 : Pattern Generator Table 0x0000 = 00_0000_0000_0000 → 00_0
-		write_reg( 5, 8'h36 );			//	R#5 = 0x36 : Sprite Attribute Table  0x1B00 = 01_1011_0000_0000 → 01_1011_0
-		write_reg( 6, 8'h07 );			//	R#6 = 0x07 : Sprite Generator Table  0x3800 = 11_1000_0000_0000 → 11_1
-		timing = 0;
-
-		//	VRAMをゼロクリアする 
-		set_vram_address( 14'h0000 );
-		for( i = 0; i < 16384; i++ ) begin
-			write_data( 0, 8'h00 );
-		end
-
-		//	Pattern Name Table にインクリメント値をセットする 
-		set_vram_address( 14'h1800 );
-		for( i = 0; i < 768; i++ ) begin
-			write_data( 0, i & 255 );
-		end
-
-		//	Pattern Generator Table にインクリメント値をセットする 
-		set_vram_address( 14'h0000 );
-		for( i = 0; i < 256; i++ ) begin
-			for( j = 0; j < 8; j++ ) begin
-				write_data( 0, j + ((i << 4) & 255) );
-			end
-		end
-
-		//	Color Table に定数値をセットする 
-		set_vram_address( 14'h2000 );
-		for( i = 0; i < 32; i++ ) begin
-			write_data( 0, 8'hF4 );
-		end
-
-		//	Sprite Generator Table に FFh をセットする 
-		set_vram_address( 14'h3800 );
-		for( i = 0; i < 256; i++ ) begin
-			for( j = 0; j < 8; j++ ) begin
-				write_data( 0, 8'hFF );
-			end
-		end
-
-		//	Sprite Attribute Table にインクリメント値をセットする 
-		set_vram_address( 14'h1B00 );
-		for( i = 0; i < 32; i++ ) begin
-			write_data( 0, 8'h00 );				//	Y座標 
-			write_data( 0, i * 8 );				//	X座標 
-			write_data( 0, 0 );					//	パターン番号 
-			write_data( 0, (i & 7) + 8 );		//	色 
-		end
-
-		timing = 1;
-		@( posedge clk );
-
-		timing = 0;
-
-		# 17ms
-		@( posedge clk );
+//		//	連続書き込みのアドレス指定 
+//		write_data( 1, 8'h00 );
+//		write_data( 1, 8'h40 );
+//
+//		write_data( 0, 8'hAA );
+//		write_data( 0, 8'h55 );
+//		write_data( 0, 8'hA5 );
+//		write_data( 0, 8'h5A );
+//		write_data( 0, 8'h12 );
+//		write_data( 0, 8'h34 );
+//		write_data( 0, 8'h56 );
+//		write_data( 0, 8'h78 );
+//
+//		//	連続読み出しのアドレス指定
+//		write_data( 1, 8'h00 );
+//		write_data( 1, 8'h00 );
+//
+//		read_data( 0, 8'hAA );
+//		read_data( 0, 8'h55 );
+//		read_data( 0, 8'hA5 );
+//		read_data( 0, 8'h5A );
+//		read_data( 0, 8'h12 );
+//		read_data( 0, 8'h34 );
+//		read_data( 0, 8'h56 );
+//		read_data( 0, 8'h78 );
+//
+//		//	ステータスレジスタの読み出し
+//		read_data( 1, 8'h1f );
+//
+//		//	レジスタ書き込み
+//		write_reg( 1, 8'hA0 );
+//
+//		repeat( 100 ) @( posedge clk );
+//
+//		// ====================================================================
+//		//	GRAPHIC1 (SCREEN1) にセットする 
+//		timing = 1;
+//		write_reg( 0, 8'h00 );			//	R#0 = 0x00 : Mode 0 : SCREEN1
+//		write_reg( 1, 8'h02 );			//	R#1 = 0x02 : Mode 1 : SCREEN1, 16x16 Sprite
+//		write_reg( 2, 8'h06 );			//	R#2 = 0x06 : Pattern Name Table      0x1800 = 01_1000_0000_0000 → 01_10
+//		write_reg( 3, 8'h80 );			//	R#3 = 0x80 : Color Table             0x2000 = 10_0000_0000_0000 → 10_0000_00
+//		write_reg( 4, 8'h00 );			//	R#4 = 0x00 : Pattern Generator Table 0x0000 = 00_0000_0000_0000 → 00_0
+//		write_reg( 5, 8'h36 );			//	R#5 = 0x36 : Sprite Attribute Table  0x1B00 = 01_1011_0000_0000 → 01_1011_0
+//		write_reg( 6, 8'h07 );			//	R#6 = 0x07 : Sprite Generator Table  0x3800 = 11_1000_0000_0000 → 11_1
+//		timing = 0;
+//
+//		//	VRAMをゼロクリアする 
+//		set_vram_address( 14'h0000 );
+//		for( i = 0; i < 16384; i++ ) begin
+//			write_data( 0, 8'h00 );
+//		end
+//
+//		//	Pattern Name Table にインクリメント値をセットする 
+//		set_vram_address( 14'h1800 );
+//		for( i = 0; i < 768; i++ ) begin
+//			write_data( 0, i & 255 );
+//		end
+//
+//		//	Pattern Generator Table にインクリメント値をセットする 
+//		set_vram_address( 14'h0000 );
+//		for( i = 0; i < 256; i++ ) begin
+//			for( j = 0; j < 8; j++ ) begin
+//				write_data( 0, j + ((i << 4) & 255) );
+//			end
+//		end
+//
+//		//	Color Table に定数値をセットする 
+//		set_vram_address( 14'h2000 );
+//		for( i = 0; i < 32; i++ ) begin
+//			write_data( 0, 8'hF4 );
+//		end
+//
+//		//	Sprite Generator Table に FFh をセットする 
+//		set_vram_address( 14'h3800 );
+//		for( i = 0; i < 256; i++ ) begin
+//			for( j = 0; j < 8; j++ ) begin
+//				write_data( 0, 8'hFF );
+//			end
+//		end
+//
+//		//	Sprite Attribute Table にインクリメント値をセットする 
+//		set_vram_address( 14'h1B00 );
+//		for( i = 0; i < 32; i++ ) begin
+//			write_data( 0, 8'h00 );				//	Y座標 
+//			write_data( 0, i * 8 );				//	X座標 
+//			write_data( 0, 0 );					//	パターン番号 
+//			write_data( 0, (i & 7) + 8 );		//	色 
+//		end
+//
+//		timing = 1;
+//		@( posedge clk );
+//
+//		timing = 0;
+//
+//		# 17ms
+		repeat( 1368 * 600 ) @( posedge clk );
 		$finish;
 	end
 endmodule

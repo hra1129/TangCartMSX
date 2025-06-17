@@ -162,9 +162,9 @@ module tb ();
 		j = 100;
 		k = 200;
 		repeat( 342 * 600 ) begin
-			vdp_r	<= i;
-			vdp_g	<= j;
-			vdp_b	<= k;
+			vdp_r	<= 0;//i;
+			vdp_g	<= 0;//j;
+			vdp_b	<= 0;//k;
 			i++;
 			j++;
 			k++;

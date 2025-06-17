@@ -91,9 +91,9 @@ module vdp_color_decoder (
 	wire	[3:0]	w_fore_color;
 	wire	[3:0]	w_back_color;
 
-	assign pvideor_vdp			= { ff_video_r, 1'b0 };
-	assign pvideog_vdp			= { ff_video_g, 1'b0 };
-	assign pvideob_vdp			= { ff_video_b, 1'b0 };
+	assign pvideor_vdp			= { ff_video_r, 1'b1 };
+	assign pvideog_vdp			= { ff_video_g, 1'b1 };
+	assign pvideob_vdp			= { ff_video_b, 1'b1 };
 
 	assign w_even_dotstate		= ( dot_state == 2'b00 || dot_state == 2'b11 ) ? 1'b1 : 1'b0;
 
@@ -124,7 +124,8 @@ module vdp_color_decoder (
 			4'd12:		begin ff_video_r <= 5'd4 ; ff_video_g <= 5'd17; ff_video_b <= 5'd4 ; end
 			4'd13:		begin ff_video_r <= 5'd26; ff_video_g <= 5'd8 ; ff_video_b <= 5'd22; end
 			4'd14:		begin ff_video_r <= 5'd22; ff_video_g <= 5'd22; ff_video_b <= 5'd22; end
-			default:	begin ff_video_r <= 5'd31; ff_video_g <= 5'd31; ff_video_b <= 5'd31; end
+			4'd15:		begin ff_video_r <= 5'd31; ff_video_g <= 5'd31; ff_video_b <= 5'd31; end
+			default:	begin ff_video_r <= 5'd0 ; ff_video_g <= 5'd0 ; ff_video_b <= 5'd0 ; end
 			endcase
 		end
 	end
