@@ -74,7 +74,7 @@ module vdp_inst(
 	output					p_dram_valid,
 	input					p_dram_ready,
 	output		[7:0]		p_dram_wdata,
-	input		[7:0]		p_dram_rdata,
+	input		[15:0]		p_dram_rdata,
 	input					p_dram_rdata_en,
 
 	// video output
@@ -94,7 +94,7 @@ module vdp_inst(
 	reg		[16:0]	ff_address;
 	reg		[7:0]	ff_wdata;
 	reg				ff_valid;
-	reg		[7:0]	ff_rdata;
+	reg		[15:0]	ff_rdata;
 	wire			w_dram_oe_n;
 	wire			w_dram_we_n;
 	wire	[16:0]	w_dram_address;
@@ -174,7 +174,7 @@ module vdp_inst(
 
 	always @( posedge clk ) begin
 		if( !reset_n ) begin
-			ff_rdata <= 8'd0;
+			ff_rdata <= 16'd0;
 		end
 		else if( p_dram_rdata_en ) begin
 			ff_rdata <= p_dram_rdata;
@@ -200,7 +200,7 @@ module vdp_inst(
 		.p_dram_oe_n		( w_dram_oe_n				),	// OUT	
 		.p_dram_we_n		( w_dram_we_n				),	// OUT	
 		.p_dram_address		( w_dram_address			),	// OUT	[13: 0 ];
-		.p_dram_rdata		( ff_rdata					),	// IN	[ 7: 0 ];
+		.p_dram_rdata		( ff_rdata					),	// IN	[15: 0 ];
 		.p_dram_wdata		( w_dram_wdata				),	// OUT	[ 7: 0 ];
 		.p_vdp_r			( p_vdp_r					),	// OUT	[ 7: 0 ];
 		.p_vdp_g			( p_vdp_g					),	// OUT	[ 7: 0 ];

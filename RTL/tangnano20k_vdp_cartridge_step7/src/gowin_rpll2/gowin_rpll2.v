@@ -5,25 +5,27 @@
 //Part Number: GW2AR-LV18QN88C8/I7
 //Device: GW2AR-18
 //Device Version: C
-//Created Time: Sat Jun 14 17:37:32 2025
+//Created Time: Thu Jun 19 07:18:37 2025
 
-module Gowin_rPLL2 (clkout, lock, clkin);
+module Gowin_rPLL2 (clkout, clkoutp, clkin);
 
 output clkout;
-output lock;
+output clkoutp;
 input clkin;
 
-wire clkoutp_o;
+wire lock_o;
 wire clkoutd_o;
 wire clkoutd3_o;
+wire gw_vcc;
 wire gw_gnd;
 
+assign gw_vcc = 1'b1;
 assign gw_gnd = 1'b0;
 
 rPLL rpll_inst (
     .CLKOUT(clkout),
-    .LOCK(lock),
-    .CLKOUTP(clkoutp_o),
+    .LOCK(lock_o),
+    .CLKOUTP(clkoutp),
     .CLKOUTD(clkoutd_o),
     .CLKOUTD3(clkoutd3_o),
     .RESET(gw_gnd),
@@ -35,7 +37,7 @@ rPLL rpll_inst (
     .ODSEL({gw_gnd,gw_gnd,gw_gnd,gw_gnd,gw_gnd,gw_gnd}),
     .PSDA({gw_gnd,gw_gnd,gw_gnd,gw_gnd}),
     .DUTYDA({gw_gnd,gw_gnd,gw_gnd,gw_gnd}),
-    .FDLY({gw_gnd,gw_gnd,gw_gnd,gw_gnd})
+    .FDLY({gw_vcc,gw_vcc,gw_vcc,gw_vcc})
 );
 
 defparam rpll_inst.FCLKIN = "14.318";
@@ -45,8 +47,8 @@ defparam rpll_inst.DYN_FBDIV_SEL = "false";
 defparam rpll_inst.FBDIV_SEL = 5;
 defparam rpll_inst.DYN_ODIV_SEL = "false";
 defparam rpll_inst.ODIV_SEL = 8;
-defparam rpll_inst.PSDA_SEL = "0000";
-defparam rpll_inst.DYN_DA_EN = "true";
+defparam rpll_inst.PSDA_SEL = "1000";
+defparam rpll_inst.DYN_DA_EN = "false";
 defparam rpll_inst.DUTYDA_SEL = "1000";
 defparam rpll_inst.CLKOUT_FT_DIR = 1'b1;
 defparam rpll_inst.CLKOUTP_FT_DIR = 1'b1;

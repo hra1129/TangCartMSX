@@ -73,7 +73,7 @@ module vdp(
 	output					p_dram_oe_n,
 	output					p_dram_we_n,
 	output		[16:0]		p_dram_address,
-	input		[7:0]		p_dram_rdata,
+	input		[15:0]		p_dram_rdata,
 	output		[7:0]		p_dram_wdata,
 	// video output
 	output		[5:0]		p_vdp_r,

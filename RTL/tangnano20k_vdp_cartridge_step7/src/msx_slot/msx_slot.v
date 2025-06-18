@@ -70,7 +70,6 @@ module msx_slot(
 	inout	[7:0]	p_slot_data,
 	output			p_slot_data_dir,		//	0: MSX→Cartridge (Write), 1: Cartridge→MSX (Read)
 	output			p_slot_int,				//	0 or HiZ: Normal, 1: Interrupt
-	output			p_slot_wait,			//	0: Normal, 1 or HiZ: Wait
 	//	Local BUS
 	input			int_n,
 	output	[15:0]	bus_address,
@@ -209,7 +208,6 @@ module msx_slot(
 	assign bus_wdata		= ff_wdata;
 	assign p_slot_data		= ff_write ? 8'hZZ: ff_rdata;
 	assign p_slot_int		= ~int_n;
-	assign p_slot_wait		= 1'b0;
 
 	//	0: Cartridge <- CPU, 1: Cartridge -> CPU
 	assign p_slot_data_dir	= ~ff_write;

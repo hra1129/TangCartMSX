@@ -7,7 +7,7 @@
 
 -mod_name Gowin_rPLL2
 -file_name gowin_rpll2
--path D:/github/HRA_product/TangCartMSX/RTL/tangnano20k_vdp_cartridge_step3/src/gowin_rpll2/
+-path D:/github/HRA_product/TangCartMSX/RTL/tangnano20k_vdp_cartridge_step7/src/gowin_rpll2/
 -type PLL
 -rPll true
 -file_type vlg
@@ -18,16 +18,17 @@
 -fbdiv_sel 6
 -dyn_odiv_sel false
 -odiv_sel 8
--dyn_da_en true
+-dyn_da_en false
 -rst_sig false
 -rst_sig_p false
 -fclkin 14.318
 -clkfb_sel 0
--en_lock true
+-en_lock false
 -clkout_bypass false
--clkout_ft_dir 1
--en_clkoutp false
+-en_clkoutp true
 -clkoutp_bypass false
+-psda_sel 8
+-dutyda_sel 8
 -en_clkoutd false
 -clkoutd_bypass false
 -en_clkoutd3 false

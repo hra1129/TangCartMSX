@@ -1,7 +1,7 @@
-Reading netlist file: "D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_vdp_cartridge_step6\impl\gwsynthesis\tangnano20k_vdp_cartridge.vg"
-Parsing netlist file "D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_vdp_cartridge_step6\impl\gwsynthesis\tangnano20k_vdp_cartridge.vg" completed
+Reading netlist file: "D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_vdp_cartridge_step7\impl\gwsynthesis\tangnano20k_vdp_cartridge.vg"
+Parsing netlist file "D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_vdp_cartridge_step7\impl\gwsynthesis\tangnano20k_vdp_cartridge.vg" completed
 Processing netlist completed
-Reading constraint file: "D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_vdp_cartridge_step6\src\tangnano20k_vdp_cartridge.cst"
+Reading constraint file: "D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_vdp_cartridge_step7\src\tangnano20k_vdp_cartridge.cst"
 Physical Constraint parsed completed
 Running placement......
 [10%] Placement Phase 0 completed
@@ -21,10 +21,10 @@ Bitstream generation in progress......
 Bitstream generation completed
 Running power analysis......
 [100%] Power analysis completed
-Generate file "D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_vdp_cartridge_step6\impl\pnr\tangnano20k_vdp_cartridge.power.html" completed
-Generate file "D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_vdp_cartridge_step6\impl\pnr\tangnano20k_vdp_cartridge.pin.html" completed
-Generate file "D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_vdp_cartridge_step6\impl\pnr\tangnano20k_vdp_cartridge.rpt.html" completed
-Generate file "D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_vdp_cartridge_step6\impl\pnr\tangnano20k_vdp_cartridge.rpt.txt" completed
-Generate file "D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_vdp_cartridge_step6\impl\pnr\tangnano20k_vdp_cartridge.tr.html" completed
-Tue Jun 17 22:09:06 2025
+Generate file "D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_vdp_cartridge_step7\impl\pnr\tangnano20k_vdp_cartridge.power.html" completed
+Generate file "D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_vdp_cartridge_step7\impl\pnr\tangnano20k_vdp_cartridge.pin.html" completed
+Generate file "D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_vdp_cartridge_step7\impl\pnr\tangnano20k_vdp_cartridge.rpt.html" completed
+Generate file "D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_vdp_cartridge_step7\impl\pnr\tangnano20k_vdp_cartridge.rpt.txt" completed
+Generate file "D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_vdp_cartridge_step7\impl\pnr\tangnano20k_vdp_cartridge.tr.html" completed
+Thu Jun 19 07:19:52 2025
 
