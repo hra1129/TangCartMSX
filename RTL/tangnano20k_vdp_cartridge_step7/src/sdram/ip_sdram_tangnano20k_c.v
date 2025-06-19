@@ -64,7 +64,6 @@ module ip_sdram #(
 
 	input	[22:0]		bus_address,
 	input				bus_valid,
-	output				bus_ready,
 	input				bus_write,
 	input				bus_refresh,
 	input	[ 7:0]		bus_wdata,
@@ -111,14 +110,13 @@ module ip_sdram #(
 	localparam	[4:0]	c_main_state_nop2					= 5'd13;
 	localparam	[4:0]	c_main_state_read_or_write			= 5'd14;
 	localparam	[4:0]	c_main_state_nop3					= 5'd15;
-	localparam	[4:0]	c_main_state_nop4					= 5'd16;
-	localparam	[4:0]	c_main_state_data_fetch				= 5'd17;
-	localparam	[4:0]	c_main_state_finish					= 5'd18;
+	localparam	[4:0]	c_main_state_data_fetch				= 5'd16;
+	localparam	[4:0]	c_main_state_finish					= 5'd17;
+	localparam	[4:0]	c_main_state_nop4					= 5'd18;
 	localparam	[4:0]	c_main_state_nop5					= 5'd19;
 	localparam	[4:0]	c_main_state_nop6					= 5'd20;
 	localparam	[4:0]	c_main_state_nop7					= 5'd21;
-	localparam	[4:0]	c_main_state_nop8					= 5'd22;
-	localparam	[4:0]	c_main_state_finish2				= 5'd23;
+	localparam	[4:0]	c_main_state_finish2				= 5'd22;
 
 	localparam CLOCK_TIME		= 1_000_000_000 / FREQ;		// nsec
 	localparam TIMER_COUNT		= 120_000 / CLOCK_TIME;		// clock
@@ -143,10 +141,9 @@ module ip_sdram #(
 	reg							ff_sdr_read_data_en;
 	reg							ff_do_command;
 	reg							ff_write;
-	reg							ff_rd_wr_accept;
-	reg							ff_rfsh_accept;
 	reg		[ 7:0]				ff_wdata;
 	reg		[22:0]				ff_address;
+	reg		[ 1:0]				ff_wait;
 	wire						w_busy;
 
 	// --------------------------------------------------------------------
@@ -160,7 +157,7 @@ module ip_sdram #(
 			ff_address		<= 23'd0;
 			ff_do_refresh	<= 1'b0;
 		end
-		else if( (ff_main_state == c_main_state_ready) && bus_valid ) begin
+		else if( (ff_main_state == c_main_state_ready) && (bus_valid || bus_refresh) ) begin
 			ff_do_command	<= 1'b1;
 			if( bus_refresh ) begin
 				ff_do_refresh	<= 1'b1;
@@ -176,49 +173,6 @@ module ip_sdram #(
 			ff_do_command	<= 1'b0;
 			ff_do_refresh	<= 1'b0;
 			ff_write		<= 1'b0;
-		end
-	end
-
-	// --------------------------------------------------------------------
-	//	Request
-	// --------------------------------------------------------------------
-	always @( posedge clk ) begin
-		if( !reset_n ) begin
-			ff_rd_wr_accept <= 1'b0;
-		end
-		else if( ff_rd_wr_accept && (ff_main_state == c_main_state_data_fetch) ) begin
-			ff_rd_wr_accept <= 1'b0;
-		end
-		else if( ff_main_state == c_main_state_activate ) begin
-			if( !ff_rfsh_accept && bus_refresh ) begin
-				//	hold
-			end
-			else if( !ff_rd_wr_accept && ff_do_command ) begin
-				ff_rd_wr_accept <= 1'b1;
-			end
-			else begin
-				//	hold
-			end
-		end
-	end
-
-	always @( posedge clk ) begin
-		if( !reset_n ) begin
-			ff_rfsh_accept <= 1'b0;
-		end
-		else if( ff_rfsh_accept && !bus_refresh ) begin
-			ff_rfsh_accept <= 1'b0;
-		end
-		else if( ff_main_state == c_main_state_activate ) begin
-			if( !ff_rfsh_accept && bus_refresh ) begin
-				ff_rfsh_accept <= 1'b1;
-			end
-			else begin
-				//	hold
-			end
-		end
-		else begin
-			//	hold
 		end
 	end
 
@@ -243,18 +197,18 @@ module ip_sdram #(
 			c_init_state_send_mode_register_set:
 				ff_main_state	<= c_init_state_wait_mode_register_set;
 			c_main_state_ready:
-				if( !ff_rfsh_accept && bus_refresh ) begin
+				if( bus_valid || bus_refresh ) begin
 					ff_main_state		<= c_main_state_activate;
-					ff_do_main_state	<= 1'b1;
 				end
-				else if( !ff_rd_wr_accept && (bus_valid && !w_busy) ) begin
-					ff_main_state		<= c_main_state_activate;
+			c_main_state_activate:
+				begin
+					ff_main_state		<= c_main_state_nop1;
 					ff_do_main_state	<= 1'b1;
 				end
 			c_main_state_read_or_write:
 				begin
 					if( ff_do_refresh ) begin
-						ff_main_state		<= c_main_state_nop5;
+						ff_main_state		<= c_main_state_nop4;
 					end
 					else begin
 						ff_main_state		<= c_main_state_nop3;
@@ -277,7 +231,6 @@ module ip_sdram #(
 	end
 
 	assign w_busy			= ff_do_command;
-	assign bus_ready		= ~w_busy;
 	assign sdram_init_busy	= !ff_sdr_ready;
 
 	// --------------------------------------------------------------------
@@ -351,12 +304,12 @@ module ip_sdram #(
 				if( ff_sdr_ready ) begin
 					case( ff_main_state )
 					c_main_state_activate:
-						if( !ff_rfsh_accept && bus_refresh ) begin
+						if( ff_do_refresh ) begin
 //							$display( "do_refresh: precharge_all" );
 							ff_sdr_command		<= c_sdr_command_precharge_all;
 							ff_sdr_dq_mask		<= 4'b0000;
 						end
-						else if( !ff_rd_wr_accept && ff_do_command ) begin
+						else begin
 //							$display( "activate address %X", ff_address[20:10] );
 							ff_sdr_command		<= c_sdr_command_activate;
 							ff_sdr_dq_mask		<= 4'b1111;
@@ -484,21 +437,35 @@ module ip_sdram #(
 		end
 	end
 
-	always @( posedge clk_sdram ) begin
+	always @( posedge clk ) begin
 		if( !reset_n ) begin
 			ff_sdr_read_data	<= 16'd0;
-			ff_sdr_read_data_en	<= 1'b0;
 		end
-		else if( ff_main_state == c_main_state_data_fetch ) begin
+		else if( ff_main_state == c_main_state_finish ) begin
 			case( ff_address[1] )
 			1'd0:		ff_sdr_read_data <= IO_sdram_dq[15:0 ];
 			1'd1:		ff_sdr_read_data <= IO_sdram_dq[31:16];
 			default:	ff_sdr_read_data <= 16'd0;
 			endcase
-			ff_sdr_read_data_en	<= ~ff_write;
 		end
-		else begin
+	end
+
+	always @( posedge clk ) begin
+		if( !reset_n ) begin
 			ff_sdr_read_data_en	<= 1'b0;
+			ff_wait				<= 2'd0;
+		end
+		else if( ff_main_state == c_main_state_nop2 ) begin
+			ff_sdr_read_data_en	<= ~ff_write & ~ff_do_refresh;
+			ff_wait				<= 2'd3;
+		end
+		else if( ff_sdr_read_data_en ) begin
+			if( ff_wait == 2'd0 ) begin
+				ff_sdr_read_data_en	<= 1'b0;
+			end
+			else begin
+				ff_wait				<= ff_wait - 2'd1;
+			end
 		end
 	end
 

@@ -85,7 +85,6 @@ module tangnano20k_vdp_cartridge (
 	wire	[13:0]	w_dram_address;
 	wire			w_dram_write;
 	wire			w_dram_valid;
-	wire			w_dram_ready;
 	wire			w_dram_refresh;
 	wire	[7:0]	w_dram_wdata;
 	wire	[15:0]	w_dram_rdata;
@@ -223,7 +222,6 @@ module tangnano20k_vdp_cartridge (
 		.p_dram_address		( w_dram_address		),
 		.p_dram_write		( w_dram_write			),
 		.p_dram_valid		( w_dram_valid			),
-		.p_dram_ready		( w_dram_ready			),
 		.p_dram_wdata		( w_dram_wdata			),
 		.p_dram_rdata		( w_dram_rdata			),
 		.p_dram_rdata_en	( w_dram_rdata_en		),
@@ -286,11 +284,10 @@ module tangnano20k_vdp_cartridge (
 	) u_vram (
 		.reset_n			( reset_n				),
 		.clk				( clk85m				),		//	85.90908MHz
-		.clk_sdram			( clk85m_n				),
+		.clk_sdram			( clk85m				),
 		.sdram_init_busy	( w_dram_init_busy		),
 		.bus_address		( w_dram_address		),
 		.bus_valid			( w_dram_valid			),
-		.bus_ready			( w_dram_ready			),
 		.bus_write			( w_dram_write			),
 		.bus_refresh		( w_dram_refresh		),
 		.bus_wdata			( w_dram_wdata			),

@@ -57,12 +57,13 @@ module tb ();
 	localparam		TIMEOUT_COUNT	= 50;
 	longint			clk_base		= 64'd1_000_000_000_000 / 64'd85_909_080;	//	ps
 	reg				reset_n;
+	reg				clk21m;				//	21.47727MHz
+	reg		[1:0]	ff_21m;
 	reg				clk;				//	85.90908MHz
 	reg				clk_sdram;			//	85.90908MHz
 	wire			sdram_init_busy;
 	reg		[22:0]	bus_address;
 	reg				bus_valid;
-	wire			bus_ready;
 	reg				bus_write;
 	reg				bus_refresh;
 	reg		[ 7:0]	bus_wdata;
@@ -86,11 +87,10 @@ module tb ();
 	ip_sdram u_sdram_controller (
 		.reset_n			( reset_n			),
 		.clk				( clk				),
-		.clk_sdram			( clk_sdram			),
+		.clk_sdram			( clk				),
 		.sdram_init_busy	( sdram_init_busy	),
 		.bus_address		( bus_address		),
 		.bus_valid			( bus_valid			),
-		.bus_ready			( bus_ready			),
 		.bus_write			( bus_write			),
 		.bus_refresh		( bus_refresh		),
 		.bus_wdata			( bus_wdata			),
@@ -130,6 +130,11 @@ module tb ();
 		clk_sdram <= ~clk_sdram;
 	end
 
+	always @( posedge clk ) begin
+		ff_21m <= ff_21m + 2'd1;
+	end
+	assign clk21m	= ff_21m[1];
+
 	// --------------------------------------------------------------------
 	//	Tasks
 	// --------------------------------------------------------------------
@@ -139,23 +144,19 @@ module tb ();
 	);
 		int timeout;
 
+		@( posedge clk21m );
 		bus_address		<= p_address;
 		bus_wdata		<= p_data;
 		bus_write		<= 1'b1;
 		bus_valid		<= 1'b1;
-		timeout			<= 0;
-		@( posedge clk );
-		while( !bus_ready && (timeout < TIMEOUT_COUNT) ) begin
-			@( posedge clk );
-			timeout++;
-		end
+		@( posedge clk21m );
 
 		$display( "[%t] write( 0x%06X, 0x%02X )", $realtime, p_address, p_data );
 		bus_address		<= 0;
 		bus_wdata		<= 0;
 		bus_write		<= 1'b0;
 		bus_valid		<= 1'b0;
-		@( posedge clk );
+		@( posedge clk21m );
 		$display( "-- done" );
 	endtask: write_data
 
@@ -166,24 +167,20 @@ module tb ();
 	);
 		int timeout;
 
+		@( posedge clk21m );
 		bus_address		<= p_address;
 		bus_write		<= 1'b0;
 		bus_valid		<= 1'b1;
-		timeout			<= 0;
-		@( posedge clk );
-		while( !bus_ready && (timeout < TIMEOUT_COUNT) ) begin
-			@( posedge clk );
-			timeout++;
-		end
+		@( posedge clk21m );
 
 		$display( "[%t] read( 0x%06X )", $realtime, p_address );
 		bus_valid		<= 1'b0;
 		timeout			<= 0;
-		@( posedge clk );
 		while( !bus_rdata_en && (timeout < TIMEOUT_COUNT) ) begin
-			@( posedge clk );
+			@( posedge clk21m );
 			timeout++;
 		end
+		@( posedge clk21m );
 		assert( p_data == bus_rdata );
 		if( p_data == bus_rdata ) begin
 			$display( "-- done (0x%04X)", bus_rdata );
@@ -194,9 +191,20 @@ module tb ();
 	endtask: read_data
 
 	// --------------------------------------------------------------------
+	task exec_refresh(
+	);
+		@( posedge clk21m );
+		bus_refresh		<= 1'b1;
+		@( posedge clk21m );
+		bus_refresh		<= 1'b0;
+		@( posedge clk21m );
+	endtask: exec_refresh
+
+	// --------------------------------------------------------------------
 	//	Test bench
 	// --------------------------------------------------------------------
 	initial begin
+		ff_21m = 0;
 		reset_n = 0;
 		clk = 0;
 		clk_sdram = 1;
@@ -239,6 +247,10 @@ module tb ();
 		read_data(  'h000005, 'h6756 );
 		read_data(  'h000006, 'h8978 );
 		read_data(  'h000007, 'h8978 );
+
+		exec_refresh();
+		exec_refresh();
+		exec_refresh();
 
 		repeat( 12 ) @( posedge clk );
 		$finish;

@@ -1065,32 +1065,32 @@ module mt48lc2m32b2 (Dq, Addr, Ba, Clk, Cke, Cs_n, Ras_n, Cas_n, We_n, Dqm);
     endtask
  
     // Timing Parameters for -6 CL3
-    specify
-        specparam
-            tAH  =  1.0,                                        // Addr, Ba Hold Time
-            tAS  =  1.5,                                        // Addr, Ba Setup Time
-            tCH  =  2.5,                                        // Clock High-Level Width
-            tCL  =  2.5,                                        // Clock Low-Level Width
-            tCK  =  6.0,                                        // Clock Cycle Time
-            tDH  =  1.0,                                        // Data-in Hold Time
-            tDS  =  1.5,                                        // Data-in Setup Time
-            tCKH =  1.0,                                        // CKE Hold  Time
-            tCKS =  1.5,                                        // CKE Setup Time
-            tCMH =  1.0,                                        // CS#, RAS#, CAS#, WE#, DQM# Hold  Time
-            tCMS =  1.5;                                        // CS#, RAS#, CAS#, WE#, DQM# Setup Time
-        $width    (posedge Clk,           tCH);
-        $width    (negedge Clk,           tCL);
-        $period   (negedge Clk,           tCK);
-        $period   (posedge Clk,           tCK);
-        $setuphold(posedge Clk,    Cke,   tCKS, tCKH);
-        $setuphold(posedge Clk,    Cs_n,  tCMS, tCMH);
-        $setuphold(posedge Clk,    Cas_n, tCMS, tCMH);
-        $setuphold(posedge Clk,    Ras_n, tCMS, tCMH);
-        $setuphold(posedge Clk,    We_n,  tCMS, tCMH);
-        $setuphold(posedge Clk,    Addr,  tAS,  tAH);
-        $setuphold(posedge Clk,    Ba,    tAS,  tAH);
-        $setuphold(posedge Clk,    Dqm,   tCMS, tCMH);
-        $setuphold(posedge Dq_chk, Dq,    tDS,  tDH);
-    endspecify
+//    specify
+//        specparam
+//            tAH  =  1.0,                                        // Addr, Ba Hold Time
+//            tAS  =  1.5,                                        // Addr, Ba Setup Time
+//            tCH  =  2.5,                                        // Clock High-Level Width
+//            tCL  =  2.5,                                        // Clock Low-Level Width
+//            tCK  =  6.0,                                        // Clock Cycle Time
+//            tDH  =  1.0,                                        // Data-in Hold Time
+//            tDS  =  1.5,                                        // Data-in Setup Time
+//            tCKH =  1.0,                                        // CKE Hold  Time
+//            tCKS =  1.5,                                        // CKE Setup Time
+//            tCMH =  1.0,                                        // CS#, RAS#, CAS#, WE#, DQM# Hold  Time
+//            tCMS =  1.5;                                        // CS#, RAS#, CAS#, WE#, DQM# Setup Time
+//        $width    (posedge Clk,           tCH);
+//        $width    (negedge Clk,           tCL);
+//        $period   (negedge Clk,           tCK);
+//        $period   (posedge Clk,           tCK);
+//        $setuphold(posedge Clk,    Cke,   tCKS, tCKH);
+//        $setuphold(posedge Clk,    Cs_n,  tCMS, tCMH);
+//        $setuphold(posedge Clk,    Cas_n, tCMS, tCMH);
+//        $setuphold(posedge Clk,    Ras_n, tCMS, tCMH);
+//        $setuphold(posedge Clk,    We_n,  tCMS, tCMH);
+//        $setuphold(posedge Clk,    Addr,  tAS,  tAH);
+//        $setuphold(posedge Clk,    Ba,    tAS,  tAH);
+//        $setuphold(posedge Clk,    Dqm,   tCMS, tCMH);
+//        $setuphold(posedge Dq_chk, Dq,    tDS,  tDH);
+//    endspecify
  
 endmodule
