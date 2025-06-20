@@ -6,9 +6,10 @@ Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_vdp_ca
 Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_vdp_cartridge_step7\src\gowin_rpll2\gowin_rpll2.v'
 Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_vdp_cartridge_step7\src\gpio\ip_gpio.v'
 Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_vdp_cartridge_step7\src\msx_slot\msx_slot.v'
+Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_vdp_cartridge_step7\src\ram\ip_ram.v'
 Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_vdp_cartridge_step7\src\sdram\ip_sdram_tangnano20k_c.v'
 Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_vdp_cartridge_step7\src\tangnano20k_vdp_cartridge.v'
-Undeclared symbol 'slot_int', assumed default net type 'wire'("D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_vdp_cartridge_step7\src\tangnano20k_vdp_cartridge.v":156)
+Undeclared symbol 'slot_int', assumed default net type 'wire'("D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_vdp_cartridge_step7\src\tangnano20k_vdp_cartridge.v":163)
 Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_vdp_cartridge_step7\src\v9958\vdp.v'
 Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_vdp_cartridge_step7\src\v9958\vdp_color_bus.v'
 Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_vdp_cartridge_step7\src\v9958\vdp_color_decoder.v'
@@ -16,8 +17,8 @@ Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_vdp_ca
 Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_vdp_cartridge_step7\src\v9958\vdp_graphic123m.v'
 Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_vdp_cartridge_step7\src\v9958\vdp_graphic4567.v'
 Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_vdp_cartridge_step7\src\v9958\vdp_inst.v'
-Undeclared symbol 'p_video_dh_clk', assumed default net type 'wire'("D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_vdp_cartridge_step7\src\v9958\vdp_inst.v":194)
-Undeclared symbol 'p_video_dl_clk', assumed default net type 'wire'("D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_vdp_cartridge_step7\src\v9958\vdp_inst.v":195)
+Undeclared symbol 'p_video_dh_clk', assumed default net type 'wire'("D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_vdp_cartridge_step7\src\v9958\vdp_inst.v":204)
+Undeclared symbol 'p_video_dl_clk', assumed default net type 'wire'("D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_vdp_cartridge_step7\src\v9958\vdp_inst.v":205)
 Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_vdp_cartridge_step7\src\v9958\vdp_interrupt.v'
 Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_vdp_cartridge_step7\src\v9958\vdp_ram_256byte.v'
 Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_vdp_cartridge_step7\src\v9958\vdp_ram_palette.v'
@@ -33,6 +34,7 @@ Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_vdp_ca
 Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_vdp_cartridge_step7\src\video_out\video_out_hmag.v'
 Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_vdp_cartridge_step7\src\video_out\video_ram_line_buffer.v'
 Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_vdp_cartridge_step7\src\ws2812_led\ip_ws2812_led.v'
+WARN  (EX3073) : Port 'bus_ready' remains unconnected for this instance("D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_vdp_cartridge_step7\src\tangnano20k_vdp_cartridge.v":300)
 Compiling module 'tangnano20k_vdp_cartridge'("D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_vdp_cartridge_step7\src\tangnano20k_vdp_cartridge.v":24)
 Compiling module 'Gowin_rPLL'("D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_vdp_cartridge_step7\src\gowin_rpll\gowin_rpll.v":10)
 Compiling module 'Gowin_rPLL2'("D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_vdp_cartridge_step7\src\gowin_rpll2\gowin_rpll2.v":10)
@@ -42,6 +44,7 @@ Compiling module 'ip_gpio'("D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_vd
 Compiling module 'ip_ws2812_led'("D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_vdp_cartridge_step7\src\ws2812_led\ip_ws2812_led.v":57)
 WARN  (EX3791) : Expression size 32 truncated to fit in target size 14("D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_vdp_cartridge_step7\src\ws2812_led\ip_ws2812_led.v":155)
 Compiling module 'vdp_inst'("D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_vdp_cartridge_step7\src\v9958\vdp_inst.v":58)
+WARN  (EX3791) : Expression size 16 truncated to fit in target size 8("D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_vdp_cartridge_step7\src\v9958\vdp_inst.v":174)
 Compiling module 'vdp'("D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_vdp_cartridge_step7\src\v9958\vdp.v":58)
 Compiling module 'vdp_color_bus'("D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_vdp_cartridge_step7\src\v9958\vdp_color_bus.v":56)
 WARN  (EX3791) : Expression size 18 truncated to fit in target size 17("D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_vdp_cartridge_step7\src\v9958\vdp_color_bus.v":314)
@@ -107,6 +110,7 @@ Extracting RAM for identifier 'c_wait_table_602'("D:\github\HRA_product\TangCart
 Extracting RAM for identifier 'c_wait_table_603'("D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_vdp_cartridge_step7\src\v9958\vdp_wait_control.v":64)
 Extracting RAM for identifier 'c_wait_table_604'("D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_vdp_cartridge_step7\src\v9958\vdp_wait_control.v":66)
 Extracting RAM for identifier 'c_wait_table_605'("D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_vdp_cartridge_step7\src\v9958\vdp_wait_control.v":68)
+WARN  (EX3670) : Actual bit length 8 differs from formal bit length 16 for port 'p_dram_rdata'("D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_vdp_cartridge_step7\src\v9958\vdp_inst.v":197)
 Compiling module 'video_out(hs_positive=1'b0,vs_positive=1'b0)'("D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_vdp_cartridge_step7\src\video_out\video_out.v":60)
 Compiling module 'video_out_hmag'("D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_vdp_cartridge_step7\src\video_out\video_out_hmag.v":60)
 WARN  (EX3791) : Expression size 32 truncated to fit in target size 10("D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_vdp_cartridge_step7\src\video_out\video_out_hmag.v":141)
@@ -116,14 +120,37 @@ Extracting RAM for identifier 'ff_imem'("D:\github\HRA_product\TangCartMSX\RTL\t
 Compiling module 'video_out_bilinear'("D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_vdp_cartridge_step7\src\video_out\video_out_bilinear.v":60)
 Compiling module 'DVI_TX_Top'("D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_vdp_cartridge_step7\src\dvi_tx\dvi_tx.v":1072)
 Compiling module '**'("D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_vdp_cartridge_step7\src\dvi_tx\dvi_tx.v":1071)
-Compiling module 'ip_sdram'("D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_vdp_cartridge_step7\src\sdram\ip_sdram_tangnano20k_c.v":57)
-WARN  (EX3791) : Expression size 32 truncated to fit in target size 14("D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_vdp_cartridge_step7\src\sdram\ip_sdram_tangnano20k_c.v":269)
-WARN  (EX3670) : Actual bit length 14 differs from formal bit length 23 for port 'bus_address'("D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_vdp_cartridge_step7\src\tangnano20k_vdp_cartridge.v":289)
+Compiling module 'ip_ram'("D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_vdp_cartridge_step7\src\ram\ip_ram.v":5)
+Extracting RAM for identifier 'ff_ram'("D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_vdp_cartridge_step7\src\ram\ip_ram.v":16)
 NOTE  (EX0101) : Current top module is "tangnano20k_vdp_cartridge"
+WARN  (EX0211) : The output port "O_sdram_clk" of module "tangnano20k_vdp_cartridge" has no driver, assigning undriven bits to Z, simulation mismatch possible("D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_vdp_cartridge_step7\src\tangnano20k_vdp_cartridge.v":48)
+WARN  (EX0211) : The output port "O_sdram_cke" of module "tangnano20k_vdp_cartridge" has no driver, assigning undriven bits to Z, simulation mismatch possible("D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_vdp_cartridge_step7\src\tangnano20k_vdp_cartridge.v":49)
+WARN  (EX0211) : The output port "O_sdram_cs_n" of module "tangnano20k_vdp_cartridge" has no driver, assigning undriven bits to Z, simulation mismatch possible("D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_vdp_cartridge_step7\src\tangnano20k_vdp_cartridge.v":50)
+WARN  (EX0211) : The output port "O_sdram_ras_n" of module "tangnano20k_vdp_cartridge" has no driver, assigning undriven bits to Z, simulation mismatch possible("D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_vdp_cartridge_step7\src\tangnano20k_vdp_cartridge.v":51)
+WARN  (EX0211) : The output port "O_sdram_cas_n" of module "tangnano20k_vdp_cartridge" has no driver, assigning undriven bits to Z, simulation mismatch possible("D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_vdp_cartridge_step7\src\tangnano20k_vdp_cartridge.v":52)
+WARN  (EX0211) : The output port "O_sdram_wen_n" of module "tangnano20k_vdp_cartridge" has no driver, assigning undriven bits to Z, simulation mismatch possible("D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_vdp_cartridge_step7\src\tangnano20k_vdp_cartridge.v":53)
+WARN  (EX0211) : The output port "O_sdram_addr[10]" of module "tangnano20k_vdp_cartridge" has no driver, assigning undriven bits to Z, simulation mismatch possible("D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_vdp_cartridge_step7\src\tangnano20k_vdp_cartridge.v":55)
+WARN  (EX0211) : The output port "O_sdram_addr[9]" of module "tangnano20k_vdp_cartridge" has no driver, assigning undriven bits to Z, simulation mismatch possible("D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_vdp_cartridge_step7\src\tangnano20k_vdp_cartridge.v":55)
+WARN  (EX0211) : The output port "O_sdram_addr[8]" of module "tangnano20k_vdp_cartridge" has no driver, assigning undriven bits to Z, simulation mismatch possible("D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_vdp_cartridge_step7\src\tangnano20k_vdp_cartridge.v":55)
+WARN  (EX0211) : The output port "O_sdram_addr[7]" of module "tangnano20k_vdp_cartridge" has no driver, assigning undriven bits to Z, simulation mismatch possible("D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_vdp_cartridge_step7\src\tangnano20k_vdp_cartridge.v":55)
+WARN  (EX0211) : The output port "O_sdram_addr[6]" of module "tangnano20k_vdp_cartridge" has no driver, assigning undriven bits to Z, simulation mismatch possible("D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_vdp_cartridge_step7\src\tangnano20k_vdp_cartridge.v":55)
+WARN  (EX0211) : The output port "O_sdram_addr[5]" of module "tangnano20k_vdp_cartridge" has no driver, assigning undriven bits to Z, simulation mismatch possible("D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_vdp_cartridge_step7\src\tangnano20k_vdp_cartridge.v":55)
+WARN  (EX0211) : The output port "O_sdram_addr[4]" of module "tangnano20k_vdp_cartridge" has no driver, assigning undriven bits to Z, simulation mismatch possible("D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_vdp_cartridge_step7\src\tangnano20k_vdp_cartridge.v":55)
+WARN  (EX0211) : The output port "O_sdram_addr[3]" of module "tangnano20k_vdp_cartridge" has no driver, assigning undriven bits to Z, simulation mismatch possible("D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_vdp_cartridge_step7\src\tangnano20k_vdp_cartridge.v":55)
+WARN  (EX0211) : The output port "O_sdram_addr[2]" of module "tangnano20k_vdp_cartridge" has no driver, assigning undriven bits to Z, simulation mismatch possible("D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_vdp_cartridge_step7\src\tangnano20k_vdp_cartridge.v":55)
+WARN  (EX0211) : The output port "O_sdram_addr[1]" of module "tangnano20k_vdp_cartridge" has no driver, assigning undriven bits to Z, simulation mismatch possible("D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_vdp_cartridge_step7\src\tangnano20k_vdp_cartridge.v":55)
+WARN  (EX0211) : The output port "O_sdram_addr[0]" of module "tangnano20k_vdp_cartridge" has no driver, assigning undriven bits to Z, simulation mismatch possible("D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_vdp_cartridge_step7\src\tangnano20k_vdp_cartridge.v":55)
+WARN  (EX0211) : The output port "O_sdram_ba[1]" of module "tangnano20k_vdp_cartridge" has no driver, assigning undriven bits to Z, simulation mismatch possible("D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_vdp_cartridge_step7\src\tangnano20k_vdp_cartridge.v":56)
+WARN  (EX0211) : The output port "O_sdram_ba[0]" of module "tangnano20k_vdp_cartridge" has no driver, assigning undriven bits to Z, simulation mismatch possible("D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_vdp_cartridge_step7\src\tangnano20k_vdp_cartridge.v":56)
+WARN  (EX0211) : The output port "O_sdram_dqm[3]" of module "tangnano20k_vdp_cartridge" has no driver, assigning undriven bits to Z, simulation mismatch possible("D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_vdp_cartridge_step7\src\tangnano20k_vdp_cartridge.v":57)
+WARN  (EX0211) : The output port "O_sdram_dqm[2]" of module "tangnano20k_vdp_cartridge" has no driver, assigning undriven bits to Z, simulation mismatch possible("D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_vdp_cartridge_step7\src\tangnano20k_vdp_cartridge.v":57)
+WARN  (EX0211) : The output port "O_sdram_dqm[1]" of module "tangnano20k_vdp_cartridge" has no driver, assigning undriven bits to Z, simulation mismatch possible("D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_vdp_cartridge_step7\src\tangnano20k_vdp_cartridge.v":57)
+WARN  (EX0211) : The output port "O_sdram_dqm[0]" of module "tangnano20k_vdp_cartridge" has no driver, assigning undriven bits to Z, simulation mismatch possible("D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_vdp_cartridge_step7\src\tangnano20k_vdp_cartridge.v":57)
 [5%] Running netlist conversion ...
 WARN  (CV0016) : Input clk is unused("D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_vdp_cartridge_step7\src\tangnano20k_vdp_cartridge.v":25)
 WARN  (CV0016) : Input dipsw is unused("D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_vdp_cartridge_step7\src\tangnano20k_vdp_cartridge.v":38)
 WARN  (CV0016) : Input button is unused("D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_vdp_cartridge_step7\src\tangnano20k_vdp_cartridge.v":40)
+WARN  (CV0017) : Inout IO_sdram_dq is unused("D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_vdp_cartridge_step7\src\tangnano20k_vdp_cartridge.v":54)
 Running device independent optimization ...
 [10%] Optimizing Phase 0 completed
 [15%] Optimizing Phase 1 completed
@@ -139,6 +166,7 @@ Running technical mapping ...
 [75%] Tech-Mapping Phase 2 completed
 [80%] Tech-Mapping Phase 3 completed
 [90%] Tech-Mapping Phase 4 completed
+WARN  (NL0002) : The module "Gowin_rPLL2" instantiated to "u_pll2" is swept in optimizing("D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_vdp_cartridge_step7\src\tangnano20k_vdp_cartridge.v":139)
 WARN  (NL0002) : The module "vdp_interrupt" instantiated to "u_vdp_interrupt" is swept in optimizing("D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_vdp_cartridge_step7\src\v9958\vdp.v":508)
 [95%] Generate netlist file "D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_vdp_cartridge_step7\impl\gwsynthesis\tangnano20k_vdp_cartridge.vg" completed
 [100%] Generate report file "D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_vdp_cartridge_step7\impl\gwsynthesis\tangnano20k_vdp_cartridge_syn.rpt.html" completed

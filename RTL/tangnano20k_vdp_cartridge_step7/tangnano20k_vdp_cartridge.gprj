@@ -11,6 +11,7 @@
         <File path="src/gowin_rpll2/gowin_rpll2.v" type="file.verilog" enable="1"/>
         <File path="src/gpio/ip_gpio.v" type="file.verilog" enable="1"/>
         <File path="src/msx_slot/msx_slot.v" type="file.verilog" enable="1"/>
+        <File path="src/ram/ip_ram.v" type="file.verilog" enable="1"/>
         <File path="src/sdram/ip_sdram_tangnano20k_c.v" type="file.verilog" enable="1"/>
         <File path="src/tangnano20k_vdp_cartridge.v" type="file.verilog" enable="1"/>
         <File path="src/v9958/vdp.v" type="file.verilog" enable="1"/>
