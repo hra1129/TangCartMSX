@@ -95,7 +95,7 @@ module tangnano20k_vdp_cartridge (
 	wire			w_sdram_valid;
 	wire			w_sdram_refresh;
 	wire	[7:0]	w_sdram_wdata;
-	wire	[15:0]	w_sdram_rdata;
+	wire	[31:0]	w_sdram_rdata;
 	wire			w_sdram_rdata_en;
 
 	wire			w_vdp_cs_n;
@@ -226,12 +226,12 @@ module tangnano20k_vdp_cartridge (
 		.bus_rdata			( w_bus_vdp_rdata		),
 		.bus_rdata_en		( w_bus_vdp_rdata_en	),
 		.int_n				( 						),
-		.p_dram_address		( w_dram_address[16:0]	),
-		.p_dram_write		( w_dram_write			),
-		.p_dram_valid		( w_dram_valid			),
-		.p_dram_wdata		( w_dram_wdata			),
-		.p_dram_rdata		( w_dram_rdata			),
-		.p_dram_rdata_en	( w_dram_rdata_en		),
+		.p_dram_address		( w_sdram_address[16:0]	),
+		.p_dram_write		( w_sdram_write			),
+		.p_dram_valid		( w_sdram_valid			),
+		.p_dram_wdata		( w_sdram_wdata			),
+		.p_dram_rdata		( w_sdram_rdata			),
+		.p_dram_rdata_en	( w_sdram_rdata_en		),
 		.p_vdp_enable		( w_vdp_enable			),
 		.p_vdp_r			( w_vdp_r				),
 		.p_vdp_g			( w_vdp_g				),
@@ -241,7 +241,7 @@ module tangnano20k_vdp_cartridge (
 	);
 	assign w_sdram_address[22:17]	= 6'd0;
 
-	assign w_dram_init_busy	= 1'b0;
+//	assign w_dram_init_busy	= 1'b0;
 
 	// --------------------------------------------------------------------
 	//	Video output
@@ -289,46 +289,46 @@ module tangnano20k_vdp_cartridge (
 	// --------------------------------------------------------------------
 	//	VRAM
 	// --------------------------------------------------------------------
-	ip_ram u_vram (
-		.reset_n			( reset_n				),
-		.clk				( clk42m				),
-		.bus_address		( w_dram_address[13:0]	),
-		.bus_valid			( w_dram_valid			),
-		.bus_write			( w_dram_write			),
-		.bus_wdata			( w_dram_wdata			),
-		.bus_rdata			( w_dram_rdata[7:0]		),
-		.bus_rdata_en		( w_dram_rdata_en		)
-	);
-	assign w_dram_rdata[15:8] = 8'd0;
+//	ip_ram u_vram (
+//		.reset_n			( reset_n				),
+//		.clk				( clk42m				),
+//		.bus_address		( w_dram_address[13:0]	),
+//		.bus_valid			( w_dram_valid			),
+//		.bus_write			( w_dram_write			),
+//		.bus_wdata			( w_dram_wdata			),
+//		.bus_rdata			( w_dram_rdata[7:0]		),
+//		.bus_rdata_en		( w_dram_rdata_en		)
+//	);
+//	assign w_dram_rdata[15:8] = 8'd0;
 
 	// --------------------------------------------------------------------
 	//	SDRAM
 	// --------------------------------------------------------------------
-//	ip_sdram #(
-//		.FREQ				( 85_909_080			)		//	Hz
-//	) u_sdram (
-//		.reset_n			( reset_n				),
-//		.clk				( clk85m				),		//	85.90908MHz
-//		.clk_sdram			( clk85m				),
-//		.sdram_init_busy	( w_dram_init_busy		),
-//		.bus_address		( w_sdram_address		),
-//		.bus_valid			( w_sdram_valid			),
-//		.bus_write			( w_sdram_write			),
-//		.bus_refresh		( w_sdram_refresh		),
-//		.bus_wdata			( w_sdram_wdata			),
-//		.bus_rdata			( w_sdram_rdata			),
-//		.bus_rdata_en		( w_sdram_rdata_en		),
-//		.O_sdram_clk		( O_sdram_clk			),
-//		.O_sdram_cke		( O_sdram_cke			),
-//		.O_sdram_cs_n		( O_sdram_cs_n			),		// chip select
-//		.O_sdram_ras_n		( O_sdram_ras_n			),		// row address select
-//		.O_sdram_cas_n		( O_sdram_cas_n			),		// columns address select
-//		.O_sdram_wen_n		( O_sdram_wen_n			),		// write enable
-//		.IO_sdram_dq		( IO_sdram_dq			),		// 32 bit bidirectional data bus
-//		.O_sdram_addr		( O_sdram_addr			),		// 11 bit multiplexed address bus
-//		.O_sdram_ba			( O_sdram_ba			),		// two banks
-//		.O_sdram_dqm		( O_sdram_dqm			)		// data mask
-//	);
-//
-//	assign w_dram_refresh	= 1'b0;
+	ip_sdram #(
+		.FREQ				( 85_909_080			)		//	Hz
+	) u_sdram (
+		.reset_n			( reset_n				),
+		.clk				( clk85m				),		//	85.90908MHz
+		.clk_sdram			( clk85m				),
+		.sdram_init_busy	( w_dram_init_busy		),
+		.bus_address		( w_sdram_address		),
+		.bus_valid			( w_sdram_valid			),
+		.bus_write			( w_sdram_write			),
+		.bus_refresh		( w_sdram_refresh		),
+		.bus_wdata			( w_sdram_wdata			),
+		.bus_rdata			( w_sdram_rdata			),
+		.bus_rdata_en		( w_sdram_rdata_en		),
+		.O_sdram_clk		( O_sdram_clk			),
+		.O_sdram_cke		( O_sdram_cke			),
+		.O_sdram_cs_n		( O_sdram_cs_n			),		// chip select
+		.O_sdram_ras_n		( O_sdram_ras_n			),		// row address select
+		.O_sdram_cas_n		( O_sdram_cas_n			),		// columns address select
+		.O_sdram_wen_n		( O_sdram_wen_n			),		// write enable
+		.IO_sdram_dq		( IO_sdram_dq			),		// 32 bit bidirectional data bus
+		.O_sdram_addr		( O_sdram_addr			),		// 11 bit multiplexed address bus
+		.O_sdram_ba			( O_sdram_ba			),		// two banks
+		.O_sdram_dqm		( O_sdram_dqm			)		// data mask
+	);
+
+	assign w_dram_refresh	= 1'b0;
 endmodule

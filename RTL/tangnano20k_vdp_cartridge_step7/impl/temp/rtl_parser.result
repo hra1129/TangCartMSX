@@ -1,11 +1,11 @@
 [
  {
-  "InstFile" : "D:/github/HRA_product/TangCartMSX/RTL/tangnano20k_vdp_cartridge_step7/src/sdram/ip_sdram_tangnano20k_c.v",
-  "InstLine" : 57,
-  "InstName" : "ip_sdram",
-  "ModuleFile" : "D:/github/HRA_product/TangCartMSX/RTL/tangnano20k_vdp_cartridge_step7/src/sdram/ip_sdram_tangnano20k_c.v",
-  "ModuleLine" : 57,
-  "ModuleName" : "ip_sdram"
+  "InstFile" : "D:/github/HRA_product/TangCartMSX/RTL/tangnano20k_vdp_cartridge_step7/src/ram/ip_ram.v",
+  "InstLine" : 5,
+  "InstName" : "ip_ram",
+  "ModuleFile" : "D:/github/HRA_product/TangCartMSX/RTL/tangnano20k_vdp_cartridge_step7/src/ram/ip_ram.v",
+  "ModuleLine" : 5,
+  "ModuleName" : "ip_ram"
  },
  {
   "InstFile" : "D:/github/HRA_product/TangCartMSX/RTL/tangnano20k_vdp_cartridge_step7/src/tangnano20k_vdp_cartridge.v",
@@ -73,7 +73,7 @@
     "SubInsts" : [
      {
       "InstFile" : "D:/github/HRA_product/TangCartMSX/RTL/tangnano20k_vdp_cartridge_step7/src/v9958/vdp_inst.v",
-      "InstLine" : 181,
+      "InstLine" : 204,
       "InstName" : "u_v9958_core",
       "ModuleFile" : "D:/github/HRA_product/TangCartMSX/RTL/tangnano20k_vdp_cartridge_step7/src/v9958/vdp.v",
       "ModuleLine" : 58,
@@ -305,11 +305,11 @@
    },
    {
     "InstFile" : "D:/github/HRA_product/TangCartMSX/RTL/tangnano20k_vdp_cartridge_step7/src/tangnano20k_vdp_cartridge.v",
-    "InstLine" : 292,
-    "InstName" : "u_vram",
-    "ModuleFile" : "D:/github/HRA_product/TangCartMSX/RTL/tangnano20k_vdp_cartridge_step7/src/ram/ip_ram.v",
-    "ModuleLine" : 5,
-    "ModuleName" : "ip_ram"
+    "InstLine" : 309,
+    "InstName" : "u_sdram",
+    "ModuleFile" : "D:/github/HRA_product/TangCartMSX/RTL/tangnano20k_vdp_cartridge_step7/src/sdram/ip_sdram_tangnano20k_c.v",
+    "ModuleLine" : 57,
+    "ModuleName" : "ip_sdram"
    }
   ]
  }

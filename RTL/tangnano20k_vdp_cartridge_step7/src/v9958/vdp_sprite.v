@@ -634,7 +634,7 @@ module vdp_sprite (
 				ff_preread_address <= { w_attribute_address, 2'b01 };
 			3'd2:								// pattern num read
 				ff_preread_address <= { w_attribute_address, 2'b10 };
-			3'd3, 3'd4:						// pattern read
+			3'd3, 3'd4:							// pattern read
 				ff_preread_address <= w_read_pattern_address;
 			3'd5:								// color read
 				ff_preread_address <= w_read_color_address;
@@ -682,7 +682,7 @@ module vdp_sprite (
 			//	hold
 		end
 		else begin
-			if( dot_state == 2'b01 ) begin
+			if( dot_state == 2'b10 ) begin
 				if( ff_main_state == c_state_prepare ) begin
 					case( eight_dot_state )
 					3'd1:								// y read
@@ -761,7 +761,7 @@ module vdp_sprite (
 		if( !enable ) begin
 			//	hold
 		end
-		else if( dot_state == 2'b01 ) begin
+		else if( dot_state == 2'b10 ) begin
 			if( ff_main_state == c_state_prepare ) begin
 				if( eight_dot_state == 3'd7 ) begin
 					ff_prepare_plane_num <= ff_render_planes[ ff_prepare_local_plane_num + 1 ];

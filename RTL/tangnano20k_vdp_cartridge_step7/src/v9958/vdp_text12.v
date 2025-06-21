@@ -158,12 +158,12 @@ module vdp_text12 (
 			else begin
 				// the ff_dot_counter24[2:0] counts up 0 to 5,
 				// and the ff_dot_counter24[4:3] counts up 0 to 3.
-				if( ff_dot_counter24[2:0] == 3'b101 ) begin
-					ff_dot_counter24[4:3] <= ff_dot_counter24[4:3] + 1;
-					ff_dot_counter24[2:0] <= 3'b000;
+				if( ff_dot_counter24[2:0] == 3'd5 ) begin
+					ff_dot_counter24[4:3] <= ff_dot_counter24[4:3] + 2'd1;
+					ff_dot_counter24[2:0] <= 3'd0;
 				end
 				else begin
-					ff_dot_counter24[2:0] <= ff_dot_counter24[2:0] + 1;
+					ff_dot_counter24[2:0] <= ff_dot_counter24[2:0] + 3'd1;
 				end
 			end
 		end
@@ -223,12 +223,12 @@ module vdp_text12 (
 		end
 		else begin
 			case( dot_state )
-			2'b11:
+			2'b00:
 				begin
 					if( ff_tx_prewindow_x ) begin
 						// vram read address output.
 						case( ff_dot_counter24[2:0] )
-						3'b000:
+						3'd0:
 							begin
 								if( ff_dot_counter24[4:3] == 2'b00 ) begin
 									// read color table(text2 ff_blink)
@@ -237,20 +237,20 @@ module vdp_text12 (
 									ff_tx_vram_read_en2 <= 1'b1;
 								end
 							end
-						3'b001:
+						3'd1:
 							begin
 								// read ff_pattern name table
 								ff_ramadr <= w_logical_vram_addr_nam;
 								ff_tx_vram_read_en <= 1'b1;
 								ff_tx_char_counter_x <= ff_tx_char_counter_x + 1;
 							end
-						3'b010:
+						3'd2:
 							begin
 								// read ff_pattern generator table
 								ff_ramadr <= w_logical_vram_addr_gen;
 								ff_tx_vram_read_en <= 1'b1;
 							end
-						3'b100:
+						3'd4:
 							begin
 								// read ff_pattern name table
 								// it is used if vdpmode is test2.
@@ -260,7 +260,7 @@ module vdp_text12 (
 									ff_tx_char_counter_x <= ff_tx_char_counter_x + 1;
 								end
 							end
-						3'b101:
+						3'd5:
 							begin
 								// read ff_pattern generator table
 								// it is used if vdpmode is test2.
@@ -274,12 +274,12 @@ module vdp_text12 (
 						endcase
 					end
 				end
-			2'b10:
+			2'b01:
 				begin
 					ff_tx_vram_read_en <= 1'b0;
 					ff_tx_vram_read_en2 <= 1'b0;
 				end
-			2'b00:
+			2'b11:
 				begin
 					if( dot_counter_x == 11) begin
 						ff_tx_char_counter_x <= 7'd0;
@@ -291,10 +291,10 @@ module vdp_text12 (
 						ff_tx_char_counter_start_of_line <= ff_tx_char_counter_start_of_line + ff_tx_char_counter_x;
 					end
 				end
-			2'b01:
+			2'b10:
 				begin
 					case( ff_dot_counter24[2:0] )
-					3'b001:
+					3'd1:
 						begin
 							// read color table(text2 ff_blink)
 							// it is used only one time per 8 characters.
@@ -302,17 +302,17 @@ module vdp_text12 (
 								ff_preblink <= p_vram_rdata;
 							end
 						end
-					3'b010:
+					3'd2:
 						// read ff_pattern name table
 						ff_pattern_num <= p_vram_rdata;
-					3'b011:
+					3'd3:
 						// read ff_pattern generator table
 						ff_prepattern <= p_vram_rdata;
-					3'b101:
+					3'd5:
 						// read ff_pattern name table
 						// it is used if vdpmode is test2.
 						ff_pattern_num <= p_vram_rdata;
-					3'b000:
+					3'd0:
 						begin
 							// read ff_pattern generator table
 							// it is used if vdpmode is test2.

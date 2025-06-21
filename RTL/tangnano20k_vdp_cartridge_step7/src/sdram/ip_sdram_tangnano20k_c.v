@@ -67,7 +67,7 @@ module ip_sdram #(
 	input				bus_write,
 	input				bus_refresh,
 	input	[ 7:0]		bus_wdata,
-	output	[15:0]		bus_rdata,
+	output	[31:0]		bus_rdata,
 	output				bus_rdata_en,
 
 	// SDRAM ports
@@ -137,13 +137,13 @@ module ip_sdram #(
 	reg		[12:0]				ff_sdr_address			= 13'h0000;
 	reg		[31:0]				ff_sdr_write_data		= 32'd0;
 	reg		[ 3:0]				ff_sdr_dq_mask			= 4'b1111;
-	reg		[15:0]				ff_sdr_read_data;
+	reg		[31:0]				ff_sdr_read_data;
 	reg							ff_sdr_read_data_en;
 	reg							ff_do_command;
 	reg							ff_write;
 	reg		[ 7:0]				ff_wdata;
 	reg		[22:0]				ff_address;
-	reg		[ 1:0]				ff_wait;
+	reg							ff_wait;
 	wire						w_busy;
 
 	// --------------------------------------------------------------------
@@ -439,32 +439,21 @@ module ip_sdram #(
 
 	always @( posedge clk ) begin
 		if( !reset_n ) begin
-			ff_sdr_read_data	<= 16'd0;
+			ff_sdr_read_data	<= 32'd0;
+			ff_sdr_read_data_en	<= 1'b0;
+			ff_wait				<= 1'b0;
 		end
 		else if( ff_main_state == c_main_state_finish ) begin
-			case( ff_address[1] )
-			1'd0:		ff_sdr_read_data <= IO_sdram_dq[15:0 ];
-			1'd1:		ff_sdr_read_data <= IO_sdram_dq[31:16];
-			default:	ff_sdr_read_data <= 16'd0;
-			endcase
-		end
-	end
-
-	always @( posedge clk ) begin
-		if( !reset_n ) begin
-			ff_sdr_read_data_en	<= 1'b0;
-			ff_wait				<= 2'd0;
-		end
-		else if( ff_main_state == c_main_state_nop2 ) begin
+			ff_sdr_read_data	<= IO_sdram_dq;
 			ff_sdr_read_data_en	<= ~ff_write & ~ff_do_refresh;
-			ff_wait				<= 2'd3;
+			ff_wait				<= 1'd1;
 		end
 		else if( ff_sdr_read_data_en ) begin
-			if( ff_wait == 2'd0 ) begin
+			if( ff_wait == 1'b0 ) begin
 				ff_sdr_read_data_en	<= 1'b0;
 			end
 			else begin
-				ff_wait				<= ff_wait - 2'd1;
+				ff_wait				<= 1'b0;
 			end
 		end
 	end

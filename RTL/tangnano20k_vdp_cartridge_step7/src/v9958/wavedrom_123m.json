@@ -1,0 +1,19 @@
+{
+	"signal": [
+		{ "name": "clk42m",   					"wave": "P...............................................................", "period": 0.5 },
+		{ "name": "clk21m",   					"wave": "P...............................", "period": 1 },
+		{ "name": "eight_dot_state",  			"wave": "2...3...4...5...6...7...8...9...", "data": ["0", "1", "2", "3", "4", "5", "6", "7", "8"] },
+		{ "name": "dot_state",   				"wave": "23452345234523452345234523452345", "data": ["00", "01", "11", "10", "00", "01", "11", "10", "00", "01", "11", "10", "00", "01", "11", "10", "00", "01", "11", "10", "00", "01", "11", "10", "00", "01", "11", "10", "00", "01", "11", "10", "00", "01", "11", "10" ] },
+		{ "name": "ff_vram_address(123m)",  	"wave": "xxx2.......3...4...", "data": ["Name Adr.", "Generator Adr.", "Color Adr." ] },
+		{ "name": "ff_dram_address(colorbus)",	"wave": "xxxx2.......3...4...", "data": [ "Name Adr.", "Generator Adr.", "Color Adr." ] },
+		{ "name": "ff_dram_oe_n(colorbus)",		"wave": "1...01......01..01.." },
+		{ "name": "ff_address(vdp_inst)",		"wave": "x........2...............3.......4.......", "data": [ "Name Adr.", "Generator Adr.", "Color Adr." ], "period": 0.5 },
+		{ "name": "ff_valid(vdp_inst)",			"wave": "0........110.............110.....110.....", "period": 0.5  },
+		{ "name": "ff_rdata(ip_ram)",			"wave": "x.........2...............3.......4.......", "data": [ "Name Data", "Generator Data", "Color Data" ], "period": 0.5 },
+		{ "name": "ff_rdata2(ip_ram)",			"wave": "x..........2...............3.......4.......", "data": [ "Name Data", "Generator Data", "Color Data" ], "period": 0.5 },
+		{ "name": "ff_rdata3(ip_ram)",			"wave": "x...........2...............3.......4.......", "data": [ "Name Data", "Generator Data", "Color Data" ], "period": 0.5 },
+		{ "name": "ff_rdata(vdp_inst)",			"wave": "x............2...............3.......4.......", "data": [ "Name Data", "Generator Data", "Color Data" ], "period": 0.5 },
+		{ "name": "p_ram_dat(123m)",			"wave": "x............2...............3.......4.......", "data": [ "Name Data", "Generator Data", "Color Data" ], "period": 0.5 }
+	],
+	"config": { "hscale": 2 }
+}
