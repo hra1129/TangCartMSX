@@ -82,7 +82,7 @@ module tangnano20k_vdp_cartridge (
 	wire	[7:0]	w_led_green;
 	wire	[7:0]	w_led_blue;
 
-	wire	[13:0]	w_dram_address;
+	wire	[16:0]	w_dram_address;
 	wire			w_dram_write;
 	wire			w_dram_valid;
 	wire	[7:0]	w_dram_wdata;
@@ -226,7 +226,7 @@ module tangnano20k_vdp_cartridge (
 		.bus_rdata			( w_bus_vdp_rdata		),
 		.bus_rdata_en		( w_bus_vdp_rdata_en	),
 		.int_n				( 						),
-		.p_dram_address		( w_dram_address		),
+		.p_dram_address		( w_dram_address[16:0]	),
 		.p_dram_write		( w_dram_write			),
 		.p_dram_valid		( w_dram_valid			),
 		.p_dram_wdata		( w_dram_wdata			),
@@ -238,7 +238,8 @@ module tangnano20k_vdp_cartridge (
 		.p_vdp_b			( w_vdp_b				),
 		.p_vdp_hcounter		( w_vdp_hcounter		),
 		.p_vdp_vcounter		( w_vdp_vcounter		)
-    );
+	);
+	assign w_sdram_address[22:17]	= 6'd0;
 
 	assign w_dram_init_busy	= 1'b0;
 
@@ -291,7 +292,7 @@ module tangnano20k_vdp_cartridge (
 	ip_ram u_vram (
 		.reset_n			( reset_n				),
 		.clk				( clk42m				),
-		.bus_address		( w_dram_address		),
+		.bus_address		( w_dram_address[13:0]	),
 		.bus_valid			( w_dram_valid			),
 		.bus_write			( w_dram_write			),
 		.bus_wdata			( w_dram_wdata			),

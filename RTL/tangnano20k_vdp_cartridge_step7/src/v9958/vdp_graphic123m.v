@@ -131,8 +131,8 @@ module vdp_graphic123m (
 		else if( dot_state == 2'b11 )begin
 			case( eight_dot_state )
 			3'd0:		ff_vram_address <= w_pattern_name_address;
-			3'd1:		ff_vram_address <= w_pattern_generator_address;
-			3'd2:		ff_vram_address <= w_color_address;
+			3'd2:		ff_vram_address <= w_pattern_generator_address;
+			3'd3:		ff_vram_address <= w_color_address;
 			default:
 				begin
 					//	hold
@@ -170,7 +170,7 @@ module vdp_graphic123m (
 		else if( !enable )begin
 			//	hold
 		end
-		else if( dot_state == 2'b01 && eight_dot_state == 3'd1 )begin
+		else if( dot_state == 2'b10 && eight_dot_state == 3'd1 )begin
 			ff_pre_pattern_num <= p_ram_dat;
 		end
 	end
@@ -187,7 +187,7 @@ module vdp_graphic123m (
 		else if( !enable )begin
 			//	hold
 		end
-		else if( dot_state == 2'b01 && eight_dot_state == 3'd2 )begin
+		else if( dot_state == 2'b10 && eight_dot_state == 3'd3 )begin
 			ff_pre_pattern_generator <= p_ram_dat;
 		end
 	end
@@ -202,7 +202,7 @@ module vdp_graphic123m (
 		else if( !enable )begin
 			//	hold
 		end
-		else if( dot_state == 2'b01 && eight_dot_state == 3'd3 )begin
+		else if( dot_state == 2'b10 && eight_dot_state == 3'd4 )begin
 			ff_pre_color <= p_ram_dat;
 		end
 	end

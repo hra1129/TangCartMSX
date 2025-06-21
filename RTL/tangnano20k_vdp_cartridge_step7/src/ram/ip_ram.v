@@ -15,7 +15,11 @@ module ip_ram (
 );
 	reg		[7:0]	ff_ram [0:16383];
 	reg		[7:0]	ff_rdata;
-    reg             ff_rdata_en;
+	reg				ff_rdata_en;
+	reg		[7:0]	ff_rdata2;
+	reg				ff_rdata2_en;
+	reg		[7:0]	ff_rdata3;
+	reg				ff_rdata3_en;
 
 	assign	bus_ready	= 1'b1;
 
@@ -40,6 +44,26 @@ module ip_ram (
 		end
 	end
 
-	assign bus_rdata	= ff_rdata;
-	assign bus_rdata_en	= ff_rdata_en;
+	always @( posedge clk ) begin
+		ff_rdata2		<= ff_rdata;
+		ff_rdata2_en	<= ff_rdata_en;
+		ff_rdata3		<= ff_rdata2;
+		ff_rdata3_en	<= ff_rdata2_en;
+	end
+
+	assign bus_rdata	= ff_rdata3;
+	assign bus_rdata_en	= ff_rdata3_en;
 endmodule
+
+//	             _____   _____   _____   _____   _____   _____   _____   _____   
+//	clk21m       |   |___|   |___|   |___|   |___|   |___|   |___|   |___|   |___
+//	             ___ ___ ___ ___ ___ ___ ___ ___ ___ ___ ___ ___ ___ ___ ___ ___ 
+//	clk42m       | |_| |_| |_| |_| |_| |_| |_| |_| |_| |_| |_| |_| |_| |_| |_| |_
+//	bus_address  X   a   X
+//	bus_valid    |"""|____________
+//	ff_rdata         X   d   X
+//	ff_rdata     ____|"""|________
+//	ff_rdata2            X   d   X
+//	ff_rdata2_en ________|"""|____
+//	ff_rdata3                X   d   X
+//	ff_rdata3_en ____________|"""|____
