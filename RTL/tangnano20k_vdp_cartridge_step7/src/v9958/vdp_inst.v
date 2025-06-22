@@ -94,9 +94,7 @@ module vdp_inst(
 	reg		[7:0]	ff_wdata;
 	reg				ff_valid;
 	reg		[15:0]	ff_rdata;
-	reg		[1:0]	ff_data_sel1;
-	reg		[1:0]	ff_data_sel2;
-	reg		[1:0]	ff_data_sel3;
+	reg		[1:0]	ff_data_sel;
 	wire			w_dram_oe_n;
 	wire			w_dram_we_n;
 	wire	[16:0]	w_dram_address;
@@ -166,16 +164,11 @@ module vdp_inst(
 
 	always @( posedge clk ) begin
 		if( !reset_n ) begin
-			ff_data_sel1	<= 2'd0;
+			ff_data_sel	<= 2'd0;
 		end
 		else if( ff_enable && !w_dram_oe_n ) begin
-			ff_data_sel1	<= ff_address[1:0];
+			ff_data_sel	<= ff_address[1:0];
 		end
-	end
-
-	always @( posedge clk ) begin
-		ff_data_sel2	<= ff_data_sel1;
-		ff_data_sel3	<= ff_data_sel2;
 	end
 
 	assign p_dram_address	= ff_address[13:0];
@@ -188,7 +181,7 @@ module vdp_inst(
 			ff_rdata <= 16'd0;
 		end
 		else if( p_dram_rdata_en ) begin
-			case( ff_data_sel3[1:0] )
+			case( ff_data_sel[1:0] )
 			2'd0:		ff_rdata <= { p_dram_rdata[15: 8], p_dram_rdata[ 7: 0] };
 			2'd1:		ff_rdata <= { p_dram_rdata[ 7: 0], p_dram_rdata[15: 8] };
 			2'd2:		ff_rdata <= { p_dram_rdata[31:24], p_dram_rdata[23:16] };

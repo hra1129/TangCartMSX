@@ -137,6 +137,7 @@ module vdp_sprite (
 	wire	[16:0]	w_vram_address;
 	reg		[16:0]	ff_y_test_address;
 	reg		[16:0]	ff_preread_address;
+	reg		[7:0]	ff_vram_rdata;
 
 	reg		[9:0]	ff_attribute_base_address;
 	reg		[5:0]	ff_pattern_gen_base_address;
@@ -205,6 +206,21 @@ module vdp_sprite (
 	assign p_s5_reset_ack			= ff_vdps5resetack;
 	assign p_s0_sp_overmapped		= ff_sp_overmap;
 	assign p_s0_sp_overmapped_num	= ff_sp_overmap_num;
+
+	// --------------------------------------------------------------------------
+	// Latch VRAM read data
+	// --------------------------------------------------------------------------
+	always @( posedge clk ) begin
+		if( reset ) begin
+			ff_vram_rdata <= 8'd0;
+		end
+		else if( !enable ) begin
+			//	hold
+		end
+		else if( dot_state == 2'b11 ) begin
+			ff_vram_rdata <= p_vram_rdata;
+		end
+	end
 
 	//---------------------------------------------------------------------------
 	// スプライトを表示するか否かを示す信号
@@ -287,10 +303,16 @@ module vdp_sprite (
 
 	//---------------------------------------------------------------------------
 	// state machine
+	//
+	//	dot_counter_x
+	//		  1...264 : c_state_ytest_draw
+	//		265...??? : c_state_prepare
+	//		???...341 : c_state_idle        (VRAM is not access)
 	//---------------------------------------------------------------------------
 	always @( posedge clk ) begin
 		if( reset ) begin
-			ff_main_state <= c_state_idle;
+			ff_main_state		<= c_state_idle;
+			sp_vram_accessing	<= 1'b0;
 		end
 		else if( !enable ) begin
 			//	hold
@@ -299,120 +321,42 @@ module vdp_sprite (
 			case( ff_main_state )
 			c_state_idle:
 				if( dot_counter_x == 9'd0 ) begin
-					ff_main_state <= c_state_ytest_draw;
+					ff_main_state		<= c_state_ytest_draw;
+					sp_vram_accessing	<= (~reg_r8_sp_off) & w_active;
 				end
 			c_state_ytest_draw:
 				if( dot_counter_x == 9'd264 ) begin
-					ff_main_state <= c_state_prepare;
+					ff_main_state		<= c_state_prepare;
+					sp_vram_accessing	<= (~reg_r8_sp_off) & ff_sp_en;
 				end
 			c_state_prepare:
 				if( ff_prepare_end ) begin
-					ff_main_state <= c_state_idle;
-				end
-			default:
-				ff_main_state <= c_state_idle;
-			endcase
-		end
-	end
-
-	//---------------------------------------------------------------------------
-	// 現ラインのライン番号
-	//---------------------------------------------------------------------------
-	always @( posedge clk ) begin
-		if( !enable ) begin
-			//	hold
-		end
-		else if( (dot_state == 2'b01) && (dot_counter_x == 9'd0) ) begin
-			//	 +1 should be needed. because it will be drawn in the next line.
-			ff_cur_y <= dot_counter_yp + { 1'b0, reg_r23_vstart_line } + 9'd1;
-		end
-	end
-
-	always @( posedge clk ) begin
-		if( !enable ) begin
-			//	hold
-		end
-		else if( (dot_state == 2'b01) && (dot_counter_x == 9'd0) ) begin
-			ff_prev_cur_y <= ff_cur_y;
-		end
-	end
-
-	//---------------------------------------------------------------------------
-	// vram address generator
-	//---------------------------------------------------------------------------
-	always @( posedge clk ) begin
-		// latching address signals
-		if( !enable ) begin
-			//	hold
-		end
-		else if( (dot_state == 2'b01) && (dot_counter_x == 9'd0) ) begin
-			ff_pattern_gen_base_address <= reg_r6_sp_gen_addr;
-			if( !p_sp_mode2 ) begin
-				ff_attribute_base_address <= reg_r11r5_sp_atr_addr[9:0];
-			end
-			else begin
-				ff_attribute_base_address <= { reg_r11r5_sp_atr_addr[9:2], 2'b00 };
-			end
-		end
-	end
-
-	//---------------------------------------------------------------------------
-	// vram access mask
-	//---------------------------------------------------------------------------
-	always @( posedge clk ) begin
-		if( reset ) begin
-			sp_vram_accessing <= 1'b0;
-		end
-		else if( !enable ) begin
-			//	hold
-		end
-		else if( dot_state == 2'b10 ) begin
-			case( ff_main_state )
-			c_state_idle:
-				begin
-					if( dot_counter_x == 9'd0 ) begin
-						sp_vram_accessing <= (~reg_r8_sp_off) & w_active;
-					end
-				end
-			c_state_ytest_draw:
-				begin
-					if( dot_counter_x == 9'd264 ) begin
-						sp_vram_accessing <= (~reg_r8_sp_off) & ff_sp_en;
-					end
-				end
-			c_state_prepare:
-				begin
-					if( ff_prepare_end == 1'b1 ) begin
-						sp_vram_accessing <= 1'b0;
-					end
+					ff_main_state		<= c_state_idle;
+					sp_vram_accessing	<= 1'b0;
 				end
 			default:
 				begin
-					//	hold
+					ff_main_state		<= c_state_idle;
+					sp_vram_accessing	<= 1'b0;
 				end
 			endcase
 		end
 	end
 
 	//---------------------------------------------------------------------------
-	// [y_test]yテスト用の信号
+	// 現在のラインで固定される情報
 	//---------------------------------------------------------------------------
-	assign w_listup_y		= ff_cur_y[7:0] - p_vram_rdata;
-
-	// [y_test]着目スプライトを現ラインに表示するかどうかの信号
-	assign w_target_sp_en	= (((w_listup_y[7:3] == 5'd0) && (!reg_r1_sp_size) && (!reg_r1_sp_zoom)) ||
-							   ((w_listup_y[7:4] == 4'd0) && ( reg_r1_sp_size) && (!reg_r1_sp_zoom)) ||
-							   ((w_listup_y[7:4] == 4'd0) && (!reg_r1_sp_size) && ( reg_r1_sp_zoom)) ||
-							   ((w_listup_y[7:5] == 3'd0) && ( reg_r1_sp_size) && ( reg_r1_sp_zoom)) );
-
-	// [y_test]これ以降のスプライトは表示禁止かどうかの信号
-	assign w_sp_off			=	( p_vram_rdata == { 4'b1101, p_sp_mode2, 3'b000 } ) ? 1'b1: 1'b0;
-
-	// [y_test]４つ（８つ）のスプライトが並んでいるかどうかの信号
-	assign w_sp_overmap		=	( (ff_y_test_listup_addr[2] & !p_sp_mode2) | ff_y_test_listup_addr[3] );
-
-	// [y_test]表示中のラインか否か
-	assign w_active			=	bwindow_y;
+	always @( posedge clk ) begin
+		if( !enable ) begin
+			//	hold
+		end
+		else if( (dot_state == 2'b01) && (dot_counter_x == 9'd0) ) begin
+			ff_prev_cur_y				<= ff_cur_y;
+			ff_cur_y					<= dot_counter_yp + { 1'b0, reg_r23_vstart_line } + 9'd1;
+			ff_pattern_gen_base_address	<= reg_r6_sp_gen_addr;
+			ff_attribute_base_address	<= p_sp_mode2 ? { reg_r11r5_sp_atr_addr[9:2], 2'b00 } : reg_r11r5_sp_atr_addr[9:0];
+		end
+	end
 
 	//---------------------------------------------------------------------------
 	// [ff_window_y]
@@ -433,70 +377,47 @@ module vdp_sprite (
 		end
 	end
 
-
 	//---------------------------------------------------------------------------
-	// [y_test]yテストステートでないことを示す信号
+	// [y_test] 調査対象となるスプライトプレーンのY座標を読みだす
 	//---------------------------------------------------------------------------
 	always @( posedge clk ) begin
 		if( reset ) begin
-			ff_y_test_en <= 1'b0;
+			ff_y_test_en			<= 1'b0;	//	y_test中は 1
+			ff_y_test_sp_num		<= 5'd0;	//	y_testで調べるスプライトプレーン番号
 		end
 		else if( !enable ) begin
 			//	hold
 		end
 		else if( dot_state == 2'b01 ) begin
 			if( dot_counter_x == 9'd0 ) begin
-				ff_y_test_en <= ff_sp_en;
+				ff_y_test_en			<= ff_sp_en;
+				ff_y_test_sp_num		<= 5'd0;
 			end
 			else if( eight_dot_state == 3'd6 ) begin
 				if( w_sp_off || (w_sp_overmap && w_target_sp_en) || (ff_y_test_sp_num == 5'd31) ) begin
-					ff_y_test_en <= 1'b0;
+					ff_y_test_en			<= 1'b0;
 				end
-			end
-		end
-	end
-
-	//---------------------------------------------------------------------------
-	// [y_test]テスト対象のスプライト番号 (0～31)
-	//---------------------------------------------------------------------------
-	always @( posedge clk ) begin
-		if( reset ) begin
-			ff_y_test_sp_num <= 5'd0;
-		end
-		else if( !enable ) begin
-			//	hold
-		end
-		else if( dot_state == 2'b01 ) begin
-			if( dot_counter_x == 9'd0 ) begin
-				ff_y_test_sp_num <= 5'd0;
-			end
-			else if( eight_dot_state == 3'd6 ) begin
 				if( ff_y_test_en && ff_y_test_sp_num != 5'd31 ) begin
-					ff_y_test_sp_num <= ff_y_test_sp_num + 5'd1;
+					ff_y_test_sp_num		<= ff_y_test_sp_num + 5'd1;
 				end
 			end
 		end
 	end
 
-	//---------------------------------------------------------------------------
-	// [y_test]表示するスプライトをリストアップするためのリストアップメモリアドレス 0～8
-	//---------------------------------------------------------------------------
 	always @( posedge clk ) begin
 		if( reset ) begin
-			ff_y_test_listup_addr <= 4'd0;
+			ff_y_test_listup_addr	<= 4'd0;	//	表示することが決まったスプライトプレーンの情報を蓄える RAM のアドレス
 		end
 		else if( !enable ) begin
 			//	hold
 		end
-		else if( dot_state == 2'b01 ) begin
+		else if( dot_state == 2'b10 ) begin
 			if( dot_counter_x == 9'd0 ) begin
-				// initialize
-				ff_y_test_listup_addr <= 4'd0;
+				ff_y_test_listup_addr	<= 4'd0;
 			end
 			else if( eight_dot_state == 3'd6 ) begin
-				// next sprite [リストアップメモリが満杯になるまでインクリメント]
 				if( ff_y_test_en && w_target_sp_en && !w_sp_overmap && !w_sp_off ) begin
-					ff_y_test_listup_addr <= ff_y_test_listup_addr + 4'd1;
+					ff_y_test_listup_addr	<= ff_y_test_listup_addr + 4'd1;
 				end
 			end
 		end
@@ -519,7 +440,7 @@ module vdp_sprite (
 		else if( !enable ) begin
 			//	hold
 		end
-		else if( dot_state == 2'b01 ) begin
+		else if( dot_state == 2'b10 ) begin
 			if( dot_counter_x == 9'd0 ) begin
 				// initialize
 			end
@@ -532,11 +453,30 @@ module vdp_sprite (
 		end
 	end
 
+	// [y_test][prepare]着目スプライトの一番上を 0 とする相対座標に変換
+	assign w_listup_y		= ff_cur_y[7:0] - ff_vram_rdata;
+
+	// [y_test]着目スプライトを現ラインに表示するかどうかの信号
+	assign w_target_sp_en	= (((w_listup_y[7:3] == 5'd0) && (!reg_r1_sp_size) && (!reg_r1_sp_zoom)) ||
+							   ((w_listup_y[7:4] == 4'd0) && ( reg_r1_sp_size) && (!reg_r1_sp_zoom)) ||
+							   ((w_listup_y[7:4] == 4'd0) && (!reg_r1_sp_size) && ( reg_r1_sp_zoom)) ||
+							   ((w_listup_y[7:5] == 3'd0) && ( reg_r1_sp_size) && ( reg_r1_sp_zoom)) );
+
+	// [y_test]これ以降のスプライトは表示禁止かどうかの信号
+	assign w_sp_off			=	( ff_vram_rdata == { 4'b1101, p_sp_mode2, 3'b000 } ) ? 1'b1: 1'b0;
+
+	// [y_test]４つ（８つ）のスプライトが並んでいるかどうかの信号
+	assign w_sp_overmap		=	( (ff_y_test_listup_addr[2] & !p_sp_mode2) | ff_y_test_listup_addr[3] );
+
+	// [y_test]表示中のラインか否か
+	assign w_active			=	bwindow_y;
+
 	//---------------------------------------------------------------------------
 	// [y_test]４つ目（８つ目）のスプライトが並んだかどうかの信号
 	//---------------------------------------------------------------------------
 	always @( posedge clk ) begin
 		if( reset ) begin
+			ff_sp_overmap_num	<= 5'd31;
 			ff_sp_overmap		<= 1'b0;
 		end
 		else if( !enable ) begin
@@ -544,42 +484,17 @@ module vdp_sprite (
 		end
 		else if( p_s0_reset_req == ~ff_vdps0resetack ) begin
 			// s#0が読み込まれるまでクリアしない
+			ff_sp_overmap_num	<= 5'd31;
 			ff_sp_overmap		<= 1'b0;
 		end
-		else if( dot_state == 2'b01 ) begin
+		else if( dot_state == 2'b10 ) begin
 			if( dot_counter_x == 9'd0 ) begin
 				// initialize
 			end
 			else if( eight_dot_state == 3'd6 ) begin
-				if( ff_window_y && ff_y_test_en && w_target_sp_en && w_sp_overmap && !w_sp_off ) begin
-					ff_sp_overmap <= 1'b1;
-				end
-			end
-		end
-	end
-
-	//---------------------------------------------------------------------------
-	// [y_test]処理をあきらめたスプライト信号
-	//---------------------------------------------------------------------------
-	always @( posedge clk ) begin
-		if( reset ) begin
-			ff_sp_overmap_num	<= 5'd31;
-		end
-		else if( !enable ) begin
-			//	hold
-		end
-		else if( p_s0_reset_req == ~ff_vdps0resetack ) begin
-			ff_sp_overmap_num	<= 5'd31;
-		end
-		else if( dot_state == 2'b01 ) begin
-			if( dot_counter_x == 9'd0 ) begin
-				// initialize
-			end
-			else if( eight_dot_state == 3'd6 ) begin
-				// jp: 調査をあきらめたスプライト番号が格納される。overmapとは限らない。
-				// jp: しかし、すでに overmap で値が確定している場合は更新しない。
 				if( ff_window_y && ff_y_test_en && w_target_sp_en && w_sp_overmap && !w_sp_off && !ff_sp_overmap ) begin
-					ff_sp_overmap_num <= ff_y_test_sp_num;
+					ff_sp_overmap_num	<= ff_y_test_sp_num;
+					ff_sp_overmap		<= 1'b1;
 				end
 			end
 		end
@@ -587,6 +502,8 @@ module vdp_sprite (
 
 	//---------------------------------------------------------------------------
 	// yテスト用の vram読み出しアドレス
+	//	アドレスの更新は、dot_state = 11
+	//	その結果が ff_vram_rdata から得られるのは、5clk@21MHz後の dot_state = 10
 	//---------------------------------------------------------------------------
 	always @( posedge clk ) begin
 		if( reset ) begin
@@ -608,6 +525,9 @@ module vdp_sprite (
 	// jp: 画面非描画中			: リストアップしたスプライトの情報を集め、inforamに格納
 	// jp: 次の画面描画中		: inforamに格納された情報を元に、ラインバッファに描画
 	// jp: 次の次の画面描画中	: ラインバッファに描画された絵を出力し、画面描画に混ぜる
+	//
+	//	アドレスの更新は、dot_state = 11
+	//	その結果が ff_vram_rdata から得られるのは、5clk@21MHz後の dot_state = 10
 	//---------------------------------------------------------------------------
 
 	// read timing of sprite attribute table
@@ -628,43 +548,16 @@ module vdp_sprite (
 		end
 		else if( dot_state == 2'b11 ) begin
 			case( eight_dot_state )
-			3'd0:								// y read
-				ff_preread_address <= { w_attribute_address, 2'b00 };
-			3'd1:								// x read
-				ff_preread_address <= { w_attribute_address, 2'b01 };
-			3'd2:								// pattern num read
+			3'd0:								// pattern num read
 				ff_preread_address <= { w_attribute_address, 2'b10 };
+			3'd1:								// y read
+				ff_preread_address <= { w_attribute_address, 2'b00 };
+			3'd2:								// x read
+				ff_preread_address <= { w_attribute_address, 2'b01 };
 			3'd3, 3'd4:							// pattern read
 				ff_preread_address <= w_read_pattern_address;
 			3'd5:								// color read
 				ff_preread_address <= w_read_color_address;
-			default:
-				begin
-					//	hold
-				end
-			endcase
-		end
-	end
-
-	always @( posedge clk ) begin
-		if( !enable ) begin
-			//	hold
-		end
-		else begin
-			case( dot_state )
-			2'b11:
-				ff_info_ram_we <= 1'b0;
-			2'b01:
-				begin
-					if( ff_main_state == c_state_prepare ) begin
-						if( eight_dot_state == 3'd6 ) begin
-							ff_info_ram_we <= 1'b1;
-						end
-					end
-					else begin
-						ff_info_ram_we <= 1'b0;
-					end
-				end
 			default:
 				begin
 					//	hold
@@ -685,49 +578,29 @@ module vdp_sprite (
 			if( dot_state == 2'b10 ) begin
 				if( ff_main_state == c_state_prepare ) begin
 					case( eight_dot_state )
-					3'd1:								// y read
-						begin
-							// jp: スプライトの何行目が該当したか覚えておく
-							if( !reg_r1_sp_zoom ) begin
-								ff_prepare_line_num	<= w_listup_y[3:0];
-							end
-							else begin
-								ff_prepare_line_num	<= w_listup_y[4:1];
-							end
-						end
-					3'd2:								// x read
-						ff_info_x <= { 1'b0, p_vram_rdata };
-					3'd3:								// pattern num read
-						ff_prepare_pattern_num <= p_vram_rdata;
+					3'd1:								// pattern num read
+						ff_prepare_pattern_num	<= ff_vram_rdata;
+					3'd2:								// y read
+						// jp: スプライトの何行目が該当したか覚えておく
+						ff_prepare_line_num		<= reg_r1_sp_zoom ? w_listup_y[4:1] : w_listup_y[3:0];
+					3'd3:								// x read
+						ff_info_x				<= { 1'b0, ff_vram_rdata };
 					3'd4:								// pattern read left
-						ff_info_pattern[15:8] <= p_vram_rdata;
+						ff_info_pattern[15:8]	<= ff_vram_rdata;
 					3'd5:								// pattern read right
-						begin
-							if( !reg_r1_sp_size ) begin
-								// 8x8 mode
-								ff_info_pattern[7:0] <= 8'd0;
-							end
-							else begin
-								// 16x16 mode
-								ff_info_pattern[7:0] <= p_vram_rdata;
-							end
-						end
+						//                                       16x16 mode    : 8x8 mode
+						ff_info_pattern[7:0]	<= reg_r1_sp_size ? ff_vram_rdata : 8'd0;
 					3'd6:								// color read
 						begin
 							// color
-							ff_info_color <= p_vram_rdata[3:0];
+							ff_info_color		<= ff_vram_rdata[3:0];
 							// cc	優先順位ビット (1: 優先順位無し, 0: 優先順位あり)
-							if( p_sp_mode2 ) begin
-								ff_info_cc <= p_vram_rdata[6];
-							end
-							else begin
-								ff_info_cc <= 1'b0;
-							end
+							ff_info_cc			<= p_sp_mode2 ? ff_vram_rdata[6] : 1'b0;
 							// ic	衝突検知ビット (1: 検知しない, 0: 検知する)
-							ff_info_ic <= p_vram_rdata[5] & p_sp_mode2;
+							ff_info_ic			<= ff_vram_rdata[5] & p_sp_mode2;
 							// ec	32ドット左シフト (1: する, 0: しない)
-							if( p_vram_rdata[7] ) begin
-								ff_info_x <= ff_info_x - 32;
+							if( ff_vram_rdata[7] ) begin
+								ff_info_x	<= ff_info_x - 9'd32;
 							end
 
 							// if all of the sprites list-uped are readed,
@@ -770,6 +643,33 @@ module vdp_sprite (
 			else begin
 				ff_prepare_plane_num <= ff_render_planes[0];
 			end
+		end
+	end
+
+	always @( posedge clk ) begin
+		if( !enable ) begin
+			//	hold
+		end
+		else begin
+			case( dot_state )
+			2'b10:
+				begin
+					if( ff_main_state == c_state_prepare ) begin
+						if( eight_dot_state == 3'd6 ) begin
+							ff_info_ram_we <= 1'b1;
+						end
+					end
+					else begin
+						ff_info_ram_we <= 1'b0;
+					end
+				end
+			2'b00:
+				ff_info_ram_we <= 1'b0;
+			default:
+				begin
+					//	hold
+				end
+			endcase
 		end
 	end
 

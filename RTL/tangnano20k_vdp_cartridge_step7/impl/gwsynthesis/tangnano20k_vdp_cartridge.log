@@ -18,8 +18,8 @@ Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_vdp_ca
 Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_vdp_cartridge_step7\src\v9958\vdp_graphic123m.v'
 Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_vdp_cartridge_step7\src\v9958\vdp_graphic4567.v'
 Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_vdp_cartridge_step7\src\v9958\vdp_inst.v'
-Undeclared symbol 'p_video_dh_clk', assumed default net type 'wire'("D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_vdp_cartridge_step7\src\v9958\vdp_inst.v":227)
-Undeclared symbol 'p_video_dl_clk', assumed default net type 'wire'("D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_vdp_cartridge_step7\src\v9958\vdp_inst.v":228)
+Undeclared symbol 'p_video_dh_clk', assumed default net type 'wire'("D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_vdp_cartridge_step7\src\v9958\vdp_inst.v":220)
+Undeclared symbol 'p_video_dl_clk', assumed default net type 'wire'("D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_vdp_cartridge_step7\src\v9958\vdp_inst.v":221)
 Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_vdp_cartridge_step7\src\v9958\vdp_interrupt.v'
 Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_vdp_cartridge_step7\src\v9958\vdp_ram_256byte.v'
 Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_vdp_cartridge_step7\src\v9958\vdp_ram_palette.v'
@@ -76,12 +76,12 @@ WARN  (EX3791) : Expression size 5 truncated to fit in target size 4("D:\github\
 Compiling module 'vdp_sprite'("D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_vdp_cartridge_step7\src\v9958\vdp_sprite.v":58)
 Compiling module 'vdp_spinforam'("D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_vdp_cartridge_step7\src\v9958\vdp_spinforam.v":58)
 Extracting RAM for identifier 'ff_memory'("D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_vdp_cartridge_step7\src\v9958\vdp_spinforam.v":66)
-WARN  (EX3791) : Expression size 32 truncated to fit in target size 9("D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_vdp_cartridge_step7\src\v9958\vdp_sprite.v":730)
-WARN  (EX3791) : Expression size 4 truncated to fit in target size 3("D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_vdp_cartridge_step7\src\v9958\vdp_sprite.v":741)
-WARN  (EX3791) : Expression size 10 truncated to fit in target size 9("D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_vdp_cartridge_step7\src\v9958\vdp_sprite.v":828)
-WARN  (EX3791) : Expression size 10 truncated to fit in target size 9("D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_vdp_cartridge_step7\src\v9958\vdp_sprite.v":866)
-WARN  (EX3791) : Expression size 10 truncated to fit in target size 9("D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_vdp_cartridge_step7\src\v9958\vdp_sprite.v":868)
-WARN  (EX3791) : Expression size 4 truncated to fit in target size 3("D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_vdp_cartridge_step7\src\v9958\vdp_sprite.v":879)
+WARN  (EX3791) : Expression size 32 truncated to fit in target size 9("D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_vdp_cartridge_step7\src\v9958\vdp_sprite.v":616)
+WARN  (EX3791) : Expression size 4 truncated to fit in target size 3("D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_vdp_cartridge_step7\src\v9958\vdp_sprite.v":627)
+WARN  (EX3791) : Expression size 10 truncated to fit in target size 9("D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_vdp_cartridge_step7\src\v9958\vdp_sprite.v":741)
+WARN  (EX3791) : Expression size 10 truncated to fit in target size 9("D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_vdp_cartridge_step7\src\v9958\vdp_sprite.v":779)
+WARN  (EX3791) : Expression size 10 truncated to fit in target size 9("D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_vdp_cartridge_step7\src\v9958\vdp_sprite.v":781)
+WARN  (EX3791) : Expression size 4 truncated to fit in target size 3("D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_vdp_cartridge_step7\src\v9958\vdp_sprite.v":792)
 Compiling module 'vdp_ram_palette'("D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_vdp_cartridge_step7\src\v9958\vdp_ram_palette.v":32)
 Extracting RAM for identifier 'ff_block_ram_r'("D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_vdp_cartridge_step7\src\v9958\vdp_ram_palette.v":60)
 Extracting RAM for identifier 'ff_block_ram_g'("D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_vdp_cartridge_step7\src\v9958\vdp_ram_palette.v":61)

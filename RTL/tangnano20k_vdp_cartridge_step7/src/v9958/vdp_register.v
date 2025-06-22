@@ -583,14 +583,14 @@ module vdp_register (
 							begin
 								vdp_vram_address_cpu[7:0]	<= vdp_p1_data[7:0];
 								vdp_vram_address_cpu[13:8]	<= wdata[5:0];
-								vdp_vram_addr_set_req			<= ~vdp_vram_addr_set_ack;
+								vdp_vram_addr_set_req		<= ~vdp_vram_addr_set_ack;
 							end
 						2'b00:	// set vram access address(read)
 							begin
 								vdp_vram_address_cpu[7:0]	<= vdp_p1_data[7:0];
 								vdp_vram_address_cpu[13:8]	<= wdata[5:0];
-								vdp_vram_addr_set_req			<= ~vdp_vram_addr_set_ack;
-								vdp_vram_rd_req					<= ~vdp_vram_rd_ack;
+								vdp_vram_addr_set_req		<= ~vdp_vram_addr_set_ack;
+								vdp_vram_rd_req				<= ~vdp_vram_rd_ack;
 							end
 						2'b10:	// direct register selection
 							begin

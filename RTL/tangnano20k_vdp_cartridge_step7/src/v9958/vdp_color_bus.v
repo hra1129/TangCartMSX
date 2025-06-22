@@ -182,7 +182,7 @@ module vdp_color_bus (
 			ff_dram_rdata_cpu		<= 8'd0;
 			ff_vram_reading_ack		<= 1'b0;
 		end
-		else if( dot_state == 2'b01 ) begin
+		else if( dot_state == 2'b10 ) begin
 			if( ff_vram_reading_req != ff_vram_reading_ack ) begin
 				ff_dram_rdata_cpu		<= w_vram_data;
 				ff_vram_reading_ack		<= ~ff_vram_reading_ack;

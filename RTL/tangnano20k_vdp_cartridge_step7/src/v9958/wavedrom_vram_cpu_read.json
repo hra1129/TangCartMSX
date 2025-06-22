@@ -1,0 +1,34 @@
+{
+	"signal": [
+		{ "name": "clk42m",   						"wave": "P.......................", "period": 0.5 },
+		{ "name": "clk21m",   						"wave": "P...........", "period": 1 },
+		{ "name": "ff_dot_counter24",  				"wave": "2...3...4...", "data": ["00", "01", "02", "03", "04", "05", "10", "11", "12"] },
+		{ "name": "dot_state",   					"wave": "245234523452", "data": ["00", "01", "11", "10", "00", "01", "11", "10", "00", "01", "11", "10", "00", "01", "11", "10", "00", "01", "11", "10", "00", "01", "11", "10", "00", "01", "11", "10", "00", "01", "11", "10", "00", "01", "11", "10" ] },
+		{ "name": "vdp_vram_address_cpu(register)",	"wave": "x2..........", "data": ["CPU Read Adr." ] },
+		{ "name": "vdp_vram_rd_req(register)",		"wave": "01..........", "note": "これは" },
+		{ "name": "vdp_vram_rd_ack(register)",		"wave": "0...1......." },
+		{ "name": "ff_vram_reading_req(colorbus)",	"wave": "0...1......." },
+		{ "name": "ff_vram_reading_ack(colorbus)",	"wave": "0.......1...." },
+		{ "name": "ff_dram_address(colorbus)",		"wave": "xxxx2.......", "data": [ "CPU Read Adr." ] },
+		{ "name": "ff_dram_oe_n(colorbus)",			"wave": "1...01.............." },
+		{ "name": "ff_address(vdp_inst)",			"wave": "x........2..........", "data": [ "CPU Read Adr." ], "period": 0.5 },
+		{ "name": "ff_valid(vdp_inst)",				"wave": "0........110........", "period": 0.5  },
+		{ "name": "ff_rdata(ip_ram)",				"wave": "x.........2.........", "data": [ "CPU Read Data" ], "period": 0.5 },
+		{ "name": "ff_rdata2(ip_ram)",				"wave": "x..........2........", "data": [ "CPU Read Data" ], "period": 0.5 },
+		{ "name": "ff_rdata3(ip_ram)",				"wave": "x...........2.......", "data": [ "CPU Read Data" ], "period": 0.5 },
+		{ "name": "ff_rdata(vdp_inst)",				"wave": "x............2......", "data": [ "CPU Read Data" ], "period": 0.5 },
+		{ "name": "ff_dram_rdata_cpu(colorbus)",	"wave": "x...............2...", "data": [ "CPU Read Data" ], "period": 0.5 }
+	],
+	"config": { 
+		"hscale": 2 
+	},
+	"head": {
+		"text": [ 
+			"tspan",
+			["tspan", {"y":170, "x":300}, "CPUからの読みだし要求。clk21m の任意のタイミングで来る。"],
+			["tspan", {"y":200, "x":520}, "vdp_vram_rd_req と同じ値にすることで受理を示す。"],
+			["tspan", {"y":230, "x":460}, "CPU起因の VRAM読みだし要求。"],
+			["tspan", {"y":260, "x":820}, "vram_reading_req が完了したことを示す ack。"]
+		]
+	}
+}

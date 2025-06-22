@@ -1,0 +1,35 @@
+PREPARE_STATE
+	ff_prepare_address
+		dot_state : 11
+			0: Pattern Number read
+			1: Y read
+			2: X read
+			3: Pattern Left read
+			4: Pattern Right read
+			5: Color
+
+	ff_prepare_pattern_num
+		dot_state : 10
+			1: Update (attern Number read)
+
+	ff_prepare_line_num
+		dot_state : 10
+			2: Update (Y read)
+
+	ff_info_x
+		dot_state : 10
+			3: Update (X read)
+
+	ff_info_pattern[15:8]
+		dot_state : 10
+			4: Update (Pattern read left)
+
+	ff_info_pattern[7:0]
+		dot_state : 10
+			5: Update (Pattern read right)
+
+	ff_info_color
+		dot_state : 10
+			6: Update (Color)
+
+	
