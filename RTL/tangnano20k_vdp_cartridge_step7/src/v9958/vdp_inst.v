@@ -69,7 +69,7 @@ module vdp_inst(
 
 	output					int_n,
 
-	output		[13:0]		p_dram_address,
+	output		[16:0]		p_dram_address,
 	output					p_dram_write,
 	output					p_dram_valid,
 	output		[7:0]		p_dram_wdata,
@@ -138,7 +138,7 @@ module vdp_inst(
 	//--------------------------------------------------------------
 	always @( posedge clk ) begin
 		if( !reset_n ) begin
-			ff_address <= 16'd0;
+			ff_address <= 17'd0;
 			ff_write <= 1'b0;
 			ff_valid <= 1'b0;
 			ff_wdata <= 8'd0;
@@ -171,7 +171,7 @@ module vdp_inst(
 		end
 	end
 
-	assign p_dram_address	= ff_address[13:0];
+	assign p_dram_address	= ff_address;
 	assign p_dram_write		= ff_write;
 	assign p_dram_valid		= ff_valid;
 	assign p_dram_wdata		= ff_wdata;

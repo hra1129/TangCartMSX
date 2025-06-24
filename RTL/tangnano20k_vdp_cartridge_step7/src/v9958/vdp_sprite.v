@@ -137,7 +137,6 @@ module vdp_sprite (
 	wire	[16:0]	w_vram_address;
 	reg		[16:0]	ff_y_test_address;
 	reg		[16:0]	ff_preread_address;
-	reg		[7:0]	ff_vram_rdata;
 
 	reg		[9:0]	ff_attribute_base_address;
 	reg		[5:0]	ff_pattern_gen_base_address;
@@ -207,21 +206,6 @@ module vdp_sprite (
 	assign p_s0_sp_overmapped		= ff_sp_overmap;
 	assign p_s0_sp_overmapped_num	= ff_sp_overmap_num;
 
-	// --------------------------------------------------------------------------
-	// Latch VRAM read data
-	// --------------------------------------------------------------------------
-	always @( posedge clk ) begin
-		if( reset ) begin
-			ff_vram_rdata <= 8'd0;
-		end
-		else if( !enable ) begin
-			//	hold
-		end
-		else if( dot_state == 2'b11 ) begin
-			ff_vram_rdata <= p_vram_rdata;
-		end
-	end
-
 	//---------------------------------------------------------------------------
 	// スプライトを表示するか否かを示す信号
 	//---------------------------------------------------------------------------
@@ -249,6 +233,23 @@ module vdp_sprite (
 		.data			( w_info_wdata				),
 		.q				( w_info_rdata				)
 	);
+
+	always @( posedge clk ) begin
+		if( !enable ) begin
+			//	hold
+		end
+		else if( ff_main_state == c_state_prepare ) begin
+			if( dot_state == 2'b10 && eight_dot_state == 3'd6 ) begin
+				ff_info_ram_we <= 1'b1;
+			end
+			else begin
+				ff_info_ram_we <= 1'b0;
+			end
+		end
+		else begin
+			ff_info_ram_we <= 1'b0;
+		end
+	end
 
 	assign w_info_wdata			=	{ 1'b0, ff_info_x, ff_info_pattern, ff_info_color, ff_info_cc, ff_info_ic };
 	assign w_info_x				=	w_info_rdata[30:22];
@@ -317,7 +318,7 @@ module vdp_sprite (
 		else if( !enable ) begin
 			//	hold
 		end
-		else if( dot_state == 2'b10 ) begin
+		else if( dot_state == 2'b11 ) begin
 			case( ff_main_state )
 			c_state_idle:
 				if( dot_counter_x == 9'd0 ) begin
@@ -347,7 +348,13 @@ module vdp_sprite (
 	// 現在のラインで固定される情報
 	//---------------------------------------------------------------------------
 	always @( posedge clk ) begin
-		if( !enable ) begin
+		if( reset ) begin
+			ff_prev_cur_y				<= 9'd0;
+			ff_cur_y					<= 9'd0;
+			ff_pattern_gen_base_address	<= 6'd0;
+			ff_attribute_base_address	<= 10'd0;
+		end
+		else if( !enable ) begin
 			//	hold
 		end
 		else if( (dot_state == 2'b01) && (dot_counter_x == 9'd0) ) begin
@@ -388,7 +395,7 @@ module vdp_sprite (
 		else if( !enable ) begin
 			//	hold
 		end
-		else if( dot_state == 2'b01 ) begin
+		else if( dot_state == 2'b10 ) begin
 			if( dot_counter_x == 9'd0 ) begin
 				ff_y_test_en			<= ff_sp_en;
 				ff_y_test_sp_num		<= 5'd0;
@@ -454,7 +461,7 @@ module vdp_sprite (
 	end
 
 	// [y_test][prepare]着目スプライトの一番上を 0 とする相対座標に変換
-	assign w_listup_y		= ff_cur_y[7:0] - ff_vram_rdata;
+	assign w_listup_y		= ff_cur_y[7:0] - p_vram_rdata;
 
 	// [y_test]着目スプライトを現ラインに表示するかどうかの信号
 	assign w_target_sp_en	= (((w_listup_y[7:3] == 5'd0) && (!reg_r1_sp_size) && (!reg_r1_sp_zoom)) ||
@@ -463,7 +470,7 @@ module vdp_sprite (
 							   ((w_listup_y[7:5] == 3'd0) && ( reg_r1_sp_size) && ( reg_r1_sp_zoom)) );
 
 	// [y_test]これ以降のスプライトは表示禁止かどうかの信号
-	assign w_sp_off			=	( ff_vram_rdata == { 4'b1101, p_sp_mode2, 3'b000 } ) ? 1'b1: 1'b0;
+	assign w_sp_off			=	( p_vram_rdata == { 4'b1101, p_sp_mode2, 3'b000 } ) ? 1'b1: 1'b0;
 
 	// [y_test]４つ（８つ）のスプライトが並んでいるかどうかの信号
 	assign w_sp_overmap		=	( (ff_y_test_listup_addr[2] & !p_sp_mode2) | ff_y_test_listup_addr[3] );
@@ -503,7 +510,7 @@ module vdp_sprite (
 	//---------------------------------------------------------------------------
 	// yテスト用の vram読み出しアドレス
 	//	アドレスの更新は、dot_state = 11
-	//	その結果が ff_vram_rdata から得られるのは、5clk@21MHz後の dot_state = 10
+	//	その結果が p_vram_rdata から得られるのは、5clk@21MHz後の dot_state = 10
 	//---------------------------------------------------------------------------
 	always @( posedge clk ) begin
 		if( reset ) begin
@@ -527,7 +534,7 @@ module vdp_sprite (
 	// jp: 次の次の画面描画中	: ラインバッファに描画された絵を出力し、画面描画に混ぜる
 	//
 	//	アドレスの更新は、dot_state = 11
-	//	その結果が ff_vram_rdata から得られるのは、5clk@21MHz後の dot_state = 10
+	//	その結果が p_vram_rdata から得られるのは、5clk@21MHz後の dot_state = 10
 	//---------------------------------------------------------------------------
 
 	// read timing of sprite attribute table
@@ -579,27 +586,27 @@ module vdp_sprite (
 				if( ff_main_state == c_state_prepare ) begin
 					case( eight_dot_state )
 					3'd1:								// pattern num read
-						ff_prepare_pattern_num	<= ff_vram_rdata;
+						ff_prepare_pattern_num	<= p_vram_rdata;
 					3'd2:								// y read
 						// jp: スプライトの何行目が該当したか覚えておく
 						ff_prepare_line_num		<= reg_r1_sp_zoom ? w_listup_y[4:1] : w_listup_y[3:0];
 					3'd3:								// x read
-						ff_info_x				<= { 1'b0, ff_vram_rdata };
+						ff_info_x				<= { 1'b0, p_vram_rdata };
 					3'd4:								// pattern read left
-						ff_info_pattern[15:8]	<= ff_vram_rdata;
+						ff_info_pattern[15:8]	<= p_vram_rdata;
 					3'd5:								// pattern read right
 						//                                       16x16 mode    : 8x8 mode
-						ff_info_pattern[7:0]	<= reg_r1_sp_size ? ff_vram_rdata : 8'd0;
+						ff_info_pattern[7:0]	<= reg_r1_sp_size ? p_vram_rdata : 8'd0;
 					3'd6:								// color read
 						begin
 							// color
-							ff_info_color		<= ff_vram_rdata[3:0];
+							ff_info_color		<= p_vram_rdata[3:0];
 							// cc	優先順位ビット (1: 優先順位無し, 0: 優先順位あり)
-							ff_info_cc			<= p_sp_mode2 ? ff_vram_rdata[6] : 1'b0;
+							ff_info_cc			<= p_sp_mode2 ? p_vram_rdata[6] : 1'b0;
 							// ic	衝突検知ビット (1: 検知しない, 0: 検知する)
-							ff_info_ic			<= ff_vram_rdata[5] & p_sp_mode2;
+							ff_info_ic			<= p_vram_rdata[5] & p_sp_mode2;
 							// ec	32ドット左シフト (1: する, 0: しない)
-							if( ff_vram_rdata[7] ) begin
+							if( p_vram_rdata[7] ) begin
 								ff_info_x	<= ff_info_x - 9'd32;
 							end
 
@@ -611,8 +618,8 @@ module vdp_sprite (
 						end
 					3'd7:
 						begin
-							ff_prepare_local_plane_num <= ff_prepare_local_plane_num + 1;
-							if( (ff_prepare_local_plane_num == 7) || (ff_prepare_local_plane_num == 3 && !p_sp_mode2) ) begin
+							ff_prepare_local_plane_num <= ff_prepare_local_plane_num + 3'd1;
+							if( (ff_prepare_local_plane_num == 3'd7) || (ff_prepare_local_plane_num == 3'd3 && !p_sp_mode2) ) begin
 								ff_prepare_end <= 1'b1;
 							end
 						end
@@ -646,33 +653,6 @@ module vdp_sprite (
 		end
 	end
 
-	always @( posedge clk ) begin
-		if( !enable ) begin
-			//	hold
-		end
-		else begin
-			case( dot_state )
-			2'b10:
-				begin
-					if( ff_main_state == c_state_prepare ) begin
-						if( eight_dot_state == 3'd6 ) begin
-							ff_info_ram_we <= 1'b1;
-						end
-					end
-					else begin
-						ff_info_ram_we <= 1'b0;
-					end
-				end
-			2'b00:
-				ff_info_ram_we <= 1'b0;
-			default:
-				begin
-					//	hold
-				end
-			endcase
-		end
-	end
-
 	//---------------------------------------------------------------------------
 	// drawing to line buffer.
 	//
@@ -693,45 +673,53 @@ module vdp_sprite (
 		if( reset ) begin
 			ff_line_buf_draw_we			<= 1'b0;					// jp: ラインバッファへの書き込みイネーブラ
 			ff_sp_predraw_end			<= 1'b0;
-			ff_draw_pattern				<= 'd0;
-			ff_line_buf_draw_color		<= 'd0;
-			ff_line_buf_draw_x			<= 'd0;
-			ff_draw_color				<= 'd0;
+			ff_draw_pattern				<= 16'd0;
+			ff_line_buf_draw_color		<= 8'd0;
+			ff_line_buf_draw_x			<= 8'd0;
+			ff_draw_color				<= 4'd0;
 			ff_vdps0resetack			<= 1'b0;
 			ff_vdps5resetack			<= 1'b0;
 
 			ff_s0_collision_incidence	= 1'b0;						// jp: スプライトが衝突したかどうかを示すフラグ
-			ff_s3s4_collision_x			= 'd0;
-			ff_s5s6_collision_y			= 'd0;
+			ff_s3s4_collision_x			= 9'd0;
+			ff_s5s6_collision_y			= 9'd0;
 			ff_cc0_found				= 1'b0;
-			ff_last_cc0_local_plane_num	= 'd0;
+			ff_last_cc0_local_plane_num	= 3'd0;
 		end
 		else if( !enable ) begin
 			//	hold
 		end
+		else if( dot_counter_x == 9'd0 ) begin
+			ff_predraw_local_plane_num		<= 3'd0;
+			ff_sp_predraw_end				<= reg_r8_sp_off;
+			ff_last_cc0_local_plane_num		= 3'd0;
+			ff_cc0_found					= 1'b0;
+		end
 		else if( ff_main_state == c_state_ytest_draw ) begin
 			case( dot_state )
 			2'b10:
-				// jp: 処理単位の始まり
-				ff_line_buf_draw_we <= 1'b0;
-			2'b00:
 				begin
-					// jp:
-					if( dot_counter_x[4:0] == 4'd1 ) begin
-						ff_draw_pattern	<= w_info_pattern;
-						ff_draw_x_pre	= w_info_x;
+					// jp: 処理単位の始まり
+					ff_line_buf_draw_we <= 1'b0;
+				end
+			2'b00:
+				// jp:
+				if( dot_counter_x[4:0] == 4'd1 ) begin
+					ff_draw_pattern	<= w_info_pattern;
+					ff_draw_x_pre	<= w_info_x;
+				end
+				else begin
+					if( !reg_r1_sp_zoom || dot_counter_x[0] ) begin
+						ff_draw_pattern <= { ff_draw_pattern[14:0], 1'b0 };
 					end
-					else begin
-						if( !reg_r1_sp_zoom || dot_counter_x[0] ) begin
-							ff_draw_pattern <= { ff_draw_pattern[14:0], 1'b0 };
-						end
-						ff_draw_x_pre	= ff_draw_x + 1;
-					end
-					ff_draw_x			<= ff_draw_x_pre;
-					ff_line_buf_draw_x	<= ff_draw_x_pre[7:0];
+					ff_draw_x_pre	<= ff_draw_x + 1;
 				end
 			2'b01:
-				ff_draw_color <= w_info_color;
+				begin
+					ff_draw_x			<= ff_draw_x_pre;
+					ff_line_buf_draw_x	<= ff_draw_x_pre[7:0];
+					ff_draw_color		<= w_info_color;
+				end
 			2'b11:
 				begin
 					if( !w_info_cc ) begin
@@ -769,13 +757,7 @@ module vdp_sprite (
 						end
 					end
 					//
-					if( dot_counter_x == 0 ) begin
-						ff_predraw_local_plane_num		<= 'd0;
-						ff_sp_predraw_end				<= reg_r8_sp_off;
-						ff_last_cc0_local_plane_num		= 'd0;
-						ff_cc0_found					= 1'b0;
-					end
-					else if( dot_counter_x[4:0] == 5'd0 ) begin
+					if( dot_counter_x[4:0] == 5'd0 ) begin
 						ff_predraw_local_plane_num <= ff_predraw_local_plane_num + 1;
 						if( (ff_predraw_local_plane_num == 7) || (ff_predraw_local_plane_num == 3 && !p_sp_mode2) ) begin
 							ff_sp_predraw_end <= 1'b1;

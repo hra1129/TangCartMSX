@@ -155,7 +155,7 @@
         "SubInsts" : [
          {
           "InstFile" : "D:/github/HRA_product/TangCartMSX/RTL/tangnano20k_vdp_cartridge_step7/src/v9958/vdp_sprite.v",
-          "InstLine" : 244,
+          "InstLine" : 228,
           "InstName" : "u_sprite_info_ram",
           "ModuleFile" : "D:/github/HRA_product/TangCartMSX/RTL/tangnano20k_vdp_cartridge_step7/src/v9958/vdp_spinforam.v",
           "ModuleLine" : 58,
@@ -163,7 +163,7 @@
          },
          {
           "InstFile" : "D:/github/HRA_product/TangCartMSX/RTL/tangnano20k_vdp_cartridge_step7/src/v9958/vdp_sprite.v",
-          "InstLine" : 272,
+          "InstLine" : 273,
           "InstName" : "u_even_line_buf",
           "ModuleFile" : "D:/github/HRA_product/TangCartMSX/RTL/tangnano20k_vdp_cartridge_step7/src/v9958/vdp_ram_256byte.v",
           "ModuleLine" : 32,
@@ -171,7 +171,7 @@
          },
          {
           "InstFile" : "D:/github/HRA_product/TangCartMSX/RTL/tangnano20k_vdp_cartridge_step7/src/v9958/vdp_sprite.v",
-          "InstLine" : 288,
+          "InstLine" : 289,
           "InstName" : "u_odd_line_buf",
           "ModuleFile" : "D:/github/HRA_product/TangCartMSX/RTL/tangnano20k_vdp_cartridge_step7/src/v9958/vdp_ram_256byte.v",
           "ModuleLine" : 32,

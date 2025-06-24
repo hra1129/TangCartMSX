@@ -272,31 +272,31 @@ module vdp_graphic4567(
 		end
 		else begin
 			case( dot_state )
-			2'b00:
+			2'b10:
 				begin
-					if(		eight_dot_state == 3'b000 ) begin
+					if(		eight_dot_state == 3'd0 ) begin
 						ff_fifo_write <= 1'b0;
 					end
-					else if((eight_dot_state == 3'b001) ||
-							(eight_dot_state == 3'b010) ||
-							(eight_dot_state == 3'b011) ||
-							(eight_dot_state == 3'b100) ) begin
+					else if((eight_dot_state == 3'd1) ||
+							(eight_dot_state == 3'd2) ||
+							(eight_dot_state == 3'd3) ||
+							(eight_dot_state == 3'd4) ) begin
 						ff_fifo_write <= 1'b1;
 					end
 				end
-			2'b01:
+			2'b00:
 				ff_fifo_write <= 1'b0;
-			2'b11:
+			2'b01:
 				begin
 					if( (vdp_mode_graphic6 || vdp_mode_graphic7) &&
-						(	(eight_dot_state == 3'b001) ||
-							(eight_dot_state == 3'b010) ||
-							(eight_dot_state == 3'b011) ||
-							(eight_dot_state == 3'b100)) ) begin
+						(	(eight_dot_state == 3'd2) ||
+							(eight_dot_state == 3'd3) ||
+							(eight_dot_state == 3'd4) ||
+							(eight_dot_state == 3'd5)) ) begin
 						ff_fifo_write <= 1'b1;
 					end
 				end
-			2'b10:
+			2'b11:
 				ff_fifo_write <= 1'b0;
 			default:
 				begin
@@ -462,7 +462,7 @@ module vdp_graphic4567(
 			3'd0:
 				ff_local_dot_counter_x <= w_dot_counter_x;
 			3'd1, 3'd2, 3'd3, 3'd4:
-				ff_local_dot_counter_x <= ff_local_dot_counter_x + 2;
+				ff_local_dot_counter_x <= ff_local_dot_counter_x + 9'd2;
 			default:
 				begin
 					//	hold
