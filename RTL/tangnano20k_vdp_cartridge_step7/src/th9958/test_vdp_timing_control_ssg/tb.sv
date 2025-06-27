@@ -60,10 +60,9 @@ module tb ();
 
 	wire		[10:0]	h_count;
 	wire		[ 9:0]	v_count;
-	wire		[10:0]	screen_pos_x;
+	wire		[12:0]	screen_pos_x;
 	wire		[ 9:0]	screen_pos_y;
 	wire				screen_active;
-	wire				dot_phase;
 
 	reg					reg_50hz_mode;
 	reg					reg_interlace_mode;

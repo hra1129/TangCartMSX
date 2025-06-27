@@ -1,0 +1,18 @@
+th9958(仮) 開発日誌
+-------------------------------------------------------------------------------
+2025年6月25日
+	OCM-PLD の V9958コアを移植したものが、微妙なタイミング不整合で、画面が崩れた
+	のをきっかけに、「ちゃんと自分で把握しきれるものを作ろう」と思い立つ。
+	全体のブロック図を作成。
+	th9918_timing_control.v を作成。
+
+2025年6月26日
+	th9918_timing_control.v を vdp_timing_control_ssg.v に改名。
+	vdp_timing_control_g123m.v を一部分作成。
+	vdp_cpu_interface.v を一部分作成。
+
+2025年6月27日
+	vdp_timing_control_ssg.v のポートを少し改変。
+	vdp_timing_control の中のブロック構成図を作成。
+	g123m のタイミングチャートを作成。
+	vdp_timing_control_g123m.v を作成。

@@ -62,15 +62,14 @@ module vdp_timing_control_ssg (
 	output		[10:0]	h_count,
 	output		[ 9:0]	v_count,
 
-	output		[10:0]	screen_pos_x,
-	output		[ 9:0]	screen_pos_y,
+	output		[12:0]	screen_pos_x,			//	signed
+	output		[ 9:0]	screen_pos_y,			//	signed
 	output				screen_active,
-	output				dot_phase,
 
 	input				reg_50hz_mode,
 	input				reg_interlace_mode
 );
-	localparam			c_left_pos			= 11'd172;		//	4の倍数
+	localparam			c_left_pos			= 12'd320;		//	16の倍数
 	localparam			c_top_pos			= 11'd6;
 	localparam			c_h_count_max		= 11'd1367;
 	localparam			c_v_count_max_60p	= 10'd523;
@@ -82,7 +81,7 @@ module vdp_timing_control_ssg (
 	reg			[ 9:0]	ff_v_count;
 	wire				w_h_count_end;
 	wire				w_v_count_end;
-	wire		[10:0]	w_screen_pos_x;
+	wire		[12:0]	w_screen_pos_x;
 	wire		[ 9:0]	w_screen_pos_y;
 	reg					ff_h_active;
 	reg					ff_v_active;
@@ -149,7 +148,7 @@ module vdp_timing_control_ssg (
 			if( ff_half_count == (c_left_pos - 11'd1) ) begin
 				ff_h_active <= 1'b1;
 			end
-			else if( ff_half_count == (c_left_pos + 11'd1023) ) begin
+			else if( ff_half_count == (c_left_pos + 11'd2047) ) begin
 				ff_h_active <= 1'b0;
 			end
 		end
@@ -160,16 +159,16 @@ module vdp_timing_control_ssg (
 			ff_v_active <= 1'b0;
 		end
 		else if( w_h_count_end ) begin
-			if( ff_v_count == (c_top_pos - 10'd1) ) begin
+			if( ff_v_count == (c_top_pos * 2 - 10'd1) ) begin
 				ff_v_active <= 1'b1;
 			end
-			else if( ff_v_count == (c_top_pos + 10'd423) ) begin
+			else if( ff_v_count == (c_top_pos * 2 + 10'd423) ) begin
 				ff_v_active <= 1'b0;
 			end
 		end
 	end
 
-	assign w_screen_pos_x	= { ff_half_count[11:1] }   - c_left_pos;
+	assign w_screen_pos_x	= { 1'b0, ff_half_count   } - c_left_pos;
 	assign w_screen_pos_y	= { 1'b0, ff_v_count[9:1] } - c_top_pos;
 
 	// --------------------------------------------------------------------
