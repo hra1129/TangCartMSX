@@ -64,9 +64,18 @@ module vdp_cpu_interface (
 	input				bus_ioreq,
 	input				bus_write,
 	input				bus_valid,
+	output				bus_ready,
 	input	[7:0]		bus_wdata,
 	output	[7:0]		bus_rdata,
 	output				bus_rdata_en,
+
+	output	[16:0]		vram_address,
+	output				vram_write,
+	output				vram_valid,
+	input				vram_ready,
+	output	[7:0]		vram_wdata,
+	input	[7:0]		vram_rdata,
+	input				vram_rdata_en,
 
 	output	[4:0]		reg_screen_mode,
 	output				reg_sprite_magify,
@@ -136,9 +145,12 @@ module vdp_cpu_interface (
 	reg					ff_write;
 	reg		[5:0]		ff_register_num;
 	reg		[16:0]		ff_vram_address;
+	reg					ff_vram_address_write;		//	アドレス設定が書き込み用に設定されたかどうか
+	reg					ff_vram_write;				//	実際のアクセスが書き込みアクセスかどうか
+	reg					ff_vram_valid;
 
 	// --------------------------------------------------------------------
-	//	Write access
+	//	VRAM Read/Write access
 	// --------------------------------------------------------------------
 	always @( posedge clk or negedge reset_n ) begin
 		if( !reset_n ) begin
@@ -146,6 +158,11 @@ module vdp_cpu_interface (
 			ff_1st_byte			<= 8'd0;
 			ff_register_write	<= 1'b0;
 			ff_register_num		<= 6'd0;
+		end
+		else if( ff_vram_valid ) begin
+			if( vram_ready && ff_vram_address_write ) begin
+				
+			end
 		end
 		else if( bus_valid && bus_write && bus_address == 2'd1 ) begin
 			if( !ff_2nd_access ) begin
@@ -162,11 +179,13 @@ module vdp_cpu_interface (
 					begin
 						ff_vram_address[7:0]	<= ff_1st_byte;
 						ff_vram_address[13:8]	<= bus_wdata[5:0];
+						ff_vram_address_write	<= 1'b0;
 					end
 				2'd1:			//	Set VRAM Write Address
 					begin
 						ff_vram_address[7:0]	<= ff_1st_byte;
 						ff_vram_address[13:8]	<= bus_wdata[5:0];
+						ff_vram_address_write	<= 1'b1;
 					end
 				2'd2, 2'd3:		//	Direct Register Write Access
 					begin
@@ -185,6 +204,28 @@ module vdp_cpu_interface (
 		end
 	end
 
+	always @( posedge clk or negedge reset_n ) begin
+		if( !reset_n ) begin
+			ff_vram_valid <= 1'b0;
+			ff_vram_write <= 1'b0;
+		end
+		else if( ff_vram_valid ) begin
+			if( vram_ready ) begin
+				ff_vram_valid <= 1'b0;
+			end
+			else begin
+				//	hold
+			end
+		end
+		else if( bus_valid && bus_address == 2'd0 ) begin
+			ff_vram_valid <= 1'b1;
+			ff_vram_write <= bus_write;
+		end
+	end
+
+	// --------------------------------------------------------------------
+	//	Control registers
+	// --------------------------------------------------------------------
 	always @( posedge clk or negedge reset_n ) begin
 		if( !reset_n ) begin
 			ff_screen_mode <= 5'd0;

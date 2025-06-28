@@ -59,19 +59,21 @@ module vdp_timing_control_g123m (
 	input				reset_n,
 	input				clk,					//	42.95454MHz
 
-	input		[10:0]	screen_pos_x,
+	input		[12:0]	screen_pos_x,
 	input		[ 9:0]	screen_pos_y,
 	input				screen_active,
-	input				dot_phase,
+
+	output		[16:0]	vram_address,
+	output				vram_valid,
+	input		[7:0]	vram_rdata,
+
+	output		[3:0]	display_color,
 
 	input		[4:0]	reg_screen_mode,
 	input		[16:10]	reg_pattern_name_table_base,
 	input		[16:6]	reg_color_table_base,
 	input		[16:11]	reg_pattern_generator_table_base,
-
-	output		[16:0]	vram_read_address,
-	output				vram_read_valid,
-	input		[7:0]	vram_read_data
+	input		[3:0]	reg_backdrop_color
 );
 	//	Screen mode
 	localparam			c_mode_g1	= 5'b000_00;	//	Graphic1 (SCREEN1)
@@ -86,7 +88,7 @@ module vdp_timing_control_g123m (
 	localparam			c_gm		= 3;			//	Mosaic   (SCREEN3) w_mode index
 	//	Phase
 	wire		[2:0]	w_phase;
-	wire		[1:0]	w_sub_phase;
+	wire		[2:0]	w_sub_phase;
 	//	Position
 	wire		[7:0]	w_pos_x;
 	wire		[7:0]	w_pos_y;
@@ -97,9 +99,20 @@ module vdp_timing_control_g123m (
 	wire		[16:0]	w_pattern_generator_g1;
 	wire		[16:0]	w_pattern_generator_g23;
 	wire		[16:0]	w_pattern_generator;
+	reg			[7:0]	ff_next_pattern;
+	reg			[7:0]	ff_pattern;
+	//	Color table address
+	wire		[16:0]	w_color_g1;
+	wire		[16:0]	w_color_g23;
+	wire		[16:0]	w_color_gm;
+	wire		[16:0]	w_color;
+	reg			[7:0]	ff_next_color;
+	reg			[7:0]	ff_color;
 	//	VRAM address
-	reg			[16:0]	ff_vram_read_address;
-	reg					ff_vram_read_valid;
+	reg			[16:0]	ff_vram_address;
+	reg					ff_vram_valid;
+	//	Display color
+	reg			[3:0]	ff_display_color;
 
 	// --------------------------------------------------------------------
 	//	Screen mode decoder
@@ -121,7 +134,7 @@ module vdp_timing_control_g123m (
 	// --------------------------------------------------------------------
 	//	Screen Position for active area
 	// --------------------------------------------------------------------
-	assign w_pos_x		= screen_pos_x[9:3];
+	assign w_pos_x		= screen_pos_x[10:3];
 	assign w_pos_y		= screen_pos_y[7:0];
 
 	// --------------------------------------------------------------------
@@ -147,9 +160,142 @@ module vdp_timing_control_g123m (
 	// --------------------------------------------------------------------
 	assign w_color_g1					= { reg_color_table_base, 1'b0, ff_pattern_num[7:3] };
 	assign w_color_g23					= { reg_color_table_base[16:13], (w_pos_y[7:6] & reg_color_table_base[12:11]), (ff_pattern_num[7:3] & reg_color_table_base[10:6]), ff_pattern_num[2:0], w_pos_y[2:0] };
-	assign w_color_m					= { reg_pattern_generator_table_base, ff_pattern_num, w_pos_y[4:2] };
+	assign w_color_gm					= { reg_pattern_generator_table_base, ff_pattern_num, w_pos_y[4:2] };
 	assign w_color						= w_mode[ c_g1 ] ? w_color_g1:
-										  w_mode[ c_m  ] ? w_color_m : w_color_g23;
+										  w_mode[ c_gm ] ? w_color_gm : w_color_g23;
 
-	
+	// --------------------------------------------------------------------
+	//	VRAM read access request
+	// --------------------------------------------------------------------
+	always @( posedge clk or negedge reset_n ) begin
+		if( !reset_n ) begin
+			ff_vram_address <= 17'd0;
+			ff_vram_valid <= 1'b0;
+		end
+		else begin
+			if( w_sub_phase == 3'd0 ) begin
+				case( w_phase )
+				3'd0:
+					begin
+						ff_vram_address <= w_pattern_name;
+						ff_vram_valid <= screen_active;
+					end
+				3'd2:
+					begin
+						ff_vram_address <= w_pattern_generator;
+						ff_vram_valid <= screen_active;
+					end
+				3'd3:
+					begin
+						ff_vram_address <= w_color;
+						ff_vram_valid <= screen_active;
+					end
+				default:
+					begin
+						//	hold
+					end
+				endcase
+			end
+			else begin
+				ff_vram_address <= 17'd0;
+				ff_vram_valid <= 1'b0;
+			end
+		end
+	end
+
+	assign vram_address = ff_vram_address;
+	assign vram_valid = ff_vram_valid;
+
+	// --------------------------------------------------------------------
+	//	VRAM read data latch
+	// --------------------------------------------------------------------
+	always @( posedge clk or negedge reset_n ) begin
+		if( !reset_n ) begin
+			ff_pattern_num <= 8'd0;
+			ff_next_pattern <= 8'd0;
+			ff_next_color <= 8'd0;
+		end
+		else begin
+			if( w_sub_phase == 3'd0 ) begin
+				case( w_phase )
+				3'd1:
+					begin
+						ff_pattern_num <= vram_rdata;
+					end
+				3'd3:
+					begin
+						ff_next_pattern <= vram_rdata;
+					end
+				3'd4:
+					begin
+						ff_next_color <= vram_rdata;
+					end
+				default:
+					begin
+						//	hold
+					end
+				endcase
+			end
+		end
+	end
+
+	// --------------------------------------------------------------------
+	//	Display color generate
+	// --------------------------------------------------------------------
+	always @( posedge clk or negedge reset_n ) begin
+		if( !reset_n ) begin
+			ff_pattern <= 8'd0;
+		end
+		else if( w_sub_phase == 3'd5 ) begin
+			if( w_phase == 3'd7 ) begin
+				if( !screen_active ) begin
+					ff_pattern <= 8'd0;
+				end
+				else if( w_mode[ c_gm ] ) begin
+					//	Fixed pattern 11110000 for mosaic mode
+					ff_pattern <= 8'hF0;
+				end
+				else begin
+					ff_pattern <= ff_next_pattern;
+				end
+			end
+			else begin
+				ff_pattern <= { ff_pattern[6:0], 1'b0 };
+			end
+		end
+	end
+
+	always @( posedge clk or negedge reset_n ) begin
+		if( !reset_n ) begin
+			ff_color <= 8'd0;
+		end
+		else if( w_sub_phase == 3'd5 ) begin
+			if( w_phase == 3'd7 ) begin
+				if( !screen_active ) begin
+					ff_color <= { reg_backdrop_color, reg_backdrop_color };
+				end
+				else begin
+					ff_color <= ff_next_color;
+				end
+			end
+		end
+	end
+
+	always @( posedge clk or negedge reset_n ) begin
+		if( !reset_n ) begin
+			ff_display_color <= 4'd0;
+		end
+		else if( w_sub_phase == 3'd7 ) begin
+			if( ff_pattern[7] ) begin
+				//	Foreground
+				ff_display_color <= ff_color[7:4];
+			end
+			else begin
+				//	Background
+				ff_display_color <= ff_color[3:0];
+			end
+		end
+	end
+
+	assign display_color = ff_display_color;
 endmodule
