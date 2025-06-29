@@ -1,28 +1,31 @@
-th9958(‰¼) ŠJ”­“ú
+th9958(ä»®) é–‹ç™ºæ—¥èªŒ
 -------------------------------------------------------------------------------
-2025”N6Œ25“ú
-	OCM-PLD ‚Ì V9958ƒRƒA‚ğˆÚA‚µ‚½‚à‚Ì‚ªA”÷–­‚Èƒ^ƒCƒ~ƒ“ƒO•s®‡‚ÅA‰æ–Ê‚ª•ö‚ê‚½
-	‚Ì‚ğ‚«‚Á‚©‚¯‚ÉAu‚¿‚á‚ñ‚Æ©•ª‚Å”cˆ¬‚µ‚«‚ê‚é‚à‚Ì‚ğì‚ë‚¤v‚Æv‚¢—§‚ÂB
-	‘S‘Ì‚ÌƒuƒƒbƒN}‚ğì¬B
-	th9918_timing_control.v ‚ğì¬B
+2025å¹´6æœˆ25æ—¥
+	OCM-PLD ã® V9958ã‚³ã‚¢ã‚’ç§»æ¤ã—ãŸã‚‚ã®ãŒã€å¾®å¦™ãªã‚¿ã‚¤ãƒŸãƒ³ã‚°ä¸æ•´åˆã§ã€ç”»é¢ãŒå´©ã‚ŒãŸ
+	ã®ã‚’ãã£ã‹ã‘ã«ã€ã€Œã¡ã‚ƒã‚“ã¨è‡ªåˆ†ã§æŠŠæ¡ã—ãã‚Œã‚‹ã‚‚ã®ã‚’ä½œã‚ã†ã€ã¨æ€ã„ç«‹ã¤ã€‚
+	å…¨ä½“ã®ãƒ–ãƒ­ãƒƒã‚¯å›³ã‚’ä½œæˆã€‚
+	th9918_timing_control.v ã‚’ä½œæˆã€‚
 
-2025”N6Œ26“ú
-	th9918_timing_control.v ‚ğ vdp_timing_control_ssg.v ‚É‰ü–¼B
-	vdp_timing_control_g123m.v ‚ğˆê•”•ªì¬B
-	vdp_cpu_interface.v ‚ğˆê•”•ªì¬B
+2025å¹´6æœˆ26æ—¥
+	th9918_timing_control.v ã‚’ vdp_timing_control_ssg.v ã«æ”¹åã€‚
+	vdp_timing_control_g123m.v ã‚’ä¸€éƒ¨åˆ†ä½œæˆã€‚
+	vdp_cpu_interface.v ã‚’ä¸€éƒ¨åˆ†ä½œæˆã€‚
 
-2025”N6Œ27“ú
-	vdp_timing_control_ssg.v ‚Ìƒ|[ƒg‚ğ­‚µ‰ü•ÏB
-	vdp_timing_control ‚Ì’†‚ÌƒuƒƒbƒN\¬}‚ğì¬B
-	g123m ‚Ìƒ^ƒCƒ~ƒ“ƒOƒ`ƒƒ[ƒg‚ğì¬B
-	vdp_timing_control_g123m.v ‚ğì¬B
+2025å¹´6æœˆ27æ—¥
+	vdp_timing_control_ssg.v ã®ãƒãƒ¼ãƒˆã‚’å°‘ã—æ”¹å¤‰ã€‚
+	vdp_timing_control ã®ä¸­ã®ãƒ–ãƒ­ãƒƒã‚¯æ§‹æˆå›³ã‚’ä½œæˆã€‚
+	g123m ã®ã‚¿ã‚¤ãƒŸãƒ³ã‚°ãƒãƒ£ãƒ¼ãƒˆã‚’ä½œæˆã€‚
+	vdp_timing_control_g123m.v ã‚’ä½œæˆã€‚
 
-2025”N6Œ28“ú
-	vdp_cpu_interface.v ‚ğˆê•”•ªì¬B
-	vdp_cpu_interface ‚ÌƒeƒXƒgƒxƒ“ƒ`‚ğì¬B
-	VRAM“Ç‚İ‘‚«ƒAƒNƒZƒX‚ÌƒfƒoƒbƒOB
+2025å¹´6æœˆ28æ—¥
+	vdp_cpu_interface.v ã‚’ä¸€éƒ¨åˆ†ä½œæˆã€‚
+	vdp_cpu_interface ã®ãƒ†ã‚¹ãƒˆãƒ™ãƒ³ãƒã‚’ä½œæˆã€‚
+	VRAMèª­ã¿æ›¸ãã‚¢ã‚¯ã‚»ã‚¹ã®ãƒ‡ãƒãƒƒã‚°ã€‚
 
-2025”N6Œ29“ú
-	VRAM“Ç‚İ‘‚«ƒAƒNƒZƒX‚ÌƒfƒoƒbƒOŠ®—¹B
-	vdp_color_palette.v ‚ÌİŒv‚ğŠJnAˆê•”(ƒpƒŒƒbƒg¨RGB888’l•ÏŠ·)À‘•B
-	vdp_color_palette_ram.v ‚ğİŒvAŠ®—¹B
+2025å¹´6æœˆ29æ—¥
+	VRAMèª­ã¿æ›¸ãã‚¢ã‚¯ã‚»ã‚¹ã®ãƒ‡ãƒãƒƒã‚°å®Œäº†ã€‚
+	vdp_color_palette.v ã®è¨­è¨ˆã‚’é–‹å§‹ã€ä¸€éƒ¨(ãƒ‘ãƒ¬ãƒƒãƒˆâ†’RGB888å€¤å¤‰æ›)å®Ÿè£…ã€‚
+	vdp_color_palette_ram.v ã‚’è¨­è¨ˆã€å®Œäº†ã€‚
+	vdp_timing_control_sprite_line_ram ã‚’è¨­è¨ˆã€å®Œäº†ã€‚
+	vdp_timing_control_sprite_info_ram ã‚’è¨­è¨ˆã€å®Œäº†ã€‚
+	vdp_timing_control_sprite ã‚’è¨­è¨ˆé–‹å§‹ã€‚
