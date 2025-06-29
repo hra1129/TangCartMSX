@@ -16,3 +16,13 @@ th9958(仮) 開発日誌
 	vdp_timing_control の中のブロック構成図を作成。
 	g123m のタイミングチャートを作成。
 	vdp_timing_control_g123m.v を作成。
+
+2025年6月28日
+	vdp_cpu_interface.v を一部分作成。
+	vdp_cpu_interface のテストベンチを作成。
+	VRAM読み書きアクセスのデバッグ。
+
+2025年6月29日
+	VRAM読み書きアクセスのデバッグ完了。
+	vdp_color_palette.v の設計を開始。
+	vdp_color_palette_ram.v を設計、完了。

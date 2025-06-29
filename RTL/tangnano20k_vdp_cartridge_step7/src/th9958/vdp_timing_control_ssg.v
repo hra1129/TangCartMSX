@@ -1,6 +1,6 @@
 //
 //	vdp_timing_control_ssg.v
-//	Sinchronous Signal Generator for Timing Control
+//	Synchronous Signal Generator for Timing Control
 //
 //	Copyright (C) 2025 Takayuki Hara
 //
