@@ -149,13 +149,12 @@ module vdp_cpu_interface (
 	reg					ff_vram_address_write;		//	アドレス設定が書き込み用に設定されたかどうか
 	reg					ff_vram_write;				//	実際のアクセスが書き込みアクセスかどうか
 	reg		[7:0]		ff_vram_wdata;
-	reg		[7:0]		ff_vram_rdata;
 	reg					ff_vram_address_inc;		//	アドレスインクリメント要求
 	reg					ff_vram_valid;
 	wire				w_address_14bit;			//	test1, test1q, multi, multiq, graphic1, graphic2 は、アドレスインクリメントが bit14 に繰り上がらない
 	reg					ff_busy;
 
-	assign bus_ready = ~ff_busy | ff_register_write;
+	assign bus_ready = ~ff_busy & ~ff_register_write;
 
 	// --------------------------------------------------------------------
 	//	VRAM Read/Write access
@@ -212,18 +211,19 @@ module vdp_cpu_interface (
 			ff_vram_write <= 1'b0;
 			ff_vram_address_inc <= 1'b0;
 			ff_vram_wdata <= 8'd0;
-			ff_vram_rdata <= 8'd0;
+			ff_busy <= 1'b0;
+		end
+		else if( ff_vram_address_inc ) begin
+			ff_vram_address_inc <= 1'b0;
 			ff_busy <= 1'b0;
 		end
 		else if( vram_rdata_en ) begin
-			ff_vram_address_inc <= 1'b0;
-			ff_vram_rdata <= vram_rdata;
-			ff_busy <= 1'b0;
+			ff_vram_address_inc <= 1'b1;
 		end
 		else if( ff_vram_valid ) begin
 			if( vram_ready ) begin
 				ff_vram_valid <= 1'b0;
-				ff_vram_address_inc <= ~ff_vram_write;
+				ff_vram_address_inc <= ff_vram_write;
 				ff_busy <= ~ff_vram_write;
 			end
 			else begin
@@ -233,7 +233,6 @@ module vdp_cpu_interface (
 		else if( bus_valid && bus_address == 2'd0 ) begin
 			ff_vram_valid <= 1'b1;
 			ff_vram_write <= bus_write;
-			ff_vram_address_inc <= bus_write;
 			ff_vram_wdata <= bus_wdata;
 			ff_busy <= 1'b1;
 		end
@@ -244,13 +243,11 @@ module vdp_cpu_interface (
 			ff_vram_address		<= 17'd0;
 		end
 		else if( ff_vram_address_inc ) begin
-			if( ff_vram_write && vram_ready || !ff_vram_write ) begin
-				if( w_address_14bit ) begin
-					ff_vram_address[13:0] <= ff_vram_address[13:0] + 14'd1;
-				end
-				else begin
-					ff_vram_address <= ff_vram_address + 17'd1;
-				end
+			if( w_address_14bit ) begin
+				ff_vram_address[13:0] <= ff_vram_address[13:0] + 14'd1;
+			end
+			else begin
+				ff_vram_address <= ff_vram_address + 17'd1;
 			end
 		end
 		else if( ff_busy ) begin
@@ -333,113 +330,113 @@ module vdp_cpu_interface (
 			case( ff_register_num )
 			6'd0:	//	R#0 = [N/A][N/A][N/A][IE1][M5][M4][M3][N/A]
 				begin
-					ff_screen_mode[4:2] <= bus_wdata[3:1];
-					ff_line_interrupt_enable <= bus_wdata[4];
+					ff_screen_mode[4:2] <= ff_1st_byte[3:1];
+					ff_line_interrupt_enable <= ff_1st_byte[4];
 				end
 			6'd1:	//	R#1 = [N/A][BL][IE0][M1][M2][N/A][SI][MAG]
 				begin
-					ff_sprite_magify <= bus_wdata[0];
-					ff_sprite_16x16 <= bus_wdata[1];
-					ff_screen_mode[1] <= bus_wdata[3];
-					ff_screen_mode[0] <= bus_wdata[4];
-					ff_frame_interrupt_enable <= bus_wdata[5];
-					ff_display_on <= bus_wdata[6];
+					ff_sprite_magify <= ff_1st_byte[0];
+					ff_sprite_16x16 <= ff_1st_byte[1];
+					ff_screen_mode[1] <= ff_1st_byte[3];
+					ff_screen_mode[0] <= ff_1st_byte[4];
+					ff_frame_interrupt_enable <= ff_1st_byte[5];
+					ff_display_on <= ff_1st_byte[6];
 				end
 			6'd2:	//	R#2 = [N/A][A16][A15][A14][A13][A12][A11][A10]
 				begin
-					ff_pattern_name_table_base <= bus_wdata[6:0];
+					ff_pattern_name_table_base <= ff_1st_byte[6:0];
 				end
 			6'd3:	//	R#3 = [A13][A12][A11][A10][A9][A8][A7][A6]
 				begin
-					ff_color_table_base[13:6] <= bus_wdata;
+					ff_color_table_base[13:6] <= ff_1st_byte;
 				end
 			6'd4:	//	R#4 = [N/A][N/A][A16][A15][A14][A13][A12][A11]
 				begin
-					ff_pattern_generator_table_base <= bus_wdata[5:0];
+					ff_pattern_generator_table_base <= ff_1st_byte[5:0];
 				end
 			6'd5:	//	R#5 = [A14][A13][A12][A11][A10][A9][N/A][N/A]
 				begin
-					ff_sprite_attribute_table_base[14:9] <= bus_wdata[7:2];
+					ff_sprite_attribute_table_base[14:9] <= ff_1st_byte[7:2];
 				end
 			6'd6:	//	R#6 = [N/A][N/A][A16][A15][A14][A13][A12][A11]
 				begin
-					ff_sprite_pattern_generator_table_base <= bus_wdata[5:0];
+					ff_sprite_pattern_generator_table_base <= ff_1st_byte[5:0];
 				end
 			6'd7:	//	R#7 = [BD7][BD6][BD5][BD4][BD3][BD2][BD1][BD0]
 				begin
-					ff_backdrop_color <= bus_wdata;
+					ff_backdrop_color <= ff_1st_byte;
 				end
 			6'd8:	//	R#8 = [N/A][N/A][TP][N/A][N/A][N/A][SPD][N/A]
 				begin
-					ff_sprite_disable <= bus_wdata[1];
-					ff_color0_opaque <= bus_wdata[5];
+					ff_sprite_disable <= ff_1st_byte[1];
+					ff_color0_opaque <= ff_1st_byte[5];
 				end
 			6'd9:	//	R#9 = [LN][N/A][N/A][N/A][IL][EO][NT][N/A]
 				begin
-					ff_50hz_mode <= bus_wdata[1];
-					ff_interleaving_mode <= bus_wdata[2];
-					ff_interlace_mode <= bus_wdata[3];
-					ff_212lines_mode <= bus_wdata[7];
+					ff_50hz_mode <= ff_1st_byte[1];
+					ff_interleaving_mode <= ff_1st_byte[2];
+					ff_interlace_mode <= ff_1st_byte[3];
+					ff_212lines_mode <= ff_1st_byte[7];
 				end
 			6'd10:	//	R#10 = [N/A][N/A][N/A][N/A][N/A][A16][A15][A14]
 				begin
-					ff_color_table_base[16:14] <= bus_wdata[2:0];
+					ff_color_table_base[16:14] <= ff_1st_byte[2:0];
 				end
 			6'd11:	//	R#11 = [N/A][N/A][N/A][N/A][N/A][N/A][A16][A15]
 				begin
-					ff_sprite_attribute_table_base[16:15] <= bus_wdata[1:0];
+					ff_sprite_attribute_table_base[16:15] <= ff_1st_byte[1:0];
 				end
 			6'd12:	//	R#12 = [T23][T22][T1][T20][BC3][BC2][BC1][BC0]
 				begin
-					ff_text_back_color <= bus_wdata;
+					ff_text_back_color <= ff_1st_byte;
 				end
 			6'd13:	//	R#13 = [CN3][CN2][CN1][CN0][CF3][CF2][CF1][CF0]
 				begin
-					ff_blink_period <= bus_wdata;
+					ff_blink_period <= ff_1st_byte;
 				end
 
 			//	6'd14 は、ff_vram_address の always文にある
 
 			6'd15:	//	R#15 = [N/A][N/A][N/A][N/A][S3][S2][S1][S0]
 				begin
-					ff_status_register_pointer <= bus_wdata[3:0];
+					ff_status_register_pointer <= ff_1st_byte[3:0];
 				end
 			6'd16:	//	R#16 = [N/A][N/A][N/A][N/A][C3][C2][C1][C0]
 				begin
-					ff_color_palette_address <= bus_wdata[3:0];
+					ff_color_palette_address <= ff_1st_byte[3:0];
 				end
 			8'd17:	//	R#17 = [AII][N/A][R5][R4][R3][R2][R1][R0]
 				begin
-					ff_register_pointer <= bus_wdata[5:0];
-					ff_not_increment <= bus_wdata[7];
+					ff_register_pointer <= ff_1st_byte[5:0];
+					ff_not_increment <= ff_1st_byte[7];
 				end
 			8'd18:	//	R#18 = [V3][V2][V1][V0][H3][H2][H1][H0]
 				begin
-					ff_display_adjust <= bus_wdata;
+					ff_display_adjust <= ff_1st_byte;
 				end
 			8'd19:	//	R#19 = [IL7][IL6][IL5][IL4][IL3][IL2][IL1][IL0]
 				begin
-					ff_interrupt_line <= bus_wdata;
+					ff_interrupt_line <= ff_1st_byte;
 				end
 			8'd23:	//	R#23 = [DO7][DO6][DO5][DO4][DO3][DO2][DO1][DO0]
 				begin
-					ff_vertical_offset <= bus_wdata;
+					ff_vertical_offset <= ff_1st_byte;
 				end
 			8'd25:	//	R#25 = [N/A][CMD][N/A][YAE][YJK][N/A][MSK][SP2]
 				begin
-					ff_scroll_planes <= bus_wdata[0];
-					ff_left_mask <= bus_wdata[1];
-					ff_yjk_mode <= bus_wdata[3];
-					ff_yae_mode <= bus_wdata[4];
-					ff_command_enable <= bus_wdata[6];
+					ff_scroll_planes <= ff_1st_byte[0];
+					ff_left_mask <= ff_1st_byte[1];
+					ff_yjk_mode <= ff_1st_byte[3];
+					ff_yae_mode <= ff_1st_byte[4];
+					ff_command_enable <= ff_1st_byte[6];
 				end
 			8'd26:	//	R#26 = [N/A][N/A][HO8][HO7][HO6][HO5][HO4][HO3]
 				begin
-					ff_horizontal_offset[8:3] <= bus_wdata[5:0];
+					ff_horizontal_offset[8:3] <= ff_1st_byte[5:0];
 				end
 			8'd27:	//	R#27 = [N/A][N/A][N/A][N/A][N/A][HO2][HO1][HO0]
 				begin
-					ff_horizontal_offset[2:0] <= bus_wdata[2:0];
+					ff_horizontal_offset[2:0] <= ff_1st_byte[2:0];
 				end
 			default:
 				begin

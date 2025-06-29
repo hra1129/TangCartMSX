@@ -161,9 +161,10 @@ module tb ();
 		wait_ready();
 
 		bus_valid <= 1'b0;
+		while( !vram_ready ) begin
+			@( posedge clk );
+		end
 		vram_rdata <= rdata;
-		@( posedge clk );
-		@( posedge clk );
 		vram_rdata_en <= 1'b1;
 		@( posedge clk );
 		vram_rdata_en <= 1'b0;
@@ -253,8 +254,480 @@ module tb ();
 		write_io( 1, 8'h03 );
 		read_io( 0, 8'h56 );
 		wait_ready();
-		assert( ff_last_vram_address == 17'h00000 );
-		assert( ff_last_vram_wdata == 8'h12 );
+		assert( ff_last_vram_address == 17'h00321 );
+
+		$display( "[test004] VRAM Read Address Auto Increment" );
+		read_io( 0, 8'hAB );
+		wait_ready();
+		assert( ff_last_vram_address == 17'h00322 );
+
+		read_io( 0, 8'h19 );
+		wait_ready();
+		assert( ff_last_vram_address == 17'h00323 );
+
+		read_io( 0, 8'h74 );
+		wait_ready();
+		assert( ff_last_vram_address == 17'h00324 );
+
+		$display( "[test005] Write Control Registers" );
+		$display( "-- R#0 = 0" );
+		write_io( 1, 8'h00 );
+		write_io( 1, 8'h80 );
+		wait_ready();
+		assert( reg_screen_mode[4:2] == 3'd0 );
+
+		$display( "-- R#0 = 2" );
+		write_io( 1, 8'h02 );
+		write_io( 1, 8'h80 );
+		wait_ready();
+		assert( reg_screen_mode[4:2] == 3'd1 );
+
+		$display( "-- R#0 = 4" );
+		write_io( 1, 8'h04 );
+		write_io( 1, 8'h80 );
+		wait_ready();
+		assert( reg_screen_mode[4:2] == 3'd2 );
+
+		$display( "-- R#0 = 8" );
+		write_io( 1, 8'h08 );
+		write_io( 1, 8'h80 );
+		wait_ready();
+		assert( reg_screen_mode[4:2] == 3'd4 );
+
+		$display( "-- R#0 = 14" );
+		write_io( 1, 8'h0E );
+		write_io( 1, 8'h80 );
+		wait_ready();
+		assert( reg_screen_mode[4:2] == 3'd7 );
+
+		$display( "-- R#1 = 1" );
+		write_io( 1, 8'h01 );
+		write_io( 1, 8'h81 );
+		wait_ready();
+		assert( reg_sprite_magify == 1'd1 );
+		assert( reg_sprite_16x16 == 1'd0 );
+		assert( reg_screen_mode[1:0] == 2'd0 );
+		assert( reg_display_on == 1'd0 );
+
+		$display( "-- R#1 = 2" );
+		write_io( 1, 8'h02 );
+		write_io( 1, 8'h81 );
+		wait_ready();
+		assert( reg_sprite_magify == 1'd0 );
+		assert( reg_sprite_16x16 == 1'd1 );
+		assert( reg_screen_mode[1:0] == 2'd0 );
+		assert( reg_display_on == 1'd0 );
+
+		$display( "-- R#1 = 4" );
+		write_io( 1, 8'h04 );
+		write_io( 1, 8'h81 );
+		wait_ready();
+		assert( reg_sprite_magify == 1'd0 );
+		assert( reg_sprite_16x16 == 1'd0 );
+		assert( reg_screen_mode[1:0] == 2'd0 );
+		assert( reg_display_on == 1'd0 );
+
+		$display( "-- R#1 = 8" );
+		write_io( 1, 8'h08 );
+		write_io( 1, 8'h81 );
+		wait_ready();
+		assert( reg_sprite_magify == 1'd0 );
+		assert( reg_sprite_16x16 == 1'd0 );
+		assert( reg_screen_mode[1:0] == 2'd2 );
+		assert( reg_display_on == 1'd0 );
+
+		$display( "-- R#1 = 16" );
+		write_io( 1, 8'h10 );
+		write_io( 1, 8'h81 );
+		wait_ready();
+		assert( reg_sprite_magify == 1'd0 );
+		assert( reg_sprite_16x16 == 1'd0 );
+		assert( reg_screen_mode[1:0] == 2'd1 );
+		assert( reg_display_on == 1'd0 );
+
+		$display( "-- R#1 = 32" );
+		write_io( 1, 8'h20 );
+		write_io( 1, 8'h81 );
+		wait_ready();
+		assert( reg_sprite_magify == 1'd0 );
+		assert( reg_sprite_16x16 == 1'd0 );
+		assert( reg_screen_mode[1:0] == 2'd0 );
+		assert( reg_display_on == 1'd0 );
+
+		$display( "-- R#1 = 64" );
+		write_io( 1, 8'h40 );
+		write_io( 1, 8'h81 );
+		wait_ready();
+		assert( reg_sprite_magify == 1'd0 );
+		assert( reg_sprite_16x16 == 1'd0 );
+		assert( reg_screen_mode[1:0] == 2'd0 );
+		assert( reg_display_on == 1'd1 );
+
+		$display( "-- R#1 = 128" );
+		write_io( 1, 8'h80 );
+		write_io( 1, 8'h81 );
+		wait_ready();
+		assert( reg_sprite_magify == 1'd0 );
+		assert( reg_sprite_16x16 == 1'd0 );
+		assert( reg_screen_mode[1:0] == 2'd0 );
+		assert( reg_display_on == 1'd0 );
+
+		$display( "-- R#1 = 255" );
+		write_io( 1, 8'hFF );
+		write_io( 1, 8'h81 );
+		wait_ready();
+		assert( reg_sprite_magify == 1'd1 );
+		assert( reg_sprite_16x16 == 1'd1 );
+		assert( reg_screen_mode[1:0] == 2'd3 );
+		assert( reg_display_on == 1'd1 );
+
+		$display( "-- R#2 = 255" );
+		write_io( 1, 8'hFF );
+		write_io( 1, 8'h82 );
+		wait_ready();
+		assert( reg_pattern_name_table_base == 7'h7F );
+
+		$display( "-- R#2 = 55h" );
+		write_io( 1, 8'h55 );
+		write_io( 1, 8'h82 );
+		wait_ready();
+		assert( reg_pattern_name_table_base == 7'h55 );
+
+		$display( "-- R#2 = AAh" );
+		write_io( 1, 8'hAA );
+		write_io( 1, 8'h82 );
+		wait_ready();
+		assert( reg_pattern_name_table_base == 7'h2A );
+
+		$display( "-- R#3 = FFh" );
+		write_io( 1, 8'hFF );
+		write_io( 1, 8'h83 );
+		wait_ready();
+		assert( reg_color_table_base[13:6] == 8'hFF );
+
+		$display( "-- R#3 = 55h" );
+		write_io( 1, 8'h55 );
+		write_io( 1, 8'h83 );
+		wait_ready();
+		assert( reg_color_table_base[13:6] == 8'h55 );
+
+		$display( "-- R#3 = AAh" );
+		write_io( 1, 8'hAA );
+		write_io( 1, 8'h83 );
+		wait_ready();
+		assert( reg_color_table_base[13:6] == 8'hAA );
+
+		$display( "-- R#4 = FFh" );
+		write_io( 1, 8'hFF );
+		write_io( 1, 8'h84 );
+		wait_ready();
+		assert( reg_pattern_generator_table_base == 6'h3F );
+
+		$display( "-- R#4 = 55h" );
+		write_io( 1, 8'h55 );
+		write_io( 1, 8'h84 );
+		wait_ready();
+		assert( reg_pattern_generator_table_base == 6'h15 );
+
+		$display( "-- R#4 = AAh" );
+		write_io( 1, 8'hAA );
+		write_io( 1, 8'h84 );
+		wait_ready();
+		assert( reg_pattern_generator_table_base == 6'h2A );
+
+		$display( "-- R#5 = FFh" );
+		write_io( 1, 8'hFF );
+		write_io( 1, 8'h85 );
+		wait_ready();
+		assert( reg_sprite_attribute_table_base[14:9] == 6'h3F );
+
+		$display( "-- R#5 = 55h" );
+		write_io( 1, 8'h55 );
+		write_io( 1, 8'h85 );
+		wait_ready();
+		assert( reg_sprite_attribute_table_base[14:9] == 6'h15 );
+
+		$display( "-- R#5 = AAh" );
+		write_io( 1, 8'hAA );
+		write_io( 1, 8'h85 );
+		wait_ready();
+		assert( reg_sprite_attribute_table_base[14:9] == 6'h2A );
+
+		$display( "-- R#6 = FFh" );
+		write_io( 1, 8'hFF );
+		write_io( 1, 8'h86 );
+		wait_ready();
+		assert( reg_sprite_pattern_generator_table_base == 6'h3F );
+
+		$display( "-- R#6 = 55h" );
+		write_io( 1, 8'h55 );
+		write_io( 1, 8'h86 );
+		wait_ready();
+		assert( reg_sprite_pattern_generator_table_base == 6'h15 );
+
+		$display( "-- R#6 = AAh" );
+		write_io( 1, 8'hAA );
+		write_io( 1, 8'h86 );
+		wait_ready();
+		assert( reg_sprite_pattern_generator_table_base == 6'h2A );
+
+		$display( "-- R#7 = FFh" );
+		write_io( 1, 8'hFF );
+		write_io( 1, 8'h87 );
+		wait_ready();
+		assert( reg_backdrop_color == 8'hFF );
+
+		$display( "-- R#7 = 55h" );
+		write_io( 1, 8'h55 );
+		write_io( 1, 8'h87 );
+		wait_ready();
+		assert( reg_backdrop_color == 8'h55 );
+
+		$display( "-- R#7 = AAh" );
+		write_io( 1, 8'hAA );
+		write_io( 1, 8'h87 );
+		wait_ready();
+		assert( reg_backdrop_color == 8'hAA );
+
+		$display( "-- R#8 = FFh" );
+		write_io( 1, 8'hFF );
+		write_io( 1, 8'h88 );
+		wait_ready();
+		assert( reg_sprite_disable == 1'b1 );
+		assert( reg_color0_opaque == 1'b1 );
+
+		$display( "-- R#8 = 55h" );
+		write_io( 1, 8'h55 );
+		write_io( 1, 8'h88 );
+		wait_ready();
+		assert( reg_sprite_disable == 1'b0 );
+		assert( reg_color0_opaque == 1'b0 );
+
+		$display( "-- R#8 = AAh" );
+		write_io( 1, 8'hAA );
+		write_io( 1, 8'h88 );
+		wait_ready();
+		assert( reg_sprite_disable == 1'b1 );
+		assert( reg_color0_opaque == 1'b1 );
+
+		$display( "-- R#9 = FFh" );
+		write_io( 1, 8'hFF );
+		write_io( 1, 8'h89 );
+		wait_ready();
+		assert( reg_50hz_mode == 1'b1 );
+		assert( reg_interleaving_mode == 1'b1 );
+		assert( reg_interlace_mode == 1'b1 );
+		assert( reg_212lines_mode == 1'b1 );
+
+		$display( "-- R#9 = 55h" );
+		write_io( 1, 8'h55 );
+		write_io( 1, 8'h89 );
+		wait_ready();
+		assert( reg_50hz_mode == 1'b0 );
+		assert( reg_interleaving_mode == 1'b1 );
+		assert( reg_interlace_mode == 1'b0 );
+		assert( reg_212lines_mode == 1'b0 );
+
+		$display( "-- R#9 = AAh" );
+		write_io( 1, 8'hAA );
+		write_io( 1, 8'h89 );
+		wait_ready();
+		assert( reg_50hz_mode == 1'b1 );
+		assert( reg_interleaving_mode == 1'b0 );
+		assert( reg_interlace_mode == 1'b1 );
+		assert( reg_212lines_mode == 1'b1 );
+
+		$display( "-- R#10 = FFh" );
+		write_io( 1, 8'hFF );
+		write_io( 1, 8'h8A );
+		wait_ready();
+		assert( reg_color_table_base[16:14] == 3'd7 );
+
+		$display( "-- R#10 = 55h" );
+		write_io( 1, 8'h55 );
+		write_io( 1, 8'h8A );
+		wait_ready();
+		assert( reg_color_table_base[16:14] == 3'd5 );
+
+		$display( "-- R#10 = AAh" );
+		write_io( 1, 8'hAA );
+		write_io( 1, 8'h8A );
+		wait_ready();
+		assert( reg_color_table_base[16:14] == 3'd2 );
+
+		$display( "-- R#11 = FFh" );
+		write_io( 1, 8'hFF );
+		write_io( 1, 8'h8B );
+		wait_ready();
+		assert( reg_sprite_attribute_table_base[16:15] == 2'd3 );
+
+		$display( "-- R#11 = 55h" );
+		write_io( 1, 8'h55 );
+		write_io( 1, 8'h8B );
+		wait_ready();
+		assert( reg_sprite_attribute_table_base[16:15] == 2'd1 );
+
+		$display( "-- R#11 = AAh" );
+		write_io( 1, 8'hAA );
+		write_io( 1, 8'h8B );
+		wait_ready();
+		assert( reg_sprite_attribute_table_base[16:15] == 2'd2 );
+
+		$display( "-- R#12 = FFh" );
+		write_io( 1, 8'hFF );
+		write_io( 1, 8'h8C );
+		wait_ready();
+		assert( reg_text_back_color == 8'hFF );
+
+		$display( "-- R#12 = 55h" );
+		write_io( 1, 8'h55 );
+		write_io( 1, 8'h8C );
+		wait_ready();
+		assert( reg_text_back_color == 8'h55 );
+
+		$display( "-- R#12 = AAh" );
+		write_io( 1, 8'hAA );
+		write_io( 1, 8'h8C );
+		wait_ready();
+		assert( reg_text_back_color == 8'hAA );
+
+		$display( "-- R#13 = FFh" );
+		write_io( 1, 8'hFF );
+		write_io( 1, 8'h8D );
+		wait_ready();
+		assert( reg_blink_period == 8'hFF );
+
+		$display( "-- R#13 = 55h" );
+		write_io( 1, 8'h55 );
+		write_io( 1, 8'h8D );
+		wait_ready();
+		assert( reg_blink_period == 8'h55 );
+
+		$display( "-- R#13 = AAh" );
+		write_io( 1, 8'hAA );
+		write_io( 1, 8'h8D );
+		wait_ready();
+		assert( reg_blink_period == 8'hAA );
+
+		$display( "-- R#18 = FFh" );
+		write_io( 1, 8'hFF );
+		write_io( 1, 8'h92 );
+		wait_ready();
+		assert( reg_display_adjust == 8'hFF );
+
+		$display( "-- R#18 = 55h" );
+		write_io( 1, 8'h55 );
+		write_io( 1, 8'h92 );
+		wait_ready();
+		assert( reg_display_adjust == 8'h55 );
+
+		$display( "-- R#18 = AAh" );
+		write_io( 1, 8'hAA );
+		write_io( 1, 8'h92 );
+		wait_ready();
+		assert( reg_display_adjust == 8'hAA );
+
+		$display( "-- R#19 = FFh" );
+		write_io( 1, 8'hFF );
+		write_io( 1, 8'h93 );
+		wait_ready();
+		assert( reg_interrupt_line == 8'hFF );
+
+		$display( "-- R#19 = 55h" );
+		write_io( 1, 8'h55 );
+		write_io( 1, 8'h93 );
+		wait_ready();
+		assert( reg_interrupt_line == 8'h55 );
+
+		$display( "-- R#19 = AAh" );
+		write_io( 1, 8'hAA );
+		write_io( 1, 8'h93 );
+		wait_ready();
+		assert( reg_interrupt_line == 8'hAA );
+
+		$display( "-- R#23 = FFh" );
+		write_io( 1, 8'hFF );
+		write_io( 1, 8'h97 );
+		wait_ready();
+		assert( reg_vertical_offset == 8'hFF );
+
+		$display( "-- R#23 = 55h" );
+		write_io( 1, 8'h55 );
+		write_io( 1, 8'h97 );
+		wait_ready();
+		assert( reg_vertical_offset == 8'h55 );
+
+		$display( "-- R#23 = AAh" );
+		write_io( 1, 8'hAA );
+		write_io( 1, 8'h97 );
+		wait_ready();
+		assert( reg_vertical_offset == 8'hAA );
+
+		$display( "-- R#25 = FFh" );
+		write_io( 1, 8'hFF );
+		write_io( 1, 8'h99 );
+		wait_ready();
+		assert( reg_scroll_planes == 1'b1 );
+		assert( reg_left_mask == 1'b1 );
+		assert( reg_yjk_mode == 1'b1 );
+		assert( reg_yae_mode == 1'b1 );
+		assert( reg_command_enable == 1'b1 );
+
+		$display( "-- R#25 = 55h" );
+		write_io( 1, 8'h55 );
+		write_io( 1, 8'h99 );
+		wait_ready();
+		assert( reg_scroll_planes == 1'b1 );
+		assert( reg_left_mask == 1'b0 );
+		assert( reg_yjk_mode == 1'b0 );
+		assert( reg_yae_mode == 1'b1 );
+		assert( reg_command_enable == 1'b1 );
+
+		$display( "-- R#25 = AAh" );
+		write_io( 1, 8'hAA );
+		write_io( 1, 8'h99 );
+		wait_ready();
+		assert( reg_scroll_planes == 1'b0 );
+		assert( reg_left_mask == 1'b1 );
+		assert( reg_yjk_mode == 1'b1 );
+		assert( reg_yae_mode == 1'b0 );
+		assert( reg_command_enable == 1'b0 );
+
+		$display( "-- R#26 = FFh" );
+		write_io( 1, 8'hFF );
+		write_io( 1, 8'h9A );
+		wait_ready();
+		assert( reg_horizontal_offset[8:3] == 6'h3F );
+
+		$display( "-- R#26 = 55h" );
+		write_io( 1, 8'h55 );
+		write_io( 1, 8'h9A );
+		wait_ready();
+		assert( reg_horizontal_offset[8:3] == 6'h15 );
+
+		$display( "-- R#26 = AAh" );
+		write_io( 1, 8'hAA );
+		write_io( 1, 8'h9A );
+		wait_ready();
+		assert( reg_horizontal_offset[8:3] == 6'h2A );
+
+		$display( "-- R#27 = FFh" );
+		write_io( 1, 8'hFF );
+		write_io( 1, 8'h9B );
+		wait_ready();
+		assert( reg_horizontal_offset[2:0] == 3'h7 );
+
+		$display( "-- R#27 = 55h" );
+		write_io( 1, 8'h55 );
+		write_io( 1, 8'h9B );
+		wait_ready();
+		assert( reg_horizontal_offset[2:0] == 3'h5 );
+
+		$display( "-- R#27 = AAh" );
+		write_io( 1, 8'hAA );
+		write_io( 1, 8'h9B );
+		wait_ready();
+		assert( reg_horizontal_offset[2:0] == 3'h2 );
 
 		repeat( 10 ) @( posedge clk );
 		$finish;

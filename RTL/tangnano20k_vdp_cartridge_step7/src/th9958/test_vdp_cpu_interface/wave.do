@@ -10,13 +10,15 @@ add wave -noupdate -radix hexadecimal /tb/u_cpu_interface/bus_ready
 add wave -noupdate -radix hexadecimal /tb/u_cpu_interface/bus_wdata
 add wave -noupdate -radix hexadecimal /tb/u_cpu_interface/bus_rdata
 add wave -noupdate -radix hexadecimal /tb/u_cpu_interface/bus_rdata_en
+add wave -noupdate /tb/u_cpu_interface/ff_busy
+add wave -noupdate -radix hexadecimal /tb/u_cpu_interface/ff_vram_address_inc
 add wave -noupdate -radix hexadecimal /tb/ff_last_vram_address
 add wave -noupdate -radix hexadecimal /tb/ff_last_vram_wdata
 add wave -noupdate -radix hexadecimal /tb/u_cpu_interface/vram_address
+add wave -noupdate -radix hexadecimal /tb/u_cpu_interface/vram_wdata
 add wave -noupdate -radix hexadecimal /tb/u_cpu_interface/vram_write
 add wave -noupdate -radix hexadecimal /tb/u_cpu_interface/vram_valid
 add wave -noupdate -radix hexadecimal /tb/u_cpu_interface/vram_ready
-add wave -noupdate -radix hexadecimal /tb/u_cpu_interface/vram_wdata
 add wave -noupdate -radix hexadecimal /tb/u_cpu_interface/vram_rdata
 add wave -noupdate -radix hexadecimal /tb/u_cpu_interface/vram_rdata_en
 add wave -noupdate -radix hexadecimal /tb/u_cpu_interface/reg_screen_mode
@@ -91,12 +93,11 @@ add wave -noupdate -radix hexadecimal /tb/u_cpu_interface/ff_vram_address_write
 add wave -noupdate -radix hexadecimal /tb/u_cpu_interface/ff_vram_write
 add wave -noupdate -radix hexadecimal /tb/u_cpu_interface/ff_vram_wdata
 add wave -noupdate -radix hexadecimal /tb/u_cpu_interface/ff_vram_rdata
-add wave -noupdate -radix hexadecimal /tb/u_cpu_interface/ff_vram_address_inc
 add wave -noupdate -radix hexadecimal /tb/u_cpu_interface/ff_vram_valid
 add wave -noupdate -radix hexadecimal /tb/u_cpu_interface/w_address_14bit
 TreeUpdate [SetDefaultTree]
-WaveRestoreCursors {{Cursor 1} {0 ns} 0}
-quietly wave cursor active 0
+WaveRestoreCursors {{Cursor 1} {846 ns} 0}
+quietly wave cursor active 1
 configure wave -namecolwidth 338
 configure wave -valuecolwidth 56
 configure wave -justifyvalue left
@@ -111,4 +112,4 @@ configure wave -griddelta 40
 configure wave -timeline 0
 configure wave -timelineunits ps
 update
-WaveRestoreZoom {0 ns} {687 ns}
+WaveRestoreZoom {257 ns} {868 ns}
