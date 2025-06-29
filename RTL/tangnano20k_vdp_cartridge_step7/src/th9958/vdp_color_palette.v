@@ -59,6 +59,8 @@ module vdp_color_palette (
 	input				reset_n,
 	input				clk,					//	42.95454MHz
 
+	input		[2:0]	screen_pos_x,
+
 	input				palette_valid,
 	input		[3:0]	palette_num,
 	input		[2:0]	palette_r,
@@ -68,11 +70,59 @@ module vdp_color_palette (
 	input		[3:0]	display_color_g123m,
 	input		[7:0]	display_color_g4567,
 
+	output		[7:0]	display_out_r,
+	output		[7:0]	display_out_g,
+	output		[7:0]	display_out_b,
+
 	input		[4:0]	reg_screen_mode
 );
+	wire				w_256colors_mode;
+	wire				w_4colors_mode;
+	wire				w_g4567_mode;
+	reg			[3:0]	ff_display_color;
+	reg					ff_display_color_oe;
+	wire		[2:0]	w_display_r;
+	wire		[2:0]	w_display_g;
+	wire		[2:0]	w_display_b;
+	reg			[7:0]	ff_display_r;
+	reg			[7:0]	ff_display_g;
+	reg			[7:0]	ff_display_b;
 
 	// --------------------------------------------------------------------
-	//	Palette RAM
+	//	Mode Select ( screen_pos_x = 0 )
+	// --------------------------------------------------------------------
+	assign w_256colors_mode		= (reg_screen_mode == 5'b11100);	// Graphic7 (SCREEN8)
+	assign w_4colors_mode		= (reg_screen_mode == 5'b10000);	// Graphic5 (SCREEN6)
+	assign w_high_resolution	= (reg_screen_mode == 5'b10000) ||	// Graphic5 (SCREEN6)
+	                        	  (reg_screen_mode == 5'b10100);	// Graphic6 (SCREEN7)
+	assign w_g4567_mode			= (reg_screen_mode == 5'b01100) ||	// Graphic4 (SCREEN5)
+	                        	  (reg_screen_mode == 5'b10000) ||	// Graphic5 (SCREEN6)
+	                        	  (reg_screen_mode == 5'b10100) ||	// Graphic6 (SCREEN7)
+	                        	  (reg_screen_mode == 5'b11100);	// Graphic7 (SCREEN8)
+
+	// --------------------------------------------------------------------
+	//	Palette RAM Read Signal ( screen_pos_x = 0 )
+	// --------------------------------------------------------------------
+	always @( posedge clk or negedge reset_n ) begin
+		if( !reset_n ) begin
+			ff_display_color <= 4'd0;
+			ff_display_color_oe <= 1'b0;
+		end
+		else if( w_256colors_mode ) begin
+			ff_display_color <= 4'd0;
+			ff_display_color_oe <= 1'b0;
+		end
+		else if( screen_pos_x == 3'd0 || (w_high_resolution && screen_pos_x == 3'd4) ) begin
+			ff_display_color <= display_color;
+			ff_display_color_oe <= 1'b1;
+		end
+		else begin
+			ff_display_color_oe <= 1'b0;
+		end
+	end
+
+	// --------------------------------------------------------------------
+	//	Palette RAM for 4 or 16 colors mode ( screen_pos_x = 1 )
 	// --------------------------------------------------------------------
 	vdp_color_palette_ram u_color_palette_ram (
 		.clk					( clk					),
@@ -81,10 +131,89 @@ module vdp_color_palette (
 		.palette_r				( palette_r				),
 		.palette_g				( palette_g				),
 		.palette_b				( palette_b				),
-		.display_color			( display_color			),
-		.display_color_oe		( display_color_oe		),
-		.display_r				( display_r				),
-		.display_g				( display_g				),
-		.display_b				( display_b				)
+		.display_color			( ff_display_color		),
+		.display_color_oe		( ff_display_color_oe	),
+		.display_r				( w_display_r16			),
+		.display_g				( w_display_g16			),
+		.display_b				( w_display_b16			)
 	);
+
+	// --------------------------------------------------------------------
+	//	RGB table for 256 colors mode ( screen_pos_x = 1 )
+	// --------------------------------------------------------------------
+	assign w_display_r = w_256colors_mode ? display_color_g4567[4:2]          : w_display_r16;
+	assign w_display_g = w_256colors_mode ? display_color_g4567[7:5]          : w_display_g16;
+	assign w_display_b = w_256colors_mode ? { 1'b0, display_color_g4567[1:0] }: w_display_b16;
+
+	// --------------------------------------------------------------------
+	//	RGB Color Conversion ( screen_pos_x = 2 )
+	// --------------------------------------------------------------------
+	always @( posedge clk or negedge reset_n ) begin
+		if( !reset_n ) begin
+			ff_display_r <= 8'd0;
+			ff_display_g <= 8'd0;
+		end
+		else if( screen_pos_x == 3'd2 || (w_high_resolution == 3'd6 ) begin
+			case( w_display_r )
+			3'd0:		ff_display_r <= 8'd0;
+			3'd1:		ff_display_r <= 8'd37;
+			3'd2:		ff_display_r <= 8'd73;
+			3'd3:		ff_display_r <= 8'd110;
+			3'd4:		ff_display_r <= 8'd146;
+			3'd5:		ff_display_r <= 8'd183;
+			3'd6:		ff_display_r <= 8'd219;
+			3'd7:		ff_display_r <= 8'd255;
+			default:	ff_display_r <= 8'd0;
+			endcase
+
+			case( w_display_g )
+			3'd0:		ff_display_g <= 8'd0;
+			3'd1:		ff_display_g <= 8'd37;
+			3'd2:		ff_display_g <= 8'd73;
+			3'd3:		ff_display_g <= 8'd110;
+			3'd4:		ff_display_g <= 8'd146;
+			3'd5:		ff_display_g <= 8'd183;
+			3'd6:		ff_display_g <= 8'd219;
+			3'd7:		ff_display_g <= 8'd255;
+			default:	ff_display_g <= 8'd0;
+			endcase
+		end
+	end
+
+	always @( posedge clk or negedge reset_n ) begin
+		if( !reset_n ) begin
+			ff_display_b <= 8'd0;
+		end
+		else if( screen_pos_x == 3'd2 || (w_high_resolution == 3'd6 ) begin
+			if( w_256colors_mode ) begin
+				case( w_display_b[1:0] )
+				3'd0:		ff_display_b <= 8'd0;
+				3'd1:		ff_display_b <= 8'd85;
+				3'd2:		ff_display_b <= 8'd170;
+				3'd3:		ff_display_b <= 8'd255;
+				default:	ff_display_b <= 8'd0;
+				endcase
+			end
+			else begin
+				case( w_display_b )
+				3'd0:		ff_display_b <= 8'd0;
+				3'd1:		ff_display_b <= 8'd37;
+				3'd2:		ff_display_b <= 8'd73;
+				3'd3:		ff_display_b <= 8'd110;
+				3'd4:		ff_display_b <= 8'd146;
+				3'd5:		ff_display_b <= 8'd183;
+				3'd6:		ff_display_b <= 8'd219;
+				3'd7:		ff_display_b <= 8'd255;
+				default:	ff_display_b <= 8'd0;
+				endcase
+			end
+		end
+	end
+
+	// --------------------------------------------------------------------
+	//	Output assignment ( screen_pos_x = 3 )
+	// --------------------------------------------------------------------
+	assign display_out_r = ff_display_r;
+	assign display_out_g = ff_display_g;
+	assign display_out_b = ff_display_b;
 endmodule

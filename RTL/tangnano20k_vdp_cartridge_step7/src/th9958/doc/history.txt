@@ -24,5 +24,5 @@ th9958(仮) 開発日誌
 
 2025年6月29日
 	VRAM読み書きアクセスのデバッグ完了。
-	vdp_color_palette.v の設計を開始。
+	vdp_color_palette.v の設計を開始、一部(パレット→RGB888値変換)実装。
 	vdp_color_palette_ram.v を設計、完了。
