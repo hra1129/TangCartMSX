@@ -1,6 +1,5 @@
 //
-//	vdp_timing_control_ssg.v
-//	Synchronous Signal Generator for Timing Control
+//	vdp_timing_control.v
 //
 //	Copyright (C) 2025 Takayuki Hara
 //
@@ -55,7 +54,7 @@
 //
 //-----------------------------------------------------------------------------
 
-module vdp_timing_control_ssg (
+module vdp_timing_control (
 	input				reset_n,
 	input				clk,					//	42.95454MHz
 
@@ -72,115 +71,22 @@ module vdp_timing_control_ssg (
 	input				reg_50hz_mode,
 	input				reg_interlace_mode
 );
-	localparam			c_left_pos			= 12'd320;		//	16の倍数
-	localparam			c_top_pos			= 11'd6;
-	localparam			c_h_count_max		= 11'd1367;
-	localparam			c_v_count_max_60p	= 10'd523;
-	localparam			c_v_count_max_60i	= 10'd524;
-	localparam			c_v_count_max_50p	= 10'd625;
-	localparam			c_v_count_max_50i	= 10'd624;
-	reg			[10:0]	ff_h_count;
-	reg			[11:0]	ff_half_count;
-	reg			[ 9:0]	ff_v_count;
-	wire				w_h_count_end;
-	wire				w_v_count_end;
-	wire		[12:0]	w_screen_pos_x;
-	wire		[ 9:0]	w_screen_pos_y;
-	reg					ff_h_active;
-	reg					ff_v_active;
 
 	// --------------------------------------------------------------------
-	//	Horizontal Counter
+	//	Synchronous Signal Generator
 	// --------------------------------------------------------------------
-	always @( posedge clk or negedge reset_n ) begin
-		if( !reset_n ) begin
-			ff_h_count <= 11'd0;
-		end
-		else if( w_h_count_end ) begin
-			ff_h_count <= 11'd0;
-		end
-		else begin
-			ff_h_count <= ff_h_count + 11'd1;
-		end
-	end
+	vdp_timing_control_ssg u_ssg (
+		.reset_n						( reset_n						),
+		.clk							( clk							),
+		.h_count						( h_count						),
+		.v_count						( v_count						),
+		.screen_pos_x					( screen_pos_x					),
+		.screen_pos_y					( screen_pos_y					),
+		.screen_active					( screen_active					),
+		.intr_line						( intr_line						),
+		.intr_frame						( intr_frame					),
+		.reg_50hz_mode					( reg_50hz_mode					),
+		.reg_interlace_mode				( reg_interlace_mode			)
+	);
 
-	always @( posedge clk or negedge reset_n ) begin
-		if( !reset_n ) begin
-			ff_half_count <= 12'd0;
-		end
-		else if( ff_v_count[0] && w_h_count_end ) begin
-			ff_half_count <= 12'd0;
-		end
-		else begin
-			ff_half_count <= ff_half_count + 12'd1;
-		end
-	end
-
-	assign w_h_count_end	= ( ff_h_count == c_h_count_max );
-
-	// --------------------------------------------------------------------
-	//	Vertical Counter
-	// --------------------------------------------------------------------
-	always @( posedge clk or negedge reset_n ) begin
-		if( !reset_n ) begin
-			ff_v_count <= 10'd0;
-		end
-		else if( w_h_count_end ) begin
-			if( w_v_count_end ) begin
-				ff_v_count <= 10'd0;
-			end
-			else begin
-				ff_v_count <= ff_v_count + 10'd1;
-			end
-		end
-	end
-
-	assign w_v_count_end	= ( !reg_50hz_mode &&  reg_interlace_mode && ff_v_count == c_v_count_max_60i ) ||
-							  ( !reg_50hz_mode && !reg_interlace_mode && ff_v_count == c_v_count_max_60p ) ||
-							  (  reg_50hz_mode &&  reg_interlace_mode && ff_v_count == c_v_count_max_50i ) ||
-							  (                                          ff_v_count == c_v_count_max_50p );
-
-	// --------------------------------------------------------------------
-	//	Active area
-	// --------------------------------------------------------------------
-	always @( posedge clk or negedge reset_n ) begin
-		if( !reset_n ) begin
-			ff_h_active <= 1'b0;
-		end
-		else begin
-			if( ff_half_count == (c_left_pos - 11'd1) ) begin
-				ff_h_active <= 1'b1;
-			end
-			else if( ff_half_count == (c_left_pos + 11'd2047) ) begin
-				ff_h_active <= 1'b0;
-			end
-		end
-	end
-
-	always @( posedge clk or negedge reset_n ) begin
-		if( !reset_n ) begin
-			ff_v_active <= 1'b0;
-		end
-		else if( w_h_count_end ) begin
-			if( ff_v_count == (c_top_pos * 2 - 10'd1) ) begin
-				ff_v_active <= 1'b1;
-			end
-			else if( ff_v_count == (c_top_pos * 2 + 10'd423) ) begin
-				ff_v_active <= 1'b0;
-			end
-		end
-	end
-
-	assign w_screen_pos_x	= { 1'b0, ff_half_count   } - c_left_pos;
-	assign w_screen_pos_y	= { 1'b0, ff_v_count[9:1] } - c_top_pos;
-
-	// --------------------------------------------------------------------
-	//	Output assignment
-	// --------------------------------------------------------------------
-	assign h_count			= ff_h_count;
-	assign v_count			= ff_v_count;
-	assign screen_pos_x		= w_screen_pos_x;
-	assign screen_pos_y		= w_screen_pos_y;
-	assign screen_active	= ff_h_active & ff_v_active;
-	assign dot_phase		= ff_half_count[0];
 endmodule
