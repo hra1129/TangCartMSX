@@ -70,7 +70,9 @@ module vdp_timing_control_ssg (
 	output				intr_frame,				//	pulse
 
 	input				reg_50hz_mode,
-	input				reg_interlace_mode
+	input				reg_interlace_mode,
+	input		[7:0]	reg_interrupt_line,
+	input		[7:0]	reg_vertical_offset
 );
 	localparam			c_left_pos			= 12'd320;		//	16の倍数
 	localparam			c_top_pos			= 11'd6;
@@ -79,6 +81,8 @@ module vdp_timing_control_ssg (
 	localparam			c_v_count_max_60i	= 10'd524;
 	localparam			c_v_count_max_50p	= 10'd625;
 	localparam			c_v_count_max_50i	= 10'd624;
+	localparam			c_intr_line_timing	= 12'd100;
+	localparam			c_intr_frame_timing	= 10'd212;
 	reg			[10:0]	ff_h_count;
 	reg			[11:0]	ff_half_count;
 	reg			[ 9:0]	ff_v_count;
@@ -86,8 +90,12 @@ module vdp_timing_control_ssg (
 	wire				w_v_count_end;
 	wire		[12:0]	w_screen_pos_x;
 	wire		[ 9:0]	w_screen_pos_y;
+	wire		[ 9:0]	w_screen_pos_yp;
+	wire		[ 7:0]	w_screen_pos_ys;
 	reg					ff_h_active;
 	reg					ff_v_active;
+	wire				w_intr_line_timing;
+	wire				w_intr_frame_timing;
 
 	// --------------------------------------------------------------------
 	//	Horizontal Counter
@@ -172,7 +180,15 @@ module vdp_timing_control_ssg (
 	end
 
 	assign w_screen_pos_x	= { 1'b0, ff_half_count   } - c_left_pos;
-	assign w_screen_pos_y	= { 1'b0, ff_v_count[9:1] } - c_top_pos;
+	assign w_screen_pos_yp	= { 1'b0, ff_v_count[9:1] } - c_top_pos;
+	assign w_screen_pos_ys	= w_screen_pos_yp[7:0] + reg_vertical_offset;
+	assign w_screen_pos_y	= ( w_screen_pos_yp[9:8] == 2'd0 ) ? { 2'd0, w_screen_pos_ys } : w_screen_pos_yp;
+
+	// --------------------------------------------------------------------
+	//	Interrupt
+	// --------------------------------------------------------------------
+	assign w_intr_line_timing	= (ff_half_count == c_intr_line_timing) ? 1'b1: 1'b0;
+	assign w_intr_frame_timing	= (w_screen_pos_yp == c_intr_frame_timing) ? 1'b1: 1'b0;
 
 	// --------------------------------------------------------------------
 	//	Output assignment
@@ -181,6 +197,8 @@ module vdp_timing_control_ssg (
 	assign v_count			= ff_v_count;
 	assign screen_pos_x		= w_screen_pos_x;
 	assign screen_pos_y		= w_screen_pos_y;
+	assign intr_line		= (w_screen_pos_y == { 2'd0, reg_interrupt_line } ) ? 1'b1: 1'b0;
+	assign intr_frame		= w_intr_frame_timing & w_intr_line_timing;
 	assign screen_active	= ff_h_active & ff_v_active;
 	assign dot_phase		= ff_half_count[0];
 endmodule

@@ -64,8 +64,13 @@ module tb ();
 	wire		[ 9:0]	screen_pos_y;
 	wire				screen_active;
 
+	wire				intr_line;				//	pulse
+	wire				intr_frame;				//	pulse
+
 	reg					reg_50hz_mode;
 	reg					reg_interlace_mode;
+	reg			[7:0]	reg_interrupt_line;
+	reg			[7:0]	reg_vertical_offset;
 
 	// --------------------------------------------------------------------
 	//	DUT
@@ -85,6 +90,11 @@ module tb ();
 	initial begin
 		clk = 0;
 		reset_n = 0;
+
+		reg_50hz_mode = 0;
+		reg_interlace_mode = 0;
+		reg_interrupt_line = 100;
+		reg_vertical_offset = 0;
 
 		@( posedge clk );
 		@( posedge clk );

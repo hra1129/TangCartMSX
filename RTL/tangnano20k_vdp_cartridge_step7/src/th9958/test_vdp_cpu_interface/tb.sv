@@ -75,6 +75,10 @@ module tb ();
 	reg		[7:0]		vram_rdata;
 	reg					vram_rdata_en;
 
+	wire				int_n;
+	reg					intr_line;				//	pulse
+	reg					intr_frame;				//	pulse
+
 	wire	[4:0]		reg_screen_mode;
 	wire				reg_sprite_magify;
 	wire				reg_sprite_16x16;
@@ -212,6 +216,9 @@ module tb ();
 		vram_rdata = 0;
 		vram_rdata_en = 0;
 		ff_last_vram_address = 0;
+
+		intr_line = 0;
+		intr_frame = 0;
 
 		fork
 			vram_response();

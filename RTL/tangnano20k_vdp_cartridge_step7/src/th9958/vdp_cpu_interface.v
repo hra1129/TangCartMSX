@@ -76,6 +76,10 @@ module vdp_cpu_interface (
 	input	[7:0]		vram_rdata,
 	input				vram_rdata_en,
 
+	output				int_n,
+	input				intr_line,				//	pulse
+	input				intr_frame,				//	pulse
+
 	output	[4:0]		reg_screen_mode,
 	output				reg_sprite_magify,
 	output				reg_sprite_16x16,
@@ -153,6 +157,9 @@ module vdp_cpu_interface (
 	reg					ff_vram_valid;
 	wire				w_address_14bit;			//	test1, test1q, multi, multiq, graphic1, graphic2 は、アドレスインクリメントが bit14 に繰り上がらない
 	reg					ff_busy;
+
+	reg					ff_line_interrupt;
+	reg					ff_frame_interrupt;
 
 	assign bus_ready = ~ff_busy & ~ff_register_write;
 
@@ -460,8 +467,8 @@ module vdp_cpu_interface (
 		end
 		else if( bus_valid && !bus_write && bus_address == 2'd1 ) begin
 			case( ff_status_register_pointer )
-			4'd0:		ff_bus_rdata <= { 1'b0, 1'b0, 1'b0, 5'b00000 };
-			4'd1:		ff_bus_rdata <= { 2'd0, 5'b00010, 1'b0 };
+			4'd0:		ff_bus_rdata <= { ff_frame_interrupt, 1'b0, 1'b0, 5'b00000 };
+			4'd1:		ff_bus_rdata <= { 2'd0, 5'b00010, ff_line_interrupt };
 			4'd2:		ff_bus_rdata <= { 1'b0, 1'b0, 1'b0, 1'b0, 2'b11, 1'b0, 1'b0 };
 			4'd3:		ff_bus_rdata <= 8'd0;
 			4'd4:		ff_bus_rdata <= { 7'b1111111, 1'b0 };
@@ -479,6 +486,43 @@ module vdp_cpu_interface (
 			ff_bus_rdata_en <= 1'b0;
 		end
 	end
+
+	// --------------------------------------------------------------------
+	//	Interrupt
+	// --------------------------------------------------------------------
+	always @( posedge clk or negedge reset_n ) begin
+		if( !reset_n ) begin
+			ff_line_interrupt <= 1'b0;
+		end
+		else if( bus_valid && !bus_write && bus_address == 2'd1 ) begin
+			if( ff_status_register_pointer == 4'd1 ) begin
+				//	Clear line interrupt flag
+				ff_line_interrupt <= 1'b0;
+			end
+		end
+		else if( intr_line ) begin
+			//	Happend line interrupt
+			ff_line_interrupt <= 1'b1;
+		end
+	end
+
+	always @( posedge clk or negedge reset_n ) begin
+		if( !reset_n ) begin
+			ff_frame_interrupt <= 1'b0;
+		end
+		else if( bus_valid && !bus_write && bus_address == 2'd1 ) begin
+			if( ff_status_register_pointer == 4'd0 ) begin
+				//	Clear frame interrupt flag
+				ff_frame_interrupt <= 1'b0;
+			end
+		end
+		else if( intr_frame ) begin
+			//	Happend line interrupt
+			ff_frame_interrupt <= 1'b1;
+		end
+	end
+
+	assign int_n = ~(ff_line_interrupt | ff_frame_interrupt);
 
 	// --------------------------------------------------------------------
 	//	Output assignment
