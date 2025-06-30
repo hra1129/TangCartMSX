@@ -29,3 +29,7 @@ th9958(仮) 開発日誌
 	vdp_timing_control_sprite_line_ram を設計、完了。
 	vdp_timing_control_sprite_info_ram を設計、完了。
 	vdp_timing_control_sprite を設計開始。
+
+2025年6月30日
+	vdp_timing_control_g4567.v の設計を開始、一部を実装。
+	vdp_vram_interface.v の設計を開始、entity 実装。

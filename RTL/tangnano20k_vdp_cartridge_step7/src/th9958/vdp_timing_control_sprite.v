@@ -65,7 +65,7 @@ module vdp_timing_control_sprite (
 
 	output		[16:0]	vram_address,
 	output				vram_valid,
-	input		[7:0]	vram_rdata,
+	input		[31:0]	vram_rdata,
 
 	output		[3:0]	display_color,
 
