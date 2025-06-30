@@ -92,5 +92,80 @@ module vdp_vram_interface (
 	input		[31:0]	vram_rdata,
 	input				vram_rdata_en
 );
+	localparam			c_wait_count = 3'd4;
+	reg			[16:0]	ff_vram_address;
+	reg					ff_vram_valid;
+	reg					ff_vram_write;
+	reg			[7:0]	ff_vram_wdata;
+	reg			[31:0]	ff_vram_rdata;
+	reg					ff_vram_rdata_en;
+	reg			[2:0]	ff_vram_rdata_sel;
+	reg			[2:0]	ff_wait;
 
+	// --------------------------------------------------------------------
+	//	Priority selector
+	// --------------------------------------------------------------------
+	always @( posedge clk or negedge reset_n ) begin
+		if( !reset_n ) begin
+			ff_vram_address		<= 17'd0;
+			ff_vram_valid		<= 1'b0;
+			ff_vram_write		<= 1'b0;
+			ff_vram_wdata		<= 8'd0;
+			ff_vram_rdata_sel	<= 3'd0;
+			ff_wait				<= 3'd0;
+		end
+		else if( ff_wait != 3'd0 ) begin
+			ff_wait				<= ff_wait - 3'd1;
+		end
+		else begin
+			if( g123m_vram_valid ) begin
+				ff_vram_address		<= g123m_vram_address;
+				ff_vram_valid		<= 1'b1;
+				ff_vram_write		<= 1'b0;
+				ff_vram_wdata		<= 8'd0;
+				ff_vram_rdata_sel	<= 3'd1;
+				ff_wait				<= c_wait_count;
+			end
+			else if( g4567_vram_valid ) begin
+				ff_vram_address		<= g4567_vram_address;
+				ff_vram_valid		<= 1'b1;
+				ff_vram_write		<= 1'b0;
+				ff_vram_wdata		<= 8'd0;
+				ff_vram_rdata_sel	<= 3'd2;
+				ff_wait				<= c_wait_count;
+			end
+			else if( sprite_vram_valid ) begin
+				ff_vram_address		<= sprite_vram_address;
+				ff_vram_valid		<= 1'b1;
+				ff_vram_write		<= 1'b0;
+				ff_vram_wdata		<= 8'd0;
+				ff_vram_rdata_sel	<= 3'd3;
+				ff_wait				<= c_wait_count;
+			end
+			else if( cpu_vram_valid ) begin
+				ff_vram_address		<= cpu_vram_address;
+				ff_vram_valid		<= 1'b1;
+				ff_vram_write		<= cpu_vram_write;
+				ff_vram_wdata		<= cpu_vram_wdata;
+				ff_vram_rdata_sel	<= 3'd4;
+				ff_wait				<= c_wait_count;
+			end
+			else if( command_vram_valid ) begin
+				ff_vram_address		<= command_vram_address;
+				ff_vram_valid		<= 1'b1;
+				ff_vram_write		<= command_vram_write;
+				ff_vram_wdata		<= command_vram_wdata;
+				ff_vram_rdata_sel	<= 3'd5;
+				ff_wait				<= c_wait_count;
+			end
+			else begin
+				ff_vram_rdata_sel	<= 3'd0;
+			end
+		end
+	end
+
+	assign vram_address	= ff_vram_address;
+	assign vram_valid	= ff_vram_valid;
+	assign vram_write	= ff_vram_write;
+	assign vram_wdata	= ff_vram_wdata;
 endmodule
