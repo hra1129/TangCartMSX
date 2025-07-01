@@ -33,3 +33,7 @@ th9958(仮) 開発日誌
 2025年6月30日
 	vdp_timing_control_g4567.v の設計を開始、一部を実装。
 	vdp_vram_interface.v の設計を開始、entity 実装。
+
+2025年7月1日
+	vdp_timing_control_ssg.v に走査線割り込み・垂直同期割り込みのタイミング生成回路を追加
+	vdp_cpu_interface.v にその信号を受けて int_n を作る回路を追加

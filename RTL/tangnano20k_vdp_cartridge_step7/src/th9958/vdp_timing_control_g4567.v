@@ -75,10 +75,10 @@ module vdp_timing_control_g4567 (
 	input		[7:0]	reg_backdrop_color
 );
 	//	Screen mode
-	localparam			c_mode_g1	= 5'b011_00;	//	Graphic4 (SCREEN5)
-	localparam			c_mode_g2	= 5'b100_00;	//	Graphic5 (SCREEN6)
-	localparam			c_mode_g3	= 5'b101_00;	//	Graphic6 (SCREEN7)
-	localparam			c_mode_g4	= 5'b111_00;	//	Graphic7 (SCREEN8/10/11/12)
+	localparam			c_mode_g4	= 5'b011_00;	//	Graphic4 (SCREEN5)
+	localparam			c_mode_g5	= 5'b100_00;	//	Graphic5 (SCREEN6)
+	localparam			c_mode_g6	= 5'b101_00;	//	Graphic6 (SCREEN7)
+	localparam			c_mode_g7	= 5'b111_00;	//	Graphic7 (SCREEN8/10/11/12)
 	wire		[3:0]	w_mode;
 	localparam			c_g4		= 0;			//	Graphic4 (SCREEN5) w_mode index
 	localparam			c_g5		= 1;			//	Graphic5 (SCREEN6) w_mode index
@@ -93,8 +93,8 @@ module vdp_timing_control_g4567 (
 	//	Pattern name table address
 	wire		[16:0]	w_pattern_name_g45;
 	wire		[16:0]	w_pattern_name_g67;
-	reg			[31:0]	ff_next_pattern_num0;
-	reg			[31:0]	ff_next_pattern_num1;
+	reg			[31:0]	ff_next_pattern0;
+	reg			[31:0]	ff_next_pattern1;
 	reg			[7:0]	ff_pattern [0:7];
 	//	VRAM address
 	reg			[16:0]	ff_vram_address;
@@ -185,31 +185,31 @@ module vdp_timing_control_g4567 (
 	// --------------------------------------------------------------------
 	always @( posedge clk or negedge reset_n ) begin
 		if( !reset_n ) begin
-			ff_pattern_num0 <= 32'd0;
-			ff_pattern_num1 <= 32'd0;
+			ff_next_pattern0 <= 32'd0;
+			ff_next_pattern1 <= 32'd0;
 		end
 		else begin
 			if( w_sub_phase == 3'd0 ) begin
 				case( w_phase )
 				3'd1:
 					begin
-						ff_pattern_num0 <= vram_rdata;
+						ff_next_pattern0 <= vram_rdata;
 					end
 				3'd2:
 					begin
-						ff_pattern_num1 <= vram_rdata;
+						ff_next_pattern1 <= vram_rdata;
 					end
 				3'd3:
 					begin
 						if( w_mode[0] || w_mode[1] ) begin
-							ff_pattern_num0 <= { 4'd0, ff_pattern_num0[15:12], 4'd0, ff_pattern_num0[11: 8], 
-							                     4'd0, ff_pattern_num0[ 7: 4], 4'd0, ff_pattern_num0[ 3: 0] };
-							ff_pattern_num1 <= { 4'd0, ff_pattern_num0[31:28], 4'd0, ff_pattern_num0[27:24], 
-							                     4'd0, ff_pattern_num0[23:20], 4'd0, ff_pattern_num0[19:16] };
+							ff_next_pattern0 <= { 4'd0, ff_next_pattern0[15:12], 4'd0, ff_next_pattern0[11: 8], 
+							                      4'd0, ff_next_pattern0[ 7: 4], 4'd0, ff_next_pattern0[ 3: 0] };
+							ff_next_pattern1 <= { 4'd0, ff_next_pattern0[31:28], 4'd0, ff_next_pattern0[27:24], 
+							                      4'd0, ff_next_pattern0[23:20], 4'd0, ff_next_pattern0[19:16] };
 						end
 						else begin
-							ff_pattern_num0 <= { ff_pattern_num1[15: 8], ff_pattern_num0[15: 8], ff_pattern_num1[ 7: 0], ff_pattern_num0[ 7: 0] };
-							ff_pattern_num1 <= { ff_pattern_num1[31:24], ff_pattern_num0[31:24], ff_pattern_num1[23:16], ff_pattern_num0[23:16] };
+							ff_next_pattern0 <= { ff_next_pattern1[15: 8], ff_next_pattern0[15: 8], ff_next_pattern1[ 7: 0], ff_next_pattern0[ 7: 0] };
+							ff_next_pattern1 <= { ff_next_pattern1[31:24], ff_next_pattern0[31:24], ff_next_pattern1[23:16], ff_next_pattern0[23:16] };
 						end
 					end
 				default:
@@ -248,14 +248,14 @@ module vdp_timing_control_g4567 (
 					ff_pattern[7] <= reg_backdrop_color;
 				end
 				else begin
-					ff_pattern[0] <= ff_pattern_num0[ 7: 0];
-					ff_pattern[1] <= ff_pattern_num0[15: 8];
-					ff_pattern[2] <= ff_pattern_num0[23:16];
-					ff_pattern[3] <= ff_pattern_num0[31:24];
-					ff_pattern[4] <= ff_pattern_num1[ 7: 0];
-					ff_pattern[5] <= ff_pattern_num1[15: 8];
-					ff_pattern[6] <= ff_pattern_num1[23:16];
-					ff_pattern[7] <= ff_pattern_num1[31:24];
+					ff_pattern[0] <= ff_next_pattern0[ 7: 0];
+					ff_pattern[1] <= ff_next_pattern0[15: 8];
+					ff_pattern[2] <= ff_next_pattern0[23:16];
+					ff_pattern[3] <= ff_next_pattern0[31:24];
+					ff_pattern[4] <= ff_next_pattern1[ 7: 0];
+					ff_pattern[5] <= ff_next_pattern1[15: 8];
+					ff_pattern[6] <= ff_next_pattern1[23:16];
+					ff_pattern[7] <= ff_next_pattern1[31:24];
 				end
 			end
 			else begin
