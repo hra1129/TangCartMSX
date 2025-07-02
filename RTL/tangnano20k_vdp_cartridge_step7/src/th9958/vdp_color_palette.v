@@ -67,6 +67,7 @@ module vdp_color_palette (
 	input		[2:0]	palette_g,
 	input		[2:0]	palette_b,
 
+	input		[3:0]	display_color_t12,
 	input		[3:0]	display_color_g123m,
 	input		[7:0]	display_color_g4567,
 	input		[3:0]	display_color_sprite,

@@ -37,3 +37,15 @@ th9958(仮) 開発日誌
 2025年7月1日
 	vdp_timing_control_ssg.v に走査線割り込み・垂直同期割り込みのタイミング生成回路を追加
 	vdp_cpu_interface.v にその信号を受けて int_n を作る回路を追加
+	vdp_timing_control.v を作成。vdp_timing_control_ssg のインスタンス記述を追加。
+	vdp_timing_control_g4567.v のテストベンチを作成。波形目視にて概ね期待通り動作していることを確認。
+
+2025年7月2日
+	vdp_timing_control.v に vdp_timing_control_g123m のインスタンス記述を追加。
+	vdp_timing_control.v に vdp_timing_control_g4567 のインスタンス記述を追加。
+	vdp_timing_control_t12.v の設計を開始、一部を実装。
+
+2025年7月3日
+	vdp_timing_control_ssg.v にスクロールレジスタの影響を受けない座標出力を追加。
+	vdp_timing_control_ssg.v に水平スクロールの処理を追加。
+	vdp_timing_control_t12.v のテストベンチを作成。

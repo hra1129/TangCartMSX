@@ -76,8 +76,6 @@ module tb ();
 
 	reg			[4:0]	reg_screen_mode;
 	reg			[16:10]	reg_pattern_name_table_base;
-	reg					reg_color0_opaque;
-	reg			[7:0]	reg_backdrop_color;
 	int					i, j, jj;
 
 	// --------------------------------------------------------------------
@@ -104,8 +102,6 @@ module tb ();
 		vram_rdata = 0;
 		reg_screen_mode = c_mode_g4;
 		reg_pattern_name_table_base = 0;
-		reg_color0_opaque = 0;
-		reg_backdrop_color = 0;
 
 		@( posedge clk );
 		@( posedge clk );
@@ -117,7 +113,6 @@ module tb ();
 		jj = 0;
 		reg_screen_mode = c_mode_g4;
 		for( j = 0; j < 16; j++ ) begin
-			reg_backdrop_color = j;
 			for( i = 0; i < 2736; i++ ) begin
 				screen_pos_x <= i - 128;
 				screen_pos_y <= -10;
@@ -132,7 +127,6 @@ module tb ();
 
 		$display( "[test002] SCREEN5 Active phase" );
 		for( j = 0; j < 16; j++ ) begin
-			reg_backdrop_color = j;
 			for( i = 0; i < 2736; i++ ) begin
 				screen_pos_x <= i - 128;
 				screen_pos_y <= 0;
@@ -155,7 +149,6 @@ module tb ();
 		$display( "[test001] SCREEN6 Inactive mode" );
 		reg_screen_mode = c_mode_g5;
 		for( j = 0; j < 16; j++ ) begin
-			reg_backdrop_color = j;
 			for( i = 0; i < 2736; i++ ) begin
 				screen_pos_x <= i - 128;
 				screen_pos_y <= -10;
@@ -170,7 +163,6 @@ module tb ();
 
 		$display( "[test002] SCREEN6 Active phase" );
 		for( j = 0; j < 16; j++ ) begin
-			reg_backdrop_color = j;
 			for( i = 0; i < 2736; i++ ) begin
 				screen_pos_x <= i - 128;
 				screen_pos_y <= 0;
@@ -193,7 +185,6 @@ module tb ();
 		$display( "[test001] SCREEN7 Inactive mode" );
 		reg_screen_mode = c_mode_g6;
 		for( j = 0; j < 16; j++ ) begin
-			reg_backdrop_color = j;
 			for( i = 0; i < 2736; i++ ) begin
 				screen_pos_x <= i - 128;
 				screen_pos_y <= -10;
@@ -208,7 +199,6 @@ module tb ();
 
 		$display( "[test002] SCREEN7 Active phase" );
 		for( j = 0; j < 16; j++ ) begin
-			reg_backdrop_color = j;
 			for( i = 0; i < 2736; i++ ) begin
 				screen_pos_x <= i - 128;
 				screen_pos_y <= 0;
@@ -232,7 +222,6 @@ module tb ();
 		reg_screen_mode = c_mode_g7;
 		jj = 0;
 		for( j = 0; j < 16; j++ ) begin
-			reg_backdrop_color = j;
 			for( i = 0; i < 2736; i++ ) begin
 				screen_pos_x <= i - 128;
 				screen_pos_y <= -10;
@@ -247,7 +236,6 @@ module tb ();
 
 		$display( "[test002] SCREEN8 Active phase" );
 		for( j = 0; j < 16; j++ ) begin
-			reg_backdrop_color = j;
 			for( i = 0; i < 2736; i++ ) begin
 				screen_pos_x <= i - 128;
 				screen_pos_y <= 0;

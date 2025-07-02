@@ -62,8 +62,10 @@ module vdp_timing_control_ssg (
 	output		[10:0]	h_count,
 	output		[ 9:0]	v_count,
 
-	output		[12:0]	screen_pos_x,			//	signed
-	output		[ 9:0]	screen_pos_y,			//	signed
+	output		[12:0]	screen_pos_x,			//	signed   (Coordinates not affected by scroll register)
+	output		[ 9:0]	screen_pos_y,			//	signed   (Coordinates not affected by scroll register)
+	output		[ 8:0]	pixel_pos_x,			//	unsigned (Coordinates affected by scroll register)
+	output		[ 7:0]	pixel_pos_y,			//	unsigned (Coordinates affected by scroll register)
 	output				screen_active,
 
 	output				intr_line,				//	pulse
@@ -72,7 +74,8 @@ module vdp_timing_control_ssg (
 	input				reg_50hz_mode,
 	input				reg_interlace_mode,
 	input		[7:0]	reg_interrupt_line,
-	input		[7:0]	reg_vertical_offset
+	input		[7:0]	reg_vertical_offset,
+	input		[8:0]	reg_horizontal_offset
 );
 	localparam			c_left_pos			= 12'd320;		//	16の倍数
 	localparam			c_top_pos			= 11'd6;
@@ -90,8 +93,8 @@ module vdp_timing_control_ssg (
 	wire				w_v_count_end;
 	wire		[12:0]	w_screen_pos_x;
 	wire		[ 9:0]	w_screen_pos_y;
-	wire		[ 9:0]	w_screen_pos_yp;
-	wire		[ 7:0]	w_screen_pos_ys;
+	wire		[ 8:0]	w_pixel_pos_x;
+	wire		[ 7:0]	w_pixel_pos_y;
 	reg					ff_h_active;
 	reg					ff_v_active;
 	wire				w_intr_line_timing;
@@ -180,15 +183,16 @@ module vdp_timing_control_ssg (
 	end
 
 	assign w_screen_pos_x	= { 1'b0, ff_half_count   } - c_left_pos;
-	assign w_screen_pos_yp	= { 1'b0, ff_v_count[9:1] } - c_top_pos;
-	assign w_screen_pos_ys	= w_screen_pos_yp[7:0] + reg_vertical_offset;
-	assign w_screen_pos_y	= ( w_screen_pos_yp[9:8] == 2'd0 ) ? { 2'd0, w_screen_pos_ys } : w_screen_pos_yp;
+	assign w_screen_pos_y	= { 1'b0, ff_v_count[9:1] } - c_top_pos;
+
+	assign w_pixel_pos_x	= w_screen_pos_x[11:3] + { reg_horizontal_offset[8:3], 3'd0 };
+	assign w_pixel_pos_y	= w_screen_pos_y[ 7:0] + reg_vertical_offset;
 
 	// --------------------------------------------------------------------
 	//	Interrupt
 	// --------------------------------------------------------------------
-	assign w_intr_line_timing	= (ff_half_count == c_intr_line_timing) ? 1'b1: 1'b0;
-	assign w_intr_frame_timing	= (w_screen_pos_yp == c_intr_frame_timing) ? 1'b1: 1'b0;
+	assign w_intr_line_timing	= (ff_half_count  == c_intr_line_timing ) ? 1'b1: 1'b0;
+	assign w_intr_frame_timing	= (w_screen_pos_y == c_intr_frame_timing) ? 1'b1: 1'b0;
 
 	// --------------------------------------------------------------------
 	//	Output assignment
@@ -197,6 +201,8 @@ module vdp_timing_control_ssg (
 	assign v_count			= ff_v_count;
 	assign screen_pos_x		= w_screen_pos_x;
 	assign screen_pos_y		= w_screen_pos_y;
+	assign pixel_pos_x		= w_pixel_pos_x;
+	assign pixel_pos_y		= w_pixel_pos_y;
 	assign intr_line		= (w_screen_pos_y == { 2'd0, reg_interrupt_line } ) ? 1'b1: 1'b0;
 	assign intr_frame		= w_intr_frame_timing & w_intr_line_timing;
 	assign screen_active	= ff_h_active & ff_v_active;

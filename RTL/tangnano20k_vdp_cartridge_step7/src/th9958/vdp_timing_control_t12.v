@@ -1,6 +1,6 @@
 //
-//	vdp_timing_control_g4567.v
-//	Graphic 4, 5, 6 and 7 mode timing generator for Timing Control
+//	vdp_timing_control_t12.v
+//	Text 1 and 2 mode timing generator for Timing Control
 //
 //	Copyright (C) 2025 Takayuki Hara
 //
@@ -55,7 +55,7 @@
 //
 //-----------------------------------------------------------------------------
 
-module vdp_timing_control_g4567 (
+module vdp_timing_control_t12 (
 	input				reset_n,
 	input				clk,					//	42.95454MHz
 
@@ -65,53 +65,64 @@ module vdp_timing_control_g4567 (
 
 	output		[16:0]	vram_address,
 	output				vram_valid,
-	input		[31:0]	vram_rdata,
+	input		[15:0]	vram_rdata,
 
-	output		[7:0]	display_color,
+	output		[3:0]	display_color,
 
 	input		[4:0]	reg_screen_mode,
-	input		[16:10]	reg_pattern_name_table_base
+	input		[16:10]	reg_pattern_name_table_base,
+	input		[16:6]	reg_color_table_base,
+	input		[16:11]	reg_pattern_generator_table_base,
+	input		[3:0]	reg_backdrop_color
 );
 	//	Screen mode
-	localparam			c_mode_g4	= 5'b011_00;	//	Graphic4 (SCREEN5)
-	localparam			c_mode_g5	= 5'b100_00;	//	Graphic5 (SCREEN6)
-	localparam			c_mode_g6	= 5'b101_00;	//	Graphic6 (SCREEN7)
-	localparam			c_mode_g7	= 5'b111_00;	//	Graphic7 (SCREEN8/10/11/12)
-	wire		[3:0]	w_mode;
-	localparam			c_g4		= 0;			//	Graphic4 (SCREEN5) w_mode index
-	localparam			c_g5		= 1;			//	Graphic5 (SCREEN6) w_mode index
-	localparam			c_g6		= 2;			//	Graphic6 (SCREEN7) w_mode index
-	localparam			c_g7		= 3;			//	Graphic7 (SCREEN8) w_mode index
+	localparam			c_mode_t1	= 5'b000_01;	//	Text1 (SCREEN0:WIDTH40)
+	localparam			c_mode_t1q	= 5'b001_01;	//	Text1 (SCREEN0:WIDTH40)
+	localparam			c_mode_t2	= 5'b010_01;	//	Text2 (SCREEN0:WIDTH80)
+	wire		[1:0]	w_mode;
+	localparam			c_t1		= 0;			//	Text1 (SCREEN0:WIDTH40) w_mode index
+	localparam			c_t2		= 1;			//	Text2 (SCREEN0:WIDTH80) w_mode index
 	//	Phase
-	wire		[2:0]	w_phase;
+	reg			[2:0]	ff_phase;					//	0, 1, 2, ... , 5, 0 ... 6states
 	wire		[2:0]	w_sub_phase;
 	//	Position
-	wire		[7:0]	w_pos_x;
-	wire		[7:0]	w_pos_y;
+	wire		[2:0]	w_pos_y;
+	reg			[5:0]	ff_pos_x;
+	reg			[7:0]	ff_pos_y;
 	//	Pattern name table address
-	wire		[16:0]	w_pattern_name_g45;
-	wire		[16:0]	w_pattern_name_g67;
-	reg			[31:0]	ff_next_pattern0;
-	reg			[31:0]	ff_next_pattern1;
-	reg			[7:0]	ff_pattern [0:7];
+	wire		[10:0]	w_pre_pattern_name;
+	wire		[16:0]	w_pattern_name;
+	reg			[7:0]	ff_pattern_num;
+	//	Pattern generator table address
+	wire		[16:0]	w_pattern_generator;
+	reg			[5:0]	ff_next_pattern;
+	reg			[5:0]	ff_pattern;
+	//	Color table address
+	wire		[16:0]	w_color;
+	reg			[7:0]	ff_next_color;
+	reg			[7:0]	ff_color;
 	//	VRAM address
 	reg			[16:0]	ff_vram_address;
 	reg					ff_vram_valid;
 	//	Display color
-	reg			[7:0]	ff_display_color;
+	reg			[3:0]	ff_display_color;
+
+	// --------------------------------------------------------------------
+	//	★メモ
+	//	垂直スクロールは、パターンジェネレータのアドレスにしか効かない。
+	//	水平スクロールは、R#27 は効くが、R#26 は効かない。
+	// --------------------------------------------------------------------
 
 	// --------------------------------------------------------------------
 	//	Screen mode decoder
 	// --------------------------------------------------------------------
-	function [3:0] func_screen_mode_decoder(
+	function [1:0] func_screen_mode_decoder(
 		input	[4:0]	reg_screen_mode
 	);
 		case( reg_screen_mode )
-		c_mode_g4:		func_screen_mode_decoder = 4'b0001;
-		c_mode_g5:		func_screen_mode_decoder = 4'b0010;
-		c_mode_g6:		func_screen_mode_decoder = 4'b0100;
-		c_mode_g7:		func_screen_mode_decoder = 4'b1000;
-		default:		func_screen_mode_decoder = 4'b0000;
+		c_mode_t1, c_mode_t1q:	func_screen_mode_decoder = 2'b01;
+		c_mode_t2:				func_screen_mode_decoder = 2'b10;
+		default:				func_screen_mode_decoder = 2'b00;
 		endcase
 	endfunction
 
@@ -120,20 +131,71 @@ module vdp_timing_control_g4567 (
 	// --------------------------------------------------------------------
 	//	Screen Position for active area
 	// --------------------------------------------------------------------
-	assign w_pos_x		= screen_pos_x[10:3];
-	assign w_pos_y		= screen_pos_y[7:0];
+	assign w_pos_y		= screen_pos_y[2:0];
+
+	always @( posedge clk or negedge reset_n ) begin
+		if( !reset_n ) begin
+			ff_pos_x <= 6'd0;
+		end
+		else if( screen_pos_x == 13'h1FFF ) begin
+			ff_pos_x <= 6'd0;
+		end
+		else if( w_sub_phase == 3'd7 ) begin
+			ff_pos_x <= ff_pos_x + 6'd1;
+		end
+	end
+
+	always @( posedge clk or negedge reset_n ) begin
+		if( !reset_n ) begin
+			ff_pos_y <= 8'd0;
+		end
+		else if( screen_pos_x == 13'h1FFF ) begin
+			if( screen_pos_y == 10'h3FF ) begin
+				ff_pos_y <= 8'hFF;
+			end
+			else begin
+				ff_pos_y <= ff_pos_y + 8'd1;
+			end
+		end
+	end
 
 	// --------------------------------------------------------------------
 	//	Phase
 	// --------------------------------------------------------------------
-	assign w_phase		= screen_pos_x[5:3];
 	assign w_sub_phase	= screen_pos_x[2:0];
+
+	always @( posedge clk or negedge reset_n ) begin
+		if( !reset_n ) begin
+			ff_phase <= 3'd0;
+		end
+		else if( screen_pos_x == 13'h1FFF ) begin
+			ff_phase <= 3'd0;
+		end
+		else if( w_sub_phase == 3'd7 ) begin
+			if( ff_phase == 3'd5 ) begin
+				ff_phase <= 3'd0;
+			end
+			else begin
+				ff_phase <= ff_phase + 3'd1;
+			end
+		end
+	end
 
 	// --------------------------------------------------------------------
 	//	Pattern name table address
 	// --------------------------------------------------------------------
-	assign w_pattern_name_g45			= {          reg_pattern_name_table_base[16:15], (reg_pattern_name_table_base[14:10] & w_pos_y[7:3]), w_pos_y[2:0], w_pos_x[7:3], 2'd0 };
-	assign w_pattern_name_g67			= { w_pos_x[0], reg_pattern_name_table_base[15], (reg_pattern_name_table_base[14:10] & w_pos_y[7:3]), w_pos_y[2:0], w_pos_x[7:3], 3'd0 };
+	assign w_pre_pattern_name			= { 1'b0, ff_pos_y[7:3], 5'd0 } + { 3'd0, ff_pos_y[7:3], 3'd0 } + { 5'd0, ff_pos_x };
+	assign w_pattern_name				= { reg_pattern_name_table_base, 8'd0 } + w_mode[ c_t1 ] ? { 6'd0, w_pre_pattern_name }: { 5'd0, w_pre_pattern_name, 1'b0 };
+
+	// --------------------------------------------------------------------
+	//	Pattern generator table address
+	// --------------------------------------------------------------------
+	assign w_pattern_generator			= { reg_pattern_generator_table_base, ff_pattern_num, w_pos_y[2:0] };
+
+	// --------------------------------------------------------------------
+	//	Color table address
+	// --------------------------------------------------------------------
+	assign w_color						= { reg_color_table_base[16:9], 9'd0 } + { 6'd0, w_pre_pattern_name };
 
 	// --------------------------------------------------------------------
 	//	VRAM read access request
@@ -145,26 +207,35 @@ module vdp_timing_control_g4567 (
 		end
 		else begin
 			if( w_sub_phase == 3'd0 ) begin
-				case( w_phase )
+				case( ff_phase )
 				3'd0:
 					begin
-						if( w_mode[2] || w_mode[3] ) begin
-							ff_vram_address <= w_pattern_name_g45;
-						end
-						else begin
-							ff_vram_address <= w_pattern_name_g67;
-						end
+						ff_vram_address <= w_pattern_name;
 						ff_vram_valid <= screen_active;
 					end
-				3'd1:
+				3'd2:
 					begin
-						ff_vram_address <= w_pattern_name_g67;
-						ff_vram_valid <= screen_active & (w_mode[2] | w_mode[3]);
+						ff_vram_address <= w_pattern_generator;
+						ff_vram_valid <= screen_active;
+					end
+				3'd3:
+					begin
+						ff_vram_address <= w_color;
+						ff_vram_valid <= screen_active;
+					end
+				3'd4:
+					begin
+						ff_vram_address <= w_pattern_generator;
+						ff_vram_valid <= screen_active & w_mode[ c_t2 ];
+					end
+				3'd5:
+					begin
+						ff_vram_address <= w_color;
+						ff_vram_valid <= screen_active & w_mode[ c_t2 ];
 					end
 				default:
 					begin
-						ff_vram_address <= 17'd0;
-						ff_vram_valid <= 1'b0;
+						//	hold
 					end
 				endcase
 			end
@@ -183,32 +254,24 @@ module vdp_timing_control_g4567 (
 	// --------------------------------------------------------------------
 	always @( posedge clk or negedge reset_n ) begin
 		if( !reset_n ) begin
-			ff_next_pattern0 <= 32'd0;
-			ff_next_pattern1 <= 32'd0;
+			ff_pattern_num <= 8'd0;
+			ff_next_pattern <= 8'd0;
+			ff_next_color <= 6'd0;
 		end
 		else begin
 			if( w_sub_phase == 3'd0 ) begin
-				case( w_phase )
+				case( ff_phase )
 				3'd1:
 					begin
-						ff_next_pattern0 <= vram_rdata;
-					end
-				3'd2:
-					begin
-						ff_next_pattern1 <= vram_rdata;
+						ff_pattern_num <= vram_rdata;
 					end
 				3'd3:
 					begin
-						if( w_mode[0] || w_mode[1] ) begin
-							ff_next_pattern0 <= { 4'd0, ff_next_pattern0[15:12], 4'd0, ff_next_pattern0[11: 8], 
-							                      4'd0, ff_next_pattern0[ 7: 4], 4'd0, ff_next_pattern0[ 3: 0] };
-							ff_next_pattern1 <= { 4'd0, ff_next_pattern0[31:28], 4'd0, ff_next_pattern0[27:24], 
-							                      4'd0, ff_next_pattern0[23:20], 4'd0, ff_next_pattern0[19:16] };
-						end
-						else begin
-							ff_next_pattern0 <= { ff_next_pattern1[15: 8], ff_next_pattern0[15: 8], ff_next_pattern1[ 7: 0], ff_next_pattern0[ 7: 0] };
-							ff_next_pattern1 <= { ff_next_pattern1[31:24], ff_next_pattern0[31:24], ff_next_pattern1[23:16], ff_next_pattern0[23:16] };
-						end
+						ff_next_pattern <= vram_rdata;
+					end
+				3'd4:
+					begin
+						ff_next_color <= vram_rdata[7:2];
 					end
 				default:
 					begin
@@ -224,47 +287,35 @@ module vdp_timing_control_g4567 (
 	// --------------------------------------------------------------------
 	always @( posedge clk or negedge reset_n ) begin
 		if( !reset_n ) begin
-			ff_pattern[0] <= 8'd0;
-			ff_pattern[1] <= 8'd0;
-			ff_pattern[2] <= 8'd0;
-			ff_pattern[3] <= 8'd0;
-			ff_pattern[4] <= 8'd0;
-			ff_pattern[5] <= 8'd0;
-			ff_pattern[6] <= 8'd0;
-			ff_pattern[7] <= 8'd0;
+			ff_pattern <= 6'd0;
 		end
 		else if( w_sub_phase == 3'd5 ) begin
-			if( w_phase == 3'd7 ) begin
+			if( ff_phase == 3'd5 ) begin
 				if( !screen_active ) begin
-					ff_pattern[0] <= reg_backdrop_color;
-					ff_pattern[1] <= reg_backdrop_color;
-					ff_pattern[2] <= reg_backdrop_color;
-					ff_pattern[3] <= reg_backdrop_color;
-					ff_pattern[4] <= reg_backdrop_color;
-					ff_pattern[5] <= reg_backdrop_color;
-					ff_pattern[6] <= reg_backdrop_color;
-					ff_pattern[7] <= reg_backdrop_color;
+					ff_pattern <= 6'd0;
 				end
 				else begin
-					ff_pattern[0] <= ff_next_pattern0[ 7: 0];
-					ff_pattern[1] <= ff_next_pattern0[15: 8];
-					ff_pattern[2] <= ff_next_pattern0[23:16];
-					ff_pattern[3] <= ff_next_pattern0[31:24];
-					ff_pattern[4] <= ff_next_pattern1[ 7: 0];
-					ff_pattern[5] <= ff_next_pattern1[15: 8];
-					ff_pattern[6] <= ff_next_pattern1[23:16];
-					ff_pattern[7] <= ff_next_pattern1[31:24];
+					ff_pattern <= ff_next_pattern;
 				end
 			end
 			else begin
-				ff_pattern[0] <= ff_pattern[1];
-				ff_pattern[1] <= ff_pattern[2];
-				ff_pattern[2] <= ff_pattern[3];
-				ff_pattern[3] <= ff_pattern[4];
-				ff_pattern[4] <= ff_pattern[5];
-				ff_pattern[5] <= ff_pattern[6];
-				ff_pattern[6] <= ff_pattern[7];
-				ff_pattern[7] <= reg_backdrop_color;
+				ff_pattern <= { ff_pattern[4:0], 1'b0 };
+			end
+		end
+	end
+
+	always @( posedge clk or negedge reset_n ) begin
+		if( !reset_n ) begin
+			ff_color <= 8'd0;
+		end
+		else if( w_sub_phase == 3'd5 ) begin
+			if( ff_phase == 3'd5 ) begin
+				if( !screen_active ) begin
+					ff_color <= { reg_backdrop_color, reg_backdrop_color };
+				end
+				else begin
+					ff_color <= ff_next_color;
+				end
 			end
 		end
 	end
@@ -274,7 +325,14 @@ module vdp_timing_control_g4567 (
 			ff_display_color <= 4'd0;
 		end
 		else if( w_sub_phase == 3'd7 ) begin
-			ff_display_color <= ff_pattern[0];
+			if( ff_pattern[5] ) begin
+				//	Foreground
+				ff_display_color <= ff_color[7:4];
+			end
+			else begin
+				//	Background
+				ff_display_color <= ff_color[3:0];
+			end
 		end
 	end
 

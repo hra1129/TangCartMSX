@@ -68,29 +68,100 @@ module vdp_timing_control (
 	output				intr_line,				//	pulse
 	output				intr_frame,				//	pulse
 
+	output		[3:0]	display_color_t12,
+	output		[3:0]	display_color_g123m,
+	output		[7:0]	display_color_g4567,
+	output		[3:0]	display_color_sprite,
+	output				display_color_sprite_en,
+
 	input				reg_50hz_mode,
 	input				reg_interlace_mode,
 	input		[7:0]	reg_interrupt_line,
 	input		[7:0]	reg_vertical_offset
+	input		[4:0]	reg_screen_mode,
+	input		[16:10]	reg_pattern_name_table_base,
+	input		[16:6]	reg_color_table_base,
+	input		[16:11]	reg_pattern_generator_table_base,
+	input		[3:0]	reg_backdrop_color
 );
+	wire		[12:0]	w_screen_pos_x;			//	signed   (Coordinates not affected by scroll register)
+	wire		[ 9:0]	w_screen_pos_y;			//	signed   (Coordinates not affected by scroll register)
+	wire		[ 8:0]	w_pixel_pos_x;			//	unsigned (Coordinates affected by scroll register)
+	wire		[ 7:0]	w_pixel_pos_y;			//	unsigned (Coordinates affected by scroll register)
+	wire				w_screen_active;
+
+	// --------------------------------------------------------------------
+	//	Output assignment
+	// --------------------------------------------------------------------
+	assign screen_pos_x		= w_screen_pos_x;
+	assign screen_pos_y		= w_screen_pos_y;
+	assign screen_active	= w_screen_active;
 
 	// --------------------------------------------------------------------
 	//	Synchronous Signal Generator
 	// --------------------------------------------------------------------
 	vdp_timing_control_ssg u_ssg (
-		.reset_n						( reset_n						),
-		.clk							( clk							),
-		.h_count						( h_count						),
-		.v_count						( v_count						),
-		.screen_pos_x					( screen_pos_x					),
-		.screen_pos_y					( screen_pos_y					),
-		.screen_active					( screen_active					),
-		.intr_line						( intr_line						),
-		.intr_frame						( intr_frame					),
-		.reg_50hz_mode					( reg_50hz_mode					),
-		.reg_interlace_mode				( reg_interlace_mode			),
-		.reg_interrupt_line				( reg_interrupt_line			),
-		.reg_vertical_offset			( reg_vertical_offset			)
+		.reset_n							( reset_n							),
+		.clk								( clk								),
+		.h_count							( h_count							),
+		.v_count							( v_count							),
+		.screen_pos_x						( w_screen_pos_x					),
+		.screen_pos_y						( w_screen_pos_y					),
+		.pixel_pos_x						( w_pixel_pos_x						),
+		.pixel_pos_y						( w_pixel_pos_y						),
+		.screen_active						( w_screen_active					),
+		.intr_line							( intr_line							),
+		.intr_frame							( intr_frame						),
+		.reg_50hz_mode						( reg_50hz_mode						),
+		.reg_interlace_mode					( reg_interlace_mode				),
+		.reg_interrupt_line					( reg_interrupt_line				),
+		.reg_vertical_offset				( reg_vertical_offset				),
+		.reg_horizontal_offset				( reg_horizontal_offset				)
 	);
+
+	// --------------------------------------------------------------------
+	//	Text1 and 2 mode
+	// --------------------------------------------------------------------
+
+	// --------------------------------------------------------------------
+	//	Graphic1, 2, 3 and Multi color mode
+	// --------------------------------------------------------------------
+	vdp_timing_control_g123m u_g123m (
+		.reset_n							( reset_n							),
+		.clk								( clk								),
+		.screen_pos_x						( w_screen_pos_x					),
+		.screen_pos_y						( w_screen_pos_y					),
+		.screen_active						( w_screen_active					),
+		.vram_address						( vram_address						),
+		.vram_valid							( vram_valid						),
+		.vram_rdata							( vram_rdata						),
+		.display_color						( display_color_g123m				),
+		.reg_screen_mode					( reg_screen_mode					),
+		.reg_pattern_name_table_base		( reg_pattern_name_table_base		),
+		.reg_color_table_base				( reg_color_table_base				),
+		.reg_pattern_generator_table_base	( reg_pattern_generator_table_base	),
+		.reg_backdrop_color					( reg_backdrop_color				)
+	);
+
+	// --------------------------------------------------------------------
+	//	Graphic4, 5, 6 and 7 mode
+	// --------------------------------------------------------------------
+	vdp_timing_control_g4567 u_g4567 (
+		.reset_n							( reset_n							),
+		.clk								( clk								),
+		.screen_pos_x						( w_screen_pos_x					),
+		.screen_pos_y						( w_screen_pos_y					),
+		.screen_active						( w_screen_active					),
+		.vram_address						( vram_address						),
+		.vram_valid							( vram_valid						),
+		.vram_rdata							( vram_rdata						),
+		.display_color						( display_color_g4567				),
+		.reg_screen_mode					( reg_screen_mode					),
+		.reg_pattern_name_table_base		( reg_pattern_name_table_base		)
+	);
+
+	// --------------------------------------------------------------------
+	//	Sprite
+	// --------------------------------------------------------------------
 
 endmodule

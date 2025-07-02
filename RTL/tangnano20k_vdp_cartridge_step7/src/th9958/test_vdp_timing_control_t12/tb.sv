@@ -1,5 +1,5 @@
 // -----------------------------------------------------------------------------
-//	Test of vdp_timing_control_ssg.v
+//	Test of vdp_timing_control_t12.v
 //	Copyright (C)2025 Takayuki Hara (HRA!)
 //	
 //	本ソフトウェアおよび本ソフトウェアに基づいて作成された派生物は、以下の条件を
@@ -54,31 +54,36 @@
 // --------------------------------------------------------------------
 
 module tb ();
-	localparam		clk_base		= 1_000_000_000/42_954_540;	//	ns
+	localparam			clk_base		= 1_000_000_000/42_954_540;	//	ns
+
+	localparam			c_mode_t1	= 5'b000_01;	//	Text1 (SCREEN0:WIDTH40)
+	localparam			c_mode_t1q	= 5'b001_01;	//	Text1 (SCREEN0:WIDTH40)
+	localparam			c_mode_t2	= 5'b010_01;	//	Text2 (SCREEN0:WIDTH80)
+
 	reg					reset_n;
-	reg					clk;
+	reg					clk;						//	42.95454MHz
 
-	wire		[10:0]	h_count;
-	wire		[ 9:0]	v_count;
-	wire		[12:0]	screen_pos_x;
-	wire		[ 9:0]	screen_pos_y;
-	wire		[ 8:0]	pixel_pos_x;
-	wire		[ 7:0]	pixel_pos_y;
-	wire				screen_active;
+	reg			[12:0]	screen_pos_x;
+	reg			[ 9:0]	screen_pos_y;
+	reg					screen_active;
 
-	wire				intr_line;				//	pulse
-	wire				intr_frame;				//	pulse
+	wire		[16:0]	vram_address;
+	wire				vram_valid;
+	reg			[15:0]	vram_rdata;
 
-	reg					reg_50hz_mode;
-	reg					reg_interlace_mode;
-	reg			[7:0]	reg_interrupt_line;
-	reg			[7:0]	reg_vertical_offset;
-	reg			[8:0]	reg_horizontal_offset;
+	wire		[3:0]	display_color;
+
+	reg			[4:0]	reg_screen_mode;
+	reg			[16:10]	reg_pattern_name_table_base;
+	reg			[16:6]	reg_color_table_base;
+	reg			[16:11]	reg_pattern_generator_table_base;
+	reg			[3:0]	reg_backdrop_color;
+	int					i, j, jj;
 
 	// --------------------------------------------------------------------
 	//	DUT
 	// --------------------------------------------------------------------
-	vdp_timing_control_ssg u_timing_control_ssg ( .* );
+	vdp_timing_control_t12 u_timing_control_t12 ( .* );
 
 	// --------------------------------------------------------------------
 	//	clock
@@ -93,12 +98,16 @@ module tb ();
 	initial begin
 		clk = 0;
 		reset_n = 0;
-
-		reg_50hz_mode = 0;
-		reg_interlace_mode = 0;
-		reg_interrupt_line = 100;
-		reg_vertical_offset = 0;
-		reg_horizontal_offset = 0;
+		screen_pos_x = 0;
+		screen_pos_y = 0;
+		screen_active = 0;
+		vram_rdata = 0;
+		reg_screen_mode = c_mode_t1;
+		reg_pattern_name_table_base = 0;
+		reg_pattern_name_table_base = 0;
+		reg_color_table_base = 0;
+		reg_pattern_generator_table_base = 0;
+		reg_backdrop_color = 0;
 
 		@( posedge clk );
 		@( posedge clk );
@@ -106,26 +115,116 @@ module tb ();
 		reset_n <= 1;
 		@( posedge clk );
 
-		$display( "60Hz, non interlace" );
-		reg_50hz_mode		= 1'b0;		//	60Hz
-		reg_interlace_mode	= 1'b0;		//	non interlace
-		repeat( 1368 * 550 * 2 ) @( posedge clk );
+		$display( "[test001] SCREEN0(W40) Inactive mode" );
+		jj = 0;
+		reg_screen_mode = c_mode_t1;
+		for( j = 0; j < 16; j++ ) begin
+			for( i = 0; i < 2736; i++ ) begin
+				screen_pos_x <= i - 128;
+				screen_pos_y <= -10;
+				screen_active <= 1'b0;
+				@( posedge clk );
+				assert( vram_valid == 1'b0 );
+				if( (i % 64) == 63 ) begin
+					jj = j;
+				end
+			end
+		end
 
-		$display( "60Hz, interlace" );
-		reg_50hz_mode		= 1'b0;		//	60Hz
-		reg_interlace_mode	= 1'b1;		//	interlace
-		repeat( 1368 * 550 * 2 ) @( posedge clk );
+		$display( "[test002] SCREEN0(E40) Active phase" );
+		for( j = 0; j < 16; j++ ) begin
+			for( i = 0; i < 2736; i++ ) begin
+				screen_pos_x <= i - 128;
+				screen_pos_y <= 0;
+				screen_active <= 1'b1;
+				@( posedge clk );
+				if( screen_pos_x[2:0] == 3'd1 ) begin
+					if( screen_pos_x[5:3] == 3'd0 ) begin
+						assert( vram_valid == 1'b1 );
+					end
+					else begin
+						assert( vram_valid == 1'b0 );
+					end
+				end
+				if( (i % 64) == 63 ) begin
+					jj = j;
+				end
+			end
+		end
 
-		$display( "50Hz, non interlace" );
-		reg_50hz_mode		= 1'b1;		//	50Hz
-		reg_interlace_mode	= 1'b0;		//	non interlace
-		repeat( 1368 * 650 * 2 ) @( posedge clk );
+		$display( "[test001] SCREEN0(W40) Inactive mode" );
+		reg_screen_mode = c_mode_t1q;
+		for( j = 0; j < 16; j++ ) begin
+			for( i = 0; i < 2736; i++ ) begin
+				screen_pos_x <= i - 128;
+				screen_pos_y <= -10;
+				screen_active <= 1'b0;
+				@( posedge clk );
+				assert( vram_valid == 1'b0 );
+				if( (i % 64) == 63 ) begin
+					jj = j;
+				end
+			end
+		end
 
-		$display( "50Hz, interlace" );
-		reg_50hz_mode		= 1'b1;		//	50Hz
-		reg_interlace_mode	= 1'b1;		//	interlace
-		repeat( 1368 * 650 * 2 ) @( posedge clk );
+		$display( "[test002] SCREEN0(W40) Active phase" );
+		for( j = 0; j < 16; j++ ) begin
+			for( i = 0; i < 2736; i++ ) begin
+				screen_pos_x <= i - 128;
+				screen_pos_y <= 0;
+				screen_active <= 1'b1;
+				@( posedge clk );
+				if( screen_pos_x[2:0] == 3'd1 ) begin
+					if( screen_pos_x[5:3] == 3'd0 ) begin
+						assert( vram_valid == 1'b1 );
+					end
+					else begin
+						assert( vram_valid == 1'b0 );
+					end
+				end
+				if( (i % 64) == 63 ) begin
+					jj = j;
+				end
+			end
+		end
 
+		$display( "[test001] SCREEN0(W80) Inactive mode" );
+		reg_screen_mode = c_mode_t2;
+		for( j = 0; j < 16; j++ ) begin
+			for( i = 0; i < 2736; i++ ) begin
+				screen_pos_x <= i - 128;
+				screen_pos_y <= -10;
+				screen_active <= 1'b0;
+				@( posedge clk );
+				assert( vram_valid == 1'b0 );
+				if( (i % 64) == 63 ) begin
+					jj = j;
+				end
+			end
+		end
+
+		$display( "[test002] SCREEN0(W80) Active phase" );
+		for( j = 0; j < 16; j++ ) begin
+			for( i = 0; i < 2736; i++ ) begin
+				screen_pos_x <= i - 128;
+				screen_pos_y <= 0;
+				screen_active <= 1'b1;
+				@( posedge clk );
+				if( screen_pos_x[2:0] == 3'd1 ) begin
+					if( screen_pos_x[5:3] == 3'd0 || screen_pos_x[5:3] == 3'd1 ) begin
+						assert( vram_valid == 1'b1 );
+					end
+					else begin
+						assert( vram_valid == 1'b0 );
+					end
+				end
+				if( (i % 64) == 63 ) begin
+					jj = j;
+				end
+			end
+		end
+
+		$display( "[test---] Finished" );
 		repeat( 10 ) @( posedge clk );
 		$finish;
 	end
