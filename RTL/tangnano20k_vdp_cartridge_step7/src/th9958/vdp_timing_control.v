@@ -77,7 +77,7 @@ module vdp_timing_control (
 	input				reg_50hz_mode,
 	input				reg_interlace_mode,
 	input		[7:0]	reg_interrupt_line,
-	input		[7:0]	reg_vertical_offset
+	input		[7:0]	reg_vertical_offset,
 	input		[4:0]	reg_screen_mode,
 	input		[16:10]	reg_pattern_name_table_base,
 	input		[16:6]	reg_color_table_base,
@@ -122,6 +122,23 @@ module vdp_timing_control (
 	// --------------------------------------------------------------------
 	//	Text1 and 2 mode
 	// --------------------------------------------------------------------
+	vdp_timing_control_t12 u_t12 (
+		.reset_n							( reset_n							),
+		.clk								( clk								),
+		.screen_pos_x						( w_screen_pos_x					),
+		.screen_pos_y						( w_screen_pos_y					),
+		.pixel_pos_y						( w_pixel_pos_y[2:0]				),
+		.screen_active						( screen_active						),
+		.vram_address						( vram_address						),
+		.vram_valid							( vram_valid						),
+		.vram_rdata							( vram_rdata						),
+		.display_color						( display_color						),
+		.reg_screen_mode					( reg_screen_mode					),
+		.reg_pattern_name_table_base		( reg_pattern_name_table_base		),
+		.reg_color_table_base				( reg_color_table_base				),
+		.reg_pattern_generator_table_base	( reg_pattern_generator_table_base	),
+		.reg_backdrop_color					( reg_backdrop_color				)
+	);
 
 	// --------------------------------------------------------------------
 	//	Graphic1, 2, 3 and Multi color mode
@@ -130,7 +147,7 @@ module vdp_timing_control (
 		.reset_n							( reset_n							),
 		.clk								( clk								),
 		.screen_pos_x						( w_screen_pos_x					),
-		.screen_pos_y						( w_screen_pos_y					),
+		.pixel_pos_y						( w_pixel_pos_y						),
 		.screen_active						( w_screen_active					),
 		.vram_address						( vram_address						),
 		.vram_valid							( vram_valid						),

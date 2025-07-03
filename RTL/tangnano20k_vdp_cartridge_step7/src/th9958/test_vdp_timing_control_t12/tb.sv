@@ -65,6 +65,7 @@ module tb ();
 
 	reg			[12:0]	screen_pos_x;
 	reg			[ 9:0]	screen_pos_y;
+	wire		[ 2:0]	pixel_pos_y;
 	reg					screen_active;
 
 	wire		[16:0]	vram_address;
@@ -84,6 +85,8 @@ module tb ();
 	//	DUT
 	// --------------------------------------------------------------------
 	vdp_timing_control_t12 u_timing_control_t12 ( .* );
+
+	assign pixel_pos_y = screen_pos_y[2:0];
 
 	// --------------------------------------------------------------------
 	//	clock
@@ -136,7 +139,7 @@ module tb ();
 			for( i = 0; i < 2736; i++ ) begin
 				screen_pos_x <= i - 128;
 				screen_pos_y <= 0;
-				screen_active <= 1'b1;
+				screen_active <= ( (i - 128) >= 0 && (i - 128) < (256 * 8) );
 				@( posedge clk );
 				if( (i % 64) == 63 ) begin
 					jj = j;
@@ -164,7 +167,7 @@ module tb ();
 			for( i = 0; i < 2736; i++ ) begin
 				screen_pos_x <= i - 128;
 				screen_pos_y <= 0;
-				screen_active <= 1'b1;
+				screen_active <= ( (i - 128) >= 0 && (i - 128) < (256 * 8) );
 				@( posedge clk );
 				if( (i % 64) == 63 ) begin
 					jj = j;
@@ -192,7 +195,7 @@ module tb ();
 			for( i = 0; i < 2736; i++ ) begin
 				screen_pos_x <= i - 128;
 				screen_pos_y <= 0;
-				screen_active <= 1'b1;
+				screen_active <= ( (i - 128) >= 0 && (i - 128) < (256 * 8) );
 				@( posedge clk );
 				if( (i % 64) == 63 ) begin
 					jj = j;

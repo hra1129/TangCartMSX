@@ -60,7 +60,7 @@ module vdp_timing_control_g123m (
 	input				clk,					//	42.95454MHz
 
 	input		[12:0]	screen_pos_x,
-	input		[ 9:0]	screen_pos_y,
+	input		[ 7:0]	pixel_pos_y,
 	input				screen_active,
 
 	output		[16:0]	vram_address,
@@ -91,7 +91,6 @@ module vdp_timing_control_g123m (
 	wire		[2:0]	w_sub_phase;
 	//	Position
 	wire		[7:0]	w_pos_x;
-	wire		[7:0]	w_pos_y;
 	//	Pattern name table address
 	wire		[16:0]	w_pattern_name;
 	reg			[7:0]	ff_pattern_num;
@@ -135,7 +134,6 @@ module vdp_timing_control_g123m (
 	//	Screen Position for active area
 	// --------------------------------------------------------------------
 	assign w_pos_x		= screen_pos_x[10:3];
-	assign w_pos_y		= screen_pos_y[7:0];
 
 	// --------------------------------------------------------------------
 	//	Phase
@@ -146,21 +144,21 @@ module vdp_timing_control_g123m (
 	// --------------------------------------------------------------------
 	//	Pattern name table address
 	// --------------------------------------------------------------------
-	assign w_pattern_name				= { reg_pattern_name_table_base, w_pos_y[7:3], w_pos_x[7:5] };
+	assign w_pattern_name				= { reg_pattern_name_table_base, pixel_pos_y[7:3], w_pos_x[7:5] };
 
 	// --------------------------------------------------------------------
 	//	Pattern generator table address
 	// --------------------------------------------------------------------
-	assign w_pattern_generator_g1		= { reg_pattern_generator_table_base, ff_pattern_num, w_pos_y[2:0] };
-	assign w_pattern_generator_g23		= { reg_pattern_generator_table_base[16:13], (w_pos_y[7:6] & reg_pattern_generator_table_base[12:11]), ff_pattern_num, w_pos_y[2:0] };
+	assign w_pattern_generator_g1		= { reg_pattern_generator_table_base, ff_pattern_num, pixel_pos_y[2:0] };
+	assign w_pattern_generator_g23		= { reg_pattern_generator_table_base[16:13], (pixel_pos_y[7:6] & reg_pattern_generator_table_base[12:11]), ff_pattern_num, pixel_pos_y[2:0] };
 	assign w_pattern_generator			= w_mode[ c_g1 ] ? w_pattern_generator_g1: w_pattern_generator_g23;
 
 	// --------------------------------------------------------------------
 	//	Color table address
 	// --------------------------------------------------------------------
 	assign w_color_g1					= { reg_color_table_base, 1'b0, ff_pattern_num[7:3] };
-	assign w_color_g23					= { reg_color_table_base[16:13], (w_pos_y[7:6] & reg_color_table_base[12:11]), (ff_pattern_num[7:3] & reg_color_table_base[10:6]), ff_pattern_num[2:0], w_pos_y[2:0] };
-	assign w_color_gm					= { reg_pattern_generator_table_base, ff_pattern_num, w_pos_y[4:2] };
+	assign w_color_g23					= { reg_color_table_base[16:13], (pixel_pos_y[7:6] & reg_color_table_base[12:11]), (ff_pattern_num[7:3] & reg_color_table_base[10:6]), ff_pattern_num[2:0], pixel_pos_y[2:0] };
+	assign w_color_gm					= { reg_pattern_generator_table_base, ff_pattern_num, pixel_pos_y[4:2] };
 	assign w_color						= w_mode[ c_g1 ] ? w_color_g1:
 										  w_mode[ c_gm ] ? w_color_gm : w_color_g23;
 

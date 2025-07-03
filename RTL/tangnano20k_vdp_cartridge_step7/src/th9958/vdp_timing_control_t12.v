@@ -61,6 +61,7 @@ module vdp_timing_control_t12 (
 
 	input		[12:0]	screen_pos_x,
 	input		[ 9:0]	screen_pos_y,
+	input		[ 2:0]	pixel_pos_y,
 	input				screen_active,
 
 	output		[16:0]	vram_address,
@@ -86,7 +87,6 @@ module vdp_timing_control_t12 (
 	reg			[2:0]	ff_phase;					//	0, 1, 2, ... , 5, 0 ... 6states
 	wire		[2:0]	w_sub_phase;
 	//	Position
-	wire		[2:0]	w_pos_y;
 	reg			[5:0]	ff_pos_x;
 	reg			[7:0]	ff_pos_y;
 	//	Pattern name table address
@@ -136,8 +136,6 @@ module vdp_timing_control_t12 (
 	// --------------------------------------------------------------------
 	//	Screen Position for active area
 	// --------------------------------------------------------------------
-	assign w_pos_y		= screen_pos_y[2:0];
-
 	always @( posedge clk or negedge reset_n ) begin
 		if( !reset_n ) begin
 			ff_pos_x <= 6'd0;
@@ -196,7 +194,7 @@ module vdp_timing_control_t12 (
 	//	Pattern generator table address
 	// --------------------------------------------------------------------
 	assign w_pattern_num				= ff_phase[0] ? ff_pattern_num1: ff_pattern_num0;
-	assign w_pattern_generator			= { reg_pattern_generator_table_base, w_pattern_num, w_pos_y[2:0] };
+	assign w_pattern_generator			= { reg_pattern_generator_table_base, w_pattern_num, pixel_pos_y[2:0] };
 
 	// --------------------------------------------------------------------
 	//	Color table address

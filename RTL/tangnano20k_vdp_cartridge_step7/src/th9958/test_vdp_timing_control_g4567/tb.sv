@@ -65,7 +65,7 @@ module tb ();
 	reg					clk;					//	42.95454MHz
 
 	reg			[12:0]	screen_pos_x;
-	reg			[ 9:0]	screen_pos_y;
+	reg			[ 7:0]	pixel_pos_y;
 	reg					screen_active;
 
 	wire		[16:0]	vram_address;
@@ -76,6 +76,8 @@ module tb ();
 
 	reg			[4:0]	reg_screen_mode;
 	reg			[16:10]	reg_pattern_name_table_base;
+	reg			[7:0]	reg_backdrop_color;
+
 	int					i, j, jj;
 
 	// --------------------------------------------------------------------
@@ -97,11 +99,12 @@ module tb ();
 		clk = 0;
 		reset_n = 0;
 		screen_pos_x = 0;
-		screen_pos_y = 0;
+		pixel_pos_y = 0;
 		screen_active = 0;
 		vram_rdata = 0;
 		reg_screen_mode = c_mode_g4;
 		reg_pattern_name_table_base = 0;
+		reg_backdrop_color = 8'hF4;
 
 		@( posedge clk );
 		@( posedge clk );
@@ -115,7 +118,7 @@ module tb ();
 		for( j = 0; j < 16; j++ ) begin
 			for( i = 0; i < 2736; i++ ) begin
 				screen_pos_x <= i - 128;
-				screen_pos_y <= -10;
+				pixel_pos_y <= -10;
 				screen_active <= 1'b0;
 				@( posedge clk );
 				assert( vram_valid == 1'b0 );
@@ -129,7 +132,7 @@ module tb ();
 		for( j = 0; j < 16; j++ ) begin
 			for( i = 0; i < 2736; i++ ) begin
 				screen_pos_x <= i - 128;
-				screen_pos_y <= 0;
+				pixel_pos_y <= 0;
 				screen_active <= 1'b1;
 				@( posedge clk );
 				if( screen_pos_x[2:0] == 3'd1 ) begin
@@ -151,7 +154,7 @@ module tb ();
 		for( j = 0; j < 16; j++ ) begin
 			for( i = 0; i < 2736; i++ ) begin
 				screen_pos_x <= i - 128;
-				screen_pos_y <= -10;
+				pixel_pos_y <= -10;
 				screen_active <= 1'b0;
 				@( posedge clk );
 				assert( vram_valid == 1'b0 );
@@ -165,7 +168,7 @@ module tb ();
 		for( j = 0; j < 16; j++ ) begin
 			for( i = 0; i < 2736; i++ ) begin
 				screen_pos_x <= i - 128;
-				screen_pos_y <= 0;
+				pixel_pos_y <= 0;
 				screen_active <= 1'b1;
 				@( posedge clk );
 				if( screen_pos_x[2:0] == 3'd1 ) begin
@@ -187,7 +190,7 @@ module tb ();
 		for( j = 0; j < 16; j++ ) begin
 			for( i = 0; i < 2736; i++ ) begin
 				screen_pos_x <= i - 128;
-				screen_pos_y <= -10;
+				pixel_pos_y <= -10;
 				screen_active <= 1'b0;
 				@( posedge clk );
 				assert( vram_valid == 1'b0 );
@@ -201,7 +204,7 @@ module tb ();
 		for( j = 0; j < 16; j++ ) begin
 			for( i = 0; i < 2736; i++ ) begin
 				screen_pos_x <= i - 128;
-				screen_pos_y <= 0;
+				pixel_pos_y <= 0;
 				screen_active <= 1'b1;
 				@( posedge clk );
 				if( screen_pos_x[2:0] == 3'd1 ) begin
@@ -224,7 +227,7 @@ module tb ();
 		for( j = 0; j < 16; j++ ) begin
 			for( i = 0; i < 2736; i++ ) begin
 				screen_pos_x <= i - 128;
-				screen_pos_y <= -10;
+				pixel_pos_y <= -10;
 				screen_active <= 1'b0;
 				@( posedge clk );
 				assert( vram_valid == 1'b0 );
@@ -238,7 +241,7 @@ module tb ();
 		for( j = 0; j < 16; j++ ) begin
 			for( i = 0; i < 2736; i++ ) begin
 				screen_pos_x <= i - 128;
-				screen_pos_y <= 0;
+				pixel_pos_y <= 0;
 				screen_active <= 1'b1;
 				@( posedge clk );
 				if( screen_pos_x[2:0] == 3'd1 ) begin

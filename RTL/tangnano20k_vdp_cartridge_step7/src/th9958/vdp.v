@@ -93,6 +93,14 @@ module vdp (
 	wire	[7:0]		vram_rdata;
 	wire				vram_rdata_en;
 
+	wire		[10:0]	w_h_count;
+	wire		[ 9:0]	w_v_count;
+	wire		[12:0]	w_screen_pos_x;
+	wire		[ 9:0]	w_screen_pos_y;
+	wire				w_screen_active;
+	wire				w_intr_line;
+	wire				w_intr_frame;
+
 	wire	[4:0]		reg_screen_mode;
 	wire				reg_sprite_magify;
 	wire				reg_sprite_16x16;
@@ -143,6 +151,9 @@ module vdp (
 		.vram_wdata									( vram_wdata								),
 		.vram_rdata									( vram_rdata								),
 		.vram_rdata_en								( vram_rdata_en								),
+		.int_n										( int_n										),
+		.intr_line									( w_intr_line								),
+		.intr_frame									( w_intr_frame								),
 		.reg_screen_mode							( reg_screen_mode							),
 		.reg_sprite_magify							( reg_sprite_magify							),
 		.reg_sprite_16x16							( reg_sprite_16x16							),
@@ -171,6 +182,95 @@ module vdp (
 		.reg_yae_mode								( reg_yae_mode								),
 		.reg_command_enable							( reg_command_enable						),
 		.reg_horizontal_offset						( reg_horizontal_offset						)
+	);
+
+	// --------------------------------------------------------------------
+	//	Timing control
+	// --------------------------------------------------------------------
+	vdp_timing_control u_timing_control (
+		.reset_n									( reset_n									),
+		.clk										( clk										),
+		.h_count									( w_h_count									),
+		.v_count									( w_v_count									),
+		.screen_pos_x								( w_screen_pos_x							),
+		.screen_pos_y								( w_screen_pos_y							),
+		.screen_active								( w_screen_active							),
+		.intr_line									( w_intr_line								),
+		.intr_frame									( w_intr_frame								),
+		.display_color_t12							( display_color_t12							),
+		.display_color_g123m						( display_color_g123m						),
+		.display_color_g4567						( display_color_g4567						),
+		.display_color_sprite						( display_color_sprite						),
+		.display_color_sprite_en					( display_color_sprite_en					),
+		.reg_50hz_mode								( reg_50hz_mode								),
+		.reg_interlace_mode							( reg_interlace_mode						),
+		.reg_interrupt_line							( reg_interrupt_line						),
+		.reg_vertical_offset						( reg_vertical_offset						),
+		.reg_screen_mode							( reg_screen_mode							),
+		.reg_pattern_name_table_base				( reg_pattern_name_table_base				),
+		.reg_color_table_base						( reg_color_table_base						),
+		.reg_pattern_generator_table_base			( reg_pattern_generator_table_base			),
+		.reg_backdrop_color							( reg_backdrop_color						)
+	);
+
+	// --------------------------------------------------------------------
+	//	VRAM interface
+	// --------------------------------------------------------------------
+	vdp_vram_interface u_vram_interface (
+		.reset_n									( reset_n									),
+		.clk										( clk										),
+		.g123m_vram_address							( g123m_vram_address						),
+		.g123m_vram_valid							( g123m_vram_valid							),
+		.g123m_vram_rdata							( g123m_vram_rdata							),
+		.g4567_vram_address							( g4567_vram_address						),
+		.g4567_vram_valid							( g4567_vram_valid							),
+		.g4567_vram_rdata							( g4567_vram_rdata							),
+		.sprite_vram_address						( sprite_vram_address						),
+		.sprite_vram_valid							( sprite_vram_valid							),
+		.sprite_vram_rdata							( sprite_vram_rdata							),
+		.command_vram_address						( command_vram_address						),
+		.command_vram_valid							( command_vram_valid						),
+		.command_vram_write							( command_vram_write						),
+		.command_vram_wdata							( command_vram_wdata						),
+		.command_vram_rdata							( command_vram_rdata						),
+		.command_vram_rdata_en						( command_vram_rdata_en						),
+		.cpu_vram_address							( cpu_vram_address							),
+		.cpu_vram_valid								( cpu_vram_valid							),
+		.cpu_vram_write								( cpu_vram_write							),
+		.cpu_vram_wdata								( cpu_vram_wdata							),
+		.cpu_vram_rdata								( cpu_vram_rdata							),
+		.cpu_vram_rdata_en							( cpu_vram_rdata_en							),
+		.vram_address								( vram_address								),
+		.vram_valid									( vram_valid								),
+		.vram_write									( vram_write								),
+		.vram_wdata									( vram_wdata								),
+		.vram_rdata									( vram_rdata								),
+		.vram_rdata_en								( vram_rdata_en								)
+	);
+
+	// --------------------------------------------------------------------
+	//	Color palette
+	// --------------------------------------------------------------------
+	vdp_color_palette u_color_palette (
+		.reset_n									( reset_n									),
+		.clk										( clk										),
+		.screen_pos_x								( w_screen_pos_x							),
+		.palette_valid								( palette_valid								),
+		.palette_num								( palette_num								),
+		.palette_r									( palette_r									),
+		.palette_g									( palette_g									),
+		.palette_b									( palette_b									),
+		.display_color_t12							( display_color_t12							),
+		.display_color_g123m						( display_color_g123m						),
+		.display_color_g4567						( display_color_g4567						),
+		.display_color_sprite						( display_color_sprite						),
+		.display_color_sprite_en					( display_color_sprite_en					),
+		.display_out_r								( display_out_r								),
+		.display_out_g								( display_out_g								),
+		.display_out_b								( display_out_b								),
+		.reg_screen_mode							( reg_screen_mode							),
+		.reg_yjk_mode								( reg_yjk_mode								),
+		.reg_yae_mode								( reg_yae_mode								)
 	);
 
 endmodule

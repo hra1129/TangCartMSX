@@ -50,3 +50,11 @@ th9958(仮) 開発日誌
 	vdp_timing_control_ssg.v に水平スクロールの処理を追加。
 	vdp_timing_control_t12.v のテストベンチを作成。
 	vdp_timing_control_t12.v の一部を実装、バグを修正。
+
+2025年7月4日
+	vdp_timing_control_t12.v の一部を実装、バグを修正。
+	vdp_timing_control_g123m.v の一部を修正。
+	vdp_timing_control_g4567.v の一部を修正。
+	vdp_timing_control.v に vdp_timing_control_t12 のインスタンス記述を追加。
+	vdp.v に vdp_timing_control, vdp_color_palette, vdp_vram_interface のインスタンス記述を追加。
+	vdp.v の cpu_interface のインスタンス記述を一部修正。

@@ -60,7 +60,7 @@ module vdp_timing_control_g4567 (
 	input				clk,					//	42.95454MHz
 
 	input		[12:0]	screen_pos_x,
-	input		[ 9:0]	screen_pos_y,
+	input		[ 7:0]	pixel_pos_y,
 	input				screen_active,
 
 	output		[16:0]	vram_address,
@@ -70,7 +70,8 @@ module vdp_timing_control_g4567 (
 	output		[7:0]	display_color,
 
 	input		[4:0]	reg_screen_mode,
-	input		[16:10]	reg_pattern_name_table_base
+	input		[16:10]	reg_pattern_name_table_base,
+	input		[7:0]	reg_backdrop_color
 );
 	//	Screen mode
 	localparam			c_mode_g4	= 5'b011_00;	//	Graphic4 (SCREEN5)
@@ -87,7 +88,6 @@ module vdp_timing_control_g4567 (
 	wire		[2:0]	w_sub_phase;
 	//	Position
 	wire		[7:0]	w_pos_x;
-	wire		[7:0]	w_pos_y;
 	//	Pattern name table address
 	wire		[16:0]	w_pattern_name_g45;
 	wire		[16:0]	w_pattern_name_g67;
@@ -121,7 +121,6 @@ module vdp_timing_control_g4567 (
 	//	Screen Position for active area
 	// --------------------------------------------------------------------
 	assign w_pos_x		= screen_pos_x[10:3];
-	assign w_pos_y		= screen_pos_y[7:0];
 
 	// --------------------------------------------------------------------
 	//	Phase
@@ -132,8 +131,8 @@ module vdp_timing_control_g4567 (
 	// --------------------------------------------------------------------
 	//	Pattern name table address
 	// --------------------------------------------------------------------
-	assign w_pattern_name_g45			= {          reg_pattern_name_table_base[16:15], (reg_pattern_name_table_base[14:10] & w_pos_y[7:3]), w_pos_y[2:0], w_pos_x[7:3], 2'd0 };
-	assign w_pattern_name_g67			= { w_pos_x[0], reg_pattern_name_table_base[15], (reg_pattern_name_table_base[14:10] & w_pos_y[7:3]), w_pos_y[2:0], w_pos_x[7:3], 3'd0 };
+	assign w_pattern_name_g45			= {          reg_pattern_name_table_base[16:15], (reg_pattern_name_table_base[14:10] & pixel_pos_y[7:3]), pixel_pos_y[2:0], w_pos_x[7:3], 2'd0 };
+	assign w_pattern_name_g67			= { w_pos_x[0], reg_pattern_name_table_base[15], (reg_pattern_name_table_base[14:10] & pixel_pos_y[7:3]), pixel_pos_y[2:0], w_pos_x[7:3], 3'd0 };
 
 	// --------------------------------------------------------------------
 	//	VRAM read access request
