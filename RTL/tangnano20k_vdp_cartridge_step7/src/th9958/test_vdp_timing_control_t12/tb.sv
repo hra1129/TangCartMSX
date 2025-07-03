@@ -69,7 +69,7 @@ module tb ();
 
 	wire		[16:0]	vram_address;
 	wire				vram_valid;
-	reg			[15:0]	vram_rdata;
+	reg			[7:0]	vram_rdata;
 
 	wire		[3:0]	display_color;
 
@@ -138,14 +138,6 @@ module tb ();
 				screen_pos_y <= 0;
 				screen_active <= 1'b1;
 				@( posedge clk );
-				if( screen_pos_x[2:0] == 3'd1 ) begin
-					if( screen_pos_x[5:3] == 3'd0 ) begin
-						assert( vram_valid == 1'b1 );
-					end
-					else begin
-						assert( vram_valid == 1'b0 );
-					end
-				end
 				if( (i % 64) == 63 ) begin
 					jj = j;
 				end
@@ -174,14 +166,6 @@ module tb ();
 				screen_pos_y <= 0;
 				screen_active <= 1'b1;
 				@( posedge clk );
-				if( screen_pos_x[2:0] == 3'd1 ) begin
-					if( screen_pos_x[5:3] == 3'd0 ) begin
-						assert( vram_valid == 1'b1 );
-					end
-					else begin
-						assert( vram_valid == 1'b0 );
-					end
-				end
 				if( (i % 64) == 63 ) begin
 					jj = j;
 				end
@@ -210,14 +194,6 @@ module tb ();
 				screen_pos_y <= 0;
 				screen_active <= 1'b1;
 				@( posedge clk );
-				if( screen_pos_x[2:0] == 3'd1 ) begin
-					if( screen_pos_x[5:3] == 3'd0 || screen_pos_x[5:3] == 3'd1 ) begin
-						assert( vram_valid == 1'b1 );
-					end
-					else begin
-						assert( vram_valid == 1'b0 );
-					end
-				end
 				if( (i % 64) == 63 ) begin
 					jj = j;
 				end

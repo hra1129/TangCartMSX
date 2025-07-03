@@ -65,7 +65,7 @@ module vdp_timing_control_t12 (
 
 	output		[16:0]	vram_address,
 	output				vram_valid,
-	input		[15:0]	vram_rdata,
+	input		[7:0]	vram_rdata,
 
 	output		[3:0]	display_color,
 
@@ -92,14 +92,19 @@ module vdp_timing_control_t12 (
 	//	Pattern name table address
 	wire		[10:0]	w_pre_pattern_name;
 	wire		[16:0]	w_pattern_name;
-	reg			[7:0]	ff_pattern_num;
+	reg			[7:0]	ff_pattern_num0;
+	reg			[7:0]	ff_pattern_num1;
+	wire		[7:0]	w_pattern_num;
 	//	Pattern generator table address
 	wire		[16:0]	w_pattern_generator;
-	reg			[5:0]	ff_next_pattern;
-	reg			[5:0]	ff_pattern;
+	reg			[5:0]	ff_next_pattern0;
+	reg			[5:0]	ff_next_pattern1;
+	reg			[5:0]	ff_pattern0;
+	reg			[5:0]	ff_pattern1;
 	//	Color table address
 	wire		[16:0]	w_color;
-	reg			[7:0]	ff_next_color;
+	reg			[7:0]	ff_next_color0;
+	reg			[7:0]	ff_next_color1;
 	reg			[7:0]	ff_color;
 	//	VRAM address
 	reg			[16:0]	ff_vram_address;
@@ -185,17 +190,18 @@ module vdp_timing_control_t12 (
 	//	Pattern name table address
 	// --------------------------------------------------------------------
 	assign w_pre_pattern_name			= { 1'b0, ff_pos_y[7:3], 5'd0 } + { 3'd0, ff_pos_y[7:3], 3'd0 } + { 5'd0, ff_pos_x };
-	assign w_pattern_name				= { reg_pattern_name_table_base, 8'd0 } + w_mode[ c_t1 ] ? { 6'd0, w_pre_pattern_name }: { 5'd0, w_pre_pattern_name, 1'b0 };
+	assign w_pattern_name				= { reg_pattern_name_table_base, 8'd0 } + (w_mode[ c_t1 ] ? { 6'd0, w_pre_pattern_name }: { 5'd0, w_pre_pattern_name, 1'b0 });
 
 	// --------------------------------------------------------------------
 	//	Pattern generator table address
 	// --------------------------------------------------------------------
-	assign w_pattern_generator			= { reg_pattern_generator_table_base, ff_pattern_num, w_pos_y[2:0] };
+	assign w_pattern_num				= ff_phase[0] ? ff_pattern_num1: ff_pattern_num0;
+	assign w_pattern_generator			= { reg_pattern_generator_table_base, w_pattern_num, w_pos_y[2:0] };
 
 	// --------------------------------------------------------------------
 	//	Color table address
 	// --------------------------------------------------------------------
-	assign w_color						= { reg_color_table_base[16:9], 9'd0 } + { 6'd0, w_pre_pattern_name };
+	assign w_color						= { reg_color_table_base[16:9], 9'd0 } + (w_mode[ c_t1 ] ? { 6'd0, w_pre_pattern_name }: { 5'd0, w_pre_pattern_name, 1'b0 });
 
 	// --------------------------------------------------------------------
 	//	VRAM read access request
@@ -213,6 +219,11 @@ module vdp_timing_control_t12 (
 						ff_vram_address <= w_pattern_name;
 						ff_vram_valid <= screen_active;
 					end
+				3'd1:
+					begin
+						ff_vram_address <= { w_pattern_name[16:1], 1'b1 };
+						ff_vram_valid <= screen_active & w_mode[ c_t2 ];
+					end
 				3'd2:
 					begin
 						ff_vram_address <= w_pattern_generator;
@@ -220,13 +231,13 @@ module vdp_timing_control_t12 (
 					end
 				3'd3:
 					begin
-						ff_vram_address <= w_color;
-						ff_vram_valid <= screen_active;
+						ff_vram_address <= w_pattern_generator;
+						ff_vram_valid <= screen_active & w_mode[ c_t2 ];
 					end
 				3'd4:
 					begin
-						ff_vram_address <= w_pattern_generator;
-						ff_vram_valid <= screen_active & w_mode[ c_t2 ];
+						ff_vram_address <= w_color;
+						ff_vram_valid <= screen_active;
 					end
 				3'd5:
 					begin
@@ -254,24 +265,39 @@ module vdp_timing_control_t12 (
 	// --------------------------------------------------------------------
 	always @( posedge clk or negedge reset_n ) begin
 		if( !reset_n ) begin
-			ff_pattern_num <= 8'd0;
-			ff_next_pattern <= 8'd0;
-			ff_next_color <= 6'd0;
+			ff_pattern_num0 <= 8'd0;
+			ff_pattern_num1 <= 8'd0;
+			ff_next_pattern0 <= 6'd0;
+			ff_next_pattern1 <= 6'd0;
+			ff_next_color0 <= 8'd0;
+			ff_next_color1 <= 8'd0;
 		end
 		else begin
 			if( w_sub_phase == 3'd0 ) begin
 				case( ff_phase )
 				3'd1:
 					begin
-						ff_pattern_num <= vram_rdata;
+						ff_pattern_num0 <= vram_rdata;
+					end
+				3'd2:
+					begin
+						ff_pattern_num1 <= vram_rdata;
 					end
 				3'd3:
 					begin
-						ff_next_pattern <= vram_rdata;
+						ff_next_pattern0 <= vram_rdata[7:2];
 					end
 				3'd4:
 					begin
-						ff_next_color <= vram_rdata[7:2];
+						ff_next_pattern1 <= vram_rdata[7:2];
+					end
+				3'd5:
+					begin
+						ff_next_color0 <= vram_rdata;
+					end
+				3'd0:
+					begin
+						ff_next_color1 <= vram_rdata;
 					end
 				default:
 					begin
@@ -287,20 +313,29 @@ module vdp_timing_control_t12 (
 	// --------------------------------------------------------------------
 	always @( posedge clk or negedge reset_n ) begin
 		if( !reset_n ) begin
-			ff_pattern <= 6'd0;
+			ff_pattern0 <= 6'd0;
+			ff_pattern1 <= 6'd0;
 		end
-		else if( w_sub_phase == 3'd5 ) begin
+		else if( w_sub_phase == 3'd7 ) begin
 			if( ff_phase == 3'd5 ) begin
 				if( !screen_active ) begin
-					ff_pattern <= 6'd0;
+					ff_pattern0 <= 6'd0;
+					ff_pattern1 <= 6'd0;
 				end
 				else begin
-					ff_pattern <= ff_next_pattern;
+					ff_pattern0 <= ff_next_pattern0;
+					ff_pattern1 <= ff_next_pattern1;
 				end
 			end
-			else begin
-				ff_pattern <= { ff_pattern[4:0], 1'b0 };
+			else if( ff_phase == 3'd2 && w_mode[ c_t2 ] ) begin
+				ff_pattern0 <= ff_pattern1;
 			end
+			else begin
+				ff_pattern0 <= { ff_pattern0[4:0], 1'b0 };
+			end
+		end
+		else if( w_sub_phase == 3'd3 && w_mode[ c_t2 ] ) begin
+			ff_pattern0 <= { ff_pattern0[4:0], 1'b0 };
 		end
 	end
 
@@ -308,13 +343,21 @@ module vdp_timing_control_t12 (
 		if( !reset_n ) begin
 			ff_color <= 8'd0;
 		end
-		else if( w_sub_phase == 3'd5 ) begin
+		else if( w_sub_phase == 3'd7 ) begin
 			if( ff_phase == 3'd5 ) begin
 				if( !screen_active ) begin
 					ff_color <= { reg_backdrop_color, reg_backdrop_color };
 				end
 				else begin
-					ff_color <= ff_next_color;
+					ff_color <= ff_next_color0;
+				end
+			end
+			else if( ff_phase == 3'd2 && w_mode[ c_t2 ] ) begin
+				if( !screen_active ) begin
+					ff_color <= { reg_backdrop_color, reg_backdrop_color };
+				end
+				else begin
+					ff_color <= ff_next_color1;
 				end
 			end
 		end
@@ -324,8 +367,8 @@ module vdp_timing_control_t12 (
 		if( !reset_n ) begin
 			ff_display_color <= 4'd0;
 		end
-		else if( w_sub_phase == 3'd7 ) begin
-			if( ff_pattern[5] ) begin
+		else if( w_sub_phase == 3'd7 || (w_sub_phase == 3'd4 && w_mode[ c_t2 ]) ) begin
+			if( ff_pattern0[5] ) begin
 				//	Foreground
 				ff_display_color <= ff_color[7:4];
 			end

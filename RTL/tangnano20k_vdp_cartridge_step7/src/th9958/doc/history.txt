@@ -49,3 +49,4 @@ th9958(仮) 開発日誌
 	vdp_timing_control_ssg.v にスクロールレジスタの影響を受けない座標出力を追加。
 	vdp_timing_control_ssg.v に水平スクロールの処理を追加。
 	vdp_timing_control_t12.v のテストベンチを作成。
+	vdp_timing_control_t12.v の一部を実装、バグを修正。
