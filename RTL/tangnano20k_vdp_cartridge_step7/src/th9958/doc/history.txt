@@ -58,3 +58,9 @@ th9958(仮) 開発日誌
 	vdp_timing_control.v に vdp_timing_control_t12 のインスタンス記述を追加。
 	vdp.v に vdp_timing_control, vdp_color_palette, vdp_vram_interface のインスタンス記述を追加。
 	vdp.v の cpu_interface のインスタンス記述を一部修正。
+
+2025年7月5日
+	vdp_video_out_bilinear.v を実装。
+	vdp_video_double_buffer.v を実装。
+	vdp_video_ram_line_buffer.v を実装。
+	vdp_video_out.v を実装。

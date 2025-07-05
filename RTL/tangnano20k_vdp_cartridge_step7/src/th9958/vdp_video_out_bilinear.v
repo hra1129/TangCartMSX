@@ -1,8 +1,10 @@
 //
-//	video_double_buffer.v
-//	  Double Buffered Line Memory.
+//	vdp_video_out_bilinear.v
+//	 LCD 800x480 up-scan converter.
 //
-//	Copyright (C) 2024 Takayuki Hara
+//	Copyright (C) 2024 Takayuki Hara.
+//	All rights reserved.
+//									   https://github.com/hra1129
 //
 //	本ソフトウェアおよび本ソフトウェアに基づいて作成された派生物は、以下の条件を
 //	満たす場合に限り、再頒布および使用が許可されます。
@@ -53,89 +55,52 @@
 //	ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 //	POSSIBILITY OF SUCH DAMAGE.
 //
-//-----------------------------------------------------------------------------
+// -----------------------------------------------------------------------------
 
-module video_double_buffer (
-	input			clk,
-	input			reset_n,
-	input			enable,
-	input	[9:0]	x_position_w,
-	input	[9:0]	x_position_r,
-	input			is_odd,				//	write access mode is odd
-	input			re,
-	input			we,
-	input	[5:0]	wdata_r,
-	input	[5:0]	wdata_g,
-	input	[5:0]	wdata_b,
-	output	[5:0]	rdata_r,
-	output	[5:0]	rdata_g,
-	output	[5:0]	rdata_b
+module vdp_video_out_bilinear (
+	input			clk,						//	42.95454MHz
+	input	[7:0]	coeff,
+	input	[7:0]	tap0,
+	input	[7:0]	tap1,
+	output	[7:0]	pixel_out
 );
-	wire	[17:0]	out_e;
-	wire	[17:0]	out_o;
-	reg				ff_enable;
-	reg				ff_we_e;
-	reg				ff_we_o;
-	reg				ff_re;
-	reg		[9:0]	ff_addr_e;
-	reg		[9:0]	ff_addr_o;
-	reg		[17:0]	ff_d;
-	reg		[5:0]	ff_rdata_r;
-	reg		[5:0]	ff_rdata_g;
-	reg		[5:0]	ff_rdata_b;
-	wire			w_odd_enable;
-	wire			w_even_enable;
+	reg		[7:0]	ff_tap1_delay;
+	reg		[7:0]	ff_out;
+	wire	[8:0]	w_sub;
+	wire	[17:0]	w_mul;
+	reg		[10:0]	ff_mul;
+	wire	[10:0]	w_add;
 
-	assign w_odd_enable		= is_odd ? enable: 1'b1;
-	assign w_even_enable	= is_odd ? 1'b1  : enable;
-
-	// even line
-	video_ram_line_buffer u_buf_even (
-		.clk		( clk			),
-		.enable		( w_even_enable	),
-		.address	( ff_addr_e		),
-		.re			( ff_re			),
-		.we			( ff_we_e		),
-		.d			( ff_d			),
-		.q			( out_e			)
-	);
-
-	// odd line
-	video_ram_line_buffer u_buf_odd (
-		.clk		( clk			),
-		.enable		( w_odd_enable	),
-		.address	( ff_addr_o		),
-		.re			( ff_re			),
-		.we			( ff_we_o		),
-		.d			( ff_d			),
-		.q			( out_o			)
-	);
-
-	assign rdata_r		= ff_rdata_r;
-	assign rdata_g		= ff_rdata_g;
-	assign rdata_b		= ff_rdata_b;
+	// --------------------------------------------------------------------
+	//	----[ff_tap0]-----[ff_tap1]----   ※画像表示上は tap1 の方が左画素。
+	//
+	//	ff_out = tap1 * (1.0 - coeff) + tap0 * coeff;
+	//	       = tap1 + (tap0 - tap1) * coeff;
+	// --------------------------------------------------------------------
 
 	always @( posedge clk ) begin
-		if( !reset_n ) begin
-			ff_enable <= 1'b0;
+		ff_tap1_delay	<= tap1;
+		ff_mul			<= w_mul[17:7];		//	小数部8bit → 小数部1bit
+	end
+
+	assign w_sub		= { 1'b0, tap0 } - { 1'b0, tap1 };					//	小数部0bit - 小数部0bit
+	assign w_mul		= $signed( w_sub ) * $signed( { 1'b0, coeff } );	//	小数部0bit * 小数部6bit
+	assign w_add		= ff_mul + { 2'd0, ff_tap1_delay, 1'b1 };			//	小数部2bit + 小数部2bit, 四捨五入
+
+	always @( posedge clk ) begin
+		if( w_add[10:9] == 2'b01 ) begin
+			//	Clip overflow
+			ff_out <= 8'hFF;
+		end
+		else if( w_add[10] == 1'b1 ) begin
+			//	Clip underflow
+			ff_out <= 8'h00;
 		end
 		else begin
-			ff_enable <= enable;
+			//	Throgh
+			ff_out	<= w_add[8:1];
 		end
 	end
 
-	always @( posedge clk ) begin
-		ff_we_e		<= ( !is_odd ) ? we : 1'b0;
-		ff_we_o		<= (  is_odd ) ? we : 1'b0;
-		ff_d		<= { wdata_r, wdata_g, wdata_b };
-	end
-
-	always @( posedge clk ) begin
-		ff_re		<= re;
-		ff_addr_e	<= ( is_odd ) ? x_position_r : x_position_w;
-		ff_addr_o	<= ( is_odd ) ? x_position_w : x_position_r;
-		ff_rdata_r	<= ( is_odd ) ? out_e[17:12] : out_o[17:12];
-		ff_rdata_g	<= ( is_odd ) ? out_e[11: 6] : out_o[11: 6];
-		ff_rdata_b	<= ( is_odd ) ? out_e[ 5: 0] : out_o[ 5: 0];
-	end
+	assign pixel_out	= ff_out;
 endmodule

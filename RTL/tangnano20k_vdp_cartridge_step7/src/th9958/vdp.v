@@ -78,19 +78,19 @@ module vdp (
 	input				vram_rdata_en,
 
 	// video output
-	output		[10:0]	vdp_h_counter,
-	output		[10:0]	vdp_v_counter,
-	output				vdp_v_counter_end,
-	output		[7:0]	vdp_r,
-	output		[7:0]	vdp_g,
-	output		[7:0]	vdp_b
+	output				display_hs,
+	output				display_vs,
+	output				display_en,
+	output		[7:0]	display_r,
+	output		[7:0]	display_g,
+	output		[7:0]	display_b
 );
-	wire	[16:0]		vram_address;
+	wire		[16:0]	vram_address;
 	wire				vram_write;
 	wire				vram_valid;
 	wire				vram_ready;
-	wire	[7:0]		vram_wdata;
-	wire	[7:0]		vram_rdata;
+	wire		[7:0]	vram_wdata;
+	wire		[7:0]	vram_rdata;
 	wire				vram_rdata_en;
 
 	wire		[10:0]	w_h_count;
@@ -101,34 +101,38 @@ module vdp (
 	wire				w_intr_line;
 	wire				w_intr_frame;
 
-	wire	[4:0]		reg_screen_mode;
+	wire		[7:0]	w_vdp_r;
+	wire		[7:0]	w_vdp_g;
+	wire		[7:0]	w_vdp_b;
+
+	wire		[4:0]	reg_screen_mode;
 	wire				reg_sprite_magify;
 	wire				reg_sprite_16x16;
 	wire				reg_display_on;
-	wire	[16:10]		reg_pattern_name_table_base;
-	wire	[16:6]		reg_color_table_base;
-	wire	[16:11]		reg_pattern_generator_table_base;
-	wire	[16:9]		reg_sprite_attribute_table_base;
-	wire	[16:11]		reg_sprite_pattern_generator_table_base;
-	wire	[7:0]		reg_backdrop_color;
+	wire		[16:10]	reg_pattern_name_table_base;
+	wire		[16:6]	reg_color_table_base;
+	wire		[16:11]	reg_pattern_generator_table_base;
+	wire		[16:9]	reg_sprite_attribute_table_base;
+	wire		[16:11]	reg_sprite_pattern_generator_table_base;
+	wire		[7:0]	reg_backdrop_color;
 	wire				reg_sprite_disable;
 	wire				reg_color0_opaque;
 	wire				reg_50hz_mode;
 	wire				reg_interleaving_mode;
 	wire				reg_interlace_mode;
 	wire				reg_212lines_mode;
-	wire	[7:0]		reg_text_back_color;
-	wire	[7:0]		reg_blink_period;
-	wire	[3:0]		reg_color_palette_address;
-	wire	[7:0]		reg_display_adjust;
-	wire	[7:0]		reg_interrupt_line;
-	wire	[7:0]		reg_vertical_offset;
+	wire		[7:0]	reg_text_back_color;
+	wire		[7:0]	reg_blink_period;
+	wire		[3:0]	reg_color_palette_address;
+	wire		[7:0]	reg_display_adjust;
+	wire		[7:0]	reg_interrupt_line;
+	wire		[7:0]	reg_vertical_offset;
 	wire				reg_scroll_planes;
 	wire				reg_left_mask;
 	wire				reg_yjk_mode;
 	wire				reg_yae_mode;
 	wire				reg_command_enable;
-	wire	[8:0]		reg_horizontal_offset;
+	wire		[8:0]	reg_horizontal_offset;
 
 	// --------------------------------------------------------------------
 	//	CPU Interface
@@ -265,9 +269,9 @@ module vdp (
 		.display_color_g4567						( display_color_g4567						),
 		.display_color_sprite						( display_color_sprite						),
 		.display_color_sprite_en					( display_color_sprite_en					),
-		.display_out_r								( display_out_r								),
-		.display_out_g								( display_out_g								),
-		.display_out_b								( display_out_b								),
+		.vdp_r										( w_vdp_r									),
+		.vdp_g										( w_vdp_g									),
+		.vdp_b										( w_vdp_b									),
 		.reg_screen_mode							( reg_screen_mode							),
 		.reg_yjk_mode								( reg_yjk_mode								),
 		.reg_yae_mode								( reg_yae_mode								)

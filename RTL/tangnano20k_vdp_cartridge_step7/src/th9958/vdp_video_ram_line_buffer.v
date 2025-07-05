@@ -1,6 +1,6 @@
 //
-//	video_double_buffer.v
-//	  Double Buffered Line Memory.
+//	vdp_video_ram_line_buffer.v
+//	  Line buffer for VGA upscan converter.
 //
 //	Copyright (C) 2024 Takayuki Hara
 //
@@ -55,87 +55,44 @@
 //
 //-----------------------------------------------------------------------------
 
-module video_double_buffer (
+module vdp_video_ram_line_buffer (
 	input			clk,
-	input			reset_n,
-	input			enable,
-	input	[9:0]	x_position_w,
-	input	[9:0]	x_position_r,
-	input			is_odd,				//	write access mode is odd
+	input	[9:0]	address,
 	input			re,
 	input			we,
-	input	[5:0]	wdata_r,
-	input	[5:0]	wdata_g,
-	input	[5:0]	wdata_b,
-	output	[5:0]	rdata_r,
-	output	[5:0]	rdata_g,
-	output	[5:0]	rdata_b
+	input	[23:0]	d,
+	output	[23:0]	q
 );
-	wire	[17:0]	out_e;
-	wire	[17:0]	out_o;
-	reg				ff_enable;
-	reg				ff_we_e;
-	reg				ff_we_o;
+	reg		[9:0]	ff_address;
 	reg				ff_re;
-	reg		[9:0]	ff_addr_e;
-	reg		[9:0]	ff_addr_o;
-	reg		[17:0]	ff_d;
-	reg		[5:0]	ff_rdata_r;
-	reg		[5:0]	ff_rdata_g;
-	reg		[5:0]	ff_rdata_b;
-	wire			w_odd_enable;
-	wire			w_even_enable;
-
-	assign w_odd_enable		= is_odd ? enable: 1'b1;
-	assign w_even_enable	= is_odd ? 1'b1  : enable;
-
-	// even line
-	video_ram_line_buffer u_buf_even (
-		.clk		( clk			),
-		.enable		( w_even_enable	),
-		.address	( ff_addr_e		),
-		.re			( ff_re			),
-		.we			( ff_we_e		),
-		.d			( ff_d			),
-		.q			( out_e			)
-	);
-
-	// odd line
-	video_ram_line_buffer u_buf_odd (
-		.clk		( clk			),
-		.enable		( w_odd_enable	),
-		.address	( ff_addr_o		),
-		.re			( ff_re			),
-		.we			( ff_we_o		),
-		.d			( ff_d			),
-		.q			( out_o			)
-	);
-
-	assign rdata_r		= ff_rdata_r;
-	assign rdata_g		= ff_rdata_g;
-	assign rdata_b		= ff_rdata_b;
+	reg				ff_we;
+	reg		[23:0]	ff_d;
+	reg		[23:0]	ff_imem [0:1023];
+	reg		[23:0]	ff_q;
+	reg		[23:0]	ff_q_out;
 
 	always @( posedge clk ) begin
-		if( !reset_n ) begin
-			ff_enable <= 1'b0;
+		ff_address	<= address;
+		ff_we		<= we;
+		ff_re		<= re;
+		ff_d		<= d;
+	end
+
+	always @( posedge clk ) begin
+		if( ff_we ) begin
+			ff_imem[ ff_address ]	<= ff_d;
+		end
+		else if( ff_re ) begin
+			ff_q					<= ff_imem[ ff_address ];
 		end
 		else begin
-			ff_enable <= enable;
+			ff_q					<= 24'd0;
 		end
 	end
 
 	always @( posedge clk ) begin
-		ff_we_e		<= ( !is_odd ) ? we : 1'b0;
-		ff_we_o		<= (  is_odd ) ? we : 1'b0;
-		ff_d		<= { wdata_r, wdata_g, wdata_b };
+		ff_q_out <= ff_q;
 	end
 
-	always @( posedge clk ) begin
-		ff_re		<= re;
-		ff_addr_e	<= ( is_odd ) ? x_position_r : x_position_w;
-		ff_addr_o	<= ( is_odd ) ? x_position_w : x_position_r;
-		ff_rdata_r	<= ( is_odd ) ? out_e[17:12] : out_o[17:12];
-		ff_rdata_g	<= ( is_odd ) ? out_e[11: 6] : out_o[11: 6];
-		ff_rdata_b	<= ( is_odd ) ? out_e[ 5: 0] : out_o[ 5: 0];
-	end
+	assign q = ff_q_out;
 endmodule
