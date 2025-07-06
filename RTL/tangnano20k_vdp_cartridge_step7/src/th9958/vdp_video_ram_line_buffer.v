@@ -63,30 +63,20 @@ module vdp_video_ram_line_buffer (
 	input	[23:0]	d,
 	output	[23:0]	q
 );
-	reg		[9:0]	ff_address;
-	reg				ff_re;
-	reg				ff_we;
-	reg		[23:0]	ff_d;
 	reg		[23:0]	ff_imem [0:1023];
 	reg		[23:0]	ff_q;
 	reg		[23:0]	ff_q_out;
 
 	always @( posedge clk ) begin
-		ff_address	<= address;
-		ff_we		<= we;
-		ff_re		<= re;
-		ff_d		<= d;
-	end
-
-	always @( posedge clk ) begin
-		if( ff_we ) begin
-			ff_imem[ ff_address ]	<= ff_d;
+		if( we ) begin
+			ff_imem[ address ]	<= d;
+			ff_q				<= 24'dx;
 		end
-		else if( ff_re ) begin
-			ff_q					<= ff_imem[ ff_address ];
+		else if( re ) begin
+			ff_q				<= ff_imem[ address ];
 		end
 		else begin
-			ff_q					<= 24'd0;
+			ff_q				<= 24'dx;
 		end
 	end
 

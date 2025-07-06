@@ -79,8 +79,7 @@ module vdp_video_out #(
 	output		[7:0]	display_b,
 	// parameters
 	input		[7:0]	reg_denominator,			//	144 ... 200
-	input		[7:0]	reg_normalize,				//	8192 / reg_denominator : 228 ... 160
-	input				reg_scanline
+	input		[7:0]	reg_normalize				//	8192 / reg_denominator : 228 ... 160
 );
 	localparam		clocks_per_line		= 1368;
 	localparam		disp_width			= 10'd576;
@@ -99,7 +98,7 @@ module vdp_video_out #(
 	wire			w_active_start;
 	wire			w_active_end;
 	wire			w_h_cnt_end;
-	wire			w_is_odd;
+	wire			w_is_write_odd;
 	wire	[7:0]	w_pixel_r;
 	wire	[7:0]	w_pixel_g;
 	wire	[7:0]	w_pixel_b;
@@ -126,9 +125,9 @@ module vdp_video_out #(
 	wire	[7:0]	w_bilinear_b;
 	wire	[9:0]	w_scanline_gain;
 	wire	[7:0]	w_gain;
-	reg		[7:0]	ff_pre_r;
-	reg		[7:0]	ff_pre_g;
-	reg		[7:0]	ff_pre_b;
+	reg		[7:0]	ff_bilinear_r;
+	reg		[7:0]	ff_bilinear_g;
+	reg		[7:0]	ff_bilinear_b;
 	reg		[7:0]	ff_gain;
 	wire	[15:0]	w_gain_r;
 	wire	[15:0]	w_gain_g;
@@ -168,7 +167,7 @@ module vdp_video_out #(
 		if( !reset_n ) begin
 			ff_x_position_r <= 10'd0;
 		end
-		else if( w_h_cnt_end ) begin
+		else if( w_active_start ) begin
 			ff_x_position_r <= 10'd0;
 		end
 		else if( ff_active ) begin
@@ -201,9 +200,9 @@ module vdp_video_out #(
 		end
 	end
 
-	assign w_hold				= w_sub_numerator[8];
 	assign w_next_numerator		= { 1'b0, ff_numerator } + c_numerator;
 	assign w_sub_numerator		= w_next_numerator - { 1'b0, reg_denominator };
+	assign w_hold				= w_sub_numerator[8];
 
 	always @( posedge clk ) begin
 		ff_hold0 <= w_hold & ff_active;
@@ -218,10 +217,9 @@ module vdp_video_out #(
 	// --------------------------------------------------------------------
 	vdp_video_double_buffer u_double_buffer (
 		.clk			( clk				),
-		.reset_n		( reset_n			),
 		.x_position_w	( w_x_position_w	),
 		.x_position_r	( ff_x_position_r	),
-		.is_odd			( w_is_odd			),
+		.is_write_odd	( w_is_write_odd	),
 		.re				( ff_active			),
 		.wdata_r		( vdp_r				),
 		.wdata_g		( vdp_g				),
@@ -231,7 +229,7 @@ module vdp_video_out #(
 		.rdata_b		( w_pixel_b			)
 	);
 
-	assign w_is_odd			= v_count[0];
+	assign w_is_write_odd	= v_count[0];
 
 	// --------------------------------------------------------------------
 	//	Filter coefficient
@@ -303,15 +301,15 @@ module vdp_video_out #(
 							  (~v_count[0]          ) ? 8'd128: { 1'b0, w_scanline_gain[9:3] };
 
 	always @( posedge clk ) begin
-		ff_pre_r	<= w_bilinear_r;
-		ff_pre_g	<= w_bilinear_g;
-		ff_pre_b	<= w_bilinear_b;
+		ff_bilinear_r	<= w_bilinear_r;
+		ff_bilinear_g	<= w_bilinear_g;
+		ff_bilinear_b	<= w_bilinear_b;
 		ff_gain		<= w_gain;
 	end
 
-	assign w_gain_r		= ff_pre_r * ff_gain;
-	assign w_gain_g		= ff_pre_g * ff_gain;
-	assign w_gain_b		= ff_pre_b * ff_gain;
+	assign w_display_r	= ff_bilinear_r * ff_gain;
+	assign w_display_g	= ff_bilinear_g * ff_gain;
+	assign w_display_b	= ff_bilinear_b * ff_gain;
 
 	always @( posedge clk ) begin
 		ff_display_r	<= w_gain_r[14:7];

@@ -64,3 +64,8 @@ th9958(仮) 開発日誌
 	vdp_video_double_buffer.v を実装。
 	vdp_video_ram_line_buffer.v を実装。
 	vdp_video_out.v を実装。
+	vdp_video_out_bilinear の回路図を作図完了。
+	vdp_video_double_buffer の回路図を作図開始。
+
+2025年7月6日
+	vdp_video_double_buffer の回路図を作図完了。

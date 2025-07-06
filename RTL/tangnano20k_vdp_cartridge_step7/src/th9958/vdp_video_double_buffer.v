@@ -57,10 +57,9 @@
 
 module vdp_video_double_buffer (
 	input			clk,
-	input			reset_n,
 	input	[11:0]	x_position_w,
 	input	[9:0]	x_position_r,
-	input			is_odd,				//	write access mode is odd
+	input			is_write_odd,				//	write access mode is odd
 	input			re,
 	input	[7:0]	wdata_r,
 	input	[7:0]	wdata_g,
@@ -71,11 +70,11 @@ module vdp_video_double_buffer (
 );
 	wire	[23:0]	out_e;
 	wire	[23:0]	out_o;
-	reg				ff_we_e;
-	reg				ff_we_o;
+	reg				ff_we_even;
+	reg				ff_we_odd;
 	reg				ff_re;
-	reg		[9:0]	ff_addr_e;
-	reg		[9:0]	ff_addr_o;
+	reg		[9:0]	ff_address_even;
+	reg		[9:0]	ff_address_odd;
 	reg		[23:0]	ff_d;
 	reg		[7:0]	ff_rdata_r;
 	reg		[7:0]	ff_rdata_g;
@@ -83,22 +82,22 @@ module vdp_video_double_buffer (
 
 	// even line
 	vdp_video_ram_line_buffer u_buf_even (
-		.clk		( clk			),
-		.address	( ff_addr_e		),
-		.re			( ff_re			),
-		.we			( ff_we_e		),
-		.d			( ff_d			),
-		.q			( out_e			)
+		.clk		( clk				),
+		.address	( ff_address_even	),
+		.re			( ff_re				),
+		.we			( ff_we_even		),
+		.d			( ff_d				),
+		.q			( out_e				)
 	);
 
 	// odd line
 	vdp_video_ram_line_buffer u_buf_odd (
-		.clk		( clk			),
-		.address	( ff_addr_o		),
-		.re			( ff_re			),
-		.we			( ff_we_o		),
-		.d			( ff_d			),
-		.q			( out_o			)
+		.clk		( clk				),
+		.address	( ff_address_odd	),
+		.re			( ff_re				),
+		.we			( ff_we_odd			),
+		.d			( ff_d				),
+		.q			( out_o				)
 	);
 
 	assign rdata_r		= ff_rdata_r;
@@ -106,17 +105,17 @@ module vdp_video_double_buffer (
 	assign rdata_b		= ff_rdata_b;
 
 	always @( posedge clk ) begin
-		ff_we_e		<= ( !is_odd && (x_position_w[11:10] == 2'b00) ) ? 1'b1 : 1'b0;
-		ff_we_o		<= (  is_odd && (x_position_w[11:10] == 2'b00) ) ? 1'b1 : 1'b0;
-		ff_d		<= { wdata_r, wdata_g, wdata_b };
+		ff_re			<= re;
+		ff_d			<= { wdata_r, wdata_g, wdata_b };
+		ff_we_even		<= ( !is_write_odd && (x_position_w[11:10] == 2'b00) ) ? 1'b1 : 1'b0;
+		ff_address_even	<= ( is_write_odd ) ? x_position_r[9:0] : x_position_w[9:0];
+		ff_we_odd		<= (  is_write_odd && (x_position_w[11:10] == 2'b00) ) ? 1'b1 : 1'b0;
+		ff_address_odd	<= ( is_write_odd ) ? x_position_w[9:0] : x_position_r[9:0];
 	end
 
 	always @( posedge clk ) begin
-		ff_re		<= re;
-		ff_addr_e	<= ( is_odd ) ? x_position_r[9:0] : x_position_w[9:0];
-		ff_addr_o	<= ( is_odd ) ? x_position_w[9:0] : x_position_r[9:0];
-		ff_rdata_r	<= ( is_odd ) ? out_e[23:16] : out_o[23:16];
-		ff_rdata_g	<= ( is_odd ) ? out_e[15: 8] : out_o[15: 8];
-		ff_rdata_b	<= ( is_odd ) ? out_e[ 7: 0] : out_o[ 7: 0];
+		ff_rdata_r		<= ( is_write_odd ) ? out_e[23:16] : out_o[23:16];
+		ff_rdata_g		<= ( is_write_odd ) ? out_e[15: 8] : out_o[15: 8];
+		ff_rdata_b		<= ( is_write_odd ) ? out_e[ 7: 0] : out_o[ 7: 0];
 	end
 endmodule
