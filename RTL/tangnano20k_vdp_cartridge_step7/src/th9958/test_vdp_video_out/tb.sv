@@ -68,14 +68,16 @@ module tb ();
 	logic		[7:0]	vdp_r;
 	logic		[7:0]	vdp_g;
 	logic		[7:0]	vdp_b;
-	// read side
-	logic		[7:0]	video_r;
-	logic		[7:0]	video_g;
-	logic		[7:0]	video_b;
+	// output pixel
+	logic				display_hs;
+	logic				display_vs;
+	logic				display_en;
+	logic		[7:0]	display_r;
+	logic		[7:0]	display_g;
+	logic		[7:0]	display_b;
 	// parameters
 	logic		[7:0]	reg_denominator;
 	logic		[7:0]	reg_normalize;
-	logic				reg_scanline;
 
 	// --------------------------------------------------------------------
 	//	Loop variables
@@ -86,20 +88,22 @@ module tb ();
 	//	DUT
 	// --------------------------------------------------------------------
 	vdp_video_out u_video_out (
-		.clk				( clk ),
-		.reset_n			( reset_n ),
-		.h_count			( h_count ),
-		.v_count			( v_count ),
-		.has_scanline		( has_scanline ),
-		.vdp_r				( vdp_r ),
-		.vdp_g				( vdp_g ),
-		.vdp_b				( vdp_b ),
-		.video_r			( video_r ),
-		.video_g			( video_g ),
-		.video_b			( video_b ),
-		.reg_denominator	( reg_denominator ),
-		.reg_normalize		( reg_normalize ),
-		.reg_scanline		( reg_scanline )
+		.clk				( clk				),
+		.reset_n			( reset_n			),
+		.h_count			( h_count			),
+		.v_count			( v_count			),
+		.has_scanline		( has_scanline		),
+		.vdp_r				( vdp_r				),
+		.vdp_g				( vdp_g				),
+		.vdp_b				( vdp_b				),
+		.display_hs			( display_hs		),
+		.display_vs			( display_vs		),
+		.display_en			( display_en		),
+		.display_r			( display_r			),
+		.display_g			( display_g			),
+		.display_b			( display_b			),
+		.reg_denominator	( reg_denominator	),
+		.reg_normalize		( reg_normalize		)
 	);
 
 	// --------------------------------------------------------------------
@@ -124,7 +128,6 @@ module tb ();
 		vdp_b = 0;
 		reg_denominator = 8'd144;		// Default value
 		reg_normalize = 8'd228;			// Default value (8192/144 ≈ 57)
-		reg_scanline = 0;
 
 		// Reset sequence
 		@( posedge clk );
@@ -173,8 +176,6 @@ module tb ();
 		end
 
 		$display( "[test003] Scanline mode test" );
-		
-		reg_scanline <= 1;
 		
 		for( j = 0; j < 8; j++ ) begin
 			for( i = 0; i < 1368; i++ ) begin	// One line

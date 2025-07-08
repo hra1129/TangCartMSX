@@ -76,6 +76,12 @@ module vdp_cpu_interface (
 	input	[7:0]		vram_rdata,
 	input				vram_rdata_en,
 
+	output				palette_valid,
+	output		[3:0]	palette_num,
+	output		[2:0]	palette_r,
+	output		[2:0]	palette_g,
+	output		[2:0]	palette_b,
+
 	output				int_n,
 	input				intr_line,				//	pulse
 	input				intr_frame,				//	pulse
@@ -98,7 +104,6 @@ module vdp_cpu_interface (
 	output				reg_212lines_mode,
 	output	[7:0]		reg_text_back_color,
 	output	[7:0]		reg_blink_period,
-	output	[3:0]		reg_color_palette_address,
 	output	[7:0]		reg_display_adjust,
 	output	[7:0]		reg_interrupt_line,
 	output	[7:0]		reg_vertical_offset,
@@ -132,7 +137,11 @@ module vdp_cpu_interface (
 	reg		[7:0]		ff_text_back_color;
 	reg		[7:0]		ff_blink_period;
 	reg		[3:0]		ff_status_register_pointer;
-	reg		[3:0]		ff_color_palette_address;
+	reg		[4:0]		ff_color_palette_address;
+	reg					ff_color_palette_valid;
+	reg		[2:0]		ff_palette_r;
+	reg		[2:0]		ff_palette_g;
+	reg		[2:0]		ff_palette_b;
 	reg		[5:0]		ff_register_pointer;
 	reg					ff_not_increment;
 	reg		[7:0]		ff_display_adjust;
@@ -320,7 +329,6 @@ module vdp_cpu_interface (
 			ff_text_back_color <= 8'd0;
 			ff_blink_period <= 8'd0;
 			ff_status_register_pointer <= 4'd0;
-			ff_color_palette_address <= 4'd0;
 			ff_register_pointer <= 5'd0;
 			ff_not_increment <= 1'b0;
 			ff_display_adjust <= 8'd0;
@@ -408,10 +416,9 @@ module vdp_cpu_interface (
 				begin
 					ff_status_register_pointer <= ff_1st_byte[3:0];
 				end
-			6'd16:	//	R#16 = [N/A][N/A][N/A][N/A][C3][C2][C1][C0]
-				begin
-					ff_color_palette_address <= ff_1st_byte[3:0];
-				end
+
+			//	6'd16 は、color palette interface の always文にある
+
 			8'd17:	//	R#17 = [AII][N/A][R5][R4][R3][R2][R1][R0]
 				begin
 					ff_register_pointer <= ff_1st_byte[5:0];
@@ -450,6 +457,37 @@ module vdp_cpu_interface (
 					//	hold
 				end
 			endcase
+		end
+	end
+
+	// --------------------------------------------------------------------
+	//	Color palette interface
+	// --------------------------------------------------------------------
+	always @( posedge clk or negedge reset_n ) begin
+		if( !reset_n ) begin
+			ff_color_palette_address <= 5'd0;
+		end
+		else if( ff_register_write ) begin
+			if( ff_register_num == 6'd16 ) begin
+				//	R#16 = [N/A][N/A][N/A][N/A][C3][C2][C1][C0]
+				ff_color_palette_address <= { ff_1st_byte[3:0], 1'b0 };
+			end
+		end
+		else if( bus_valid && bus_write && bus_address == 2'd2 ) begin
+			if( ff_color_palette_address[0] == 1'b0 ) begin
+				//	P#2 = [0][R][R][R][0][B][B][B]
+				ff_palette_r <= bus_wdata[6:4];
+				ff_palette_b <= bus_wdata[2:0];
+			end
+			else begin
+				//	P#2 = [0][0][0][0][0][G][G][G]
+				ff_palette_g <= bus_wdata[2:0];
+				ff_color_palette_valid <= 1'b1;
+			end
+			ff_color_palette_address <= ff_color_palette_address + 5'd1;
+		end
+		else begin
+			ff_color_palette_valid <= 1'b0;
 		end
 	end
 
@@ -535,6 +573,12 @@ module vdp_cpu_interface (
 	assign vram_valid								= ff_vram_valid;
 	assign vram_wdata								= ff_vram_wdata;
 
+	assign palette_valid							= ff_color_palette_valid;
+	assign palette_num								= ff_color_palette_address[4:1];
+	assign palette_r								= ff_palette_r;
+	assign palette_g								= ff_palette_g;
+	assign palette_b								= ff_palette_b;
+
 	assign reg_screen_mode							= ff_screen_mode;
 	assign reg_sprite_magify						= ff_sprite_magify;
 	assign reg_sprite_16x16							= ff_sprite_16x16;
@@ -553,7 +597,6 @@ module vdp_cpu_interface (
 	assign reg_212lines_mode						= ff_212lines_mode;
 	assign reg_text_back_color						= ff_text_back_color;
 	assign reg_blink_period							= ff_blink_period;
-	assign reg_color_palette_address				= ff_color_palette_address;
 	assign reg_display_adjust						= ff_display_adjust;
 	assign reg_interrupt_line						= ff_interrupt_line;
 	assign reg_vertical_offset						= ff_vertical_offset;

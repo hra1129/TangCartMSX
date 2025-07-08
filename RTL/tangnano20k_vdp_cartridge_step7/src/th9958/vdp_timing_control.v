@@ -68,21 +68,37 @@ module vdp_timing_control (
 	output				intr_line,				//	pulse
 	output				intr_frame,				//	pulse
 
-	output		[3:0]	display_color_t12,
-	output		[3:0]	display_color_g123m,
-	output		[7:0]	display_color_g4567,
-	output		[3:0]	display_color_sprite,
-	output				display_color_sprite_en,
+	output		[16:0]	t12_vram_address,
+	output				t12_vram_valid,
+	input		[7:0]	t12_vram_rdata,
+	output		[3:0]	t12_display_color,
+
+	output		[16:0]	g123m_vram_address,
+	output				g123m_vram_valid,
+	input		[7:0]	g123m_vram_rdata,
+	output		[3:0]	g123m_display_color,
+
+	output		[16:0]	g4567_vram_address,
+	output				g4567_vram_valid,
+	input		[31:0]	g4567_vram_rdata,
+	output		[7:0]	g4567_display_color,
+
+	output		[16:0]	sprite_vram_address,
+	output				sprite_vram_valid,
+	input		[31:0]	sprite_vram_rdata,
+	output		[3:0]	sprite_display_color,
+	output				sprite_display_color_en,
 
 	input				reg_50hz_mode,
 	input				reg_interlace_mode,
 	input		[7:0]	reg_interrupt_line,
 	input		[7:0]	reg_vertical_offset,
+	input		[8:0]	reg_horizontal_offset,
 	input		[4:0]	reg_screen_mode,
 	input		[16:10]	reg_pattern_name_table_base,
 	input		[16:6]	reg_color_table_base,
 	input		[16:11]	reg_pattern_generator_table_base,
-	input		[3:0]	reg_backdrop_color
+	input		[7:0]	reg_backdrop_color
 );
 	wire		[12:0]	w_screen_pos_x;			//	signed   (Coordinates not affected by scroll register)
 	wire		[ 9:0]	w_screen_pos_y;			//	signed   (Coordinates not affected by scroll register)
@@ -129,15 +145,15 @@ module vdp_timing_control (
 		.screen_pos_y						( w_screen_pos_y					),
 		.pixel_pos_y						( w_pixel_pos_y[2:0]				),
 		.screen_active						( screen_active						),
-		.vram_address						( vram_address						),
-		.vram_valid							( vram_valid						),
-		.vram_rdata							( vram_rdata						),
-		.display_color						( display_color						),
+		.vram_address						( t12_vram_address					),
+		.vram_valid							( t12_vram_valid					),
+		.vram_rdata							( t12_vram_rdata					),
+		.display_color						( t12_display_color					),
 		.reg_screen_mode					( reg_screen_mode					),
 		.reg_pattern_name_table_base		( reg_pattern_name_table_base		),
 		.reg_color_table_base				( reg_color_table_base				),
 		.reg_pattern_generator_table_base	( reg_pattern_generator_table_base	),
-		.reg_backdrop_color					( reg_backdrop_color				)
+		.reg_backdrop_color					( reg_backdrop_color[3:0]			)
 	);
 
 	// --------------------------------------------------------------------
@@ -149,15 +165,15 @@ module vdp_timing_control (
 		.screen_pos_x						( w_screen_pos_x					),
 		.pixel_pos_y						( w_pixel_pos_y						),
 		.screen_active						( w_screen_active					),
-		.vram_address						( vram_address						),
-		.vram_valid							( vram_valid						),
-		.vram_rdata							( vram_rdata						),
-		.display_color						( display_color_g123m				),
+		.vram_address						( g123m_vram_address				),
+		.vram_valid							( g123m_vram_valid					),
+		.vram_rdata							( g123m_vram_rdata					),
+		.display_color						( g123m_display_color				),
 		.reg_screen_mode					( reg_screen_mode					),
 		.reg_pattern_name_table_base		( reg_pattern_name_table_base		),
 		.reg_color_table_base				( reg_color_table_base				),
 		.reg_pattern_generator_table_base	( reg_pattern_generator_table_base	),
-		.reg_backdrop_color					( reg_backdrop_color				)
+		.reg_backdrop_color					( reg_backdrop_color[3:0]			)
 	);
 
 	// --------------------------------------------------------------------
@@ -167,18 +183,22 @@ module vdp_timing_control (
 		.reset_n							( reset_n							),
 		.clk								( clk								),
 		.screen_pos_x						( w_screen_pos_x					),
-		.screen_pos_y						( w_screen_pos_y					),
+		.pixel_pos_y						( w_pixel_pos_y						),
 		.screen_active						( w_screen_active					),
-		.vram_address						( vram_address						),
-		.vram_valid							( vram_valid						),
-		.vram_rdata							( vram_rdata						),
-		.display_color						( display_color_g4567				),
+		.vram_address						( g4567_vram_address				),
+		.vram_valid							( g4567_vram_valid					),
+		.vram_rdata							( g4567_vram_rdata					),
+		.display_color						( g4567_display_color				),
 		.reg_screen_mode					( reg_screen_mode					),
-		.reg_pattern_name_table_base		( reg_pattern_name_table_base		)
+		.reg_pattern_name_table_base		( reg_pattern_name_table_base		),
+		.reg_backdrop_color					( reg_backdrop_color				)
 	);
 
 	// --------------------------------------------------------------------
 	//	Sprite
 	// --------------------------------------------------------------------
-
+	assign sprite_vram_address = 17'd0;
+	assign sprite_vram_valid = 1'b0;
+	assign sprite_display_color = 4'd0;
+	assign sprite_display_color_en = 1'b0;
 endmodule

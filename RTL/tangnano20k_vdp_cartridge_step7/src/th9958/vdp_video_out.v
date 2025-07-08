@@ -78,23 +78,25 @@ module vdp_video_out #(
 	output		[7:0]	display_g,
 	output		[7:0]	display_b,
 	// parameters
-	input		[7:0]	reg_denominator,			//	144 ... 200
-	input		[7:0]	reg_normalize				//	8192 / reg_denominator : 228 ... 160
+	input		[7:0]	reg_denominator,			//	800 / 4
+	input		[7:0]	reg_normalize				//	8192 / reg_denominator
 );
-	localparam		clocks_per_line		= 1368;
-	localparam		disp_width			= 10'd576;
-	localparam		h_back_porch_end	= 45;
-	localparam		h_active_end		= h_back_porch_end + 800;
-	localparam		h_front_porch_end	= h_active_end + 502;
-	localparam		h_vdp_active_start	= h_back_porch_end + 112;
-	localparam		c_active_end		= disp_width - 1;
-	localparam		c_numerator			= disp_width / 4;
+	localparam		clocks_per_line		= 11'd1368;
+	localparam		h_en_start			= 11'd375;
+	localparam		h_en_end			= h_en_start + 11'd800;
+	localparam		hs_start			= clocks_per_line - 1;
+	localparam		hs_end				= 11'd284;
+	localparam		v_en_start			= 10'd41;
+	localparam		v_en_end			= v_en_start + 10'd480;
+	localparam		vs_start			= 10'd14;
+	localparam		vs_end				= 10'd20;
+	localparam		c_numerator			= 576 / 4;
 	wire	[11:0]	w_x_position_w;
 	reg		[9:0]	ff_x_position_r;
 	reg				ff_active;
 	reg		[7:0]	ff_numerator;
-	wire	[8:0]	w_next_numerator;
-	wire	[8:0]	w_sub_numerator;
+	wire	[10:0]	w_next_numerator;
+	wire	[11:0]	w_sub_numerator;
 	wire			w_active_start;
 	wire			w_active_end;
 	wire			w_h_cnt_end;
@@ -129,12 +131,24 @@ module vdp_video_out #(
 	reg		[7:0]	ff_bilinear_g;
 	reg		[7:0]	ff_bilinear_b;
 	reg		[7:0]	ff_gain;
-	wire	[15:0]	w_gain_r;
-	wire	[15:0]	w_gain_g;
-	wire	[15:0]	w_gain_b;
+	wire	[15:0]	w_display_r;
+	wire	[15:0]	w_display_g;
+	wire	[15:0]	w_display_b;
 	reg		[7:0]	ff_display_r;
 	reg		[7:0]	ff_display_g;
 	reg		[7:0]	ff_display_b;
+	reg				ff_h_en;
+	reg				ff_v_en;
+	reg				ff_hs;
+	reg				ff_vs;
+	wire			w_h_en_start;
+	wire			w_h_en_end;
+	wire			w_v_en_start;
+	wire			w_v_en_end;
+	wire			w_hs_start;
+	wire			w_hs_end;
+	wire			w_vs_start;
+	wire			w_vs_end;
 
 	// --------------------------------------------------------------------
 	//	Active period
@@ -157,6 +171,78 @@ module vdp_video_out #(
 			//	hold
 		end
 	end
+
+	// --------------------------------------------------------------------
+	//	Synchronous signals
+	// --------------------------------------------------------------------
+	assign w_h_en_start		= (h_count == h_en_start);
+	assign w_h_en_end		= (h_count == h_en_end  );
+
+	always @( posedge clk or negedge reset_n ) begin
+		if( !reset_n ) begin
+			ff_h_en <= 1'b0;
+		end
+		else if( w_h_cnt_end || w_h_en_end ) begin
+			ff_h_en <= 1'b0;
+		end
+		else if( w_h_en_start ) begin
+			ff_h_en <= 1'b1;
+		end
+	end
+
+	assign w_v_en_start		= (v_count == v_en_start);
+	assign w_v_en_end		= (v_count == v_en_end  );
+
+	always @( posedge clk or negedge reset_n ) begin
+		if( !reset_n ) begin
+			ff_v_en <= 1'b0;
+		end
+		else if( w_h_cnt_end ) begin
+			if( w_v_en_end ) begin
+				ff_v_en <= 1'b0;
+			end
+			else if( w_v_en_start ) begin
+				ff_v_en <= 1'b1;
+			end
+		end
+	end
+
+	assign display_en	= ff_h_en & ff_v_en;
+
+	assign w_hs_start		= (h_count == hs_start);
+	assign w_hs_end			= (h_count == hs_end  );
+
+	always @( posedge clk or negedge reset_n ) begin
+		if( !reset_n ) begin
+			ff_hs <= 1'b0;
+		end
+		else if( w_h_cnt_end || w_hs_end ) begin
+			ff_hs <= 1'b0;
+		end
+		else if( w_hs_start ) begin
+			ff_hs <= 1'b1;
+		end
+	end
+
+	assign w_vs_start		= (v_count == vs_start);
+	assign w_vs_end			= (v_count == vs_end  );
+
+	always @( posedge clk or negedge reset_n ) begin
+		if( !reset_n ) begin
+			ff_vs <= 1'b0;
+		end
+		else if( w_h_cnt_end ) begin
+			if( w_vs_end ) begin
+				ff_vs <= 1'b0;
+			end
+			else if( w_vs_start ) begin
+				ff_vs <= 1'b1;
+			end
+		end
+	end
+
+	assign display_hs	= ff_hs;
+	assign display_vs	= ff_vs;
 
 	// --------------------------------------------------------------------
 	//	Buffer address
@@ -234,7 +320,7 @@ module vdp_video_out #(
 	// --------------------------------------------------------------------
 	//	Filter coefficient
 	// --------------------------------------------------------------------
-	assign w_normalized_numerator	= ff_numerator * reg_normalize;		//	8bit * 8bit = 16bit
+	assign w_normalized_numerator	= ff_numerator * reg_normalize;		//	8bit * 10bit = 16bit
 
 	always @( posedge clk ) begin
 		if( !reset_n ) begin
@@ -312,9 +398,9 @@ module vdp_video_out #(
 	assign w_display_b	= ff_bilinear_b * ff_gain;
 
 	always @( posedge clk ) begin
-		ff_display_r	<= w_gain_r[14:7];
-		ff_display_g	<= w_gain_g[14:7];
-		ff_display_b	<= w_gain_b[14:7];
+		ff_display_r	<= w_display_r[14:7];
+		ff_display_g	<= w_display_g[14:7];
+		ff_display_b	<= w_display_b[14:7];
 	end
 
 	assign display_r	= ff_display_r;
