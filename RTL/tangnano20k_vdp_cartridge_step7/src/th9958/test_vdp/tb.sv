@@ -371,7 +371,7 @@ module tb ();
 		// Initialize signals
 		clk = 0;
 		reset_n = 0;
-		initial_busy = 0;
+		initial_busy = 1;
 		bus_address = 0;
 		bus_ioreq = 0;
 		bus_write = 0;
@@ -390,6 +390,11 @@ module tb ();
 		// Reset sequence
 		repeat(10) @( posedge clk );
 		reset_n <= 1;
+		repeat(10) @( posedge clk );
+
+		$display( "[test000] Not VRAM access in initial busy period test" );
+		repeat( 1368 * 1000 ) @( posedge clk );
+		initial_busy = 0;
 		repeat(10) @( posedge clk );
 
 		$display( "[test001] VDP basic register initialization test" );

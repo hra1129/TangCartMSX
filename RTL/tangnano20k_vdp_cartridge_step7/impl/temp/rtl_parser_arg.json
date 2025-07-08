@@ -38,91 +38,63 @@
    "Type" : "verilog"
   },
   {
-   "Path" : "D:/github/HRA_product/TangCartMSX/RTL/tangnano20k_vdp_cartridge_step7/src/v9958/vdp.v",
-   "Type" : "verilog"
-  },
-  {
-   "Path" : "D:/github/HRA_product/TangCartMSX/RTL/tangnano20k_vdp_cartridge_step7/src/v9958/vdp_color_bus.v",
-   "Type" : "verilog"
-  },
-  {
-   "Path" : "D:/github/HRA_product/TangCartMSX/RTL/tangnano20k_vdp_cartridge_step7/src/v9958/vdp_color_decoder.v",
-   "Type" : "verilog"
-  },
-  {
-   "Path" : "D:/github/HRA_product/TangCartMSX/RTL/tangnano20k_vdp_cartridge_step7/src/v9958/vdp_command.v",
-   "Type" : "verilog"
-  },
-  {
-   "Path" : "D:/github/HRA_product/TangCartMSX/RTL/tangnano20k_vdp_cartridge_step7/src/v9958/vdp_graphic123m.v",
-   "Type" : "verilog"
-  },
-  {
-   "Path" : "D:/github/HRA_product/TangCartMSX/RTL/tangnano20k_vdp_cartridge_step7/src/v9958/vdp_graphic4567.v",
-   "Type" : "verilog"
-  },
-  {
-   "Path" : "D:/github/HRA_product/TangCartMSX/RTL/tangnano20k_vdp_cartridge_step7/src/v9958/vdp_inst.v",
-   "Type" : "verilog"
-  },
-  {
-   "Path" : "D:/github/HRA_product/TangCartMSX/RTL/tangnano20k_vdp_cartridge_step7/src/v9958/vdp_interrupt.v",
-   "Type" : "verilog"
-  },
-  {
-   "Path" : "D:/github/HRA_product/TangCartMSX/RTL/tangnano20k_vdp_cartridge_step7/src/v9958/vdp_ram_256byte.v",
-   "Type" : "verilog"
-  },
-  {
-   "Path" : "D:/github/HRA_product/TangCartMSX/RTL/tangnano20k_vdp_cartridge_step7/src/v9958/vdp_ram_palette.v",
-   "Type" : "verilog"
-  },
-  {
-   "Path" : "D:/github/HRA_product/TangCartMSX/RTL/tangnano20k_vdp_cartridge_step7/src/v9958/vdp_register.v",
-   "Type" : "verilog"
-  },
-  {
-   "Path" : "D:/github/HRA_product/TangCartMSX/RTL/tangnano20k_vdp_cartridge_step7/src/v9958/vdp_spinforam.v",
-   "Type" : "verilog"
-  },
-  {
-   "Path" : "D:/github/HRA_product/TangCartMSX/RTL/tangnano20k_vdp_cartridge_step7/src/v9958/vdp_sprite.v",
-   "Type" : "verilog"
-  },
-  {
-   "Path" : "D:/github/HRA_product/TangCartMSX/RTL/tangnano20k_vdp_cartridge_step7/src/v9958/vdp_ssg.v",
-   "Type" : "verilog"
-  },
-  {
-   "Path" : "D:/github/HRA_product/TangCartMSX/RTL/tangnano20k_vdp_cartridge_step7/src/v9958/vdp_text12.v",
-   "Type" : "verilog"
-  },
-  {
-   "Path" : "D:/github/HRA_product/TangCartMSX/RTL/tangnano20k_vdp_cartridge_step7/src/v9958/vdp_wait_control.v",
-   "Type" : "verilog"
-  },
-  {
-   "Path" : "D:/github/HRA_product/TangCartMSX/RTL/tangnano20k_vdp_cartridge_step7/src/video_out/video_double_buffer.v",
-   "Type" : "verilog"
-  },
-  {
-   "Path" : "D:/github/HRA_product/TangCartMSX/RTL/tangnano20k_vdp_cartridge_step7/src/video_out/video_out.v",
-   "Type" : "verilog"
-  },
-  {
-   "Path" : "D:/github/HRA_product/TangCartMSX/RTL/tangnano20k_vdp_cartridge_step7/src/video_out/video_out_bilinear.v",
-   "Type" : "verilog"
-  },
-  {
-   "Path" : "D:/github/HRA_product/TangCartMSX/RTL/tangnano20k_vdp_cartridge_step7/src/video_out/video_out_hmag.v",
-   "Type" : "verilog"
-  },
-  {
-   "Path" : "D:/github/HRA_product/TangCartMSX/RTL/tangnano20k_vdp_cartridge_step7/src/video_out/video_ram_line_buffer.v",
-   "Type" : "verilog"
-  },
-  {
    "Path" : "D:/github/HRA_product/TangCartMSX/RTL/tangnano20k_vdp_cartridge_step7/src/ws2812_led/ip_ws2812_led.v",
+   "Type" : "verilog"
+  },
+  {
+   "Path" : "D:/github/HRA_product/TangCartMSX/RTL/tangnano20k_vdp_cartridge_step7/src/th9958/vdp.v",
+   "Type" : "verilog"
+  },
+  {
+   "Path" : "D:/github/HRA_product/TangCartMSX/RTL/tangnano20k_vdp_cartridge_step7/src/th9958/vdp_color_palette.v",
+   "Type" : "verilog"
+  },
+  {
+   "Path" : "D:/github/HRA_product/TangCartMSX/RTL/tangnano20k_vdp_cartridge_step7/src/th9958/vdp_color_palette_ram.v",
+   "Type" : "verilog"
+  },
+  {
+   "Path" : "D:/github/HRA_product/TangCartMSX/RTL/tangnano20k_vdp_cartridge_step7/src/th9958/vdp_cpu_interface.v",
+   "Type" : "verilog"
+  },
+  {
+   "Path" : "D:/github/HRA_product/TangCartMSX/RTL/tangnano20k_vdp_cartridge_step7/src/th9958/vdp_timing_control.v",
+   "Type" : "verilog"
+  },
+  {
+   "Path" : "D:/github/HRA_product/TangCartMSX/RTL/tangnano20k_vdp_cartridge_step7/src/th9958/vdp_timing_control_g123m.v",
+   "Type" : "verilog"
+  },
+  {
+   "Path" : "D:/github/HRA_product/TangCartMSX/RTL/tangnano20k_vdp_cartridge_step7/src/th9958/vdp_timing_control_g4567.v",
+   "Type" : "verilog"
+  },
+  {
+   "Path" : "D:/github/HRA_product/TangCartMSX/RTL/tangnano20k_vdp_cartridge_step7/src/th9958/vdp_timing_control_ssg.v",
+   "Type" : "verilog"
+  },
+  {
+   "Path" : "D:/github/HRA_product/TangCartMSX/RTL/tangnano20k_vdp_cartridge_step7/src/th9958/vdp_timing_control_t12.v",
+   "Type" : "verilog"
+  },
+  {
+   "Path" : "D:/github/HRA_product/TangCartMSX/RTL/tangnano20k_vdp_cartridge_step7/src/th9958/vdp_video_double_buffer.v",
+   "Type" : "verilog"
+  },
+  {
+   "Path" : "D:/github/HRA_product/TangCartMSX/RTL/tangnano20k_vdp_cartridge_step7/src/th9958/vdp_video_out.v",
+   "Type" : "verilog"
+  },
+  {
+   "Path" : "D:/github/HRA_product/TangCartMSX/RTL/tangnano20k_vdp_cartridge_step7/src/th9958/vdp_video_out_bilinear.v",
+   "Type" : "verilog"
+  },
+  {
+   "Path" : "D:/github/HRA_product/TangCartMSX/RTL/tangnano20k_vdp_cartridge_step7/src/th9958/vdp_video_ram_line_buffer.v",
+   "Type" : "verilog"
+  },
+  {
+   "Path" : "D:/github/HRA_product/TangCartMSX/RTL/tangnano20k_vdp_cartridge_step7/src/th9958/vdp_vram_interface.v",
    "Type" : "verilog"
   }
  ],

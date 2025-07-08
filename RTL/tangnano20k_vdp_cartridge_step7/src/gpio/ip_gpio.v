@@ -151,7 +151,7 @@ module ip_gpio(
 		end
 	end
 
-	assign bus_ready	= 1'b1;
+	assign bus_ready	= ( { bus_address[7:2], 2'd0 } == 8'h10 ) & bus_ioreq;
 	assign bus_rdata	= ff_rdata;
 	assign bus_rdata_en	= ff_rdata_en;
 	assign led_wr		= ff_wr;

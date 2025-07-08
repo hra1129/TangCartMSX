@@ -153,7 +153,7 @@ module vdp_timing_control_g4567 (
 						else begin
 							ff_vram_address <= w_pattern_name_g67;
 						end
-						ff_vram_valid <= screen_active;
+						ff_vram_valid <= screen_active & (w_mode != 4'b0000);
 					end
 				3'd1:
 					begin

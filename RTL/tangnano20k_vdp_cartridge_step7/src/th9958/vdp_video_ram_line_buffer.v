@@ -76,7 +76,7 @@ module vdp_video_ram_line_buffer (
 			ff_q				<= ff_imem[ address ];
 		end
 		else begin
-			ff_q				<= 24'dx;
+			ff_q				<= 24'd0;
 		end
 	end
 

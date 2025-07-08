@@ -170,7 +170,7 @@ module vdp_cpu_interface (
 	reg					ff_line_interrupt;
 	reg					ff_frame_interrupt;
 
-	assign bus_ready = ~ff_busy & ~ff_register_write;
+	assign bus_ready = ~ff_busy & ~ff_register_write & bus_ioreq;
 
 	// --------------------------------------------------------------------
 	//	VRAM Read/Write access
@@ -466,6 +466,10 @@ module vdp_cpu_interface (
 	always @( posedge clk or negedge reset_n ) begin
 		if( !reset_n ) begin
 			ff_color_palette_address <= 5'd0;
+			ff_color_palette_valid <= 1'b0;
+			ff_palette_r <= 3'd0;
+			ff_palette_g <= 3'd0;
+			ff_palette_b <= 3'd0;
 		end
 		else if( ff_register_write ) begin
 			if( ff_register_num == 6'd16 ) begin

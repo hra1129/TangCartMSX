@@ -9,32 +9,28 @@ Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_vdp_ca
 Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_vdp_cartridge_step7\src\ram\ip_ram.v'
 Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_vdp_cartridge_step7\src\sdram\ip_sdram_tangnano20k_c.v'
 Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_vdp_cartridge_step7\src\tangnano20k_vdp_cartridge.v'
-Undeclared symbol 'slot_int', assumed default net type 'wire'("D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_vdp_cartridge_step7\src\tangnano20k_vdp_cartridge.v":163)
-Undeclared symbol 'w_dram_refresh', assumed default net type 'wire'("D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_vdp_cartridge_step7\src\tangnano20k_vdp_cartridge.v":333)
-Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_vdp_cartridge_step7\src\v9958\vdp.v'
-Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_vdp_cartridge_step7\src\v9958\vdp_color_bus.v'
-Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_vdp_cartridge_step7\src\v9958\vdp_color_decoder.v'
-Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_vdp_cartridge_step7\src\v9958\vdp_command.v'
-Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_vdp_cartridge_step7\src\v9958\vdp_graphic123m.v'
-Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_vdp_cartridge_step7\src\v9958\vdp_graphic4567.v'
-Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_vdp_cartridge_step7\src\v9958\vdp_inst.v'
-Undeclared symbol 'p_video_dh_clk', assumed default net type 'wire'("D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_vdp_cartridge_step7\src\v9958\vdp_inst.v":220)
-Undeclared symbol 'p_video_dl_clk', assumed default net type 'wire'("D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_vdp_cartridge_step7\src\v9958\vdp_inst.v":221)
-Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_vdp_cartridge_step7\src\v9958\vdp_interrupt.v'
-Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_vdp_cartridge_step7\src\v9958\vdp_ram_256byte.v'
-Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_vdp_cartridge_step7\src\v9958\vdp_ram_palette.v'
-Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_vdp_cartridge_step7\src\v9958\vdp_register.v'
-Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_vdp_cartridge_step7\src\v9958\vdp_spinforam.v'
-Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_vdp_cartridge_step7\src\v9958\vdp_sprite.v'
-Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_vdp_cartridge_step7\src\v9958\vdp_ssg.v'
-Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_vdp_cartridge_step7\src\v9958\vdp_text12.v'
-Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_vdp_cartridge_step7\src\v9958\vdp_wait_control.v'
-Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_vdp_cartridge_step7\src\video_out\video_double_buffer.v'
-Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_vdp_cartridge_step7\src\video_out\video_out.v'
-Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_vdp_cartridge_step7\src\video_out\video_out_bilinear.v'
-Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_vdp_cartridge_step7\src\video_out\video_out_hmag.v'
-Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_vdp_cartridge_step7\src\video_out\video_ram_line_buffer.v'
+Undeclared symbol 'slot_int', assumed default net type 'wire'("D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_vdp_cartridge_step7\src\tangnano20k_vdp_cartridge.v":167)
+Undeclared symbol 'w_vdp_ioreq', assumed default net type 'wire'("D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_vdp_cartridge_step7\src\tangnano20k_vdp_cartridge.v":227)
+Undeclared symbol 'int_n', assumed default net type 'wire'("D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_vdp_cartridge_step7\src\tangnano20k_vdp_cartridge.v":234)
+Undeclared symbol 'w_dram_refresh', assumed default net type 'wire'("D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_vdp_cartridge_step7\src\tangnano20k_vdp_cartridge.v":367)
 Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_vdp_cartridge_step7\src\ws2812_led\ip_ws2812_led.v'
+Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_vdp_cartridge_step7\src\th9958\vdp.v'
+Undeclared symbol 'w_cpu_vram_ready', assumed default net type 'wire'("D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_vdp_cartridge_step7\src\th9958\vdp.v":188)
+Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_vdp_cartridge_step7\src\th9958\vdp_color_palette.v'
+Undeclared symbol 'w_high_resolution', assumed default net type 'wire'("D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_vdp_cartridge_step7\src\th9958\vdp_color_palette.v":153)
+Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_vdp_cartridge_step7\src\th9958\vdp_color_palette_ram.v'
+Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_vdp_cartridge_step7\src\th9958\vdp_cpu_interface.v'
+Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_vdp_cartridge_step7\src\th9958\vdp_timing_control.v'
+Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_vdp_cartridge_step7\src\th9958\vdp_timing_control_g123m.v'
+Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_vdp_cartridge_step7\src\th9958\vdp_timing_control_g4567.v'
+Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_vdp_cartridge_step7\src\th9958\vdp_timing_control_ssg.v'
+Undeclared symbol 'dot_phase', assumed default net type 'wire'("D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_vdp_cartridge_step7\src\th9958\vdp_timing_control_ssg.v":209)
+Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_vdp_cartridge_step7\src\th9958\vdp_timing_control_t12.v'
+Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_vdp_cartridge_step7\src\th9958\vdp_video_double_buffer.v'
+Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_vdp_cartridge_step7\src\th9958\vdp_video_out.v'
+Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_vdp_cartridge_step7\src\th9958\vdp_video_out_bilinear.v'
+Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_vdp_cartridge_step7\src\th9958\vdp_video_ram_line_buffer.v'
+Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_vdp_cartridge_step7\src\th9958\vdp_vram_interface.v'
 Compiling module 'tangnano20k_vdp_cartridge'("D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_vdp_cartridge_step7\src\tangnano20k_vdp_cartridge.v":24)
 Compiling module 'Gowin_rPLL'("D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_vdp_cartridge_step7\src\gowin_rpll\gowin_rpll.v":10)
 Compiling module 'Gowin_rPLL2'("D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_vdp_cartridge_step7\src\gowin_rpll2\gowin_rpll2.v":10)
@@ -43,82 +39,34 @@ Compiling module 'msx_slot'("D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_v
 Compiling module 'ip_gpio'("D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_vdp_cartridge_step7\src\gpio\ip_gpio.v":57)
 Compiling module 'ip_ws2812_led'("D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_vdp_cartridge_step7\src\ws2812_led\ip_ws2812_led.v":57)
 WARN  (EX3791) : Expression size 32 truncated to fit in target size 14("D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_vdp_cartridge_step7\src\ws2812_led\ip_ws2812_led.v":155)
-Compiling module 'vdp_inst'("D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_vdp_cartridge_step7\src\v9958\vdp_inst.v":58)
-Compiling module 'vdp'("D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_vdp_cartridge_step7\src\v9958\vdp.v":58)
-Compiling module 'vdp_color_bus'("D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_vdp_cartridge_step7\src\v9958\vdp_color_bus.v":56)
-WARN  (EX3791) : Expression size 18 truncated to fit in target size 17("D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_vdp_cartridge_step7\src\v9958\vdp_color_bus.v":314)
-WARN  (EX3791) : Expression size 15 truncated to fit in target size 14("D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_vdp_cartridge_step7\src\v9958\vdp_color_bus.v":341)
-WARN  (EX3791) : Expression size 18 truncated to fit in target size 17("D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_vdp_cartridge_step7\src\v9958\vdp_color_bus.v":344)
-Compiling module 'vdp_interrupt'("D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_vdp_cartridge_step7\src\v9958\vdp_interrupt.v":57)
-Compiling module 'vdp_ssg'("D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_vdp_cartridge_step7\src\v9958\vdp_ssg.v":58)
-WARN  (EX3791) : Expression size 12 truncated to fit in target size 11("D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_vdp_cartridge_step7\src\v9958\vdp_ssg.v":170)
-WARN  (EX3791) : Expression size 12 truncated to fit in target size 11("D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_vdp_cartridge_step7\src\v9958\vdp_ssg.v":225)
-WARN  (EX3791) : Expression size 4 truncated to fit in target size 3("D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_vdp_cartridge_step7\src\v9958\vdp_ssg.v":394)
-WARN  (EX3791) : Expression size 10 truncated to fit in target size 9("D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_vdp_cartridge_step7\src\v9958\vdp_ssg.v":434)
-WARN  (EX3791) : Expression size 10 truncated to fit in target size 9("D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_vdp_cartridge_step7\src\v9958\vdp_ssg.v":457)
-WARN  (EX3791) : Expression size 10 truncated to fit in target size 9("D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_vdp_cartridge_step7\src\v9958\vdp_ssg.v":571)
-Compiling module 'vdp_color_decoder'("D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_vdp_cartridge_step7\src\v9958\vdp_color_decoder.v":56)
-Compiling module 'vdp_text12'("D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_vdp_cartridge_step7\src\v9958\vdp_text12.v":58)
-WARN  (EX3791) : Expression size 8 truncated to fit in target size 7("D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_vdp_cartridge_step7\src\v9958\vdp_text12.v":245)
-WARN  (EX3791) : Expression size 8 truncated to fit in target size 7("D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_vdp_cartridge_step7\src\v9958\vdp_text12.v":260)
-WARN  (EX3791) : Expression size 5 truncated to fit in target size 4("D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_vdp_cartridge_step7\src\v9958\vdp_text12.v":454)
-WARN  (EX3791) : Expression size 5 truncated to fit in target size 4("D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_vdp_cartridge_step7\src\v9958\vdp_text12.v":471)
-Compiling module 'vdp_graphic123m'("D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_vdp_cartridge_step7\src\v9958\vdp_graphic123m.v":62)
-Compiling module 'vdp_graphic4567'("D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_vdp_cartridge_step7\src\v9958\vdp_graphic4567.v":58)
-Compiling module 'vdp_ram_256byte'("D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_vdp_cartridge_step7\src\v9958\vdp_ram_256byte.v":32)
-Extracting RAM for identifier 'ff_block_ram'("D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_vdp_cartridge_step7\src\v9958\vdp_ram_256byte.v":43)
-WARN  (EX3791) : Expression size 9 truncated to fit in target size 8("D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_vdp_cartridge_step7\src\v9958\vdp_graphic4567.v":221)
-WARN  (EX3791) : Expression size 9 truncated to fit in target size 8("D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_vdp_cartridge_step7\src\v9958\vdp_graphic4567.v":241)
-WARN  (EX3791) : Expression size 9 truncated to fit in target size 8("D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_vdp_cartridge_step7\src\v9958\vdp_graphic4567.v":245)
-WARN  (EX3791) : Expression size 5 truncated to fit in target size 4("D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_vdp_cartridge_step7\src\v9958\vdp_graphic4567.v":491)
-WARN  (EX3791) : Expression size 5 truncated to fit in target size 4("D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_vdp_cartridge_step7\src\v9958\vdp_graphic4567.v":494)
-Compiling module 'vdp_sprite'("D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_vdp_cartridge_step7\src\v9958\vdp_sprite.v":58)
-Compiling module 'vdp_spinforam'("D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_vdp_cartridge_step7\src\v9958\vdp_spinforam.v":58)
-Extracting RAM for identifier 'ff_memory'("D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_vdp_cartridge_step7\src\v9958\vdp_spinforam.v":66)
-WARN  (EX3791) : Expression size 10 truncated to fit in target size 9("D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_vdp_cartridge_step7\src\v9958\vdp_sprite.v":715)
-WARN  (EX3791) : Expression size 10 truncated to fit in target size 9("D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_vdp_cartridge_step7\src\v9958\vdp_sprite.v":754)
-WARN  (EX3791) : Expression size 10 truncated to fit in target size 9("D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_vdp_cartridge_step7\src\v9958\vdp_sprite.v":756)
-WARN  (EX3791) : Expression size 4 truncated to fit in target size 3("D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_vdp_cartridge_step7\src\v9958\vdp_sprite.v":761)
-Compiling module 'vdp_ram_palette'("D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_vdp_cartridge_step7\src\v9958\vdp_ram_palette.v":32)
-Extracting RAM for identifier 'ff_block_ram_r'("D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_vdp_cartridge_step7\src\v9958\vdp_ram_palette.v":60)
-Extracting RAM for identifier 'ff_block_ram_g'("D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_vdp_cartridge_step7\src\v9958\vdp_ram_palette.v":61)
-Extracting RAM for identifier 'ff_block_ram_b'("D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_vdp_cartridge_step7\src\v9958\vdp_ram_palette.v":62)
-WARN  (EX3791) : Expression size 7 truncated to fit in target size 5("D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_vdp_cartridge_step7\src\v9958\vdp_ram_palette.v":152)
-WARN  (EX3791) : Expression size 7 truncated to fit in target size 5("D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_vdp_cartridge_step7\src\v9958\vdp_ram_palette.v":153)
-WARN  (EX3791) : Expression size 7 truncated to fit in target size 5("D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_vdp_cartridge_step7\src\v9958\vdp_ram_palette.v":154)
-Compiling module 'vdp_register'("D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_vdp_cartridge_step7\src\v9958\vdp_register.v":56)
-Compiling module 'vdp_command'("D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_vdp_cartridge_step7\src\v9958\vdp_command.v":56)
-WARN  (EX3791) : Expression size 32 truncated to fit in target size 10("D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_vdp_cartridge_step7\src\v9958\vdp_command.v":515)
-WARN  (EX3791) : Expression size 32 truncated to fit in target size 10("D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_vdp_cartridge_step7\src\v9958\vdp_command.v":621)
-WARN  (EX3791) : Expression size 32 truncated to fit in target size 10("D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_vdp_cartridge_step7\src\v9958\vdp_command.v":703)
-WARN  (EX3791) : Expression size 11 truncated to fit in target size 10("D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_vdp_cartridge_step7\src\v9958\vdp_command.v":735)
-WARN  (EX3791) : Expression size 32 truncated to fit in target size 10("D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_vdp_cartridge_step7\src\v9958\vdp_command.v":822)
-Compiling module 'vdp_wait_control'("D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_vdp_cartridge_step7\src\v9958\vdp_wait_control.v":31)
-Extracting RAM for identifier 'c_wait_table_501'("D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_vdp_cartridge_step7\src\v9958\vdp_wait_control.v":50)
-Extracting RAM for identifier 'c_wait_table_502'("D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_vdp_cartridge_step7\src\v9958\vdp_wait_control.v":52)
-Extracting RAM for identifier 'c_wait_table_503'("D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_vdp_cartridge_step7\src\v9958\vdp_wait_control.v":54)
-Extracting RAM for identifier 'c_wait_table_504'("D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_vdp_cartridge_step7\src\v9958\vdp_wait_control.v":56)
-Extracting RAM for identifier 'c_wait_table_505'("D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_vdp_cartridge_step7\src\v9958\vdp_wait_control.v":58)
-Extracting RAM for identifier 'c_wait_table_601'("D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_vdp_cartridge_step7\src\v9958\vdp_wait_control.v":60)
-Extracting RAM for identifier 'c_wait_table_602'("D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_vdp_cartridge_step7\src\v9958\vdp_wait_control.v":62)
-Extracting RAM for identifier 'c_wait_table_603'("D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_vdp_cartridge_step7\src\v9958\vdp_wait_control.v":64)
-Extracting RAM for identifier 'c_wait_table_604'("D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_vdp_cartridge_step7\src\v9958\vdp_wait_control.v":66)
-Extracting RAM for identifier 'c_wait_table_605'("D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_vdp_cartridge_step7\src\v9958\vdp_wait_control.v":68)
-Compiling module 'video_out(hs_positive=1'b0,vs_positive=1'b0)'("D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_vdp_cartridge_step7\src\video_out\video_out.v":60)
-Compiling module 'video_out_hmag'("D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_vdp_cartridge_step7\src\video_out\video_out_hmag.v":60)
-WARN  (EX3791) : Expression size 32 truncated to fit in target size 10("D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_vdp_cartridge_step7\src\video_out\video_out_hmag.v":141)
-Compiling module 'video_double_buffer'("D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_vdp_cartridge_step7\src\video_out\video_double_buffer.v":58)
-Compiling module 'video_ram_line_buffer'("D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_vdp_cartridge_step7\src\video_out\video_ram_line_buffer.v":58)
-Extracting RAM for identifier 'ff_imem'("D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_vdp_cartridge_step7\src\video_out\video_ram_line_buffer.v":71)
-Compiling module 'video_out_bilinear'("D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_vdp_cartridge_step7\src\video_out\video_out_bilinear.v":60)
+Compiling module 'vdp'("D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_vdp_cartridge_step7\src\th9958\vdp.v":58)
+Compiling module 'vdp_cpu_interface'("D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_vdp_cartridge_step7\src\th9958\vdp_cpu_interface.v":58)
+Compiling module 'vdp_timing_control'("D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_vdp_cartridge_step7\src\th9958\vdp_timing_control.v":57)
+Compiling module 'vdp_timing_control_ssg'("D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_vdp_cartridge_step7\src\th9958\vdp_timing_control_ssg.v":58)
+WARN  (EX3791) : Expression size 11 truncated to fit in target size 10("D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_vdp_cartridge_step7\src\th9958\vdp_timing_control_ssg.v":186)
+Compiling module 'vdp_timing_control_t12'("D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_vdp_cartridge_step7\src\th9958\vdp_timing_control_t12.v":58)
+Compiling module 'vdp_timing_control_g123m'("D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_vdp_cartridge_step7\src\th9958\vdp_timing_control_g123m.v":58)
+Compiling module 'vdp_timing_control_g4567'("D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_vdp_cartridge_step7\src\th9958\vdp_timing_control_g4567.v":58)
+WARN  (EX3791) : Expression size 18 truncated to fit in target size 17("D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_vdp_cartridge_step7\src\th9958\vdp_timing_control_g4567.v":135)
+Compiling module 'vdp_vram_interface'("D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_vdp_cartridge_step7\src\th9958\vdp_vram_interface.v":58)
+Compiling module 'vdp_color_palette'("D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_vdp_cartridge_step7\src\th9958\vdp_color_palette.v":58)
+Compiling module 'vdp_color_palette_ram'("D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_vdp_cartridge_step7\src\th9958\vdp_color_palette_ram.v":58)
+Extracting RAM for identifier 'ram_r'("D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_vdp_cartridge_step7\src\th9958\vdp_color_palette_ram.v":73)
+Extracting RAM for identifier 'ram_g'("D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_vdp_cartridge_step7\src\th9958\vdp_color_palette_ram.v":74)
+Extracting RAM for identifier 'ram_b'("D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_vdp_cartridge_step7\src\th9958\vdp_color_palette_ram.v":75)
+Compiling module 'vdp_video_out'("D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_vdp_cartridge_step7\src\th9958\vdp_video_out.v":60)
+Compiling module 'vdp_video_double_buffer'("D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_vdp_cartridge_step7\src\th9958\vdp_video_double_buffer.v":58)
+Compiling module 'vdp_video_ram_line_buffer'("D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_vdp_cartridge_step7\src\th9958\vdp_video_ram_line_buffer.v":58)
+Extracting RAM for identifier 'ff_imem'("D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_vdp_cartridge_step7\src\th9958\vdp_video_ram_line_buffer.v":66)
+Compiling module 'vdp_video_out_bilinear'("D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_vdp_cartridge_step7\src\th9958\vdp_video_out_bilinear.v":60)
 Compiling module 'DVI_TX_Top'("D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_vdp_cartridge_step7\src\dvi_tx\dvi_tx.v":1072)
 Compiling module '**'("D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_vdp_cartridge_step7\src\dvi_tx\dvi_tx.v":1071)
 Compiling module 'ip_sdram'("D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_vdp_cartridge_step7\src\sdram\ip_sdram_tangnano20k_c.v":57)
 WARN  (EX3791) : Expression size 32 truncated to fit in target size 14("D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_vdp_cartridge_step7\src\sdram\ip_sdram_tangnano20k_c.v":269)
-WARN  (EX1998) : Net 'w_sdram_refresh' does not have a driver("D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_vdp_cartridge_step7\src\tangnano20k_vdp_cartridge.v":96)
+WARN  (EX1998) : Net 'w_sdram_refresh' does not have a driver("D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_vdp_cartridge_step7\src\tangnano20k_vdp_cartridge.v":100)
+WARN  (EX1998) : Net 'w_vdp_ioreq' does not have a driver("D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_vdp_cartridge_step7\src\tangnano20k_vdp_cartridge.v":227)
 NOTE  (EX0101) : Current top module is "tangnano20k_vdp_cartridge"
 [5%] Running netlist conversion ...
-WARN  (CV0016) : Input clk is unused("D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_vdp_cartridge_step7\src\tangnano20k_vdp_cartridge.v":25)
 WARN  (CV0016) : Input dipsw is unused("D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_vdp_cartridge_step7\src\tangnano20k_vdp_cartridge.v":38)
 WARN  (CV0016) : Input button is unused("D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_vdp_cartridge_step7\src\tangnano20k_vdp_cartridge.v":40)
 Running device independent optimization ...
@@ -136,7 +84,8 @@ Running technical mapping ...
 [75%] Tech-Mapping Phase 2 completed
 [80%] Tech-Mapping Phase 3 completed
 [90%] Tech-Mapping Phase 4 completed
-WARN  (NL0002) : The module "vdp_interrupt" instantiated to "u_vdp_interrupt" is swept in optimizing("D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_vdp_cartridge_step7\src\v9958\vdp.v":508)
 [95%] Generate netlist file "D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_vdp_cartridge_step7\impl\gwsynthesis\tangnano20k_vdp_cartridge.vg" completed
+WARN  (CK3000) : Can't calculate clocks' relationship between: "clk" and "u_clkdiv/clkdiv_inst/CLKOUT.default_gen_clk"
+WARN  (CK3000) : Can't calculate clocks' relationship between: "u_clkdiv/clkdiv_inst/CLKOUT.default_gen_clk" and "clk"
 [100%] Generate report file "D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_vdp_cartridge_step7\impl\gwsynthesis\tangnano20k_vdp_cartridge_syn.rpt.html" completed
 GowinSynthesis finish

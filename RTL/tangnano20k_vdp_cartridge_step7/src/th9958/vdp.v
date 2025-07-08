@@ -134,6 +134,7 @@ module vdp (
 
 	wire		[16:0]	w_command_vram_address;
 	wire				w_command_vram_valid;
+	wire				w_command_vram_ready;
 	wire				w_command_vram_write;
 	wire		[7:0]	w_command_vram_wdata;
 	wire		[31:0]	w_command_vram_rdata;
@@ -281,6 +282,7 @@ module vdp (
 	vdp_vram_interface u_vram_interface (
 		.reset_n									( reset_n									),
 		.clk										( clk										),
+		.initial_busy								( initial_busy								),
 		.h_count									( w_h_count[2:0]							),
 		.t12_vram_address							( w_t12_vram_address						),
 		.t12_vram_valid								( w_t12_vram_valid							),
@@ -296,6 +298,7 @@ module vdp (
 		.sprite_vram_rdata							( w_sprite_vram_rdata						),
 		.command_vram_address						( w_command_vram_address					),
 		.command_vram_valid							( w_command_vram_valid						),
+		.command_vram_ready							( w_command_vram_ready						),
 		.command_vram_write							( w_command_vram_write						),
 		.command_vram_wdata							( w_command_vram_wdata						),
 		.command_vram_rdata							( w_command_vram_rdata						),

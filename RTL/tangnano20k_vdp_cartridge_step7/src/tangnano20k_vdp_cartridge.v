@@ -72,8 +72,12 @@ module tangnano20k_vdp_cartridge (
 	wire	[7:0]	w_bus_rdata;
 	wire			w_bus_rdata_en;
 
+	wire			w_bus_gpio_ready;
 	wire	[7:0]	w_bus_gpio_rdata;
 	wire			w_bus_gpio_rdata_en;
+
+	wire			w_bus_vdp_ioreq;
+	wire			w_bus_vdp_ready;
 	wire	[7:0]	w_bus_vdp_rdata;
 	wire			w_bus_vdp_rdata_en;
 
@@ -176,6 +180,7 @@ module tangnano20k_vdp_cartridge (
 	assign w_bus_rdata		= ( w_bus_gpio_rdata_en		) ? w_bus_gpio_rdata:
 	                  		  ( w_bus_vdp_rdata_en		) ? w_bus_gpio_rdata: 8'hFF;
 	assign w_bus_rdata_en	= w_bus_gpio_rdata_en;	// | w_bus_vdp_rdata_en;
+	assign w_bus_ready		= w_bus_gpio_ready | w_bus_vdp_ready;
 
 	// --------------------------------------------------------------------
 	//	GPIO
@@ -187,7 +192,7 @@ module tangnano20k_vdp_cartridge (
 		.bus_ioreq			( w_bus_ioreq				),
 		.bus_write			( w_bus_write				),
 		.bus_valid			( w_bus_valid				),
-		.bus_ready			( w_bus_ready				),
+		.bus_ready			( w_bus_gpio_ready			),
 		.bus_wdata			( w_bus_wdata				),
 		.bus_rdata			( w_bus_gpio_rdata			),
 		.bus_rdata_en		( w_bus_gpio_rdata_en		),
@@ -214,31 +219,60 @@ module tangnano20k_vdp_cartridge (
 	// --------------------------------------------------------------------
 	//	V9958 clone
 	// --------------------------------------------------------------------
-	vdp_inst u_v9958 (
-		.clk				( clk42m				),
+	vdp u_v9958 (
 		.reset_n			( reset_n				),
+		.clk				( clk					),
 		.initial_busy		( w_dram_init_busy		),
-		.bus_address		( w_bus_address			),
-		.bus_ioreq			( w_bus_ioreq			),
+		.bus_address		( w_bus_address[1:0]	),
+		.bus_ioreq			( w_vdp_ioreq			),
 		.bus_write			( w_bus_write			),
 		.bus_valid			( w_bus_valid			),
+		.bus_ready			( w_bus_vdp_ready		),
 		.bus_wdata			( w_bus_wdata			),
 		.bus_rdata			( w_bus_vdp_rdata		),
 		.bus_rdata_en		( w_bus_vdp_rdata_en	),
-		.int_n				( 						),
-		.p_dram_address		( w_sdram_address[16:0]	),
-		.p_dram_write		( w_sdram_write			),
-		.p_dram_valid		( w_sdram_valid			),
-		.p_dram_wdata		( w_sdram_wdata			),
-		.p_dram_rdata		( w_sdram_rdata			),
-		.p_dram_rdata_en	( w_sdram_rdata_en		),
-		.p_vdp_enable		( w_vdp_enable			),
-		.p_vdp_r			( w_vdp_r				),
-		.p_vdp_g			( w_vdp_g				),
-		.p_vdp_b			( w_vdp_b				),
-		.p_vdp_hcounter		( w_vdp_hcounter		),
-		.p_vdp_vcounter		( w_vdp_vcounter		)
+		.int_n				( int_n					),
+		.vram_address		( w_sdram_address[16:0]	),
+		.vram_write			( w_sdram_write			),
+		.vram_valid			( w_sdram_valid			),
+		.vram_wdata			( w_sdram_wdata			),
+		.vram_rdata			( w_sdram_rdata			),
+		.vram_rdata_en		( w_sdram_rdata_en		),
+		.display_hs			( w_video_hs			),
+		.display_vs			( w_video_vs			),
+		.display_en			( w_video_de			),
+		.display_r			( w_video_r				),
+		.display_g			( w_video_g				),
+		.display_b			( w_video_b				)
 	);
+
+	assign w_bus_vdp_ioreq	= w_bus_ioreq & ( {w_bus_address[7:2], 2'd0} == 8'h98 );
+
+//	vdp_inst u_v9958 (
+//		.clk				( clk42m				),
+//		.reset_n			( reset_n				),
+//		.initial_busy		( w_dram_init_busy		),
+//		.bus_address		( w_bus_address			),
+//		.bus_ioreq			( w_bus_ioreq			),
+//		.bus_write			( w_bus_write			),
+//		.bus_valid			( w_bus_valid			),
+//		.bus_wdata			( w_bus_wdata			),
+//		.bus_rdata			( w_bus_vdp_rdata		),
+//		.bus_rdata_en		( w_bus_vdp_rdata_en	),
+//		.int_n				( 						),
+//		.p_dram_address		( w_sdram_address[16:0]	),
+//		.p_dram_write		( w_sdram_write			),
+//		.p_dram_valid		( w_sdram_valid			),
+//		.p_dram_wdata		( w_sdram_wdata			),
+//		.p_dram_rdata		( w_sdram_rdata			),
+//		.p_dram_rdata_en	( w_sdram_rdata_en		),
+//		.p_vdp_enable		( w_vdp_enable			),
+//		.p_vdp_r			( w_vdp_r				),
+//		.p_vdp_g			( w_vdp_g				),
+//		.p_vdp_b			( w_vdp_b				),
+//		.p_vdp_hcounter		( w_vdp_hcounter		),
+//		.p_vdp_vcounter		( w_vdp_vcounter		)
+//	);
 	assign w_sdram_address[22:17]	= 6'd0;
 
 //	assign w_dram_init_busy	= 1'b0;
@@ -246,26 +280,26 @@ module tangnano20k_vdp_cartridge (
 	// --------------------------------------------------------------------
 	//	Video output
 	// --------------------------------------------------------------------
-	video_out #(
-		.hs_positive		( 1'b0					),		//	If video_hs is positive logic, set to 1.
-		.vs_positive		( 1'b0					)		//	If video_vs is positive logic, set to 1.
-	) u_video_out (
-		.clk				( clk42m				),
-		.reset_n			( reset_n   			),
-		.enable				( w_vdp_enable			),
-		.vdp_r				( w_vdp_r				),
-		.vdp_g				( w_vdp_g				),
-		.vdp_b				( w_vdp_b				),
-		.vdp_hcounter		( w_vdp_hcounter		),
-		.vdp_vcounter		( w_vdp_vcounter		),
-		.video_clk			( w_video_clk			),
-		.video_de			( w_video_de			),
-		.video_hs			( w_video_hs			),
-		.video_vs			( w_video_vs			),
-		.video_r			( w_video_r				),
-		.video_g			( w_video_g				),
-		.video_b			( w_video_b				)
-	);
+//	video_out #(
+//		.hs_positive		( 1'b0					),		//	If video_hs is positive logic, set to 1.
+//		.vs_positive		( 1'b0					)		//	If video_vs is positive logic, set to 1.
+//	) u_video_out (
+//		.clk				( clk42m				),
+//		.reset_n			( reset_n   			),
+//		.enable				( w_vdp_enable			),
+//		.vdp_r				( w_vdp_r				),
+//		.vdp_g				( w_vdp_g				),
+//		.vdp_b				( w_vdp_b				),
+//		.vdp_hcounter		( w_vdp_hcounter		),
+//		.vdp_vcounter		( w_vdp_vcounter		),
+//		.video_clk			( w_video_clk			),
+//		.video_de			( w_video_de			),
+//		.video_hs			( w_video_hs			),
+//		.video_vs			( w_video_vs			),
+//		.video_r			( w_video_r				),
+//		.video_g			( w_video_g				),
+//		.video_b			( w_video_b				)
+//	);
 
 	// --------------------------------------------------------------------
 	//	HDMI
@@ -273,7 +307,7 @@ module tangnano20k_vdp_cartridge (
 	DVI_TX_Top u_dvi (
 		.I_rst_n			( reset_n   			),		//input I_rst_n
 		.I_serial_clk		( clk215m				),		//input I_serial_clk
-		.I_rgb_clk			( w_video_clk			),		//input I_rgb_clk
+		.I_rgb_clk			( clk42m				),		//input I_rgb_clk
 		.I_rgb_vs			( w_video_vs			),		//input I_rgb_vs
 		.I_rgb_hs			( w_video_hs			),		//input I_rgb_hs
 		.I_rgb_de			( w_video_de			),		//input I_rgb_de

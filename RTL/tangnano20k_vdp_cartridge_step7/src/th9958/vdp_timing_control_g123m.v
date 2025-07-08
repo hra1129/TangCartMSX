@@ -176,17 +176,17 @@ module vdp_timing_control_g123m (
 				3'd0:
 					begin
 						ff_vram_address <= w_pattern_name;
-						ff_vram_valid <= screen_active;
+						ff_vram_valid <= screen_active & (w_mode != 4'b0000);
 					end
 				3'd2:
 					begin
 						ff_vram_address <= w_pattern_generator;
-						ff_vram_valid <= screen_active;
+						ff_vram_valid <= screen_active & (w_mode != 4'b0000);
 					end
 				3'd3:
 					begin
 						ff_vram_address <= w_color;
-						ff_vram_valid <= screen_active;
+						ff_vram_valid <= screen_active & (w_mode != 4'b0000);
 					end
 				default:
 					begin

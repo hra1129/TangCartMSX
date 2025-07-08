@@ -82,14 +82,14 @@ module vdp_video_out #(
 	input		[7:0]	reg_normalize				//	8192 / reg_denominator
 );
 	localparam		clocks_per_line		= 11'd1368;
-	localparam		h_en_start			= 11'd375;
+	localparam		h_en_start			= 11'd374;
 	localparam		h_en_end			= h_en_start + 11'd800;
 	localparam		hs_start			= clocks_per_line - 1;
-	localparam		hs_end				= 11'd284;
-	localparam		v_en_start			= 10'd41;
+	localparam		hs_end				= 11'd283;
+	localparam		v_en_start			= 10'd40;
 	localparam		v_en_end			= v_en_start + 10'd480;
-	localparam		vs_start			= 10'd14;
-	localparam		vs_end				= 10'd20;
+	localparam		vs_start			= 10'd13;
+	localparam		vs_end				= 10'd19;
 	localparam		c_numerator			= 576 / 4;
 	wire	[11:0]	w_x_position_w;
 	reg		[9:0]	ff_x_position_r;
@@ -161,7 +161,7 @@ module vdp_video_out #(
 		if( !reset_n ) begin
 			ff_active <= 1'b0;
 		end
-		else if( w_active_end || w_h_cnt_end ) begin
+		else if( w_active_end ) begin
 			ff_active <= 1'b0;
 		end
 		else if( w_active_start ) begin
@@ -182,7 +182,7 @@ module vdp_video_out #(
 		if( !reset_n ) begin
 			ff_h_en <= 1'b0;
 		end
-		else if( w_h_cnt_end || w_h_en_end ) begin
+		else if( w_h_en_end ) begin
 			ff_h_en <= 1'b0;
 		end
 		else if( w_h_en_start ) begin
@@ -214,13 +214,13 @@ module vdp_video_out #(
 
 	always @( posedge clk or negedge reset_n ) begin
 		if( !reset_n ) begin
-			ff_hs <= 1'b0;
+			ff_hs <= 1'b1;
 		end
-		else if( w_h_cnt_end || w_hs_end ) begin
-			ff_hs <= 1'b0;
+		else if( w_hs_end ) begin
+			ff_hs <= 1'b1;
 		end
 		else if( w_hs_start ) begin
-			ff_hs <= 1'b1;
+			ff_hs <= 1'b0;
 		end
 	end
 
@@ -229,14 +229,14 @@ module vdp_video_out #(
 
 	always @( posedge clk or negedge reset_n ) begin
 		if( !reset_n ) begin
-			ff_vs <= 1'b0;
+			ff_vs <= 1'b1;
 		end
 		else if( w_h_cnt_end ) begin
 			if( w_vs_end ) begin
-				ff_vs <= 1'b0;
+				ff_vs <= 1'b1;
 			end
 			else if( w_vs_start ) begin
-				ff_vs <= 1'b1;
+				ff_vs <= 1'b0;
 			end
 		end
 	end
