@@ -94,6 +94,10 @@ module vdp (
 	wire				w_intr_line;
 	wire				w_intr_frame;
 
+	wire		[7:0]	w_upscan_r;
+	wire		[7:0]	w_upscan_g;
+	wire		[7:0]	w_upscan_b;
+
 	wire		[7:0]	w_vdp_r;
 	wire		[7:0]	w_vdp_g;
 	wire		[7:0]	w_vdp_b;
@@ -344,6 +348,23 @@ module vdp (
 	);
 
 	// --------------------------------------------------------------------
+	//	Upscan
+	// --------------------------------------------------------------------
+	vdp_upscan u_upscan (
+		.clk										( clk										),
+		.screen_pos_x								( w_screen_pos_x							),
+		.screen_pos_y								( w_screen_pos_y							),
+		.h_count									( w_h_count									),
+		.v_count									( w_v_count									),
+		.vdp_r										( w_vdp_r									),
+		.vdp_g										( w_vdp_g									),
+		.vdp_b										( w_vdp_b									),
+		.upscan_r									( w_upscan_r								),
+		.upscan_g									( w_upscan_g								),
+		.upscan_b									( w_upscan_b								)
+	);
+
+	// --------------------------------------------------------------------
 	//	Video out
 	// --------------------------------------------------------------------
 	vdp_video_out #(
@@ -355,9 +376,9 @@ module vdp (
 		.h_count									( w_h_count									),
 		.v_count									( w_v_count									),
 		.has_scanline								( 1'b1										),
-		.vdp_r										( w_vdp_r									),
-		.vdp_g										( w_vdp_g									),
-		.vdp_b										( w_vdp_b									),
+		.vdp_r										( w_upscan_r								),
+		.vdp_g										( w_upscan_g								),
+		.vdp_b										( w_upscan_b								),
 		.display_hs									( display_hs								),
 		.display_vs									( display_vs								),
 		.display_en									( display_en								),

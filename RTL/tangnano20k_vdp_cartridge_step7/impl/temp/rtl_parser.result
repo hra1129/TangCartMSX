@@ -73,7 +73,7 @@
     "SubInsts" : [
      {
       "InstFile" : "D:/github/HRA_product/TangCartMSX/RTL/tangnano20k_vdp_cartridge_step7/src/th9958/vdp.v",
-      "InstLine" : 174,
+      "InstLine" : 178,
       "InstName" : "u_cpu_interface",
       "ModuleFile" : "D:/github/HRA_product/TangCartMSX/RTL/tangnano20k_vdp_cartridge_step7/src/th9958/vdp_cpu_interface.v",
       "ModuleLine" : 58,
@@ -81,7 +81,7 @@
      },
      {
       "InstFile" : "D:/github/HRA_product/TangCartMSX/RTL/tangnano20k_vdp_cartridge_step7/src/th9958/vdp.v",
-      "InstLine" : 232,
+      "InstLine" : 236,
       "InstName" : "u_timing_control",
       "ModuleFile" : "D:/github/HRA_product/TangCartMSX/RTL/tangnano20k_vdp_cartridge_step7/src/th9958/vdp_timing_control.v",
       "ModuleLine" : 57,
@@ -123,7 +123,7 @@
      },
      {
       "InstFile" : "D:/github/HRA_product/TangCartMSX/RTL/tangnano20k_vdp_cartridge_step7/src/th9958/vdp.v",
-      "InstLine" : 282,
+      "InstLine" : 286,
       "InstName" : "u_vram_interface",
       "ModuleFile" : "D:/github/HRA_product/TangCartMSX/RTL/tangnano20k_vdp_cartridge_step7/src/th9958/vdp_vram_interface.v",
       "ModuleLine" : 58,
@@ -131,7 +131,7 @@
      },
      {
       "InstFile" : "D:/github/HRA_product/TangCartMSX/RTL/tangnano20k_vdp_cartridge_step7/src/th9958/vdp.v",
-      "InstLine" : 324,
+      "InstLine" : 328,
       "InstName" : "u_color_palette",
       "ModuleFile" : "D:/github/HRA_product/TangCartMSX/RTL/tangnano20k_vdp_cartridge_step7/src/th9958/vdp_color_palette.v",
       "ModuleLine" : 58,
@@ -149,7 +149,33 @@
      },
      {
       "InstFile" : "D:/github/HRA_product/TangCartMSX/RTL/tangnano20k_vdp_cartridge_step7/src/th9958/vdp.v",
-      "InstLine" : 352,
+      "InstLine" : 353,
+      "InstName" : "u_upscan",
+      "ModuleFile" : "D:/github/HRA_product/TangCartMSX/RTL/tangnano20k_vdp_cartridge_step7/src/th9958/vdp_upscan.v",
+      "ModuleLine" : 60,
+      "ModuleName" : "vdp_upscan",
+      "SubInsts" : [
+       {
+        "InstFile" : "D:/github/HRA_product/TangCartMSX/RTL/tangnano20k_vdp_cartridge_step7/src/th9958/vdp_upscan.v",
+        "InstLine" : 94,
+        "InstName" : "u_even_line_buffer",
+        "ModuleFile" : "D:/github/HRA_product/TangCartMSX/RTL/tangnano20k_vdp_cartridge_step7/src/th9958/vdp_upscan_line_buffer.v",
+        "ModuleLine" : 58,
+        "ModuleName" : "vdp_upscan_line_buffer"
+       },
+       {
+        "InstFile" : "D:/github/HRA_product/TangCartMSX/RTL/tangnano20k_vdp_cartridge_step7/src/th9958/vdp_upscan.v",
+        "InstLine" : 108,
+        "InstName" : "u_odd_line_buffer",
+        "ModuleFile" : "D:/github/HRA_product/TangCartMSX/RTL/tangnano20k_vdp_cartridge_step7/src/th9958/vdp_upscan_line_buffer.v",
+        "ModuleLine" : 58,
+        "ModuleName" : "vdp_upscan_line_buffer"
+       }
+      ]
+     },
+     {
+      "InstFile" : "D:/github/HRA_product/TangCartMSX/RTL/tangnano20k_vdp_cartridge_step7/src/th9958/vdp.v",
+      "InstLine" : 373,
       "InstName" : "u_video_out",
       "ModuleFile" : "D:/github/HRA_product/TangCartMSX/RTL/tangnano20k_vdp_cartridge_step7/src/th9958/vdp_video_out.v",
       "ModuleLine" : 60,
@@ -157,7 +183,7 @@
       "SubInsts" : [
        {
         "InstFile" : "D:/github/HRA_product/TangCartMSX/RTL/tangnano20k_vdp_cartridge_step7/src/th9958/vdp_video_out.v",
-        "InstLine" : 304,
+        "InstLine" : 300,
         "InstName" : "u_double_buffer",
         "ModuleFile" : "D:/github/HRA_product/TangCartMSX/RTL/tangnano20k_vdp_cartridge_step7/src/th9958/vdp_video_double_buffer.v",
         "ModuleLine" : 58,
@@ -183,7 +209,7 @@
        },
        {
         "InstFile" : "D:/github/HRA_product/TangCartMSX/RTL/tangnano20k_vdp_cartridge_step7/src/th9958/vdp_video_out.v",
-        "InstLine" : 358,
+        "InstLine" : 352,
         "InstName" : "u_bilinear_r",
         "ModuleFile" : "D:/github/HRA_product/TangCartMSX/RTL/tangnano20k_vdp_cartridge_step7/src/th9958/vdp_video_out_bilinear.v",
         "ModuleLine" : 60,
@@ -191,7 +217,7 @@
        },
        {
         "InstFile" : "D:/github/HRA_product/TangCartMSX/RTL/tangnano20k_vdp_cartridge_step7/src/th9958/vdp_video_out.v",
-        "InstLine" : 366,
+        "InstLine" : 360,
         "InstName" : "u_bilinear_g",
         "ModuleFile" : "D:/github/HRA_product/TangCartMSX/RTL/tangnano20k_vdp_cartridge_step7/src/th9958/vdp_video_out_bilinear.v",
         "ModuleLine" : 60,
@@ -199,7 +225,7 @@
        },
        {
         "InstFile" : "D:/github/HRA_product/TangCartMSX/RTL/tangnano20k_vdp_cartridge_step7/src/th9958/vdp_video_out.v",
-        "InstLine" : 374,
+        "InstLine" : 368,
         "InstName" : "u_bilinear_b",
         "ModuleFile" : "D:/github/HRA_product/TangCartMSX/RTL/tangnano20k_vdp_cartridge_step7/src/th9958/vdp_video_out_bilinear.v",
         "ModuleLine" : 60,

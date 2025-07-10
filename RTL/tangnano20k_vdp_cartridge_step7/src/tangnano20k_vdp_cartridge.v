@@ -180,7 +180,7 @@ module tangnano20k_vdp_cartridge (
 	assign w_bus_rdata		= ( w_bus_gpio_rdata_en		) ? w_bus_gpio_rdata:
 	                  		  ( w_bus_vdp_rdata_en		) ? w_bus_gpio_rdata: 8'hFF;
 	assign w_bus_rdata_en	= w_bus_gpio_rdata_en;	// | w_bus_vdp_rdata_en;
-	assign w_bus_ready		= w_bus_gpio_ready | w_bus_vdp_ready;
+	assign w_bus_ready		= w_bus_vdp_ready;
 
 	// --------------------------------------------------------------------
 	//	GPIO
@@ -221,10 +221,10 @@ module tangnano20k_vdp_cartridge (
 	// --------------------------------------------------------------------
 	vdp u_v9958 (
 		.reset_n			( reset_n				),
-		.clk				( clk					),
+		.clk				( clk42m				),
 		.initial_busy		( w_dram_init_busy		),
 		.bus_address		( w_bus_address[1:0]	),
-		.bus_ioreq			( w_vdp_ioreq			),
+		.bus_ioreq			( w_bus_vdp_ioreq		),
 		.bus_write			( w_bus_write			),
 		.bus_valid			( w_bus_valid			),
 		.bus_ready			( w_bus_vdp_ready		),
@@ -364,5 +364,5 @@ module tangnano20k_vdp_cartridge (
 		.O_sdram_dqm		( O_sdram_dqm			)		// data mask
 	);
 
-	assign w_dram_refresh	= 1'b0;
+	assign w_sdram_refresh	= 1'b0;
 endmodule

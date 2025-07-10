@@ -91,7 +91,7 @@ module vdp_video_out #(
 	localparam		vs_start			= 10'd13;
 	localparam		vs_end				= 10'd19;
 	localparam		c_numerator			= 576 / 4;
-	wire	[11:0]	w_x_position_w;
+	wire	[10:0]	w_x_position_w;
 	reg		[9:0]	ff_x_position_r;
 	reg				ff_active;
 	reg		[7:0]	ff_numerator;
@@ -109,8 +109,6 @@ module vdp_video_out #(
 	reg		[7:0]	ff_coeff;
 	reg		[7:0]	ff_coeff1;
 	reg		[7:0]	ff_coeff2;
-	reg		[7:0]	ff_coeff3;
-	reg		[7:0]	ff_coeff4;
 	reg				ff_hold0;
 	reg				ff_hold1;
 	reg				ff_hold2;
@@ -207,8 +205,6 @@ module vdp_video_out #(
 		end
 	end
 
-	assign display_en	= ff_h_en & ff_v_en;
-
 	assign w_hs_start		= (h_count == hs_start);
 	assign w_hs_end			= (h_count == hs_end  );
 
@@ -247,7 +243,7 @@ module vdp_video_out #(
 	// --------------------------------------------------------------------
 	//	Buffer address
 	// --------------------------------------------------------------------
-	assign w_x_position_w	= { 1'b0, h_count } - { 1'b0, active_area_start };
+	assign w_x_position_w	= h_count;
 
 	always @( posedge clk ) begin
 		if( !reset_n ) begin
@@ -334,8 +330,6 @@ module vdp_video_out #(
 	always @( posedge clk ) begin
 		ff_coeff1	<= ff_coeff;
 		ff_coeff2	<= ff_coeff1;
-		ff_coeff3	<= ff_coeff2;
-		ff_coeff4	<= ff_coeff3;
 	end
 
 	// --------------------------------------------------------------------
@@ -357,7 +351,7 @@ module vdp_video_out #(
 
 	vdp_video_out_bilinear u_bilinear_r (
 		.clk			( clk					),
-		.coeff			( ff_coeff4				),
+		.coeff			( ff_coeff2				),
 		.tap0			( ff_tap0_r				),
 		.tap1			( ff_tap1_r				),
 		.pixel_out		( w_bilinear_r			)
@@ -365,7 +359,7 @@ module vdp_video_out #(
 
 	vdp_video_out_bilinear u_bilinear_g (
 		.clk			( clk					),
-		.coeff			( ff_coeff4				),
+		.coeff			( ff_coeff2				),
 		.tap0			( ff_tap0_g				),
 		.tap1			( ff_tap1_g				),
 		.pixel_out		( w_bilinear_g			)
@@ -373,7 +367,7 @@ module vdp_video_out #(
 
 	vdp_video_out_bilinear u_bilinear_b (
 		.clk			( clk					),
-		.coeff			( ff_coeff4				),
+		.coeff			( ff_coeff2				),
 		.tap0			( ff_tap0_b				),
 		.tap1			( ff_tap1_b				),
 		.pixel_out		( w_bilinear_b			)
@@ -403,7 +397,9 @@ module vdp_video_out #(
 		ff_display_b	<= w_display_b[14:7];
 	end
 
-	assign display_r	= ff_display_r;
-	assign display_g	= ff_display_g;
-	assign display_b	= ff_display_b;
+	assign w_display_en	= ff_h_en & ff_v_en;
+	assign display_r	= w_display_en ? ff_display_r : 8'd0;
+	assign display_g	= w_display_en ? ff_display_g : 8'd0;
+	assign display_b	= w_display_en ? ff_display_b : 8'd0;
+	assign display_en	= w_display_en;
 endmodule

@@ -143,19 +143,19 @@ module tb ();
 			vram_rdata_en <= 1'b0;
 			vram_delay_counter <= 0;
 		end
+		else if( vram_delay_counter ) begin
+			if( vram_delay_counter == 1 ) begin
+				vram_rdata_en <= 1'b1;
+			end
+			vram_delay_counter <= vram_delay_counter - 1;
+		end
 		else begin
 			if( vram_valid && !vram_write ) begin
 				// Read operation with some delay simulation
 				// 下位2bitは無効、4byteアラインで32bit読み出し
-				if( vram_delay_counter < 2 ) begin
-					vram_delay_counter <= vram_delay_counter + 1;
-					vram_rdata_en <= 1'b0;
-				end
-				else begin
-					vram_rdata <= vram_memory[vram_address[16:2]];
-					vram_rdata_en <= 1'b1;
-					vram_delay_counter <= 0;
-				end
+				vram_rdata <= vram_memory[vram_address[16:2]];
+				vram_rdata_en <= 1'b0;
+				vram_delay_counter <= 3;
 			end
 			else if( vram_valid && vram_write ) begin
 				// Write operation

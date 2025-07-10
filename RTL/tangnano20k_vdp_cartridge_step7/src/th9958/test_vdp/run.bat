@@ -1,5 +1,7 @@
 rmdir /S /Q work
 vlib work
+vlog ..\vdp_upscan_line_buffer.v
+vlog ..\vdp_upscan.v
 vlog ..\vdp_video_ram_line_buffer.v
 vlog ..\vdp_video_double_buffer.v
 vlog ..\vdp_video_out_bilinear.v
