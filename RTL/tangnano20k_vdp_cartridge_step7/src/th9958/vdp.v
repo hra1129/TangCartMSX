@@ -368,10 +368,7 @@ module vdp (
 	// --------------------------------------------------------------------
 	//	Video out
 	// --------------------------------------------------------------------
-	vdp_video_out #(
-		.active_area_start							( 11'd100									),
-		.active_area_end							( 11'd1056									)
-	) u_video_out (
+	vdp_video_out u_video_out (
 		.clk										( clk										),
 		.reset_n									( reset_n									),
 		.h_count									( w_h_count									),

@@ -417,9 +417,7 @@ module tb ();
 		initial_busy = 0;
 		repeat(10) @( posedge clk );
 
-		$display( "[test001] VDP basic register initialization test" );
-		
-		// Initialize basic VDP registers
+		$display( "[test001] VDP SCREEN1 test" );
 		write_vdp_reg( 8'd00, 8'h00 );	// Mode register 0
 		write_vdp_reg( 8'd01, 8'h00 );	// Mode register 1  
 		write_vdp_reg( 8'd02, 8'h06 );	// Pattern name table base address
@@ -467,9 +465,27 @@ module tb ();
 		read_io( 2'd0, status );	assert( status == 8'h20 );
 		read_io( 2'd0, status );	assert( status == 8'h40 );
 		read_io( 2'd0, status );	assert( status == 8'h80 );
+		repeat( 100 ) @( posedge clk );
+
+		$display( "[test006] VDP SCREEN0(W40) test" );
+		write_vdp_reg( 8'd00, 8'h00 );	// Mode register 0
+		write_vdp_reg( 8'd01, 8'h10 );	// Mode register 1  
+		write_vdp_reg( 8'd02, 8'h00 );	// Pattern name table base address
+		write_vdp_reg( 8'd03, 8'h80 );	// Color table base address
+		write_vdp_reg( 8'd04, 8'h01 );	// Pattern generator table base address
+		write_vdp_reg( 8'd05, 8'h20 );	// Sprite attribute table base address
+		write_vdp_reg( 8'd06, 8'h00 );	// Sprite pattern generator table base address
+		write_vdp_reg( 8'd07, 8'h04 );	// Backdrop color
+
+		for( i = 0; i < 2000; i++ ) begin
+			for( j = 0; j < 1368; j++ ) begin
+				@( posedge clk );
+			end
+		end
 
 		$display( "[test---] All tests completed" );
 		repeat( 100 ) @( posedge clk );
+
 		$finish;
 	end
 

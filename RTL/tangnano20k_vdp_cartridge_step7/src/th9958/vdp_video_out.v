@@ -57,10 +57,7 @@
 //
 // -----------------------------------------------------------------------------
 
-module vdp_video_out #(
-	parameter			active_area_start = 11'd100,
-	parameter			active_area_end = 11'd1056
-) (
+module vdp_video_out (
 	input				clk,						//	42.95454MHz
 	input				reset_n,
 	input		[10:0]	h_count,
@@ -81,6 +78,8 @@ module vdp_video_out #(
 	input		[7:0]	reg_denominator,			//	800 / 4
 	input		[7:0]	reg_normalize				//	8192 / reg_denominator
 );
+	localparam		active_area_start	= 11'd100;
+	localparam		active_area_end		= 11'd1056;
 	localparam		clocks_per_line		= 11'd1368;
 	localparam		h_en_start			= 11'd300;	//  11'd374;
 	localparam		h_en_end			= h_en_start + 11'd800;
@@ -91,7 +90,7 @@ module vdp_video_out #(
 	localparam		vs_start			= 10'd3;
 	localparam		vs_end				= 10'd9;
 	localparam		c_numerator			= 800 / 4;
-	wire	[10:0]	w_x_position_w;
+	wire	[9:0]	w_x_position_w;
 	reg		[9:0]	ff_x_position_r;
 	reg				ff_active;
 	reg		[7:0]	ff_numerator;
@@ -243,7 +242,7 @@ module vdp_video_out #(
 	// --------------------------------------------------------------------
 	//	Buffer address
 	// --------------------------------------------------------------------
-	assign w_x_position_w	= h_count;
+	assign w_x_position_w	= h_count[10:1];
 
 	always @( posedge clk ) begin
 		if( !reset_n ) begin

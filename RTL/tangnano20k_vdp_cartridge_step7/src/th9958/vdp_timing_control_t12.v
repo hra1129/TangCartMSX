@@ -143,7 +143,7 @@ module vdp_timing_control_t12 (
 		else if( screen_pos_x == 13'h1FFF ) begin
 			ff_pos_x <= 6'd0;
 		end
-		else if( w_sub_phase == 3'd7 ) begin
+		else if( w_sub_phase == 3'd7 && ff_phase == 3'd5 ) begin
 			ff_pos_x <= ff_pos_x + 6'd1;
 		end
 	end
@@ -153,8 +153,8 @@ module vdp_timing_control_t12 (
 			ff_pos_y <= 8'd0;
 		end
 		else if( screen_pos_x == 13'h1FFF ) begin
-			if( screen_pos_y == 10'h3FF ) begin
-				ff_pos_y <= 8'hFF;
+			if( screen_pos_y == 10'h0 ) begin
+				ff_pos_y <= 8'h0;
 			end
 			else begin
 				ff_pos_y <= ff_pos_y + 8'd1;
@@ -187,6 +187,7 @@ module vdp_timing_control_t12 (
 	// --------------------------------------------------------------------
 	//	Pattern name table address
 	// --------------------------------------------------------------------
+	                         			// (ff_pos_y >> 3) * 40 + ff_pos_x = (ff_pos_y >> 3) * (32 + 8) + ff_pos_x
 	assign w_pre_pattern_name			= { 1'b0, ff_pos_y[7:3], 5'd0 } + { 3'd0, ff_pos_y[7:3], 3'd0 } + { 5'd0, ff_pos_x };
 	assign w_pattern_name				= { reg_pattern_name_table_base, 8'd0 } + (w_mode[ c_t1 ] ? { 6'd0, w_pre_pattern_name }: { 5'd0, w_pre_pattern_name, 1'b0 });
 
