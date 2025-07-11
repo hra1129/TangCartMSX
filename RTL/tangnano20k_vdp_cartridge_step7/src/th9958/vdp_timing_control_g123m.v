@@ -144,7 +144,7 @@ module vdp_timing_control_g123m (
 	// --------------------------------------------------------------------
 	//	Pattern name table address
 	// --------------------------------------------------------------------
-	assign w_pattern_name				= { reg_pattern_name_table_base, pixel_pos_y[7:3], w_pos_x[7:5] };
+	assign w_pattern_name				= { reg_pattern_name_table_base, pixel_pos_y[7:3], w_pos_x[7:3] };
 
 	// --------------------------------------------------------------------
 	//	Pattern generator table address

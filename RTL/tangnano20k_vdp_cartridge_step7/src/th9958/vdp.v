@@ -261,6 +261,7 @@ module vdp (
 		.sprite_display_color						( w_sprite_display_color					),
 		.sprite_display_color_en					( w_sprite_display_color_en					),
 		.reg_50hz_mode								( reg_50hz_mode								),
+		.reg_212lines_mode							( reg_212lines_mode							),
 		.reg_interlace_mode							( reg_interlace_mode						),
 		.reg_interrupt_line							( reg_interrupt_line						),
 		.reg_vertical_offset						( reg_vertical_offset						),

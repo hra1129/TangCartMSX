@@ -240,6 +240,10 @@ module vdp_vram_interface (
 			c_command:	begin ff_command_vram_rdata	<= vram_rdata;	ff_command_vram_rdata_en <= 1'b1;	end
 			endcase
 		end
+		else begin
+			ff_cpu_vram_rdata_en		<= 1'b0;
+			ff_command_vram_rdata_en	<= 1'b0;
+		end
 	end
 
 	assign t12_vram_rdata			= ff_t12_vram_rdata;

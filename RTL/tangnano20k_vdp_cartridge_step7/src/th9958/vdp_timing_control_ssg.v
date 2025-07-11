@@ -72,13 +72,14 @@ module vdp_timing_control_ssg (
 	output				intr_frame,				//	pulse
 
 	input				reg_50hz_mode,
+	input				reg_212lines_mode,
 	input				reg_interlace_mode,
 	input		[7:0]	reg_interrupt_line,
 	input		[7:0]	reg_vertical_offset,
 	input		[8:0]	reg_horizontal_offset
 );
 	localparam			c_left_pos			= 12'd320;		//	16の倍数
-	localparam			c_top_pos			= 11'd6;
+	localparam			c_top_pos			= 11'd36;
 	localparam			c_h_count_max		= 11'd1367;
 	localparam			c_v_count_max_60p	= 10'd523;
 	localparam			c_v_count_max_60i	= 10'd524;
@@ -175,6 +176,9 @@ module vdp_timing_control_ssg (
 		else if( w_h_count_end ) begin
 			if( ff_v_count == (c_top_pos * 2 - 10'd1) ) begin
 				ff_v_active <= 1'b1;
+			end
+			else if( ff_v_count == (c_top_pos * 2 + 10'd383) && (reg_212lines_mode == 1'b0) ) begin
+				ff_v_active <= 1'b0;
 			end
 			else if( ff_v_count == (c_top_pos * 2 + 10'd423) ) begin
 				ff_v_active <= 1'b0;

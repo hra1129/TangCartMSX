@@ -1,28 +1,28 @@
 th9958(仮) 開発日誌
 -------------------------------------------------------------------------------
-2025年6月25日
+2025年6月25日 1日目
 	OCM-PLD の V9958コアを移植したものが、微妙なタイミング不整合で、画面が崩れた
 	のをきっかけに、「ちゃんと自分で把握しきれるものを作ろう」と思い立つ。
 	全体のブロック図を作成。
 	th9918_timing_control.v を作成。
 
-2025年6月26日
+2025年6月26日 2日目
 	th9918_timing_control.v を vdp_timing_control_ssg.v に改名。
 	vdp_timing_control_g123m.v を一部分作成。
 	vdp_cpu_interface.v を一部分作成。
 
-2025年6月27日
+2025年6月27日 3日目
 	vdp_timing_control_ssg.v のポートを少し改変。
 	vdp_timing_control の中のブロック構成図を作成。
 	g123m のタイミングチャートを作成。
 	vdp_timing_control_g123m.v を作成。
 
-2025年6月28日
+2025年6月28日 4日目
 	vdp_cpu_interface.v を一部分作成。
 	vdp_cpu_interface のテストベンチを作成。
 	VRAM読み書きアクセスのデバッグ。
 
-2025年6月29日
+2025年6月29日 5日目
 	VRAM読み書きアクセスのデバッグ完了。
 	vdp_color_palette.v の設計を開始、一部(パレット→RGB888値変換)実装。
 	vdp_color_palette_ram.v を設計、完了。
@@ -30,28 +30,28 @@ th9958(仮) 開発日誌
 	vdp_timing_control_sprite_info_ram を設計、完了。
 	vdp_timing_control_sprite を設計開始。
 
-2025年6月30日
+2025年6月30日 6日目
 	vdp_timing_control_g4567.v の設計を開始、一部を実装。
 	vdp_vram_interface.v の設計を開始、entity 実装。
 
-2025年7月1日
+2025年7月1日 7日目
 	vdp_timing_control_ssg.v に走査線割り込み・垂直同期割り込みのタイミング生成回路を追加
 	vdp_cpu_interface.v にその信号を受けて int_n を作る回路を追加
 	vdp_timing_control.v を作成。vdp_timing_control_ssg のインスタンス記述を追加。
 	vdp_timing_control_g4567.v のテストベンチを作成。波形目視にて概ね期待通り動作していることを確認。
 
-2025年7月2日
+2025年7月2日 8日目
 	vdp_timing_control.v に vdp_timing_control_g123m のインスタンス記述を追加。
 	vdp_timing_control.v に vdp_timing_control_g4567 のインスタンス記述を追加。
 	vdp_timing_control_t12.v の設計を開始、一部を実装。
 
-2025年7月3日
+2025年7月3日 9日目
 	vdp_timing_control_ssg.v にスクロールレジスタの影響を受けない座標出力を追加。
 	vdp_timing_control_ssg.v に水平スクロールの処理を追加。
 	vdp_timing_control_t12.v のテストベンチを作成。
 	vdp_timing_control_t12.v の一部を実装、バグを修正。
 
-2025年7月4日
+2025年7月4日 10日目
 	vdp_timing_control_t12.v の一部を実装、バグを修正。
 	vdp_timing_control_g123m.v の一部を修正。
 	vdp_timing_control_g4567.v の一部を修正。
@@ -59,7 +59,7 @@ th9958(仮) 開発日誌
 	vdp.v に vdp_timing_control, vdp_color_palette, vdp_vram_interface のインスタンス記述を追加。
 	vdp.v の cpu_interface のインスタンス記述を一部修正。
 
-2025年7月5日
+2025年7月5日 11日目
 	vdp_video_out_bilinear.v を実装。
 	vdp_video_double_buffer.v を実装。
 	vdp_video_ram_line_buffer.v を実装。
@@ -67,13 +67,13 @@ th9958(仮) 開発日誌
 	vdp_video_out_bilinear の回路図を作図完了。
 	vdp_video_double_buffer の回路図を作図開始。
 
-2025年7月6日
+2025年7月6日 12日目
 	vdp_video_double_buffer の回路図を作図完了。
 
-2025年7月7日
+2025年7月7日 13日目
 	Covid-19罹患によりダウン。一回休み。
 
-2025年7月8日
+2025年7月8日 14日目
 	test_vdp_timing_control のテストベンチを作成。
 	vdp_timing_control のバグを修正。
 	vdp_color_palette に、リセット直後のカラーパレット初期化回路を追加。
@@ -83,11 +83,19 @@ th9958(仮) 開発日誌
 	FPGA用の top階層に組み込み。
 	FPGA に書き込んで動作を見てみるものの、HDMIモニターに認識されず。
 
-2025年7月9日
+2025年7月9日 15日目
 	Covid-19によりダウン。一回休み。
 
-2025年7月10日
+2025年7月10日 16日目
 	top階層で vdp に供給しているクロックを間違えていたバグを修正。HDMIモニター認識される。
 	vdp_upscan, vdp_upscan_line_buffer を実装。vdp へ組み込み。
 	テストベンチの VRAMモデルにミスがあったのを修正。
 	g123m の VRAMアドレス生成にミスがあることを発見。
+
+2025年7月11日 17日目
+	cpu_interface の制御レジスタ書き込みに正常に書き込めないバグがあったのを修正。
+	g123m のパターンネームテーブルのアドレス計算を間違えるミスがあったのを修正。
+	cpu_interface の VRAMアクセス（書き込み・読みだしとも）にバグがあったのを修正。
+	vram_interface の CPUからの VRAM読みだしにバグがあったのを修正。
+	この時点で、FPGA に書き込み、SCREEN1 の一部が拡大表示されるようになったのを確認。
+	垂直位置・水平位置・水平拡大率が合っていなかったのを修正。

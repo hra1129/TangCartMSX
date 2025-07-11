@@ -90,6 +90,7 @@ module vdp_timing_control (
 	output				sprite_display_color_en,
 
 	input				reg_50hz_mode,
+	input				reg_212lines_mode,
 	input				reg_interlace_mode,
 	input		[7:0]	reg_interrupt_line,
 	input		[7:0]	reg_vertical_offset,
@@ -129,6 +130,7 @@ module vdp_timing_control (
 		.intr_line							( intr_line							),
 		.intr_frame							( intr_frame						),
 		.reg_50hz_mode						( reg_50hz_mode						),
+		.reg_212lines_mode					( reg_212lines_mode					),
 		.reg_interlace_mode					( reg_interlace_mode				),
 		.reg_interrupt_line					( reg_interrupt_line				),
 		.reg_vertical_offset				( reg_vertical_offset				),

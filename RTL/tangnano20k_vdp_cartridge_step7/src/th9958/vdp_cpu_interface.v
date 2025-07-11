@@ -166,11 +166,13 @@ module vdp_cpu_interface (
 	reg					ff_vram_valid;
 	wire				w_address_14bit;			//	test1, test1q, multi, multiq, graphic1, graphic2 は、アドレスインクリメントが bit14 に繰り上がらない
 	reg					ff_busy;
+	wire				w_ready;
 
 	reg					ff_line_interrupt;
 	reg					ff_frame_interrupt;
 
-	assign bus_ready = ~ff_busy & ~ff_register_write & bus_ioreq;
+	assign w_ready		= ~ff_busy & ~ff_register_write & bus_ioreq;
+	assign bus_ready	= w_ready;
 
 	// --------------------------------------------------------------------
 	//	VRAM Read/Write access
@@ -186,7 +188,7 @@ module vdp_cpu_interface (
 		else if( ff_busy ) begin
 			//	hold
 		end
-		else if( bus_valid && bus_write && bus_address == 2'd1 ) begin
+		else if( bus_valid && bus_write && w_ready && bus_address == 2'd1 ) begin
 			if( !ff_2nd_access ) begin
 				//	1st write access
 				ff_1st_byte <= bus_wdata;
@@ -240,13 +242,12 @@ module vdp_cpu_interface (
 			if( vram_ready ) begin
 				ff_vram_valid <= 1'b0;
 				ff_vram_address_inc <= ff_vram_write;
-				ff_busy <= ~ff_vram_write;
 			end
 			else begin
 				//	hold
 			end
 		end
-		else if( bus_valid && bus_address == 2'd0 ) begin
+		else if( bus_valid && w_ready && bus_address == 2'd0 ) begin
 			ff_vram_valid <= 1'b1;
 			ff_vram_write <= bus_write;
 			ff_vram_wdata <= bus_wdata;
@@ -269,7 +270,7 @@ module vdp_cpu_interface (
 		else if( ff_busy ) begin
 			//	hold
 		end
-		else if( bus_valid && bus_write && bus_address == 2'd1 ) begin
+		else if( bus_valid && bus_write && w_ready && bus_address == 2'd1 ) begin
 			if( ff_2nd_access ) begin
 				//	2nd write access
 				case( bus_wdata[7:6] )
@@ -477,7 +478,7 @@ module vdp_cpu_interface (
 				ff_color_palette_address <= { ff_1st_byte[3:0], 1'b0 };
 			end
 		end
-		else if( bus_valid && bus_write && bus_address == 2'd2 ) begin
+		else if( bus_valid && bus_write && w_ready && bus_address == 2'd2 ) begin
 			if( ff_color_palette_address[0] == 1'b0 ) begin
 				//	P#2 = [0][R][R][R][0][B][B][B]
 				ff_palette_r <= bus_wdata[6:4];
@@ -507,7 +508,7 @@ module vdp_cpu_interface (
 			ff_bus_rdata <= vram_rdata;
 			ff_bus_rdata_en <= 1'b1;
 		end
-		else if( bus_valid && !bus_write && bus_address == 2'd1 ) begin
+		else if( bus_valid && !bus_write && w_ready && bus_address == 2'd1 ) begin
 			case( ff_status_register_pointer )
 			4'd0:		ff_bus_rdata <= { ff_frame_interrupt, 1'b0, 1'b0, 5'b00000 };
 			4'd1:		ff_bus_rdata <= { 2'd0, 5'b00010, ff_line_interrupt };
@@ -536,7 +537,7 @@ module vdp_cpu_interface (
 		if( !reset_n ) begin
 			ff_line_interrupt <= 1'b0;
 		end
-		else if( bus_valid && !bus_write && bus_address == 2'd1 ) begin
+		else if( bus_valid && !bus_write && w_ready && bus_address == 2'd1 ) begin
 			if( ff_status_register_pointer == 4'd1 ) begin
 				//	Clear line interrupt flag
 				ff_line_interrupt <= 1'b0;
@@ -552,7 +553,7 @@ module vdp_cpu_interface (
 		if( !reset_n ) begin
 			ff_frame_interrupt <= 1'b0;
 		end
-		else if( bus_valid && !bus_write && bus_address == 2'd1 ) begin
+		else if( bus_valid && !bus_write && w_ready && bus_address == 2'd1 ) begin
 			if( ff_status_register_pointer == 4'd0 ) begin
 				//	Clear frame interrupt flag
 				ff_frame_interrupt <= 1'b0;

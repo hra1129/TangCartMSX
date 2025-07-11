@@ -182,26 +182,24 @@ module tb ();
 	task write_io(input [1:0] io_num, input [7:0] data);
 		begin
 			// First write: data
-			@( posedge clk );
 			bus_address <= io_num;
 			bus_ioreq <= 1'b1;
 			bus_write <= 1'b1;
 			bus_valid <= 1'b1;
 			bus_wdata <= data;
 			bus_ready_timeout_counter <= 0;
+			@( posedge clk );
 			
 			// Wait for bus_ready with timeout
 			while( !bus_ready && bus_ready_timeout_counter < 100 ) begin
 				@( posedge clk );
 				bus_ready_timeout_counter <= bus_ready_timeout_counter + 1;
 			end
-			
 			if( bus_ready_timeout_counter >= 100 ) begin
 				$display( "ERROR: bus_ready timeout during VDP register write (data phase)" );
 				$stop;
 			end
 			
-			@( posedge clk );
 			bus_valid <= 1'b0;
 			@( posedge clk );
 		end
@@ -210,29 +208,27 @@ module tb ();
 	task write_vdp_reg(input [7:0] reg_num, input [7:0] data);
 		begin
 			// First write: data
-			@( posedge clk );
 			bus_address <= 2'd1;
 			bus_ioreq <= 1'b1;
 			bus_write <= 1'b1;
 			bus_valid <= 1'b1;
 			bus_wdata <= data;
 			bus_ready_timeout_counter <= 0;
-			
+			@( posedge clk );
+
 			// Wait for bus_ready with timeout
 			while( !bus_ready && bus_ready_timeout_counter < 100 ) begin
 				@( posedge clk );
 				bus_ready_timeout_counter <= bus_ready_timeout_counter + 1;
 			end
-			
 			if( bus_ready_timeout_counter >= 100 ) begin
 				$display( "ERROR: bus_ready timeout during VDP register write (data phase)" );
 				$stop;
 			end
-			
-			@( posedge clk );
+
 			bus_valid <= 1'b0;
 			@( posedge clk );
-			
+
 			// Second write: register number with control bit
 			bus_address <= 2'd1;
 			bus_ioreq <= 1'b1;
@@ -240,19 +236,18 @@ module tb ();
 			bus_valid <= 1'b1;
 			bus_wdata <= reg_num | 8'h80;
 			bus_ready_timeout_counter <= 0;
-			
+			@( posedge clk );
+
 			// Wait for bus_ready with timeout
 			while( !bus_ready && bus_ready_timeout_counter < 100 ) begin
 				@( posedge clk );
 				bus_ready_timeout_counter <= bus_ready_timeout_counter + 1;
 			end
-			
 			if( bus_ready_timeout_counter >= 100 ) begin
 				$display( "ERROR: bus_ready timeout during VDP register write (register phase)" );
 				$stop;
 			end
 			
-			@( posedge clk );
 			bus_valid <= 1'b0;
 			@( posedge clk );
 		end
@@ -261,29 +256,27 @@ module tb ();
 	task write_vram(input [16:0] addr, input [7:0] data);
 		begin
 			// Set VRAM address (low byte)
-			@( posedge clk );
 			bus_address <= 2'd1;
 			bus_ioreq <= 1'b1;
 			bus_write <= 1'b1;
 			bus_valid <= 1'b1;
 			bus_wdata <= addr[7:0];
 			bus_ready_timeout_counter <= 0;
+			@( posedge clk );
 			
 			// Wait for bus_ready with timeout
 			while( !bus_ready && bus_ready_timeout_counter < 100 ) begin
 				@( posedge clk );
 				bus_ready_timeout_counter <= bus_ready_timeout_counter + 1;
 			end
-			
 			if( bus_ready_timeout_counter >= 100 ) begin
 				$display( "ERROR: bus_ready timeout during VRAM address write (low byte)" );
 				$stop;
 			end
-			
-			@( posedge clk );
+
 			bus_valid <= 1'b0;
 			@( posedge clk );
-			
+
 			// Set VRAM address (high byte with write mode)
 			bus_address <= 2'd1;
 			bus_ioreq <= 1'b1;
@@ -291,22 +284,21 @@ module tb ();
 			bus_valid <= 1'b1;
 			bus_wdata <= { 2'd0, addr[13:8] } | 8'h40;  // Write mode
 			bus_ready_timeout_counter <= 0;
-			
+			@( posedge clk );
+
 			// Wait for bus_ready with timeout
 			while( !bus_ready && bus_ready_timeout_counter < 100 ) begin
 				@( posedge clk );
 				bus_ready_timeout_counter <= bus_ready_timeout_counter + 1;
 			end
-			
 			if( bus_ready_timeout_counter >= 100 ) begin
 				$display( "ERROR: bus_ready timeout during VRAM address write (high byte)" );
 				$stop;
 			end
-			
-			@( posedge clk );
+
 			bus_valid <= 1'b0;
 			@( posedge clk );
-			
+
 			// Write data
 			bus_address <= 2'd0;
 			bus_ioreq <= 1'b1;
@@ -314,19 +306,18 @@ module tb ();
 			bus_valid <= 1'b1;
 			bus_wdata <= data;
 			bus_ready_timeout_counter <= 0;
-			
+			@( posedge clk );
+
 			// Wait for bus_ready with timeout
 			while( !bus_ready && bus_ready_timeout_counter < 100 ) begin
 				@( posedge clk );
 				bus_ready_timeout_counter <= bus_ready_timeout_counter + 1;
 			end
-			
 			if( bus_ready_timeout_counter >= 100 ) begin
 				$display( "ERROR: bus_ready timeout during VRAM data write" );
 				$stop;
 			end
-			
-			@( posedge clk );
+
 			bus_valid <= 1'b0;
 			@( posedge clk );
 		end
@@ -334,32 +325,31 @@ module tb ();
 
 	task read_status_register(output [7:0] status);
 		begin
-			@( posedge clk );
 			bus_address <= 2'd1;
 			bus_ioreq <= 1'b1;
 			bus_write <= 1'b0;
 			bus_valid <= 1'b1;
 			bus_ready_timeout_counter <= 0;
-			
+			@( posedge clk );
+
 			// Wait for bus_ready with timeout
 			while( !bus_ready && bus_ready_timeout_counter < 100 ) begin
 				@( posedge clk );
 				bus_ready_timeout_counter <= bus_ready_timeout_counter + 1;
 			end
-			
 			if( bus_ready_timeout_counter >= 100 ) begin
 				$display( "ERROR: bus_ready timeout during status register read" );
 				$stop;
 			end
-			
-			@( posedge clk );
-			if( bus_rdata_en ) begin
-				status = bus_rdata;
-			end
-			else begin
-				status = 8'h00;
-			end
+
 			bus_valid <= 1'b0;
+			bus_ready_timeout_counter <= 0;
+			@( posedge clk );
+			while( !bus_rdata_en && bus_ready_timeout_counter < 100 ) begin
+				@( posedge clk );
+				bus_ready_timeout_counter <= bus_ready_timeout_counter + 1;
+			end
+			status = bus_rdata;
 			@( posedge clk );
 		end
 	endtask
@@ -404,10 +394,10 @@ module tb ();
 		write_vdp_reg( 8'd01, 8'h00 );	// Mode register 1  
 		write_vdp_reg( 8'd02, 8'h06 );	// Pattern name table base address
 		write_vdp_reg( 8'd03, 8'h80 );	// Color table base address
-		write_vdp_reg( 8'd04, 8'h01 );	// Pattern generator table base address
+		write_vdp_reg( 8'd04, 8'h00 );	// Pattern generator table base address
 		write_vdp_reg( 8'd05, 8'h20 );	// Sprite attribute table base address
 		write_vdp_reg( 8'd06, 8'h00 );	// Sprite pattern generator table base address
-		write_vdp_reg( 8'd07, 8'h01 );	// Backdrop color
+		write_vdp_reg( 8'd07, 8'h07 );	// Backdrop color
 
 		$display( "[test002] Enable display test" );
 		
