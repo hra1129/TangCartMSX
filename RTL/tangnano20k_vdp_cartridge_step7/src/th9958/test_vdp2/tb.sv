@@ -439,6 +439,9 @@ module tb ();
 				@( posedge clk );
 			end
 		end
+		for( j = 0; j < 700; j++ ) begin
+			@( posedge clk );
+		end
 
 		$display( "[test004] VRAM write test" );
 		write_io( 2'd1, 8'h00 );	// VRAM Address 0
@@ -482,6 +485,30 @@ module tb ();
 				@( posedge clk );
 			end
 		end
+		for( j = 0; j < 600; j++ ) begin
+			@( posedge clk );
+		end
+
+		$display( "[test005] VRAM read test" );
+		write_io( 2'd1, 8'h00 );	// VRAM Address 0
+		write_io( 2'd1, 8'h00 );
+
+		read_io( 2'd0, status );	assert( status == 8'h01 );
+		@( posedge clk );
+		read_io( 2'd0, status );	assert( status == 8'h02 );
+		@( posedge clk );
+		read_io( 2'd0, status );	assert( status == 8'h04 );
+		@( posedge clk );
+		read_io( 2'd0, status );	assert( status == 8'h08 );
+		@( posedge clk );
+		read_io( 2'd0, status );	assert( status == 8'h10 );
+		@( posedge clk );
+		read_io( 2'd0, status );	assert( status == 8'h20 );
+		@( posedge clk );
+		read_io( 2'd0, status );	assert( status == 8'h40 );
+		@( posedge clk );
+		read_io( 2'd0, status );	assert( status == 8'h80 );
+		@( posedge clk );
 
 		$display( "[test---] All tests completed" );
 		repeat( 100 ) @( posedge clk );

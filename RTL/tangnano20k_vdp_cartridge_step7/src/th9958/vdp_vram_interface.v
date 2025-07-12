@@ -125,6 +125,9 @@ module vdp_vram_interface (
 	reg					ff_cpu_vram_rdata_en;
 	reg			[31:0]	ff_command_vram_rdata;
 	reg					ff_command_vram_rdata_en;
+	wire				is_access_timming;
+
+	assign is_access_timming	= (h_count == 3'd1);
 
 	// --------------------------------------------------------------------
 	//	Priority selector
@@ -179,7 +182,7 @@ module vdp_vram_interface (
 				ff_vram_rdata_sel	<= c_sprite;
 				ff_wait				<= c_wait_count;
 			end
-			else if( cpu_vram_valid && (h_count == 3'd0) ) begin
+			else if( cpu_vram_valid && is_access_timming ) begin
 				ff_vram_address		<= cpu_vram_address;
 				ff_vram_valid		<= 1'b1;
 				ff_vram_write		<= cpu_vram_write;
@@ -187,7 +190,7 @@ module vdp_vram_interface (
 				ff_vram_rdata_sel	<= c_cpu;
 				ff_wait				<= c_wait_count;
 			end
-			else if( command_vram_valid ) begin
+			else if( command_vram_valid && is_access_timming ) begin
 				ff_vram_address		<= command_vram_address;
 				ff_vram_valid		<= 1'b1;
 				ff_vram_write		<= command_vram_write;
@@ -201,8 +204,8 @@ module vdp_vram_interface (
 		end
 	end
 
-	assign cpu_vram_ready		= (h_count[2:0] == 3'd0) ? ~(t12_vram_valid | g123m_vram_valid | g4567_vram_valid | sprite_vram_valid) : 1'b0;
-	assign command_vram_ready	= (h_count[2:0] == 3'd0) ? ~(t12_vram_valid | g123m_vram_valid | g4567_vram_valid | sprite_vram_valid | cpu_vram_valid) : 1'b0;
+	assign cpu_vram_ready		= is_access_timming ? ~(t12_vram_valid | g123m_vram_valid | g4567_vram_valid | sprite_vram_valid) : 1'b0;
+	assign command_vram_ready	= is_access_timming ? ~(t12_vram_valid | g123m_vram_valid | g4567_vram_valid | sprite_vram_valid | cpu_vram_valid) : 1'b0;
 
 	function [7:0] func_rdata_sel(
 		input	[1:0]	address,
