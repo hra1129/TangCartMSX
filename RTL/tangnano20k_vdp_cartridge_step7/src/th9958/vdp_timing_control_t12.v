@@ -71,6 +71,7 @@ module vdp_timing_control_t12 (
 	output		[3:0]	display_color,
 
 	input		[4:0]	reg_screen_mode,
+	input				reg_display_on,
 	input		[16:10]	reg_pattern_name_table_base,
 	input		[16:6]	reg_color_table_base,
 	input		[16:11]	reg_pattern_generator_table_base,
@@ -216,32 +217,32 @@ module vdp_timing_control_t12 (
 				3'd0:
 					begin
 						ff_vram_address <= w_pattern_name;
-						ff_vram_valid <= screen_active & (w_mode != 2'b00);
+						ff_vram_valid <= screen_active & (w_mode != 2'b00) & reg_display_on;
 					end
 				3'd1:
 					begin
 						ff_vram_address <= { w_pattern_name[16:1], 1'b1 };
-						ff_vram_valid <= screen_active & w_mode[ c_t2 ];
+						ff_vram_valid <= screen_active & w_mode[ c_t2 ] & reg_display_on;
 					end
 				3'd2:
 					begin
 						ff_vram_address <= w_pattern_generator;
-						ff_vram_valid <= screen_active & (w_mode != 2'b00);
+						ff_vram_valid <= screen_active & (w_mode != 2'b00) & reg_display_on;
 					end
 				3'd3:
 					begin
 						ff_vram_address <= w_pattern_generator;
-						ff_vram_valid <= screen_active & w_mode[ c_t2 ];
+						ff_vram_valid <= screen_active & w_mode[ c_t2 ] & reg_display_on;
 					end
 				3'd4:
 					begin
 						ff_vram_address <= w_color;
-						ff_vram_valid <= screen_active & (w_mode != 2'b00);
+						ff_vram_valid <= screen_active & (w_mode != 2'b00) & reg_display_on;
 					end
 				3'd5:
 					begin
 						ff_vram_address <= w_color;
-						ff_vram_valid <= screen_active & w_mode[ c_t2 ];
+						ff_vram_valid <= screen_active & w_mode[ c_t2 ] & reg_display_on;
 					end
 				default:
 					begin

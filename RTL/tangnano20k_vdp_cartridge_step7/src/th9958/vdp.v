@@ -267,6 +267,7 @@ module vdp (
 		.reg_vertical_offset						( reg_vertical_offset						),
 		.reg_horizontal_offset						( reg_horizontal_offset						),
 		.reg_screen_mode							( reg_screen_mode							),
+		.reg_display_on								( reg_display_on							),
 		.reg_pattern_name_table_base				( reg_pattern_name_table_base				),
 		.reg_color_table_base						( reg_color_table_base						),
 		.reg_pattern_generator_table_base			( reg_pattern_generator_table_base			),

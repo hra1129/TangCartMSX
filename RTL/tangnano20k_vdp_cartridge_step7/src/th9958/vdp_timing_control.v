@@ -96,6 +96,7 @@ module vdp_timing_control (
 	input		[7:0]	reg_vertical_offset,
 	input		[8:0]	reg_horizontal_offset,
 	input		[4:0]	reg_screen_mode,
+	input				reg_display_on,
 	input		[16:10]	reg_pattern_name_table_base,
 	input		[16:6]	reg_color_table_base,
 	input		[16:11]	reg_pattern_generator_table_base,
@@ -152,6 +153,7 @@ module vdp_timing_control (
 		.vram_rdata							( t12_vram_rdata					),
 		.display_color						( t12_display_color					),
 		.reg_screen_mode					( reg_screen_mode					),
+		.reg_display_on						( reg_display_on					),
 		.reg_pattern_name_table_base		( reg_pattern_name_table_base		),
 		.reg_color_table_base				( reg_color_table_base				),
 		.reg_pattern_generator_table_base	( reg_pattern_generator_table_base	),
@@ -172,6 +174,7 @@ module vdp_timing_control (
 		.vram_rdata							( g123m_vram_rdata					),
 		.display_color						( g123m_display_color				),
 		.reg_screen_mode					( reg_screen_mode					),
+		.reg_display_on						( reg_display_on					),
 		.reg_pattern_name_table_base		( reg_pattern_name_table_base		),
 		.reg_color_table_base				( reg_color_table_base				),
 		.reg_pattern_generator_table_base	( reg_pattern_generator_table_base	),
@@ -192,6 +195,7 @@ module vdp_timing_control (
 		.vram_rdata							( g4567_vram_rdata					),
 		.display_color						( g4567_display_color				),
 		.reg_screen_mode					( reg_screen_mode					),
+		.reg_display_on						( reg_display_on					),
 		.reg_pattern_name_table_base		( reg_pattern_name_table_base		),
 		.reg_backdrop_color					( reg_backdrop_color				)
 	);

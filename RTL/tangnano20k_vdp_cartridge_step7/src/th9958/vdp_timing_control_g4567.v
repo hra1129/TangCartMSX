@@ -70,6 +70,7 @@ module vdp_timing_control_g4567 (
 	output		[7:0]	display_color,
 
 	input		[4:0]	reg_screen_mode,
+	input				reg_display_on,
 	input		[16:10]	reg_pattern_name_table_base,
 	input		[7:0]	reg_backdrop_color
 );
@@ -153,12 +154,12 @@ module vdp_timing_control_g4567 (
 						else begin
 							ff_vram_address <= w_pattern_name_g67;
 						end
-						ff_vram_valid <= screen_active & (w_mode != 4'b0000);
+						ff_vram_valid <= screen_active & (w_mode != 4'b0000) & reg_display_on;
 					end
 				3'd1:
 					begin
 						ff_vram_address <= w_pattern_name_g67;
-						ff_vram_valid <= screen_active & (w_mode[2] | w_mode[3]);
+						ff_vram_valid <= screen_active & (w_mode[2] | w_mode[3]) & reg_display_on;
 					end
 				default:
 					begin
@@ -190,11 +191,11 @@ module vdp_timing_control_g4567 (
 				case( w_phase )
 				3'd1:
 					begin
-						ff_next_pattern0 <= vram_rdata;
+						ff_next_pattern0 <= reg_display_on ? vram_rdata : 8'd0;
 					end
 				3'd2:
 					begin
-						ff_next_pattern1 <= vram_rdata;
+						ff_next_pattern1 <= reg_display_on ? vram_rdata : 8'd0;
 					end
 				3'd3:
 					begin
