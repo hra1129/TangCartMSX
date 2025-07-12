@@ -57,13 +57,13 @@
 
 module vdp_video_ram_line_buffer (
 	input			clk,
-	input	[8:0]	address,
+	input	[9:0]	address,
 	input			re,
 	input			we,
 	input	[23:0]	d,
 	output	[23:0]	q
 );
-	reg		[23:0]	ff_imem [0:511];
+	reg		[23:0]	ff_imem [0:1023];
 	reg		[23:0]	ff_q;
 	reg		[23:0]	ff_q_out;
 
