@@ -1,6 +1,6 @@
 //
-//	vdp_sprite_select_visible_planes.v
-//	Select visible sprite planes for Timing Control Sprite
+//	vdp_sprite_info_collect .v
+//	Sprite plane's information collector for Timing Control Sprite
 //
 //	Copyright (C) 2025 Takayuki Hara
 //
@@ -55,9 +55,10 @@
 //
 //-----------------------------------------------------------------------------
 
-module vdp_sprite_select_visible_planes (
+module vdp_sprite_info_collect (
 	input				reset_n,
 	input				clk,					//	42.95454MHz
+	input				start_info_collect,
 
 	input		[12:0]	screen_pos_x,
 	input		[ 7:0]	pixel_pos_y,
@@ -67,129 +68,60 @@ module vdp_sprite_select_visible_planes (
 	output				vram_valid,
 	input		[31:0]	vram_rdata,
 
-	output				selected_en;
-	output		[4:0]	selected_plane_num;
-	output		[3:0]	selected_y;
-	output		[7:0]	selected_x;
-	output		[7:0]	selected_pattern;
-	output		[7:0]	selected_color;
+	output		[2:0]	current_plane;
+	input		[4:0]	selected_plane_num;
+	input		[3:0]	selected_y;
+	input		[7:0]	selected_x;
+	input		[7:0]	selected_pattern;
+	input		[7:0]	selected_color;
 
-	output				selected_count;
-	output				start_info_collect;
+	input				selected_count;
 
 	input				sprite_mode2,
 	input				reg_sprite_magify,
 	input				reg_sprite_16x16,
 	input		[16:9]	reg_sprite_attribute_table_base
 );
-	//	Phase
-	wire		[2:0]	w_phase;
-	wire		[2:0]	w_sub_phase;
-	reg			[4:0]	ff_current_plane;		//	Plane#0...#31
-	reg					ff_vram_valid;
-	reg			[3:0]	ff_selected_count;
-	reg					ff_selected_en;
-	reg			[7:0]	ff_y;
-	reg			[7:0]	ff_x;
-	reg			[7:0]	ff_pattern;
-	reg			[7:0]	ff_color;
-	wire		[8:0]	w_offset_y;
-	wire		[8:3]	w_invisible;
+	reg			[3:0]	ff_currrent_plane;		//	Plane#0...#7, and endmark(#8)
+	reg			[1:0]	ff_state;				//	#0=info read, #1=pattern left read, #2=pattern right read, #3=color read
+	wire		[2:0]	w_sub_phase;			//	Sub phase #0...#7
 
 	// --------------------------------------------------------------------
-	//	Phase
+	//	Pattern left, right and color collector
 	// --------------------------------------------------------------------
-	assign w_phase		= screen_pos_x[5:3];
 	assign w_sub_phase	= screen_pos_x[2:0];
-	assign vram_address	= { reg_sprite_attribute_table_base, 2'd0, ff_current_plane, 2'd0 };
-
-	// --------------------------------------------------------------------
-	//	Read VRAM request for sprite attribute table
-	// --------------------------------------------------------------------
-	always @( posedge clk or negedge reset_n ) begin
-		if( !reset_n ) begin
-			ff_current_plane	<= 5'd0;
-			ff_vram_valid		<= 1'b0;
-		end
-		else if( !screen_active ) begin
-			//	hold
-		end
-		else if( w_phase == 3'd6 || w_sub_phase == 3'd0 ) begin
-			if( screen_pos_x[10:6] == 5'd0 ) begin
-				ff_current_plane	<= 5'd0;
-				ff_vram_valid		<= 1'b1;
-			end
-			else begin
-				ff_current_plane <= ff_current_plane + 5'd1;
-				ff_vram_valid		<= 1'b1;
-			end
-		end
-		else begin
-			ff_vram_valid		<= 1'b0;
-		end
-	end
-
-	assign vram_valid	= ff_vram_valid;
-
-	// --------------------------------------------------------------------
-	//	Receive value of attribute table
-	// --------------------------------------------------------------------
-	always @( posedge clk or negedge reset_n ) begin
-		if( !reset_n ) begin
-			ff_y		<= 8'd0;
-			ff_x		<= 8'd0;
-			ff_pattern	<= 8'd0;
-			ff_color	<= 8'd0;
-		end
-		else if( !screen_active ) begin
-			//	hold
-		end
-		else if( w_phase == 3'd7 || w_sub_phase == 3'd0 ) begin
-			ff_y		<= vram_rdata[ 7: 0];
-			ff_x		<= vram_rdata[15: 8];
-			ff_pattern	<= vram_rdata[23:16];
-			ff_color	<= vram_rdata[31:24];
-		end
-	end
-
-	// --------------------------------------------------------------------
-	//	Check visible plane
-	// --------------------------------------------------------------------
-	assign w_offset_y	= { 1'b0, ff_y } - { 1'b0, pixel_pos_y };
-	assign w_invisible	= (!reg_sprite_16x16 && !reg_sprite_magify) ?   w_offset_y[8:3]        : 
-	                  	  (!reg_sprite_16x16 || !reg_sprite_magify) ? { w_offset_y[8:4], 1'd0 }: { w_offset_y[8:5], 2'd0 };
 
 	always @( posedge clk or negedge reset_n ) begin
 		if( !reset_n ) begin
-			ff_selected_count	<= 4'd0;
+			ff_currrent_plane	<= 4'd8;
+			ff_state			<= 2'd0;
 		end
-		else if( !screen_active ) begin
-			//	hold
+		else if( start_info_collect ) begin
+			ff_currrent_plane	<= 4'd0;
+			ff_state			<= 2'd0;
 		end
-		else if( w_phase == 3'd7 ) begin
-			if(      w_sub_phase == 3'd0 && screen_pos_x[10:6] == 5'd0 ) begin
-				ff_selected_count	<= 4'd0;
-			end
-			else if( w_sub_phase == 3'd1 ) begin
-				if( w_invisible == 6'd0 && ff_selected_count[2] == 1'b0 ) begin
-					ff_selected_en <= 1'b1;
+		else if( !ff_currrent_plane[3] ) begin
+			case( ff_state )
+			2'd0:
+				begin
+					
 				end
-			end
-			else if( w_sub_phase == 3'd2 ) begin
-				if( ff_selected_en ) begin
-					ff_selected_count	<= ff_selected_count + 4'd1;
-					ff_selected_en <= 1'b0;
+			2'd1:
+				if( w_sub_phase == 3'd0 ) begin
+					//	Pattern left read
 				end
-			end
+			2'd2:
+				if( w_sub_phase == 3'd0 ) begin
+					//	Pattern right read
+				end
+			2'd3:
+				if( w_sub_phase == 3'd0 ) begin
+					//	Color read
+				end
+			endcase
 		end
 	end
 
-	assign selected_en			= ff_selected_en;
-	assign selected_plane_num	= ff_selected_count;
-	assign selected_y			= w_offset_y[3:0];
-	assign selected_x			= ff_x;
-	assign selected_pattern		= ff_pattern;
-	assign selected_color		= ff_color;
-	assign selected_count		= ff_selected_count;
-	assign start_info_collect	= (screen_active && screen_pos_x[10:3] == 8'd255 && w_sub_phase == 3'd7);
+	assign current_plane	= ff_currrent_plane;
+
 endmodule
