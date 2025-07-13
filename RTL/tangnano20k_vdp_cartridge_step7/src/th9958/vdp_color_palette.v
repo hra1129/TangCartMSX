@@ -83,6 +83,7 @@ module vdp_color_palette (
 );
 	wire				w_256colors_mode;
 	wire				w_4colors_mode;
+	wire				w_t12_mode;
 	wire				w_g4567_mode;
 	reg			[7:0]	ff_display_color256;
 	reg			[7:0]	ff_display_color;
@@ -156,6 +157,10 @@ module vdp_color_palette (
 	                        	  (reg_screen_mode == 5'b10000) ||	// Graphic5 (SCREEN6)
 	                        	  (reg_screen_mode == 5'b10100) ||	// Graphic6 (SCREEN7)
 	                        	  (reg_screen_mode == 5'b11100);	// Graphic7 (SCREEN8)
+	assign w_t12_mode			= (reg_screen_mode == 5'b00001) ||	// Text1 (SCREEN0:W40)
+	                        	  (reg_screen_mode == 5'b00101) ||	// Text1 (SCREEN0:W40)
+	                        	  (reg_screen_mode == 5'b01001);	// Text2 (SCREEN0:W80)
+
 
 	// --------------------------------------------------------------------
 	//	Palette RAM Read Signal ( screen_pos_x = 0 )
@@ -175,7 +180,10 @@ module vdp_color_palette (
 			ff_display_color_oe <= 1'b0;
 		end
 		else if( screen_pos_x == 3'd0 || (w_high_resolution && screen_pos_x == 3'd4) ) begin
-			if( display_color_sprite_en ) begin
+			if( w_t12_mode ) begin
+				ff_display_color <= { 4'd0, display_color_t12 };
+			end
+			else if( display_color_sprite_en ) begin
 				ff_display_color <= { 4'd0, display_color_sprite };
 			end
 			else if( w_g4567_mode ) begin

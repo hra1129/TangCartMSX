@@ -157,7 +157,7 @@ module vdp_timing_control (
 		.reg_pattern_name_table_base		( reg_pattern_name_table_base		),
 		.reg_color_table_base				( reg_color_table_base				),
 		.reg_pattern_generator_table_base	( reg_pattern_generator_table_base	),
-		.reg_backdrop_color					( reg_backdrop_color[3:0]			)
+		.reg_backdrop_color					( reg_backdrop_color				)
 	);
 
 	// --------------------------------------------------------------------
