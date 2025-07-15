@@ -186,7 +186,7 @@ module vdp_sprite_select_visible_planes (
 
 	assign selected_en			= ff_selected_en;
 	assign selected_plane_num	= ff_current_plane_num;
-	assign selected_y			= w_offset_y[3:0];
+	assign selected_y			= reg_sprite_magify ? w_offset_y[4:1]: w_offset_y[3:0];
 	assign selected_x			= ff_x;
 	assign selected_pattern		= ff_pattern;
 	assign selected_color		= ff_color;

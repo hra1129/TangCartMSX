@@ -61,11 +61,12 @@ module tb ();
 	reg					clk;					//	42.95454MHz
 	
 	// DUT input signals
-	reg					start_info_collect;
+	wire				start_info_collect;
 	reg		[12:0]		screen_pos_x;
-	reg		[ 7:0]		pixel_pos_y;
-	reg					screen_active;
+	wire				screen_active;
 	reg		[31:0]		vram_rdata;
+	reg		[2:0]		current_plane;
+	reg					selected_en;
 	reg		[4:0]		selected_plane_num;
 	reg		[3:0]		selected_y;
 	reg		[7:0]		selected_x;
@@ -81,7 +82,7 @@ module tb ();
 	// DUT output signals
 	wire	[16:0]		vram_address;
 	wire				vram_valid;
-	wire	[2:0]		current_plane;
+	wire	[2:0]		makeup_plane;
 	wire	[7:0]		pattern_left;
 	wire				pattern_left_en;
 	wire	[7:0]		pattern_right;
@@ -93,33 +94,33 @@ module tb ();
 	//	DUT
 	// --------------------------------------------------------------------
 	vdp_sprite_info_collect u_sprite_info_collect (
-		.reset_n							(reset_n),
-		.clk								(clk),
-		.start_info_collect					(start_info_collect),
-		.screen_pos_x						(screen_pos_x),
-		.pixel_pos_y						(pixel_pos_y),
-		.screen_active						(screen_active),
-		.vram_address						(vram_address),
-		.vram_valid							(vram_valid),
-		.vram_rdata							(vram_rdata),
-		.current_plane						(current_plane),
-		.selected_plane_num					(selected_plane_num),
-		.selected_y							(selected_y),
-		.selected_x							(selected_x),
-		.selected_pattern					(selected_pattern),
-		.selected_color						(selected_color),
-		.selected_count						(selected_count),
-		.pattern_left						(pattern_left),
-		.pattern_left_en					(pattern_left_en),
-		.pattern_right						(pattern_right),
-		.pattern_right_en					(pattern_right_en),
-		.color								(color),
-		.color_en							(color_en),
-		.sprite_mode2						(sprite_mode2),
-		.reg_sprite_magify					(reg_sprite_magify),
-		.reg_sprite_16x16					(reg_sprite_16x16),
-		.reg_sprite_attribute_table_base	(reg_sprite_attribute_table_base),
-		.reg_sprite_pattern_generator_table_base(reg_sprite_pattern_generator_table_base)
+		.reset_n									( reset_n										),
+		.clk										( clk											),
+		.start_info_collect							( start_info_collect							),
+		.screen_pos_x								( screen_pos_x									),
+		.screen_active								( screen_active									),
+		.vram_address								( vram_address									),
+		.vram_valid									( vram_valid									),
+		.vram_rdata									( vram_rdata									),
+		.selected_en								( selected_en									),
+		.selected_plane_num							( selected_plane_num							),
+		.selected_y									( selected_y									),
+		.selected_x									( selected_x									),
+		.selected_pattern							( selected_pattern								),
+		.selected_color								( selected_color								),
+		.selected_count								( selected_count								),
+		.makeup_plane								( makeup_plane									),
+		.pattern_left								( pattern_left									),
+		.pattern_left_en							( pattern_left_en								),
+		.pattern_right								( pattern_right									),
+		.pattern_right_en							( pattern_right_en								),
+		.color										( color											),
+		.color_en									( color_en										),
+		.sprite_mode2								( sprite_mode2									),
+		.reg_sprite_magify							( reg_sprite_magify								),
+		.reg_sprite_16x16							( reg_sprite_16x16								),
+		.reg_sprite_attribute_table_base			( reg_sprite_attribute_table_base				),
+		.reg_sprite_pattern_generator_table_base	( reg_sprite_pattern_generator_table_base		)
 	);
 
 	// Simple VRAM model - returns test pattern data
@@ -129,6 +130,21 @@ module tb ();
 			vram_rdata <= {24'h0, vram_address[7:0]};
 		end
 	end
+
+	always @( posedge clk ) begin
+		if( !reset_n ) begin
+			screen_pos_x <= 'd0;
+		end
+		else if( screen_pos_x == 'd2735 ) begin
+			screen_pos_x <= 'd0;
+		end
+		else begin
+			screen_pos_x <= screen_pos_x + 'd1;
+		end
+	end
+
+	assign start_info_collect	= (screen_pos_x == 'd2047);
+	assign screen_active		= (screen_pos_x >= 'd0 && screen_active <= 'd2047);
 
 	// --------------------------------------------------------------------
 	//	clock
@@ -141,14 +157,18 @@ module tb ();
 	task wait_clocks(input integer cycles);
 		repeat(cycles) @(posedge clk);
 	endtask
-	
+
+	task wait_start_info_collect();
+		while( start_info_collect == 1'b0 ) begin
+			@( posedge clk );
+		end
+	endtask
+
 	// Task to initialize signals
 	task init_signals();
-		start_info_collect <= 1'b0;
-		screen_pos_x <= 13'd0;
-		pixel_pos_y <= 8'd0;
-		screen_active <= 1'b1;
 		vram_rdata <= 32'h0;
+		current_plane <= 3'd0;
+		selected_en <= 1'b0;
 		selected_plane_num <= 5'd0;
 		selected_y <= 4'd0;
 		selected_x <= 8'd0;
@@ -191,23 +211,17 @@ module tb ();
 		sprite_mode2 <= 1'b0;
 		reg_sprite_16x16 <= 1'b0;
 		
-		start_info_collect <= 1'b1;
-		wait_clocks(1);
-		start_info_collect <= 1'b0;
-		
-		// Wait for collection to complete
-		wait_clocks(100);
+		wait_start_info_collect();
+		wait_clocks(200);
 		
 		// Test 2: 16x16 sprite mode
 		$display("Test 2: 16x16 sprite collection");
 		reg_sprite_16x16 <= 1'b1;
+		sprite_mode2 <= 1'b0;
 		selected_pattern <= 8'h24;
-		
-		start_info_collect <= 1'b1;
-		wait_clocks(1);
-		start_info_collect <= 1'b0;
-		
-		wait_clocks(100);
+
+		wait_start_info_collect();
+		wait_clocks(200);
 		
 		// Test 3: Sprite mode 2
 		$display("Test 3: Sprite mode 2 collection");
@@ -215,29 +229,18 @@ module tb ();
 		reg_sprite_16x16 <= 1'b0;
 		selected_pattern <= 8'h33;
 		
-		start_info_collect <= 1'b1;
-		wait_clocks(1);
-		start_info_collect <= 1'b0;
-		
-		wait_clocks(100);
+		wait_start_info_collect();
+		wait_clocks(200);
 		
 		// Test 4: Screen position cycling test
 		$display("Test 4: Screen position cycling");
 		sprite_mode2 <= 1'b0;
 		reg_sprite_16x16 <= 1'b0;
 		
-		start_info_collect <= 1'b1;
-		wait_clocks(1);
-		start_info_collect <= 1'b0;
+		wait_start_info_collect();
+		wait_clocks(200);
 		
-		// Cycle through different screen positions
-		for (int i = 0; i < 16; i++) begin
-			screen_pos_x <= i;
-			wait_clocks(5);
-		end
-		
-		wait_clocks(50);
-		
+		wait_start_info_collect();
 		$display("Testbench completed successfully");
 		$finish;
 	end

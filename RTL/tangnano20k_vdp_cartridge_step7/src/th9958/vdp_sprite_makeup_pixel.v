@@ -59,5 +59,12 @@ module vdp_sprite_makeup_pixel (
 	input				reset_n,
 	input				clk,					//	42.95454MHz
 
+	input		[12:0]	screen_pos_x,
+	input				screen_active,
+
+	input				sprite_mode2,
+	input				reg_sprite_magify,
+	input				reg_sprite_16x16,
+
 );
 endmodule
