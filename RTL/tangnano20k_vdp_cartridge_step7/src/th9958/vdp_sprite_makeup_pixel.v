@@ -65,6 +65,309 @@ module vdp_sprite_makeup_pixel (
 	input				sprite_mode2,
 	input				reg_sprite_magify,
 	input				reg_sprite_16x16,
-
+	//	from select_visible_planes
+	input		[3:0]	selected_count,
+	//	from info_collect
+	input		[2:0]	makeup_plane,
+	input		[7:0]	selected_x,
+	input				selected_x_en,
+	input		[7:0]	pattern_left,
+	input				pattern_left_en,
+	input		[7:0]	pattern_right,
+	input				pattern_right_en,
+	input		[7:0]	color,
+	input				color_en
+	//	to color_palette
+	output		[3:0]	display_color,
+	output				display_color_en
 );
+	reg					ff_active;
+	reg			[3:0]	ff_planes;
+	reg			[3:0]	ff_current_plane;
+	reg			[15:0]	ff_pattern0;
+	reg			[15:0]	ff_pattern1;
+	reg			[15:0]	ff_pattern2;
+	reg			[15:0]	ff_pattern3;
+	reg			[15:0]	ff_pattern4;
+	reg			[15:0]	ff_pattern5;
+	reg			[15:0]	ff_pattern6;
+	reg			[15:0]	ff_pattern7;
+	wire		[7:0]	w_pattern_left;
+	wire		[7:0]	w_pattern_right;
+	wire		[15:0]	w_pattern;
+	reg			[7:0]	ff_color0;
+	reg			[7:0]	ff_color1;
+	reg			[7:0]	ff_color2;
+	reg			[7:0]	ff_color3;
+	reg			[7:0]	ff_color4;
+	reg			[7:0]	ff_color5;
+	reg			[7:0]	ff_color6;
+	reg			[7:0]	ff_color7;
+	wire		[7:0]	w_color;
+	reg			[7:0]	ff_x0;
+	reg			[7:0]	ff_x1;
+	reg			[7:0]	ff_x2;
+	reg			[7:0]	ff_x3;
+	reg			[7:0]	ff_x4;
+	reg			[7:0]	ff_x5;
+	reg			[7:0]	ff_x6;
+	reg			[7:0]	ff_x7;
+	wire		[7:0]	w_x;
+	wire		[2:0]	w_sub_phase;
+	wire				w_active;
+	reg					ff_pre_pixel_color_en;
+	reg			[3:0]	ff_pre_pixel_color;
+	reg					ff_pixel_color_en;
+	reg			[3:0]	ff_pixel_color;
+	wire		[9:0]	w_offset_x;
+	wire		[9:3]	w_overflow;
+	wire				w_sprite_en;
+	wire		[6:0]	w_ec_shift;
+	wire				w_sprite_en;
+	wire		[3:0]	w_bit_sel;
+
+	// --------------------------------------------------------------------
+	//	Latch information for visible sprite planes
+	// --------------------------------------------------------------------
+	assign w_pattern_left	= { pattern_left[0] , pattern_left[1] , pattern_left[2] , pattern_left[3] , pattern_left[4] , pattern_left[5] , pattern_left[6] , pattern_left[7]  };
+	assign w_pattern_right	= { pattern_right[0], pattern_right[1], pattern_right[2], pattern_right[3], pattern_right[4], pattern_right[5], pattern_right[6], pattern_right[7] };
+
+	always @( posedge clk ) begin
+		if( pattern_left_en ) begin
+			case( makeup_plane )
+			3'd0:		ff_pattern0[ 7: 0]	<= pattern_left;
+			3'd1:		ff_pattern1[ 7: 0]	<= pattern_left;
+			3'd2:		ff_pattern2[ 7: 0]	<= pattern_left;
+			3'd3:		ff_pattern3[ 7: 0]	<= pattern_left;
+			3'd4:		ff_pattern4[ 7: 0]	<= pattern_left;
+			3'd5:		ff_pattern5[ 7: 0]	<= pattern_left;
+			3'd6:		ff_pattern6[ 7: 0]	<= pattern_left;
+			3'd7:		ff_pattern7[ 7: 0]	<= pattern_left;
+			default:	ff_pattern0[ 7: 0]	<= pattern_left;
+			endcase
+		end
+		else if( pattern_right_en ) begin
+			case( makeup_plane )
+			3'd0:		ff_pattern0[15: 8]	<= pattern_right;
+			3'd1:		ff_pattern1[15: 8]	<= pattern_right;
+			3'd2:		ff_pattern2[15: 8]	<= pattern_right;
+			3'd3:		ff_pattern3[15: 8]	<= pattern_right;
+			3'd4:		ff_pattern4[15: 8]	<= pattern_right;
+			3'd5:		ff_pattern5[15: 8]	<= pattern_right;
+			3'd6:		ff_pattern6[15: 8]	<= pattern_right;
+			3'd7:		ff_pattern7[15: 8]	<= pattern_right;
+			default:	ff_pattern0[15: 8]	<= pattern_right;
+			endcase
+		end
+	end
+
+	always @( posedge clk ) begin
+		else if( color_en ) begin
+			case( makeup_plane )
+			3'd0:		ff_color0	<= color;
+			3'd1:		ff_color1	<= color;
+			3'd2:		ff_color2	<= color;
+			3'd3:		ff_color3	<= color;
+			3'd4:		ff_color4	<= color;
+			3'd5:		ff_color5	<= color;
+			3'd6:		ff_color6	<= color;
+			3'd7:		ff_color7	<= color;
+			default:	ff_color0	<= color;
+			endcase
+		end
+	end
+
+	always @( posedge clk ) begin
+		if( selected_x_en ) begin
+			case( makeup_plane )
+			3'd0:		ff_x0	<= selected_x;
+			3'd1:		ff_x1	<= selected_x;
+			3'd2:		ff_x2	<= selected_x;
+			3'd3:		ff_x3	<= selected_x;
+			3'd4:		ff_x4	<= selected_x;
+			3'd5:		ff_x5	<= selected_x;
+			3'd6:		ff_x6	<= selected_x;
+			3'd7:		ff_x7	<= selected_x;
+			default:	ff_x0	<= selected_x;
+			endcase
+		end
+	end
+
+	// --------------------------------------------------------------------
+	//	Control signals
+	// --------------------------------------------------------------------
+	always @( posedge clk or negedge reset_n ) begin
+		if( !reset_n ) begin
+			ff_active			<= 1'b0;
+			ff_planes			<= 4'd0;
+			ff_current_plane	<= 4'd0;
+		end
+		else if( screen_pos_x == 13'h1FFF ) begin
+			ff_active			<= 1'b1;
+			ff_planes			<= selected_count;
+			ff_current_plane	<= 4'd0;
+		end
+		else if( w_sub_phase == 3'd7 ) begin
+			ff_current_plane	<= 4'd0;
+		end
+		else if( w_active ) begin
+			ff_current_plane	<= ff_current_plane + 4'd1;
+		end
+	end
+
+	assign w_sub_phase	= screen_pos_x[2:0];
+	assign w_active		= ( ff_current_plane != ff_planes ) ? ff_active: 1'b0;
+
+	// --------------------------------------------------------------------
+	//	[delay 0] Select the current sprite plane
+	// --------------------------------------------------------------------
+	function [15:0] func_word_selector(
+		input	[2:0]	current_plane,
+		input	[15:0]	word0,
+		input	[15:0]	word1,
+		input	[15:0]	word2,
+		input	[15:0]	word3,
+		input	[15:0]	word4,
+		input	[15:0]	word5,
+		input	[15:0]	word6,
+		input	[15:0]	word7
+	);
+		case( current_plane )
+		3'd0:		func_word_selector = word0;
+		3'd1:		func_word_selector = word1;
+		3'd2:		func_word_selector = word2;
+		3'd3:		func_word_selector = word3;
+		3'd4:		func_word_selector = word4;
+		3'd5:		func_word_selector = word5;
+		3'd6:		func_word_selector = word6;
+		3'd7:		func_word_selector = word7;
+		default:	func_word_selector = word0;
+		endcase
+	endfunction
+
+	function [7:0] func_byte_selector(
+		input	[2:0]	current_plane,
+		input	[7:0]	byte0,
+		input	[7:0]	byte1,
+		input	[7:0]	byte2,
+		input	[7:0]	byte3,
+		input	[7:0]	byte4,
+		input	[7:0]	byte5,
+		input	[7:0]	byte6,
+		input	[7:0]	byte7
+	);
+		case( current_plane )
+		3'd0:		func_byte_selector = byte0;
+		3'd1:		func_byte_selector = byte1;
+		3'd2:		func_byte_selector = byte2;
+		3'd3:		func_byte_selector = byte3;
+		3'd4:		func_byte_selector = byte4;
+		3'd5:		func_byte_selector = byte5;
+		3'd6:		func_byte_selector = byte6;
+		3'd7:		func_byte_selector = byte7;
+		default:	func_byte_selector = byte0;
+		endcase
+	endfunction
+
+	assign w_pattern	= func_word_selector( 
+			ff_current_plane[2:0],
+			ff_pattern0,
+			ff_pattern1,
+			ff_pattern2,
+			ff_pattern3,
+			ff_pattern4,
+			ff_pattern5,
+			ff_pattern6,
+			ff_pattern7
+	);
+
+	assign w_color		= func_byte_selector(
+			ff_current_plane[2:0],
+			ff_color0,
+			ff_color1,
+			ff_color2,
+			ff_color3,
+			ff_color4,
+			ff_color5,
+			ff_color6,
+			ff_color7
+	);
+
+	assign w_x			= func_byte_selector(
+			ff_current_plane[2:0],
+			ff_x0,
+			ff_x1,
+			ff_x2,
+			ff_x3,
+			ff_x4,
+			ff_x5,
+			ff_x6,
+			ff_x7
+	);
+
+	assign w_offset_x	= screen_pos_x[12:3] - { 2'd0, w_x };
+	assign w_overflow	= ( !reg_sprite_16x16  ) ?   w_offset_x[9:3]:
+	                 	  (  reg_sprite_magify ) ? { w_offset_x[9:5], 2'd0 }: { w_offset_x[9:4], 1'd0 };
+	assign w_ec_shift	= w_color[7] ? 7'h7E: 7'h00;
+	assign w_sprite_en	= ( w_overflow == w_ec_shift );
+	assign w_bit_sel	= reg_sprite_magify ? w_offset_x[4:1]: w_offset_x[3:0];
+
+	always @( posedge clk or negedge reset_n ) begin
+		if( !reset_n ) begin
+			ff_color_en		<= 1'b0;
+			ff_color		<= 4'd0;
+		end
+		else begin
+			ff_color_en		<= w_sprite_en & ff_pattern[ w_bit_sel ] & w_active;
+			ff_color		<= w_color[3:0];
+		end
+	end
+
+	// --------------------------------------------------------------------
+	//	[delay 1...8] Mix 8 planes
+	// --------------------------------------------------------------------
+	always @( posedge clk or negedge reset_n ) begin
+		if( !reset_n ) begin
+			ff_pre_pixel_color_en	<= 1'b0;
+			ff_pre_pixel_color		<= 4'd0;
+		end
+		else if( screen_pos_x == 13'h1FFF ) begin
+			ff_pre_pixel_color_en	<= 1'b0;
+			ff_pre_pixel_color		<= 4'd0;
+		end
+		else if( w_sub_phase == 3'd1 ) begin
+			ff_pre_pixel_color_en	<= ff_color_en;
+			ff_pre_pixel_color		<= ff_color;
+		end
+		else begin
+			if( !ff_pre_pixel_color_en ) begin
+				ff_pre_pixel_color_en	<= ff_color_en;
+				ff_pre_pixel_color		<= ff_color;
+			end
+			else begin
+				//	The dots of the sprite with the highest priority are already plotted.
+			end
+		end
+	end
+
+	// --------------------------------------------------------------------
+	//	[delay 9] latch pixel color
+	// --------------------------------------------------------------------
+	always @( posedge clk or negedge reset_n ) begin
+		if( !reset_n ) begin
+			ff_pixel_color_en	<= 1'b0;
+			ff_pixel_color		<= 4'd0;
+		end
+		else if( screen_pos_x == 13'h1FFF ) begin
+			ff_pixel_color_en	<= 1'b0;
+			ff_pixel_color		<= 4'd0;
+		end
+		else if( w_sub_phase == 3'd1 ) begin
+			ff_pixel_color_en	<= ff_pre_pixel_color_en;
+			ff_pixel_color		<= ff_pre_pixel_color;
+		end
+	end
+
+	assign display_color		= ff_pixel_color_en;
+	assign display_color_en		= ff_pixel_color;
 endmodule
