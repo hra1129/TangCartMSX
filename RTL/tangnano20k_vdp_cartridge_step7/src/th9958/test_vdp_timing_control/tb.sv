@@ -89,61 +89,81 @@ module tb ();
 	wire	[16:0]	sprite_vram_address;
 	wire			sprite_vram_valid;
 	reg		[31:0]	sprite_vram_rdata;
+	reg		[7:0]	sprite_vram_rdata8;
 	wire	[3:0]	sprite_display_color;
 	wire			sprite_display_color_en;
 
 	// レジスタ信号
 	reg				reg_50hz_mode;
+	reg				reg_212lines_mode;
 	reg				reg_interlace_mode;
 	reg		[7:0]	reg_interrupt_line;
 	reg		[7:0]	reg_vertical_offset;
 	reg		[8:0]	reg_horizontal_offset;
 	reg		[4:0]	reg_screen_mode;
+	reg				reg_display_on;
 	reg		[16:10]	reg_pattern_name_table_base;
 	reg		[16:6]	reg_color_table_base;
 	reg		[16:11]	reg_pattern_generator_table_base;
+	reg		[16:9]	reg_sprite_attribute_table_base;
+	reg		[16:11]	reg_sprite_pattern_generator_table_base;
+	reg				reg_sprite_magify;
+	reg				reg_sprite_16x16;
+	reg				reg_sprite_disable;
+	reg				reg_color0_opaque;
 	reg		[7:0]	reg_backdrop_color;
+	reg				reg_left_mask;
 
 	// ----------------------------------------------------------------
 	// DUTインスタンス
 	// ----------------------------------------------------------------
 	vdp_timing_control u_dut (
-		.reset_n							( reset_n							),
-		.clk								( clk								),
-		.h_count							( h_count							),
-		.v_count							( v_count							),
-		.screen_pos_x						( screen_pos_x						),
-		.screen_pos_y						( screen_pos_y						),
-		.screen_active						( screen_active						),
-		.intr_line							( intr_line							),
-		.intr_frame							( intr_frame						),
-		.t12_vram_address					( t12_vram_address					),
-		.t12_vram_valid						( t12_vram_valid					),
-		.t12_vram_rdata						( t12_vram_rdata					),
-		.t12_display_color					( t12_display_color					),
-		.g123m_vram_address					( g123m_vram_address				),
-		.g123m_vram_valid					( g123m_vram_valid					),
-		.g123m_vram_rdata					( g123m_vram_rdata					),
-		.g123m_display_color				( g123m_display_color				),
-		.g4567_vram_address					( g4567_vram_address				),
-		.g4567_vram_valid					( g4567_vram_valid					),
-		.g4567_vram_rdata					( g4567_vram_rdata					),
-		.g4567_display_color				( g4567_display_color				),
-		.sprite_vram_address				( sprite_vram_address				),
-		.sprite_vram_valid					( sprite_vram_valid					),
-		.sprite_vram_rdata					( sprite_vram_rdata					),
-		.sprite_display_color				( sprite_display_color				),
-		.sprite_display_color_en			( sprite_display_color_en			),
-		.reg_50hz_mode						( reg_50hz_mode						),
-		.reg_interlace_mode					( reg_interlace_mode				),
-		.reg_interrupt_line					( reg_interrupt_line				),
-		.reg_vertical_offset				( reg_vertical_offset				),
-		.reg_horizontal_offset				( reg_horizontal_offset				),
-		.reg_screen_mode					( reg_screen_mode					),
-		.reg_pattern_name_table_base		( reg_pattern_name_table_base		),
-		.reg_color_table_base				( reg_color_table_base				),
-		.reg_pattern_generator_table_base	( reg_pattern_generator_table_base	),
-		.reg_backdrop_color					( reg_backdrop_color				)
+		.reset_n									( reset_n									),
+		.clk										( clk										),
+		.h_count									( h_count									),
+		.v_count									( v_count									),
+		.screen_pos_x								( screen_pos_x								),
+		.screen_pos_y								( screen_pos_y								),
+		.screen_active								( screen_active								),
+		.intr_line									( intr_line									),
+		.intr_frame									( intr_frame								),
+		.t12_vram_address							( t12_vram_address							),
+		.t12_vram_valid								( t12_vram_valid							),
+		.t12_vram_rdata								( t12_vram_rdata							),
+		.t12_display_color							( t12_display_color							),
+		.g123m_vram_address							( g123m_vram_address						),
+		.g123m_vram_valid							( g123m_vram_valid							),
+		.g123m_vram_rdata							( g123m_vram_rdata							),
+		.g123m_display_color						( g123m_display_color						),
+		.g4567_vram_address							( g4567_vram_address						),
+		.g4567_vram_valid							( g4567_vram_valid							),
+		.g4567_vram_rdata							( g4567_vram_rdata							),
+		.g4567_display_color						( g4567_display_color						),
+		.sprite_vram_address						( sprite_vram_address						),
+		.sprite_vram_valid							( sprite_vram_valid							),
+		.sprite_vram_rdata							( sprite_vram_rdata							),
+		.sprite_vram_rdata8							( sprite_vram_rdata8						),
+		.sprite_display_color						( sprite_display_color						),
+		.sprite_display_color_en					( sprite_display_color_en					),
+		.reg_50hz_mode								( reg_50hz_mode								),
+		.reg_212lines_mode							( reg_212lines_mode							),
+		.reg_interlace_mode							( reg_interlace_mode						),
+		.reg_interrupt_line							( reg_interrupt_line						),
+		.reg_vertical_offset						( reg_vertical_offset						),
+		.reg_horizontal_offset						( reg_horizontal_offset						),
+		.reg_screen_mode							( reg_screen_mode							),
+		.reg_display_on								( reg_display_on							),
+		.reg_pattern_name_table_base				( reg_pattern_name_table_base				),
+		.reg_color_table_base						( reg_color_table_base						),
+		.reg_pattern_generator_table_base			( reg_pattern_generator_table_base			),
+		.reg_sprite_attribute_table_base			( reg_sprite_attribute_table_base			),
+		.reg_sprite_pattern_generator_table_base	( reg_sprite_pattern_generator_table_base	),
+		.reg_sprite_magify							( reg_sprite_magify							),
+		.reg_sprite_16x16							( reg_sprite_16x16							),
+		.reg_sprite_disable							( reg_sprite_disable						),
+		.reg_color0_opaque							( reg_color0_opaque							),
+		.reg_backdrop_color							( reg_backdrop_color						),
+		.reg_left_mask								( reg_left_mask								)
 	);
 
 	// ----------------------------------------------------------------
@@ -174,15 +194,24 @@ module tb ();
 		// 初期値設定
 		reset_n = 1'b0;
 		reg_50hz_mode = 1'b0;					// 60Hz mode
+		reg_212lines_mode = 1'b0;				// 192 lines mode
 		reg_interlace_mode = 1'b0;				// Non-interlace
 		reg_interrupt_line = 8'd192;			// 標準的な割り込みライン
 		reg_vertical_offset = 8'd0;				// 垂直オフセットなし
 		reg_horizontal_offset = 9'd0;			// 水平オフセットなし
 		reg_screen_mode = 5'd0;					// Screen mode 0
+		reg_display_on = 1'b1;					// Display ON
 		reg_pattern_name_table_base = 7'h00;	// パターンネームテーブルベース
 		reg_color_table_base = 11'h000;			// カラーテーブルベース
 		reg_pattern_generator_table_base = 6'h00; // パターンジェネレータテーブルベース
+		reg_sprite_attribute_table_base = 0;
+		reg_sprite_pattern_generator_table_base = 0;
+		reg_sprite_magify = 0;
+		reg_sprite_16x16 = 0;
+		reg_sprite_disable = 0;
+		reg_color0_opaque = 0;
 		reg_backdrop_color = 8'h0F;				// 背景色（白）
+		reg_left_mask = 1'b0;
 
 		// リセット解除
 		#(clk_base * 10);

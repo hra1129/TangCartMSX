@@ -66,8 +66,10 @@ module vdp_timing_control_sprite (
 	output		[16:0]	vram_address,
 	output				vram_valid,
 	input		[31:0]	vram_rdata,
+	input		[7:0]	vram_rdata8,
 
 	output		[3:0]	display_color,
+	output				display_color_en,
 
 	input		[4:0]	reg_screen_mode,
 	input				reg_sprite_magify,
@@ -78,6 +80,51 @@ module vdp_timing_control_sprite (
 	input	[16:11]		reg_sprite_pattern_generator_table_base,
 	input				reg_left_mask
 );
+	localparam			c_mode_g3	= 5'b010_00;	//	Graphic3 (SCREEN4)
+	localparam			c_mode_g4	= 5'b011_00;	//	Graphic4 (SCREEN5)
+	localparam			c_mode_g5	= 5'b100_00;	//	Graphic5 (SCREEN6)
+	localparam			c_mode_g6	= 5'b101_00;	//	Graphic6 (SCREEN7)
+	localparam			c_mode_g7	= 5'b111_00;	//	Graphic7 (SCREEN8/10/11/12)
+
+	// --------------------------------------------------------------------
+	//	Wire declarations
+	// --------------------------------------------------------------------
+	wire		[7:0]	w_pixel_pos_y;
+	wire				w_selected_en;
+	wire		[4:0]	w_selected_plane_num;
+	wire		[3:0]	w_selected_y;
+	wire		[7:0]	w_selected_x;
+	wire		[7:0]	w_selected_pattern;
+	wire		[7:0]	w_selected_color;
+	wire		[3:0]	w_selected_count;
+	wire				w_start_info_collect;
+	wire				w_sprite_mode2;
+	wire				w_selected_x_en;
+	wire		[7:0]	w_pattern_left;
+	wire				w_pattern_left_en;
+	wire		[7:0]	w_pattern_right;
+	wire				w_pattern_right_en;
+	wire		[7:0]	w_color;
+	wire				w_color_en;
+	wire		[2:0]	w_makeup_plane;
+	wire		[16:0]	w_vp_vram_address;
+	wire				w_vp_vram_valid;
+	wire		[16:0]	w_ic_vram_address;
+	wire				w_ic_vram_valid;
+
+	assign vram_address		= screen_active ? w_vp_vram_address: w_ic_vram_address;
+	assign vram_valid		= screen_active ? w_vp_vram_valid: w_ic_vram_valid;
+	assign w_sprite_mode2	= (
+			reg_screen_mode == c_mode_g3 ||
+			reg_screen_mode == c_mode_g4 ||
+			reg_screen_mode == c_mode_g5 ||
+			reg_screen_mode == c_mode_g6 ||
+			reg_screen_mode == c_mode_g7 );
+
+	// --------------------------------------------------------------------
+	//	Signal assignments
+	// --------------------------------------------------------------------
+	assign w_pixel_pos_y = screen_pos_y[7:0];
 
 	// --------------------------------------------------------------------
 	//	Select visible planes
@@ -86,20 +133,20 @@ module vdp_timing_control_sprite (
 		.reset_n									( reset_n									),
 		.clk										( clk										),
 		.screen_pos_x								( screen_pos_x								),
-		.pixel_pos_y								( pixel_pos_y								),
+		.pixel_pos_y								( w_pixel_pos_y								),
 		.screen_active								( screen_active								),
-		.vram_address								( vram_address								),
-		.vram_valid									( vram_valid								),
+		.vram_address								( w_vp_vram_address							),
+		.vram_valid									( w_vp_vram_valid							),
 		.vram_rdata									( vram_rdata								),
-		.selected_en								( selected_en								),
-		.selected_plane_num							( selected_plane_num						),
-		.selected_y									( selected_y								),
-		.selected_x									( selected_x								),
-		.selected_pattern							( selected_pattern							),
-		.selected_color								( selected_color							),
-		.selected_count								( selected_count							),
-		.start_info_collect							( start_info_collect						),
-		.sprite_mode2								( sprite_mode2								),
+		.selected_en								( w_selected_en								),
+		.selected_plane_num							( w_selected_plane_num						),
+		.selected_y									( w_selected_y								),
+		.selected_x									( w_selected_x								),
+		.selected_pattern							( w_selected_pattern						),
+		.selected_color								( w_selected_color							),
+		.selected_count								( w_selected_count							),
+		.start_info_collect							( w_start_info_collect						),
+		.sprite_mode2								( w_sprite_mode2							),
 		.reg_sprite_magify							( reg_sprite_magify							),
 		.reg_sprite_16x16							( reg_sprite_16x16							),
 		.reg_sprite_attribute_table_base			( reg_sprite_attribute_table_base			)
@@ -111,28 +158,28 @@ module vdp_timing_control_sprite (
 	vdp_sprite_info_collect u_info_collect (
 		.reset_n									( reset_n									),
 		.clk										( clk										),
-		.start_info_collect							( start_info_collect						),
+		.start_info_collect							( w_start_info_collect						),
 		.screen_pos_x								( screen_pos_x								),
-		.pixel_pos_y								( pixel_pos_y								),
 		.screen_active								( screen_active								),
-		.vram_address								( vram_address								),
-		.vram_valid									( vram_valid								),
-		.vram_rdata									( vram_rdata								),
-		.current_plane								( current_plane								),
-		.selected_plane_num							( selected_plane_num						),
-		.selected_y									( selected_y								),
-		.selected_x									( selected_x								),
-		.selected_pattern							( selected_pattern							),
-		.selected_color								( selected_color							),
-		.selected_count								( selected_count							),
-		.selected_x_en								( selected_x_en								),
-		.pattern_left								( pattern_left								),
-		.pattern_left_en							( pattern_left_en							),
-		.pattern_right								( pattern_right								),
-		.pattern_right_en							( pattern_right_en							),
-		.color										( color										),
-		.color_en									( color_en									),
-		.sprite_mode2								( sprite_mode2								),
+		.vram_address								( w_ic_vram_address							),
+		.vram_valid									( w_ic_vram_valid							),
+		.vram_rdata									( vram_rdata8								),
+		.selected_en								( w_selected_en								),
+		.selected_plane_num							( w_selected_plane_num						),
+		.selected_y									( w_selected_y								),
+		.selected_x									( w_selected_x								),
+		.selected_pattern							( w_selected_pattern						),
+		.selected_color								( w_selected_color							),
+		.selected_count								( w_selected_count							),
+		.selected_x_en								( w_selected_x_en							),
+		.makeup_plane								( w_makeup_plane							),
+		.pattern_left								( w_pattern_left							),
+		.pattern_left_en							( w_pattern_left_en							),
+		.pattern_right								( w_pattern_right							),
+		.pattern_right_en							( w_pattern_right_en						),
+		.color										( w_color									),
+		.color_en									( w_color_en								),
+		.sprite_mode2								( w_sprite_mode2							),
 		.reg_sprite_magify							( reg_sprite_magify							),
 		.reg_sprite_16x16							( reg_sprite_16x16							),
 		.reg_sprite_attribute_table_base			( reg_sprite_attribute_table_base			),
@@ -147,19 +194,19 @@ module vdp_timing_control_sprite (
 		.clk										( clk										),
 		.screen_pos_x								( screen_pos_x								),
 		.screen_active								( screen_active								),
-		.sprite_mode2								( sprite_mode2								),
+		.sprite_mode2								( w_sprite_mode2							),
 		.reg_sprite_magify							( reg_sprite_magify							),
 		.reg_sprite_16x16							( reg_sprite_16x16							),
-		.selected_count								( selected_count							),
-		.makeup_plane								( makeup_plane								),
-		.selected_x									( selected_x								),
-		.selected_x_en								( selected_x_en								),
-		.pattern_left								( pattern_left								),
-		.pattern_left_en							( pattern_left_en							),
-		.pattern_right								( pattern_right								),
-		.pattern_right_en							( pattern_right_en							),
-		.color										( color										),
-		.color_en								    ( color_en								    ),
+		.selected_count								( w_selected_count							),
+		.makeup_plane								( w_makeup_plane							),
+		.selected_x									( w_selected_x								),
+		.selected_x_en								( w_selected_x_en							),
+		.pattern_left								( w_pattern_left							),
+		.pattern_left_en							( w_pattern_left_en							),
+		.pattern_right								( w_pattern_right							),
+		.pattern_right_en							( w_pattern_right_en						),
+		.color										( w_color									),
+		.color_en								    ( w_color_en								),
 		.display_color								( display_color								),
 		.display_color_en							( display_color_en							)
 	);

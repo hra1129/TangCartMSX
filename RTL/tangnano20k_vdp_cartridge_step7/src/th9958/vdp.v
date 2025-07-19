@@ -133,6 +133,7 @@ module vdp (
 	wire		[16:0]	w_sprite_vram_address;
 	wire				w_sprite_vram_valid;
 	wire		[31:0]	w_sprite_vram_rdata;
+	wire		[7:0]	w_sprite_vram_rdata8;
 	wire		[3:0]	w_sprite_display_color;
 	wire				w_sprite_display_color_en;
 
@@ -258,6 +259,7 @@ module vdp (
 		.sprite_vram_address						( w_sprite_vram_address						),
 		.sprite_vram_valid							( w_sprite_vram_valid						),
 		.sprite_vram_rdata							( w_sprite_vram_rdata						),
+		.sprite_vram_rdata8							( w_sprite_vram_rdata8						),
 		.sprite_display_color						( w_sprite_display_color					),
 		.sprite_display_color_en					( w_sprite_display_color_en					),
 		.reg_50hz_mode								( reg_50hz_mode								),
@@ -271,7 +273,14 @@ module vdp (
 		.reg_pattern_name_table_base				( reg_pattern_name_table_base				),
 		.reg_color_table_base						( reg_color_table_base						),
 		.reg_pattern_generator_table_base			( reg_pattern_generator_table_base			),
-		.reg_backdrop_color							( reg_backdrop_color						)
+		.reg_sprite_attribute_table_base			( reg_sprite_attribute_table_base			),
+		.reg_sprite_pattern_generator_table_base	( reg_sprite_pattern_generator_table_base	),
+		.reg_sprite_magify							( reg_sprite_magify							),
+		.reg_sprite_16x16							( reg_sprite_16x16							),
+		.reg_sprite_disable							( reg_sprite_disable						),
+		.reg_color0_opaque							( reg_color0_opaque							),
+		.reg_backdrop_color							( reg_backdrop_color						),
+		.reg_left_mask								( reg_left_mask								)
 	);
 
 	// --------------------------------------------------------------------
@@ -302,6 +311,7 @@ module vdp (
 		.sprite_vram_address						( w_sprite_vram_address						),
 		.sprite_vram_valid							( w_sprite_vram_valid						),
 		.sprite_vram_rdata							( w_sprite_vram_rdata						),
+		.sprite_vram_rdata8							( w_sprite_vram_rdata8						),
 		.command_vram_address						( w_command_vram_address					),
 		.command_vram_valid							( w_command_vram_valid						),
 		.command_vram_ready							( w_command_vram_ready						),

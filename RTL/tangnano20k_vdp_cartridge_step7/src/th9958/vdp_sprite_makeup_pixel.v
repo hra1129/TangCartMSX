@@ -123,8 +123,9 @@ module vdp_sprite_makeup_pixel (
 	wire		[9:3]	w_overflow;
 	wire				w_sprite_en;
 	wire		[6:0]	w_ec_shift;
-	wire				w_sprite_en;
 	wire		[3:0]	w_bit_sel;
+	reg			[7:0]	ff_color;
+	reg					ff_color_en;
 
 	// --------------------------------------------------------------------
 	//	Latch information for visible sprite planes
@@ -162,7 +163,7 @@ module vdp_sprite_makeup_pixel (
 	end
 
 	always @( posedge clk ) begin
-		else if( color_en ) begin
+		if( color_en ) begin
 			case( makeup_plane )
 			3'd0:		ff_color0	<= color;
 			3'd1:		ff_color1	<= color;
@@ -318,7 +319,7 @@ module vdp_sprite_makeup_pixel (
 			ff_color		<= 4'd0;
 		end
 		else begin
-			ff_color_en		<= w_sprite_en & ff_pattern[ w_bit_sel ] & w_active;
+			ff_color_en		<= w_sprite_en & w_pattern[ w_bit_sel ] & w_active;
 			ff_color		<= w_color[3:0];
 		end
 	end
@@ -368,6 +369,6 @@ module vdp_sprite_makeup_pixel (
 		end
 	end
 
-	assign display_color		= ff_pixel_color_en;
-	assign display_color_en		= ff_pixel_color;
+	assign display_color		= ff_pixel_color;
+	assign display_color_en		= ff_pixel_color_en;
 endmodule
