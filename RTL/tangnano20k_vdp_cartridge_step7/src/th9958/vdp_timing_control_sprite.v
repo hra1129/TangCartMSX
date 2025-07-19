@@ -125,6 +125,7 @@ module vdp_timing_control_sprite (
 		.selected_pattern							( selected_pattern							),
 		.selected_color								( selected_color							),
 		.selected_count								( selected_count							),
+		.selected_x_en								( selected_x_en								),
 		.pattern_left								( pattern_left								),
 		.pattern_left_en							( pattern_left_en							),
 		.pattern_right								( pattern_right								),
@@ -136,6 +137,31 @@ module vdp_timing_control_sprite (
 		.reg_sprite_16x16							( reg_sprite_16x16							),
 		.reg_sprite_attribute_table_base			( reg_sprite_attribute_table_base			),
 		.reg_sprite_pattern_generator_table_base	( reg_sprite_pattern_generator_table_base	)
+	);
+
+	// --------------------------------------------------------------------
+	//	Makeup pixels
+	// --------------------------------------------------------------------
+	vdp_sprite_makeup_pixel u_makeup_pixel (
+		.reset_n									( reset_n									),
+		.clk										( clk										),
+		.screen_pos_x								( screen_pos_x								),
+		.screen_active								( screen_active								),
+		.sprite_mode2								( sprite_mode2								),
+		.reg_sprite_magify							( reg_sprite_magify							),
+		.reg_sprite_16x16							( reg_sprite_16x16							),
+		.selected_count								( selected_count							),
+		.makeup_plane								( makeup_plane								),
+		.selected_x									( selected_x								),
+		.selected_x_en								( selected_x_en								),
+		.pattern_left								( pattern_left								),
+		.pattern_left_en							( pattern_left_en							),
+		.pattern_right								( pattern_right								),
+		.pattern_right_en							( pattern_right_en							),
+		.color										( color										),
+		.color_en								    ( color_en								    ),
+		.display_color								( display_color								),
+		.display_color_en							( display_color_en							)
 	);
 
 endmodule

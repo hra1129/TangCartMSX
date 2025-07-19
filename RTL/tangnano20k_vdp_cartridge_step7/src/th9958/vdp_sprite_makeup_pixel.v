@@ -76,7 +76,7 @@ module vdp_sprite_makeup_pixel (
 	input		[7:0]	pattern_right,
 	input				pattern_right_en,
 	input		[7:0]	color,
-	input				color_en
+	input				color_en,
 	//	to color_palette
 	output		[3:0]	display_color,
 	output				display_color_en
