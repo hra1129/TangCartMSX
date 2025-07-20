@@ -395,8 +395,8 @@ module tb ();
 		write_vdp_reg( 8'd02, 8'h06 );	// Pattern name table base address
 		write_vdp_reg( 8'd03, 8'h80 );	// Color table base address
 		write_vdp_reg( 8'd04, 8'h00 );	// Pattern generator table base address
-		write_vdp_reg( 8'd05, 8'h20 );	// Sprite attribute table base address
-		write_vdp_reg( 8'd06, 8'h00 );	// Sprite pattern generator table base address
+		write_vdp_reg( 8'd05, 8'h36 );	// Sprite attribute table base address
+		write_vdp_reg( 8'd06, 8'h07 );	// Sprite pattern generator table base address
 		write_vdp_reg( 8'd07, 8'h07 );	// Backdrop color
 
 		$display( "[test002] Enable display test" );
@@ -409,6 +409,10 @@ module tb ();
 		// Write some test patterns to VRAM
 		for( i = 0; i < 256; i++ ) begin
 			write_vram( i, i[7:0] );
+		end
+
+		for( i = 0; i < 256; i++ ) begin
+			write_vram( i + 'h3800, i[7:0] );
 		end
 
 		$display( "[test004] Video output observation" );

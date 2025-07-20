@@ -76,7 +76,7 @@ module vdp_timing_control_sprite (
 	input				reg_sprite_16x16,
 	input				reg_sprite_disable,
 	input				reg_color0_opaque,
-	input	[16:9]		reg_sprite_attribute_table_base,
+	input	[16:7]		reg_sprite_attribute_table_base,
 	input	[16:11]		reg_sprite_pattern_generator_table_base,
 	input				reg_left_mask
 );
@@ -182,7 +182,6 @@ module vdp_timing_control_sprite (
 		.sprite_mode2								( w_sprite_mode2							),
 		.reg_sprite_magify							( reg_sprite_magify							),
 		.reg_sprite_16x16							( reg_sprite_16x16							),
-		.reg_sprite_attribute_table_base			( reg_sprite_attribute_table_base			),
 		.reg_sprite_pattern_generator_table_base	( reg_sprite_pattern_generator_table_base	)
 	);
 

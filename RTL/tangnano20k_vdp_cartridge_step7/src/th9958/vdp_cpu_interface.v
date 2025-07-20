@@ -93,7 +93,7 @@ module vdp_cpu_interface (
 	output	[16:10]		reg_pattern_name_table_base,
 	output	[16:6]		reg_color_table_base,
 	output	[16:11]		reg_pattern_generator_table_base,
-	output	[16:9]		reg_sprite_attribute_table_base,
+	output	[16:7]		reg_sprite_attribute_table_base,
 	output	[16:11]		reg_sprite_pattern_generator_table_base,
 	output	[7:0]		reg_backdrop_color,
 	output				reg_sprite_disable,
@@ -125,7 +125,7 @@ module vdp_cpu_interface (
 	reg		[16:10]		ff_pattern_name_table_base;
 	reg		[16:6]		ff_color_table_base;
 	reg		[16:11]		ff_pattern_generator_table_base;
-	reg		[16:9]		ff_sprite_attribute_table_base;
+	reg		[16:7]		ff_sprite_attribute_table_base;
 	reg		[16:11]		ff_sprite_pattern_generator_table_base;
 	reg		[7:0]		ff_backdrop_color;
 	reg					ff_sprite_disable;
@@ -318,7 +318,7 @@ module vdp_cpu_interface (
 			ff_pattern_name_table_base <= 7'd0;
 			ff_color_table_base <= 11'd0;
 			ff_pattern_generator_table_base <= 6'd0;
-			ff_sprite_attribute_table_base <= 8'd0;
+			ff_sprite_attribute_table_base <= 10'd0;
 			ff_sprite_pattern_generator_table_base <= 6'd0;
 			ff_backdrop_color <= 8'd0;
 			ff_sprite_disable <= 1'b0;
@@ -370,9 +370,9 @@ module vdp_cpu_interface (
 				begin
 					ff_pattern_generator_table_base <= ff_1st_byte[5:0];
 				end
-			6'd5:	//	R#5 = [A14][A13][A12][A11][A10][A9][N/A][N/A]
+			6'd5:	//	R#5 = [A14][A13][A12][A11][A10][A9][A8][A7]
 				begin
-					ff_sprite_attribute_table_base[14:9] <= ff_1st_byte[7:2];
+					ff_sprite_attribute_table_base[14:7] <= ff_1st_byte;
 				end
 			6'd6:	//	R#6 = [N/A][N/A][A16][A15][A14][A13][A12][A11]
 				begin

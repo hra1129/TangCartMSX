@@ -152,7 +152,7 @@ module vdp (
 	wire		[16:10]	reg_pattern_name_table_base;
 	wire		[16:6]	reg_color_table_base;
 	wire		[16:11]	reg_pattern_generator_table_base;
-	wire		[16:9]	reg_sprite_attribute_table_base;
+	wire		[16:7]	reg_sprite_attribute_table_base;
 	wire		[16:11]	reg_sprite_pattern_generator_table_base;
 	wire		[7:0]	reg_backdrop_color;
 	wire				reg_sprite_disable;

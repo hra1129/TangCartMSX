@@ -101,7 +101,7 @@ module vdp_timing_control (
 	input		[16:10]	reg_pattern_name_table_base,
 	input		[16:6]	reg_color_table_base,
 	input		[16:11]	reg_pattern_generator_table_base,
-	input		[16:9]	reg_sprite_attribute_table_base,
+	input		[16:7]	reg_sprite_attribute_table_base,
 	input		[16:11]	reg_sprite_pattern_generator_table_base,
 	input				reg_sprite_magify,
 	input				reg_sprite_16x16,
