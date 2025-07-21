@@ -348,8 +348,8 @@ module vdp_sprite_makeup_pixel (
 	                 	  (  reg_sprite_16x16 &&  reg_sprite_magify ) ? { w_offset_x[9:5], 2'd0 }:	// 16x16 magnify
 	                 	                                                { w_offset_x[9:4], 1'd0 };	// 8x8 magnify or 16x16 normal
 
-	assign w_ec_shift	= w_color[7] ? 7'b1111100: 7'b0000000;
-	assign w_sprite_en	= ( w_overflow == w_ec_shift );
+	assign w_ec_shift	= { 5 { w_color[7] } };
+	assign w_sprite_en	= ( w_overflow == { w_ec_shift, 2'd0 } );
 	assign w_bit_sel	= reg_sprite_magify ? w_offset_x[4:1]: w_offset_x[3:0];
 
 	always @( posedge clk or negedge reset_n ) begin

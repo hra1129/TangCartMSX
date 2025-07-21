@@ -59,7 +59,6 @@ Compiling module 'vdp_sprite_select_visible_planes'("D:\github\HRA_product\TangC
 Compiling module 'vdp_sprite_info_collect'("D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_vdp_cartridge_step7\src\th9958\vdp_sprite_info_collect.v":58)
 WARN  (EX3791) : Expression size 4 truncated to fit in target size 3("D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_vdp_cartridge_step7\src\th9958\vdp_sprite_info_collect.v":263)
 Compiling module 'vdp_sprite_makeup_pixel'("D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_vdp_cartridge_step7\src\th9958\vdp_sprite_makeup_pixel.v":58)
-WARN  (EX3791) : Expression size 7 truncated to fit in target size 5("D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_vdp_cartridge_step7\src\th9958\vdp_sprite_makeup_pixel.v":351)
 WARN  (EX3791) : Expression size 8 truncated to fit in target size 4("D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_vdp_cartridge_step7\src\th9958\vdp_sprite_makeup_pixel.v":380)
 WARN  (EX3791) : Expression size 8 truncated to fit in target size 4("D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_vdp_cartridge_step7\src\th9958\vdp_sprite_makeup_pixel.v":385)
 WARN  (EX2565) : Input 'reg_212lines_mode' on this instance is undriven. Assigning to 0, simulation mismatch possible. Please assign the input or remove the declaration("D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_vdp_cartridge_step7\src\th9958\vdp_timing_control_sprite.v":156)
