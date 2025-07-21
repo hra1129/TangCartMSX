@@ -63,14 +63,15 @@ module vdp_sprite_makeup_pixel (
 	input				screen_active,
 
 	input				sprite_mode2,
+	input				reg_display_on,
 	input				reg_sprite_magify,
 	input				reg_sprite_16x16,
 	//	from select_visible_planes
 	input		[3:0]	selected_count,
 	//	from info_collect
 	input		[2:0]	makeup_plane,
-	input		[7:0]	selected_x,
-	input				selected_x_en,
+	input		[7:0]	plane_x,
+	input				plane_x_en,
 	input		[7:0]	pattern_left,
 	input				pattern_left_en,
 	input		[7:0]	pattern_right,
@@ -133,37 +134,57 @@ module vdp_sprite_makeup_pixel (
 	assign w_pattern_left	= { pattern_left[0] , pattern_left[1] , pattern_left[2] , pattern_left[3] , pattern_left[4] , pattern_left[5] , pattern_left[6] , pattern_left[7]  };
 	assign w_pattern_right	= { pattern_right[0], pattern_right[1], pattern_right[2], pattern_right[3], pattern_right[4], pattern_right[5], pattern_right[6], pattern_right[7] };
 
-	always @( posedge clk ) begin
-		if( pattern_left_en ) begin
+	always @( posedge clk or negedge reset_n ) begin
+		if( !reset_n ) begin
+			ff_pattern0 <= 16'd0;
+			ff_pattern1 <= 16'd0;
+			ff_pattern2 <= 16'd0;
+			ff_pattern3 <= 16'd0;
+			ff_pattern4 <= 16'd0;
+			ff_pattern5 <= 16'd0;
+			ff_pattern6 <= 16'd0;
+			ff_pattern7 <= 16'd0;
+		end
+		else if( pattern_left_en ) begin
 			case( makeup_plane )
-			3'd0:		ff_pattern0[ 7: 0]	<= pattern_left;
-			3'd1:		ff_pattern1[ 7: 0]	<= pattern_left;
-			3'd2:		ff_pattern2[ 7: 0]	<= pattern_left;
-			3'd3:		ff_pattern3[ 7: 0]	<= pattern_left;
-			3'd4:		ff_pattern4[ 7: 0]	<= pattern_left;
-			3'd5:		ff_pattern5[ 7: 0]	<= pattern_left;
-			3'd6:		ff_pattern6[ 7: 0]	<= pattern_left;
-			3'd7:		ff_pattern7[ 7: 0]	<= pattern_left;
-			default:	ff_pattern0[ 7: 0]	<= pattern_left;
+			3'd0:		ff_pattern0[ 7: 0]	<= w_pattern_left;
+			3'd1:		ff_pattern1[ 7: 0]	<= w_pattern_left;
+			3'd2:		ff_pattern2[ 7: 0]	<= w_pattern_left;
+			3'd3:		ff_pattern3[ 7: 0]	<= w_pattern_left;
+			3'd4:		ff_pattern4[ 7: 0]	<= w_pattern_left;
+			3'd5:		ff_pattern5[ 7: 0]	<= w_pattern_left;
+			3'd6:		ff_pattern6[ 7: 0]	<= w_pattern_left;
+			3'd7:		ff_pattern7[ 7: 0]	<= w_pattern_left;
+			default:	ff_pattern0[ 7: 0]	<= w_pattern_left;
 			endcase
 		end
 		else if( pattern_right_en ) begin
 			case( makeup_plane )
-			3'd0:		ff_pattern0[15: 8]	<= pattern_right;
-			3'd1:		ff_pattern1[15: 8]	<= pattern_right;
-			3'd2:		ff_pattern2[15: 8]	<= pattern_right;
-			3'd3:		ff_pattern3[15: 8]	<= pattern_right;
-			3'd4:		ff_pattern4[15: 8]	<= pattern_right;
-			3'd5:		ff_pattern5[15: 8]	<= pattern_right;
-			3'd6:		ff_pattern6[15: 8]	<= pattern_right;
-			3'd7:		ff_pattern7[15: 8]	<= pattern_right;
-			default:	ff_pattern0[15: 8]	<= pattern_right;
+			3'd0:		ff_pattern0[15: 8]	<= w_pattern_right;
+			3'd1:		ff_pattern1[15: 8]	<= w_pattern_right;
+			3'd2:		ff_pattern2[15: 8]	<= w_pattern_right;
+			3'd3:		ff_pattern3[15: 8]	<= w_pattern_right;
+			3'd4:		ff_pattern4[15: 8]	<= w_pattern_right;
+			3'd5:		ff_pattern5[15: 8]	<= w_pattern_right;
+			3'd6:		ff_pattern6[15: 8]	<= w_pattern_right;
+			3'd7:		ff_pattern7[15: 8]	<= w_pattern_right;
+			default:	ff_pattern0[15: 8]	<= w_pattern_right;
 			endcase
 		end
 	end
 
-	always @( posedge clk ) begin
-		if( color_en ) begin
+	always @( posedge clk or negedge reset_n ) begin
+		if( !reset_n ) begin
+			ff_color0 <= 8'd0;
+			ff_color1 <= 8'd0;
+			ff_color2 <= 8'd0;
+			ff_color3 <= 8'd0;
+			ff_color4 <= 8'd0;
+			ff_color5 <= 8'd0;
+			ff_color6 <= 8'd0;
+			ff_color7 <= 8'd0;
+		end
+		else if( color_en ) begin
 			case( makeup_plane )
 			3'd0:		ff_color0	<= color;
 			3'd1:		ff_color1	<= color;
@@ -178,18 +199,28 @@ module vdp_sprite_makeup_pixel (
 		end
 	end
 
-	always @( posedge clk ) begin
-		if( selected_x_en ) begin
+	always @( posedge clk or negedge reset_n ) begin
+		if( !reset_n ) begin
+			ff_x0 <= 8'd0;
+			ff_x1 <= 8'd0;
+			ff_x2 <= 8'd0;
+			ff_x3 <= 8'd0;
+			ff_x4 <= 8'd0;
+			ff_x5 <= 8'd0;
+			ff_x6 <= 8'd0;
+			ff_x7 <= 8'd0;
+		end
+		else if( plane_x_en ) begin
 			case( makeup_plane )
-			3'd0:		ff_x0	<= selected_x;
-			3'd1:		ff_x1	<= selected_x;
-			3'd2:		ff_x2	<= selected_x;
-			3'd3:		ff_x3	<= selected_x;
-			3'd4:		ff_x4	<= selected_x;
-			3'd5:		ff_x5	<= selected_x;
-			3'd6:		ff_x6	<= selected_x;
-			3'd7:		ff_x7	<= selected_x;
-			default:	ff_x0	<= selected_x;
+			3'd0:		ff_x0	<= plane_x;
+			3'd1:		ff_x1	<= plane_x;
+			3'd2:		ff_x2	<= plane_x;
+			3'd3:		ff_x3	<= plane_x;
+			3'd4:		ff_x4	<= plane_x;
+			3'd5:		ff_x5	<= plane_x;
+			3'd6:		ff_x6	<= plane_x;
+			3'd7:		ff_x7	<= plane_x;
+			default:	ff_x0	<= plane_x;
 			endcase
 		end
 	end
@@ -204,7 +235,7 @@ module vdp_sprite_makeup_pixel (
 			ff_current_plane	<= 4'd0;
 		end
 		else if( screen_pos_x == 13'h1FFF ) begin
-			ff_active			<= 1'b1;
+			ff_active			<= reg_display_on;
 			ff_planes			<= selected_count;
 			ff_current_plane	<= 4'd0;
 		end

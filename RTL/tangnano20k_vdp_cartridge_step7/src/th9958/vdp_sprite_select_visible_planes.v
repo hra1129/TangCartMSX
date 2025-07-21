@@ -78,6 +78,7 @@ module vdp_sprite_select_visible_planes (
 	output				start_info_collect,
 
 	input				sprite_mode2,
+	input				reg_display_on,
 	input				reg_sprite_magify,
 	input				reg_sprite_16x16,
 	input		[16:7]	reg_sprite_attribute_table_base
@@ -113,7 +114,7 @@ module vdp_sprite_select_visible_planes (
 			ff_current_plane_num	<= 5'd0;
 			ff_vram_valid			<= 1'b0;
 		end
-		else if( !screen_active ) begin
+		else if( !screen_active || !reg_display_on ) begin
 			//	hold
 		end
 		else if( w_phase == 3'd6 && w_sub_phase == 3'd0 ) begin
@@ -143,7 +144,7 @@ module vdp_sprite_select_visible_planes (
 			ff_pattern	<= 8'd0;
 			ff_color	<= 8'd0;
 		end
-		else if( !screen_active ) begin
+		else if( !screen_active || !reg_display_on ) begin
 			//	hold
 		end
 		else if( w_phase == 3'd7 && w_sub_phase == 3'd0 ) begin
@@ -157,7 +158,7 @@ module vdp_sprite_select_visible_planes (
 	// --------------------------------------------------------------------
 	//	Check visible plane
 	// --------------------------------------------------------------------
-	assign w_offset_y	= { 1'b0, ff_y } - { 1'b0, pixel_pos_y };
+	assign w_offset_y	= { 1'b0, pixel_pos_y } - { 1'b0, ff_y };
 	assign w_invisible	= (!reg_sprite_16x16 && !reg_sprite_magify) ?   w_offset_y[8:3]        : 
 	                  	  (!reg_sprite_16x16 || !reg_sprite_magify) ? { w_offset_y[8:4], 1'd0 }: { w_offset_y[8:5], 2'd0 };
 
@@ -166,7 +167,7 @@ module vdp_sprite_select_visible_planes (
 			ff_selected_count	<= 4'd0;
 			ff_selected_en		<= 1'b0;
 		end
-		else if( !screen_active ) begin
+		else if( !screen_active || !reg_display_on ) begin
 			//	hold
 		end
 		else if( w_phase == 3'd7 ) begin

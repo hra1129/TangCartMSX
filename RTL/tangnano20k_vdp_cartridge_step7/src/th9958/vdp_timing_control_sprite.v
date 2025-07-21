@@ -72,6 +72,7 @@ module vdp_timing_control_sprite (
 	output				display_color_en,
 
 	input		[4:0]	reg_screen_mode,
+	input				reg_display_on,
 	input				reg_sprite_magify,
 	input				reg_sprite_16x16,
 	input				reg_sprite_disable,
@@ -99,7 +100,8 @@ module vdp_timing_control_sprite (
 	wire		[3:0]	w_selected_count;
 	wire				w_start_info_collect;
 	wire				w_sprite_mode2;
-	wire				w_selected_x_en;
+	wire		[7:0]	w_plane_x;
+	wire				w_plane_x_en;
 	wire		[7:0]	w_pattern_left;
 	wire				w_pattern_left_en;
 	wire		[7:0]	w_pattern_right;
@@ -147,6 +149,7 @@ module vdp_timing_control_sprite (
 		.selected_count								( w_selected_count							),
 		.start_info_collect							( w_start_info_collect						),
 		.sprite_mode2								( w_sprite_mode2							),
+		.reg_display_on								( reg_display_on							),
 		.reg_sprite_magify							( reg_sprite_magify							),
 		.reg_sprite_16x16							( reg_sprite_16x16							),
 		.reg_sprite_attribute_table_base			( reg_sprite_attribute_table_base			)
@@ -171,8 +174,9 @@ module vdp_timing_control_sprite (
 		.selected_pattern							( w_selected_pattern						),
 		.selected_color								( w_selected_color							),
 		.selected_count								( w_selected_count							),
-		.selected_x_en								( w_selected_x_en							),
 		.makeup_plane								( w_makeup_plane							),
+		.plane_x									( w_plane_x									),
+		.plane_x_en									( w_plane_x_en								),
 		.pattern_left								( w_pattern_left							),
 		.pattern_left_en							( w_pattern_left_en							),
 		.pattern_right								( w_pattern_right							),
@@ -180,6 +184,7 @@ module vdp_timing_control_sprite (
 		.color										( w_color									),
 		.color_en									( w_color_en								),
 		.sprite_mode2								( w_sprite_mode2							),
+		.reg_display_on								( reg_display_on							),
 		.reg_sprite_magify							( reg_sprite_magify							),
 		.reg_sprite_16x16							( reg_sprite_16x16							),
 		.reg_sprite_pattern_generator_table_base	( reg_sprite_pattern_generator_table_base	)
@@ -194,12 +199,13 @@ module vdp_timing_control_sprite (
 		.screen_pos_x								( screen_pos_x								),
 		.screen_active								( screen_active								),
 		.sprite_mode2								( w_sprite_mode2							),
+		.reg_display_on								( reg_display_on							),
 		.reg_sprite_magify							( reg_sprite_magify							),
 		.reg_sprite_16x16							( reg_sprite_16x16							),
 		.selected_count								( w_selected_count							),
 		.makeup_plane								( w_makeup_plane							),
-		.selected_x									( w_selected_x								),
-		.selected_x_en								( w_selected_x_en							),
+		.plane_x									( w_plane_x									),
+		.plane_x_en									( w_plane_x_en								),
 		.pattern_left								( w_pattern_left							),
 		.pattern_left_en							( w_pattern_left_en							),
 		.pattern_right								( w_pattern_right							),

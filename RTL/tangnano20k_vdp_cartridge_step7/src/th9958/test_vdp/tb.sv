@@ -415,6 +415,27 @@ module tb ();
 			write_vram( i + 'h3800, i[7:0] );
 		end
 
+		//	Attribute
+		write_vram( 'h1B00, 0 );		//	[#0] Y
+		write_vram( 'h1B01, 10 );		//	[#0] X
+		write_vram( 'h1B02, 0 );		//	[#0] Pattern
+		write_vram( 'h1B03, 15 );		//	[#0] Color
+
+		write_vram( 'h1B04, 0 );		//	[#1] Y
+		write_vram( 'h1B05, 30 );		//	[#1] X
+		write_vram( 'h1B06, 4 );		//	[#1] Pattern
+		write_vram( 'h1B07, 14 );		//	[#1] Color
+
+		write_vram( 'h1B08, 0 );		//	[#2] Y
+		write_vram( 'h1B09, 100 );		//	[#2] X
+		write_vram( 'h1B0A, 8 );		//	[#2] Pattern
+		write_vram( 'h1B0B, 13 );		//	[#2] Color
+
+		write_vram( 'h1B0C, 0 );		//	[#3] Y
+		write_vram( 'h1B0D, 200 );		//	[#3] X
+		write_vram( 'h1B0E, 12 );		//	[#3] Pattern
+		write_vram( 'h1B0F, 12 + 128 );	//	[#3] Color
+
 		$display( "[test004] Video output observation" );
 		
 		// Run for several frames to observe video output

@@ -224,6 +224,7 @@ module vdp_timing_control (
 		.display_color								( sprite_display_color						),
 		.display_color_en							( sprite_display_color_en					),
 		.reg_screen_mode							( reg_screen_mode							),
+		.reg_display_on								( reg_display_on							),
 		.reg_sprite_magify							( reg_sprite_magify							),
 		.reg_sprite_16x16							( reg_sprite_16x16							),
 		.reg_sprite_disable							( reg_sprite_disable						),

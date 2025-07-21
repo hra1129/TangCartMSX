@@ -75,9 +75,10 @@ module vdp_sprite_info_collect (
 	input		[7:0]	selected_color,
 
 	input		[3:0]	selected_count,
-	output				selected_x_en,
 	//	to makeup_pixel
 	output		[2:0]	makeup_plane,
+	output		[7:0]	plane_x,
+	output				plane_x_en,
 	output		[7:0]	pattern_left,
 	output				pattern_left_en,
 	output		[7:0]	pattern_right,
@@ -86,6 +87,7 @@ module vdp_sprite_info_collect (
 	output				color_en,
 
 	input				sprite_mode2,
+	input				reg_display_on,
 	input				reg_sprite_magify,
 	input				reg_sprite_16x16,
 	input		[16:11]	reg_sprite_pattern_generator_table_base
@@ -138,7 +140,7 @@ module vdp_sprite_info_collect (
 			ff_selected_ram[6] <= 32'd0;
 			ff_selected_ram[7] <= 32'd0;
 		end
-		else if( screen_active ) begin
+		else if( screen_active && reg_display_on ) begin
 			if( selected_en ) begin
 				//	Update information RAM by select_visible_planes
 				ff_selected_ram[ ff_current_plane ] <= w_selected_d;
@@ -156,7 +158,7 @@ module vdp_sprite_info_collect (
 		if( !reset_n ) begin
 			ff_sprite_mode2 <= 1'b0;
 		end
-		else if( start_info_collect ) begin
+		else if( start_info_collect && reg_display_on ) begin
 			ff_sprite_mode2 <= sprite_mode2;
 		end
 	end
@@ -170,7 +172,7 @@ module vdp_sprite_info_collect (
 		if( !reset_n ) begin
 			ff_state			<= 2'd0;
 		end
-		else if( start_info_collect ) begin
+		else if( start_info_collect && reg_display_on ) begin
 			ff_state			<= 2'd0;
 		end
 		else if( screen_pos_x == 13'h1FFF ) begin
@@ -192,7 +194,7 @@ module vdp_sprite_info_collect (
 		else if( start_info_collect && selected_count != 4'd0 ) begin
 			ff_current_plane	<= 4'd0;
 			ff_vram_valid		<= 1'b0;
-			ff_active			<= 1'b1;
+			ff_active			<= reg_display_on;
 		end
 		else if( screen_pos_x == 13'h1FFF ) begin
 			ff_current_plane	<= 4'd0;
@@ -258,8 +260,9 @@ module vdp_sprite_info_collect (
 	assign vram_address		= ff_vram_address;
 	assign vram_valid		= ff_vram_valid;
 
-	assign selected_x_en	= (ff_active_d1 && w_sub_phase == 3'd0 && ff_state == 2'd1);
 	assign makeup_plane		= ff_current_plane_d1;
+	assign plane_x			= w_selected_x;
+	assign plane_x_en		= (ff_active_d1 && w_sub_phase == 3'd0 && ff_state == 2'd1);
 	assign pattern_left		= vram_rdata;
 	assign pattern_left_en	= (ff_active_d1 && w_sub_phase == 3'd0 && ff_state == 2'd2);
 	assign pattern_right	= reg_sprite_16x16 ? vram_rdata: 8'd0;
