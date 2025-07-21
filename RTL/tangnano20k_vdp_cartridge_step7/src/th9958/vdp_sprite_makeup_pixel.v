@@ -127,6 +127,12 @@ module vdp_sprite_makeup_pixel (
 	wire		[3:0]	w_bit_sel;
 	reg			[7:0]	ff_color;
 	reg					ff_color_en;
+	reg			[4:0]	ff_pixel_color_d0;
+	reg			[4:0]	ff_pixel_color_d1;
+	reg			[4:0]	ff_pixel_color_d2;
+	reg			[4:0]	ff_pixel_color_d3;
+	reg			[4:0]	ff_pixel_color_d4;
+	reg			[4:0]	ff_pixel_color_d5;
 
 	// --------------------------------------------------------------------
 	//	Latch information for visible sprite planes
@@ -338,8 +344,9 @@ module vdp_sprite_makeup_pixel (
 	);
 
 	assign w_offset_x	= screen_pos_x[12:3] - { 2'd0, w_x };
-	assign w_overflow	= ( !reg_sprite_16x16  ) ?   w_offset_x[9:3]:
-	                 	  (  reg_sprite_magify ) ? { w_offset_x[9:5], 2'd0 }: { w_offset_x[9:4], 1'd0 };
+	assign w_overflow	= ( !reg_sprite_16x16 && !reg_sprite_magify ) ?   w_offset_x[9:3]:			// 8x8 normal
+	                 	  (  reg_sprite_16x16 &&  reg_sprite_magify ) ? { w_offset_x[9:5], 2'd0 }:	// 16x16 magnify
+	                 	                                                { w_offset_x[9:4], 1'd0 };	// 8x8 magnify or 16x16 normal
 	assign w_ec_shift	= w_color[7] ? 7'h7E: 7'h00;
 	assign w_sprite_en	= ( w_overflow == w_ec_shift );
 	assign w_bit_sel	= reg_sprite_magify ? w_offset_x[4:1]: w_offset_x[3:0];
@@ -400,6 +407,25 @@ module vdp_sprite_makeup_pixel (
 		end
 	end
 
-	assign display_color		= ff_pixel_color;
-	assign display_color_en		= ff_pixel_color_en;
+	always @( posedge clk or negedge reset_n ) begin
+        if( !reset_n ) begin
+            ff_pixel_color_d0 <= 5'd0;
+            ff_pixel_color_d1 <= 5'd0;
+            ff_pixel_color_d2 <= 5'd0;
+            ff_pixel_color_d3 <= 5'd0;
+            ff_pixel_color_d4 <= 5'd0;
+            ff_pixel_color_d5 <= 5'd0;
+        end
+		else if( w_sub_phase == 3'd7 ) begin
+			ff_pixel_color_d0 <= { ff_pixel_color_en, ff_pixel_color };
+			ff_pixel_color_d1 <= ff_pixel_color_d0;
+			ff_pixel_color_d2 <= ff_pixel_color_d1;
+			ff_pixel_color_d3 <= ff_pixel_color_d2;
+			ff_pixel_color_d4 <= ff_pixel_color_d3;
+			ff_pixel_color_d5 <= ff_pixel_color_d4;
+		end
+	end
+
+	assign display_color_en		= ff_pixel_color_d5[4];
+	assign display_color		= ff_pixel_color_d5[3:0];
 endmodule
