@@ -120,10 +120,10 @@ module vdp_sprite_makeup_pixel (
 	reg			[3:0]	ff_pre_pixel_color;
 	reg					ff_pixel_color_en;
 	reg			[3:0]	ff_pixel_color;
-	wire		[9:0]	w_offset_x;
-	wire		[9:3]	w_overflow;
+	wire		[ 9:0]	w_offset_x;
+	wire		[ 9:3]	w_overflow;
 	wire				w_sprite_en;
-	wire		[6:0]	w_ec_shift;
+	wire		[4:0]	w_ec_shift;
 	wire		[3:0]	w_bit_sel;
 	reg			[7:0]	ff_color;
 	reg					ff_color_en;
@@ -347,7 +347,8 @@ module vdp_sprite_makeup_pixel (
 	assign w_overflow	= ( !reg_sprite_16x16 && !reg_sprite_magify ) ?   w_offset_x[9:3]:			// 8x8 normal
 	                 	  (  reg_sprite_16x16 &&  reg_sprite_magify ) ? { w_offset_x[9:5], 2'd0 }:	// 16x16 magnify
 	                 	                                                { w_offset_x[9:4], 1'd0 };	// 8x8 magnify or 16x16 normal
-	assign w_ec_shift	= w_color[7] ? 7'h7E: 7'h00;
+
+	assign w_ec_shift	= w_color[7] ? 7'b1111100: 7'b0000000;
 	assign w_sprite_en	= ( w_overflow == w_ec_shift );
 	assign w_bit_sel	= reg_sprite_magify ? w_offset_x[4:1]: w_offset_x[3:0];
 
@@ -357,7 +358,7 @@ module vdp_sprite_makeup_pixel (
 			ff_color		<= 4'd0;
 		end
 		else begin
-			ff_color_en		<= w_sprite_en & w_pattern[ w_bit_sel ] & w_active;
+			ff_color_en		<= w_sprite_en & w_pattern[ w_bit_sel ] & w_active & screen_active;
 			ff_color		<= w_color[3:0];
 		end
 	end

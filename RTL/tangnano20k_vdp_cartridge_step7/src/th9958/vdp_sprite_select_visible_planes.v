@@ -81,6 +81,7 @@ module vdp_sprite_select_visible_planes (
 	input				reg_display_on,
 	input				reg_sprite_magify,
 	input				reg_sprite_16x16,
+	input				reg_212lines_mode,
 	input		[16:7]	reg_sprite_attribute_table_base
 );
 	//	Phase
@@ -89,6 +90,7 @@ module vdp_sprite_select_visible_planes (
 	reg			[4:0]	ff_current_plane_num;		//	Plane#0...#31
 	reg					ff_vram_valid;
 	reg			[3:0]	ff_selected_count;
+	reg					ff_select_finish;
 	reg					ff_selected_en;
 	reg			[7:0]	ff_y;
 	reg			[7:0]	ff_x;
@@ -97,6 +99,7 @@ module vdp_sprite_select_visible_planes (
 	wire		[8:0]	w_offset_y;
 	wire		[8:3]	w_invisible;
 	wire				w_selected_full;
+	wire		[7:0]	w_finish_line;
 
 	// --------------------------------------------------------------------
 	//	Phase
@@ -104,7 +107,8 @@ module vdp_sprite_select_visible_planes (
 	assign w_phase			= screen_pos_x[5:3];
 	assign w_sub_phase		= screen_pos_x[2:0];
 	assign vram_address		= { reg_sprite_attribute_table_base, ff_current_plane_num, 2'd0 };
-	assign w_selected_full	= ff_selected_count[3] | (ff_selected_count[2] && !sprite_mode2);
+	assign w_selected_full	= ff_selected_count[3] | (ff_selected_count[2] && !sprite_mode2) | ff_select_finish;
+	assign w_finish_line	= reg_212lines_mode ? 8'd216: 8'd208;
 
 	// --------------------------------------------------------------------
 	//	Read VRAM request for sprite attribute table
@@ -166,9 +170,12 @@ module vdp_sprite_select_visible_planes (
 		if( !reset_n ) begin
 			ff_selected_count	<= 4'd0;
 			ff_selected_en		<= 1'b0;
+			ff_select_finish	<= 1'b0;
 		end
 		else if( screen_pos_x == 13'h1FFF ) begin
 			ff_selected_count	<= 4'd0;
+			ff_selected_en		<= 1'b0;
+			ff_select_finish	<= 1'b0;
 		end
 		else if( !screen_active || !reg_display_on ) begin
 			//	hold
@@ -176,13 +183,19 @@ module vdp_sprite_select_visible_planes (
 		else if( w_phase == 3'd7 ) begin
 			if( w_sub_phase == 3'd1 ) begin
 				if( w_invisible == 6'd0 && !w_selected_full ) begin
-					ff_selected_en <= 1'b1;
+					if( ff_y == w_finish_line ) begin
+						ff_select_finish	<= 1'b1;
+						ff_selected_en		<= 1'b0;
+					end
+					else begin
+						ff_selected_en		<= 1'b1;
+					end
 				end
 			end
 			else if( w_sub_phase == 3'd2 ) begin
 				if( ff_selected_en ) begin
 					ff_selected_count	<= ff_selected_count + 4'd1;
-					ff_selected_en <= 1'b0;
+					ff_selected_en		<= 1'b0;
 				end
 			end
 		end
