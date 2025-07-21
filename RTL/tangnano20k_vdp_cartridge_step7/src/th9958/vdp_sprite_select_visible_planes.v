@@ -167,14 +167,14 @@ module vdp_sprite_select_visible_planes (
 			ff_selected_count	<= 4'd0;
 			ff_selected_en		<= 1'b0;
 		end
+		else if( screen_pos_x == 13'h1FFF ) begin
+			ff_selected_count	<= 4'd0;
+		end
 		else if( !screen_active || !reg_display_on ) begin
 			//	hold
 		end
 		else if( w_phase == 3'd7 ) begin
-			if(      w_sub_phase == 3'd0 && screen_pos_x[10:6] == 5'd0 ) begin
-				ff_selected_count	<= 4'd0;
-			end
-			else if( w_sub_phase == 3'd1 ) begin
+			if( w_sub_phase == 3'd1 ) begin
 				if( w_invisible == 6'd0 && !w_selected_full ) begin
 					ff_selected_en <= 1'b1;
 				end
