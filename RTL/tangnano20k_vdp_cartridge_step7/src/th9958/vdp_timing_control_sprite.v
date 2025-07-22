@@ -71,6 +71,9 @@ module vdp_timing_control_sprite (
 	output		[3:0]	display_color,
 	output				display_color_en,
 
+	input				clear_sprite_collision,
+	output				sprite_collision,
+
 	input		[4:0]	reg_screen_mode,
 	input				reg_display_on,
 	input				reg_sprite_magify,
@@ -198,6 +201,8 @@ module vdp_timing_control_sprite (
 		.screen_pos_x								( screen_pos_x								),
 		.screen_active								( screen_active								),
 		.sprite_mode2								( w_sprite_mode2							),
+		.clear_sprite_collision						( clear_sprite_collision					),
+		.sprite_collision							( sprite_collision							),
 		.reg_display_on								( reg_display_on							),
 		.reg_sprite_magify							( reg_sprite_magify							),
 		.reg_sprite_16x16							( reg_sprite_16x16							),

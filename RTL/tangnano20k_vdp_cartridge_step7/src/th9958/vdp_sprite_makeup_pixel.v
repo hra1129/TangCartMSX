@@ -64,6 +64,7 @@ module vdp_sprite_makeup_pixel (
 
 	input				sprite_mode2,
 	input				reg_display_on,
+	input				reg_color0_opaque,
 	input				reg_sprite_magify,
 	input				reg_sprite_16x16,
 	//	from select_visible_planes
@@ -80,7 +81,10 @@ module vdp_sprite_makeup_pixel (
 	input				color_en,
 	//	to color_palette
 	output		[3:0]	display_color,
-	output				display_color_en
+	output				display_color_en,
+	//	to cpu_interface
+	input				clear_sprite_collision,
+	output				sprite_collision
 );
 	reg					ff_active;
 	reg			[3:0]	ff_planes;
@@ -133,6 +137,8 @@ module vdp_sprite_makeup_pixel (
 	reg			[4:0]	ff_pixel_color_d3;
 	reg			[4:0]	ff_pixel_color_d4;
 	reg			[4:0]	ff_pixel_color_d5;
+	reg			[4:0]	ff_pixel_color_d6;
+	reg					ff_collision;
 
 	// --------------------------------------------------------------------
 	//	Latch information for visible sprite planes
@@ -390,6 +396,29 @@ module vdp_sprite_makeup_pixel (
 		end
 	end
 
+	always @( posedge clk or negedge reset_n ) begin
+		if( !reset_n ) begin
+			ff_collision	<= 1'b0;
+		end
+		else if( screen_pos_x == 13'h1FFF || clear_sprite_collision ) begin
+			ff_collision	<= 1'b0;
+		end
+		else if( w_sub_phase == 3'd1 ) begin
+			//	hold
+		end
+		else begin
+			if( !ff_pre_pixel_color_en ) begin
+				//	hold
+			end
+			else begin
+				//	The dots of the sprite with the highest priority are already plotted.
+				if( ff_pre_pixel_color != 4'd0 || reg_color0_opaque ) begin
+					ff_collision	<= 1'b1;
+				end
+			end
+		end
+	end
+
 	// --------------------------------------------------------------------
 	//	[delay 9] latch pixel color
 	// --------------------------------------------------------------------
@@ -409,14 +438,15 @@ module vdp_sprite_makeup_pixel (
 	end
 
 	always @( posedge clk or negedge reset_n ) begin
-        if( !reset_n ) begin
-            ff_pixel_color_d0 <= 5'd0;
-            ff_pixel_color_d1 <= 5'd0;
-            ff_pixel_color_d2 <= 5'd0;
-            ff_pixel_color_d3 <= 5'd0;
-            ff_pixel_color_d4 <= 5'd0;
-            ff_pixel_color_d5 <= 5'd0;
-        end
+		if( !reset_n ) begin
+			ff_pixel_color_d0 <= 5'd0;
+			ff_pixel_color_d1 <= 5'd0;
+			ff_pixel_color_d2 <= 5'd0;
+			ff_pixel_color_d3 <= 5'd0;
+			ff_pixel_color_d4 <= 5'd0;
+			ff_pixel_color_d5 <= 5'd0;
+			ff_pixel_color_d6 <= 5'd0;
+		end
 		else if( w_sub_phase == 3'd7 ) begin
 			ff_pixel_color_d0 <= { ff_pixel_color_en, ff_pixel_color };
 			ff_pixel_color_d1 <= ff_pixel_color_d0;
@@ -424,9 +454,10 @@ module vdp_sprite_makeup_pixel (
 			ff_pixel_color_d3 <= ff_pixel_color_d2;
 			ff_pixel_color_d4 <= ff_pixel_color_d3;
 			ff_pixel_color_d5 <= ff_pixel_color_d4;
+			ff_pixel_color_d6 <= ff_pixel_color_d5;
 		end
 	end
 
-	assign display_color_en		= ff_pixel_color_d5[4];
-	assign display_color		= ff_pixel_color_d5[3:0];
+	assign display_color_en		= ff_pixel_color_d6[4];
+	assign display_color		= ff_pixel_color_d6[3:0];
 endmodule

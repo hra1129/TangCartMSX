@@ -86,6 +86,9 @@ module vdp_cpu_interface (
 	input				intr_line,				//	pulse
 	input				intr_frame,				//	pulse
 
+	output				clear_sprite_collision,	//	pulse
+	input				sprite_collision,
+
 	output	[4:0]		reg_screen_mode,
 	output				reg_sprite_magify,
 	output				reg_sprite_16x16,
@@ -510,7 +513,7 @@ module vdp_cpu_interface (
 		end
 		else if( bus_valid && !bus_write && w_ready && bus_address == 2'd1 ) begin
 			case( ff_status_register_pointer )
-			4'd0:		ff_bus_rdata <= { ff_frame_interrupt, 1'b0, 1'b0, 5'b00000 };
+			4'd0:		ff_bus_rdata <= { ff_frame_interrupt, sprite_collision, 1'b0, 5'b00000 };
 			4'd1:		ff_bus_rdata <= { 2'd0, 5'b00010, ff_line_interrupt };
 			4'd2:		ff_bus_rdata <= { 1'b0, 1'b0, 1'b0, 1'b0, 2'b11, 1'b0, 1'b0 };
 			4'd3:		ff_bus_rdata <= 8'd0;
@@ -529,6 +532,8 @@ module vdp_cpu_interface (
 			ff_bus_rdata_en <= 1'b0;
 		end
 	end
+
+	assign clear_sprite_collision	= (bus_valid && !bus_write && w_ready && bus_address == 2'd1 && ff_status_register_pointer == 4'd0);
 
 	// --------------------------------------------------------------------
 	//	Interrupt

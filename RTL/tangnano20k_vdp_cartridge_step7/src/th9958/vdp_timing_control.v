@@ -90,6 +90,9 @@ module vdp_timing_control (
 	output		[3:0]	sprite_display_color,
 	output				sprite_display_color_en,
 
+	input				clear_sprite_collision,
+	output				sprite_collision,
+
 	input				reg_50hz_mode,
 	input				reg_212lines_mode,
 	input				reg_interlace_mode,
@@ -222,6 +225,8 @@ module vdp_timing_control (
 		.vram_rdata8								( sprite_vram_rdata8						),
 		.display_color								( sprite_display_color						),
 		.display_color_en							( sprite_display_color_en					),
+		.clear_sprite_collision						( clear_sprite_collision					),
+		.sprite_collision							( sprite_collision							),
 		.reg_screen_mode							( reg_screen_mode							),
 		.reg_display_on								( reg_display_on							),
 		.reg_sprite_magify							( reg_sprite_magify							),

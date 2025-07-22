@@ -145,6 +145,9 @@ module vdp (
 	wire		[31:0]	w_command_vram_rdata;
 	wire				w_command_vram_rdata_en;
 
+	wire				w_clear_sprite_collision;
+	wire				w_sprite_collision;
+
 	wire		[4:0]	reg_screen_mode;
 	wire				reg_sprite_magify;
 	wire				reg_sprite_16x16;
@@ -202,6 +205,8 @@ module vdp (
 		.palette_r									( w_palette_r								),
 		.palette_g									( w_palette_g								),
 		.palette_b									( w_palette_b								),
+		.clear_sprite_collision						( w_clear_sprite_collision					),
+		.sprite_collision							( w_sprite_collision						),
 		.reg_screen_mode							( reg_screen_mode							),
 		.reg_sprite_magify							( reg_sprite_magify							),
 		.reg_sprite_16x16							( reg_sprite_16x16							),
@@ -262,6 +267,8 @@ module vdp (
 		.sprite_vram_rdata8							( w_sprite_vram_rdata8						),
 		.sprite_display_color						( w_sprite_display_color					),
 		.sprite_display_color_en					( w_sprite_display_color_en					),
+		.clear_sprite_collision						( w_clear_sprite_collision					),
+		.sprite_collision							( w_sprite_collision						),
 		.reg_50hz_mode								( reg_50hz_mode								),
 		.reg_212lines_mode							( reg_212lines_mode							),
 		.reg_interlace_mode							( reg_interlace_mode						),

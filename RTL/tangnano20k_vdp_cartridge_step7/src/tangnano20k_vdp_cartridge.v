@@ -179,7 +179,7 @@ module tangnano20k_vdp_cartridge (
 
 	assign w_bus_rdata		= ( w_bus_gpio_rdata_en		) ? w_bus_gpio_rdata:
 	                  		  ( w_bus_vdp_rdata_en		) ? w_bus_gpio_rdata: 8'hFF;
-	assign w_bus_rdata_en	= w_bus_gpio_rdata_en;	// | w_bus_vdp_rdata_en;
+	assign w_bus_rdata_en	= w_bus_gpio_rdata_en | w_bus_vdp_rdata_en;
 	assign w_bus_ready		= w_bus_vdp_ready;
 
 	// --------------------------------------------------------------------
@@ -246,7 +246,8 @@ module tangnano20k_vdp_cartridge (
 		.display_b			( w_video_b				)
 	);
 
-	assign w_bus_vdp_ioreq	= w_bus_ioreq & ( {w_bus_address[7:2], 2'd0} == 8'h98 );
+//	assign w_bus_vdp_ioreq	= w_bus_ioreq & ( {w_bus_address[7:2], 2'd0} == 8'h98 );
+	assign w_bus_vdp_ioreq	= w_bus_ioreq & ( {w_bus_address[7:2], 2'd0} == 8'h88 );
 
 //	vdp_inst u_v9958 (
 //		.clk				( clk42m				),
