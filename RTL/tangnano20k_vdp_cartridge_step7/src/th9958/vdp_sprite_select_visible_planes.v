@@ -182,14 +182,12 @@ module vdp_sprite_select_visible_planes (
 		end
 		else if( w_phase == 3'd7 ) begin
 			if( w_sub_phase == 3'd1 ) begin
-				if( w_invisible == 6'd0 && !w_selected_full ) begin
-					if( ff_y == w_finish_line ) begin
-						ff_select_finish	<= 1'b1;
-						ff_selected_en		<= 1'b0;
-					end
-					else begin
-						ff_selected_en		<= 1'b1;
-					end
+				if( ff_y == w_finish_line ) begin
+					ff_select_finish	<= 1'b1;
+					ff_selected_en		<= 1'b0;
+				end
+				else if( w_invisible == 6'd0 && !w_selected_full ) begin
+					ff_selected_en		<= 1'b1;
 				end
 			end
 			else if( w_sub_phase == 3'd2 ) begin
