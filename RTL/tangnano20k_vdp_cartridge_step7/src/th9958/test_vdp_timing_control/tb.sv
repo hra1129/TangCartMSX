@@ -110,7 +110,6 @@ module tb ();
 	reg				reg_sprite_magify;
 	reg				reg_sprite_16x16;
 	reg				reg_sprite_disable;
-	reg				reg_color0_opaque;
 	reg		[7:0]	reg_backdrop_color;
 	reg				reg_left_mask;
 
@@ -161,7 +160,6 @@ module tb ();
 		.reg_sprite_magify							( reg_sprite_magify							),
 		.reg_sprite_16x16							( reg_sprite_16x16							),
 		.reg_sprite_disable							( reg_sprite_disable						),
-		.reg_color0_opaque							( reg_color0_opaque							),
 		.reg_backdrop_color							( reg_backdrop_color						),
 		.reg_left_mask								( reg_left_mask								)
 	);
@@ -209,7 +207,6 @@ module tb ();
 		reg_sprite_magify = 0;
 		reg_sprite_16x16 = 0;
 		reg_sprite_disable = 0;
-		reg_color0_opaque = 0;
 		reg_backdrop_color = 8'h0F;				// 背景色（白）
 		reg_left_mask = 1'b0;
 

@@ -79,7 +79,8 @@ module vdp_color_palette (
 
 	input		[4:0]	reg_screen_mode,
 	input				reg_yjk_mode,
-	input				reg_yae_mode
+	input				reg_yae_mode,
+	input				reg_color0_opaque
 );
 	wire				w_256colors_mode;
 	wire				w_4colors_mode;
@@ -183,7 +184,7 @@ module vdp_color_palette (
 			if( w_t12_mode ) begin
 				ff_display_color <= { 4'd0, display_color_t12 };
 			end
-			else if( display_color_sprite_en ) begin
+			else if( display_color_sprite_en && (display_color_sprite != 4'd0 || reg_color0_opaque) ) begin
 				ff_display_color <= { 4'd0, display_color_sprite };
 			end
 			else if( w_g4567_mode ) begin

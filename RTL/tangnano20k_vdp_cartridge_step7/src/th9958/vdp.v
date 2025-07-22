@@ -278,7 +278,6 @@ module vdp (
 		.reg_sprite_magify							( reg_sprite_magify							),
 		.reg_sprite_16x16							( reg_sprite_16x16							),
 		.reg_sprite_disable							( reg_sprite_disable						),
-		.reg_color0_opaque							( reg_color0_opaque							),
 		.reg_backdrop_color							( reg_backdrop_color						),
 		.reg_left_mask								( reg_left_mask								)
 	);
@@ -356,7 +355,8 @@ module vdp (
 		.vdp_b										( w_vdp_b									),
 		.reg_screen_mode							( reg_screen_mode							),
 		.reg_yjk_mode								( reg_yjk_mode								),
-		.reg_yae_mode								( reg_yae_mode								)
+		.reg_yae_mode								( reg_yae_mode								),
+		.reg_color0_opaque							( reg_color0_opaque							)
 	);
 
 	// --------------------------------------------------------------------
