@@ -60,6 +60,7 @@ module vdp_sprite_makeup_pixel (
 	input				clk,					//	42.95454MHz
 
 	input		[12:0]	screen_pos_x,
+	input		[7:0]	pixel_pos_y,
 	input				screen_active,
 
 	input				sprite_mode2,
@@ -84,7 +85,10 @@ module vdp_sprite_makeup_pixel (
 	output				display_color_en,
 	//	to cpu_interface
 	input				clear_sprite_collision,
-	output				sprite_collision
+	output				sprite_collision,
+	input				clear_sprite_collision_xy,
+	output		[8:0]	sprite_collision_x,
+	output		[9:0]	sprite_collision_y
 );
 	reg					ff_active;
 	reg			[3:0]	ff_planes;
@@ -139,6 +143,8 @@ module vdp_sprite_makeup_pixel (
 	reg			[4:0]	ff_pixel_color_d5;
 	reg			[4:0]	ff_pixel_color_d6;
 	reg					ff_collision;
+	reg			[8:0]	ff_sprite_collision_x;
+	reg			[9:0]	ff_sprite_collision_y;
 
 	// --------------------------------------------------------------------
 	//	Latch information for visible sprite planes
@@ -398,10 +404,16 @@ module vdp_sprite_makeup_pixel (
 
 	always @( posedge clk or negedge reset_n ) begin
 		if( !reset_n ) begin
-			ff_collision	<= 1'b0;
+			ff_collision			<= 1'b0;
+			ff_sprite_collision_x	<= 9'd0;
+			ff_sprite_collision_y	<= 10'd0;
 		end
-		else if( screen_pos_x == 13'h1FFF || clear_sprite_collision ) begin
-			ff_collision	<= 1'b0;
+		else if( clear_sprite_collision ) begin
+			ff_collision			<= 1'b0;
+		end
+		else if( clear_sprite_collision_xy ) begin
+			ff_sprite_collision_x	<= 9'd0;
+			ff_sprite_collision_y	<= 10'd0;
 		end
 		else if( w_sub_phase == 3'd1 ) begin
 			//	hold
@@ -410,10 +422,12 @@ module vdp_sprite_makeup_pixel (
 			if( !ff_pre_pixel_color_en ) begin
 				//	hold
 			end
-			else begin
+			else if( !ff_collision ) begin
 				//	The dots of the sprite with the highest priority are already plotted.
 				if( ff_pre_pixel_color != 4'd0 || reg_color0_opaque ) begin
-					ff_collision	<= 1'b1;
+					ff_collision			<= 1'b1;
+					ff_sprite_collision_x	<= screen_pos_x[11:3] + 9'd12;
+					ff_sprite_collision_y	<= { 2'd0, pixel_pos_y } + 10'd8;
 				end
 			end
 		end

@@ -147,6 +147,9 @@ module vdp (
 
 	wire				w_clear_sprite_collision;
 	wire				w_sprite_collision;
+	wire				w_clear_sprite_collision_xy;
+	wire		[8:0]	w_sprite_collision_x;
+	wire		[9:0]	w_sprite_collision_y;
 
 	wire		[4:0]	reg_screen_mode;
 	wire				reg_sprite_magify;
@@ -207,6 +210,9 @@ module vdp (
 		.palette_b									( w_palette_b								),
 		.clear_sprite_collision						( w_clear_sprite_collision					),
 		.sprite_collision							( w_sprite_collision						),
+		.clear_sprite_collision_xy					( w_clear_sprite_collision_xy				),
+		.sprite_collision_x							( w_sprite_collision_x						),
+		.sprite_collision_y							( w_sprite_collision_y						),
 		.reg_screen_mode							( reg_screen_mode							),
 		.reg_sprite_magify							( reg_sprite_magify							),
 		.reg_sprite_16x16							( reg_sprite_16x16							),
@@ -269,6 +275,9 @@ module vdp (
 		.sprite_display_color_en					( w_sprite_display_color_en					),
 		.clear_sprite_collision						( w_clear_sprite_collision					),
 		.sprite_collision							( w_sprite_collision						),
+		.clear_sprite_collision_xy					( w_clear_sprite_collision_xy				),
+		.sprite_collision_x							( w_sprite_collision_x						),
+		.sprite_collision_y							( w_sprite_collision_y						),
 		.reg_50hz_mode								( reg_50hz_mode								),
 		.reg_212lines_mode							( reg_212lines_mode							),
 		.reg_interlace_mode							( reg_interlace_mode						),
@@ -277,6 +286,7 @@ module vdp (
 		.reg_horizontal_offset						( reg_horizontal_offset						),
 		.reg_screen_mode							( reg_screen_mode							),
 		.reg_display_on								( reg_display_on							),
+		.reg_color0_opaque							( reg_color0_opaque							),
 		.reg_pattern_name_table_base				( reg_pattern_name_table_base				),
 		.reg_color_table_base						( reg_color_table_base						),
 		.reg_pattern_generator_table_base			( reg_pattern_generator_table_base			),

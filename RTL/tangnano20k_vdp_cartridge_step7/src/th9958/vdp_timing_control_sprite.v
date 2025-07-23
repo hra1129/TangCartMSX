@@ -61,6 +61,7 @@ module vdp_timing_control_sprite (
 
 	input		[12:0]	screen_pos_x,
 	input		[ 9:0]	screen_pos_y,
+	input		[7:0]	pixel_pos_y,
 	input				screen_active,
 
 	output		[16:0]	vram_address,
@@ -73,11 +74,16 @@ module vdp_timing_control_sprite (
 
 	input				clear_sprite_collision,
 	output				sprite_collision,
+	input				clear_sprite_collision_xy,
+	output		[8:0]	sprite_collision_x,
+	output		[9:0]	sprite_collision_y,
 
 	input		[4:0]	reg_screen_mode,
 	input				reg_display_on,
+	input				reg_color0_opaque,
 	input				reg_sprite_magify,
 	input				reg_sprite_16x16,
+	input				reg_212lines_mode,
 	input				reg_sprite_disable,
 	input	[16:7]		reg_sprite_attribute_table_base,
 	input	[16:11]		reg_sprite_pattern_generator_table_base,
@@ -154,6 +160,7 @@ module vdp_timing_control_sprite (
 		.reg_display_on								( reg_display_on							),
 		.reg_sprite_magify							( reg_sprite_magify							),
 		.reg_sprite_16x16							( reg_sprite_16x16							),
+		.reg_212lines_mode							( reg_212lines_mode							),
 		.reg_sprite_attribute_table_base			( reg_sprite_attribute_table_base			)
 	);
 
@@ -199,11 +206,16 @@ module vdp_timing_control_sprite (
 		.reset_n									( reset_n									),
 		.clk										( clk										),
 		.screen_pos_x								( screen_pos_x								),
+		.pixel_pos_y								( pixel_pos_y								),
 		.screen_active								( screen_active								),
 		.sprite_mode2								( w_sprite_mode2							),
 		.clear_sprite_collision						( clear_sprite_collision					),
 		.sprite_collision							( sprite_collision							),
+		.clear_sprite_collision_xy					( clear_sprite_collision_xy					),
+		.sprite_collision_x							( sprite_collision_x						),
+		.sprite_collision_y							( sprite_collision_y						),
 		.reg_display_on								( reg_display_on							),
+		.reg_color0_opaque							( reg_color0_opaque							),
 		.reg_sprite_magify							( reg_sprite_magify							),
 		.reg_sprite_16x16							( reg_sprite_16x16							),
 		.selected_count								( w_selected_count							),

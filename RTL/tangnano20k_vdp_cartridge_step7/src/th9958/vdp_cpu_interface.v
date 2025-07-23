@@ -83,11 +83,14 @@ module vdp_cpu_interface (
 	output		[2:0]	palette_b,
 
 	output				int_n,
-	input				intr_line,				//	pulse
-	input				intr_frame,				//	pulse
+	input				intr_line,					//	pulse
+	input				intr_frame,					//	pulse
 
-	output				clear_sprite_collision,	//	pulse
+	output				clear_sprite_collision,		//	pulse
 	input				sprite_collision,
+	output				clear_sprite_collision_xy,	//	pulse
+	input		[8:0]	sprite_collision_x,
+	input		[9:0]	sprite_collision_y,
 
 	output	[4:0]		reg_screen_mode,
 	output				reg_sprite_magify,
@@ -516,10 +519,10 @@ module vdp_cpu_interface (
 			4'd0:		ff_bus_rdata <= { ff_frame_interrupt, sprite_collision, 1'b0, 5'b00000 };
 			4'd1:		ff_bus_rdata <= { 2'd0, 5'b00010, ff_line_interrupt };
 			4'd2:		ff_bus_rdata <= { 1'b0, 1'b0, 1'b0, 1'b0, 2'b11, 1'b0, 1'b0 };
-			4'd3:		ff_bus_rdata <= 8'd0;
-			4'd4:		ff_bus_rdata <= { 7'b1111111, 1'b0 };
-			4'd5:		ff_bus_rdata <= 8'd0;
-			4'd6:		ff_bus_rdata <= { 6'b111111, 2'b00 };
+			4'd3:		ff_bus_rdata <= sprite_collision_x[7:0];
+			4'd4:		ff_bus_rdata <= { 7'b1111111, sprite_collision_x[8] };
+			4'd5:		ff_bus_rdata <= sprite_collision_y[7:0];
+			4'd6:		ff_bus_rdata <= { 6'b111111, sprite_collision_y[9:8] };
 			4'd7:		ff_bus_rdata <= 8'd0;
 			4'd8:		ff_bus_rdata <= 8'd0;
 			4'd9:		ff_bus_rdata <= { 7'b1111111, 1'b0 };
@@ -533,7 +536,8 @@ module vdp_cpu_interface (
 		end
 	end
 
-	assign clear_sprite_collision	= (bus_valid && !bus_write && w_ready && bus_address == 2'd1 && ff_status_register_pointer == 4'd0);
+	assign clear_sprite_collision		= (bus_valid && !bus_write && w_ready && bus_address == 2'd1 && ff_status_register_pointer == 4'd0);
+	assign clear_sprite_collision_xy	= (bus_valid && !bus_write && w_ready && bus_address == 2'd1 && ff_status_register_pointer == 4'd5);
 
 	// --------------------------------------------------------------------
 	//	Interrupt
