@@ -171,7 +171,7 @@ module vdp_timing_control_t12 (
 		else if( screen_pos_x == 13'h1FFF ) begin
 			ff_h_active <= 1'b1;
 		end
-		else if( ff_pos_x == 6'd39 && ff_phase == 3'd5 ) begin
+		else if( ff_pos_x == 6'd40 && ff_phase == 3'd5 ) begin
 			ff_h_active <= 1'b0;
 		end
 	end

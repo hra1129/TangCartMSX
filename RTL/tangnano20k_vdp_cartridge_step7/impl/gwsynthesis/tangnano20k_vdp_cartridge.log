@@ -12,7 +12,7 @@ Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_vdp_ca
 Undeclared symbol 'slot_int', assumed default net type 'wire'("D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_vdp_cartridge_step7\src\tangnano20k_vdp_cartridge.v":167)
 Undeclared symbol 'int_n', assumed default net type 'wire'("D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_vdp_cartridge_step7\src\tangnano20k_vdp_cartridge.v":234)
 Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_vdp_cartridge_step7\src\th9958\vdp.v'
-Undeclared symbol 'w_cpu_vram_ready', assumed default net type 'wire'("D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_vdp_cartridge_step7\src\th9958\vdp.v":196)
+Undeclared symbol 'w_cpu_vram_ready', assumed default net type 'wire'("D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_vdp_cartridge_step7\src\th9958\vdp.v":199)
 Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_vdp_cartridge_step7\src\th9958\vdp_color_palette.v'
 Undeclared symbol 'w_high_resolution', assumed default net type 'wire'("D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_vdp_cartridge_step7\src\th9958\vdp_color_palette.v":155)
 Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_vdp_cartridge_step7\src\th9958\vdp_color_palette_ram.v'
@@ -53,17 +53,13 @@ Compiling module 'vdp_timing_control_t12'("D:\github\HRA_product\TangCartMSX\RTL
 Compiling module 'vdp_timing_control_g123m'("D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_vdp_cartridge_step7\src\th9958\vdp_timing_control_g123m.v":58)
 Compiling module 'vdp_timing_control_g4567'("D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_vdp_cartridge_step7\src\th9958\vdp_timing_control_g4567.v":58)
 WARN  (EX3791) : Expression size 18 truncated to fit in target size 17("D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_vdp_cartridge_step7\src\th9958\vdp_timing_control_g4567.v":136)
-WARN  (EX3073) : Port 'reg_212lines_mode' remains unconnected for this instance("D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_vdp_cartridge_step7\src\th9958\vdp_timing_control_sprite.v":158)
-WARN  (EX3073) : Port 'reg_color0_opaque' remains unconnected for this instance("D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_vdp_cartridge_step7\src\th9958\vdp_timing_control_sprite.v":221)
 Compiling module 'vdp_timing_control_sprite'("D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_vdp_cartridge_step7\src\th9958\vdp_timing_control_sprite.v":58)
 Compiling module 'vdp_sprite_select_visible_planes'("D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_vdp_cartridge_step7\src\th9958\vdp_sprite_select_visible_planes.v":58)
 Compiling module 'vdp_sprite_info_collect'("D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_vdp_cartridge_step7\src\th9958\vdp_sprite_info_collect.v":58)
 WARN  (EX3791) : Expression size 4 truncated to fit in target size 3("D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_vdp_cartridge_step7\src\th9958\vdp_sprite_info_collect.v":263)
 Compiling module 'vdp_sprite_makeup_pixel'("D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_vdp_cartridge_step7\src\th9958\vdp_sprite_makeup_pixel.v":58)
-WARN  (EX3791) : Expression size 8 truncated to fit in target size 4("D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_vdp_cartridge_step7\src\th9958\vdp_sprite_makeup_pixel.v":386)
-WARN  (EX3791) : Expression size 8 truncated to fit in target size 4("D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_vdp_cartridge_step7\src\th9958\vdp_sprite_makeup_pixel.v":391)
-WARN  (EX2565) : Input 'reg_212lines_mode' on this instance is undriven. Assigning to 0, simulation mismatch possible. Please assign the input or remove the declaration("D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_vdp_cartridge_step7\src\th9958\vdp_timing_control_sprite.v":158)
-WARN  (EX2565) : Input 'reg_color0_opaque' on this instance is undriven. Assigning to 0, simulation mismatch possible. Please assign the input or remove the declaration("D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_vdp_cartridge_step7\src\th9958\vdp_timing_control_sprite.v":221)
+WARN  (EX3791) : Expression size 8 truncated to fit in target size 4("D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_vdp_cartridge_step7\src\th9958\vdp_sprite_makeup_pixel.v":392)
+WARN  (EX3791) : Expression size 8 truncated to fit in target size 4("D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_vdp_cartridge_step7\src\th9958\vdp_sprite_makeup_pixel.v":397)
 Compiling module 'vdp_vram_interface'("D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_vdp_cartridge_step7\src\th9958\vdp_vram_interface.v":58)
 Compiling module 'vdp_color_palette'("D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_vdp_cartridge_step7\src\th9958\vdp_color_palette.v":58)
 Compiling module 'vdp_color_palette_ram'("D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_vdp_cartridge_step7\src\th9958\vdp_color_palette_ram.v":58)
@@ -83,7 +79,7 @@ Compiling module '**'("D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_vdp_car
 Compiling module 'ip_sdram'("D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_vdp_cartridge_step7\src\sdram\ip_sdram_tangnano20k_c.v":57)
 WARN  (EX3791) : Expression size 32 truncated to fit in target size 14("D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_vdp_cartridge_step7\src\sdram\ip_sdram_tangnano20k_c.v":269)
 NOTE  (EX0101) : Current top module is "tangnano20k_vdp_cartridge"
-WARN  (EX0211) : The output port "sprite_collision" of module "vdp_sprite_makeup_pixel" has no driver, assigning undriven bits to Z, simulation mismatch possible("D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_vdp_cartridge_step7\src\th9958\vdp_sprite_makeup_pixel.v":87)
+WARN  (EX0211) : The output port "sprite_collision" of module "vdp_sprite_makeup_pixel" has no driver, assigning undriven bits to Z, simulation mismatch possible("D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_vdp_cartridge_step7\src\th9958\vdp_sprite_makeup_pixel.v":88)
 [5%] Running netlist conversion ...
 WARN  (CV0016) : Input clk is unused("D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_vdp_cartridge_step7\src\tangnano20k_vdp_cartridge.v":25)
 WARN  (CV0016) : Input dipsw is unused("D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_vdp_cartridge_step7\src\tangnano20k_vdp_cartridge.v":38)

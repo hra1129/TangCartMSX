@@ -474,4 +474,6 @@ module vdp_sprite_makeup_pixel (
 
 	assign display_color_en		= ff_pixel_color_d6[4];
 	assign display_color		= ff_pixel_color_d6[3:0];
+	assign sprite_collision_x   = ff_sprite_collision_x;
+	assign sprite_collision_y   = ff_sprite_collision_y;
 endmodule
