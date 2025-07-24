@@ -143,7 +143,8 @@ module vdp_cpu_interface (
 	reg		[7:0]		ff_text_back_color;
 	reg		[7:0]		ff_blink_period;
 	reg		[3:0]		ff_status_register_pointer;
-	reg		[4:0]		ff_color_palette_address;
+	reg		[3:0]		ff_color_palette_address;
+	reg					ff_color_palette_g_phase;
 	reg					ff_color_palette_valid;
 	reg		[2:0]		ff_palette_r;
 	reg		[2:0]		ff_palette_g;
@@ -472,8 +473,9 @@ module vdp_cpu_interface (
 	// --------------------------------------------------------------------
 	always @( posedge clk or negedge reset_n ) begin
 		if( !reset_n ) begin
-			ff_color_palette_address <= 5'd0;
+			ff_color_palette_address <= 4'd0;
 			ff_color_palette_valid <= 1'b0;
+			ff_color_palette_g_phase <= 1'b0;
 			ff_palette_r <= 3'd0;
 			ff_palette_g <= 3'd0;
 			ff_palette_b <= 3'd0;
@@ -481,23 +483,26 @@ module vdp_cpu_interface (
 		else if( ff_register_write ) begin
 			if( ff_register_num == 6'd16 ) begin
 				//	R#16 = [N/A][N/A][N/A][N/A][C3][C2][C1][C0]
-				ff_color_palette_address <= { ff_1st_byte[3:0], 1'b0 };
+				ff_color_palette_address <= ff_1st_byte[3:0];
+				ff_color_palette_g_phase <= 1'b0;
 			end
 		end
 		else if( bus_valid && bus_write && w_ready && bus_address == 2'd2 ) begin
-			if( ff_color_palette_address[0] == 1'b0 ) begin
+			if( ff_color_palette_g_phase == 1'b0 ) begin
 				//	P#2 = [0][R][R][R][0][B][B][B]
 				ff_palette_r <= bus_wdata[6:4];
 				ff_palette_b <= bus_wdata[2:0];
+				ff_color_palette_g_phase <= 1'b1;
 			end
 			else begin
 				//	P#2 = [0][0][0][0][0][G][G][G]
 				ff_palette_g <= bus_wdata[2:0];
 				ff_color_palette_valid <= 1'b1;
+				ff_color_palette_g_phase <= 1'b0;
 			end
-			ff_color_palette_address <= ff_color_palette_address + 5'd1;
 		end
-		else begin
+		else if( ff_color_palette_valid ) begin
+			ff_color_palette_address <= ff_color_palette_address + 4'd1;
 			ff_color_palette_valid <= 1'b0;
 		end
 	end
@@ -588,7 +593,7 @@ module vdp_cpu_interface (
 	assign vram_wdata								= ff_vram_wdata;
 
 	assign palette_valid							= ff_color_palette_valid;
-	assign palette_num								= ff_color_palette_address[4:1];
+	assign palette_num								= ff_color_palette_address;
 	assign palette_r								= ff_palette_r;
 	assign palette_g								= ff_palette_g;
 	assign palette_b								= ff_palette_b;

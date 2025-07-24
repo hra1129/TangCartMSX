@@ -226,7 +226,7 @@ module vdp_color_palette (
 		end
 		else if( screen_pos_x == 3'd1 && w_256colors_mode ) begin
 			if( display_color_sprite_en ) begin
-				case( ff_display_color )
+				case( ff_display_color[3:0] )
 				4'd0:		ff_display_color256 <= { 3'd0, 3'd0, 2'd0 };
 				4'd1:		ff_display_color256 <= { 3'd0, 3'd0, 2'd1 };
 				4'd2:		ff_display_color256 <= { 3'd0, 3'd3, 2'd0 };
