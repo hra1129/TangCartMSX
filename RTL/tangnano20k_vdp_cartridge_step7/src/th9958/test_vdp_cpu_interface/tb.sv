@@ -302,21 +302,25 @@ module tb ();
 		write_io( 1, 8'h00 );
 		write_io( 1, 8'h40 );
 		write_io( 0, 8'h12 );
+		repeat( 10 ) @( posedge clk );
 		assert( ff_last_vram_address == 17'h00000 );
 		assert( ff_last_vram_wdata == 8'h12 );
 
 		write_io( 1, 8'h23 );
 		write_io( 1, 8'h41 );
 		write_io( 0, 8'hAB );
+		repeat( 10 ) @( posedge clk );
 		assert( ff_last_vram_address == 17'h00123 );
 		assert( ff_last_vram_wdata == 8'hAB );
 
 		$display( "[test002] VRAM Write Address Auto Increment" );
 		write_io( 0, 8'hCD );
+		repeat( 10 ) @( posedge clk );
 		assert( ff_last_vram_address == 17'h00124 );
 		assert( ff_last_vram_wdata == 8'hCD );
 
 		write_io( 0, 8'hEF );
+		repeat( 10 ) @( posedge clk );
 		assert( ff_last_vram_address == 17'h00125 );
 		assert( ff_last_vram_wdata == 8'hEF );
 

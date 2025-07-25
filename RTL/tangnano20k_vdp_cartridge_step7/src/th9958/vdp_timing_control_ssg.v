@@ -74,9 +74,13 @@ module vdp_timing_control_ssg (
 	input				reg_50hz_mode,
 	input				reg_212lines_mode,
 	input				reg_interlace_mode,
+	input		[7:0]	reg_display_adjust,
 	input		[7:0]	reg_interrupt_line,
 	input		[7:0]	reg_vertical_offset,
-	input		[8:0]	reg_horizontal_offset
+	input		[2:0]	reg_horizontal_offset_l,
+	input		[8:3]	reg_horizontal_offset_h,
+	output		[2:0]	horizontal_offset_l,
+	output		[8:3]	horizontal_offset_h
 );
 	localparam			c_left_pos			= 12'd320;		//	16の倍数
 	localparam			c_top_pos			= 11'd36;
@@ -100,6 +104,25 @@ module vdp_timing_control_ssg (
 	reg					ff_v_active;
 	wire				w_intr_line_timing;
 	wire				w_intr_frame_timing;
+	reg			[2:0]	ff_horizontal_offset_l;
+	reg			[8:3]	ff_horizontal_offset_h;
+
+	// --------------------------------------------------------------------
+	//	Latch horizontal scroll register
+	// --------------------------------------------------------------------
+	always @( posedge clk or negedge reset_n ) begin
+		if( !reset_n ) begin
+			ff_horizontal_offset_l <= 3'd0;
+			ff_horizontal_offset_h <= 6'd0;
+		end
+		else if( ff_v_count[0] && w_h_count_end ) begin
+			ff_horizontal_offset_l <= reg_horizontal_offset_l;
+			ff_horizontal_offset_h <= reg_horizontal_offset_h;
+		end
+	end
+
+	assign horizontal_offset_l	= ff_horizontal_offset_l;
+	assign horizontal_offset_h	= ff_horizontal_offset_h;
 
 	// --------------------------------------------------------------------
 	//	Horizontal Counter
@@ -186,10 +209,10 @@ module vdp_timing_control_ssg (
 		end
 	end
 
-	assign w_screen_pos_x	= { 1'b0, ff_half_count   } - c_left_pos;
-	assign w_screen_pos_y	= { 1'b0, ff_v_count[9:1] } - c_top_pos;
+	assign w_screen_pos_x	= { 1'b0, ff_half_count   } - c_left_pos + { { 7 {reg_display_adjust[3]} }, reg_display_adjust[3:0], 3'd0 };
+	assign w_screen_pos_y	= { 1'b0, ff_v_count[9:1] } - c_top_pos  + { { 6 {reg_display_adjust[7]} }, reg_display_adjust[7:4] };
 
-	assign w_pixel_pos_x	= w_screen_pos_x[11:3] + { reg_horizontal_offset[8:3], 3'd0 };
+	assign w_pixel_pos_x	= w_screen_pos_x[11:3] + { ff_horizontal_offset_h, 3'd0 };
 	assign w_pixel_pos_y	= w_screen_pos_y[ 7:0] + reg_vertical_offset;
 
 	// --------------------------------------------------------------------

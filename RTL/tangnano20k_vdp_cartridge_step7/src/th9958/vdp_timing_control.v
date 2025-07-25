@@ -99,9 +99,11 @@ module vdp_timing_control (
 	input				reg_50hz_mode,
 	input				reg_212lines_mode,
 	input				reg_interlace_mode,
+	input		[7:0]	reg_display_adjust,
 	input		[7:0]	reg_interrupt_line,
 	input		[7:0]	reg_vertical_offset,
-	input		[8:0]	reg_horizontal_offset,
+	input		[2:0]	reg_horizontal_offset_l,
+	input		[8:3]	reg_horizontal_offset_h,
 	input		[4:0]	reg_screen_mode,
 	input				reg_display_on,
 	input				reg_color0_opaque,
@@ -121,6 +123,8 @@ module vdp_timing_control (
 	wire		[ 8:0]	w_pixel_pos_x;			//	unsigned (Coordinates affected by scroll register)
 	wire		[ 7:0]	w_pixel_pos_y;			//	unsigned (Coordinates affected by scroll register)
 	wire				w_screen_active;
+	wire		[ 2:0]	w_horizontal_offset_l;
+	wire		[ 8:3]	w_horizontal_offset_h;
 
 	// --------------------------------------------------------------------
 	//	Output assignment
@@ -147,9 +151,13 @@ module vdp_timing_control (
 		.reg_50hz_mode								( reg_50hz_mode								),
 		.reg_212lines_mode							( reg_212lines_mode							),
 		.reg_interlace_mode							( reg_interlace_mode						),
+		.reg_display_adjust							( reg_display_adjust						),
 		.reg_interrupt_line							( reg_interrupt_line						),
 		.reg_vertical_offset						( reg_vertical_offset						),
-		.reg_horizontal_offset						( reg_horizontal_offset						)
+		.reg_horizontal_offset_l					( reg_horizontal_offset_l					),
+		.reg_horizontal_offset_h					( reg_horizontal_offset_h					),
+		.horizontal_offset_l						( w_horizontal_offset_l						),
+		.horizontal_offset_h						( w_horizontal_offset_h						)
 	);
 
 	// --------------------------------------------------------------------
@@ -166,6 +174,7 @@ module vdp_timing_control (
 		.vram_valid									( t12_vram_valid							),
 		.vram_rdata									( t12_vram_rdata							),
 		.display_color								( t12_display_color							),
+		.horizontal_offset_l						( w_horizontal_offset_l						),
 		.reg_screen_mode							( reg_screen_mode							),
 		.reg_display_on								( reg_display_on							),
 		.reg_pattern_name_table_base				( reg_pattern_name_table_base				),

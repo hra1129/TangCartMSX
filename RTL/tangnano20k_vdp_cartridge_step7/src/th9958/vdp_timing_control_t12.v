@@ -70,6 +70,7 @@ module vdp_timing_control_t12 (
 
 	output		[3:0]	display_color,
 
+	input		[2:0]	horizontal_offset_l,
 	input		[4:0]	reg_screen_mode,
 	input				reg_display_on,
 	input		[16:10]	reg_pattern_name_table_base,
@@ -113,6 +114,8 @@ module vdp_timing_control_t12 (
 	reg					ff_vram_valid;
 	//	Display color
 	reg			[3:0]	ff_display_color;
+	wire		[9:0]	w_screen_pos_x;
+	wire				w_line_start;
 
 	// --------------------------------------------------------------------
 	//	★メモ
@@ -138,11 +141,14 @@ module vdp_timing_control_t12 (
 	// --------------------------------------------------------------------
 	//	Screen Position for active area
 	// --------------------------------------------------------------------
+	assign w_screen_pos_x	= screen_pos_x[12:3] - { 7'd0, horizontal_offset_l };
+	assign w_line_start		= (w_sub_phase == 3'd7 && w_screen_pos_x == 10'd7);
+
 	always @( posedge clk or negedge reset_n ) begin
 		if( !reset_n ) begin
 			ff_pos_x <= 6'd0;
 		end
-		else if( screen_pos_x == 13'h1FFF ) begin
+		else if( w_line_start ) begin
 			ff_pos_x <= 6'd0;
 		end
 		else if( w_sub_phase == 3'd7 && ff_phase == 3'd5 ) begin
@@ -154,7 +160,7 @@ module vdp_timing_control_t12 (
 		if( !reset_n ) begin
 			ff_pos_y <= 8'd0;
 		end
-		else if( screen_pos_x == 13'h1FFF ) begin
+		else if( w_line_start ) begin
 			if( screen_pos_y == 10'h0 ) begin
 				ff_pos_y <= 8'h0;
 			end
@@ -168,7 +174,7 @@ module vdp_timing_control_t12 (
 		if( !reset_n ) begin
 			ff_h_active <= 1'b0;
 		end
-		else if( screen_pos_x == 13'h1FFF ) begin
+		else if( w_line_start ) begin
 			ff_h_active <= 1'b1;
 		end
 		else if( ff_pos_x == 6'd40 && ff_phase == 3'd5 ) begin
@@ -185,7 +191,7 @@ module vdp_timing_control_t12 (
 		if( !reset_n ) begin
 			ff_phase <= 3'd0;
 		end
-		else if( screen_pos_x == 13'h1FFF ) begin
+		else if( w_line_start ) begin
 			ff_phase <= 3'd0;
 		end
 		else if( w_sub_phase == 3'd7 ) begin

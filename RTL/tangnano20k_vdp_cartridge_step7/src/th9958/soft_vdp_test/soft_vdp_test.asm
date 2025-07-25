@@ -42,6 +42,8 @@ start:
 			call	s0w40_color
 			call	s0w40_palette
 			call	s0w40_vscroll
+			call	s0w40_hscroll
+			call	s0w40_display_adjust
 			; 後始末
 			call	clear_key_buffer
 			ld		c, func_term
@@ -726,6 +728,135 @@ s0w40_palette::
 			endscope
 
 ; =============================================================================
+;	垂直スクロールレジスタ
+;	input:
+;		none
+;	output:
+;		none
+;	break:
+;		AF
+;	comment:
+;		none
+; =============================================================================
+			scope	vscroll
+vscroll::
+			ld		d, 0
+	loop:
+			ld		a, d
+			ld		e, 23
+			call	write_control_register		; R#23 = D
+
+			xor		a, a
+	wait_loop1:
+			ld		e, 50
+	wait_loop2:
+			dec		e
+			jr		nz, wait_loop2
+			dec		a
+			jr		nz, wait_loop1
+
+			inc		d							; D++
+			jr		nz, loop
+
+			xor		a, a
+			ld		e, 23
+			call	write_control_register		; R#23 = 0
+			jp		wait_push_space_key
+			endscope
+
+; =============================================================================
+;	水平スクロールレジスタ
+;	input:
+;		none
+;	output:
+;		none
+;	break:
+;		AF
+;	comment:
+;		none
+; =============================================================================
+			scope	hscroll
+hscroll::
+			ld		d, 0
+	loop:
+			ld		a, d
+			and		a, 7
+			xor		a, 7
+			ld		e, 27
+			call	write_control_register		; R#27 = D
+			ld		a, d
+			rrca
+			rrca
+			rrca
+			and		a, 0x1F
+			ld		e, 26
+			call	write_control_register		; R#26 = D
+
+			xor		a, a
+	wait_loop1:
+			ld		e, 50
+	wait_loop2:
+			dec		e
+			jr		nz, wait_loop2
+			dec		a
+			jr		nz, wait_loop1
+
+			inc		d							; D++
+			jr		nz, loop
+
+			xor		a, a
+			ld		e, 26
+			call	write_control_register		; R#26 = 0
+			xor		a, a
+			ld		e, 27
+			call	write_control_register		; R#27 = 0
+			jp		wait_push_space_key
+			endscope
+
+; =============================================================================
+;	画面位置調整
+;	input:
+;		none
+;	output:
+;		none
+;	break:
+;		AF
+;	comment:
+;		none
+; =============================================================================
+			scope	display_adjust
+display_adjust::
+			ld		hl, adjust_table
+	loop:
+			ld		a, [hl]
+			ld		e, 18
+			call	write_control_register		; R#18 = [HL]
+			xor		a, a
+	wait_loop1:
+			ld		e, 50
+	wait_loop2:
+			dec		e
+			jr		nz, wait_loop2
+			dec		a
+			jr		nz, wait_loop1
+
+			ld		a, [hl]
+			inc		hl
+			or		a, a
+			jr		nz, loop
+			jp		wait_push_space_key
+
+adjust_table:
+			db		0x11, 0x22, 0x33, 0x44, 0x55, 0x66, 0x77
+			db		0x76, 0x75, 0x74, 0x73, 0x72, 0x71, 0x70
+			db		0x7F, 0x7E, 0x7D, 0x7C, 0x7B, 0x7A, 0x79
+			db		0x78, 0x68, 0x58, 0x48, 0x38, 0x28, 0x18
+			db		0x08, 0xF8, 0xE8, 0xD8, 0xC8, 0xB8, 0xA8
+			db		0x98, 0x88, 0x99, 0xAA, 0xBB, 0xCC, 0xDD
+			db		0xEE, 0xFF, 0x00
+			endscope
+
+; =============================================================================
 ;	[SCREEN0W40] 垂直スクロールレジスタ
 ;	input:
 ;		none
@@ -742,30 +873,51 @@ s0w40_vscroll::
 			ld		hl, 0
 			ld		de, s_message
 			call	puts
-			ld		d, 0
-	loop:
-			ld		a, d
-			ld		e, 23
-			call	write_control_register		; R#23 = D
-
-			xor		a, a
-	wait_loop1:
-			ld		e, 0
-	wait_loop2:
-			dec		e
-			jr		nz, wait_loop2
-			dec		a
-			jr		nz, wait_loop1
-
-			inc		d							; D++
-			jr		nz, loop
-			call	wait_push_space_key
-
-			xor		a, a
-			ld		e, 23
-			call	write_control_register		; R#23 = 0
-
-			ret
+			jp		vscroll
 	s_message:
 			db		"[S0W40] V-SCROLL TEST ", 0
+			endscope
+
+; =============================================================================
+;	[SCREEN0W40] 水平スクロールレジスタ
+;	input:
+;		none
+;	output:
+;		none
+;	break:
+;		AF
+;	comment:
+;		none
+; =============================================================================
+			scope	s0w40_hscroll
+s0w40_hscroll::
+			; Put test name
+			ld		hl, 0
+			ld		de, s_message
+			call	puts
+			jp		hscroll
+	s_message:
+			db		"[S0W40] H-SCROLL TEST ", 0
+			endscope
+
+; =============================================================================
+;	[SCREEN0W40] display position adjust
+;	input:
+;		none
+;	output:
+;		none
+;	break:
+;		AF
+;	comment:
+;		none
+; =============================================================================
+			scope	s0w40_display_adjust
+s0w40_display_adjust::
+			; Put test name
+			ld		hl, 0
+			ld		de, s_message
+			call	puts
+			jp		display_adjust
+	s_message:
+			db		"[S0W40] DISPLAY ADJUST TEST ", 0
 			endscope

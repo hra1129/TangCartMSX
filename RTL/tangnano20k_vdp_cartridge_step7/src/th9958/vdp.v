@@ -177,7 +177,8 @@ module vdp (
 	wire				reg_yjk_mode;
 	wire				reg_yae_mode;
 	wire				reg_command_enable;
-	wire		[8:0]	reg_horizontal_offset;
+	wire		[2:0]	reg_horizontal_offset_l;
+	wire		[8:3]	reg_horizontal_offset_h;
 
 	// --------------------------------------------------------------------
 	//	CPU Interface
@@ -239,7 +240,8 @@ module vdp (
 		.reg_yjk_mode								( reg_yjk_mode								),
 		.reg_yae_mode								( reg_yae_mode								),
 		.reg_command_enable							( reg_command_enable						),
-		.reg_horizontal_offset						( reg_horizontal_offset						)
+		.reg_horizontal_offset_l					( reg_horizontal_offset_l					),
+		.reg_horizontal_offset_h					( reg_horizontal_offset_h					)
 	);
 
 	// --------------------------------------------------------------------
@@ -281,9 +283,11 @@ module vdp (
 		.reg_50hz_mode								( reg_50hz_mode								),
 		.reg_212lines_mode							( reg_212lines_mode							),
 		.reg_interlace_mode							( reg_interlace_mode						),
+		.reg_display_adjust							( reg_display_adjust						),
 		.reg_interrupt_line							( reg_interrupt_line						),
 		.reg_vertical_offset						( reg_vertical_offset						),
-		.reg_horizontal_offset						( reg_horizontal_offset						),
+		.reg_horizontal_offset_l					( reg_horizontal_offset_l					),
+		.reg_horizontal_offset_h					( reg_horizontal_offset_h					),
 		.reg_screen_mode							( reg_screen_mode							),
 		.reg_display_on								( reg_display_on							),
 		.reg_color0_opaque							( reg_color0_opaque							),

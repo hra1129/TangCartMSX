@@ -118,7 +118,8 @@ module vdp_cpu_interface (
 	output				reg_yjk_mode,
 	output				reg_yae_mode,
 	output				reg_command_enable,
-	output	[8:0]		reg_horizontal_offset
+	output	[2:0]		reg_horizontal_offset_l,
+	output	[8:3]		reg_horizontal_offset_h
 );
 	reg		[7:0]		ff_bus_rdata;
 	reg					ff_bus_rdata_en;
@@ -159,7 +160,8 @@ module vdp_cpu_interface (
 	reg					ff_yjk_mode;
 	reg					ff_yae_mode;
 	reg					ff_command_enable;
-	reg		[8:0]		ff_horizontal_offset;
+	reg		[2:0]		ff_horizontal_offset_l;
+	reg		[8:3]		ff_horizontal_offset_h;
 
 	reg					ff_2nd_access;
 	reg		[7:0]		ff_1st_byte;
@@ -347,7 +349,8 @@ module vdp_cpu_interface (
 			ff_yjk_mode <= 1'b0;
 			ff_yae_mode <= 1'b0;
 			ff_command_enable <= 1'b0;
-			ff_horizontal_offset <= 9'd0;
+			ff_horizontal_offset_l <= 3'd0;
+			ff_horizontal_offset_h <= 6'd0;
 		end
 		else if( ff_register_write ) begin
 			case( ff_register_num )
@@ -454,11 +457,11 @@ module vdp_cpu_interface (
 				end
 			8'd26:	//	R#26 = [N/A][N/A][HO8][HO7][HO6][HO5][HO4][HO3]
 				begin
-					ff_horizontal_offset[8:3] <= ff_1st_byte[5:0];
+					ff_horizontal_offset_h <= ff_1st_byte[5:0];
 				end
 			8'd27:	//	R#27 = [N/A][N/A][N/A][N/A][N/A][HO2][HO1][HO0]
 				begin
-					ff_horizontal_offset[2:0] <= ff_1st_byte[2:0];
+					ff_horizontal_offset_l <= ff_1st_byte[2:0];
 				end
 			default:
 				begin
@@ -624,5 +627,6 @@ module vdp_cpu_interface (
 	assign reg_yjk_mode								= ff_yjk_mode;
 	assign reg_yae_mode								= ff_yae_mode;
 	assign reg_command_enable						= ff_command_enable;
-	assign reg_horizontal_offset					= ff_horizontal_offset;
+	assign reg_horizontal_offset_l					= ff_horizontal_offset_l;
+	assign reg_horizontal_offset_h					= ff_horizontal_offset_h;
 endmodule
