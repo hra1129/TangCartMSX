@@ -83,7 +83,7 @@ module vdp_timing_control_ssg (
 	output		[8:3]	horizontal_offset_h
 );
 	localparam			c_left_pos			= 12'd320;		//	16の倍数
-	localparam			c_top_pos			= 11'd36;
+	localparam			c_top_pos			= 11'd28;
 	localparam			c_h_count_max		= 11'd1367;
 	localparam			c_v_count_max_60p	= 10'd523;
 	localparam			c_v_count_max_60i	= 10'd524;
@@ -210,7 +210,7 @@ module vdp_timing_control_ssg (
 	end
 
 	assign w_screen_pos_x	= { 1'b0, ff_half_count   } - c_left_pos;
-	assign w_screen_pos_y	= { 1'b0, ff_v_count[9:1] } - c_top_pos  + { { 6 {reg_display_adjust[7]} }, reg_display_adjust[7:4] };
+	assign w_screen_pos_y	= { 1'b0, ff_v_count[9:1] } - c_top_pos  + { 5'd0, ~reg_display_adjust[7], reg_display_adjust[6:4] };
 
 	assign w_pixel_pos_x	= w_screen_pos_x[11:3] + { ff_horizontal_offset_h, 3'd0 };
 	assign w_pixel_pos_y	= w_screen_pos_y[ 7:0] + reg_vertical_offset;

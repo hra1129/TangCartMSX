@@ -190,6 +190,7 @@ module vdp_timing_control (
 		.reset_n									( reset_n									),
 		.clk										( clk										),
 		.screen_pos_x								( w_screen_pos_x							),
+		.pixel_pos_x								( w_pixel_pos_x								),
 		.pixel_pos_y								( w_pixel_pos_y								),
 		.screen_active								( w_screen_active							),
 		.vram_address								( g123m_vram_address						),

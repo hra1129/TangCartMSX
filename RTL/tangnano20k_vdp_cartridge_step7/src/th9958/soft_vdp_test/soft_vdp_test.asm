@@ -45,6 +45,15 @@ start:
 			call	s0w40_hscroll
 			call	s0w40_display_adjust
 			call	s0w40_interlace
+
+			call	screen1
+			call	s1_font_test
+			call	s1_color
+			call	s1_vscroll
+			call	s1_hscroll
+			call	s1_display_adjust
+			call	s1_interlace
+
 			; 後始末
 			call	clear_key_buffer
 			ld		c, func_term
@@ -304,6 +313,95 @@ set_pattern_name_table::
 			endscope
 
 ; =============================================================================
+;	Color table
+;	input:
+;		HL .... Color Table Address
+;	output:
+;		none
+;	break:
+;		AF
+;	comment:
+;		none
+; =============================================================================
+			scope	set_color_table
+set_color_table::
+			srl		h
+			rr		l
+			srl		h
+			rr		l
+			srl		h
+			rr		l
+			srl		h
+			rr		l
+			srl		h
+			rr		l
+			srl		h
+			rr		l
+			ld		a, l
+			ld		e, 3
+			call	write_control_register
+			ld		a, h
+			ld		e, 10
+			jp		write_control_register
+			endscope
+
+; =============================================================================
+;	Sprite attribute table
+;	input:
+;		HL .... Sprite attribute Table Address
+;	output:
+;		none
+;	break:
+;		AF
+;	comment:
+;		none
+; =============================================================================
+			scope	set_sprite_attribute_table
+set_sprite_attribute_table::
+			srl		h
+			rr		l
+			srl		h
+			rr		l
+			srl		h
+			rr		l
+			srl		h
+			rr		l
+			srl		h
+			rr		l
+			srl		h
+			rr		l
+			srl		h
+			rr		l
+			ld		a, l
+			ld		e, 5
+			call	write_control_register
+			ld		a, h
+			ld		e, 11
+			jp		write_control_register
+			endscope
+
+; =============================================================================
+;	Sprite pattern generator table
+;	input:
+;		HL .... Sprite pattern generator Table Address
+;	output:
+;		none
+;	break:
+;		AF
+;	comment:
+;		none
+; =============================================================================
+			scope	set_sprite_pattern_generator_table
+set_sprite_pattern_generator_table::
+			srl		h
+			srl		h
+			srl		h
+			ld		a, h
+			ld		e, 6
+			jp		write_control_register
+			endscope
+
+; =============================================================================
 ;	Pattern Generator Table
 ;	input:
 ;		HL .... Pattern Generator Table Address
@@ -322,40 +420,6 @@ set_pattern_generator_table::
 			srl		a
 			srl		a
 			ld		e, 4
-			jp		write_control_register
-			endscope
-
-; =============================================================================
-;	Color Table
-;	input:
-;		HL .... Color Table Address
-;	output:
-;		none
-;	break:
-;		AF
-;	comment:
-;		none
-; =============================================================================
-			scope	set_color_table
-set_color_table::
-			; A = HL >> 6
-			srl		h
-			rr		l
-			srl		h
-			rr		l
-			srl		h
-			rr		l
-			srl		h
-			rr		l
-			srl		h
-			rr		l
-			srl		h
-			rr		l
-			ld		a, l
-			ld		e, 3
-			call	write_control_register
-			ld		a, h
-			ld		e, 10
 			jp		write_control_register
 			endscope
 
@@ -588,6 +652,62 @@ screen0_w40::
 			endscope
 
 ; =============================================================================
+;	SCREEN1
+;	input:
+;		none
+;	output:
+;		none
+;	break:
+;		AF
+;	comment:
+;		none
+; =============================================================================
+			scope	screen1
+screen1::
+			; R#0 = 0
+			xor		a, a
+			ld		e, a
+			call	write_control_register
+			; R#1 = 0x40
+			ld		a, 0x40
+			ld		e, 1
+			call	write_control_register
+			; R#7 = 0x07
+			ld		a, 0x07					; 周辺色 7
+			ld		e, 7
+			call	write_control_register
+			; Pattern Name Table
+			ld		hl, 0x1800
+			call	set_pattern_name_table
+			; Color Table
+			ld		hl, 0x2000
+			call	set_color_table
+			; Sprite Attribute Table
+			ld		hl, 0x1B00
+			call	set_sprite_attribute_table
+			; Sprite Pattern Generator Table
+			ld		hl, 0x3800
+			call	set_sprite_pattern_generator_table
+			; Pattern Generator Table
+			ld		hl, 0x0000
+			call	set_pattern_generator_table
+			; Pattern Name Table をクリア
+			ld		hl, 0x1800
+			ld		bc, 32 * 26
+			ld		e, ' '
+			call	fill_vram
+			; Font をセット
+			ld		hl, 0x0000
+			call	set_font
+			; Fontの色をセット
+			ld		hl, 0x2000
+			ld		bc, 256 / 8
+			ld		e, 0xF4
+			call	fill_vram
+			ret
+			endscope
+
+; =============================================================================
 ;	[SCREEN0W40] 文字フォントが期待通りに表示される・40桁、24行表示される
 ;	input:
 ;		none
@@ -613,6 +733,34 @@ s0w40_font_test::
 			ret
 	s_message:
 			db		"[S0W40] FONT TEST ", 0
+			endscope
+
+; =============================================================================
+;	[SCREEN1] 文字フォントが期待通りに表示される・32桁、24行表示される
+;	input:
+;		none
+;	output:
+;		none
+;	break:
+;		AF
+;	comment:
+;		none
+; =============================================================================
+			scope	s1_font_test
+s1_font_test::
+			; Pattern Name Table にインクリメントデータを敷き詰める
+			ld		hl, 0x1800
+			ld		bc, 32 * 24
+			call	fill_increment
+			; Put test name
+			ld		hl, 0x1800
+			ld		de, s_message
+			call	puts
+			; キー待ち
+			call	wait_push_space_key
+			ret
+	s_message:
+			db		"[S1] FONT TEST ", 0
 			endscope
 
 ; =============================================================================
@@ -664,6 +812,45 @@ s0w40_color::
 			db		0xF4, "                  ", 0
 			db		0
 			endscope
+
+; =============================================================================
+;	[SCREEN1] 文字の色を変える
+;	input:
+;		none
+;	output:
+;		none
+;	break:
+;		AF
+;	comment:
+;		none
+; =============================================================================
+			scope	s1_color
+s1_color::
+			; Pattern Name Table にインクリメントデータを敷き詰める
+			ld		hl, 0x1800
+			ld		bc, 32 * 24
+			call	fill_increment
+			; 色データをコピー
+			ld		hl, color_table
+			ld		de, 0x2000
+			ld		bc, 32
+			call	block_copy
+			; Put test name
+			ld		hl, 0x1800
+			ld		de, s_message
+			call	puts
+			; キー待ち
+			call	wait_push_space_key
+			ret
+	color_table:
+			db		0xF4, 0xE5, 0xF6, 0xE7, 0xF2, 0xE3, 0x17, 0x71
+			db		0xBC, 0x23, 0xF8, 0x7F, 0xF3, 0xD4, 0x27, 0x72
+			db		0xA6, 0x45, 0xE9, 0xF7, 0xE2, 0xB5, 0x37, 0x73
+			db		0xB4, 0x68, 0xE6, 0xE4, 0xA3, 0xC6, 0x47, 0x74
+	s_message:
+			db		"[S1] COLOR TEST ", 0
+			endscope
+
 
 ; =============================================================================
 ;	[SCREEN0W40] パレットを変える
@@ -739,6 +926,35 @@ fill_increment::
 			ld		a, e
 			call	write_vram
 			inc		e
+			dec		bc
+			ld		a, c
+			or		a, b
+			jr		nz, loop
+			ret
+			endscope
+
+; =============================================================================
+;	VRAM をインクリメント値で埋める
+;	input:
+;		HL .... 転送元アドレス
+;		DE .... 転送先VRAMアドレス
+;		BC .... サイズ [byte]
+;	output:
+;		none
+;	break:
+;		AF
+;	comment:
+;		none
+; =============================================================================
+			scope	block_copy
+block_copy::
+			ex		de, hl
+			call	set_vram_write_address
+			ex		de, hl
+	loop:
+			ld		a, [hl]
+			inc		hl
+			call	write_vram
 			dec		bc
 			ld		a, c
 			or		a, b
@@ -898,6 +1114,28 @@ s0w40_vscroll::
 			endscope
 
 ; =============================================================================
+;	[SCREEN1] 垂直スクロールレジスタ
+;	input:
+;		none
+;	output:
+;		none
+;	break:
+;		AF
+;	comment:
+;		none
+; =============================================================================
+			scope	s1_vscroll
+s1_vscroll::
+			; Put test name
+			ld		hl, 0x1800
+			ld		de, s_message
+			call	puts
+			jp		vscroll
+	s_message:
+			db		"[S1] V-SCROLL TEST ", 0
+			endscope
+
+; =============================================================================
 ;	[SCREEN0W40] 水平スクロールレジスタ
 ;	input:
 ;		none
@@ -920,6 +1158,28 @@ s0w40_hscroll::
 			endscope
 
 ; =============================================================================
+;	[SCREEN1] 水平スクロールレジスタ
+;	input:
+;		none
+;	output:
+;		none
+;	break:
+;		AF
+;	comment:
+;		none
+; =============================================================================
+			scope	s1_hscroll
+s1_hscroll::
+			; Put test name
+			ld		hl, 0x1800
+			ld		de, s_message
+			call	puts
+			jp		hscroll
+	s_message:
+			db		"[S1] H-SCROLL TEST ", 0
+			endscope
+
+; =============================================================================
 ;	[SCREEN0W40] display position adjust
 ;	input:
 ;		none
@@ -939,6 +1199,28 @@ s0w40_display_adjust::
 			jp		display_adjust
 	s_message:
 			db		"[S0W40] DISPLAY ADJUST TEST ", 0
+			endscope
+
+; =============================================================================
+;	[SCREEN1] display position adjust
+;	input:
+;		none
+;	output:
+;		none
+;	break:
+;		AF
+;	comment:
+;		none
+; =============================================================================
+			scope	s1_display_adjust
+s1_display_adjust::
+			; Put test name
+			ld		hl, 0x1800
+			ld		de, s_message
+			call	puts
+			jp		display_adjust
+	s_message:
+			db		"[S1] DISPLAY ADJUST TEST ", 0
 			endscope
 
 ; =============================================================================
@@ -995,4 +1277,60 @@ s0w40_interlace::
 			db		"[S0W40] PAL TEST      ", 0
 	s_message3:
 			db		"[S0W40] INTERLACE/PAL TEST ", 0
+			endscope
+
+; =============================================================================
+;	[SCREEN1] interlace mode
+;	input:
+;		none
+;	output:
+;		none
+;	break:
+;		AF
+;	comment:
+;		none
+; =============================================================================
+			scope	s1_interlace
+s1_interlace::
+			; Put test name
+			ld		hl, 0x1800
+			ld		de, s_message1
+			call	puts
+			; R#9 = 0b00001000 ... IL=1: Interlace: NT=0: NTSC
+			ld		a, 0x08
+			ld		e, 9
+			call	write_control_register
+			call	wait_push_space_key
+
+			; Put test name
+			ld		hl, 0x1800
+			ld		de, s_message2
+			call	puts
+			; R#9 = 0b00000010 ... IL=0: Non Interlace, NT=1: PAL
+			ld		a, 0x02
+			ld		e, 9
+			call	write_control_register
+			call	wait_push_space_key
+
+			; Put test name
+			ld		hl, 0x1800
+			ld		de, s_message3
+			call	puts
+			; R#9 = 0b00001010 ... IL=1: Interlace, NT=1: PAL
+			ld		a, 0x0A
+			ld		e, 9
+			call	write_control_register
+			call	wait_push_space_key
+
+			; R#9 = 0b00000000 ... IL=0: Non Interlace, NT=0: NTSC
+			ld		a, 0x0A
+			ld		e, 9
+			jp		write_control_register
+
+	s_message1:
+			db		"[S1] INTERLACE TEST      ", 0
+	s_message2:
+			db		"[S1] PAL TEST      ", 0
+	s_message3:
+			db		"[S1] INTERLACE/PAL TEST ", 0
 			endscope

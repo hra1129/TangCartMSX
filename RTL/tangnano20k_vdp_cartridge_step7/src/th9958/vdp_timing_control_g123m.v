@@ -60,6 +60,7 @@ module vdp_timing_control_g123m (
 	input				clk,					//	42.95454MHz
 
 	input		[12:0]	screen_pos_x,
+	input		[ 8:0]	pixel_pos_x,
 	input		[ 7:0]	pixel_pos_y,
 	input				screen_active,
 
@@ -69,6 +70,7 @@ module vdp_timing_control_g123m (
 
 	output		[3:0]	display_color,
 
+	input		[2:0]	horizontal_offset_l,
 	input		[4:0]	reg_screen_mode,
 	input				reg_display_on,
 	input		[16:10]	reg_pattern_name_table_base,
@@ -134,18 +136,18 @@ module vdp_timing_control_g123m (
 	// --------------------------------------------------------------------
 	//	Screen Position for active area
 	// --------------------------------------------------------------------
-	assign w_pos_x		= screen_pos_x[10:3];
+	assign w_pos_x		= screen_pos_x[10:3] - { 5'd0, horizontal_offset_l };
 
 	// --------------------------------------------------------------------
 	//	Phase
 	// --------------------------------------------------------------------
-	assign w_phase		= screen_pos_x[5:3];
+	assign w_phase		= w_pos_x[2:0];
 	assign w_sub_phase	= screen_pos_x[2:0];
 
 	// --------------------------------------------------------------------
 	//	Pattern name table address
 	// --------------------------------------------------------------------
-	assign w_pattern_name				= { reg_pattern_name_table_base, pixel_pos_y[7:3], w_pos_x[7:3] };
+	assign w_pattern_name				= { reg_pattern_name_table_base, pixel_pos_y[7:3], pixel_pos_x[7:3] };
 
 	// --------------------------------------------------------------------
 	//	Pattern generator table address

@@ -90,7 +90,7 @@ module vdp_upscan (
 	// --------------------------------------------------------------------
 	//	Line buffer
 	// --------------------------------------------------------------------
-	assign w_write_pos		= screen_pos_x[11:2] + { 5'd0, ~reg_display_adjust[3], reg_display_adjust[2:0], 1'b0 };
+	assign w_write_pos		= screen_pos_x[11:2] + 10'd24 - { 5'd0, ~reg_display_adjust[3], reg_display_adjust[2:0], 1'b0 };
 	assign w_read_pos		= h_count[9:0];
 
 	vdp_upscan_line_buffer u_even_line_buffer (
