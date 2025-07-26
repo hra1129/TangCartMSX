@@ -333,29 +333,29 @@ module vdp_timing_control_t12 (
 	always @( posedge clk or negedge reset_n ) begin
 		if( !reset_n ) begin
 			ff_pattern0 <= 6'd0;
-//			ff_pattern1 <= 6'd0;
+			ff_pattern1 <= 6'd0;
 		end
 		else if( w_sub_phase == 3'd7 ) begin
 			if( ff_phase == 3'd5 ) begin
 				if( screen_active && ff_h_active ) begin
 					ff_pattern0 <= ff_next_pattern0;
-//					ff_pattern1 <= ff_next_pattern1;
+					ff_pattern1 <= ff_next_pattern1;
 				end
 				else begin
 					ff_pattern0 <= 6'd0;
-//					ff_pattern1 <= 6'd0;
+					ff_pattern1 <= 6'd0;
 				end
 			end
-//			else if( ff_phase == 3'd2 && w_mode[ c_t2 ] ) begin
-//				ff_pattern0 <= ff_pattern1;
-//			end
+			else if( ff_phase == 3'd2 && w_mode[ c_t2 ] ) begin
+				ff_pattern0 <= ff_pattern1;
+			end
 			else begin
 				ff_pattern0 <= { ff_pattern0[4:0], 1'b0 };
 			end
 		end
-//		else if( w_sub_phase == 3'd3 && w_mode[ c_t2 ] ) begin
-//			ff_pattern0 <= { ff_pattern0[4:0], 1'b0 };
-//		end
+		else if( w_sub_phase == 3'd3 && w_mode[ c_t2 ] ) begin
+			ff_pattern0 <= { ff_pattern0[4:0], 1'b0 };
+		end
 	end
 
 	always @( posedge clk or negedge reset_n ) begin

@@ -74,11 +74,13 @@ module tb ();
 
 	wire		[3:0]	display_color;
 
+	reg			[2:0]	horizontal_offset_l;
 	reg			[4:0]	reg_screen_mode;
+	reg					reg_display_on;
 	reg			[16:10]	reg_pattern_name_table_base;
 	reg			[16:6]	reg_color_table_base;
 	reg			[16:11]	reg_pattern_generator_table_base;
-	reg			[3:0]	reg_backdrop_color;
+	reg			[7:0]	reg_backdrop_color;
 	int					i, j, jj;
 
 	// --------------------------------------------------------------------
@@ -105,7 +107,9 @@ module tb ();
 		screen_pos_y = 0;
 		screen_active = 0;
 		vram_rdata = 0;
+		horizontal_offset_l = 0;
 		reg_screen_mode = c_mode_t1;
+		reg_display_on = 1;
 		reg_pattern_name_table_base = 0;
 		reg_pattern_name_table_base = 0;
 		reg_color_table_base = 0;

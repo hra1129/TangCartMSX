@@ -70,10 +70,16 @@ module tb ();
 	wire				intr_frame;				//	pulse
 
 	reg					reg_50hz_mode;
+	reg					reg_212lines_mode;
 	reg					reg_interlace_mode;
+	reg			[7:0]	reg_display_adjust;
 	reg			[7:0]	reg_interrupt_line;
 	reg			[7:0]	reg_vertical_offset;
 	reg			[8:0]	reg_horizontal_offset;
+	reg			[2:0]	reg_horizontal_offset_l;
+	reg			[8:3]	reg_horizontal_offset_h;
+	wire		[2:0]	horizontal_offset_l;
+	wire		[8:3]	horizontal_offset_h;
 
 	// --------------------------------------------------------------------
 	//	DUT
@@ -95,10 +101,14 @@ module tb ();
 		reset_n = 0;
 
 		reg_50hz_mode = 0;
+		reg_212lines_mode = 0;
 		reg_interlace_mode = 0;
+		reg_display_adjust = 0;
 		reg_interrupt_line = 100;
 		reg_vertical_offset = 0;
 		reg_horizontal_offset = 0;
+		reg_horizontal_offset_l = 0;
+		reg_horizontal_offset_h = 0;
 
 		@( posedge clk );
 		@( posedge clk );
@@ -125,6 +135,12 @@ module tb ();
 		reg_50hz_mode		= 1'b1;		//	50Hz
 		reg_interlace_mode	= 1'b1;		//	interlace
 		repeat( 1368 * 650 * 2 ) @( posedge clk );
+
+		$display( "60Hz, non interlace [set adjust]" );
+		reg_50hz_mode		= 1'b0;		//	60Hz
+		reg_interlace_mode	= 1'b0;		//	non interlace
+		reg_display_adjust	= 8'h85;	//	set adjust( 5, 8 )
+		repeat( 1368 * 550 * 2 ) @( posedge clk );
 
 		repeat( 10 ) @( posedge clk );
 		$finish;

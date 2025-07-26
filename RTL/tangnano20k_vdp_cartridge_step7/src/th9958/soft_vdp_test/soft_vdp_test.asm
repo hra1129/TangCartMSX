@@ -44,6 +44,7 @@ start:
 			call	s0w40_vscroll
 			call	s0w40_hscroll
 			call	s0w40_display_adjust
+			call	s0w40_interlace
 			; 後始末
 			call	clear_key_buffer
 			ld		c, func_term
@@ -601,17 +602,8 @@ screen0_w40::
 s0w40_font_test::
 			; Pattern Name Table にインクリメントデータを敷き詰める
 			ld		hl, 0
-			call	set_vram_write_address
-			ld		e, 0
 			ld		bc, 40 * 24
-	loop:
-			ld		a, e
-			call	write_vram
-			inc		e
-			dec		bc
-			ld		a, c
-			or		a, b
-			jr		nz, loop
+			call	fill_increment
 			; Put test name
 			ld		hl, 0
 			ld		de, s_message
@@ -725,6 +717,33 @@ s0w40_palette::
 			db		0x04, 0x30, 0x07, 0x0F, 0x00, 0x04, 0xFF
 			db		0x04, 0x07, 0x00, 0x0F, 0x77, 0x07, 0xFF
 			db		0xFF
+			endscope
+
+; =============================================================================
+;	VRAM をインクリメント値で埋める
+;	input:
+;		HL .... VRAMアドレス
+;		BC .... 埋めるサイズ [byte]
+;	output:
+;		none
+;	break:
+;		AF
+;	comment:
+;		none
+; =============================================================================
+			scope	fill_increment
+fill_increment::
+			call	set_vram_write_address
+			ld		e, 0
+	loop:
+			ld		a, e
+			call	write_vram
+			inc		e
+			dec		bc
+			ld		a, c
+			or		a, b
+			jr		nz, loop
+			ret
 			endscope
 
 ; =============================================================================
@@ -920,4 +939,60 @@ s0w40_display_adjust::
 			jp		display_adjust
 	s_message:
 			db		"[S0W40] DISPLAY ADJUST TEST ", 0
+			endscope
+
+; =============================================================================
+;	[SCREEN0W40] interlace mode
+;	input:
+;		none
+;	output:
+;		none
+;	break:
+;		AF
+;	comment:
+;		none
+; =============================================================================
+			scope	s0w40_interlace
+s0w40_interlace::
+			; Put test name
+			ld		hl, 0
+			ld		de, s_message1
+			call	puts
+			; R#9 = 0b00001000 ... IL=1: Interlace: NT=0: NTSC
+			ld		a, 0x08
+			ld		e, 9
+			call	write_control_register
+			call	wait_push_space_key
+
+			; Put test name
+			ld		hl, 0
+			ld		de, s_message2
+			call	puts
+			; R#9 = 0b00000010 ... IL=0: Non Interlace, NT=1: PAL
+			ld		a, 0x02
+			ld		e, 9
+			call	write_control_register
+			call	wait_push_space_key
+
+			; Put test name
+			ld		hl, 0
+			ld		de, s_message3
+			call	puts
+			; R#9 = 0b00001010 ... IL=1: Interlace, NT=1: PAL
+			ld		a, 0x0A
+			ld		e, 9
+			call	write_control_register
+			call	wait_push_space_key
+
+			; R#9 = 0b00000000 ... IL=0: Non Interlace, NT=0: NTSC
+			ld		a, 0x0A
+			ld		e, 9
+			jp		write_control_register
+
+	s_message1:
+			db		"[S0W40] INTERLACE TEST      ", 0
+	s_message2:
+			db		"[S0W40] PAL TEST      ", 0
+	s_message3:
+			db		"[S0W40] INTERLACE/PAL TEST ", 0
 			endscope

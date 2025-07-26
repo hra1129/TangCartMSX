@@ -389,6 +389,7 @@ module vdp (
 		.screen_pos_y								( w_screen_pos_y							),
 		.h_count									( w_h_count									),
 		.v_count									( w_v_count									),
+		.reg_display_adjust							( reg_display_adjust[3:0]					),
 		.vdp_r										( w_vdp_r									),
 		.vdp_g										( w_vdp_g									),
 		.vdp_b										( w_vdp_b									),
