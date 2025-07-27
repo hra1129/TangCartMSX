@@ -72,6 +72,7 @@ module vdp_timing_control_sprite (
 	output		[3:0]	display_color,
 	output				display_color_en,
 
+	input		[2:0]	horizontal_offset_l,
 	input				clear_sprite_collision,
 	output				sprite_collision,
 	input				clear_sprite_collision_xy,
@@ -158,6 +159,7 @@ module vdp_timing_control_sprite (
 		.screen_pos_x								( screen_pos_x								),
 		.pixel_pos_y								( pixel_pos_y								),
 		.screen_active								( w_screen_active							),
+		.horizontal_offset_l						( horizontal_offset_l						),
 		.vram_address								( w_vp_vram_address							),
 		.vram_valid									( w_vp_vram_valid							),
 		.vram_rdata									( vram_rdata								),

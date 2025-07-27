@@ -60,6 +60,7 @@ module vdp_timing_control_g4567 (
 	input				clk,					//	42.95454MHz
 
 	input		[12:0]	screen_pos_x,
+	input		[ 8:0]	pixel_pos_x,
 	input		[ 7:0]	pixel_pos_y,
 	input				screen_v_active,
 
@@ -69,6 +70,7 @@ module vdp_timing_control_g4567 (
 
 	output		[7:0]	display_color,
 
+	input		[2:0]	horizontal_offset_l,
 	input		[4:0]	reg_screen_mode,
 	input				reg_display_on,
 	input		[16:10]	reg_pattern_name_table_base,
@@ -90,6 +92,7 @@ module vdp_timing_control_g4567 (
 	reg					ff_screen_h_active;
 	wire				w_screen_active;
 	//	Position
+	wire		[12:0]	w_screen_pos_x;
 	wire		[9:0]	w_pos_x;
 	//	Pattern name table address
 	wire		[16:0]	w_pattern_name_g45;
@@ -123,12 +126,13 @@ module vdp_timing_control_g4567 (
 	// --------------------------------------------------------------------
 	//	Screen Position for active area
 	// --------------------------------------------------------------------
-	assign w_pos_x		= screen_pos_x[12:3] - { 7'd0, horizontal_offset_l };
+	assign w_screen_pos_x		= screen_pos_x[12:3]    - { 7'd0, horizontal_offset_l };
+	assign w_pos_x				= { 1'b0, pixel_pos_x } - { 6'd0, horizontal_offset_l };
 
 	// --------------------------------------------------------------------
 	//	Phase
 	// --------------------------------------------------------------------
-	assign w_phase		= w_pos_x[5:3];
+	assign w_phase		= w_pos_x[2:0];
 	assign w_sub_phase	= screen_pos_x[2:0];
 
 	always @( posedge clk or negedge reset_n ) begin
@@ -138,7 +142,7 @@ module vdp_timing_control_g4567 (
 		else if( screen_pos_x[12:3] == 10'd255 && w_sub_phase == 3'd7 ) begin
 			ff_screen_h_active <= 1'b0;
 		end
-		else if( w_pos_x[12:3] == 10'h3FF && w_sub_phase == 3'd7 ) begin
+		else if( w_screen_pos_x[12:3] == 10'h3FF && w_sub_phase == 3'd7 ) begin
 			ff_screen_h_active <= 1'b1;
 		end
 	end
@@ -164,7 +168,7 @@ module vdp_timing_control_g4567 (
 				case( w_phase )
 				3'd0:
 					begin
-						if( w_mode[2] || w_mode[3] ) begin
+						if( w_mode[ c_g6 ] || w_mode[ c_g7 ] ) begin
 							ff_vram_address <= w_pattern_name_g45;
 						end
 						else begin
@@ -175,7 +179,7 @@ module vdp_timing_control_g4567 (
 				3'd1:
 					begin
 						ff_vram_address <= w_pattern_name_g67;
-						ff_vram_valid <= w_screen_active & (w_mode[2] | w_mode[3]) & reg_display_on;
+						ff_vram_valid <= w_screen_active & (w_mode[ c_g6 ] | w_mode[ c_g7 ]) & reg_display_on;
 					end
 				default:
 					begin
@@ -215,7 +219,7 @@ module vdp_timing_control_g4567 (
 					end
 				3'd3:
 					begin
-						if( w_mode[0] || w_mode[1] ) begin
+						if( w_mode[ c_g4 ] || w_mode[ c_g5 ] ) begin
 							ff_next_pattern0 <= { 4'd0, ff_next_pattern0[15:12], 4'd0, ff_next_pattern0[11: 8], 
 							                      4'd0, ff_next_pattern0[ 7: 4], 4'd0, ff_next_pattern0[ 3: 0] };
 							ff_next_pattern1 <= { 4'd0, ff_next_pattern0[31:28], 4'd0, ff_next_pattern0[27:24], 

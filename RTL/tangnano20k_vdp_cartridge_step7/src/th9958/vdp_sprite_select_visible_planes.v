@@ -60,8 +60,9 @@ module vdp_sprite_select_visible_planes (
 	input				clk,					//	42.95454MHz
 
 	input		[12:0]	screen_pos_x,
-	input		[ 7:0]	pixel_pos_y,
+	input		[7:0]	pixel_pos_y,
 	input				screen_active,
+	input		[2:0]	horizontal_offset_l,
 
 	output		[16:0]	vram_address,
 	output				vram_valid,
@@ -85,6 +86,7 @@ module vdp_sprite_select_visible_planes (
 	input		[16:7]	reg_sprite_attribute_table_base
 );
 	//	Phase
+	wire		[12:0]	w_screen_pos_x;
 	wire		[2:0]	w_phase;
 	wire		[2:0]	w_sub_phase;
 	reg			[4:0]	ff_current_plane_num;		//	Plane#0...#31
@@ -104,7 +106,8 @@ module vdp_sprite_select_visible_planes (
 	// --------------------------------------------------------------------
 	//	Phase
 	// --------------------------------------------------------------------
-	assign w_phase			= screen_pos_x[5:3];
+	assign w_screen_pos_x	= screen_pos_x[12:3] - { 7'd0, horizontal_offset_l };
+	assign w_phase			= w_screen_pos_x[5:3];
 	assign w_sub_phase		= screen_pos_x[2:0];
 	assign vram_address		= { reg_sprite_attribute_table_base, ff_current_plane_num, 2'd0 };
 	assign w_selected_full	= ff_selected_count[3] | (ff_selected_count[2] && !sprite_mode2) | ff_select_finish;

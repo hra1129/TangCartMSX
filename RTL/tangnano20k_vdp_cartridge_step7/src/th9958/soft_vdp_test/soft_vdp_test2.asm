@@ -110,7 +110,7 @@ screen5::
 			; Pattern Name Table をクリア
 			ld		hl, 0x0000
 			ld		bc, 128 * 212
-			call	fill_increment
+			call	fill_random
 			ret
 			endscope
 
@@ -160,7 +160,7 @@ screen6::
 			; Pattern Name Table をクリア
 			ld		hl, 0x0000
 			ld		bc, 128 * 212
-			call	fill_increment
+			call	fill_random
 			ret
 			endscope
 
@@ -210,7 +210,7 @@ screen7::
 			; Pattern Name Table をクリア
 			ld		hl, 0x0000
 			ld		bc, 256 * 212
-			call	fill_increment
+			call	fill_random
 			ret
 			endscope
 
@@ -260,7 +260,7 @@ screen8::
 			; Pattern Name Table をクリア
 			ld		hl, 0x0000
 			ld		bc, 256 * 212
-			call	fill_increment
+			call	fill_random
 			ret
 			endscope
 

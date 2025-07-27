@@ -538,7 +538,7 @@ clear_key_buffer::
 ;	output:
 ;		none
 ;	break:
-;		AF
+;		AF, BC, E
 ;	comment:
 ;		none
 ; =============================================================================
@@ -560,13 +560,45 @@ fill_increment::
 ; =============================================================================
 ;	VRAM をインクリメント値で埋める
 ;	input:
+;		HL .... VRAMアドレス
+;		BC .... 埋めるサイズ [byte]
+;	output:
+;		none
+;	break:
+;		AF, BC, DE
+;	comment:
+;		none
+; =============================================================================
+			scope	fill_random
+fill_random::
+			call	set_vram_write_address
+			ld		e, 19
+			ld		d, 133
+	loop:
+			ld		a, e
+			add		a, d
+			xor		a, 0x5A
+			inc		a
+			ld		e, d
+			ld		d, a
+			call	write_vram
+			dec		bc
+			ld		a, c
+			or		a, b
+			jr		nz, loop
+			ret
+			endscope
+
+; =============================================================================
+;	VRAM をインクリメント値で埋める
+;	input:
 ;		HL .... 転送元アドレス
 ;		DE .... 転送先VRAMアドレス
 ;		BC .... サイズ [byte]
 ;	output:
 ;		none
 ;	break:
-;		AF
+;		AF, BC, DE, HL
 ;	comment:
 ;		none
 ; =============================================================================
