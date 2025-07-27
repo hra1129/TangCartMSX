@@ -74,6 +74,7 @@ module vdp_upscan (
 	output		[7:0]	upscan_g,
 	output		[7:0]	upscan_b
 );
+	localparam			c_left_pos		= 10'd32;		//	画面上の水平位置。小さくすると左へ、大きくすると右に寄る。
 	wire		[9:0]	w_write_pos;
 	wire		[9:0]	w_read_pos;
 	wire		[9:0]	w_even_address;
@@ -90,7 +91,7 @@ module vdp_upscan (
 	// --------------------------------------------------------------------
 	//	Line buffer
 	// --------------------------------------------------------------------
-	assign w_write_pos		= screen_pos_x[11:2] + 10'd24 - { 5'd0, ~reg_display_adjust[3], reg_display_adjust[2:0], 1'b0 };
+	assign w_write_pos		= screen_pos_x[11:2] + c_left_pos - { 5'd0, ~reg_display_adjust[3], reg_display_adjust[2:0], 1'b0 };
 	assign w_read_pos		= h_count[9:0];
 
 	vdp_upscan_line_buffer u_even_line_buffer (

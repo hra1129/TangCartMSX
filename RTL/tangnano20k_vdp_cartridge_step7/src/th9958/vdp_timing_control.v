@@ -63,7 +63,6 @@ module vdp_timing_control (
 
 	output		[12:0]	screen_pos_x,			//	signed
 	output		[ 9:0]	screen_pos_y,			//	signed
-	output				screen_active,
 
 	output				intr_line,				//	pulse
 	output				intr_frame,				//	pulse
@@ -122,7 +121,7 @@ module vdp_timing_control (
 	wire		[ 9:0]	w_screen_pos_y;			//	signed   (Coordinates not affected by scroll register)
 	wire		[ 8:0]	w_pixel_pos_x;			//	unsigned (Coordinates affected by scroll register)
 	wire		[ 7:0]	w_pixel_pos_y;			//	unsigned (Coordinates affected by scroll register)
-	wire				w_screen_active;
+	wire				w_screen_v_active;
 	wire		[ 2:0]	w_horizontal_offset_l;
 	wire		[ 8:3]	w_horizontal_offset_h;
 
@@ -131,7 +130,6 @@ module vdp_timing_control (
 	// --------------------------------------------------------------------
 	assign screen_pos_x		= w_screen_pos_x;
 	assign screen_pos_y		= w_screen_pos_y;
-	assign screen_active	= w_screen_active;
 
 	// --------------------------------------------------------------------
 	//	Synchronous Signal Generator
@@ -145,7 +143,7 @@ module vdp_timing_control (
 		.screen_pos_y								( w_screen_pos_y							),
 		.pixel_pos_x								( w_pixel_pos_x								),
 		.pixel_pos_y								( w_pixel_pos_y								),
-		.screen_active								( w_screen_active							),
+		.screen_v_active							( w_screen_v_active							),
 		.intr_line									( intr_line									),
 		.intr_frame									( intr_frame								),
 		.reg_50hz_mode								( reg_50hz_mode								),
@@ -169,7 +167,7 @@ module vdp_timing_control (
 		.screen_pos_x								( w_screen_pos_x							),
 		.screen_pos_y								( w_screen_pos_y							),
 		.pixel_pos_y								( w_pixel_pos_y[2:0]						),
-		.screen_active								( screen_active								),
+		.screen_v_active							( w_screen_v_active							),
 		.vram_address								( t12_vram_address							),
 		.vram_valid									( t12_vram_valid							),
 		.vram_rdata									( t12_vram_rdata							),
@@ -192,11 +190,12 @@ module vdp_timing_control (
 		.screen_pos_x								( w_screen_pos_x							),
 		.pixel_pos_x								( w_pixel_pos_x								),
 		.pixel_pos_y								( w_pixel_pos_y								),
-		.screen_active								( w_screen_active							),
+		.screen_v_active							( w_screen_v_active							),
 		.vram_address								( g123m_vram_address						),
 		.vram_valid									( g123m_vram_valid							),
 		.vram_rdata									( g123m_vram_rdata							),
 		.display_color								( g123m_display_color						),
+		.horizontal_offset_l						( w_horizontal_offset_l						),
 		.reg_screen_mode							( reg_screen_mode							),
 		.reg_display_on								( reg_display_on							),
 		.reg_pattern_name_table_base				( reg_pattern_name_table_base				),
@@ -213,7 +212,7 @@ module vdp_timing_control (
 		.clk										( clk										),
 		.screen_pos_x								( w_screen_pos_x							),
 		.pixel_pos_y								( w_pixel_pos_y								),
-		.screen_active								( w_screen_active							),
+		.screen_v_active							( w_screen_v_active							),
 		.vram_address								( g4567_vram_address						),
 		.vram_valid									( g4567_vram_valid							),
 		.vram_rdata									( g4567_vram_rdata							),
@@ -233,7 +232,7 @@ module vdp_timing_control (
 		.screen_pos_x								( screen_pos_x								),
 		.screen_pos_y								( screen_pos_y								),
 		.pixel_pos_y								( w_pixel_pos_y								),
-		.screen_active								( screen_active								),
+		.screen_v_active							( w_screen_v_active							),
 		.vram_address								( sprite_vram_address						),
 		.vram_valid									( sprite_vram_valid							),
 		.vram_rdata									( sprite_vram_rdata							),

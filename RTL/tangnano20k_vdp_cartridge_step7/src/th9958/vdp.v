@@ -90,7 +90,6 @@ module vdp (
 	wire		[ 9:0]	w_v_count;
 	wire		[12:0]	w_screen_pos_x;
 	wire		[ 9:0]	w_screen_pos_y;
-	wire				w_screen_active;
 	wire				w_intr_line;
 	wire				w_intr_frame;
 
@@ -254,7 +253,6 @@ module vdp (
 		.v_count									( w_v_count									),
 		.screen_pos_x								( w_screen_pos_x							),
 		.screen_pos_y								( w_screen_pos_y							),
-		.screen_active								( w_screen_active							),
 		.intr_line									( w_intr_line								),
 		.intr_frame									( w_intr_frame								),
 		.t12_vram_address							( w_t12_vram_address						),

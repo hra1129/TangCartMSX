@@ -66,7 +66,7 @@ module vdp_timing_control_ssg (
 	output		[ 9:0]	screen_pos_y,			//	signed   (Coordinates not affected by scroll register)
 	output		[ 8:0]	pixel_pos_x,			//	unsigned (Coordinates affected by scroll register)
 	output		[ 7:0]	pixel_pos_y,			//	unsigned (Coordinates affected by scroll register)
-	output				screen_active,
+	output				screen_v_active,
 
 	output				intr_line,				//	pulse
 	output				intr_frame,				//	pulse
@@ -83,7 +83,7 @@ module vdp_timing_control_ssg (
 	output		[8:3]	horizontal_offset_h
 );
 	localparam			c_left_pos			= 12'd320;		//	16の倍数
-	localparam			c_top_pos			= 11'd28;
+	localparam			c_top_pos			= 11'd48;		//	画面上の垂直位置。小さくすると上へ、大きくすると下へ寄る。
 	localparam			c_h_count_max		= 11'd1367;
 	localparam			c_v_count_max_60p	= 10'd523;
 	localparam			c_v_count_max_60i	= 10'd524;
@@ -197,13 +197,13 @@ module vdp_timing_control_ssg (
 			ff_v_active <= 1'b0;
 		end
 		else if( w_h_count_end ) begin
-			if( ff_v_count == (c_top_pos * 2 - 10'd1) ) begin
+			if( ff_v_count[0] == 1'b1 && w_screen_pos_y == 10'h3FF ) begin
 				ff_v_active <= 1'b1;
 			end
-			else if( ff_v_count == (c_top_pos * 2 + 10'd383) && (reg_212lines_mode == 1'b0) ) begin
+			else if( ff_v_count[0] == 1'b1 && (w_screen_pos_y == 10'd191) && (reg_212lines_mode == 1'b0) ) begin
 				ff_v_active <= 1'b0;
 			end
-			else if( ff_v_count == (c_top_pos * 2 + 10'd423) ) begin
+			else if( ff_v_count[0] == 1'b1 && (w_screen_pos_y == 10'd211) ) begin
 				ff_v_active <= 1'b0;
 			end
 		end
@@ -232,6 +232,6 @@ module vdp_timing_control_ssg (
 	assign pixel_pos_y		= w_pixel_pos_y;
 	assign intr_line		= (w_screen_pos_y == { 2'd0, reg_interrupt_line } ) ? 1'b1: 1'b0;
 	assign intr_frame		= w_intr_frame_timing & w_intr_line_timing;
-	assign screen_active	= ff_h_active & ff_v_active;
+	assign screen_v_active	= ff_v_active;
 	assign dot_phase		= ff_half_count[0];
 endmodule
