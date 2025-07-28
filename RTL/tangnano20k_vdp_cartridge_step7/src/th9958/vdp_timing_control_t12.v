@@ -188,7 +188,7 @@ module vdp_timing_control_t12 (
 		if( !reset_n ) begin
 			ff_screen_h_active <= 1'b0;
 		end
-		else if( screen_pos_x[12:3] == 10'd255 && screen_pos_x[2:0] == 3'd7 ) begin
+		else if( screen_pos_x[12:3] == 10'd251 && screen_pos_x[2:0] == 3'd7 ) begin
 			ff_screen_h_active <= 1'b0;
 		end
 		else if( screen_pos_x[12:3] == 10'h3FF && screen_pos_x[2:0] == 3'd7 ) begin
@@ -352,15 +352,13 @@ module vdp_timing_control_t12 (
 			ff_pattern1 <= 6'd0;
 		end
 		else if( w_sub_phase == 3'd7 ) begin
-			if( ff_phase == 3'd5 ) begin
-				if( w_screen_active && ff_h_active ) begin
-					ff_pattern0 <= ff_next_pattern0;
-					ff_pattern1 <= ff_next_pattern1;
-				end
-				else begin
-					ff_pattern0 <= 6'd0;
-					ff_pattern1 <= 6'd0;
-				end
+			if( !(w_screen_active && ff_h_active) ) begin
+				ff_pattern0 <= 6'd0;
+				ff_pattern1 <= 6'd0;
+			end
+			else if( ff_phase == 3'd5 ) begin
+				ff_pattern0 <= ff_next_pattern0;
+				ff_pattern1 <= ff_next_pattern1;
 			end
 			else if( ff_phase == 3'd2 && w_mode[ c_t2 ] ) begin
 				ff_pattern0 <= ff_pattern1;

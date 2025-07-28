@@ -173,7 +173,7 @@ module vdp_timing_control_g123m (
 		if( !reset_n ) begin
 			ff_h_active <= 1'b0;
 		end
-		else if( screen_pos_x[12:3] == 10'h0FF && w_sub_phase == 3'd7 ) begin
+		else if( screen_pos_x[12:3] == 10'd262 && w_sub_phase == 3'd6 ) begin
 			ff_h_active <= 1'b0;
 		end
 		else if( w_pos_x == 10'h3FF && w_sub_phase == 3'd7 ) begin
@@ -289,13 +289,11 @@ module vdp_timing_control_g123m (
 			ff_color <= 8'd0;
 		end
 		else if( w_sub_phase == 3'd5 ) begin
-			if( w_phase == 3'd7 ) begin
-				if( !w_screen_active ) begin
-					ff_color <= { reg_backdrop_color, reg_backdrop_color };
-				end
-				else begin
-					ff_color <= ff_next_color;
-				end
+			if( !w_screen_active ) begin
+				ff_color <= { reg_backdrop_color, reg_backdrop_color };
+			end
+			else if( w_phase == 3'd7 ) begin
+				ff_color <= ff_next_color;
 			end
 		end
 	end

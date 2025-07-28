@@ -92,7 +92,7 @@ module vdp_timing_control_g4567 (
 	reg					ff_screen_h_active;
 	wire				w_screen_active;
 	//	Position
-	wire		[12:0]	w_screen_pos_x;
+	wire		[9:0]	w_screen_pos_x;
 	wire		[9:0]	w_pos_x;
 	//	Pattern name table address
 	wire		[16:0]	w_pattern_name_g45;
@@ -126,8 +126,8 @@ module vdp_timing_control_g4567 (
 	// --------------------------------------------------------------------
 	//	Screen Position for active area
 	// --------------------------------------------------------------------
-	assign w_screen_pos_x		= screen_pos_x[12:3]    - { 7'd0, horizontal_offset_l };
-	assign w_pos_x				= { 1'b0, pixel_pos_x } - { 6'd0, horizontal_offset_l };
+	assign w_screen_pos_x		= screen_pos_x[12:3]              - { 7'd0, horizontal_offset_l };
+	assign w_pos_x				= { pixel_pos_x[8], pixel_pos_x } - { 6'd0, horizontal_offset_l };
 
 	// --------------------------------------------------------------------
 	//	Phase
@@ -139,10 +139,10 @@ module vdp_timing_control_g4567 (
 		if( !reset_n ) begin
 			ff_screen_h_active <= 1'b0;
 		end
-		else if( screen_pos_x[12:3] == 10'd255 && w_sub_phase == 3'd7 ) begin
+		else if( screen_pos_x[12:3] == 10'd263 && w_sub_phase == 3'd6 ) begin
 			ff_screen_h_active <= 1'b0;
 		end
-		else if( w_screen_pos_x[12:3] == 10'h3FF && w_sub_phase == 3'd7 ) begin
+		else if( w_screen_pos_x == 10'h3FF && w_sub_phase == 3'd7 ) begin
 			ff_screen_h_active <= 1'b1;
 		end
 	end
@@ -254,27 +254,25 @@ module vdp_timing_control_g4567 (
 			ff_pattern[7] <= 8'd0;
 		end
 		else if( w_sub_phase == 3'd5 ) begin
-			if( w_phase == 3'd7 ) begin
-				if( !w_screen_active ) begin
-					ff_pattern[0] <= reg_backdrop_color;
-					ff_pattern[1] <= reg_backdrop_color;
-					ff_pattern[2] <= reg_backdrop_color;
-					ff_pattern[3] <= reg_backdrop_color;
-					ff_pattern[4] <= reg_backdrop_color;
-					ff_pattern[5] <= reg_backdrop_color;
-					ff_pattern[6] <= reg_backdrop_color;
-					ff_pattern[7] <= reg_backdrop_color;
-				end
-				else begin
-					ff_pattern[0] <= ff_next_pattern0[ 7: 0];
-					ff_pattern[1] <= ff_next_pattern0[15: 8];
-					ff_pattern[2] <= ff_next_pattern0[23:16];
-					ff_pattern[3] <= ff_next_pattern0[31:24];
-					ff_pattern[4] <= ff_next_pattern1[ 7: 0];
-					ff_pattern[5] <= ff_next_pattern1[15: 8];
-					ff_pattern[6] <= ff_next_pattern1[23:16];
-					ff_pattern[7] <= ff_next_pattern1[31:24];
-				end
+			if( !w_screen_active ) begin
+				ff_pattern[0] <= reg_backdrop_color;
+				ff_pattern[1] <= reg_backdrop_color;
+				ff_pattern[2] <= reg_backdrop_color;
+				ff_pattern[3] <= reg_backdrop_color;
+				ff_pattern[4] <= reg_backdrop_color;
+				ff_pattern[5] <= reg_backdrop_color;
+				ff_pattern[6] <= reg_backdrop_color;
+				ff_pattern[7] <= reg_backdrop_color;
+			end
+			else if( w_phase == 3'd7 ) begin
+				ff_pattern[0] <= ff_next_pattern0[ 7: 0];
+				ff_pattern[1] <= ff_next_pattern0[15: 8];
+				ff_pattern[2] <= ff_next_pattern0[23:16];
+				ff_pattern[3] <= ff_next_pattern0[31:24];
+				ff_pattern[4] <= ff_next_pattern1[ 7: 0];
+				ff_pattern[5] <= ff_next_pattern1[15: 8];
+				ff_pattern[6] <= ff_next_pattern1[23:16];
+				ff_pattern[7] <= ff_next_pattern1[31:24];
 			end
 			else begin
 				ff_pattern[0] <= ff_pattern[1];

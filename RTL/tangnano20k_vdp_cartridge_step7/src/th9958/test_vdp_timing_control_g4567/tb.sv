@@ -65,8 +65,9 @@ module tb ();
 	reg					clk;					//	42.95454MHz
 
 	reg			[12:0]	screen_pos_x;
+	reg			[ 8:0]	pixel_pos_x;
 	reg			[ 7:0]	pixel_pos_y;
-	reg					screen_active;
+	reg					screen_v_active;
 
 	wire		[16:0]	vram_address;
 	wire				vram_valid;
@@ -74,7 +75,9 @@ module tb ();
 
 	wire		[7:0]	display_color;
 
+	reg			[2:0]	horizontal_offset_l;
 	reg			[4:0]	reg_screen_mode;
+	reg					reg_display_on;
 	reg			[16:10]	reg_pattern_name_table_base;
 	reg			[7:0]	reg_backdrop_color;
 
@@ -99,10 +102,13 @@ module tb ();
 		clk = 0;
 		reset_n = 0;
 		screen_pos_x = 0;
+		pixel_pos_x = 0;
 		pixel_pos_y = 0;
-		screen_active = 0;
+		screen_v_active = 0;
 		vram_rdata = 0;
+		horizontal_offset_l = 0;
 		reg_screen_mode = c_mode_g4;
+		reg_display_on = 1;
 		reg_pattern_name_table_base = 0;
 		reg_backdrop_color = 8'hF4;
 
@@ -115,11 +121,13 @@ module tb ();
 		$display( "[test001] SCREEN5 Inactive mode" );
 		jj = 0;
 		reg_screen_mode = c_mode_g4;
+		horizontal_offset_l = 0;
 		for( j = 0; j < 16; j++ ) begin
 			for( i = 0; i < 2736; i++ ) begin
 				screen_pos_x <= i - 128;
+				pixel_pos_x <= (i - 128) >> 3;
 				pixel_pos_y <= -10;
-				screen_active <= 1'b0;
+				screen_v_active <= 1'b0;
 				@( posedge clk );
 				assert( vram_valid == 1'b0 );
 				if( (i % 64) == 63 ) begin
@@ -128,12 +136,37 @@ module tb ();
 			end
 		end
 
-		$display( "[test002] SCREEN5 Active phase" );
+		$display( "[test002] SCREEN5 Active phase (hoffset=0)" );
+		horizontal_offset_l = 0;
 		for( j = 0; j < 16; j++ ) begin
 			for( i = 0; i < 2736; i++ ) begin
 				screen_pos_x <= i - 128;
+				pixel_pos_x <= (i - 128) >> 3;
 				pixel_pos_y <= 0;
-				screen_active <= 1'b1;
+				screen_v_active <= 1'b1;
+				@( posedge clk );
+				if( screen_pos_x[2:0] == 3'd1 ) begin
+					if( screen_pos_x[5:3] == 3'd0 ) begin
+						assert( vram_valid == 1'b1 );
+					end
+					else begin
+						assert( vram_valid == 1'b0 );
+					end
+				end
+				if( (i % 64) == 63 ) begin
+					jj = j;
+				end
+			end
+		end
+
+		$display( "[test002] SCREEN5 Active phase (hoffset=7)" );
+		horizontal_offset_l = 7;
+		for( j = 0; j < 16; j++ ) begin
+			for( i = 0; i < 2736; i++ ) begin
+				screen_pos_x <= i - 128;
+				pixel_pos_x <= (i - 128) >> 3;
+				pixel_pos_y <= 0;
+				screen_v_active <= 1'b1;
 				@( posedge clk );
 				if( screen_pos_x[2:0] == 3'd1 ) begin
 					if( screen_pos_x[5:3] == 3'd0 ) begin
@@ -151,11 +184,13 @@ module tb ();
 
 		$display( "[test001] SCREEN6 Inactive mode" );
 		reg_screen_mode = c_mode_g5;
+		horizontal_offset_l = 0;
 		for( j = 0; j < 16; j++ ) begin
 			for( i = 0; i < 2736; i++ ) begin
 				screen_pos_x <= i - 128;
+				pixel_pos_x <= (i - 128) >> 3;
 				pixel_pos_y <= -10;
-				screen_active <= 1'b0;
+				screen_v_active <= 1'b0;
 				@( posedge clk );
 				assert( vram_valid == 1'b0 );
 				if( (i % 64) == 63 ) begin
@@ -168,8 +203,9 @@ module tb ();
 		for( j = 0; j < 16; j++ ) begin
 			for( i = 0; i < 2736; i++ ) begin
 				screen_pos_x <= i - 128;
+				pixel_pos_x <= (i - 128) >> 3;
 				pixel_pos_y <= 0;
-				screen_active <= 1'b1;
+				screen_v_active <= 1'b1;
 				@( posedge clk );
 				if( screen_pos_x[2:0] == 3'd1 ) begin
 					if( screen_pos_x[5:3] == 3'd0 ) begin
@@ -190,8 +226,9 @@ module tb ();
 		for( j = 0; j < 16; j++ ) begin
 			for( i = 0; i < 2736; i++ ) begin
 				screen_pos_x <= i - 128;
+				pixel_pos_x <= (i - 128) >> 3;
 				pixel_pos_y <= -10;
-				screen_active <= 1'b0;
+				screen_v_active <= 1'b0;
 				@( posedge clk );
 				assert( vram_valid == 1'b0 );
 				if( (i % 64) == 63 ) begin
@@ -204,8 +241,9 @@ module tb ();
 		for( j = 0; j < 16; j++ ) begin
 			for( i = 0; i < 2736; i++ ) begin
 				screen_pos_x <= i - 128;
+				pixel_pos_x <= (i - 128) >> 3;
 				pixel_pos_y <= 0;
-				screen_active <= 1'b1;
+				screen_v_active <= 1'b1;
 				@( posedge clk );
 				if( screen_pos_x[2:0] == 3'd1 ) begin
 					if( screen_pos_x[5:3] == 3'd0 || screen_pos_x[5:3] == 3'd1 ) begin
@@ -227,8 +265,9 @@ module tb ();
 		for( j = 0; j < 16; j++ ) begin
 			for( i = 0; i < 2736; i++ ) begin
 				screen_pos_x <= i - 128;
+				pixel_pos_x <= (i - 128) >> 3;
 				pixel_pos_y <= -10;
-				screen_active <= 1'b0;
+				screen_v_active <= 1'b0;
 				@( posedge clk );
 				assert( vram_valid == 1'b0 );
 				if( (i % 64) == 63 ) begin
@@ -241,8 +280,9 @@ module tb ();
 		for( j = 0; j < 16; j++ ) begin
 			for( i = 0; i < 2736; i++ ) begin
 				screen_pos_x <= i - 128;
+				pixel_pos_x <= (i - 128) >> 3;
 				pixel_pos_y <= 0;
-				screen_active <= 1'b1;
+				screen_v_active <= 1'b1;
 				@( posedge clk );
 				if( screen_pos_x[2:0] == 3'd1 ) begin
 					if( screen_pos_x[5:3] == 3'd0 || screen_pos_x[5:3] == 3'd1 ) begin
