@@ -86,6 +86,8 @@ module vdp_color_palette (
 	wire				w_4colors_mode;
 	wire				w_t12_mode;
 	wire				w_g4567_mode;
+	wire				w_g5_mode;
+	wire				w_g6_mode;
 	reg			[7:0]	ff_display_color256;
 	reg			[7:0]	ff_display_color;
 	reg					ff_display_color_oe;
@@ -107,6 +109,7 @@ module vdp_color_palette (
 	reg			[2:0]	ff_palette_r;
 	reg			[2:0]	ff_palette_g;
 	reg			[2:0]	ff_palette_b;
+	wire				w_high_resolution;
 
 	// --------------------------------------------------------------------
 	//	Palette initializer
@@ -152,8 +155,6 @@ module vdp_color_palette (
 	// --------------------------------------------------------------------
 	assign w_256colors_mode		= (reg_screen_mode == 5'b11100);	// Graphic7 (SCREEN8)
 	assign w_4colors_mode		= (reg_screen_mode == 5'b10000);	// Graphic5 (SCREEN6)
-	assign w_high_resolution	= (reg_screen_mode == 5'b10000) ||	// Graphic5 (SCREEN6)
-	                        	  (reg_screen_mode == 5'b10100);	// Graphic6 (SCREEN7)
 	assign w_g4567_mode			= (reg_screen_mode == 5'b01100) ||	// Graphic4 (SCREEN5)
 	                        	  (reg_screen_mode == 5'b10000) ||	// Graphic5 (SCREEN6)
 	                        	  (reg_screen_mode == 5'b10100) ||	// Graphic6 (SCREEN7)
@@ -161,7 +162,9 @@ module vdp_color_palette (
 	assign w_t12_mode			= (reg_screen_mode == 5'b00001) ||	// Text1 (SCREEN0:W40)
 	                        	  (reg_screen_mode == 5'b00101) ||	// Text1 (SCREEN0:W40)
 	                        	  (reg_screen_mode == 5'b01001);	// Text2 (SCREEN0:W80)
-
+	assign w_g5_mode			= (reg_screen_mode == 5'b10000);	// Graphic5 (SCREEN6)
+	assign w_g6_mode			= (reg_screen_mode == 5'b10100);	// Graphic6 (SCREEN7)
+	assign w_high_resolution	= w_g5_mode | w_g6_mode;			// Graphic5 or 6 (SCREEN6 or 7)
 
 	// --------------------------------------------------------------------
 	//	Palette RAM Read Signal ( screen_pos_x = 0 )
@@ -180,18 +183,42 @@ module vdp_color_palette (
 			end
 			ff_display_color_oe <= 1'b0;
 		end
-		else if( screen_pos_x == 3'd0 || (w_high_resolution && screen_pos_x == 3'd4) ) begin
+		else if( screen_pos_x == 3'd0 ) begin
 			if( w_t12_mode ) begin
 				ff_display_color <= { 4'd0, display_color_t12 };
 			end
 			else if( display_color_sprite_en && (display_color_sprite != 4'd0 || reg_color0_opaque) ) begin
-				ff_display_color <= { 4'd0, display_color_sprite };
+				if( w_g5_mode ) begin
+					ff_display_color <= { 6'd0, display_color_sprite[1:0] };
+				end
+				else begin
+					ff_display_color <= { 4'd0, display_color_sprite };
+				end
 			end
 			else if( w_g4567_mode ) begin
 				ff_display_color <= { 4'd0, display_color_g4567[3:0] };
 			end
 			else begin
 				ff_display_color <= { 4'd0, display_color_g123m };
+			end
+			ff_display_color_oe <= 1'b1;
+		end
+		else if( w_high_resolution && screen_pos_x == 3'd4 ) begin
+			if( display_color_sprite_en && (display_color_sprite != 4'd0 || reg_color0_opaque) ) begin
+				if( w_g5_mode ) begin
+					ff_display_color <= { 6'd0, display_color_sprite[3:2] };
+				end
+				else begin
+					ff_display_color <= { 4'd0, display_color_sprite };
+				end
+			end
+			else begin
+				if( w_g5_mode ) begin
+					ff_display_color <= { 4'd0, display_color_g4567[3:2] };
+				end
+				else begin
+					ff_display_color <= { 4'd0, display_color_g4567[3:0] };
+				end
 			end
 			ff_display_color_oe <= 1'b1;
 		end
@@ -264,7 +291,7 @@ module vdp_color_palette (
 			ff_vdp_r <= 8'd0;
 			ff_vdp_g <= 8'd0;
 		end
-		else if( screen_pos_x == 3'd2 || (w_high_resolution == 3'd6) ) begin
+		else if( screen_pos_x == 3'd2 || (w_high_resolution && screen_pos_x == 3'd6) ) begin
 			case( w_display_r )
 			3'd0:		ff_vdp_r <= 8'd0;
 			3'd1:		ff_vdp_r <= 8'd37;
@@ -295,7 +322,7 @@ module vdp_color_palette (
 		if( !reset_n ) begin
 			ff_vdp_b <= 8'd0;
 		end
-		else if( screen_pos_x == 3'd2 || (w_high_resolution == 3'd6) ) begin
+		else if( screen_pos_x == 3'd2 || (w_high_resolution && screen_pos_x == 3'd6) ) begin
 			if( w_256colors_mode ) begin
 				case( w_display_b[1:0] )
 				3'd0:		ff_vdp_b <= 8'd0;

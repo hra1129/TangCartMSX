@@ -169,15 +169,18 @@ module vdp_timing_control_g4567 (
 				3'd0:
 					begin
 						if( w_mode[ c_g6 ] || w_mode[ c_g7 ] ) begin
+							//	SCREEN5 or 6
 							ff_vram_address <= w_pattern_name_g45;
 						end
 						else begin
+							//	SCREEN7 or 8
 							ff_vram_address <= w_pattern_name_g67;
 						end
 						ff_vram_valid <= w_screen_active & (w_mode != 4'b0000) & reg_display_on;
 					end
 				3'd1:
 					begin
+						//	SCREEN7 or 8
 						ff_vram_address <= w_pattern_name_g67;
 						ff_vram_valid <= w_screen_active & (w_mode[ c_g6 ] | w_mode[ c_g7 ]) & reg_display_on;
 					end

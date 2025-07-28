@@ -173,7 +173,7 @@
       "SubInsts" : [
        {
         "InstFile" : "D:/github/HRA_product/TangCartMSX/RTL/tangnano20k_vdp_cartridge_step7/src/th9958/vdp_color_palette.v",
-        "InstLine" : 206,
+        "InstLine" : 233,
         "InstName" : "u_color_palette_ram",
         "ModuleFile" : "D:/github/HRA_product/TangCartMSX/RTL/tangnano20k_vdp_cartridge_step7/src/th9958/vdp_color_palette_ram.v",
         "ModuleLine" : 58,
