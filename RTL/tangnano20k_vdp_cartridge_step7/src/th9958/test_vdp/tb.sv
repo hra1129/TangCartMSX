@@ -404,6 +404,17 @@ module tb ();
 		// Enable display
 		write_vdp_reg( 8'h01, 8'h40 );	// Display enable
 
+		repeat(10) @( posedge clk );
+		write_vdp_reg( 8'd14, 8'd7 );
+		write_vdp_reg( 8'd14, 8'd6 );
+		write_vdp_reg( 8'd14, 8'd5 );
+		write_vdp_reg( 8'd14, 8'd4 );
+		write_vdp_reg( 8'd14, 8'd3 );
+		write_vdp_reg( 8'd14, 8'd2 );
+		write_vdp_reg( 8'd14, 8'd1 );
+		write_vdp_reg( 8'd14, 8'd0 );
+		repeat(10) @( posedge clk );
+
 		$display( "[test003] VRAM write test" );
 		
 		// Write some test patterns to VRAM

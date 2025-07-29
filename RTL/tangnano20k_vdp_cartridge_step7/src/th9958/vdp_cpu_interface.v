@@ -168,6 +168,7 @@ module vdp_cpu_interface (
 	reg					ff_register_write;
 	reg		[5:0]		ff_register_num;
 	reg		[16:0]		ff_vram_address;
+	wire	[16:0]		w_next_vram_address;
 	reg					ff_vram_address_write;		//	アドレス設定が書き込み用に設定されたかどうか
 	reg					ff_vram_write;				//	実際のアクセスが書き込みアクセスかどうか
 	reg		[7:0]		ff_vram_wdata;
@@ -264,17 +265,14 @@ module vdp_cpu_interface (
 		end
 	end
 
+	assign w_next_vram_address	= ff_vram_address + 17'd1;
+
 	always @( posedge clk or negedge reset_n ) begin
 		if( !reset_n ) begin
-			ff_vram_address		<= 17'd0;
+			ff_vram_address[13:0]	<= 14'd0;
 		end
 		else if( ff_vram_address_inc ) begin
-			if( w_address_14bit ) begin
-				ff_vram_address[13:0] <= ff_vram_address[13:0] + 14'd1;
-			end
-			else begin
-				ff_vram_address <= ff_vram_address + 17'd1;
-			end
+			ff_vram_address[13:0] <= w_next_vram_address[13:0];
 		end
 		else if( ff_busy ) begin
 			//	hold
@@ -300,9 +298,20 @@ module vdp_cpu_interface (
 				endcase
 			end
 		end
+	end
+
+	always @( posedge clk or negedge reset_n ) begin
+		if( !reset_n ) begin
+			ff_vram_address[16:14] <= 3'd0;
+		end
 		else if( ff_register_write && ff_register_num == 6'd14 ) begin
 			//	R#14 = [N/A][N/A][N/A][N/A][N/A][A16][A15][A14]
-			ff_vram_address[16:14] <= bus_wdata[2:0];
+			ff_vram_address[16:14] <= ff_1st_byte[2:0];
+		end
+		else if( ff_vram_address_inc ) begin
+			if( !w_address_14bit ) begin
+				ff_vram_address[16:14] <= w_next_vram_address[16:14];
+			end
 		end
 	end
 
