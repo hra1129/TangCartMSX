@@ -4,6 +4,78 @@
 ;	Programmed by t.hara (HRA!)
 ; =============================================================================
 
+font_ptr		:= 0x0004
+bdos			:= 0x0005
+calslt			:= 0x001C
+enaslt			:= 0x0024
+rom_version		:= 0x002D
+chgmod			:= 0x005F
+gttrig			:= 0x00D8
+kilbuf			:= 0x0156
+chgcpu			:= 0x0180
+
+command_line	:= 0x005D
+ramad0			:= 0xF341
+ramad1			:= 0xF342
+ramad2			:= 0xF343
+ramad3			:= 0xF344
+main_rom_slot	:= 0xFCC1
+
+vdp_port0		:= 0x98
+vdp_port1		:= 0x99
+vdp_port2		:= 0x9A
+vdp_port3		:= 0x9B
+
+font_data		:= 0x4000		; 256 * 8 = 0x800 bytes
+
+; BDOS function call
+_TERM0		:= 0x00
+_CONIN		:= 0x01
+_CONOUT		:= 0x02
+_AUXIN		:= 0x03
+_AUXOUT		:= 0x04
+_LSTOUT		:= 0x05
+_DIRIO		:= 0x06
+_DIRIN		:= 0x07
+_INNOE		:= 0x08
+_STROUT		:= 0x09
+_BUFIN		:= 0x0A
+_CONST		:= 0x0B
+_CPMVER		:= 0x0C
+_DSKRST		:= 0x0D
+_SELDSK		:= 0x0E
+_FOPEN		:= 0x0F
+_FCLOSE		:= 0x10
+_SFIRST		:= 0x11
+_SNEXT		:= 0x12
+_FDEL		:= 0x13
+_RDSEQ		:= 0x14
+_WRSEQ		:= 0x15
+_FMAKE		:= 0x16
+_FREN		:= 0x17
+_LOGIN		:= 0x18
+_CURDRV		:= 0x19
+_SETDTA		:= 0x1A
+_ALLOC		:= 0x1B
+_RDRND		:= 0x21
+_WRRND		:= 0x22
+_FSIZE		:= 0x23
+_SETRND		:= 0x24
+_WRBLK		:= 0x26
+_RDBLK		:= 0x27
+_WRSER		:= 0x28
+_GDATE		:= 0x2A
+_SDATE		:= 0x2B
+_GTIME		:= 0x2C
+_STIME		:= 0x2D
+_VERIFY		:= 0x2E
+_RDABS		:= 0x2F
+_WRABS		:= 0x30
+_DPARM		:= 0x31
+_FFIRST		:= 0x40
+_FNEXT		:= 0x41
+_FNEW		:= 0x42
+
 ; =============================================================================
 ;	VDP の I/O アドレスを選択する
 ;	input:
@@ -78,6 +150,11 @@ vdp_io_select::
 ; =============================================================================
 			scope	set_vram_write_address
 set_vram_write_address::
+			push	de
+			xor		a, a
+			ld		e, 14
+			call	write_control_register
+			pop		de
 			di
 			ld		a, l
 p_vdp_port0	:= $ + 1
@@ -104,6 +181,11 @@ p_vdp_port1	:= $ + 1
 ; =============================================================================
 			scope	set_vram_read_address
 set_vram_read_address::
+			push	de
+			xor		a, a
+			ld		e, 14
+			call	write_control_register
+			pop		de
 			di
 			ld		a, l
 p_vdp_port2	:= $ + 1
@@ -770,4 +852,3 @@ puts::
 			call	write_vram
 			jr		loop
 			endscope
-

@@ -6,32 +6,6 @@
 
 			org		0x100
 
-font_ptr		:= 0x0004
-bdos			:= 0x0005
-calslt			:= 0x001C
-enaslt			:= 0x0024
-rom_version		:= 0x002D
-chgmod			:= 0x005F
-gttrig			:= 0x00D8
-kilbuf			:= 0x0156
-chgcpu			:= 0x0180
-
-command_line	:= 0x005D
-ramad0			:= 0xF341
-ramad1			:= 0xF342
-ramad2			:= 0xF343
-ramad3			:= 0xF344
-main_rom_slot	:= 0xFCC1
-
-vdp_port0		:= 0x98
-vdp_port1		:= 0x99
-vdp_port2		:= 0x9A
-vdp_port3		:= 0x9B
-
-font_data		:= 0x8000
-
-func_term		:= 0x00
-
 start:
 			; èÄîı
 			call	vdp_io_select
@@ -71,7 +45,7 @@ start:
 
 			; å„énññ
 			call	clear_key_buffer
-			ld		c, func_term
+			ld		c, _TERM0
 			jp		bdos
 
 include "lib.asm"

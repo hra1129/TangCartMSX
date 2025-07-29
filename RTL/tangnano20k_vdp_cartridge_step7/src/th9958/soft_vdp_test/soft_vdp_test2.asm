@@ -6,38 +6,13 @@
 
 			org		0x100
 
-font_ptr		:= 0x0004
-bdos			:= 0x0005
-calslt			:= 0x001C
-enaslt			:= 0x0024
-rom_version		:= 0x002D
-chgmod			:= 0x005F
-gttrig			:= 0x00D8
-kilbuf			:= 0x0156
-chgcpu			:= 0x0180
-
-command_line	:= 0x005D
-ramad0			:= 0xF341
-ramad1			:= 0xF342
-ramad2			:= 0xF343
-ramad3			:= 0xF344
-main_rom_slot	:= 0xFCC1
-
-vdp_port0		:= 0x98
-vdp_port1		:= 0x99
-vdp_port2		:= 0x9A
-vdp_port3		:= 0x9B
-
-font_data		:= 0x8000
-
-func_term		:= 0x00
-
 start:
 			; 準備
 			call	vdp_io_select
 			call	copy_rom_font
 			; テスト
 			call	screen5
+			call	s5_load_image
 			call	s5_vscroll
 			call	s5_hscroll
 			call	s5_display_adjust
@@ -59,7 +34,7 @@ start:
 
 			; 後始末
 			call	clear_key_buffer
-			ld		c, func_term
+			ld		c, _TERM0
 			jp		bdos
 
 include		"lib.asm"
@@ -102,15 +77,52 @@ screen5::
 			ld		e, 2
 			call	write_control_register
 			; Sprite Attribute Table
-			ld		hl, 0x3A00
+			ld		hl, 0x7A00
 			call	set_sprite_attribute_table
 			; Sprite Pattern Generator Table
-			ld		hl, 0x3000
+			ld		hl, 0x7000
 			call	set_sprite_pattern_generator_table
 			; Pattern Name Table をクリア
 			ld		hl, 0x0000
 			ld		bc, 128 * 212
 			call	fill_random
+			call	wait_push_space_key
+
+			ld		hl, 0x0000
+			ld		bc, 128 * 212
+			ld		e, 0x00
+			call	fill_vram
+			call	wait_push_space_key
+
+			ld		hl, 0x0000
+			ld		bc, 128 * 212
+			ld		e, 0x11
+			call	fill_vram
+			call	wait_push_space_key
+
+			ld		hl, 0x0000
+			ld		bc, 128 * 212
+			ld		e, 0x22
+			call	fill_vram
+			call	wait_push_space_key
+
+			ld		hl, 0x0000
+			ld		bc, 128 * 212
+			ld		e, 0x33
+			call	fill_vram
+			call	wait_push_space_key
+
+			ld		hl, 0x0000
+			ld		bc, 128 * 212
+			ld		e, 0x44
+			call	fill_vram
+			call	wait_push_space_key
+
+			ld		hl, 0x0000
+			ld		bc, 128 * 212
+			ld		e, 0x55
+			call	fill_vram
+			call	wait_push_space_key
 			ret
 			endscope
 
@@ -152,10 +164,10 @@ screen6::
 			ld		e, 2
 			call	write_control_register
 			; Sprite Attribute Table
-			ld		hl, 0x3A00
+			ld		hl, 0x7A00
 			call	set_sprite_attribute_table
 			; Sprite Pattern Generator Table
-			ld		hl, 0x3000
+			ld		hl, 0x7000
 			call	set_sprite_pattern_generator_table
 			; Pattern Name Table をクリア
 			ld		hl, 0x0000
@@ -261,6 +273,43 @@ screen8::
 			ld		hl, 0x0000
 			ld		bc, 256 * 212
 			call	fill_random
+			call	wait_push_space_key
+
+			ld		hl, 0x0000
+			ld		bc, 256 * 212
+			ld		e, 0x00
+			call	fill_vram
+			call	wait_push_space_key
+
+			ld		hl, 0x0000
+			ld		bc, 256 * 212
+			ld		e, 0x11
+			call	fill_vram
+			call	wait_push_space_key
+
+			ld		hl, 0x0000
+			ld		bc, 256 * 212
+			ld		e, 0x22
+			call	fill_vram
+			call	wait_push_space_key
+
+			ld		hl, 0x0000
+			ld		bc, 256 * 212
+			ld		e, 0x33
+			call	fill_vram
+			call	wait_push_space_key
+
+			ld		hl, 0x0000
+			ld		bc, 256 * 212
+			ld		e, 0x44
+			call	fill_vram
+			call	wait_push_space_key
+
+			ld		hl, 0x0000
+			ld		bc, 256 * 212
+			ld		e, 0x55
+			call	fill_vram
+			call	wait_push_space_key
 			ret
 			endscope
 
@@ -455,3 +504,70 @@ s7_display_adjust::
 s8_display_adjust::
 			jp		display_adjust
 			endscope
+
+; =============================================================================
+;	[SCREEN5] load screen5 image
+;	input:
+;		none
+;	output:
+;		none
+;	break:
+;		AF
+;	comment:
+;		none
+; =============================================================================
+			scope	s5_load_image
+s5_load_image::
+
+			ld		hl, small_image			; 転送元
+			ld		de, 0					; 転送先
+			ld		c, 16
+	y_loop:
+			ld		b, 16
+	x_loop:
+			push	bc
+			push	hl
+			push	de
+			ld		bc, 8
+			call	block_copy
+			ld		bc, 8
+			pop		hl						; 転送先
+			add		hl, bc					; +8
+			ex		de, hl
+			pop		hl						; 転送元
+			pop		bc
+			djnz	x_loop
+
+			push	bc
+			ld		bc, 8
+			add		hl, bc
+			pop		bc
+			dec		c
+			jr		nz, y_loop
+			call	wait_push_space_key
+			ret
+
+	small_image:
+			db		0x00,0x11,0x11,0x11,0x10,0x00,0x00,0x00		;	0
+			db		0x01,0xFF,0xFF,0xFF,0xF1,0x10,0x00,0x00		;	1
+			db		0x01,0x11,0x11,0x1F,0xFF,0xF1,0x00,0x00		;	2
+			db		0x1F,0xFF,0xFF,0xFF,0xFF,0xFF,0x10,0x00		;	3
+			db		0x01,0x11,0x1F,0xFF,0xFF,0x1F,0x10,0x00		;	4
+			db		0x00,0x01,0xFF,0xFF,0xFF,0x1F,0xF1,0x00		;	5
+			db		0x00,0x1F,0xFF,0xFF,0xDD,0xDF,0xF1,0x00		;	6
+			db		0x00,0x1F,0xFF,0xFF,0xFF,0xFF,0xF1,0x00		;	7
+			db		0x01,0x1F,0xF1,0xFF,0xFF,0xFF,0xF1,0x00		;	8
+			db		0x1F,0xFF,0x1F,0xFF,0xFF,0xFF,0xF1,0x00		;	9
+			db		0x1F,0xFF,0x1F,0xF1,0xFF,0xFF,0xF1,0x00		;	A
+			db		0x01,0xFF,0xF1,0x1F,0xFF,0xFF,0x11,0x10		;	B
+			db		0x1F,0x1F,0xFF,0xFF,0xFF,0xF1,0x1F,0xF1		;	C
+			db		0x1F,0xF1,0x1F,0xFF,0xF1,0x1F,0xFF,0x10		;	D
+			db		0x01,0xFF,0xF1,0x11,0x1F,0xFF,0x11,0x00		;	E
+			db		0x00,0x11,0x10,0x00,0x01,0x11,0x00,0x00		;	F
+			endscope
+
+; =============================================================================
+;	Workarea
+; =============================================================================
+fcb::
+			ds		37
