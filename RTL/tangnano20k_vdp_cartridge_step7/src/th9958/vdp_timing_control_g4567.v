@@ -168,7 +168,7 @@ module vdp_timing_control_g4567 (
 				case( w_phase )
 				3'd0:
 					begin
-						if( w_mode[ c_g6 ] || w_mode[ c_g7 ] ) begin
+						if( w_mode[ c_g4 ] || w_mode[ c_g5 ] ) begin
 							//	SCREEN5 or 6
 							ff_vram_address <= w_pattern_name_g45;
 						end
@@ -214,19 +214,19 @@ module vdp_timing_control_g4567 (
 				case( w_phase )
 				3'd1:
 					begin
-						ff_next_pattern0 <= reg_display_on ? vram_rdata : 8'd0;
+						ff_next_pattern0 <= reg_display_on ? vram_rdata : 32'd0;
 					end
 				3'd2:
 					begin
-						ff_next_pattern1 <= reg_display_on ? vram_rdata : 8'd0;
+						ff_next_pattern1 <= reg_display_on ? vram_rdata : 32'd0;
 					end
 				3'd3:
 					begin
 						if( w_mode[ c_g4 ] || w_mode[ c_g5 ] ) begin
-							ff_next_pattern0 <= { 4'd0, ff_next_pattern0[15:12], 4'd0, ff_next_pattern0[11: 8], 
-							                      4'd0, ff_next_pattern0[ 7: 4], 4'd0, ff_next_pattern0[ 3: 0] };
-							ff_next_pattern1 <= { 4'd0, ff_next_pattern0[31:28], 4'd0, ff_next_pattern0[27:24], 
-							                      4'd0, ff_next_pattern0[23:20], 4'd0, ff_next_pattern0[19:16] };
+							ff_next_pattern0 <= { 4'd0, ff_next_pattern0[11: 8], 4'd0, ff_next_pattern0[15:12], 
+							                      4'd0, ff_next_pattern0[ 3: 0], 4'd0, ff_next_pattern0[ 7: 4] };
+							ff_next_pattern1 <= { 4'd0, ff_next_pattern0[27:24], 4'd0, ff_next_pattern0[31:28], 
+							                      4'd0, ff_next_pattern0[19:16], 4'd0, ff_next_pattern0[23:20] };
 						end
 						else begin
 							ff_next_pattern0 <= { ff_next_pattern1[15: 8], ff_next_pattern0[15: 8], ff_next_pattern1[ 7: 0], ff_next_pattern0[ 7: 0] };

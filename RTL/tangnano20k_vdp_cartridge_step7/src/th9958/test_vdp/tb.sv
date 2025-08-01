@@ -481,7 +481,10 @@ module tb ();
 		
 		// Enable interrupts
 		write_vdp_reg( 8'h01, 8'h60 );	// Display on + interrupt enable
-		
+
+		// Clear interrupt by reading status register
+		read_status_register( status );
+
 		// Wait for interrupt with timeout
 		interrupt_timeout_counter <= 0;
 		fork
@@ -490,12 +493,15 @@ module tb ();
 				$display( "Interrupt occurred" );
 			end
 			begin
-				while( interrupt_timeout_counter < (1368 * 1000) ) begin
+				while( int_n ) begin
 					@( posedge clk );
 					interrupt_timeout_counter <= interrupt_timeout_counter + 1;
+					if( interrupt_timeout_counter > (1368 * 1000) ) begin
+						$display( "ERROR: Interrupt timeout - no interrupt occurred within expected time" );
+						$stop;
+					end
 				end
-				$display( "ERROR: Interrupt timeout - no interrupt occurred within expected time" );
-				$stop;
+				$display( "INFO: Interrupt occurred" );
 			end
 		join_any
 		disable fork;
@@ -503,6 +509,25 @@ module tb ();
 		// Clear interrupt by reading status register
 		read_status_register( status );
 		$display( "Status register read: %02h", status );
+
+		$display( "[test007] SCREEN5" );
+		write_vdp_reg( 8'd00, 8'h06 );	// Mode register 0
+		write_vdp_reg( 8'd01, 8'h40 );	// Mode register 1  
+		write_vdp_reg( 8'd02, 8'h1F );	// Pattern name table base address
+
+		write_vdp_reg( 8'd14, 8'd0 );
+		for( i = 0; i < 256; i++ ) begin
+			write_vram( i + 'h3F80, i[7:0] );
+		end
+
+		write_vdp_reg( 8'd14, 8'd0 );
+		for( i = 0; i < 256; i++ ) begin
+			write_vram( i, 255 - i[7:0] );
+		end
+
+		// Wait for a frame
+		@( negedge display_vs );
+		@( posedge display_vs );
 
 		$display( "[test---] All tests completed" );
 		repeat( 100 ) @( posedge clk );

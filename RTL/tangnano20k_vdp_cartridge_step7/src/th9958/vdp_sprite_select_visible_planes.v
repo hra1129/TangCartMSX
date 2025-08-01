@@ -80,6 +80,7 @@ module vdp_sprite_select_visible_planes (
 
 	input				sprite_mode2,
 	input				reg_display_on,
+	input				reg_sprite_disable,
 	input				reg_sprite_magify,
 	input				reg_sprite_16x16,
 	input				reg_212lines_mode,
@@ -107,7 +108,7 @@ module vdp_sprite_select_visible_planes (
 	//	Phase
 	// --------------------------------------------------------------------
 	assign w_screen_pos_x	= screen_pos_x[12:3] - { 7'd0, horizontal_offset_l };
-	assign w_phase			= w_screen_pos_x[5:3];
+	assign w_phase			= w_screen_pos_x[2:0];
 	assign w_sub_phase		= screen_pos_x[2:0];
 	assign vram_address		= { reg_sprite_attribute_table_base, ff_current_plane_num, 2'd0 };
 	assign w_selected_full	= ff_selected_count[3] | (ff_selected_count[2] && !sprite_mode2) | ff_select_finish;
@@ -175,7 +176,7 @@ module vdp_sprite_select_visible_planes (
 			ff_selected_en		<= 1'b0;
 			ff_select_finish	<= 1'b0;
 		end
-		else if( screen_pos_x == 13'h1FFF ) begin
+		else if( screen_pos_x == 13'h1FFF || reg_sprite_disable ) begin
 			ff_selected_count	<= 4'd0;
 			ff_selected_en		<= 1'b0;
 			ff_select_finish	<= 1'b0;

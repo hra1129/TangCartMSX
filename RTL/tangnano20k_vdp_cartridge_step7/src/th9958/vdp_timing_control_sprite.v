@@ -173,6 +173,7 @@ module vdp_timing_control_sprite (
 		.start_info_collect							( w_start_info_collect						),
 		.sprite_mode2								( w_sprite_mode2							),
 		.reg_display_on								( reg_display_on							),
+		.reg_sprite_disable							( reg_sprite_disable						),
 		.reg_sprite_magify							( reg_sprite_magify							),
 		.reg_sprite_16x16							( reg_sprite_16x16							),
 		.reg_212lines_mode							( reg_212lines_mode							),

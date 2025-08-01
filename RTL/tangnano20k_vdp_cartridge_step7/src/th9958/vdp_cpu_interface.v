@@ -563,6 +563,9 @@ module vdp_cpu_interface (
 		if( !reset_n ) begin
 			ff_line_interrupt <= 1'b0;
 		end
+		else if( ff_line_interrupt_enable == 1'b0 ) begin
+			ff_line_interrupt <= 1'b0;
+		end
 		else if( bus_valid && !bus_write && w_ready && bus_address == 2'd1 ) begin
 			if( ff_status_register_pointer == 4'd1 ) begin
 				//	Clear line interrupt flag
@@ -577,6 +580,9 @@ module vdp_cpu_interface (
 
 	always @( posedge clk or negedge reset_n ) begin
 		if( !reset_n ) begin
+			ff_frame_interrupt <= 1'b0;
+		end
+		else if( ff_frame_interrupt_enable == 1'b0 ) begin
 			ff_frame_interrupt <= 1'b0;
 		end
 		else if( bus_valid && !bus_write && w_ready && bus_address == 2'd1 ) begin
