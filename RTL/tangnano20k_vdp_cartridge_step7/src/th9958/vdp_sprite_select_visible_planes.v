@@ -110,7 +110,7 @@ module vdp_sprite_select_visible_planes (
 	assign w_screen_pos_x	= screen_pos_x[12:3] - { 7'd0, horizontal_offset_l };
 	assign w_phase			= w_screen_pos_x[2:0];
 	assign w_sub_phase		= screen_pos_x[2:0];
-	assign vram_address		= { reg_sprite_attribute_table_base, ff_current_plane_num, 2'd0 };
+	assign vram_address		= ff_vram_valid ? { reg_sprite_attribute_table_base, ff_current_plane_num, 2'd0 } : 17'd0;
 	assign w_selected_full	= ff_selected_count[3] | (ff_selected_count[2] && !sprite_mode2) | ff_select_finish;
 	assign w_finish_line	= reg_212lines_mode ? 8'd216: 8'd208;
 

@@ -141,8 +141,8 @@ module vdp_timing_control_sprite (
 	wire		[16:0]	w_ic_vram_address;
 	wire				w_ic_vram_valid;
 
-	assign vram_address		= w_screen_active ? w_vp_vram_address: w_ic_vram_address;
-	assign vram_valid		= w_screen_active ? w_vp_vram_valid: w_ic_vram_valid;
+	assign vram_address		= w_vp_vram_address | w_ic_vram_address;
+	assign vram_valid		= w_vp_vram_valid   | w_ic_vram_valid;
 	assign w_sprite_mode2	= (
 			reg_screen_mode == c_mode_g3 ||
 			reg_screen_mode == c_mode_g4 ||

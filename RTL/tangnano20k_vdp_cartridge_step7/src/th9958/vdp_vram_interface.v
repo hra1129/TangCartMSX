@@ -136,67 +136,71 @@ module vdp_vram_interface (
 	// --------------------------------------------------------------------
 	always @( posedge clk or negedge reset_n ) begin
 		if( !reset_n ) begin
-			ff_vram_address				<= 17'd0;
-			ff_vram_valid				<= 1'b0;
-			ff_vram_write				<= 1'b0;
-			ff_vram_wdata				<= 8'd0;
-			ff_vram_rdata_sel			<= 3'd0;
-			ff_sprite_byte_sel			<= 2'd0;
-		end
-		else if( ff_vram_valid ) begin
-			ff_vram_valid				<= 1'b0;
+			ff_vram_rdata_sel	<= 3'd0;
+			ff_sprite_byte_sel	<= 2'd0;
+			ff_sprite_byte_sel	<= 2'd0;
 		end
 		else begin
 			if( initial_busy ) begin
-				ff_vram_valid				<= 1'b0;
-				ff_vram_rdata_sel			<= 3'd0;
-				ff_sprite_byte_sel			<= 2'd0;
+				ff_vram_rdata_sel	<= 3'd0;
+				ff_sprite_byte_sel	<= 2'd0;
 			end
 			else if( t12_vram_valid ) begin
-				ff_vram_address				<= t12_vram_address;
-				ff_vram_valid				<= 1'b1;
-				ff_vram_write				<= 1'b0;
-				ff_vram_wdata				<= 8'd0;
-				ff_vram_rdata_sel			<= c_t12;
+				ff_vram_rdata_sel	<= c_t12;
 			end
 			else if( g123m_vram_valid ) begin
-				ff_vram_address				<= g123m_vram_address;
-				ff_vram_valid				<= 1'b1;
-				ff_vram_write				<= 1'b0;
-				ff_vram_wdata				<= 8'd0;
-				ff_vram_rdata_sel			<= c_g123m;
+				ff_vram_rdata_sel	<= c_g123m;
 			end
 			else if( g4567_vram_valid ) begin
-				ff_vram_address				<= g4567_vram_address;
-				ff_vram_valid				<= 1'b1;
-				ff_vram_write				<= 1'b0;
-				ff_vram_wdata				<= 8'd0;
-				ff_vram_rdata_sel			<= c_g4567;
+				ff_vram_rdata_sel	<= c_g4567;
 			end
 			else if( sprite_vram_valid ) begin
-				ff_vram_address		<= sprite_vram_address;
+				ff_vram_rdata_sel	<= c_sprite;
 				ff_sprite_byte_sel	<= sprite_vram_address[1:0];
+			end
+			else if( cpu_vram_valid && is_access_timming_b ) begin
+				ff_vram_rdata_sel	<= c_cpu;
+			end
+			else if( command_vram_valid && (is_access_timming_a || is_access_timming_b) ) begin
+				ff_vram_rdata_sel	<= c_command;
+			end
+			else if( vram_rdata_en ) begin
+				ff_vram_rdata_sel	<= c_idle;
+			end
+		end
+	end
+
+	always @( posedge clk or negedge reset_n ) begin
+		if( !reset_n ) begin
+			ff_vram_address		<= 17'd0;
+			ff_vram_valid		<= 1'b0;
+			ff_vram_write		<= 1'b0;
+			ff_vram_wdata		<= 8'd0;
+		end
+		else if( ff_vram_valid ) begin
+			ff_vram_valid		<= 1'b0;
+		end
+		else begin
+			if( initial_busy ) begin
+				ff_vram_valid		<= 1'b0;
+			end
+			else if( t12_vram_valid || g123m_vram_valid || g4567_vram_valid || sprite_vram_valid ) begin
+				ff_vram_address		<= t12_vram_address | g123m_vram_address | g4567_vram_address | sprite_vram_address;
 				ff_vram_valid		<= 1'b1;
 				ff_vram_write		<= 1'b0;
 				ff_vram_wdata		<= 8'd0;
-				ff_vram_rdata_sel	<= c_sprite;
 			end
 			else if( cpu_vram_valid && is_access_timming_b ) begin
 				ff_vram_address		<= cpu_vram_address;
 				ff_vram_valid		<= 1'b1;
 				ff_vram_write		<= cpu_vram_write;
 				ff_vram_wdata		<= cpu_vram_wdata;
-				ff_vram_rdata_sel	<= c_cpu;
 			end
 			else if( command_vram_valid && (is_access_timming_a || is_access_timming_b) ) begin
 				ff_vram_address		<= command_vram_address;
 				ff_vram_valid		<= 1'b1;
 				ff_vram_write		<= command_vram_write;
 				ff_vram_wdata		<= command_vram_wdata;
-				ff_vram_rdata_sel	<= c_command;
-			end
-			else if( vram_rdata_en ) begin
-				ff_vram_rdata_sel	<= c_idle;
 			end
 		end
 	end

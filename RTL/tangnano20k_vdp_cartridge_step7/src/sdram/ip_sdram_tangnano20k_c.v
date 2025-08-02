@@ -119,7 +119,7 @@ module ip_sdram #(
 	localparam	[4:0]	c_main_state_finish2				= 5'd22;
 
 	localparam CLOCK_TIME		= 1_000_000_000 / FREQ;		// nsec
-	localparam TIMER_COUNT		= 120_000 / CLOCK_TIME;		// clock
+	localparam TIMER_COUNT		= 150_000 / CLOCK_TIME;		// clock
 	localparam TIMER_BITS		= $clog2(TIMER_COUNT + 1);
 	localparam REFRESH_COUNT	= 15_000 / CLOCK_TIME;		// clock
 	localparam REFRESH_BITS		= $clog2(REFRESH_COUNT + 1);
@@ -134,7 +134,8 @@ module ip_sdram #(
 	reg							ff_do_refresh;
 
 	reg		[ 3:0]				ff_sdr_command			= c_sdr_command_no_operation;
-	reg		[12:0]				ff_sdr_address			= 13'h0000;
+	reg		[ 1:0]				ff_sdr_bank				= 2'd0;
+	reg		[10:0]				ff_sdr_address			= 11'd0;
 	reg		[31:0]				ff_sdr_write_data		= 32'd0;
 	reg		[ 3:0]				ff_sdr_dq_mask			= 4'b1111;
 	reg		[31:0]				ff_sdr_read_data;
@@ -142,7 +143,12 @@ module ip_sdram #(
 	reg							ff_do_command;
 	reg							ff_write;
 	reg		[ 7:0]				ff_wdata;
-	reg		[22:0]				ff_address;
+	reg		[ 1:0]				ff_bank;
+	reg		[10:0]				ff_row_address;
+	reg		[ 7:0]				ff_col_address;
+	reg		[ 1:0]				ff_write_mask;
+	reg		[ 7:0]				ff_col_address2;
+	reg		[ 1:0]				ff_write_mask2;
 	reg							ff_wait;
 	wire						w_busy;
 
@@ -154,26 +160,32 @@ module ip_sdram #(
 			ff_do_command	<= 1'b0;
 			ff_write		<= 1'b0;
 			ff_wdata		<= 8'd0;
-			ff_address		<= 23'd0;
+			ff_bank			<= 2'd0;
+			ff_row_address	<= 11'd0;
+			ff_col_address	<= 8'd0;
+			ff_write_mask	<= 2'd0;
 			ff_do_refresh	<= 1'b0;
 		end
 		else if( (ff_main_state == c_main_state_ready) && (bus_valid || bus_refresh) ) begin
 			ff_do_command	<= 1'b1;
-			if( bus_refresh ) begin
-				ff_do_refresh	<= 1'b1;
-			end
-			else begin
-				ff_do_refresh	<= 1'b0;
-				ff_write		<= bus_write;
-				ff_wdata		<= bus_wdata;
-				ff_address		<= bus_address;
-			end
+			ff_do_refresh	<= bus_refresh;
+			ff_write		<= bus_write;
+			ff_wdata		<= bus_wdata;
+			ff_bank			<= bus_address[22:21];
+			ff_row_address	<= bus_address[20:10];
+			ff_col_address	<= bus_address[9:2];
+			ff_write_mask	<= bus_address[1:0];
 		end
 		else if( (ff_main_state == c_main_state_finish) || (ff_main_state == c_main_state_finish2) ) begin
 			ff_do_command	<= 1'b0;
 			ff_do_refresh	<= 1'b0;
 			ff_write		<= 1'b0;
 		end
+	end
+
+	always @( posedge clk ) begin
+		ff_col_address2		<= ff_col_address;
+		ff_write_mask2		<= ff_write_mask;
 	end
 
 	// --------------------------------------------------------------------
@@ -196,6 +208,7 @@ module ip_sdram #(
 				ff_main_state	<= c_init_state_wait_refresh_all2;
 			c_init_state_send_mode_register_set:
 				ff_main_state	<= c_init_state_wait_mode_register_set;
+			// ----------------------------------------------------------------
 			c_main_state_ready:
 				if( bus_valid || bus_refresh ) begin
 					ff_main_state		<= c_main_state_activate;
@@ -254,7 +267,7 @@ module ip_sdram #(
 	always @( posedge clk ) begin
 		case( ff_main_state )
 		c_init_state_begin_first_wait:
-			ff_main_timer	<= TIMER_COUNT;		//	120usec
+			ff_main_timer	<= TIMER_COUNT;		//	initial time
 		c_init_state_send_precharge_all:
 			ff_main_timer	<= 'd5;
 		c_init_state_send_refresh_all1:
@@ -310,7 +323,7 @@ module ip_sdram #(
 							ff_sdr_dq_mask		<= 4'b0000;
 						end
 						else begin
-//							$display( "activate address %X", ff_address[20:10] );
+//							$display( "activate address %X", ff_row_address );
 							ff_sdr_command		<= c_sdr_command_activate;
 							ff_sdr_dq_mask		<= 4'b1111;
 						end
@@ -321,7 +334,7 @@ module ip_sdram #(
 						end
 						else if( ff_write ) begin
 							ff_sdr_command		<= c_sdr_command_write;
-							case( ff_address[1:0] )
+							case( ff_write_mask2 )
 							2'd0:		ff_sdr_dq_mask	<= 4'b1110;
 							2'd1:		ff_sdr_dq_mask	<= 4'b1101;
 							2'd2:		ff_sdr_dq_mask	<= 4'b1011;
@@ -354,62 +367,57 @@ module ip_sdram #(
 	//	
 	always @( posedge clk ) begin
 		if( !reset_n ) begin
-			ff_sdr_address			<= 13'd0;
+			ff_sdr_bank <= 2'd0;
+			ff_sdr_address <= 11'd0;
 		end
 		else if( !ff_sdr_ready ) begin
 			case( ff_main_state )
 			c_init_state_send_precharge_all:
-				ff_sdr_address <= { 
-				    2'b00,						//	Ignore
-					1'b1,						//	All banks
-					10'd0						//	Ignore
-				};
+                begin
+                    ff_sdr_bank <= 2'd0;			// Ignore
+                    ff_sdr_address <= { 
+                        1'b1,						//	All banks
+                        10'd0						//	Ignore
+                    };
+                end
 			default:
-				ff_sdr_address <= { 
-				    2'b00,						//	Bank
-					1'b0,						//	Reserved
-					1'b1,						//	Write burst mode  0: Programmed Burst Length, 1: Single Location Access
-					2'b00,						//	Operation mode    00: Standard Operation, others: Reserved
-					3'b010,						//	CAS Latency       010: 2cyc, 011: 3cyc, others: Reserved
-					1'b0,						//	Burst type        0: Sequential Access, 1: Interleave Access
-					3'b000						//	Burst length      000: 1, 001: 2, 010: 4, 011: 8, 111: full page (Sequential Access only), others: Reserved
-				};
+				begin
+					ff_sdr_bank <= 2'd0;			//	Ignore
+					ff_sdr_address <= { 
+						1'b0,						//	Reserved
+						1'b1,						//	Write burst mode  0: Programmed Burst Length, 1: Single Location Access
+						2'b00,						//	Operation mode    00: Standard Operation, others: Reserved
+						3'b010,						//	CAS Latency       010: 2cyc, 011: 3cyc, others: Reserved
+						1'b0,						//	Burst type        0: Sequential Access, 1: Interleave Access
+						3'b000						//	Burst length      000: 1, 001: 2, 010: 4, 011: 8, 111: full page (Sequential Access only), others: Reserved
+					};
+				end
 			endcase
 		end
 		else begin
 			case( ff_main_state )
 			c_main_state_activate:
-				if( ff_sdr_ready ) begin
-					ff_sdr_address <= { 
-						ff_address[22:21],			// Bank
-						ff_address[20:10]			// Row address
-					};
-				end
-				else begin
-					ff_sdr_address <= 13'd0;	// Initialize phase
+				begin
+					ff_sdr_bank <= ff_bank;				// Bank
+					ff_sdr_address <= ff_row_address;	// Row address
 				end
 			c_main_state_read_or_write:
 				begin
-					if( ff_sdr_ready ) begin
-						if( ff_do_refresh ) begin
-//							$display( "do_refresh" );
-							ff_sdr_address <= { 
-								2'b00,				// Ignore
-								1'b1,				// All banks
-								10'd0				// Ignore
-							};
-						end
-						else begin
-							ff_sdr_address <= { 
-								ff_address[22:21],	// Bank
-								1'b1,				// Enable auto precharge
-								2'd0,				// 00
-								ff_address[9:2] 	// Column address
-							};
-						end
+					if( ff_do_refresh ) begin
+//						$display( "do_refresh" );
+						ff_sdr_bank <= 2'd0;	// Ignore
+						ff_sdr_address <= { 
+							1'b1,				// All banks
+							10'd0				// Ignore
+						};
 					end
 					else begin
-						ff_sdr_address <= 13'd0;
+						ff_sdr_bank <= ff_bank;
+						ff_sdr_address <= { 
+							1'b1,				// Enable auto precharge
+							2'd0,				// 00
+							ff_col_address2	 	// Column address
+						};
 					end
 				end
 			default:
@@ -424,27 +432,29 @@ module ip_sdram #(
 		if( !reset_n ) begin
 			ff_sdr_write_data <= 32'dz;
 		end
-		else if( ff_sdr_ready && ff_main_state == c_main_state_read_or_write ) begin
-			if( ff_sdr_ready ) begin
-				ff_sdr_write_data <= { ff_wdata, ff_wdata, ff_wdata, ff_wdata };
-			end
-			else begin
-				ff_sdr_write_data <= 32'd0;
-			end
+		else if( ff_main_state == c_main_state_read_or_write ) begin
+			ff_sdr_write_data <= { ff_wdata, ff_wdata, ff_wdata, ff_wdata };
 		end
 		else begin
 			ff_sdr_write_data <= 32'dz;
 		end
 	end
 
-	always @( posedge clk ) begin
+	always @( posedge clk_sdram ) begin
 		if( !reset_n ) begin
 			ff_sdr_read_data	<= 32'd0;
+		end
+		else if( ff_main_state == c_main_state_finish ) begin
+			ff_sdr_read_data	<= IO_sdram_dq;
+		end
+	end
+
+	always @( posedge clk ) begin
+		if( !reset_n ) begin
 			ff_sdr_read_data_en	<= 1'b0;
 			ff_wait				<= 1'b0;
 		end
 		else if( ff_main_state == c_main_state_finish ) begin
-			ff_sdr_read_data	<= IO_sdram_dq;
 			ff_sdr_read_data_en	<= ~ff_write & ~ff_do_refresh;
 			ff_wait				<= 1'd1;
 		end
@@ -466,9 +476,9 @@ module ip_sdram #(
 	assign O_sdram_wen_n		= ff_sdr_command[0];
 
 	assign O_sdram_dqm			= ff_sdr_dq_mask;
-	assign O_sdram_ba			= ff_sdr_address[12:11];
+	assign O_sdram_ba			= ff_sdr_bank;
 
-	assign O_sdram_addr			= ff_sdr_address[10:0];
+	assign O_sdram_addr			= ff_sdr_address;
 	assign IO_sdram_dq			= ff_sdr_write_data;
 
 	assign bus_rdata			= ff_sdr_read_data;

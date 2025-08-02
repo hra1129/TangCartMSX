@@ -116,6 +116,7 @@ module vdp_timing_control_g123m (
 	reg					ff_vram_valid;
 	//	Display color
 	reg			[3:0]	ff_display_color;
+	wire				w_vram_valid;
 
 	// --------------------------------------------------------------------
 	//	Screen mode decoder
@@ -186,6 +187,8 @@ module vdp_timing_control_g123m (
 	// --------------------------------------------------------------------
 	//	VRAM read access request
 	// --------------------------------------------------------------------
+	assign w_vram_valid		= w_screen_active & (w_mode != 4'b0000) & reg_display_on;
+
 	always @( posedge clk or negedge reset_n ) begin
 		if( !reset_n ) begin
 			ff_vram_address <= 17'd0;
@@ -196,22 +199,23 @@ module vdp_timing_control_g123m (
 				case( w_phase )
 				3'd0:
 					begin
-						ff_vram_address <= w_pattern_name;
-						ff_vram_valid <= w_screen_active & (w_mode != 4'b0000) & reg_display_on;
+						ff_vram_address <= w_vram_valid ? w_pattern_name: 17'd0;
+						ff_vram_valid <= w_vram_valid;
 					end
 				3'd2:
 					begin
-						ff_vram_address <= w_pattern_generator;
-						ff_vram_valid <= w_screen_active & (w_mode != 4'b0000) & reg_display_on;
+						ff_vram_address <= w_vram_valid ? w_pattern_generator: 17'd0;
+						ff_vram_valid <= w_vram_valid;
 					end
 				3'd3:
 					begin
-						ff_vram_address <= w_color;
-						ff_vram_valid <= w_screen_active & (w_mode != 4'b0000) & reg_display_on;
+						ff_vram_address <= w_vram_valid ? w_color: 17'd0;
+						ff_vram_valid <= w_vram_valid;
 					end
 				default:
 					begin
-						//	hold
+						ff_vram_address <= 17'd0;
+						ff_vram_valid <= 1'b0;
 					end
 				endcase
 			end

@@ -5,7 +5,7 @@
 //Part Number: GW2AR-LV18QN88C8/I7
 //Device: GW2AR-18
 //Device Version: C
-//Created Time: Sat Jun 14 17:39:02 2025
+//Created Time: Sat Aug  2 06:45:44 2025
 
 module Gowin_CLKDIV (clkout, hclkin, resetn);
 
@@ -24,7 +24,7 @@ CLKDIV clkdiv_inst (
     .CALIB(gw_gnd)
 );
 
-defparam clkdiv_inst.DIV_MODE = "5";
+defparam clkdiv_inst.DIV_MODE = "2";
 defparam clkdiv_inst.GSREN = "false";
 
 endmodule //Gowin_CLKDIV

@@ -118,6 +118,8 @@ module vdp_timing_control_t12 (
 	wire				w_line_start;
 	reg					ff_screen_h_active;
 	wire				w_screen_active;
+	wire				w_t12_valid;
+	wire				w_t2_valid;
 
 	// --------------------------------------------------------------------
 	//	★メモ
@@ -241,6 +243,9 @@ module vdp_timing_control_t12 (
 	// --------------------------------------------------------------------
 	//	VRAM read access request
 	// --------------------------------------------------------------------
+	assign w_t12_valid		= w_screen_active & reg_display_on & (w_mode != 2'b00);
+	assign w_t2_valid		= w_screen_active & reg_display_on & w_mode[ c_t2 ];
+
 	always @( posedge clk or negedge reset_n ) begin
 		if( !reset_n ) begin
 			ff_vram_address <= 17'd0;
@@ -251,37 +256,38 @@ module vdp_timing_control_t12 (
 				case( ff_phase )
 				3'd0:
 					if( w_screen_active && ff_h_active ) begin
-						ff_vram_address <= w_pattern_name;
-						ff_vram_valid <= w_screen_active & (w_mode != 2'b00) & reg_display_on;
+						ff_vram_address <= w_t12_valid ? w_pattern_name: 17'd0;
+						ff_vram_valid <= w_t12_valid;
 					end
 //				3'd1:
 //					begin
-//						ff_vram_address <= { w_pattern_name[16:1], 1'b1 };
-//						ff_vram_valid <= w_screen_active & w_mode[ c_t2 ] & reg_display_on;
+//						ff_vram_address <= w_t2_valid ? { w_pattern_name[16:1], 1'b1 }: 17'd0;
+//						ff_vram_valid <= w_t2_valid;
 //					end
 				3'd2:
 					if( w_screen_active && ff_h_active ) begin
-						ff_vram_address <= w_pattern_generator;
-						ff_vram_valid <= w_screen_active & (w_mode != 2'b00) & reg_display_on;
+						ff_vram_address <= w_t12_valid ? w_pattern_generator: 17'd0;
+						ff_vram_valid <= w_t12_valid;
 					end
 //				3'd3:
 //					begin
-//						ff_vram_address <= w_pattern_generator;
-//						ff_vram_valid <= w_screen_active & w_mode[ c_t2 ] & reg_display_on;
+//						ff_vram_address <= w_t2_valid ? w_pattern_generator: 17'd0;
+//						ff_vram_valid <= w_t2_valid;
 //					end
 //				3'd4:
 //					begin
-//						ff_vram_address <= w_color;
-//						ff_vram_valid <= w_screen_active & w_mode[ c_t2 ] & reg_display_on;
+//						ff_vram_address <= w_t2_valid ? w_color: 17'd0;
+//						ff_vram_valid <= w_t2_valid;
 //					end
 //				3'd5:
 //					begin
-//						ff_vram_address <= w_color;
-//						ff_vram_valid <= w_screen_active & w_mode[ c_t2 ] & reg_display_on;
+//						ff_vram_address <= w_t2_valid ? w_color: 17'd0;
+//						ff_vram_valid <= w_t2_valid;
 //					end
 				default:
 					begin
-						//	hold
+						ff_vram_address <= 17'd0;
+						ff_vram_valid <= 1'b0;
 					end
 				endcase
 			end

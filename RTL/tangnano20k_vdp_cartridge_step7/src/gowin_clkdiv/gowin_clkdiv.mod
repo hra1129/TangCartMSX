@@ -7,8 +7,8 @@
 
 -mod_name Gowin_CLKDIV
 -file_name gowin_clkdiv
--path D:/github/HRA_product/TangCartMSX/RTL/tangnano20k_vdp_cartridge_step3/src/gowin_clkdiv/
+-path D:/github/HRA_product/TangCartMSX/RTL/tangnano20k_vdp_cartridge_step7/src/gowin_clkdiv/
 -type CLKDIV
 -file_type vlg
--division_factor 5
+-division_factor 2
 -calib false

@@ -56,11 +56,12 @@ module tangnano20k_vdp_cartridge (
 	output	[ 1:0]	O_sdram_ba,		// two banks
 	output	[ 3:0]	O_sdram_dqm		// data mask
 );
-	wire			pll_lock;
+	wire			pll_lock215;
+	wire			pll_lock85;
 	wire			clk21m;				//	21.47727MHz
 	wire			clk42m;				//	42.95454MHz
 	wire			clk85m;				//	85.90908MHz
-	wire			clk85m_n;			//	85.90908MHz (negative)
+	wire			clk85m_n;			//	85.90908MHz (180deg phase shift)
 	wire			clk215m;			//	214.7727MHz
 	wire			reset_n;
 	wire	[15:0]	w_bus_address;
@@ -132,20 +133,21 @@ module tangnano20k_vdp_cartridge (
 	// --------------------------------------------------------------------
 	Gowin_rPLL u_pll (
 		.clkout			( clk215m			),		//	output clkout	214.7727MHz
-		.lock			( pll_lock			),
+		.lock			( pll_lock215		),
 		.clkin			( clk14m			)		//	input clkin		14.31818MHz
 	);
 
 	Gowin_rPLL2 u_pll2 (
 		.clkout			( clk85m			),		//	output clkout	85.90908MHz
-		.clkoutp		( clk85m_n			),		//	output clkoutp	85.90908MHz (negative)
+		.lock			( pll_lock85		),
+		.clkoutp		( clk85m_n			),		//	output clkoutp	85.90908MHz (180deg phase shift)
 		.clkin			( clk14m			)		//	input clkin		14.31818MHz
-	);
+    );
 
 	Gowin_CLKDIV u_clkdiv (
 		.clkout			( clk42m			),		//	output clkout	42.95454MHz
-		.hclkin			( clk215m			),		//	input hclkin	214.7727MHz
-		.resetn			( pll_lock			)		//	input resetn
+		.hclkin			( clk85m			),		//	input hclkin	85.90908MHz
+		.resetn			( pll_lock85		)		//	input resetn
 	);
 
 	// --------------------------------------------------------------------

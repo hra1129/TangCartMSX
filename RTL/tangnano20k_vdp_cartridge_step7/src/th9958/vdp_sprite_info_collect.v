@@ -188,16 +188,20 @@ module vdp_sprite_info_collect (
 	always @( posedge clk or negedge reset_n ) begin
 		if( !reset_n ) begin
 			ff_current_plane	<= 4'd8;
+			ff_vram_address		<= 17'd0;
 			ff_vram_valid		<= 1'b0;
 			ff_active			<= 1'b0;
 		end
 		else if( start_info_collect && selected_count != 4'd0 ) begin
 			ff_current_plane	<= 4'd0;
+			ff_vram_address		<= 17'd0;
 			ff_vram_valid		<= 1'b0;
 			ff_active			<= reg_display_on;
 		end
 		else if( screen_pos_x == 13'h1FFF ) begin
 			ff_current_plane	<= 4'd0;
+			ff_vram_address		<= 17'd0;
+			ff_vram_valid		<= 1'b0;
 		end
 		else if( screen_active ) begin
 			if( selected_en ) begin
@@ -208,7 +212,8 @@ module vdp_sprite_info_collect (
 			case( ff_state )
 			2'd0:
 				begin
-					//	hold
+					ff_vram_address		<= 17'd0;
+					ff_vram_valid		<= 1'b0;
 				end
 			2'd1:
 				if( w_sub_phase == 3'd0 ) begin
@@ -217,6 +222,7 @@ module vdp_sprite_info_collect (
 					ff_vram_valid		<= 1'b1;
 				end
 				else begin
+					ff_vram_address		<= 17'd0;
 					ff_vram_valid		<= 1'b0;
 				end
 			2'd2:
@@ -226,6 +232,7 @@ module vdp_sprite_info_collect (
 					ff_vram_valid		<= reg_sprite_16x16;
 				end
 				else begin
+					ff_vram_address		<= 17'd0;
 					ff_vram_valid		<= 1'b0;
 				end
 			2'd3:
@@ -235,6 +242,7 @@ module vdp_sprite_info_collect (
 					ff_vram_valid		<= ff_sprite_mode2;
 				end
 				else if( w_sub_phase == 3'd7 ) begin
+					ff_vram_address		<= 17'd0;
 					ff_vram_valid		<= 1'b0;
 					if( w_next_plane == selected_count ) begin
 						ff_active			<= 1'b0;
@@ -244,9 +252,14 @@ module vdp_sprite_info_collect (
 					end
 				end
 				else begin
+					ff_vram_address		<= 17'd0;
 					ff_vram_valid		<= 1'b0;
 				end
 			endcase
+		end
+		else begin
+			ff_vram_address		<= 17'd0;
+			ff_vram_valid		<= 1'b0;
 		end
 	end
 
