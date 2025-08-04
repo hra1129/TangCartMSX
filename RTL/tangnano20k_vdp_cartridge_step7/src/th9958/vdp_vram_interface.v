@@ -62,17 +62,9 @@ module vdp_vram_interface (
 	input				initial_busy,
 	input		[2:0]	h_count,
 
-	input		[16:0]	t12_vram_address,
-	input				t12_vram_valid,
-	output		[7:0]	t12_vram_rdata,
-
-	input		[16:0]	g123m_vram_address,
-	input				g123m_vram_valid,
-	output		[7:0]	g123m_vram_rdata,
-
-	input		[16:0]	g4567_vram_address,
-	input				g4567_vram_valid,
-	output		[31:0]	g4567_vram_rdata,
+	input		[16:0]	screen_mode_vram_address,
+	input				screen_mode_vram_valid,
+	output		[31:0]	screen_mode_vram_rdata,
 
 	input		[16:0]	sprite_vram_address,
 	input				sprite_vram_valid,
@@ -103,23 +95,20 @@ module vdp_vram_interface (
 	input				vram_rdata_en
 );
 	localparam			c_idle		= 3'd0;
-	localparam			c_t12		= 3'd1;
-	localparam			c_g123m		= 3'd2;
-	localparam			c_g4567		= 3'd3;
-	localparam			c_sprite	= 3'd4;
-	localparam			c_cpu		= 3'd5;
-	localparam			c_command	= 3'd6;
+	localparam			c_bg		= 3'd1;
+	localparam			c_sprite	= 3'd2;
+	localparam			c_cpu		= 3'd3;
+	localparam			c_command	= 3'd4;
 
 	reg			[16:0]	ff_vram_address;
 	reg					ff_vram_valid;
 	reg					ff_vram_write;
 	reg			[7:0]	ff_vram_wdata;
+	reg					ff_vram_valid_d1;
 	reg			[2:0]	ff_vram_rdata_sel;
 	reg			[1:0]	ff_sprite_byte_sel;
 	wire		[7:0]	w_rdata8;
-	reg			[7:0]	ff_t12_vram_rdata;
-	reg			[7:0]	ff_g123m_vram_rdata;
-	reg			[31:0]	ff_g4567_vram_rdata;
+	reg			[31:0]	ff_screen_mode_vram_rdata;
 	reg			[31:0]	ff_sprite_vram_rdata;
 	reg			[7:0]	ff_cpu_vram_rdata;
 	reg					ff_cpu_vram_rdata_en;
@@ -145,14 +134,8 @@ module vdp_vram_interface (
 				ff_vram_rdata_sel	<= 3'd0;
 				ff_sprite_byte_sel	<= 2'd0;
 			end
-			else if( t12_vram_valid ) begin
-				ff_vram_rdata_sel	<= c_t12;
-			end
-			else if( g123m_vram_valid ) begin
-				ff_vram_rdata_sel	<= c_g123m;
-			end
-			else if( g4567_vram_valid ) begin
-				ff_vram_rdata_sel	<= c_g4567;
+			else if( screen_mode_vram_valid ) begin
+				ff_vram_rdata_sel	<= c_bg;
 			end
 			else if( sprite_vram_valid ) begin
 				ff_vram_rdata_sel	<= c_sprite;
@@ -184,8 +167,8 @@ module vdp_vram_interface (
 			if( initial_busy ) begin
 				ff_vram_valid		<= 1'b0;
 			end
-			else if( t12_vram_valid || g123m_vram_valid || g4567_vram_valid || sprite_vram_valid ) begin
-				ff_vram_address		<= t12_vram_address | g123m_vram_address | g4567_vram_address | sprite_vram_address;
+			else if( screen_mode_vram_valid || sprite_vram_valid ) begin
+				ff_vram_address		<= screen_mode_vram_address | sprite_vram_address;
 				ff_vram_valid		<= 1'b1;
 				ff_vram_write		<= 1'b0;
 				ff_vram_wdata		<= 8'd0;
@@ -205,8 +188,17 @@ module vdp_vram_interface (
 		end
 	end
 
-	assign cpu_vram_ready		= is_access_timming_b ? ~(t12_vram_valid | g123m_vram_valid | g4567_vram_valid | sprite_vram_valid) : 1'b0;
-	assign command_vram_ready	= is_access_timming_a ? ~(t12_vram_valid | g123m_vram_valid | g4567_vram_valid | sprite_vram_valid) : 
+	always @( posedge clk or negedge reset_n ) begin
+		if( !reset_n ) begin
+			ff_vram_valid_d1	<= 1'b0;
+		end
+		else begin
+			ff_vram_valid_d1	<= ff_vram_valid;
+		end
+	end
+
+	assign cpu_vram_ready		= is_access_timming_b ? ~(screen_mode_vram_valid | sprite_vram_valid) : 1'b0;
+	assign command_vram_ready	= is_access_timming_a ? ~(screen_mode_vram_valid | sprite_vram_valid) : 
 	                         	  is_access_timming_b ? ~cpu_vram_valid : 1'b0;
 
 	function [7:0] func_rdata_sel(
@@ -226,9 +218,7 @@ module vdp_vram_interface (
 
 	always @( posedge clk or negedge reset_n ) begin
 		if( !reset_n ) begin
-			ff_t12_vram_rdata			<= 8'd0;
-			ff_g123m_vram_rdata			<= 8'd0;
-			ff_g4567_vram_rdata			<= 32'd0;
+			ff_screen_mode_vram_rdata	<= 32'd0;
 			ff_sprite_vram_rdata		<= 32'd0;
 			ff_cpu_vram_rdata			<= 8'd0;
 			ff_cpu_vram_rdata_en		<= 1'b0;
@@ -237,12 +227,10 @@ module vdp_vram_interface (
 		end
 		else if( vram_rdata_en ) begin
 			case( ff_vram_rdata_sel )
-			c_t12:		begin ff_t12_vram_rdata		<= w_rdata8; end
-			c_g123m:	begin ff_g123m_vram_rdata	<= w_rdata8; end
-			c_g4567:	begin ff_g4567_vram_rdata	<= vram_rdata; end
-			c_sprite:	begin ff_sprite_vram_rdata	<= vram_rdata; end
-			c_cpu:		begin ff_cpu_vram_rdata		<= w_rdata8;	ff_cpu_vram_rdata_en <= 1'b1;		end
-			c_command:	begin ff_command_vram_rdata	<= vram_rdata;	ff_command_vram_rdata_en <= 1'b1;	end
+			c_bg:		begin ff_screen_mode_vram_rdata		<= vram_rdata; end
+			c_sprite:	begin ff_sprite_vram_rdata			<= vram_rdata; end
+			c_cpu:		begin ff_cpu_vram_rdata				<= w_rdata8;	ff_cpu_vram_rdata_en <= 1'b1;		end
+			c_command:	begin ff_command_vram_rdata			<= vram_rdata;	ff_command_vram_rdata_en <= 1'b1;	end
 			endcase
 		end
 		else begin
@@ -251,9 +239,7 @@ module vdp_vram_interface (
 		end
 	end
 
-	assign t12_vram_rdata			= ff_t12_vram_rdata;
-	assign g123m_vram_rdata			= ff_g123m_vram_rdata;
-	assign g4567_vram_rdata			= ff_g4567_vram_rdata;
+	assign screen_mode_vram_rdata	= ff_screen_mode_vram_rdata;
 	assign sprite_vram_rdata		= ff_sprite_vram_rdata;
 	assign sprite_vram_rdata8		= func_rdata_sel( ff_sprite_byte_sel, ff_sprite_vram_rdata );
 	assign cpu_vram_rdata			= ff_cpu_vram_rdata;
@@ -262,7 +248,7 @@ module vdp_vram_interface (
 	assign command_vram_rdata_en	= ff_command_vram_rdata_en;
 
 	assign vram_address				= ff_vram_address;
-	assign vram_valid				= ff_vram_valid;
+	assign vram_valid				= ff_vram_valid_d1;
 	assign vram_write				= ff_vram_write;
 	assign vram_wdata				= ff_vram_wdata;
 endmodule

@@ -22,11 +22,9 @@
         <File path="src/th9958/vdp_sprite_makeup_pixel.v" type="file.verilog" enable="1"/>
         <File path="src/th9958/vdp_sprite_select_visible_planes.v" type="file.verilog" enable="1"/>
         <File path="src/th9958/vdp_timing_control.v" type="file.verilog" enable="1"/>
-        <File path="src/th9958/vdp_timing_control_g123m.v" type="file.verilog" enable="1"/>
-        <File path="src/th9958/vdp_timing_control_g4567.v" type="file.verilog" enable="1"/>
+        <File path="src/th9958/vdp_timing_control_screen_mode.v" type="file.verilog" enable="1"/>
         <File path="src/th9958/vdp_timing_control_sprite.v" type="file.verilog" enable="1"/>
         <File path="src/th9958/vdp_timing_control_ssg.v" type="file.verilog" enable="1"/>
-        <File path="src/th9958/vdp_timing_control_t12.v" type="file.verilog" enable="1"/>
         <File path="src/th9958/vdp_upscan.v" type="file.verilog" enable="1"/>
         <File path="src/th9958/vdp_upscan_line_buffer.v" type="file.verilog" enable="1"/>
         <File path="src/th9958/vdp_video_double_buffer.v" type="file.verilog" enable="1"/>

@@ -156,6 +156,7 @@ module tb ();
 		.FREQ				( 85_909_080				)		//	Hz
 	) u_sdram_controller (
 		.reset_n			( reset_n					),
+		.clk_half			( clk						),
 		.clk				( clk85m					),		//	85.90908MHz
 		.clk_sdram			( clk85m					),
 		.sdram_init_busy	( w_dram_init_busy			),

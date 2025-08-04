@@ -14,6 +14,10 @@
    "Type" : "verilog"
   },
   {
+   "Path" : "D:/github/HRA_product/TangCartMSX/RTL/tangnano20k_vdp_cartridge_step7/src/gowin_rpll2/gowin_rpll2.v",
+   "Type" : "verilog"
+  },
+  {
    "Path" : "D:/github/HRA_product/TangCartMSX/RTL/tangnano20k_vdp_cartridge_step7/src/gpio/ip_gpio.v",
    "Type" : "verilog"
   },
@@ -66,11 +70,7 @@
    "Type" : "verilog"
   },
   {
-   "Path" : "D:/github/HRA_product/TangCartMSX/RTL/tangnano20k_vdp_cartridge_step7/src/th9958/vdp_timing_control_g123m.v",
-   "Type" : "verilog"
-  },
-  {
-   "Path" : "D:/github/HRA_product/TangCartMSX/RTL/tangnano20k_vdp_cartridge_step7/src/th9958/vdp_timing_control_g4567.v",
+   "Path" : "D:/github/HRA_product/TangCartMSX/RTL/tangnano20k_vdp_cartridge_step7/src/th9958/vdp_timing_control_screen_mode.v",
    "Type" : "verilog"
   },
   {
@@ -79,10 +79,6 @@
   },
   {
    "Path" : "D:/github/HRA_product/TangCartMSX/RTL/tangnano20k_vdp_cartridge_step7/src/th9958/vdp_timing_control_ssg.v",
-   "Type" : "verilog"
-  },
-  {
-   "Path" : "D:/github/HRA_product/TangCartMSX/RTL/tangnano20k_vdp_cartridge_step7/src/th9958/vdp_timing_control_t12.v",
    "Type" : "verilog"
   },
   {
@@ -116,16 +112,12 @@
   {
    "Path" : "D:/github/HRA_product/TangCartMSX/RTL/tangnano20k_vdp_cartridge_step7/src/ws2812_led/ip_ws2812_led.v",
    "Type" : "verilog"
-  },
-  {
-   "Path" : "D:/github/HRA_product/TangCartMSX/RTL/tangnano20k_vdp_cartridge_step7/src/gowin_rpll2/gowin_rpll2.v",
-   "Type" : "verilog"
   }
  ],
  "IncludePath" : [
 
  ],
- "LoopLimit" : 2000,
+ "LoopLimit" : 8000,
  "ResultFile" : "D:/github/HRA_product/TangCartMSX/RTL/tangnano20k_vdp_cartridge_step7/impl/temp/rtl_parser.result",
  "Top" : "tangnano20k_vdp_cartridge",
  "VerilogStd" : "verilog_2001",

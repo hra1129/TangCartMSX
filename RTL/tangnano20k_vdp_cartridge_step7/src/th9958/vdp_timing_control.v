@@ -67,20 +67,10 @@ module vdp_timing_control (
 	output				intr_line,				//	pulse
 	output				intr_frame,				//	pulse
 
-	output		[16:0]	t12_vram_address,
-	output				t12_vram_valid,
-	input		[7:0]	t12_vram_rdata,
-	output		[3:0]	t12_display_color,
-
-	output		[16:0]	g123m_vram_address,
-	output				g123m_vram_valid,
-	input		[7:0]	g123m_vram_rdata,
-	output		[3:0]	g123m_display_color,
-
-	output		[16:0]	g4567_vram_address,
-	output				g4567_vram_valid,
-	input		[31:0]	g4567_vram_rdata,
-	output		[7:0]	g4567_display_color,
+	output		[16:0]	screen_mode_vram_address,
+	output				screen_mode_vram_valid,
+	input		[31:0]	screen_mode_vram_rdata,
+	output		[7:0]	screen_mode_display_color,
 
 	output		[16:0]	sprite_vram_address,
 	output				sprite_vram_valid,
@@ -159,69 +149,26 @@ module vdp_timing_control (
 	);
 
 	// --------------------------------------------------------------------
-	//	Text1 and 2 mode
+	//	Screen mode
 	// --------------------------------------------------------------------
-	vdp_timing_control_t12 u_t12 (
+	vdp_timing_control_screen_mode u_screen_mode (
 		.reset_n									( reset_n									),
 		.clk										( clk										),
 		.screen_pos_x								( w_screen_pos_x							),
 		.screen_pos_y								( w_screen_pos_y							),
-		.pixel_pos_y								( w_pixel_pos_y[2:0]						),
+		.pixel_pos_x								( w_pixel_pos_x								),
+		.pixel_pos_y								( w_pixel_pos_y								),
 		.screen_v_active							( w_screen_v_active							),
-		.vram_address								( t12_vram_address							),
-		.vram_valid									( t12_vram_valid							),
-		.vram_rdata									( t12_vram_rdata							),
-		.display_color								( t12_display_color							),
+		.vram_address								( screen_mode_vram_address					),
+		.vram_valid									( screen_mode_vram_valid					),
+		.vram_rdata									( screen_mode_vram_rdata					),
+		.display_color								( screen_mode_display_color					),
 		.horizontal_offset_l						( w_horizontal_offset_l						),
 		.reg_screen_mode							( reg_screen_mode							),
 		.reg_display_on								( reg_display_on							),
 		.reg_pattern_name_table_base				( reg_pattern_name_table_base				),
 		.reg_color_table_base						( reg_color_table_base						),
 		.reg_pattern_generator_table_base			( reg_pattern_generator_table_base			),
-		.reg_backdrop_color							( reg_backdrop_color						)
-	);
-
-	// --------------------------------------------------------------------
-	//	Graphic1, 2, 3 and Multi color mode
-	// --------------------------------------------------------------------
-	vdp_timing_control_g123m u_g123m (
-		.reset_n									( reset_n									),
-		.clk										( clk										),
-		.screen_pos_x								( w_screen_pos_x							),
-		.pixel_pos_x								( w_pixel_pos_x								),
-		.pixel_pos_y								( w_pixel_pos_y								),
-		.screen_v_active							( w_screen_v_active							),
-		.vram_address								( g123m_vram_address						),
-		.vram_valid									( g123m_vram_valid							),
-		.vram_rdata									( g123m_vram_rdata							),
-		.display_color								( g123m_display_color						),
-		.horizontal_offset_l						( w_horizontal_offset_l						),
-		.reg_screen_mode							( reg_screen_mode							),
-		.reg_display_on								( reg_display_on							),
-		.reg_pattern_name_table_base				( reg_pattern_name_table_base				),
-		.reg_color_table_base						( reg_color_table_base						),
-		.reg_pattern_generator_table_base			( reg_pattern_generator_table_base			),
-		.reg_backdrop_color							( reg_backdrop_color[3:0]					)
-	);
-
-	// --------------------------------------------------------------------
-	//	Graphic4, 5, 6 and 7 mode
-	// --------------------------------------------------------------------
-	vdp_timing_control_g4567 u_g4567 (
-		.reset_n									( reset_n									),
-		.clk										( clk										),
-		.screen_pos_x								( w_screen_pos_x							),
-		.pixel_pos_x								( w_pixel_pos_x								),
-		.pixel_pos_y								( w_pixel_pos_y								),
-		.screen_v_active							( w_screen_v_active							),
-		.vram_address								( g4567_vram_address						),
-		.vram_valid									( g4567_vram_valid							),
-		.vram_rdata									( g4567_vram_rdata							),
-		.display_color								( g4567_display_color						),
-		.horizontal_offset_l						( w_horizontal_offset_l						),
-		.reg_screen_mode							( reg_screen_mode							),
-		.reg_display_on								( reg_display_on							),
-		.reg_pattern_name_table_base				( reg_pattern_name_table_base				),
 		.reg_backdrop_color							( reg_backdrop_color						)
 	);
 

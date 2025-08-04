@@ -114,20 +114,10 @@ module vdp (
 	wire		[7:0]	w_cpu_vram_rdata;
 	wire				w_cpu_vram_rdata_en;
 
-	wire		[16:0]	w_t12_vram_address;
-	wire				w_t12_vram_valid;
-	wire		[7:0]	w_t12_vram_rdata;
-	wire		[3:0]	w_t12_display_color;
-
-	wire		[16:0]	w_g123m_vram_address;
-	wire				w_g123m_vram_valid;
-	wire		[7:0]	w_g123m_vram_rdata;
-	wire		[3:0]	w_g123m_display_color;
-
-	wire		[16:0]	w_g4567_vram_address;
-	wire				w_g4567_vram_valid;
-	wire		[31:0]	w_g4567_vram_rdata;
-	wire		[7:0]	w_g4567_display_color;
+	wire		[16:0]	w_screen_mode_vram_address;
+	wire				w_screen_mode_vram_valid;
+	wire		[31:0]	w_screen_mode_vram_rdata;
+	wire		[7:0]	w_screen_mode_display_color;
 
 	wire		[16:0]	w_sprite_vram_address;
 	wire				w_sprite_vram_valid;
@@ -255,18 +245,10 @@ module vdp (
 		.screen_pos_y								( w_screen_pos_y							),
 		.intr_line									( w_intr_line								),
 		.intr_frame									( w_intr_frame								),
-		.t12_vram_address							( w_t12_vram_address						),
-		.t12_vram_valid								( w_t12_vram_valid							),
-		.t12_vram_rdata								( w_t12_vram_rdata							),
-		.t12_display_color							( w_t12_display_color						),
-		.g123m_vram_address							( w_g123m_vram_address						),
-		.g123m_vram_valid							( w_g123m_vram_valid						),
-		.g123m_vram_rdata							( w_g123m_vram_rdata						),
-		.g123m_display_color						( w_g123m_display_color						),
-		.g4567_vram_address							( w_g4567_vram_address						),
-		.g4567_vram_valid							( w_g4567_vram_valid						),
-		.g4567_vram_rdata							( w_g4567_vram_rdata						),
-		.g4567_display_color						( w_g4567_display_color						),
+		.screen_mode_vram_address					( w_screen_mode_vram_address				),
+		.screen_mode_vram_valid						( w_screen_mode_vram_valid					),
+		.screen_mode_vram_rdata						( w_screen_mode_vram_rdata					),
+		.screen_mode_display_color					( w_screen_mode_display_color				),
 		.sprite_vram_address						( w_sprite_vram_address						),
 		.sprite_vram_valid							( w_sprite_vram_valid						),
 		.sprite_vram_rdata							( w_sprite_vram_rdata						),
@@ -317,15 +299,9 @@ module vdp (
 		.clk										( clk										),
 		.initial_busy								( initial_busy								),
 		.h_count									( w_h_count[2:0]							),
-		.t12_vram_address							( w_t12_vram_address						),
-		.t12_vram_valid								( w_t12_vram_valid							),
-		.t12_vram_rdata								( w_t12_vram_rdata							),
-		.g123m_vram_address							( w_g123m_vram_address						),
-		.g123m_vram_valid							( w_g123m_vram_valid						),
-		.g123m_vram_rdata							( w_g123m_vram_rdata						),
-		.g4567_vram_address							( w_g4567_vram_address						),
-		.g4567_vram_valid							( w_g4567_vram_valid						),
-		.g4567_vram_rdata							( w_g4567_vram_rdata						),
+		.screen_mode_vram_address					( w_screen_mode_vram_address				),
+		.screen_mode_vram_valid						( w_screen_mode_vram_valid					),
+		.screen_mode_vram_rdata						( w_screen_mode_vram_rdata					),
 		.sprite_vram_address						( w_sprite_vram_address						),
 		.sprite_vram_valid							( w_sprite_vram_valid						),
 		.sprite_vram_rdata							( w_sprite_vram_rdata						),
@@ -364,9 +340,7 @@ module vdp (
 		.palette_r									( w_palette_r								),
 		.palette_g									( w_palette_g								),
 		.palette_b									( w_palette_b								),
-		.display_color_t12							( w_t12_display_color						),
-		.display_color_g123m						( w_g123m_display_color						),
-		.display_color_g4567						( w_g4567_display_color						),
+		.display_color_screen_mode					( w_screen_mode_display_color				),
 		.display_color_sprite						( w_sprite_display_color					),
 		.display_color_sprite_en					( w_sprite_display_color_en					),
 		.vdp_r										( w_vdp_r									),

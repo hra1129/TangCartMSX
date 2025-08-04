@@ -103,13 +103,19 @@ module vdp_timing_control_screen_mode (
 	localparam			c_gm		= 9;			//	Mosaic   (SCREEN3) w_mode index
 	//	Phase
 	wire		[2:0]	w_phase;
+	reg			[2:0]	ff_phase;					//	0, 1, 2, ... , 5, 0 ... 6states
 	wire		[2:0]	w_sub_phase;
 	reg					ff_screen_h_active;
 	wire				w_screen_active;
+	wire		[7:0]	w_valid_decode;
 	//	Position
 	wire		[9:0]	w_scroll_pos_x;
 	wire		[9:0]	w_pos_x;
+	reg			[5:0]	ff_pos_x;					//	Text width40 column position
 	//	Pattern name table address
+	wire		[10:0]	w_pattern_name_t12_pre;
+	wire		[16:0]	w_pattern_name_t1;
+	wire		[16:0]	w_pattern_name_t2;
 	wire		[16:0]	w_pattern_name_g123m;
 	wire		[16:0]	w_pattern_name_g45;
 	wire		[16:0]	w_pattern_name_g67;
@@ -124,18 +130,28 @@ module vdp_timing_control_screen_mode (
 	//	Pattern generator table address
 	wire		[16:0]	w_pattern_generator_g1;
 	wire		[16:0]	w_pattern_generator_g23;
-	wire		[16:0]	w_pattern_generator;
+    wire        [16:0]  w_pattern_generator_t1;
+    wire        [16:0]  w_pattern_generator_t2;
 	//	Color table address
 	wire		[16:0]	w_color_g1;
 	wire		[16:0]	w_color_g23;
 	wire		[16:0]	w_color_gm;
-	wire		[16:0]	w_color;
 	//	VRAM address
 	reg			[16:0]	ff_vram_address;
+	reg			[1:0]	ff_vram_rdata_sel;
 	reg					ff_vram_valid;
+	wire		[7:0]	w_vram_rdata8;
 	//	Display color
 	reg			[7:0]	ff_display_color;
 	wire		[7:0]	w_backdrop_color;
+	reg			[7:0]	ff_pattern0;
+	reg			[7:0]	ff_pattern1;
+	reg			[7:0]	ff_pattern2;
+	reg			[7:0]	ff_pattern3;
+	reg			[7:0]	ff_pattern4;
+	reg			[7:0]	ff_pattern5;
+	reg			[7:0]	ff_pattern6;
+	reg			[7:0]	ff_pattern7;
 
 	// --------------------------------------------------------------------
 	//	Screen mode decoder
@@ -144,17 +160,17 @@ module vdp_timing_control_screen_mode (
 		input	[4:0]	reg_screen_mode
 	);
 		casex( reg_screen_mode )
-		c_mode_g1:		func_screen_mode_decoder = 4'd0;
-		c_mode_g2:		func_screen_mode_decoder = 4'd1;
-		c_mode_g3:		func_screen_mode_decoder = 4'd2;
-		c_mode_g4:		func_screen_mode_decoder = 4'd3;
-		c_mode_g5:		func_screen_mode_decoder = 4'd4;
-		c_mode_g6:		func_screen_mode_decoder = 4'd5;
-		c_mode_g7:		func_screen_mode_decoder = 4'd6;
-		c_mode_t1:		func_screen_mode_decoder = 4'd7;
-		c_mode_t2:		func_screen_mode_decoder = 4'd8;
-		c_mode_gm:		func_screen_mode_decoder = 4'd9;
-		default:		func_screen_mode_decoder = 4'd10;
+		c_mode_g1:		func_screen_mode_decoder = c_g1;
+		c_mode_g2:		func_screen_mode_decoder = c_g2;
+		c_mode_g3:		func_screen_mode_decoder = c_g3;
+		c_mode_g4:		func_screen_mode_decoder = c_g4;
+		c_mode_g5:		func_screen_mode_decoder = c_g5;
+		c_mode_g6:		func_screen_mode_decoder = c_g6;
+		c_mode_g7:		func_screen_mode_decoder = c_g7;
+		c_mode_t1:		func_screen_mode_decoder = c_t1;
+		c_mode_t2:		func_screen_mode_decoder = c_t2;
+		c_mode_gm:		func_screen_mode_decoder = c_gm;
+		default:		func_screen_mode_decoder = 4'd0;
 		endcase
 	endfunction
 
@@ -163,15 +179,46 @@ module vdp_timing_control_screen_mode (
 	// --------------------------------------------------------------------
 	//	Screen Position for active area
 	// --------------------------------------------------------------------
+	assign w_phase				= w_pos_x[2:0];
+	assign w_sub_phase			= screen_pos_x[2:0];
 	assign w_scroll_pos_x		= screen_pos_x[12:3]              - { 7'd0, horizontal_offset_l };
 	assign w_pos_x				= { pixel_pos_x[8], pixel_pos_x } - { 6'd0, horizontal_offset_l };
+
+	always @( posedge clk or negedge reset_n ) begin
+		if( !reset_n ) begin
+			ff_phase <= 3'd0;
+		end
+		else if( w_sub_phase == 3'd7 ) begin
+			if( w_scroll_pos_x == 10'h3FF ) begin
+				ff_phase <= 3'd0;
+			end
+			else begin
+				if( (w_mode == c_t1 || w_mode == c_t2) && ff_phase == 3'd5 ) begin
+					ff_phase <= 3'd0;
+				end
+				else begin
+					ff_phase <= ff_phase + 3'd1;
+				end
+			end
+		end
+	end
+
+	//	SCREEN0 character position
+	always @( posedge clk or negedge reset_n ) begin
+		if( !reset_n ) begin
+			ff_pos_x <= 6'd0;
+		end
+		else if( w_scroll_pos_x == 10'd7 && w_sub_phase == 3'd7 ) begin
+			ff_pos_x <= 6'd0;
+		end
+		else if( ff_phase == 3'd5 && w_sub_phase == 3'd7 ) begin
+			ff_pos_x <= ff_pos_x + 6'd1;
+		end
+	end
 
 	// --------------------------------------------------------------------
 	//	Active period
 	// --------------------------------------------------------------------
-	assign w_phase		= w_pos_x[2:0];
-	assign w_sub_phase	= screen_pos_x[2:0];
-
 	always @( posedge clk or negedge reset_n ) begin
 		if( !reset_n ) begin
 			ff_screen_h_active <= 1'b0;
@@ -191,23 +238,25 @@ module vdp_timing_control_screen_mode (
 	// --------------------------------------------------------------------
 	assign w_pattern_name_g123m			= {          reg_pattern_name_table_base, pixel_pos_y[7:3], pixel_pos_x[7:3] };
 	assign w_pattern_name_g45			= {          reg_pattern_name_table_base[16:15], (reg_pattern_name_table_base[14:10] & pixel_pos_y[7:3]), pixel_pos_y[2:0], w_pos_x[7:3], 2'd0 };
-	assign w_pattern_name_g67			= { w_pos_x[0], reg_pattern_name_table_base[15], (reg_pattern_name_table_base[14:10] & pixel_pos_y[7:3]), pixel_pos_y[2:0], w_pos_x[7:3], 3'd0 };
+	assign w_pattern_name_g67			= { w_pos_x[0], reg_pattern_name_table_base[15], (reg_pattern_name_table_base[14:10] & pixel_pos_y[7:3]), pixel_pos_y[2:0], w_pos_x[7:3], 2'd0 };
+	assign w_pattern_name_t12_pre		= { 1'b0, screen_pos_y[7:3], 5'd0 } + { 3'd0, screen_pos_y[7:3], 3'd0 } + { 5'd0, ff_pos_x };
+	assign w_pattern_name_t1			= { reg_pattern_name_table_base, 8'd0 } + { 6'd0, w_pattern_name_t12_pre };
+	assign w_pattern_name_t2			= { reg_pattern_name_table_base, 8'd0 } + { 5'd0, w_pattern_name_t12_pre, 1'b0 };
 
 	// --------------------------------------------------------------------
 	//	Pattern generator table address
 	// --------------------------------------------------------------------
-	assign w_pattern_generator_g1		= { reg_pattern_generator_table_base, ff_pattern_num, pixel_pos_y[2:0] };
-	assign w_pattern_generator_g23		= { reg_pattern_generator_table_base[16:13], (pixel_pos_y[7:6] & reg_pattern_generator_table_base[12:11]), ff_pattern_num, pixel_pos_y[2:0] };
-	assign w_pattern_generator			= w_mode[ c_g1 ] ? w_pattern_generator_g1: w_pattern_generator_g23;
+	assign w_pattern_generator_g1		= { reg_pattern_generator_table_base, ff_next_vram0, pixel_pos_y[2:0] };
+	assign w_pattern_generator_g23		= { reg_pattern_generator_table_base[16:13], (pixel_pos_y[7:6] & reg_pattern_generator_table_base[12:11]), ff_next_vram0, pixel_pos_y[2:0] };
+	assign w_pattern_generator_t1		= { reg_pattern_generator_table_base, ff_next_vram0, pixel_pos_y[2:0] };
+	assign w_pattern_generator_t2		= { reg_pattern_generator_table_base, ff_next_vram0, pixel_pos_y[2:0] };
 
 	// --------------------------------------------------------------------
 	//	Color table address
 	// --------------------------------------------------------------------
-	assign w_color_g1					= { reg_color_table_base, 1'b0, ff_pattern_num[7:3] };
-	assign w_color_g23					= { reg_color_table_base[16:13], (pixel_pos_y[7:6] & reg_color_table_base[12:11]), (ff_pattern_num[7:3] & reg_color_table_base[10:6]), ff_pattern_num[2:0], pixel_pos_y[2:0] };
-	assign w_color_gm					= { reg_pattern_generator_table_base, ff_pattern_num, pixel_pos_y[4:2] };
-	assign w_color						= w_mode[ c_g1 ] ? w_color_g1:
-										  w_mode[ c_gm ] ? w_color_gm : w_color_g23;
+	assign w_color_g1					= { reg_color_table_base, 1'b0, ff_next_vram0[7:3] };
+	assign w_color_g23					= { reg_color_table_base[16:13], (pixel_pos_y[7:6] & reg_color_table_base[12:11]), (ff_next_vram0[7:3] & reg_color_table_base[10:6]), ff_next_vram0[2:0], pixel_pos_y[2:0] };
+	assign w_color_gm					= { reg_pattern_generator_table_base, ff_next_vram0, pixel_pos_y[4:2] };
 
 	// --------------------------------------------------------------------
 	//	VRAM read access request
@@ -237,7 +286,7 @@ module vdp_timing_control_screen_mode (
 			ff_vram_valid <= 1'b0;
 		end
 		else if( w_sub_phase == 3'd0 ) begin
-			ff_vram_valid <= w_valid_decode[ w_phase ];
+			ff_vram_valid <= w_valid_decode[ ff_phase ];
 		end
 		else begin
 			ff_vram_valid <= 1'b0;
@@ -251,7 +300,7 @@ module vdp_timing_control_screen_mode (
 		else begin
 			//	SUB_PHASE:0 is VRAM read access timing.
 			if( w_sub_phase == 3'd0 ) begin
-				case( w_phase )
+				case( ff_phase )
 				3'd0:
 					casex( w_mode )
 					c_g1, c_g2, c_g3, c_gm:
@@ -260,6 +309,10 @@ module vdp_timing_control_screen_mode (
 						ff_vram_address <= w_pattern_name_g45;
 					c_g6, c_g7:
 						ff_vram_address <= w_pattern_name_g67;
+					c_t1:
+						ff_vram_address <= w_pattern_name_t1;
+					c_t2:
+						ff_vram_address <= w_pattern_name_t2;
 					default:
 						ff_vram_address <= 17'd0;
 					endcase
@@ -272,15 +325,21 @@ module vdp_timing_control_screen_mode (
 					endcase
 				3'd2:
 					casex( w_mode )
-					c_g1, c_g2, c_g3:
-						ff_vram_address <= w_pattern_generator;
+					c_g1:
+						ff_vram_address <= w_pattern_generator_g1;
+					c_g2, c_g3:
+						ff_vram_address <= w_pattern_generator_g23;
 					default:
 						ff_vram_address <= 17'd0;
 					endcase
 				3'd3:
 					casex( w_mode )
-					c_g1, c_g2, c_g3, c_gm:
-						ff_vram_address <= w_color;
+					c_g1:
+						ff_vram_address <= w_color_g1;
+					c_g2, c_g3:
+						ff_vram_address <= w_color_g23;
+					c_gm:
+						ff_vram_address <= w_color_gm;
 					default:
 						ff_vram_address <= 17'd0;
 					endcase
@@ -296,12 +355,25 @@ module vdp_timing_control_screen_mode (
 		end
 	end
 
+	always @( posedge clk or negedge reset_n ) begin
+		if( !reset_n ) begin
+			ff_vram_rdata_sel <= 2'd0;
+		end
+		else if( w_sub_phase == 3'd0 ) begin
+			ff_vram_rdata_sel <= ff_vram_address[1:0];
+		end
+	end
+
 	assign vram_address = ff_vram_address;
 	assign vram_valid = ff_vram_valid;
 
 	// --------------------------------------------------------------------
 	//	VRAM read data latch
 	// --------------------------------------------------------------------
+	assign w_vram_rdata8	= (ff_vram_rdata_sel == 2'd0) ? vram_rdata[ 7: 0]:
+	                    	  (ff_vram_rdata_sel == 2'd1) ? vram_rdata[15: 8]:
+	                    	  (ff_vram_rdata_sel == 2'd1) ? vram_rdata[23:16]: vram_rdata[31:24];
+
 	always @( posedge clk or negedge reset_n ) begin
 		if( !reset_n ) begin
 			ff_next_vram0 <= 8'd0;
@@ -314,17 +386,26 @@ module vdp_timing_control_screen_mode (
 			ff_next_vram7 <= 8'd0;
 		end
 		else begin
-			if( w_sub_phase == 3'd0 ) begin
-				case( w_phase )
+			if( w_sub_phase == 3'd7 ) begin
+				case( ff_phase )
 				3'd1:
 					casex( w_mode )
-					c_g1, c_g2, c_g3, c_gm:
-						//	SCREEN1, 2, 3, 4 では、PCG の番号を保持する
-						case( ff_vram_address[1:0] )
-						2'd0:	ff_next_vram0 <= vram_rdata[ 7: 0];
-						2'd1:	ff_next_vram0 <= vram_rdata[15: 8];
-						2'd2:	ff_next_vram0 <= vram_rdata[23:16];
-						2'd3:	ff_next_vram0 <= vram_rdata[31:24];
+					c_g1, c_g2, c_g3, c_gm, c_t1:
+						//	SCREEN1, 2, 3, 4, 0(W40) では、PCG の番号を保持する
+						ff_next_vram0 <= w_vram_rdata8;
+					c_t2:
+						//	SCREEN0, 0(W80) では、PCG の番号を 2つ保持する
+						case( ff_vram_address[1] )
+						1'd0:
+							begin
+								ff_next_vram0 <= vram_rdata[ 7: 0];
+								ff_next_vram4 <= vram_rdata[15: 8];
+							end
+						1'd1:
+							begin
+								ff_next_vram0 <= vram_rdata[23:16];
+								ff_next_vram4 <= vram_rdata[31:24];
+							end
 						endcase
 					c_g4, c_g5:
 						//	SCREEN5, 6 では、この1回の読み出しで 8ドット分の画素値を一気に読める
@@ -333,7 +414,7 @@ module vdp_timing_control_screen_mode (
 							ff_next_vram1 <= { 4'd0, vram_rdata[ 3: 0] };
 							ff_next_vram2 <= { 4'd0, vram_rdata[15:12] };
 							ff_next_vram3 <= { 4'd0, vram_rdata[11: 8] };
-							ff_next_vram4 <= { 4'd0, vram_rdata[24:20] };
+							ff_next_vram4 <= { 4'd0, vram_rdata[23:20] };
 							ff_next_vram5 <= { 4'd0, vram_rdata[19:16] };
 							ff_next_vram6 <= { 4'd0, vram_rdata[31:28] };
 							ff_next_vram7 <= { 4'd0, vram_rdata[27:24] };
@@ -364,9 +445,9 @@ module vdp_timing_control_screen_mode (
 					endcase
 				3'd3:
 					casex( w_mode )
-					c_g1, c_g2, c_g3:
-						//	SCREEN1, 2, 4 では、ドットパターンを保持する。
-						ff_next_vram1 <= vram_rdata;
+					c_g1, c_g2, c_g3, c_t1:
+						//	SCREEN1, 2, 4, 0(W40), 0(W80) では、ドットパターンを保持する。
+						ff_next_vram1 <= w_vram_rdata8;
 					default:
 						begin
 							//	none
@@ -376,7 +457,23 @@ module vdp_timing_control_screen_mode (
 					casex( w_mode )
 					c_g1, c_g2, c_g3, c_gm:
 						//	SCREEN1, 2, 4 では、色を保持する。
-						ff_next_vram2 <= vram_rdata;
+						ff_next_vram2 <= w_vram_rdata8;
+					c_t1:
+						//	SCREEN0(W40) では、色はレジスタから引っ張ってくる。
+						ff_next_vram2 <= reg_backdrop_color;
+					c_t2:
+						//	SCREEN0(W80) では、色はレジスタから引っ張ってくる。ブリンクで入れ替わる。
+						ff_next_vram2 <= reg_backdrop_color;
+					default:
+						begin
+							//	none
+						end
+					endcase
+				3'd5:
+					casex( w_mode )
+					c_t2:
+						//	SCREEN0(W80) では、ドットパターンを保持する。
+						ff_next_vram5 <= w_vram_rdata8;
 					default:
 						begin
 							//	none
@@ -399,60 +496,73 @@ module vdp_timing_control_screen_mode (
 
 	always @( posedge clk or negedge reset_n ) begin
 		if( !reset_n ) begin
-			ff_pattern[0] <= 8'd0;
-			ff_pattern[1] <= 8'd0;
-			ff_pattern[2] <= 8'd0;
-			ff_pattern[3] <= 8'd0;
-			ff_pattern[4] <= 8'd0;
-			ff_pattern[5] <= 8'd0;
-			ff_pattern[6] <= 8'd0;
-			ff_pattern[7] <= 8'd0;
+			ff_pattern0 <= 8'd0;
+			ff_pattern1 <= 8'd0;
+			ff_pattern2 <= 8'd0;
+			ff_pattern3 <= 8'd0;
+			ff_pattern4 <= 8'd0;
+			ff_pattern5 <= 8'd0;
+			ff_pattern6 <= 8'd0;
+			ff_pattern7 <= 8'd0;
 		end
 		else if( w_sub_phase == 3'd5 ) begin
 			if( !w_screen_active ) begin
-				ff_pattern[0] <= w_backdrop_color;
-				ff_pattern[1] <= w_backdrop_color;
-				ff_pattern[2] <= w_backdrop_color;
-				ff_pattern[3] <= w_backdrop_color;
-				ff_pattern[4] <= w_backdrop_color;
-				ff_pattern[5] <= w_backdrop_color;
-				ff_pattern[6] <= w_backdrop_color;
-				ff_pattern[7] <= w_backdrop_color;
+				ff_pattern0 <= w_backdrop_color;
+				ff_pattern1 <= w_backdrop_color;
+				ff_pattern2 <= w_backdrop_color;
+				ff_pattern3 <= w_backdrop_color;
+				ff_pattern4 <= w_backdrop_color;
+				ff_pattern5 <= w_backdrop_color;
+				ff_pattern6 <= w_backdrop_color;
+				ff_pattern7 <= w_backdrop_color;
 			end
-			else if( w_phase == 3'd7 ) begin
+			else if( ff_phase == 3'd7 ) begin
 				casex( w_mode )
-				c_g1, c_g2, c_g3:
+				c_g1, c_g2, c_g3, c_t1:
+					//	SCREEN 1, 2, 4, 0(W40) bit pattern --> color code
 					begin
-						ff_pattern[0] <= ff_next_vram1[7] ? { 4'd0, ff_next_vram2[ 7: 4] }: { 4'd0, ff_next_vram2[ 3: 0] };
-						ff_pattern[1] <= ff_next_vram1[6] ? { 4'd0, ff_next_vram2[ 7: 4] }: { 4'd0, ff_next_vram2[ 3: 0] };
-						ff_pattern[2] <= ff_next_vram1[5] ? { 4'd0, ff_next_vram2[ 7: 4] }: { 4'd0, ff_next_vram2[ 3: 0] };
-						ff_pattern[3] <= ff_next_vram1[4] ? { 4'd0, ff_next_vram2[ 7: 4] }: { 4'd0, ff_next_vram2[ 3: 0] };
-						ff_pattern[4] <= ff_next_vram1[3] ? { 4'd0, ff_next_vram2[ 7: 4] }: { 4'd0, ff_next_vram2[ 3: 0] };
-						ff_pattern[5] <= ff_next_vram1[2] ? { 4'd0, ff_next_vram2[ 7: 4] }: { 4'd0, ff_next_vram2[ 3: 0] };
-						ff_pattern[6] <= ff_next_vram1[1] ? { 4'd0, ff_next_vram2[ 7: 4] }: { 4'd0, ff_next_vram2[ 3: 0] };
-						ff_pattern[7] <= ff_next_vram1[0] ? { 4'd0, ff_next_vram2[ 7: 4] }: { 4'd0, ff_next_vram2[ 3: 0] };
+						ff_pattern0 <= ff_next_vram1[7] ? { 4'd0, ff_next_vram2[ 7: 4] }: { 4'd0, ff_next_vram2[ 3: 0] };
+						ff_pattern1 <= ff_next_vram1[6] ? { 4'd0, ff_next_vram2[ 7: 4] }: { 4'd0, ff_next_vram2[ 3: 0] };
+						ff_pattern2 <= ff_next_vram1[5] ? { 4'd0, ff_next_vram2[ 7: 4] }: { 4'd0, ff_next_vram2[ 3: 0] };
+						ff_pattern3 <= ff_next_vram1[4] ? { 4'd0, ff_next_vram2[ 7: 4] }: { 4'd0, ff_next_vram2[ 3: 0] };
+						ff_pattern4 <= ff_next_vram1[3] ? { 4'd0, ff_next_vram2[ 7: 4] }: { 4'd0, ff_next_vram2[ 3: 0] };
+						ff_pattern5 <= ff_next_vram1[2] ? { 4'd0, ff_next_vram2[ 7: 4] }: { 4'd0, ff_next_vram2[ 3: 0] };
+						ff_pattern6 <= ff_next_vram1[1] ? { 4'd0, ff_next_vram2[ 7: 4] }: { 4'd0, ff_next_vram2[ 3: 0] };
+						ff_pattern7 <= ff_next_vram1[0] ? { 4'd0, ff_next_vram2[ 7: 4] }: { 4'd0, ff_next_vram2[ 3: 0] };
+					end
+				c_t2:
+					//	SCREEN 0(W80) bit pattern --> color code
+					begin
+						ff_pattern0 <= { ff_next_vram1[7] ? { ff_next_vram2[ 7: 4] }: { ff_next_vram2[ 3: 0] }, ff_next_vram1[6] ? { ff_next_vram2[ 7: 4] }: { ff_next_vram2[ 3: 0] } };
+						ff_pattern1 <= { ff_next_vram1[5] ? { ff_next_vram2[ 7: 4] }: { ff_next_vram2[ 3: 0] }, ff_next_vram1[4] ? { ff_next_vram2[ 7: 4] }: { ff_next_vram2[ 3: 0] } };
+						ff_pattern2 <= { ff_next_vram1[3] ? { ff_next_vram2[ 7: 4] }: { ff_next_vram2[ 3: 0] }, ff_next_vram1[2] ? { ff_next_vram2[ 7: 4] }: { ff_next_vram2[ 3: 0] } };
+						ff_pattern3 <= { ff_next_vram1[1] ? { ff_next_vram2[ 7: 4] }: { ff_next_vram2[ 3: 0] }, ff_next_vram1[0] ? { ff_next_vram2[ 7: 4] }: { ff_next_vram2[ 3: 0] } };
+						ff_pattern4 <= { ff_next_vram5[7] ? { ff_next_vram2[ 7: 4] }: { ff_next_vram2[ 3: 0] }, ff_next_vram5[6] ? { ff_next_vram2[ 7: 4] }: { ff_next_vram2[ 3: 0] } };
+						ff_pattern5 <= { ff_next_vram5[5] ? { ff_next_vram2[ 7: 4] }: { ff_next_vram2[ 3: 0] }, ff_next_vram5[4] ? { ff_next_vram2[ 7: 4] }: { ff_next_vram2[ 3: 0] } };
+						ff_pattern6 <= { ff_next_vram5[3] ? { ff_next_vram2[ 7: 4] }: { ff_next_vram2[ 3: 0] }, ff_next_vram5[2] ? { ff_next_vram2[ 7: 4] }: { ff_next_vram2[ 3: 0] } };
+						ff_pattern7 <= { ff_next_vram5[1] ? { ff_next_vram2[ 7: 4] }: { ff_next_vram2[ 3: 0] }, ff_next_vram5[0] ? { ff_next_vram2[ 7: 4] }: { ff_next_vram2[ 3: 0] } };
 					end
 				c_gm:
 					begin
-						ff_pattern[0] <= { 4'd0, ff_next_vram2[ 7: 4] };
-						ff_pattern[1] <= { 4'd0, ff_next_vram2[ 7: 4] };
-						ff_pattern[2] <= { 4'd0, ff_next_vram2[ 7: 4] };
-						ff_pattern[3] <= { 4'd0, ff_next_vram2[ 7: 4] };
-						ff_pattern[4] <= { 4'd0, ff_next_vram2[ 3: 0] };
-						ff_pattern[5] <= { 4'd0, ff_next_vram2[ 3: 0] };
-						ff_pattern[6] <= { 4'd0, ff_next_vram2[ 3: 0] };
-						ff_pattern[7] <= { 4'd0, ff_next_vram2[ 3: 0] };
+						ff_pattern0 <= { 4'd0, ff_next_vram2[ 7: 4] };
+						ff_pattern1 <= { 4'd0, ff_next_vram2[ 7: 4] };
+						ff_pattern2 <= { 4'd0, ff_next_vram2[ 7: 4] };
+						ff_pattern3 <= { 4'd0, ff_next_vram2[ 7: 4] };
+						ff_pattern4 <= { 4'd0, ff_next_vram2[ 3: 0] };
+						ff_pattern5 <= { 4'd0, ff_next_vram2[ 3: 0] };
+						ff_pattern6 <= { 4'd0, ff_next_vram2[ 3: 0] };
+						ff_pattern7 <= { 4'd0, ff_next_vram2[ 3: 0] };
 					end
 				c_g4, c_g5, c_g6, c_g7:
 					begin
-						ff_pattern[0] <= ff_next_pattern0[ 7: 0];
-						ff_pattern[1] <= ff_next_pattern0[15: 8];
-						ff_pattern[2] <= ff_next_pattern0[23:16];
-						ff_pattern[3] <= ff_next_pattern0[31:24];
-						ff_pattern[4] <= ff_next_pattern1[ 7: 0];
-						ff_pattern[5] <= ff_next_pattern1[15: 8];
-						ff_pattern[6] <= ff_next_pattern1[23:16];
-						ff_pattern[7] <= ff_next_pattern1[31:24];
+						ff_pattern0 <= ff_next_vram0;
+						ff_pattern1 <= ff_next_vram1;
+						ff_pattern2 <= ff_next_vram2;
+						ff_pattern3 <= ff_next_vram3;
+						ff_pattern4 <= ff_next_vram4;
+						ff_pattern5 <= ff_next_vram5;
+						ff_pattern6 <= ff_next_vram6;
+						ff_pattern7 <= ff_next_vram7;
 					end
 				default:
 					begin
@@ -461,14 +571,14 @@ module vdp_timing_control_screen_mode (
 				endcase
 			end
 			else begin
-				ff_pattern[0] <= ff_pattern[1];
-				ff_pattern[1] <= ff_pattern[2];
-				ff_pattern[2] <= ff_pattern[3];
-				ff_pattern[3] <= ff_pattern[4];
-				ff_pattern[4] <= ff_pattern[5];
-				ff_pattern[5] <= ff_pattern[6];
-				ff_pattern[6] <= ff_pattern[7];
-				ff_pattern[7] <= w_backdrop_color;
+				ff_pattern0 <= ff_pattern1;
+				ff_pattern1 <= ff_pattern2;
+				ff_pattern2 <= ff_pattern3;
+				ff_pattern3 <= ff_pattern4;
+				ff_pattern4 <= ff_pattern5;
+				ff_pattern5 <= ff_pattern6;
+				ff_pattern6 <= ff_pattern7;
+				ff_pattern7 <= w_backdrop_color;
 			end
 		end
 	end
@@ -477,8 +587,20 @@ module vdp_timing_control_screen_mode (
 		if( !reset_n ) begin
 			ff_display_color <= 4'd0;
 		end
-		else if( w_sub_phase == 3'd7 ) begin
-			ff_display_color <= ff_pattern[0];
+		else if( w_mode == c_t2 || w_mode == c_g5 || w_mode == c_g6 ) begin
+			if( w_sub_phase == 3'd3 ) begin
+				ff_display_color <= { 4'd0, ff_pattern0[3:0] };
+			end
+		end
+		else begin
+			if( w_sub_phase == 3'd7 ) begin
+				if( w_mode == c_g7 ) begin
+					ff_display_color <= { 4'd0, ff_pattern0[7:4] };
+				end
+				else begin
+					ff_display_color <= ff_pattern0;
+				end
+			end
 		end
 	end
 

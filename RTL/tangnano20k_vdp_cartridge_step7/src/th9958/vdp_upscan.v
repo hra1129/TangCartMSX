@@ -74,8 +74,8 @@ module vdp_upscan (
 	output		[7:0]	upscan_g,
 	output		[7:0]	upscan_b
 );
-	localparam			c_left_pos		= 10'd32;		//	画面上の水平位置。小さくすると左へ、大きくすると右に寄る。
-	wire		[9:0]	w_write_pos;
+	localparam			c_left_pos		= 11'd32;		//	画面上の水平位置。小さくすると左へ、大きくすると右に寄る。
+	wire		[10:0]	w_write_pos;
 	wire		[9:0]	w_read_pos;
 	wire		[9:0]	w_even_address;
 	wire				w_even_re;
@@ -91,7 +91,7 @@ module vdp_upscan (
 	// --------------------------------------------------------------------
 	//	Line buffer
 	// --------------------------------------------------------------------
-	assign w_write_pos		= screen_pos_x[11:2] + c_left_pos - { 5'd0, ~reg_display_adjust[3], reg_display_adjust[2:0], 1'b0 };
+	assign w_write_pos		= { screen_pos_x[11], screen_pos_x[11:2] } + c_left_pos - { 6'd0, ~reg_display_adjust[3], reg_display_adjust[2:0], 1'b0 };
 	assign w_read_pos		= h_count[9:0];
 
 	vdp_upscan_line_buffer u_even_line_buffer (
@@ -103,9 +103,9 @@ module vdp_upscan (
 		.q				( w_even_q			)
 	);
 
-	assign w_even_address	= v_count[1] ? w_read_pos : w_write_pos;
+	assign w_even_address	= v_count[1] ? w_read_pos : w_write_pos[9:0];
 	assign w_even_re		= ( (v_count[1] == 1'b1) && (h_count[10] == 1'b0) );
-	assign w_even_we		= ( (v_count[1] == 1'b0) && (screen_pos_x[12] == 1'b0) );
+	assign w_even_we		= ( (v_count[1] == 1'b0) && (w_write_pos[10] == 1'b0) );
 	assign w_even_d			= { vdp_r, vdp_g, vdp_b };
 
 	vdp_upscan_line_buffer u_odd_line_buffer (
@@ -117,12 +117,12 @@ module vdp_upscan (
 		.q				( w_odd_q			)
 	);
 
-	assign w_odd_address	= v_count[1] ? w_write_pos : w_read_pos;
+	assign w_odd_address	= v_count[1] ? w_write_pos[9:0] : w_read_pos;
 	assign w_odd_re			= ( (v_count[1] == 1'b0) && (h_count[10] == 1'b0) );
-	assign w_odd_we			= ( (v_count[1] == 1'b1) && (screen_pos_x[12] == 1'b0) );
+	assign w_odd_we			= ( (v_count[1] == 1'b1) && (w_write_pos[10] == 1'b0) );
 	assign w_odd_d			= { vdp_r, vdp_g, vdp_b };
 
-	assign upscan_r			= v_count[1] ? w_even_q[23:16] : w_odd_q[23:16];
-	assign upscan_g			= v_count[1] ? w_even_q[15: 8] : w_odd_q[15: 8];
-	assign upscan_b			= v_count[1] ? w_even_q[ 7: 0] : w_odd_q[ 7: 0];
+	assign upscan_r			= (w_read_pos >= 10'd530) ? 8'd0: (v_count[1] ? w_even_q[23:16] : w_odd_q[23:16]);
+	assign upscan_g			= (w_read_pos >= 10'd530) ? 8'd0: (v_count[1] ? w_even_q[15: 8] : w_odd_q[15: 8]);
+	assign upscan_b			= (w_read_pos >= 10'd530) ? 8'd0: (v_count[1] ? w_even_q[ 7: 0] : w_odd_q[ 7: 0]);
 endmodule

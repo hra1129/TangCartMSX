@@ -67,9 +67,7 @@ module vdp_color_palette (
 	input		[2:0]	palette_g,
 	input		[2:0]	palette_b,
 
-	input		[3:0]	display_color_t12,
-	input		[3:0]	display_color_g123m,
-	input		[7:0]	display_color_g4567,
+	input		[7:0]	display_color_screen_mode,
 	input		[3:0]	display_color_sprite,
 	input				display_color_sprite_en,
 
@@ -175,17 +173,17 @@ module vdp_color_palette (
 			ff_display_color_oe <= 1'b0;
 		end
 		else if( w_256colors_mode ) begin
-			if( display_color_sprite_en ) begin
+			if( display_color_sprite_en && (display_color_sprite != 4'd0 || reg_color0_opaque) ) begin
 				ff_display_color <= { 4'd0, display_color_sprite };
 			end
 			else begin
-				ff_display_color <= display_color_g4567;
+				ff_display_color <= display_color_screen_mode;
 			end
 			ff_display_color_oe <= 1'b0;
 		end
 		else if( screen_pos_x == 3'd0 ) begin
 			if( w_t12_mode ) begin
-				ff_display_color <= { 4'd0, display_color_t12 };
+				ff_display_color <= { 4'd0, display_color_screen_mode };
 			end
 			else if( display_color_sprite_en && (display_color_sprite != 4'd0 || reg_color0_opaque) ) begin
 				if( w_g5_mode ) begin
@@ -195,11 +193,8 @@ module vdp_color_palette (
 					ff_display_color <= { 4'd0, display_color_sprite };
 				end
 			end
-			else if( w_g4567_mode ) begin
-				ff_display_color <= { 4'd0, display_color_g4567[3:0] };
-			end
 			else begin
-				ff_display_color <= { 4'd0, display_color_g123m };
+				ff_display_color <= { 4'd0, display_color_screen_mode };
 			end
 			ff_display_color_oe <= 1'b1;
 		end
@@ -214,10 +209,10 @@ module vdp_color_palette (
 			end
 			else begin
 				if( w_g5_mode ) begin
-					ff_display_color <= { 4'd0, display_color_g4567[3:2] };
+					ff_display_color <= { 4'd0, display_color_screen_mode[3:2] };
 				end
 				else begin
-					ff_display_color <= { 4'd0, display_color_g4567[3:0] };
+					ff_display_color <= { 4'd0, display_color_screen_mode[3:0] };
 				end
 			end
 			ff_display_color_oe <= 1'b1;

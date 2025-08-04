@@ -133,7 +133,7 @@ module vdp_sprite_makeup_pixel (
 	wire				w_sprite_en;
 	wire		[4:0]	w_ec_shift;
 	wire		[3:0]	w_bit_sel;
-	reg			[7:0]	ff_color;
+	reg			[3:0]	ff_color;
 	reg					ff_color_en;
 	reg			[4:0]	ff_pixel_color_d0;
 	reg			[4:0]	ff_pixel_color_d1;

@@ -345,6 +345,7 @@ module tangnano20k_vdp_cartridge (
 		.FREQ				( 85_909_080			)		//	Hz
 	) u_sdram (
 		.reset_n			( reset_n				),
+		.clk_half			( clk42m				),		//	85.90908MHz / 2
 		.clk				( clk85m				),		//	85.90908MHz
 		.clk_sdram			( clk85m				),
 		.sdram_init_busy	( w_dram_init_busy		),
