@@ -3,10 +3,8 @@ vlib work
 vlog ..\vdp_sprite_info_collect.v
 vlog ..\vdp_sprite_makeup_pixel.v
 vlog ..\vdp_sprite_select_visible_planes.v
-vlog ..\vdp_timing_control_t12.v
 vlog ..\vdp_timing_control_ssg.v
-vlog ..\vdp_timing_control_g4567.v
-vlog ..\vdp_timing_control_g123m.v
+vlog ..\vdp_timing_control_screen_mode.v
 vlog ..\vdp_timing_control_sprite.v
 vlog ..\vdp_timing_control.v
 vlog tb.sv

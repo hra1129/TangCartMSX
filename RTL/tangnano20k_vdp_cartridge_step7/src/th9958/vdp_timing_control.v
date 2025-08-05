@@ -58,10 +58,10 @@ module vdp_timing_control (
 	input				reset_n,
 	input				clk,					//	42.95454MHz
 
-	output		[10:0]	h_count,
+	output		[11:0]	h_count,
 	output		[ 9:0]	v_count,
 
-	output		[12:0]	screen_pos_x,			//	signed
+	output		[13:0]	screen_pos_x,			//	signed
 	output		[ 9:0]	screen_pos_y,			//	signed
 
 	output				intr_line,				//	pulse
@@ -107,7 +107,7 @@ module vdp_timing_control (
 	input		[7:0]	reg_backdrop_color,
 	input				reg_left_mask
 );
-	wire		[12:0]	w_screen_pos_x;			//	signed   (Coordinates not affected by scroll register)
+	wire		[13:0]	w_screen_pos_x;			//	signed   (Coordinates not affected by scroll register)
 	wire		[ 9:0]	w_screen_pos_y;			//	signed   (Coordinates not affected by scroll register)
 	wire		[ 8:0]	w_pixel_pos_x;			//	unsigned (Coordinates affected by scroll register)
 	wire		[ 7:0]	w_pixel_pos_y;			//	unsigned (Coordinates affected by scroll register)

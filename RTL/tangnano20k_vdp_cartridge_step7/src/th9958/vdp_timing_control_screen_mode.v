@@ -59,7 +59,7 @@ module vdp_timing_control_screen_mode (
 	input				reset_n,
 	input				clk,					//	42.95454MHz
 
-	input		[12:0]	screen_pos_x,
+	input		[13:0]	screen_pos_x,
 	input		[ 9:0]	screen_pos_y,
 	input		[ 8:0]	pixel_pos_x,
 	input		[ 7:0]	pixel_pos_y,
@@ -104,7 +104,7 @@ module vdp_timing_control_screen_mode (
 	//	Phase
 	wire		[2:0]	w_phase;
 	reg			[2:0]	ff_phase;					//	0, 1, 2, ... , 5, 0 ... 6states
-	wire		[2:0]	w_sub_phase;
+	wire		[3:0]	w_sub_phase;
 	reg					ff_screen_h_active;
 	wire				w_screen_active;
 	wire		[7:0]	w_valid_decode;
@@ -180,15 +180,15 @@ module vdp_timing_control_screen_mode (
 	//	Screen Position for active area
 	// --------------------------------------------------------------------
 	assign w_phase				= w_pos_x[2:0];
-	assign w_sub_phase			= screen_pos_x[2:0];
-	assign w_scroll_pos_x		= screen_pos_x[12:3]              - { 7'd0, horizontal_offset_l };
+	assign w_sub_phase			= screen_pos_x[3:0];
+	assign w_scroll_pos_x		= screen_pos_x[13:4]              - { 7'd0, horizontal_offset_l };
 	assign w_pos_x				= { pixel_pos_x[8], pixel_pos_x } - { 6'd0, horizontal_offset_l };
 
 	always @( posedge clk or negedge reset_n ) begin
 		if( !reset_n ) begin
 			ff_phase <= 3'd0;
 		end
-		else if( w_sub_phase == 3'd7 ) begin
+		else if( w_sub_phase == 4'd15 ) begin
 			if( w_scroll_pos_x == 10'h3FF ) begin
 				ff_phase <= 3'd0;
 			end
@@ -208,10 +208,10 @@ module vdp_timing_control_screen_mode (
 		if( !reset_n ) begin
 			ff_pos_x <= 6'd0;
 		end
-		else if( w_scroll_pos_x == 10'd7 && w_sub_phase == 3'd7 ) begin
+		else if( w_scroll_pos_x == 10'd7 && w_sub_phase == 4'd15 ) begin
 			ff_pos_x <= 6'd0;
 		end
-		else if( ff_phase == 3'd5 && w_sub_phase == 3'd7 ) begin
+		else if( ff_phase == 3'd5 && w_sub_phase == 4'd15 ) begin
 			ff_pos_x <= ff_pos_x + 6'd1;
 		end
 	end
@@ -223,10 +223,10 @@ module vdp_timing_control_screen_mode (
 		if( !reset_n ) begin
 			ff_screen_h_active <= 1'b0;
 		end
-		else if( screen_pos_x[12:3] == 10'd263 && w_sub_phase == 3'd6 ) begin
+		else if( screen_pos_x[12:3] == 10'd263 && w_sub_phase == 4'd13 ) begin
 			ff_screen_h_active <= 1'b0;
 		end
-		else if( w_scroll_pos_x == 10'h3FF && w_sub_phase == 3'd7 ) begin
+		else if( w_scroll_pos_x == 10'h3FF && w_sub_phase == 4'd15 ) begin
 			ff_screen_h_active <= 1'b1;
 		end
 	end
@@ -285,7 +285,7 @@ module vdp_timing_control_screen_mode (
 		else if( !w_screen_active || !reg_display_on ) begin
 			ff_vram_valid <= 1'b0;
 		end
-		else if( w_sub_phase == 3'd0 ) begin
+		else if( w_sub_phase == 4'd0 ) begin
 			ff_vram_valid <= w_valid_decode[ ff_phase ];
 		end
 		else begin
@@ -299,7 +299,7 @@ module vdp_timing_control_screen_mode (
 		end
 		else begin
 			//	SUB_PHASE:0 is VRAM read access timing.
-			if( w_sub_phase == 3'd0 ) begin
+			if( w_sub_phase == 4'd0 ) begin
 				case( ff_phase )
 				3'd0:
 					casex( w_mode )
@@ -359,7 +359,7 @@ module vdp_timing_control_screen_mode (
 		if( !reset_n ) begin
 			ff_vram_rdata_sel <= 2'd0;
 		end
-		else if( w_sub_phase == 3'd0 ) begin
+		else if( w_sub_phase == 4'd0 ) begin
 			ff_vram_rdata_sel <= ff_vram_address[1:0];
 		end
 	end
@@ -386,7 +386,7 @@ module vdp_timing_control_screen_mode (
 			ff_next_vram7 <= 8'd0;
 		end
 		else begin
-			if( w_sub_phase == 3'd7 ) begin
+			if( w_sub_phase == 4'd15 ) begin
 				case( ff_phase )
 				3'd1:
 					casex( w_mode )
@@ -505,7 +505,7 @@ module vdp_timing_control_screen_mode (
 			ff_pattern6 <= 8'd0;
 			ff_pattern7 <= 8'd0;
 		end
-		else if( w_sub_phase == 3'd5 ) begin
+		else if( w_sub_phase == 4'd11 ) begin
 			if( !w_screen_active ) begin
 				ff_pattern0 <= w_backdrop_color;
 				ff_pattern1 <= w_backdrop_color;
@@ -588,12 +588,12 @@ module vdp_timing_control_screen_mode (
 			ff_display_color <= 4'd0;
 		end
 		else if( w_mode == c_t2 || w_mode == c_g5 || w_mode == c_g6 ) begin
-			if( w_sub_phase == 3'd3 ) begin
+			if( w_sub_phase == 4'd7 ) begin
 				ff_display_color <= { 4'd0, ff_pattern0[3:0] };
 			end
 		end
 		else begin
-			if( w_sub_phase == 3'd7 ) begin
+			if( w_sub_phase == 4'd15 ) begin
 				if( w_mode == c_g7 ) begin
 					ff_display_color <= { 4'd0, ff_pattern0[7:4] };
 				end

@@ -57,12 +57,12 @@
 
 module vdp_timing_control_ssg (
 	input				reset_n,
-	input				clk,					//	42.95454MHz
+	input				clk,					//	85.90908MHz
 
-	output		[10:0]	h_count,
+	output		[11:0]	h_count,
 	output		[ 9:0]	v_count,
 
-	output		[12:0]	screen_pos_x,			//	signed   (Coordinates not affected by scroll register)
+	output		[13:0]	screen_pos_x,			//	signed   (Coordinates not affected by scroll register)
 	output		[ 9:0]	screen_pos_y,			//	signed   (Coordinates not affected by scroll register)
 	output		[ 8:0]	pixel_pos_x,			//	unsigned (Coordinates affected by scroll register)
 	output		[ 7:0]	pixel_pos_y,			//	unsigned (Coordinates affected by scroll register)
@@ -82,23 +82,23 @@ module vdp_timing_control_ssg (
 	output		[2:0]	horizontal_offset_l,
 	output		[8:3]	horizontal_offset_h
 );
-	localparam			c_left_pos			= 12'd320;		//	16の倍数
+	localparam			c_left_pos			= 14'd640;		//	16の倍数
 	localparam			c_top_pos			= 10'd48;		//	画面上の垂直位置。小さくすると上へ、大きくすると下へ寄る。
-	localparam			c_h_count_max		= 11'd1367;
+	localparam			c_h_count_max		= 12'd2735;
 	localparam			c_v_count_max_60p	= 10'd523;
 	localparam			c_v_count_max_60i	= 10'd524;
 	localparam			c_v_count_max_50p	= 10'd625;
 	localparam			c_v_count_max_50i	= 10'd624;
-	localparam			c_intr_line_timing	= 12'd100;
+	localparam			c_intr_line_timing	= 12'd200;
 	localparam			c_intr_frame_timing	= 10'd212;
-	reg			[10:0]	ff_h_count;
-	reg			[11:0]	ff_half_count;
+	reg			[11:0]	ff_h_count;
+	reg			[12:0]	ff_half_count;
 	reg			[ 9:0]	ff_v_count;
 	wire				w_h_count_end;
 	wire				w_v_count_end;
-	wire		[12:0]	w_screen_pos_x;
+	wire		[13:0]	w_screen_pos_x;
 	wire		[ 9:0]	w_screen_pos_y;
-	wire		[ 8:0]	w_pixel_pos_x;
+	wire		[ 9:0]	w_pixel_pos_x;
 	wire		[ 7:0]	w_pixel_pos_y;
 	reg					ff_h_active;
 	reg					ff_v_active;
@@ -129,25 +129,25 @@ module vdp_timing_control_ssg (
 	// --------------------------------------------------------------------
 	always @( posedge clk or negedge reset_n ) begin
 		if( !reset_n ) begin
-			ff_h_count <= 11'd0;
+			ff_h_count <= 12'd0;
 		end
 		else if( w_h_count_end ) begin
-			ff_h_count <= 11'd0;
+			ff_h_count <= 12'd0;
 		end
 		else begin
-			ff_h_count <= ff_h_count + 11'd1;
+			ff_h_count <= ff_h_count + 12'd1;
 		end
 	end
 
 	always @( posedge clk or negedge reset_n ) begin
 		if( !reset_n ) begin
-			ff_half_count <= 12'd0;
+			ff_half_count <= 13'd0;
 		end
 		else if( ff_v_count[0] && w_h_count_end ) begin
-			ff_half_count <= 12'd0;
+			ff_half_count <= 13'd0;
 		end
 		else begin
-			ff_half_count <= ff_half_count + 12'd1;
+			ff_half_count <= ff_half_count + 13'd1;
 		end
 	end
 
@@ -183,10 +183,10 @@ module vdp_timing_control_ssg (
 			ff_h_active <= 1'b0;
 		end
 		else begin
-			if( ff_half_count == (c_left_pos - 11'd1) ) begin
+			if( ff_half_count == (c_left_pos - 14'd1) ) begin
 				ff_h_active <= 1'b1;
 			end
-			else if( ff_half_count == (c_left_pos + 11'd2047) ) begin
+			else if( ff_half_count == (c_left_pos + 14'd2047) ) begin
 				ff_h_active <= 1'b0;
 			end
 		end
@@ -212,7 +212,7 @@ module vdp_timing_control_ssg (
 	assign w_screen_pos_x	= { 1'b0, ff_half_count   } - c_left_pos;
 	assign w_screen_pos_y	= { 1'b0, ff_v_count[9:1] } - c_top_pos  + { 6'd0, ~reg_display_adjust[7], reg_display_adjust[6:4] };
 
-	assign w_pixel_pos_x	= w_screen_pos_x[11:3] + { ff_horizontal_offset_h, 3'd0 };
+	assign w_pixel_pos_x	= w_screen_pos_x[12:4] + { ff_horizontal_offset_h, 4'd0 };
 	assign w_pixel_pos_y	= w_screen_pos_y[ 7:0] + reg_vertical_offset;
 
 	// --------------------------------------------------------------------
@@ -228,7 +228,7 @@ module vdp_timing_control_ssg (
 	assign v_count			= ff_v_count;
 	assign screen_pos_x		= w_screen_pos_x;
 	assign screen_pos_y		= w_screen_pos_y;
-	assign pixel_pos_x		= w_pixel_pos_x;
+	assign pixel_pos_x		= w_pixel_pos_x[8:0];
 	assign pixel_pos_y		= w_pixel_pos_y;
 	assign intr_line		= (w_screen_pos_y == { 2'd0, reg_interrupt_line } ) ? 1'b1: 1'b0;
 	assign intr_frame		= w_intr_frame_timing & w_intr_line_timing;

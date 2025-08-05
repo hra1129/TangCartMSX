@@ -58,7 +58,6 @@ module tangnano20k_vdp_cartridge (
 );
 	wire			pll_lock215;
 	wire			pll_lock85;
-	wire			clk21m;				//	21.47727MHz
 	wire			clk42m;				//	42.95454MHz
 	wire			clk85m;				//	85.90908MHz
 	wire			clk85m_n;			//	85.90908MHz (180deg phase shift)
@@ -73,27 +72,12 @@ module tangnano20k_vdp_cartridge (
 	wire	[7:0]	w_bus_rdata;
 	wire			w_bus_rdata_en;
 
-	wire			w_bus_gpio_ready;
-	wire	[7:0]	w_bus_gpio_rdata;
-	wire			w_bus_gpio_rdata_en;
-
 	wire			w_bus_vdp_ioreq;
 	wire			w_bus_vdp_ready;
 	wire	[7:0]	w_bus_vdp_rdata;
 	wire			w_bus_vdp_rdata_en;
 
-	wire			w_led_wr;
-	wire	[7:0]	w_led_red;
-	wire	[7:0]	w_led_green;
-	wire	[7:0]	w_led_blue;
-
-	wire	[16:0]	w_dram_address;
-	wire			w_dram_write;
-	wire			w_dram_valid;
-	wire	[7:0]	w_dram_wdata;
-	wire	[15:0]	w_dram_rdata;
-	wire			w_dram_rdata_en;
-	wire			w_dram_init_busy;
+	wire			w_sdram_init_busy;
 
 	wire	[22:0]	w_sdram_address;
 	wire			w_sdram_write;
@@ -103,19 +87,6 @@ module tangnano20k_vdp_cartridge (
 	wire	[31:0]	w_sdram_rdata;
 	wire			w_sdram_rdata_en;
 
-	wire			w_vdp_cs_n;
-	wire	[7:0]	w_vdp_q;
-	wire			w_vdp_q_en;
-	wire			w_vdp_enable;
-	wire	[5:0]	w_vdp_r;
-	wire	[5:0]	w_vdp_g;
-	wire	[5:0]	w_vdp_b;
-	wire	[10:0]	w_vdp_hcounter;
-	wire	[10:0]	w_vdp_vcounter;
-	wire			w_dh_clk;
-	wire			w_dl_clk;
-
-	wire			w_video_clk;
 	wire			w_video_de;
 	wire			w_video_hs;
 	wire			w_video_vs;
@@ -123,10 +94,11 @@ module tangnano20k_vdp_cartridge (
 	wire	[7:0]	w_video_g;
 	wire	[7:0]	w_video_b;
 
-	assign slot_wait		= w_dram_init_busy;
+	assign slot_wait		= w_sdram_init_busy;
 	assign slot_intr		= 1'b0;
     assign oe_n             = 1'b0;
     assign busdir           = ( { slot_a[7:2], 2'd0 } == 8'h10 && !slot_iorq_n ) ? ~slot_rd_n: 1'b0;
+    assign ws2812_led       = 1'b0;
 
 	// --------------------------------------------------------------------
 	//	clock
@@ -154,7 +126,7 @@ module tangnano20k_vdp_cartridge (
 	//	FullColor Intelligent LED
 	// --------------------------------------------------------------------
 	msx_slot u_msx_slot (
-		.clk42m				( clk42m					),
+		.clk				( clk85m					),
 		.reset_n			( reset_n					),
 		.initial_busy		( 1'b0						),
 		.p_slot_reset_n		( slot_reset_n				),
@@ -179,52 +151,17 @@ module tangnano20k_vdp_cartridge (
 		.bus_rdata_en		( w_bus_rdata_en			)
 	);
 
-	assign w_bus_rdata		= ( w_bus_gpio_rdata_en		) ? w_bus_gpio_rdata:
-	                  		  ( w_bus_vdp_rdata_en		) ? w_bus_gpio_rdata: 8'hFF;
-	assign w_bus_rdata_en	= w_bus_gpio_rdata_en | w_bus_vdp_rdata_en;
+	assign w_bus_rdata		= ( w_bus_vdp_rdata_en		) ? w_bus_vdp_rdata: 8'hFF;
+	assign w_bus_rdata_en	= w_bus_vdp_rdata_en;
 	assign w_bus_ready		= w_bus_vdp_ready;
-
-	// --------------------------------------------------------------------
-	//	GPIO
-	// --------------------------------------------------------------------
-	ip_gpio u_gpio (
-		.reset_n			( reset_n					),
-		.clk				( clk42m					),
-		.bus_address		( w_bus_address[7:0]		),
-		.bus_ioreq			( w_bus_ioreq				),
-		.bus_write			( w_bus_write				),
-		.bus_valid			( w_bus_valid				),
-		.bus_ready			( w_bus_gpio_ready			),
-		.bus_wdata			( w_bus_wdata				),
-		.bus_rdata			( w_bus_gpio_rdata			),
-		.bus_rdata_en		( w_bus_gpio_rdata_en		),
-		.led_wr				( w_led_wr					),
-		.led_red			( w_led_red					),
-		.led_green			( w_led_green				),
-		.led_blue			( w_led_blue				)
-	);
-
-	// --------------------------------------------------------------------
-	//	FullColor Intelligent LED
-	// --------------------------------------------------------------------
-	ip_ws2812_led u_fullcolor_led (
-		.reset_n			( reset_n					),
-		.clk				( clk42m					),
-		.wr					( w_led_wr					),
-		.sending			( 							),
-		.red				( w_led_red					),
-		.green				( w_led_green				),
-		.blue				( w_led_blue				),
-		.ws2812_led			( ws2812_led				)
-	);
 
 	// --------------------------------------------------------------------
 	//	V9958 clone
 	// --------------------------------------------------------------------
 	vdp u_v9958 (
 		.reset_n			( reset_n				),
-		.clk				( clk42m				),
-		.initial_busy		( w_dram_init_busy		),
+		.clk				( clk85m				),
+		.initial_busy		( w_sdram_init_busy		),
 		.bus_address		( w_bus_address[1:0]	),
 		.bus_ioreq			( w_bus_vdp_ioreq		),
 		.bus_write			( w_bus_write			),
@@ -251,58 +188,7 @@ module tangnano20k_vdp_cartridge (
 //	assign w_bus_vdp_ioreq	= w_bus_ioreq & ( {w_bus_address[7:2], 2'd0} == 8'h98 );
 	assign w_bus_vdp_ioreq	= w_bus_ioreq & ( {w_bus_address[7:2], 2'd0} == 8'h88 );
 
-//	vdp_inst u_v9958 (
-//		.clk				( clk42m				),
-//		.reset_n			( reset_n				),
-//		.initial_busy		( w_dram_init_busy		),
-//		.bus_address		( w_bus_address			),
-//		.bus_ioreq			( w_bus_ioreq			),
-//		.bus_write			( w_bus_write			),
-//		.bus_valid			( w_bus_valid			),
-//		.bus_wdata			( w_bus_wdata			),
-//		.bus_rdata			( w_bus_vdp_rdata		),
-//		.bus_rdata_en		( w_bus_vdp_rdata_en	),
-//		.int_n				( 						),
-//		.p_dram_address		( w_sdram_address[16:0]	),
-//		.p_dram_write		( w_sdram_write			),
-//		.p_dram_valid		( w_sdram_valid			),
-//		.p_dram_wdata		( w_sdram_wdata			),
-//		.p_dram_rdata		( w_sdram_rdata			),
-//		.p_dram_rdata_en	( w_sdram_rdata_en		),
-//		.p_vdp_enable		( w_vdp_enable			),
-//		.p_vdp_r			( w_vdp_r				),
-//		.p_vdp_g			( w_vdp_g				),
-//		.p_vdp_b			( w_vdp_b				),
-//		.p_vdp_hcounter		( w_vdp_hcounter		),
-//		.p_vdp_vcounter		( w_vdp_vcounter		)
-//	);
 	assign w_sdram_address[22:17]	= 6'd0;
-
-//	assign w_dram_init_busy	= 1'b0;
-
-	// --------------------------------------------------------------------
-	//	Video output
-	// --------------------------------------------------------------------
-//	video_out #(
-//		.hs_positive		( 1'b0					),		//	If video_hs is positive logic, set to 1.
-//		.vs_positive		( 1'b0					)		//	If video_vs is positive logic, set to 1.
-//	) u_video_out (
-//		.clk				( clk42m				),
-//		.reset_n			( reset_n   			),
-//		.enable				( w_vdp_enable			),
-//		.vdp_r				( w_vdp_r				),
-//		.vdp_g				( w_vdp_g				),
-//		.vdp_b				( w_vdp_b				),
-//		.vdp_hcounter		( w_vdp_hcounter		),
-//		.vdp_vcounter		( w_vdp_vcounter		),
-//		.video_clk			( w_video_clk			),
-//		.video_de			( w_video_de			),
-//		.video_hs			( w_video_hs			),
-//		.video_vs			( w_video_vs			),
-//		.video_r			( w_video_r				),
-//		.video_g			( w_video_g				),
-//		.video_b			( w_video_b				)
-//	);
 
 	// --------------------------------------------------------------------
 	//	HDMI
@@ -324,31 +210,15 @@ module tangnano20k_vdp_cartridge (
 	);
 
 	// --------------------------------------------------------------------
-	//	VRAM
-	// --------------------------------------------------------------------
-//	ip_ram u_vram (
-//		.reset_n			( reset_n				),
-//		.clk				( clk42m				),
-//		.bus_address		( w_dram_address[13:0]	),
-//		.bus_valid			( w_dram_valid			),
-//		.bus_write			( w_dram_write			),
-//		.bus_wdata			( w_dram_wdata			),
-//		.bus_rdata			( w_dram_rdata[7:0]		),
-//		.bus_rdata_en		( w_dram_rdata_en		)
-//	);
-//	assign w_dram_rdata[15:8] = 8'd0;
-
-	// --------------------------------------------------------------------
 	//	SDRAM
 	// --------------------------------------------------------------------
 	ip_sdram #(
 		.FREQ				( 85_909_080			)		//	Hz
 	) u_sdram (
 		.reset_n			( reset_n				),
-		.clk_half			( clk42m				),		//	85.90908MHz / 2
 		.clk				( clk85m				),		//	85.90908MHz
 		.clk_sdram			( clk85m				),
-		.sdram_init_busy	( w_dram_init_busy		),
+		.sdram_init_busy	( w_sdram_init_busy		),
 		.bus_address		( w_sdram_address		),
 		.bus_valid			( w_sdram_valid			),
 		.bus_write			( w_sdram_write			),

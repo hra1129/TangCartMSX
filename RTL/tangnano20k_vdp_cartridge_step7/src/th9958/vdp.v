@@ -57,7 +57,7 @@
 
 module vdp (
 	input				reset_n,
-	input				clk,					//	42.95454MHz
+	input				clk,					//	85.90908MHz
 
 	input				initial_busy,
 	input		[1:0]	bus_address,
@@ -86,9 +86,9 @@ module vdp (
 	output		[7:0]	display_g,
 	output		[7:0]	display_b
 );
-	wire		[10:0]	w_h_count;
+	wire		[11:0]	w_h_count;
 	wire		[ 9:0]	w_v_count;
-	wire		[12:0]	w_screen_pos_x;
+	wire		[13:0]	w_screen_pos_x;
 	wire		[ 9:0]	w_screen_pos_y;
 	wire				w_intr_line;
 	wire				w_intr_frame;
@@ -298,7 +298,7 @@ module vdp (
 		.reset_n									( reset_n									),
 		.clk										( clk										),
 		.initial_busy								( initial_busy								),
-		.h_count									( w_h_count[2:0]							),
+		.h_count									( w_h_count[3:0]							),
 		.screen_mode_vram_address					( w_screen_mode_vram_address				),
 		.screen_mode_vram_valid						( w_screen_mode_vram_valid					),
 		.screen_mode_vram_rdata						( w_screen_mode_vram_rdata					),

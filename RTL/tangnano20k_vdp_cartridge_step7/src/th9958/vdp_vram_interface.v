@@ -60,7 +60,7 @@ module vdp_vram_interface (
 	input				clk,					//	42.95454MHz
 
 	input				initial_busy,
-	input		[2:0]	h_count,
+	input		[3:0]	h_count,
 
 	input		[16:0]	screen_mode_vram_address,
 	input				screen_mode_vram_valid,
@@ -117,8 +117,8 @@ module vdp_vram_interface (
 	wire				is_access_timming_a;
 	wire				is_access_timming_b;
 
-	assign is_access_timming_a	= (h_count == 3'd1);	//	g123m, g4567, sprite, vdp-command
-	assign is_access_timming_b	= (h_count == 3'd5);	//	cpu, vdp-command
+	assign is_access_timming_a	= (h_count == 4'd1);	//	g123m, g4567, sprite, vdp-command
+	assign is_access_timming_b	= (h_count == 4'd9);	//	cpu, vdp-command
 
 	// --------------------------------------------------------------------
 	//	Priority selector

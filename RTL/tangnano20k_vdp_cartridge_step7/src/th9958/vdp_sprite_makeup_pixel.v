@@ -59,7 +59,7 @@ module vdp_sprite_makeup_pixel (
 	input				reset_n,
 	input				clk,					//	42.95454MHz
 
-	input		[12:0]	screen_pos_x,
+	input		[13:0]	screen_pos_x,
 	input		[7:0]	pixel_pos_y,
 	input				screen_active,
 
@@ -122,7 +122,7 @@ module vdp_sprite_makeup_pixel (
 	reg			[7:0]	ff_x6;
 	reg			[7:0]	ff_x7;
 	wire		[7:0]	w_x;
-	wire		[2:0]	w_sub_phase;
+	wire		[3:0]	w_sub_phase;
 	wire				w_active;
 	reg					ff_pre_pixel_color_en;
 	reg			[3:0]	ff_pre_pixel_color;
@@ -252,12 +252,12 @@ module vdp_sprite_makeup_pixel (
 			ff_planes			<= 4'd0;
 			ff_current_plane	<= 4'd0;
 		end
-		else if( screen_pos_x == 13'h1FFF ) begin
+		else if( screen_pos_x == 14'h3FFF ) begin
 			ff_active			<= reg_display_on;
 			ff_planes			<= selected_count;
 			ff_current_plane	<= 4'd0;
 		end
-		else if( w_sub_phase == 3'd7 ) begin
+		else if( w_sub_phase == 4'd15 ) begin
 			ff_current_plane	<= 4'd0;
 		end
 		else if( w_active ) begin
@@ -265,7 +265,7 @@ module vdp_sprite_makeup_pixel (
 		end
 	end
 
-	assign w_sub_phase	= screen_pos_x[2:0];
+	assign w_sub_phase	= screen_pos_x[3:0];
 	assign w_active		= ( ff_current_plane != ff_planes ) ? ff_active: 1'b0;
 
 	// --------------------------------------------------------------------
@@ -355,7 +355,7 @@ module vdp_sprite_makeup_pixel (
 			ff_x7
 	);
 
-	assign w_offset_x	= screen_pos_x[12:3] - { 2'd0, w_x };
+	assign w_offset_x	= screen_pos_x[12:4] - { 2'd0, w_x };
 	assign w_overflow	= ( !reg_sprite_16x16 && !reg_sprite_magify ) ?   w_offset_x[9:3]:			// 8x8 normal
 	                 	  (  reg_sprite_16x16 &&  reg_sprite_magify ) ? { w_offset_x[9:5], 2'd0 }:	// 16x16 magnify
 	                 	                                                { w_offset_x[9:4], 1'd0 };	// 8x8 magnify or 16x16 normal
@@ -383,11 +383,11 @@ module vdp_sprite_makeup_pixel (
 			ff_pre_pixel_color_en	<= 1'b0;
 			ff_pre_pixel_color		<= 4'd0;
 		end
-		else if( screen_pos_x == 13'h1FFF ) begin
+		else if( screen_pos_x == 14'h3FFF ) begin
 			ff_pre_pixel_color_en	<= 1'b0;
 			ff_pre_pixel_color		<= 4'd0;
 		end
-		else if( w_sub_phase == 3'd1 ) begin
+		else if( w_sub_phase == 4'd2 ) begin
 			ff_pre_pixel_color_en	<= ff_color_en;
 			ff_pre_pixel_color		<= ff_color;
 		end
@@ -415,7 +415,7 @@ module vdp_sprite_makeup_pixel (
 			ff_sprite_collision_x	<= 9'd0;
 			ff_sprite_collision_y	<= 10'd0;
 		end
-		else if( w_sub_phase == 3'd1 ) begin
+		else if( w_sub_phase == 4'd2 ) begin
 			//	hold
 		end
 		else begin
@@ -426,7 +426,7 @@ module vdp_sprite_makeup_pixel (
 				//	The dots of the sprite with the highest priority are already plotted.
 				if( ff_pre_pixel_color != 4'd0 || reg_color0_opaque ) begin
 					ff_sprite_collision		<= 1'b1;
-					ff_sprite_collision_x	<= screen_pos_x[11:3] + 9'd12;
+					ff_sprite_collision_x	<= screen_pos_x[11:4] + 9'd12;
 					ff_sprite_collision_y	<= { 2'd0, pixel_pos_y } + 10'd8;
 				end
 			end
@@ -441,11 +441,11 @@ module vdp_sprite_makeup_pixel (
 			ff_pixel_color_en	<= 1'b0;
 			ff_pixel_color		<= 4'd0;
 		end
-		else if( screen_pos_x == 13'h1FFF ) begin
+		else if( screen_pos_x == 14'h3FFF ) begin
 			ff_pixel_color_en	<= 1'b0;
 			ff_pixel_color		<= 4'd0;
 		end
-		else if( w_sub_phase == 3'd1 ) begin
+		else if( w_sub_phase == 4'd2 ) begin
 			ff_pixel_color_en	<= ff_pre_pixel_color_en;
 			ff_pixel_color		<= ff_pre_pixel_color;
 		end
@@ -461,7 +461,7 @@ module vdp_sprite_makeup_pixel (
 			ff_pixel_color_d5 <= 5'd0;
 			ff_pixel_color_d6 <= 5'd0;
 		end
-		else if( w_sub_phase == 3'd7 ) begin
+		else if( w_sub_phase == 4'd15 ) begin
 			ff_pixel_color_d0 <= { ff_pixel_color_en, ff_pixel_color };
 			ff_pixel_color_d1 <= ff_pixel_color_d0;
 			ff_pixel_color_d2 <= ff_pixel_color_d1;

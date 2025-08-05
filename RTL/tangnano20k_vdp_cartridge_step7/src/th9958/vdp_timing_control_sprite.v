@@ -59,7 +59,7 @@ module vdp_timing_control_sprite (
 	input				reset_n,
 	input				clk,					//	42.95454MHz
 
-	input		[12:0]	screen_pos_x,
+	input		[13:0]	screen_pos_x,
 	input		[ 9:0]	screen_pos_y,
 	input		[7:0]	pixel_pos_y,
 	input				screen_v_active,
@@ -105,10 +105,10 @@ module vdp_timing_control_sprite (
 		if( !reset_n ) begin
 			ff_screen_h_active <= 1'b0;
 		end
-		else if( screen_pos_x[12:3] == 10'd255 && screen_pos_x[2:0] == 3'd7 ) begin
+		else if( screen_pos_x[13:4] == 10'd255 && screen_pos_x[3:0] == 4'd15 ) begin
 			ff_screen_h_active <= 1'b0;
 		end
-		else if( screen_pos_x[12:3] == 10'h3FF && screen_pos_x[2:0] == 3'd7 ) begin
+		else if( screen_pos_x[13:4] == 10'h3FF && screen_pos_x[3:0] == 4'd15 ) begin
 			ff_screen_h_active <= 1'b1;
 		end
 	end

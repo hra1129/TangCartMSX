@@ -61,7 +61,6 @@ module tb ();
 	// --------------------------------------------------------------------
 	logic				clk85m;
 	logic				reset_n;
-	logic				clk;
 	wire				w_dram_init_busy;
 	logic		[1:0]	bus_address;
 	logic				bus_ioreq;
@@ -113,7 +112,7 @@ module tb ();
 	// --------------------------------------------------------------------
 	vdp u_vdp (
 		.reset_n		( reset_n				),
-		.clk			( clk					),
+		.clk			( clk85m				),
 		.initial_busy	( w_dram_init_busy		),
 		.bus_address	( bus_address			),
 		.bus_ioreq		( bus_ioreq				),
@@ -145,10 +144,6 @@ module tb ();
 		clk85m <= ~clk85m;
 	end
 
-	always @( posedge clk85m ) begin
-		clk <= ~clk;
-	end
-
 	// --------------------------------------------------------------------
 	//	VRAM
 	// --------------------------------------------------------------------
@@ -156,7 +151,6 @@ module tb ();
 		.FREQ				( 85_909_080				)		//	Hz
 	) u_sdram_controller (
 		.reset_n			( reset_n					),
-		.clk_half			( clk						),
 		.clk				( clk85m					),		//	85.90908MHz
 		.clk_sdram			( clk85m					),
 		.sdram_init_busy	( w_dram_init_busy			),
@@ -205,11 +199,11 @@ module tb ();
 			bus_valid <= 1'b1;
 			bus_wdata <= data;
 			bus_ready_timeout_counter <= 0;
-			@( posedge clk );
+			@( posedge clk85m );
 			
 			// Wait for bus_ready with timeout
 			while( !bus_ready && bus_ready_timeout_counter < 100 ) begin
-				@( posedge clk );
+				@( posedge clk85m );
 				bus_ready_timeout_counter <= bus_ready_timeout_counter + 1;
 			end
 			if( bus_ready_timeout_counter >= 100 ) begin
@@ -218,7 +212,7 @@ module tb ();
 			end
 			
 			bus_valid <= 1'b0;
-			@( posedge clk );
+			@( posedge clk85m );
 		end
 	endtask
 
@@ -231,11 +225,11 @@ module tb ();
 			bus_valid <= 1'b1;
 			bus_wdata <= data;
 			bus_ready_timeout_counter <= 0;
-			@( posedge clk );
+			@( posedge clk85m );
 
 			// Wait for bus_ready with timeout
 			while( !bus_ready && bus_ready_timeout_counter < 100 ) begin
-				@( posedge clk );
+				@( posedge clk85m );
 				bus_ready_timeout_counter <= bus_ready_timeout_counter + 1;
 			end
 			if( bus_ready_timeout_counter >= 100 ) begin
@@ -244,7 +238,7 @@ module tb ();
 			end
 
 			bus_valid <= 1'b0;
-			@( posedge clk );
+			@( posedge clk85m );
 
 			// Second write: register number with control bit
 			bus_address <= 2'd1;
@@ -253,11 +247,11 @@ module tb ();
 			bus_valid <= 1'b1;
 			bus_wdata <= reg_num | 8'h80;
 			bus_ready_timeout_counter <= 0;
-			@( posedge clk );
+			@( posedge clk85m );
 
 			// Wait for bus_ready with timeout
 			while( !bus_ready && bus_ready_timeout_counter < 100 ) begin
-				@( posedge clk );
+				@( posedge clk85m );
 				bus_ready_timeout_counter <= bus_ready_timeout_counter + 1;
 			end
 			if( bus_ready_timeout_counter >= 100 ) begin
@@ -266,7 +260,7 @@ module tb ();
 			end
 			
 			bus_valid <= 1'b0;
-			@( posedge clk );
+			@( posedge clk85m );
 		end
 	endtask
 
@@ -279,11 +273,11 @@ module tb ();
 			bus_valid <= 1'b1;
 			bus_wdata <= addr[7:0];
 			bus_ready_timeout_counter <= 0;
-			@( posedge clk );
+			@( posedge clk85m );
 			
 			// Wait for bus_ready with timeout
 			while( !bus_ready && bus_ready_timeout_counter < 100 ) begin
-				@( posedge clk );
+				@( posedge clk85m );
 				bus_ready_timeout_counter <= bus_ready_timeout_counter + 1;
 			end
 			if( bus_ready_timeout_counter >= 100 ) begin
@@ -292,7 +286,7 @@ module tb ();
 			end
 
 			bus_valid <= 1'b0;
-			@( posedge clk );
+			@( posedge clk85m );
 
 			// Set VRAM address (high byte with write mode)
 			bus_address <= 2'd1;
@@ -301,11 +295,11 @@ module tb ();
 			bus_valid <= 1'b1;
 			bus_wdata <= { 2'd0, addr[13:8] } | 8'h40;  // Write mode
 			bus_ready_timeout_counter <= 0;
-			@( posedge clk );
+			@( posedge clk85m );
 
 			// Wait for bus_ready with timeout
 			while( !bus_ready && bus_ready_timeout_counter < 100 ) begin
-				@( posedge clk );
+				@( posedge clk85m );
 				bus_ready_timeout_counter <= bus_ready_timeout_counter + 1;
 			end
 			if( bus_ready_timeout_counter >= 100 ) begin
@@ -314,7 +308,7 @@ module tb ();
 			end
 
 			bus_valid <= 1'b0;
-			@( posedge clk );
+			@( posedge clk85m );
 
 			// Write data
 			bus_address <= 2'd0;
@@ -323,11 +317,11 @@ module tb ();
 			bus_valid <= 1'b1;
 			bus_wdata <= data;
 			bus_ready_timeout_counter <= 0;
-			@( posedge clk );
+			@( posedge clk85m );
 
 			// Wait for bus_ready with timeout
 			while( !bus_ready && bus_ready_timeout_counter < 100 ) begin
-				@( posedge clk );
+				@( posedge clk85m );
 				bus_ready_timeout_counter <= bus_ready_timeout_counter + 1;
 			end
 			if( bus_ready_timeout_counter >= 100 ) begin
@@ -336,7 +330,7 @@ module tb ();
 			end
 
 			bus_valid <= 1'b0;
-			@( posedge clk );
+			@( posedge clk85m );
 		end
 	endtask
 
@@ -347,11 +341,11 @@ module tb ();
 			bus_write <= 1'b0;
 			bus_valid <= 1'b1;
 			bus_ready_timeout_counter <= 0;
-			@( posedge clk );
+			@( posedge clk85m );
 
 			// Wait for bus_ready with timeout
 			while( !bus_ready && bus_ready_timeout_counter < 100 ) begin
-				@( posedge clk );
+				@( posedge clk85m );
 				bus_ready_timeout_counter <= bus_ready_timeout_counter + 1;
 			end
 			if( bus_ready_timeout_counter >= 100 ) begin
@@ -361,13 +355,13 @@ module tb ();
 
 			bus_valid <= 1'b0;
 			bus_ready_timeout_counter <= 0;
-			@( posedge clk );
+			@( posedge clk85m );
 			while( !bus_rdata_en && bus_ready_timeout_counter < 100 ) begin
-				@( posedge clk );
+				@( posedge clk85m );
 				bus_ready_timeout_counter <= bus_ready_timeout_counter + 1;
 			end
 			status = bus_rdata;
-			@( posedge clk );
+			@( posedge clk85m );
 		end
 	endtask
 
@@ -377,7 +371,6 @@ module tb ();
 	initial begin
 		// Initialize signals
 		clk85m = 0;
-		clk = 0;
 		reset_n = 0;
 		bus_address = 0;
 		bus_ioreq = 0;
@@ -388,17 +381,17 @@ module tb ();
 		interrupt_timeout_counter = 0;
 
 		// Reset sequence
-		repeat(10) @( posedge clk );
+		repeat(10) @( posedge clk85m );
 		reset_n <= 1;
-		repeat(10) @( posedge clk );
+		repeat(10) @( posedge clk85m );
 
 		$display( "[test000] Not VRAM access in initial busy period test" );
-		repeat( 1368 * 1000 ) @( posedge clk );
+		repeat( 1368 * 1000 ) @( posedge clk85m );
 
 		while( w_dram_init_busy ) begin
-			@( posedge clk );
+			@( posedge clk85m );
 		end
-		repeat(10) @( posedge clk );
+		repeat(10) @( posedge clk85m );
 
 		$display( "[test001] SCREEN5" );
 		write_vdp_reg( 8'd00, 8'h06 );	// Mode register 0
@@ -406,7 +399,7 @@ module tb ();
 		write_vdp_reg( 8'd02, 8'h1F );	// Pattern name table base address
 		write_vdp_reg( 8'd07, 8'h07 );	// Backdrop color
 		write_vdp_reg( 8'd14, 8'd0  );
-		repeat(10) @( posedge clk );
+		repeat(10) @( posedge clk85m );
 
 		$display( "[test003] VRAM write test" );
 		// Write some test patterns to VRAM
@@ -423,7 +416,7 @@ module tb ();
 		end
 
 		$display( "[test---] All tests completed" );
-		repeat( 100 ) @( posedge clk );
+		repeat( 100 ) @( posedge clk85m );
 		$finish;
 	end
 endmodule

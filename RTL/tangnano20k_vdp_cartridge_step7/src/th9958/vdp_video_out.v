@@ -60,7 +60,7 @@
 module vdp_video_out (
 	input				clk,						//	42.95454MHz
 	input				reset_n,
-	input		[10:0]	h_count,
+	input		[11:0]	h_count,
 	input		[ 9:0]	v_count,
 	input				has_scanline,
 	// input pixel
@@ -78,13 +78,13 @@ module vdp_video_out (
 	input		[7:0]	reg_denominator,			//	800 / 4
 	input		[7:0]	reg_normalize				//	8192 / reg_denominator
 );
-	localparam		active_area_start	= 11'd373;
-	localparam		active_area_end		= active_area_start + 11'd800;
-	localparam		clocks_per_line		= 11'd1368;
-	localparam		h_en_start			= 11'd374;
-	localparam		h_en_end			= h_en_start + 11'd800;
+	localparam		active_area_start	= 12'd747;
+	localparam		active_area_end		= active_area_start + 12'd1600;
+	localparam		clocks_per_line		= 12'd2736;
+	localparam		h_en_start			= 12'd748;
+	localparam		h_en_end			= h_en_start + 12'd1600;
 	localparam		hs_start			= clocks_per_line - 1;
-	localparam		hs_end				= 11'd283;
+	localparam		hs_end				= 12'd567;
 	localparam		v_en_start			= 10'd30;
 	localparam		v_en_end			= v_en_start + 10'd480;
 	localparam		vs_start			= 10'd3;
@@ -242,7 +242,7 @@ module vdp_video_out (
 	// --------------------------------------------------------------------
 	//	Buffer address
 	// --------------------------------------------------------------------
-	assign w_x_position_w	= h_count;
+	assign w_x_position_w	= h_count[11:1];
 
 	always @( posedge clk ) begin
 		if( !reset_n ) begin
@@ -286,11 +286,13 @@ module vdp_video_out (
 	assign w_hold				= w_sub_numerator[8];
 
 	always @( posedge clk ) begin
-		ff_hold0 <= w_hold & ff_active;
-		ff_hold1 <= ff_hold0;
-		ff_hold2 <= ff_hold1;
-		ff_hold3 <= ff_hold2;
-		ff_hold4 <= ff_hold3;
+		if( h_count[0] == 1'b1 ) begin
+			ff_hold0 <= w_hold & ff_active;
+			ff_hold1 <= ff_hold0;
+			ff_hold2 <= ff_hold1;
+			ff_hold3 <= ff_hold2;
+			ff_hold4 <= ff_hold3;
+		end
 	end
 
 	// --------------------------------------------------------------------

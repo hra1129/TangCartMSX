@@ -62,29 +62,18 @@ module tb ();
 	reg				reset_n;
 	reg				clk;
 
-	wire	[10:0]	h_count;
+	wire	[11:0]	h_count;
 	wire	[ 9:0]	v_count;
-	wire	[12:0]	screen_pos_x;
+	wire	[13:0]	screen_pos_x;
 	wire	[ 9:0]	screen_pos_y;
-	wire			screen_active;
 	wire			intr_line;
 	wire			intr_frame;
 
 	// VRAMインターフェース
-	wire	[16:0]	t12_vram_address;
-	wire			t12_vram_valid;
-	reg		[7:0]	t12_vram_rdata;
-	wire	[3:0]	t12_display_color;
-
-	wire	[16:0]	g123m_vram_address;
-	wire			g123m_vram_valid;
-	reg		[7:0]	g123m_vram_rdata;
-	wire	[3:0]	g123m_display_color;
-
-	wire	[16:0]	g4567_vram_address;
-	wire			g4567_vram_valid;
-	reg		[31:0]	g4567_vram_rdata;
-	wire	[7:0]	g4567_display_color;
+	wire	[16:0]	screen_mode_vram_address;
+	wire			screen_mode_vram_valid;
+	reg		[31:0]	screen_mode_vram_rdata;
+	wire	[7:0]	screen_mode_display_color;
 
 	wire	[16:0]	sprite_vram_address;
 	wire			sprite_vram_valid;
@@ -93,19 +82,29 @@ module tb ();
 	wire	[3:0]	sprite_display_color;
 	wire			sprite_display_color_en;
 
+	//	レジスタ制御タイミング信号
+	reg				clear_sprite_collision;
+	wire			sprite_collision;
+	reg				clear_sprite_collision_xy;
+	wire	[8:0]	sprite_collision_x;
+	wire	[9:0]	sprite_collision_y;
+
 	// レジスタ信号
 	reg				reg_50hz_mode;
 	reg				reg_212lines_mode;
 	reg				reg_interlace_mode;
+	reg		[7:0]	reg_display_adjust;
 	reg		[7:0]	reg_interrupt_line;
 	reg		[7:0]	reg_vertical_offset;
-	reg		[8:0]	reg_horizontal_offset;
+	reg		[2:0]	reg_horizontal_offset_l;
+	reg		[8:3]	reg_horizontal_offset_h;
 	reg		[4:0]	reg_screen_mode;
 	reg				reg_display_on;
+	reg				reg_color0_opaque;
 	reg		[16:10]	reg_pattern_name_table_base;
 	reg		[16:6]	reg_color_table_base;
 	reg		[16:11]	reg_pattern_generator_table_base;
-	reg		[16:9]	reg_sprite_attribute_table_base;
+	reg		[16:7]	reg_sprite_attribute_table_base;
 	reg		[16:11]	reg_sprite_pattern_generator_table_base;
 	reg				reg_sprite_magify;
 	reg				reg_sprite_16x16;
@@ -123,35 +122,34 @@ module tb ();
 		.v_count									( v_count									),
 		.screen_pos_x								( screen_pos_x								),
 		.screen_pos_y								( screen_pos_y								),
-		.screen_active								( screen_active								),
 		.intr_line									( intr_line									),
 		.intr_frame									( intr_frame								),
-		.t12_vram_address							( t12_vram_address							),
-		.t12_vram_valid								( t12_vram_valid							),
-		.t12_vram_rdata								( t12_vram_rdata							),
-		.t12_display_color							( t12_display_color							),
-		.g123m_vram_address							( g123m_vram_address						),
-		.g123m_vram_valid							( g123m_vram_valid							),
-		.g123m_vram_rdata							( g123m_vram_rdata							),
-		.g123m_display_color						( g123m_display_color						),
-		.g4567_vram_address							( g4567_vram_address						),
-		.g4567_vram_valid							( g4567_vram_valid							),
-		.g4567_vram_rdata							( g4567_vram_rdata							),
-		.g4567_display_color						( g4567_display_color						),
+		.screen_mode_vram_address					( screen_mode_vram_address					),
+		.screen_mode_vram_valid						( screen_mode_vram_valid					),
+		.screen_mode_vram_rdata						( screen_mode_vram_rdata					),
+		.screen_mode_display_color					( screen_mode_display_color					),
 		.sprite_vram_address						( sprite_vram_address						),
 		.sprite_vram_valid							( sprite_vram_valid							),
 		.sprite_vram_rdata							( sprite_vram_rdata							),
 		.sprite_vram_rdata8							( sprite_vram_rdata8						),
 		.sprite_display_color						( sprite_display_color						),
 		.sprite_display_color_en					( sprite_display_color_en					),
+		.clear_sprite_collision						( clear_sprite_collision					),
+		.sprite_collision							( sprite_collision							),
+		.clear_sprite_collision_xy					( clear_sprite_collision_xy					),
+		.sprite_collision_x							( sprite_collision_x						),
+		.sprite_collision_y							( sprite_collision_y						),
 		.reg_50hz_mode								( reg_50hz_mode								),
 		.reg_212lines_mode							( reg_212lines_mode							),
 		.reg_interlace_mode							( reg_interlace_mode						),
+		.reg_display_adjust							( reg_display_adjust						),
 		.reg_interrupt_line							( reg_interrupt_line						),
 		.reg_vertical_offset						( reg_vertical_offset						),
-		.reg_horizontal_offset						( reg_horizontal_offset						),
+		.reg_horizontal_offset_l					( reg_horizontal_offset_l					),
+		.reg_horizontal_offset_h					( reg_horizontal_offset_h					),
 		.reg_screen_mode							( reg_screen_mode							),
 		.reg_display_on								( reg_display_on							),
+		.reg_color0_opaque							( reg_color0_opaque							),
 		.reg_pattern_name_table_base				( reg_pattern_name_table_base				),
 		.reg_color_table_base						( reg_color_table_base						),
 		.reg_pattern_generator_table_base			( reg_pattern_generator_table_base			),
@@ -179,10 +177,8 @@ module tb ();
 	// ----------------------------------------------------------------
 	always @(*) begin
 		// テスト用のダミーデータを生成
-		t12_vram_rdata = 8'h55;				// パターンデータ
-		g123m_vram_rdata = 8'hAA;			// パターンデータ
-		g4567_vram_rdata = 32'h56781234;	// グラフィック4-7用データ
-		sprite_vram_rdata = 32'hFFFFFFFF;	// スプライトデータ
+		screen_mode_vram_rdata = 32'h56781234;	// グラフィック4-7用データ
+		sprite_vram_rdata = 32'hFFFFFFFF;		// スプライトデータ
 	end
 
 	// ----------------------------------------------------------------
@@ -194,11 +190,14 @@ module tb ();
 		reg_50hz_mode = 1'b0;					// 60Hz mode
 		reg_212lines_mode = 1'b0;				// 192 lines mode
 		reg_interlace_mode = 1'b0;				// Non-interlace
+		reg_display_adjust = 8'd0;				// 画面位置調整なし
 		reg_interrupt_line = 8'd192;			// 標準的な割り込みライン
 		reg_vertical_offset = 8'd0;				// 垂直オフセットなし
-		reg_horizontal_offset = 9'd0;			// 水平オフセットなし
+		reg_horizontal_offset_l = 3'd0;			// 水平オフセットなし
+		reg_horizontal_offset_h = 6'd0;			// 水平オフセットなし
 		reg_screen_mode = 5'd0;					// Screen mode 0
 		reg_display_on = 1'b1;					// Display ON
+		reg_color0_opaque = 1'b0;				// パレット0 の扱い 透明
 		reg_pattern_name_table_base = 7'h00;	// パターンネームテーブルベース
 		reg_color_table_base = 11'h000;			// カラーテーブルベース
 		reg_pattern_generator_table_base = 6'h00; // パターンジェネレータテーブルベース
@@ -339,17 +338,20 @@ module tb ();
 		
 		// 垂直オフセットテスト
 		reg_vertical_offset = 8'd10;
-		reg_horizontal_offset = 9'd20;
+		reg_horizontal_offset_l = 3'd0;
+		reg_horizontal_offset_h = 6'd04;
 		
 		#(clk_base * 1000);  // 少し待つ
 		
 		$display("Vertical offset: %0d", reg_vertical_offset);
-		$display("Horizontal offset: %0d", reg_horizontal_offset);
+		$display("Horizontal offset_l: %0d", reg_horizontal_offset_l);
+		$display("Horizontal offset_h: %0d", reg_horizontal_offset_h);
 		$display("Offset settings test completed");
 		
 		// オフセット設定を元に戻す
 		reg_vertical_offset = 8'd0;
-		reg_horizontal_offset = 9'd0;
+		reg_horizontal_offset_l = 3'd0;
+		reg_horizontal_offset_h = 6'd0;
 	endtask
 
 	// ----------------------------------------------------------------

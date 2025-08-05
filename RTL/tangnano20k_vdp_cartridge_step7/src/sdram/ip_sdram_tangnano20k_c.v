@@ -58,7 +58,6 @@ module ip_sdram #(
 	parameter		FREQ = 85_909_080	//	Hz
 ) (
 	input				reset_n,
-	input				clk_half,			//	85.90908MHz / 2
 	input				clk,				//	85.90908MHz
 	input				clk_sdram,
 	output				sdram_init_busy,
@@ -129,9 +128,6 @@ module ip_sdram #(
 	reg		[ 4:0]				ff_main_state;
 	reg		[TIMER_BITS-1:0]	ff_main_timer;
 	wire						w_end_of_main_timer;
-	reg							ff_clk1;
-	reg							ff_clk2;
-	wire						w_clk42m;
 
 	reg							ff_sdr_ready;
 	reg							ff_do_main_state;
@@ -157,33 +153,6 @@ module ip_sdram #(
 	wire						w_busy;
 
 	// --------------------------------------------------------------------
-	//	Clock checker
-	//	 _______     _______
-	//	_|O    |O____|O    |       42MHz
-	//	    _______     _______
-	//	____|     |_____|     |    85MHz
-	// --------------------------------------------------------------------
-	always @( posedge clk_half or negedge reset_n ) begin
-		if( !reset_n ) begin
-			ff_clk1 <= 1'b0;
-		end
-		else begin
-			ff_clk1 <= ~ff_clk1;
-		end
-	end
-
-	always @( posedge clk ) begin
-		if( !reset_n ) begin
-			ff_clk2 <= 1'b0;
-		end
-		else begin
-			ff_clk2 <= ff_clk1;
-		end
-	end
-
-	assign w_clk42m	= ~(ff_clk1 ^ ff_clk2);
-
-	// --------------------------------------------------------------------
 	//	Request latch
 	// --------------------------------------------------------------------
 	always @( posedge clk ) begin
@@ -197,7 +166,7 @@ module ip_sdram #(
 			ff_write_mask	<= 2'd0;
 			ff_do_refresh	<= 1'b0;
 		end
-		else if( w_clk42m && (ff_main_state == c_main_state_ready) && (bus_valid || bus_refresh) ) begin
+		else if( (ff_main_state == c_main_state_ready) && (bus_valid || bus_refresh) ) begin
 			ff_do_command	<= 1'b1;
 			ff_do_refresh	<= bus_refresh;
 			ff_write		<= bus_write;
@@ -241,7 +210,7 @@ module ip_sdram #(
 				ff_main_state	<= c_init_state_wait_mode_register_set;
 			// ----------------------------------------------------------------
 			c_main_state_ready:
-				if( w_clk42m && (bus_valid || bus_refresh) ) begin
+				if( bus_valid || bus_refresh ) begin
 					ff_main_state		<= c_main_state_activate;
 				end
 			c_main_state_activate:

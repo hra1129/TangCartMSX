@@ -54,17 +54,17 @@
 // --------------------------------------------------------------------
 
 module tb ();
-	localparam		clk_base		= 1_000_000_000/42_954_540;	//	ns
+	localparam		clk_base		= 1_000_000_000/85_909_080;	//	ns
 	reg					reset_n;
 	reg					clk;
 
-	wire		[10:0]	h_count;
+	wire		[11:0]	h_count;
 	wire		[ 9:0]	v_count;
-	wire		[12:0]	screen_pos_x;
+	wire		[13:0]	screen_pos_x;
 	wire		[ 9:0]	screen_pos_y;
 	wire		[ 8:0]	pixel_pos_x;
 	wire		[ 7:0]	pixel_pos_y;
-	wire				screen_active;
+	wire				screen_v_active;
 
 	wire				intr_line;				//	pulse
 	wire				intr_frame;				//	pulse
@@ -75,7 +75,6 @@ module tb ();
 	reg			[7:0]	reg_display_adjust;
 	reg			[7:0]	reg_interrupt_line;
 	reg			[7:0]	reg_vertical_offset;
-	reg			[8:0]	reg_horizontal_offset;
 	reg			[2:0]	reg_horizontal_offset_l;
 	reg			[8:3]	reg_horizontal_offset_h;
 	wire		[2:0]	horizontal_offset_l;
@@ -106,7 +105,6 @@ module tb ();
 		reg_display_adjust = 0;
 		reg_interrupt_line = 100;
 		reg_vertical_offset = 0;
-		reg_horizontal_offset = 0;
 		reg_horizontal_offset_l = 0;
 		reg_horizontal_offset_h = 0;
 
@@ -119,28 +117,28 @@ module tb ();
 		$display( "60Hz, non interlace" );
 		reg_50hz_mode		= 1'b0;		//	60Hz
 		reg_interlace_mode	= 1'b0;		//	non interlace
-		repeat( 1368 * 550 * 2 ) @( posedge clk );
+		repeat( 2736 * 550 * 2 ) @( posedge clk );
 
 		$display( "60Hz, interlace" );
 		reg_50hz_mode		= 1'b0;		//	60Hz
 		reg_interlace_mode	= 1'b1;		//	interlace
-		repeat( 1368 * 550 * 2 ) @( posedge clk );
+		repeat( 2736 * 550 * 2 ) @( posedge clk );
 
 		$display( "50Hz, non interlace" );
 		reg_50hz_mode		= 1'b1;		//	50Hz
 		reg_interlace_mode	= 1'b0;		//	non interlace
-		repeat( 1368 * 650 * 2 ) @( posedge clk );
+		repeat( 2736 * 650 * 2 ) @( posedge clk );
 
 		$display( "50Hz, interlace" );
 		reg_50hz_mode		= 1'b1;		//	50Hz
 		reg_interlace_mode	= 1'b1;		//	interlace
-		repeat( 1368 * 650 * 2 ) @( posedge clk );
+		repeat( 2736 * 650 * 2 ) @( posedge clk );
 
 		$display( "60Hz, non interlace [set adjust]" );
 		reg_50hz_mode		= 1'b0;		//	60Hz
 		reg_interlace_mode	= 1'b0;		//	non interlace
 		reg_display_adjust	= 8'h85;	//	set adjust( 5, 8 )
-		repeat( 1368 * 550 * 2 ) @( posedge clk );
+		repeat( 2736 * 550 * 2 ) @( posedge clk );
 
 		repeat( 10 ) @( posedge clk );
 		$finish;

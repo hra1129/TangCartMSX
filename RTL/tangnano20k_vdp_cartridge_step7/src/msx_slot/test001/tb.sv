@@ -54,9 +54,9 @@
 // --------------------------------------------------------------------
 
 module tb ();
-	localparam		clk_base		= 1_000_000_000/42_954_540;	//	ps
+	localparam		clk_base		= 1_000_000_000/85_909_080;	//	ps
 	localparam		cpu_clk_base	= 1_000_000_000/ 3_579_545;	//	ps
-	reg				clk42m;
+	reg				clk;
 	reg				reset_n;
 	reg				initial_busy;
 	reg				p_slot_clk;
@@ -71,7 +71,6 @@ module tb ();
 	reg		[7:0]	ff_slot_data;
 	wire			p_slot_data_dir;
 	wire			p_slot_int;
-	wire			p_slot_wait;
 	reg				int_n;
 	wire			bus_memreq;
 	wire			bus_ioreq;
@@ -88,7 +87,7 @@ module tb ();
 	//	DUT
 	// --------------------------------------------------------------------
 	msx_slot u_msx_slot (
-		.clk42m					( clk42m				),
+		.clk					( clk					),
 		.reset_n				( reset_n				),
 		.initial_busy			( initial_busy			),
 		.p_slot_reset_n			( p_slot_reset_n		),
@@ -101,7 +100,6 @@ module tb ();
 		.p_slot_data			( p_slot_data			),
 		.p_slot_data_dir		( p_slot_data_dir		),
 		.p_slot_int				( p_slot_int			),
-		.p_slot_wait			( p_slot_wait			),
 		.int_n					( int_n					),
 		.bus_memreq				( bus_memreq			),
 		.bus_ioreq				( bus_ioreq				),
@@ -120,7 +118,7 @@ module tb ();
 	//	clock
 	// --------------------------------------------------------------------
 	always #(clk_base/2) begin
-		clk42m <= ~clk42m;
+		clk <= ~clk;
 	end
 
 	// --------------------------------------------------------------------
@@ -190,18 +188,18 @@ module tb ();
 			begin
 				assert( bus_valid == 1'b0 );
 				@( posedge bus_valid );
-				@( posedge clk42m );
-				@( posedge clk42m );
-				@( posedge clk42m );
+				@( posedge clk );
+				@( posedge clk );
+				@( posedge clk );
 				bus_ready = 1'b1;
-				@( negedge clk42m );
+				@( negedge clk );
 				assert( bus_address == address );
 				assert( bus_valid == 1'b1 );
 				assert( bus_write == 1'b1 );
 				assert( bus_ioreq == 1'b1 );
-				@( posedge clk42m );
+				@( posedge clk );
 				bus_ready = 1'b0;
-				@( negedge clk42m );
+				@( negedge clk );
 				assert( bus_valid == 1'b0 );
 			end
 			//	others
@@ -278,18 +276,18 @@ module tb ();
 			begin
 				assert( bus_valid == 1'b0 );
 				@( posedge bus_valid );
-				@( posedge clk42m );
-				@( posedge clk42m );
-				@( posedge clk42m );
+				@( posedge clk );
+				@( posedge clk );
+				@( posedge clk );
 				bus_ready = 1'b1;
-				@( negedge clk42m );
+				@( negedge clk );
 				assert( bus_address == address );
 				assert( bus_valid == 1'b1 );
 				assert( bus_write == 1'b1 );
 				assert( bus_ioreq == 1'b1 );
-				@( posedge clk42m );
+				@( posedge clk );
 				bus_ready = 1'b0;
-				@( negedge clk42m );
+				@( negedge clk );
 				assert( bus_valid == 1'b0 );
 			end
 			//	others
@@ -305,7 +303,7 @@ module tb ();
 	//	Test bench
 	// --------------------------------------------------------------------
 	initial begin
-		clk42m				= 0;			//	42.95454MHz
+		clk				= 0;			//	42.95454MHz
 		initial_busy		= 0;
 		p_slot_clk			= 0;
 		p_slot_reset_n		= 0;
@@ -320,12 +318,12 @@ module tb ();
 		bus_rdata_en		= 0;
 		int_n				= 1;
 
-		@( negedge clk42m );
-		@( negedge clk42m );
+		@( negedge clk );
+		@( negedge clk );
 
 		p_slot_reset_n		= 1;
-		@( posedge clk42m );
-		@( posedge clk42m );
+		@( posedge clk );
+		@( posedge clk );
 
 		// --------------------------------------------------------------------
 		write_io( 16'h98, 8'h12 );
@@ -342,7 +340,7 @@ module tb ();
 		write_io_ex( 16'h56, 8'h56 );
 		write_io_ex( 16'h45, 8'h67 );
 
-		repeat( 10 ) @( posedge clk42m );
+		repeat( 10 ) @( posedge clk );
 		$finish;
 	end
 endmodule
