@@ -285,11 +285,11 @@ module vdp_sprite_info_collect (
 
 	assign makeup_plane		= ff_current_plane_d1[2:0];
 	assign plane_x			= w_selected_x;
-	assign plane_x_en		= (ff_active_d1 && w_sub_phase == 4'd2 && ff_state == 2'd1);
+	assign plane_x_en		= (ff_active_d1 && w_sub_phase == 4'd2 && ff_state == 2'd0);
 	assign pattern_left		= vram_rdata;
-	assign pattern_left_en	= (ff_active_d1 && w_sub_phase == 4'd2 && ff_state == 2'd2);
+	assign pattern_left_en	= (ff_active_d1 && w_sub_phase == 4'd2 && ff_state == 2'd1);
 	assign pattern_right	= reg_sprite_16x16 ? vram_rdata: 8'd0;
-	assign pattern_right_en	= (ff_active_d1 && w_sub_phase == 4'd2 && ff_state == 2'd3);
+	assign pattern_right_en	= (ff_active_d1 && w_sub_phase == 4'd2 && ff_state == 2'd2);
 	assign color			= ff_sprite_mode2 ? vram_rdata: w_selected_color;
-	assign color_en			= (ff_active_d1 && w_sub_phase == 4'd2 && ff_state == 2'd0);
+	assign color_en			= (ff_active_d1 && w_sub_phase == 4'd2 && ff_state == 2'd3);
 endmodule

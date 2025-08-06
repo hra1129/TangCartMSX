@@ -223,7 +223,7 @@ module vdp_timing_control_screen_mode (
 		if( !reset_n ) begin
 			ff_screen_h_active <= 1'b0;
 		end
-		else if( screen_pos_x[12:3] == 10'd263 && w_sub_phase == 4'd13 ) begin
+		else if( screen_pos_x[13:4] == 10'd263 && w_sub_phase == 4'd13 ) begin
 			ff_screen_h_active <= 1'b0;
 		end
 		else if( w_scroll_pos_x == 10'h3FF && w_sub_phase == 4'd15 ) begin
@@ -359,7 +359,7 @@ module vdp_timing_control_screen_mode (
 		if( !reset_n ) begin
 			ff_vram_rdata_sel <= 2'd0;
 		end
-		else if( w_sub_phase == 4'd0 ) begin
+		else if( w_sub_phase == 4'd1 ) begin
 			ff_vram_rdata_sel <= ff_vram_address[1:0];
 		end
 	end
@@ -386,9 +386,9 @@ module vdp_timing_control_screen_mode (
 			ff_next_vram7 <= 8'd0;
 		end
 		else begin
-			if( w_sub_phase == 4'd15 ) begin
+			if( w_sub_phase == 4'd12 ) begin
 				case( ff_phase )
-				3'd1:
+				3'd0:
 					casex( w_mode )
 					c_g1, c_g2, c_g3, c_gm, c_t1:
 						//	SCREEN1, 2, 3, 4, 0(W40) では、PCG の番号を保持する
@@ -428,7 +428,7 @@ module vdp_timing_control_screen_mode (
 							ff_next_vram3 <= vram_rdata[31:24];
 						end
 					endcase
-				3'd2:
+				3'd1:
 					casex( w_mode )
 					c_g6, c_g7:
 						//	SCREEN7, 8 では、この1回の読み出しで 後半4ドット分の画素値を一気に読める
@@ -443,7 +443,7 @@ module vdp_timing_control_screen_mode (
 							//	none
 						end
 					endcase
-				3'd3:
+				3'd2:
 					casex( w_mode )
 					c_g1, c_g2, c_g3, c_t1:
 						//	SCREEN1, 2, 4, 0(W40), 0(W80) では、ドットパターンを保持する。
@@ -453,7 +453,7 @@ module vdp_timing_control_screen_mode (
 							//	none
 						end
 					endcase
-				3'd4:
+				3'd3:
 					casex( w_mode )
 					c_g1, c_g2, c_g3, c_gm:
 						//	SCREEN1, 2, 4 では、色を保持する。
@@ -469,7 +469,7 @@ module vdp_timing_control_screen_mode (
 							//	none
 						end
 					endcase
-				3'd5:
+				3'd4:
 					casex( w_mode )
 					c_t2:
 						//	SCREEN0(W80) では、ドットパターンを保持する。

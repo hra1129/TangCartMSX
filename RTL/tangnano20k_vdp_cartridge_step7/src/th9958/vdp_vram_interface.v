@@ -104,7 +104,6 @@ module vdp_vram_interface (
 	reg					ff_vram_valid;
 	reg					ff_vram_write;
 	reg			[7:0]	ff_vram_wdata;
-	reg					ff_vram_valid_d1;
 	reg			[2:0]	ff_vram_rdata_sel;
 	reg			[1:0]	ff_sprite_byte_sel;
 	wire		[7:0]	w_rdata8;
@@ -188,15 +187,6 @@ module vdp_vram_interface (
 		end
 	end
 
-	always @( posedge clk or negedge reset_n ) begin
-		if( !reset_n ) begin
-			ff_vram_valid_d1	<= 1'b0;
-		end
-		else begin
-			ff_vram_valid_d1	<= ff_vram_valid;
-		end
-	end
-
 	assign cpu_vram_ready		= is_access_timming_b ? ~(screen_mode_vram_valid | sprite_vram_valid) : 1'b0;
 	assign command_vram_ready	= is_access_timming_a ? ~(screen_mode_vram_valid | sprite_vram_valid) : 
 	                         	  is_access_timming_b ? ~cpu_vram_valid : 1'b0;
@@ -248,7 +238,7 @@ module vdp_vram_interface (
 	assign command_vram_rdata_en	= ff_command_vram_rdata_en;
 
 	assign vram_address				= ff_vram_address;
-	assign vram_valid				= ff_vram_valid_d1;
+	assign vram_valid				= ff_vram_valid;
 	assign vram_write				= ff_vram_write;
 	assign vram_wdata				= ff_vram_wdata;
 endmodule

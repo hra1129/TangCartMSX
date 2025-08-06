@@ -155,7 +155,7 @@ module vdp_sprite_select_visible_planes (
 		else if( !screen_active || !reg_display_on ) begin
 			//	hold
 		end
-		else if( w_phase == 3'd7 && w_sub_phase == 4'd0 ) begin
+		else if( w_phase == 3'd6 && w_sub_phase == 4'd12 ) begin
 			ff_y		<= vram_rdata[ 7: 0];
 			ff_x		<= vram_rdata[15: 8];
 			ff_pattern	<= reg_sprite_16x16 ? { vram_rdata[23:18], 2'd0 } : vram_rdata[23:16];

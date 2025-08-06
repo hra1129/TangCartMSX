@@ -57,6 +57,11 @@ module tb ();
 	localparam			clk_base		= 1_000_000_000/85_909_080;	//	ns
 	localparam			cpu_clk_base	= 1_000_000_000/ 3_579_545;	//	ps
 
+	localparam			vdp_io0			= 8'h88;
+	localparam			vdp_io1			= vdp_io0 + 8'h01;
+	localparam			vdp_io2			= vdp_io0 + 8'h02;
+	localparam			vdp_io3			= vdp_io0 + 8'h03;
+
 	reg				clk;
 	reg				clk14m;
 	reg				slot_reset_n;
@@ -142,6 +147,8 @@ module tb ();
 		.O_sdram_ba				( O_sdram_ba			),
 		.O_sdram_dqm			( O_sdram_dqm			)
 	);
+
+	assign slot_d	= slot_data_dir ? 8'hZZ : ff_slot_data;
 
 	// --------------------------------------------------------------------
 	//	Clock generation
@@ -310,9 +317,9 @@ module tb ();
 		clk = 0;
 		clk14m = 0;
 		slot_reset_n = 0;
-		slot_iorq_n = 0;
-		slot_rd_n = 0;
-		slot_wr_n = 0;
+		slot_iorq_n = 1;
+		slot_rd_n = 1;
+		slot_wr_n = 1;
 		slot_a = 0;
 		dipsw = 0;
 		button = 0;
@@ -328,14 +335,19 @@ module tb ();
 		repeat(10) @( posedge clk14m );
 
 		$display( "[test001] Write VRAM" );
-		write_io( 16'h99, 8'h00 );
-		write_io( 16'h99, 8'h40 );
+		//	VRAM 0x00000 ... 0x07FFF = 0x00
+		write_io( vdp_io1, 8'h00 );
+		write_io( vdp_io1, 8'h40 );
 
 		for( i = 0; i < 32768; i = i + 1 ) begin
-			write_io( 16'h98, (i & 255) );
+			write_io( vdp_io0, (i & 255) );
 		end
 
-		repeat(5000) @( posedge clk14m );
+		//	VDP R#1 = 0x40
+		write_io( vdp_io1, 8'h40 );
+		write_io( vdp_io1, 8'h81 );
+
+		repeat(5000000) @( posedge clk14m );
 
 		$display( "[test---] All tests completed" );
 		repeat( 100 ) @( posedge clk14m );

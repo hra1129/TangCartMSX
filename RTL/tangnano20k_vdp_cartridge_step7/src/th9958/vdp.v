@@ -334,7 +334,7 @@ module vdp (
 	vdp_color_palette u_color_palette (
 		.reset_n									( reset_n									),
 		.clk										( clk										),
-		.screen_pos_x								( w_screen_pos_x[2:0]						),
+		.screen_pos_x								( w_screen_pos_x[3:0]						),
 		.palette_valid								( w_palette_valid							),
 		.palette_num								( w_palette_num								),
 		.palette_r									( w_palette_r								),
