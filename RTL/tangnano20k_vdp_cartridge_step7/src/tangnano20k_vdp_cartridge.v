@@ -128,7 +128,7 @@ module tangnano20k_vdp_cartridge (
 	msx_slot u_msx_slot (
 		.clk				( clk85m					),
 		.reset_n			( reset_n					),
-		.initial_busy		( 1'b0						),
+		.initial_busy		( w_sdram_init_busy			),
 		.p_slot_reset_n		( slot_reset_n				),
 		.p_slot_sltsl_n		( 1'b1						),
 		.p_slot_mreq_n		( 1'b1						),
@@ -177,6 +177,7 @@ module tangnano20k_vdp_cartridge (
 		.vram_wdata			( w_sdram_wdata			),
 		.vram_rdata			( w_sdram_rdata			),
 		.vram_rdata_en		( w_sdram_rdata_en		),
+		.vram_refresh		( w_sdram_refresh		),
 		.display_hs			( w_video_hs			),
 		.display_vs			( w_video_vs			),
 		.display_en			( w_video_de			),
@@ -217,7 +218,7 @@ module tangnano20k_vdp_cartridge (
 	) u_sdram (
 		.reset_n			( reset_n				),
 		.clk				( clk85m				),		//	85.90908MHz
-		.clk_sdram			( clk85m				),
+		.clk_sdram			( clk85m_n				),
 		.sdram_init_busy	( w_sdram_init_busy		),
 		.bus_address		( w_sdram_address		),
 		.bus_valid			( w_sdram_valid			),
@@ -237,6 +238,4 @@ module tangnano20k_vdp_cartridge (
 		.O_sdram_ba			( O_sdram_ba			),		// two banks
 		.O_sdram_dqm		( O_sdram_dqm			)		// data mask
 	);
-
-	assign w_sdram_refresh	= 1'b0;
 endmodule

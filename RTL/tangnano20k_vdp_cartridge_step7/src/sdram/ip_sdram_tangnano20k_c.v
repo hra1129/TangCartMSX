@@ -119,7 +119,7 @@ module ip_sdram #(
 	localparam	[4:0]	c_main_state_finish2				= 5'd22;
 
 	localparam CLOCK_TIME		= 1_000_000_000 / FREQ;		// nsec
-	localparam TIMER_COUNT		= 150_000 / CLOCK_TIME;		// clock
+	localparam TIMER_COUNT		= 200_000 / CLOCK_TIME;		// clock
 	localparam TIMER_BITS		= $clog2(TIMER_COUNT + 1);
 	localparam REFRESH_COUNT	= 15_000 / CLOCK_TIME;		// clock
 	localparam REFRESH_BITS		= $clog2(REFRESH_COUNT + 1);
@@ -133,11 +133,11 @@ module ip_sdram #(
 	reg							ff_do_main_state;
 	reg							ff_do_refresh;
 
-	reg		[ 3:0]				ff_sdr_command			= c_sdr_command_no_operation;
-	reg		[ 1:0]				ff_sdr_bank				= 2'd0;
-	reg		[10:0]				ff_sdr_address			= 11'd0;
-	reg		[31:0]				ff_sdr_write_data		= 32'd0;
-	reg		[ 3:0]				ff_sdr_dq_mask			= 4'b1111;
+	reg		[ 3:0]				ff_sdr_command;
+	reg		[ 1:0]				ff_sdr_bank;
+	reg		[10:0]				ff_sdr_address;
+	reg		[31:0]				ff_sdr_write_data;
+	reg		[ 3:0]				ff_sdr_dq_mask;
 	reg		[31:0]				ff_sdr_read_data;
 	reg							ff_sdr_read_data_en;
 	reg							ff_do_command;
@@ -149,8 +149,8 @@ module ip_sdram #(
 	reg		[ 1:0]				ff_write_mask;
 	reg		[ 7:0]				ff_col_address2;
 	reg		[ 1:0]				ff_write_mask2;
-	reg							ff_wait;
 	wire						w_busy;
+	reg							ff_initial_finish;
 
 	// --------------------------------------------------------------------
 	//	Request latch
@@ -243,6 +243,15 @@ module ip_sdram #(
 		end
 	end
 
+	always @( posedge clk or negedge reset_n ) begin
+		if( !reset_n ) begin
+			ff_initial_finish	<= 1'b0;
+		end
+		else if( w_end_of_main_timer && ff_main_state == c_init_state_first_wait ) begin
+			ff_initial_finish	<= 1'b1;
+		end
+	end
+
 	assign w_busy			= ff_do_command;
 	assign sdram_init_busy	= !ff_sdr_ready;
 
@@ -294,7 +303,8 @@ module ip_sdram #(
 	// --------------------------------------------------------------------
 	always @( posedge clk ) begin
 		if( !reset_n ) begin
-			ff_sdr_command	<= c_sdr_command_no_operation;
+			ff_sdr_command		<= c_sdr_command_no_operation;
+			ff_sdr_dq_mask		<= 4'b1111;
 		end
 		else begin
 			case( ff_main_state )
@@ -452,24 +462,17 @@ module ip_sdram #(
 	always @( posedge clk ) begin
 		if( !reset_n ) begin
 			ff_sdr_read_data_en	<= 1'b0;
-			ff_wait				<= 1'b0;
 		end
 		else if( ff_main_state == c_main_state_finish ) begin
 			ff_sdr_read_data_en	<= ~ff_write & ~ff_do_refresh;
-			ff_wait				<= 1'd1;
 		end
 		else if( ff_sdr_read_data_en ) begin
-			if( ff_wait == 1'b0 ) begin
-				ff_sdr_read_data_en	<= 1'b0;
-			end
-			else begin
-				ff_wait				<= 1'b0;
-			end
+			ff_sdr_read_data_en	<= 1'b0;
 		end
 	end
 
 	assign O_sdram_clk			= clk_sdram;
-	assign O_sdram_cke			= 1'b1;
+	assign O_sdram_cke			= ff_initial_finish;
 	assign O_sdram_cs_n			= ff_sdr_command[3];
 	assign O_sdram_ras_n		= ff_sdr_command[2];
 	assign O_sdram_cas_n		= ff_sdr_command[1];

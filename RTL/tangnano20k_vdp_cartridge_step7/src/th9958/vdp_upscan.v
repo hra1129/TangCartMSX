@@ -122,7 +122,7 @@ module vdp_upscan (
 	assign w_odd_we			= ( (v_count[1] == 1'b1) && (w_write_pos[10] == 1'b0) && (h_count[1:0] == 2'b0) );
 	assign w_odd_d			= { vdp_r, vdp_g, vdp_b };
 
-	assign upscan_r			= (w_read_pos >= 10'd530) ? 8'd0: (v_count[1] ? w_even_q[23:16] : w_odd_q[23:16]);
-	assign upscan_g			= (w_read_pos >= 10'd530) ? 8'd0: (v_count[1] ? w_even_q[15: 8] : w_odd_q[15: 8]);
-	assign upscan_b			= (w_read_pos >= 10'd530) ? 8'd0: (v_count[1] ? w_even_q[ 7: 0] : w_odd_q[ 7: 0]);
+	assign upscan_r			= v_count[1] ? w_even_q[23:16] : w_odd_q[23:16];
+	assign upscan_g			= v_count[1] ? w_even_q[15: 8] : w_odd_q[15: 8];
+	assign upscan_b			= v_count[1] ? w_even_q[ 7: 0] : w_odd_q[ 7: 0];
 endmodule

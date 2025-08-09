@@ -87,6 +87,7 @@ module msx_slot(
 	wire			w_merq_wr;
 	wire			w_merq_rd;
 	wire			w_active;
+	reg				ff_initial_busy;
 	reg				ff_iorq_wr;
 	reg				ff_iorq_rd;
 	reg				ff_merq_wr;
@@ -121,6 +122,9 @@ module msx_slot(
 			ff_merq_wr_pre	<= 1'b0;
 			ff_merq_rd_pre	<= 1'b0;
 		end
+		else if( ff_initial_busy ) begin
+			//	hold
+		end
 		else begin
 			ff_iorq_wr		<= ff_iorq_wr_pre;
 			ff_iorq_rd		<= ff_iorq_rd_pre;
@@ -130,6 +134,15 @@ module msx_slot(
 			ff_iorq_rd_pre	<= w_iorq_rd;
 			ff_merq_wr_pre	<= w_merq_wr;
 			ff_merq_rd_pre	<= w_merq_rd;
+		end
+	end
+
+	always @( posedge clk or negedge p_slot_reset_n ) begin
+		if( !p_slot_reset_n ) begin
+			ff_initial_busy	<= 1'b1;
+		end
+		else if( !initial_busy && (p_slot_ioreq_n || p_slot_sltsl_n) ) begin
+			ff_initial_busy	<= 1'b0;
 		end
 	end
 

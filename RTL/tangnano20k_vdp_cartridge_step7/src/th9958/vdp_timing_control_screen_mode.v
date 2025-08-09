@@ -223,7 +223,7 @@ module vdp_timing_control_screen_mode (
 		if( !reset_n ) begin
 			ff_screen_h_active <= 1'b0;
 		end
-		else if( screen_pos_x[13:4] == 10'd263 && w_sub_phase == 4'd13 ) begin
+		else if( screen_pos_x[13:4] == 10'd263 && w_sub_phase == 4'd15 ) begin
 			ff_screen_h_active <= 1'b0;
 		end
 		else if( w_scroll_pos_x == 10'h3FF && w_sub_phase == 4'd15 ) begin

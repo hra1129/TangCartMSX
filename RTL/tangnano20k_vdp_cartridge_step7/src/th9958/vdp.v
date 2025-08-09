@@ -77,6 +77,7 @@ module vdp (
 	output		[7:0]	vram_wdata,
 	input		[31:0]	vram_rdata,
 	input				vram_rdata_en,
+	output				vram_refresh,
 
 	// video output
 	output				display_hs,
@@ -100,6 +101,7 @@ module vdp (
 	wire		[7:0]	w_vdp_r;
 	wire		[7:0]	w_vdp_g;
 	wire		[7:0]	w_vdp_b;
+	wire				w_vram_refresh;
 
 	wire				w_palette_valid;
 	wire		[3:0]	w_palette_num;
@@ -168,6 +170,8 @@ module vdp (
 	wire				reg_command_enable;
 	wire		[2:0]	reg_horizontal_offset_l;
 	wire		[8:3]	reg_horizontal_offset_h;
+
+	assign vram_refresh		= w_vram_refresh;
 
 	// --------------------------------------------------------------------
 	//	CPU Interface
@@ -245,6 +249,7 @@ module vdp (
 		.screen_pos_y								( w_screen_pos_y							),
 		.intr_line									( w_intr_line								),
 		.intr_frame									( w_intr_frame								),
+		.vram_refresh								( w_vram_refresh							),
 		.screen_mode_vram_address					( w_screen_mode_vram_address				),
 		.screen_mode_vram_valid						( w_screen_mode_vram_valid					),
 		.screen_mode_vram_rdata						( w_screen_mode_vram_rdata					),
@@ -325,7 +330,8 @@ module vdp (
 		.vram_write									( vram_write								),
 		.vram_wdata									( vram_wdata								),
 		.vram_rdata									( vram_rdata								),
-		.vram_rdata_en								( vram_rdata_en								)
+		.vram_rdata_en								( vram_rdata_en								),
+		.vram_refresh								( w_vram_refresh							)
 	);
 
 	// --------------------------------------------------------------------

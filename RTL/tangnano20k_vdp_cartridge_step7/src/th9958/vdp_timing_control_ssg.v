@@ -70,6 +70,7 @@ module vdp_timing_control_ssg (
 
 	output				intr_line,				//	pulse
 	output				intr_frame,				//	pulse
+	output				vram_refresh,
 
 	input				reg_50hz_mode,
 	input				reg_212lines_mode,
@@ -106,6 +107,7 @@ module vdp_timing_control_ssg (
 	wire				w_intr_frame_timing;
 	reg			[2:0]	ff_horizontal_offset_l;
 	reg			[8:3]	ff_horizontal_offset_h;
+	reg					ff_vram_refresh;
 
 	// --------------------------------------------------------------------
 	//	Latch horizontal scroll register
@@ -152,6 +154,20 @@ module vdp_timing_control_ssg (
 	end
 
 	assign w_h_count_end	= ( ff_h_count == c_h_count_max );
+
+	always @( posedge clk or negedge reset_n ) begin
+		if( !reset_n ) begin
+			ff_vram_refresh <= 1'b0;
+		end
+		else if( ff_h_count == 12'd2705 ) begin
+			ff_vram_refresh <= 1'b1;
+		end
+		else begin
+			ff_vram_refresh <= 1'b0;
+		end
+	end
+
+	assign vram_refresh		= ff_vram_refresh;
 
 	// --------------------------------------------------------------------
 	//	Vertical Counter

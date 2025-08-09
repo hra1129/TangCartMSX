@@ -37,7 +37,7 @@
         <Option type="looplimit" value="8000"/>
         <Option type="output_file" value="D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_vdp_cartridge_step7\impl\gwsynthesis\tangnano20k_vdp_cartridge.vg"/>
         <Option type="print_all_synthesis_warning" value="0"/>
-        <Option type="ram_rw_check" value="0"/>
+        <Option type="ram_rw_check" value="1"/>
         <Option type="top_module" value="tangnano20k_vdp_cartridge"/>
         <Option type="vcc" value="1.0"/>
         <Option type="verilog_language" value="verilog-2001"/>

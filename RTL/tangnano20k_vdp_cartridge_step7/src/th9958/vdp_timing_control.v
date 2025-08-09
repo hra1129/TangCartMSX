@@ -66,6 +66,7 @@ module vdp_timing_control (
 
 	output				intr_line,				//	pulse
 	output				intr_frame,				//	pulse
+	output				vram_refresh,
 
 	output		[16:0]	screen_mode_vram_address,
 	output				screen_mode_vram_valid,
@@ -136,6 +137,7 @@ module vdp_timing_control (
 		.screen_v_active							( w_screen_v_active							),
 		.intr_line									( intr_line									),
 		.intr_frame									( intr_frame								),
+		.vram_refresh								( vram_refresh								),
 		.reg_50hz_mode								( reg_50hz_mode								),
 		.reg_212lines_mode							( reg_212lines_mode							),
 		.reg_interlace_mode							( reg_interlace_mode						),

@@ -210,5 +210,5 @@ module vdp_sprite_select_visible_planes (
 	assign selected_pattern		= ff_pattern;
 	assign selected_color		= ff_color;
 	assign selected_count		= ff_selected_count;
-	assign start_info_collect	= (screen_active && screen_pos_x[11:4] == 8'd255 && w_sub_phase == 4'd15);
+	assign start_info_collect	= (screen_active && screen_pos_x[13:4] == 10'd263 && w_sub_phase == 4'd15);
 endmodule

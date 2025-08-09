@@ -66,6 +66,7 @@ module vdp_upscan_line_buffer (
 	reg		[23:0]	ff_imem [0:1023];
 	reg		[23:0]	ff_q;
 	reg		[23:0]	ff_q_out;
+	reg				ff_re;
 
 	always @( posedge clk ) begin
 		if( we ) begin
@@ -73,15 +74,19 @@ module vdp_upscan_line_buffer (
 			ff_q				<= 24'dx;
 		end
 		else if( re ) begin
+			ff_re				<= 1'b1;
 			ff_q				<= ff_imem[ address ];
 		end
 		else begin
-			ff_q				<= 24'd0;
+			ff_re				<= 1'b0;
+			ff_q				<= 24'dx;
 		end
 	end
 
 	always @( posedge clk ) begin
-		ff_q_out <= ff_q;
+		if( ff_re ) begin
+			ff_q_out <= ff_q;
+		end
 	end
 
 	assign q = ff_q_out;

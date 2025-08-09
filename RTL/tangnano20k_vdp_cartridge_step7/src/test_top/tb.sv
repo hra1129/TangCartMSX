@@ -347,6 +347,48 @@ module tb ();
 		write_io( vdp_io1, 8'h40 );
 		write_io( vdp_io1, 8'h81 );
 
+//		repeat(5000000) @( posedge clk14m );
+
+		//	SCREEN5
+		//	VDP R#0 = 0x06
+		write_io( vdp_io1, 8'h06 );
+		write_io( vdp_io1, 8'h80 );
+		//	VDP R#1 = 0x40
+		write_io( vdp_io1, 8'h40 );
+		write_io( vdp_io1, 8'h81 );
+
+		repeat(5000000) @( posedge clk14m );
+
+		repeat( 200 ) begin
+			write_io( vdp_io0, 8'h01 );
+			@( posedge clk14m );
+			@( posedge clk14m );
+			@( posedge clk14m );
+			write_io( vdp_io0, 8'h23 );
+			@( posedge clk14m );
+			@( posedge clk14m );
+			write_io( vdp_io0, 8'h45 );
+			@( posedge clk14m );
+			write_io( vdp_io0, 8'h67 );
+			@( posedge clk14m );
+			@( posedge clk14m );
+			write_io( vdp_io0, 8'h89 );
+			@( posedge clk14m );
+			@( posedge clk14m );
+			@( posedge clk14m );
+			write_io( vdp_io0, 8'hAB );
+			@( posedge clk14m );
+			write_io( vdp_io0, 8'hCD );
+			@( posedge clk14m );
+			@( posedge clk14m );
+			@( posedge clk14m );
+			@( posedge clk14m );
+			@( posedge clk14m );
+			write_io( vdp_io0, 8'hEF );
+			@( posedge clk14m );
+			@( posedge clk14m );
+		end
+
 		repeat(5000000) @( posedge clk14m );
 
 		$display( "[test---] All tests completed" );
