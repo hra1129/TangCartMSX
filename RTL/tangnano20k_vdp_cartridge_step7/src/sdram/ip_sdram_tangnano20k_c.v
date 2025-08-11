@@ -119,7 +119,7 @@ module ip_sdram #(
 	localparam	[4:0]	c_main_state_finish2				= 5'd22;
 
 	localparam CLOCK_TIME		= 1_000_000_000 / FREQ;		// nsec
-	localparam TIMER_COUNT		= 250_000 / CLOCK_TIME;		// clock
+	localparam TIMER_COUNT		= 300_000 / CLOCK_TIME;		// clock
 	localparam TIMER_BITS		= $clog2(TIMER_COUNT + 1);
 	localparam REFRESH_COUNT	= 15_000 / CLOCK_TIME;		// clock
 	localparam REFRESH_BITS		= $clog2(REFRESH_COUNT + 1);

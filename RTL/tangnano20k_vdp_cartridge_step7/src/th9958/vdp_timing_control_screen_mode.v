@@ -235,7 +235,7 @@ module vdp_timing_control_screen_mode (
 			end
 		end
 		else begin
-			if( screen_pos_x[13:4] == 10'd262 && w_sub_phase == 4'd15 ) begin
+			if( screen_pos_x[13:4] == 10'd260 && w_sub_phase == 4'd15 ) begin
 				ff_screen_h_in_active <= 1'b0;
 			end
 			else if( w_scroll_pos_x == 10'h3FF && w_sub_phase == 4'd15 ) begin

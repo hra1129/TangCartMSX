@@ -228,7 +228,7 @@ module vdp_timing_control_ssg (
 	assign w_screen_pos_x	= { 1'b0, ff_half_count   } - c_left_pos;
 	assign w_screen_pos_y	= { 1'b0, ff_v_count[9:1] } - c_top_pos  + { 6'd0, ~reg_display_adjust[7], reg_display_adjust[6:4] };
 
-	assign w_pixel_pos_x	= w_screen_pos_x[12:4] + { ff_horizontal_offset_h, 4'd0 };
+	assign w_pixel_pos_x	= w_screen_pos_x[12:4] + { ff_horizontal_offset_h, 3'd0 };
 	assign w_pixel_pos_y	= w_screen_pos_y[ 7:0] + reg_vertical_offset;
 
 	// --------------------------------------------------------------------

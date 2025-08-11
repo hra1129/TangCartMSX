@@ -721,7 +721,7 @@ vscroll::
 
 			xor		a, a
 	wait_loop1:
-			ld		e, 50
+			ld		e, 5
 	wait_loop2:
 			dec		e
 			jr		nz, wait_loop2
@@ -767,7 +767,7 @@ hscroll::
 
 			xor		a, a
 	wait_loop1:
-			ld		e, 50
+			ld		e, 5
 	wait_loop2:
 			dec		e
 			jr		nz, wait_loop2
@@ -806,7 +806,7 @@ display_adjust::
 			call	write_control_register		; R#18 = [HL]
 			xor		a, a
 	wait_loop1:
-			ld		e, 50
+			ld		e, 10
 	wait_loop2:
 			dec		e
 			jr		nz, wait_loop2

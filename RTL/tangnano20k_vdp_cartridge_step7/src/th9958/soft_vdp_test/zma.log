@@ -1566,9 +1566,9 @@ LINE# |OFFSET|ADDR|MNEMONIC
    723|      |    |WAIT_LOOP1 :
       |      |    |  label [VSCROLL:WAIT_LOOP1] address: 0x00030d
 ------+------+----+----------------------------------
-   724|      |    |LD E, 50
+   724|      |    |LD E, 5
       |      |    |  Z80:8cyc R800:2cyc
-      |00020D|030D|  1E 32
+      |00020D|030D|  1E 05
 ------+------+----+----------------------------------
    725|      |    |WAIT_LOOP2 :
       |      |    |  label [VSCROLL:WAIT_LOOP2] address: 0x00030f
@@ -1684,9 +1684,9 @@ LINE# |OFFSET|ADDR|MNEMONIC
    769|      |    |WAIT_LOOP1 :
       |      |    |  label [HSCROLL:WAIT_LOOP1] address: 0x000339
 ------+------+----+----------------------------------
-   770|      |    |LD E, 50
+   770|      |    |LD E, 5
       |      |    |  Z80:8cyc R800:2cyc
-      |000239|0339|  1E 32
+      |000239|0339|  1E 05
 ------+------+----+----------------------------------
    771|      |    |WAIT_LOOP2 :
       |      |    |  label [HSCROLL:WAIT_LOOP2] address: 0x00033b
@@ -1778,9 +1778,9 @@ LINE# |OFFSET|ADDR|MNEMONIC
    808|      |    |WAIT_LOOP1 :
       |      |    |  label [DISPLAY_ADJUST:WAIT_LOOP1] address: 0x00035d
 ------+------+----+----------------------------------
-   809|      |    |LD E, 50
+   809|      |    |LD E, 10
       |      |    |  Z80:8cyc R800:2cyc
-      |00025D|035D|  1E 32
+      |00025D|035D|  1E 0A
 ------+------+----+----------------------------------
    810|      |    |WAIT_LOOP2 :
       |      |    |  label [DISPLAY_ADJUST:WAIT_LOOP2] address: 0x00035f
