@@ -425,36 +425,30 @@ module tb ();
 		//	VDP R#7 = 0xF4	Text Color/Backdrop Color
 		write_io( vdp_io1, 8'hF4 );
 		write_io( vdp_io1, 8'h87 );
+		//	VDP R#27 = 0x01	Horizontal Scroll
+		write_io( vdp_io1, 8'h01 );
+		write_io( vdp_io1, 8'h80 + 8'd27 );
 
 		//	Pattern Name Table 40 * 24 byte
 		write_io( vdp_io1, 8'h00 );
 		write_io( vdp_io1, 8'h40 );
-		repeat( 5 * 24 ) begin
-			write_io( vdp_io0, 8'h01 );
-			write_io( vdp_io0, 8'h23 );
-			write_io( vdp_io0, 8'h45 );
-			write_io( vdp_io0, 8'h67 );
-			write_io( vdp_io0, 8'h89 );
-			write_io( vdp_io0, 8'hAB );
-			write_io( vdp_io0, 8'hCD );
-			write_io( vdp_io0, 8'hEF );
+		for( i = 0; i < (40 * 24); i = i + 1 ) begin
+			write_io( vdp_io0, (i & 255) );
 		end
 
 		//	Pattern Generator Table 8 * 256 byte
 		write_io( vdp_io1, 8'h00 );
 		write_io( vdp_io1, 8'h48 );
-		for( i = 0; i < (8 * 256); i = i + 1 ) begin
-			write_io( vdp_io0, ((i + 128) & 255) );
-		end
+		`include "font.sv"
 
 		write_io( vdp_io1, 8'h01 );
 		write_io( vdp_io1, 8'h00 );
 		read_io( vdp_io0 );
-		assert( ff_rdata == 8'h23 );
+		assert( ff_rdata == 8'd1 );
 		read_io( vdp_io0 );
-		assert( ff_rdata == 8'h45 );
+		assert( ff_rdata == 8'd2 );
 		read_io( vdp_io0 );
-		assert( ff_rdata == 8'h67 );
+		assert( ff_rdata == 8'd3 );
 
 		repeat(5000000) @( posedge clk14m );
 

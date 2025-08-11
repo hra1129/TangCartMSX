@@ -303,7 +303,7 @@ module vdp (
 		.reset_n									( reset_n									),
 		.clk										( clk										),
 		.initial_busy								( initial_busy								),
-		.h_count									( w_h_count[3:0]							),
+		.h_count									( w_screen_pos_x[3:0]						),
 		.screen_mode_vram_address					( w_screen_mode_vram_address				),
 		.screen_mode_vram_valid						( w_screen_mode_vram_valid					),
 		.screen_mode_vram_rdata						( w_screen_mode_vram_rdata					),
