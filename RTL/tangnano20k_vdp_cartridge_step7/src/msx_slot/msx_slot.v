@@ -223,5 +223,5 @@ module msx_slot(
 	assign p_slot_int		= ~int_n;
 
 	//	0: Cartridge <- CPU, 1: Cartridge -> CPU
-	assign p_slot_data_dir	= ~ff_write;
+	assign p_slot_data_dir	= ~ff_write & (ff_ioreq | ff_memreq);
 endmodule

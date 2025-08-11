@@ -70,6 +70,7 @@ module vdp_timing_control_screen_mode (
 	input		[31:0]	vram_rdata,
 
 	output		[7:0]	display_color,
+	output				sprite_off,
 
 	input		[2:0]	horizontal_offset_l,
 	input		[4:0]	reg_screen_mode,
@@ -102,11 +103,10 @@ module vdp_timing_control_screen_mode (
 	localparam			c_t2		= 8;			//	Text2    (SCREEN0:WIDTH80) w_mode index
 	localparam			c_gm		= 9;			//	Mosaic   (SCREEN3) w_mode index
 	//	Phase
-	wire		[2:0]	w_phase;
-	reg			[2:0]	ff_phase;					//	0, 1, 2, ... , 5, 0 ... 6states
+	reg			[2:0]	ff_phase;					//	0, 1, 2, ... , 5, 0 (6states) or 0, 1, 2, ... , 7, 0 (8states)
 	wire		[3:0]	w_sub_phase;
-	reg					ff_screen_h_active;
-	wire				w_screen_active;
+	reg					ff_screen_h_in_active;
+	wire				w_screen_in_active;
 	wire		[7:0]	w_valid_decode;
 	//	Position
 	wire		[9:0]	w_scroll_pos_x;
@@ -175,14 +175,14 @@ module vdp_timing_control_screen_mode (
 	endfunction
 
 	assign w_mode		= func_screen_mode_decoder( reg_screen_mode );
+	assign sprite_off	= (w_mode == c_t1) || (w_mode == c_t2);
 
 	// --------------------------------------------------------------------
 	//	Screen Position for active area
 	// --------------------------------------------------------------------
-	assign w_phase				= w_pos_x[2:0];
 	assign w_sub_phase			= screen_pos_x[3:0];
 	assign w_scroll_pos_x		= screen_pos_x[13:4]              - { 7'd0, horizontal_offset_l };
-	assign w_pos_x				= { pixel_pos_x[8], pixel_pos_x } - { 6'd0, horizontal_offset_l };
+	assign w_pos_x				= { pixel_pos_x[8], pixel_pos_x } - { 7'd0, horizontal_offset_l };
 
 	always @( posedge clk or negedge reset_n ) begin
 		if( !reset_n ) begin
@@ -192,13 +192,16 @@ module vdp_timing_control_screen_mode (
 			if( w_scroll_pos_x == 10'h3FF ) begin
 				ff_phase <= 3'd0;
 			end
-			else begin
-				if( (w_mode == c_t1 || w_mode == c_t2) && ff_phase == 3'd5 ) begin
+			else if( w_mode == c_t1 || w_mode == c_t2 ) begin
+				if( ff_phase == 3'd5 || w_scroll_pos_x == 10'd7 ) begin
 					ff_phase <= 3'd0;
 				end
 				else begin
 					ff_phase <= ff_phase + 3'd1;
 				end
+			end
+			else begin
+				ff_phase <= ff_phase + 3'd1;
 			end
 		end
 	end
@@ -221,22 +224,29 @@ module vdp_timing_control_screen_mode (
 	// --------------------------------------------------------------------
 	always @( posedge clk or negedge reset_n ) begin
 		if( !reset_n ) begin
-			ff_screen_h_active <= 1'b0;
+			ff_screen_h_in_active <= 1'b0;
 		end
-		else if( screen_pos_x[13:4] == 10'd263 && w_sub_phase == 4'd15 ) begin
-			ff_screen_h_active <= 1'b0;
+		else if( screen_pos_x[13:4] == 10'd262 && w_sub_phase == 4'd15 ) begin
+			ff_screen_h_in_active <= 1'b0;
 		end
-		else if( w_scroll_pos_x == 10'h3FF && w_sub_phase == 4'd15 ) begin
-			ff_screen_h_active <= 1'b1;
+		else if( w_mode == c_t1 || w_mode == c_t2 ) begin
+			if( w_scroll_pos_x == 10'd7 && w_sub_phase == 4'd15 ) begin
+				ff_screen_h_in_active <= 1'b1;
+			end
+		end
+		else begin
+			if( w_scroll_pos_x == 10'h3FF && w_sub_phase == 4'd15 ) begin
+				ff_screen_h_in_active <= 1'b1;
+			end
 		end
 	end
 
-	assign w_screen_active	= screen_v_active & ff_screen_h_active;
+	assign w_screen_in_active	= screen_v_active & ff_screen_h_in_active;
 
 	// --------------------------------------------------------------------
 	//	Pattern name table address
 	// --------------------------------------------------------------------
-	assign w_pattern_name_g123m			= {          reg_pattern_name_table_base, pixel_pos_y[7:3], pixel_pos_x[7:3] };
+	assign w_pattern_name_g123m			= {          reg_pattern_name_table_base, pixel_pos_y[7:3], w_pos_x[7:3] };
 	assign w_pattern_name_g45			= {          reg_pattern_name_table_base[16:15], (reg_pattern_name_table_base[14:10] & pixel_pos_y[7:3]), pixel_pos_y[2:0], w_pos_x[7:3], 2'd0 };
 	assign w_pattern_name_g67			= { w_pos_x[0], reg_pattern_name_table_base[15], (reg_pattern_name_table_base[14:10] & pixel_pos_y[7:3]), pixel_pos_y[2:0], w_pos_x[7:3], 2'd0 };
 	assign w_pattern_name_t12_pre		= { 1'b0, screen_pos_y[7:3], 5'd0 } + { 3'd0, screen_pos_y[7:3], 3'd0 } + { 5'd0, ff_pos_x };
@@ -265,6 +275,10 @@ module vdp_timing_control_screen_mode (
 		input	[4:0]	reg_screen_mode
 	);
 		casex( reg_screen_mode )
+		c_mode_t1:
+			func_valid_decoder = 8'b00000101;
+		c_mode_t2:
+			func_valid_decoder = 8'b00011111;
 		c_mode_g1, c_mode_g2, c_mode_g3, c_mode_gm:
 			func_valid_decoder = 8'b00001101;
 		c_mode_g4, c_mode_g5:
@@ -282,7 +296,7 @@ module vdp_timing_control_screen_mode (
 		if( !reset_n ) begin
 			ff_vram_valid <= 1'b0;
 		end
-		else if( !w_screen_active || !reg_display_on ) begin
+		else if( !w_screen_in_active || !reg_display_on ) begin
 			ff_vram_valid <= 1'b0;
 		end
 		else if( w_sub_phase == 4'd0 ) begin
@@ -325,6 +339,10 @@ module vdp_timing_control_screen_mode (
 					endcase
 				3'd2:
 					casex( w_mode )
+					c_t1:
+						ff_vram_address <= w_pattern_generator_t1;
+					c_t2:
+						ff_vram_address <= w_pattern_generator_t2;
 					c_g1:
 						ff_vram_address <= w_pattern_generator_g1;
 					c_g2, c_g3:
@@ -372,7 +390,7 @@ module vdp_timing_control_screen_mode (
 	// --------------------------------------------------------------------
 	assign w_vram_rdata8	= (ff_vram_rdata_sel == 2'd0) ? vram_rdata[ 7: 0]:
 	                    	  (ff_vram_rdata_sel == 2'd1) ? vram_rdata[15: 8]:
-	                    	  (ff_vram_rdata_sel == 2'd1) ? vram_rdata[23:16]: vram_rdata[31:24];
+	                    	  (ff_vram_rdata_sel == 2'd2) ? vram_rdata[23:16]: vram_rdata[31:24];
 
 	always @( posedge clk or negedge reset_n ) begin
 		if( !reset_n ) begin
@@ -506,7 +524,7 @@ module vdp_timing_control_screen_mode (
 			ff_pattern7 <= 8'd0;
 		end
 		else if( w_sub_phase == 4'd11 ) begin
-			if( !w_screen_active ) begin
+			if( !w_screen_in_active ) begin
 				ff_pattern0 <= w_backdrop_color;
 				ff_pattern1 <= w_backdrop_color;
 				ff_pattern2 <= w_backdrop_color;
@@ -516,7 +534,7 @@ module vdp_timing_control_screen_mode (
 				ff_pattern6 <= w_backdrop_color;
 				ff_pattern7 <= w_backdrop_color;
 			end
-			else if( ff_phase == 3'd7 ) begin
+			else if( ff_phase == 3'd5 ) begin
 				casex( w_mode )
 				c_g1, c_g2, c_g3, c_t1:
 					//	SCREEN 1, 2, 4, 0(W40) bit pattern --> color code

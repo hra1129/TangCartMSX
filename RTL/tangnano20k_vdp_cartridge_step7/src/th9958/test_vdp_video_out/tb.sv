@@ -61,7 +61,7 @@ module tb ();
 	// --------------------------------------------------------------------
 	logic				clk;
 	logic				reset_n;
-	logic		[10:0]	h_count;
+	logic		[11:0]	h_count;
 	logic		[ 9:0]	v_count;
 	logic				has_scanline;
 	// input pixel
@@ -140,7 +140,7 @@ module tb ();
 		
 		// Test basic video input/output
 		for( j = 0; j < 16; j++ ) begin
-			for( i = 0; i < 1368; i++ ) begin	// One line
+			for( i = 0; i < 2736; i++ ) begin	// One line
 				h_count <= i;
 				v_count <= j;
 				has_scanline <= (j % 2 == 1);	// Scanline every other line
@@ -161,7 +161,7 @@ module tb ();
 		reg_normalize <= 8'd160;		// 8192/200 ≈ 41
 		
 		for( j = 0; j < 8; j++ ) begin
-			for( i = 0; i < 1368; i++ ) begin	// One line
+			for( i = 0; i < 2736; i++ ) begin	// One line
 				h_count <= i;
 				v_count <= j;
 				has_scanline <= 0;
@@ -178,7 +178,7 @@ module tb ();
 		$display( "[test003] Scanline mode test" );
 		
 		for( j = 0; j < 8; j++ ) begin
-			for( i = 0; i < 1368; i++ ) begin	// One line
+			for( i = 0; i < 2736; i++ ) begin	// One line
 				h_count <= i;
 				v_count <= j;
 				has_scanline <= 1;

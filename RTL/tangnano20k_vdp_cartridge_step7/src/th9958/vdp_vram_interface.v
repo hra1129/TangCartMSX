@@ -100,17 +100,20 @@ module vdp_vram_interface (
 	localparam			c_sprite	= 3'd2;
 	localparam			c_cpu		= 3'd3;
 	localparam			c_command	= 3'd4;
+	localparam			c_timming_a	= 4'd1;
+	localparam			c_timming_b	= 4'd9;
 
 	reg			[16:0]	ff_vram_address;
+	reg			[1:0]	ff_vram_byte_sel;
 	reg					ff_vram_valid;
 	reg					ff_vram_write;
 	reg			[7:0]	ff_vram_wdata;
 	reg			[2:0]	ff_vram_rdata_sel;
 	reg			[2:0]	ff_vram_rdata_sel_d1;
-	reg			[1:0]	ff_sprite_byte_sel;
 	wire		[7:0]	w_rdata8;
 	reg			[31:0]	ff_screen_mode_vram_rdata;
 	reg			[31:0]	ff_sprite_vram_rdata;
+	reg			[7:0]	ff_sprite_vram_rdata8;
 	reg			[7:0]	ff_cpu_vram_rdata;
 	reg					ff_cpu_vram_rdata_en;
 	reg			[31:0]	ff_command_vram_rdata;
@@ -121,8 +124,8 @@ module vdp_vram_interface (
 	wire				w_vram_refresh;
 
 	assign w_vram_refresh		= vram_refresh | ff_vram_refresh;
-	assign is_access_timming_a	= (h_count == 4'd1) ? ~w_vram_refresh: 1'b0;	//	g123m, g4567, sprite, vdp-command
-	assign is_access_timming_b	= (h_count == 4'd9) ? ~w_vram_refresh: 1'b0;	//	cpu, vdp-command
+	assign is_access_timming_a	= (h_count == c_timming_a) ? ~w_vram_refresh: 1'b0;	//	g123m, g4567, sprite, vdp-command
+	assign is_access_timming_b	= (h_count == c_timming_b) ? ~w_vram_refresh: 1'b0;	//	cpu, vdp-command
 
 	// --------------------------------------------------------------------
 	//	Priority selector
@@ -130,29 +133,22 @@ module vdp_vram_interface (
 	always @( posedge clk or negedge reset_n ) begin
 		if( !reset_n ) begin
 			ff_vram_rdata_sel	<= 3'd0;
-			ff_sprite_byte_sel	<= 2'd0;
-			ff_sprite_byte_sel	<= 2'd0;
 		end
 		else begin
 			if( initial_busy ) begin
 				ff_vram_rdata_sel	<= 3'd0;
-				ff_sprite_byte_sel	<= 2'd0;
 			end
 			else if( screen_mode_vram_valid ) begin
 				ff_vram_rdata_sel	<= c_bg;
 			end
 			else if( sprite_vram_valid ) begin
 				ff_vram_rdata_sel	<= c_sprite;
-				ff_sprite_byte_sel	<= sprite_vram_address[1:0];
 			end
 			else if( cpu_vram_valid && is_access_timming_b ) begin
 				ff_vram_rdata_sel	<= c_cpu;
 			end
 			else if( command_vram_valid && (is_access_timming_a || is_access_timming_b) ) begin
 				ff_vram_rdata_sel	<= c_command;
-			end
-			else if( vram_rdata_en ) begin
-				ff_vram_rdata_sel	<= c_idle;
 			end
 		end
 	end
@@ -180,8 +176,14 @@ module vdp_vram_interface (
 			if( initial_busy ) begin
 				ff_vram_valid		<= 1'b0;
 			end
-			else if( screen_mode_vram_valid || sprite_vram_valid ) begin
-				ff_vram_address		<= screen_mode_vram_address | sprite_vram_address;
+			else if( sprite_vram_valid ) begin
+				ff_vram_address		<= sprite_vram_address;
+				ff_vram_valid		<= 1'b1;
+				ff_vram_write		<= 1'b0;
+				ff_vram_wdata		<= 8'd0;
+			end
+			else if( screen_mode_vram_valid ) begin
+				ff_vram_address		<= screen_mode_vram_address;
 				ff_vram_valid		<= 1'b1;
 				ff_vram_write		<= 1'b0;
 				ff_vram_wdata		<= 8'd0;
@@ -218,14 +220,16 @@ module vdp_vram_interface (
 		endcase
 	endfunction
 
-	assign w_rdata8 = func_rdata_sel( ff_vram_address[1:0], vram_rdata );
+	assign w_rdata8 = func_rdata_sel( ff_vram_byte_sel, vram_rdata );
 
 	always @( posedge clk or negedge reset_n ) begin
 		if( !reset_n ) begin
-			ff_vram_rdata_sel_d1 <= 2'd0;
+			ff_vram_rdata_sel_d1	<= 2'd0;
+			ff_vram_byte_sel		<= 2'd0;
 		end
-		else if( is_access_timming_a || is_access_timming_b ) begin
-			ff_vram_rdata_sel_d1 <= ff_vram_rdata_sel;
+		else if( h_count == c_timming_a || h_count == c_timming_b ) begin
+			ff_vram_rdata_sel_d1	<= ff_vram_rdata_sel;
+			ff_vram_byte_sel		<= ff_vram_address[1:0];
 		end
 	end
 
@@ -241,7 +245,7 @@ module vdp_vram_interface (
 		else if( vram_rdata_en ) begin
 			case( ff_vram_rdata_sel_d1 )
 			c_bg:		begin ff_screen_mode_vram_rdata		<= vram_rdata; end
-			c_sprite:	begin ff_sprite_vram_rdata			<= vram_rdata; end
+			c_sprite:	begin ff_sprite_vram_rdata			<= vram_rdata;	ff_sprite_vram_rdata8 <= w_rdata8;	end
 			c_cpu:		begin ff_cpu_vram_rdata				<= w_rdata8;	ff_cpu_vram_rdata_en <= 1'b1;		end
 			c_command:	begin ff_command_vram_rdata			<= vram_rdata;	ff_command_vram_rdata_en <= 1'b1;	end
 			endcase
@@ -254,7 +258,7 @@ module vdp_vram_interface (
 
 	assign screen_mode_vram_rdata	= ff_screen_mode_vram_rdata;
 	assign sprite_vram_rdata		= ff_sprite_vram_rdata;
-	assign sprite_vram_rdata8		= func_rdata_sel( ff_sprite_byte_sel, ff_sprite_vram_rdata );
+	assign sprite_vram_rdata8		= ff_sprite_vram_rdata8;
 	assign cpu_vram_rdata			= ff_cpu_vram_rdata;
 	assign cpu_vram_rdata_en		= ff_cpu_vram_rdata_en;
 	assign command_vram_rdata		= ff_command_vram_rdata;

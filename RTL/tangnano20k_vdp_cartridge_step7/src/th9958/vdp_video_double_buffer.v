@@ -57,7 +57,7 @@
 
 module vdp_video_double_buffer (
 	input			clk,
-	input	[10:0]	x_position_w,
+	input	[9:0]	x_position_w,
 	input	[9:0]	x_position_r,
 	input			is_write_odd,				//	write access mode is odd
 	input			re,
@@ -107,9 +107,9 @@ module vdp_video_double_buffer (
 	always @( posedge clk ) begin
 		ff_re			<= re;
 		ff_d			<= { wdata_r, wdata_g, wdata_b };
-		ff_we_even		<= is_write_odd ? 1'b0 : (x_position_w[10] == 1'b0);
+		ff_we_even		<= is_write_odd ? 1'b0 : 1'b1;
 		ff_address_even	<= is_write_odd ? x_position_r[9:0] : x_position_w[9:0];
-		ff_we_odd		<= is_write_odd ? (x_position_w[10] == 1'b0) : 1'b0;
+		ff_we_odd		<= is_write_odd ? 1'b1 : 1'b0;
 		ff_address_odd	<= is_write_odd ? x_position_w[9:0] : x_position_r[9:0];
 	end
 

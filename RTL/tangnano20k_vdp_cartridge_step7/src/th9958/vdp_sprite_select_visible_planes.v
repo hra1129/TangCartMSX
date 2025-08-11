@@ -140,7 +140,7 @@ module vdp_sprite_select_visible_planes (
 		end
 	end
 
-	assign vram_valid	= ff_vram_valid;
+	assign vram_valid	= ff_vram_valid & ~reg_sprite_disable;
 
 	// --------------------------------------------------------------------
 	//	Receive value of attribute table

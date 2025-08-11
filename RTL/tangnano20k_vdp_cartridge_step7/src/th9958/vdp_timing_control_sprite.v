@@ -78,6 +78,7 @@ module vdp_timing_control_sprite (
 	input				clear_sprite_collision_xy,
 	output		[8:0]	sprite_collision_x,
 	output		[9:0]	sprite_collision_y,
+	input				sprite_off,
 
 	input		[4:0]	reg_screen_mode,
 	input				reg_display_on,
@@ -97,6 +98,9 @@ module vdp_timing_control_sprite (
 	localparam			c_mode_g7	= 5'b111_00;	//	Graphic7 (SCREEN8/10/11/12)
 	reg					ff_screen_h_active;
 	wire				w_screen_active;
+	wire				w_sprite_disable;
+
+	assign w_sprite_disable	= reg_sprite_disable | sprite_off;
 
 	// --------------------------------------------------------------------
 	//	Horizontal active
@@ -173,7 +177,7 @@ module vdp_timing_control_sprite (
 		.start_info_collect							( w_start_info_collect						),
 		.sprite_mode2								( w_sprite_mode2							),
 		.reg_display_on								( reg_display_on							),
-		.reg_sprite_disable							( reg_sprite_disable						),
+		.reg_sprite_disable							( w_sprite_disable							),
 		.reg_sprite_magify							( reg_sprite_magify							),
 		.reg_sprite_16x16							( reg_sprite_16x16							),
 		.reg_212lines_mode							( reg_212lines_mode							),

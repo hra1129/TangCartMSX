@@ -85,12 +85,12 @@ module vdp_video_out (
 	localparam		h_en_end			= h_en_start + 12'd1600;
 	localparam		hs_start			= clocks_per_line - 1;
 	localparam		hs_end				= 12'd567;
-	localparam		v_en_start			= 10'd30;
+	localparam		v_en_start			= 10'd40;
 	localparam		v_en_end			= v_en_start + 10'd480;
-	localparam		vs_start			= 10'd3;
-	localparam		vs_end				= 10'd9;
+	localparam		vs_start			= 10'd13;
+	localparam		vs_end				= 10'd19;
 	localparam		c_numerator			= 576 / 4;
-	wire	[10:0]	w_x_position_w;
+	wire	[9:0]	w_x_position_w;
 	reg		[9:0]	ff_x_position_r;
 	reg				ff_active;
 	reg		[7:0]	ff_numerator;
@@ -242,7 +242,7 @@ module vdp_video_out (
 	// --------------------------------------------------------------------
 	//	Buffer address
 	// --------------------------------------------------------------------
-	assign w_x_position_w	= h_count[11:1];
+	assign w_x_position_w	= h_count[11:2];
 
 	always @( posedge clk ) begin
 		if( !reset_n ) begin
@@ -283,16 +283,14 @@ module vdp_video_out (
 
 	assign w_next_numerator		= { 1'b0, ff_numerator } + c_numerator;
 	assign w_sub_numerator		= w_next_numerator - { 1'b0, reg_denominator };
-	assign w_hold				= w_sub_numerator[8];
+	assign w_hold				= w_sub_numerator[8] | ~h_count[0];
 
 	always @( posedge clk ) begin
-		if( h_count[0] == 1'b1 ) begin
-			ff_hold0 <= w_hold & ff_active;
-			ff_hold1 <= ff_hold0;
-			ff_hold2 <= ff_hold1;
-			ff_hold3 <= ff_hold2;
-			ff_hold4 <= ff_hold3;
-		end
+		ff_hold0 <= w_hold & ff_active;
+		ff_hold1 <= ff_hold0;
+		ff_hold2 <= ff_hold1;
+		ff_hold3 <= ff_hold2;
+		ff_hold4 <= ff_hold3;
 	end
 
 	// --------------------------------------------------------------------
@@ -323,14 +321,16 @@ module vdp_video_out (
 		if( !reset_n ) begin
 			ff_coeff <= 8'd0;
 		end
-		else begin
+		if( h_count[0] == 1'b1 ) begin
 			ff_coeff <= w_normalized_numerator[14:7];					//	0 ... 63
 		end
 	end
 
 	always @( posedge clk ) begin
-		ff_coeff1	<= ff_coeff;
-		ff_coeff2	<= ff_coeff1;
+		if( h_count[0] == 1'b1 ) begin
+			ff_coeff1	<= ff_coeff;
+			ff_coeff2	<= ff_coeff1;
+		end
 	end
 
 	// --------------------------------------------------------------------
@@ -382,10 +382,12 @@ module vdp_video_out (
 							  (~v_count[0]          ) ? 8'd128: { 1'b0, w_scanline_gain[9:3] };
 
 	always @( posedge clk ) begin
-		ff_bilinear_r	<= w_bilinear_r;
-		ff_bilinear_g	<= w_bilinear_g;
-		ff_bilinear_b	<= w_bilinear_b;
-		ff_gain		<= w_gain;
+		if( h_count[0] == 1'b1 ) begin
+			ff_bilinear_r	<= w_bilinear_r;
+			ff_bilinear_g	<= w_bilinear_g;
+			ff_bilinear_b	<= w_bilinear_b;
+			ff_gain		<= w_gain;
+		end
 	end
 
 	assign w_display_r	= ff_bilinear_r * ff_gain;
@@ -393,9 +395,11 @@ module vdp_video_out (
 	assign w_display_b	= ff_bilinear_b * ff_gain;
 
 	always @( posedge clk ) begin
-		ff_display_r	<= w_display_r[14:7];
-		ff_display_g	<= w_display_g[14:7];
-		ff_display_b	<= w_display_b[14:7];
+		if( h_count[0] == 1'b1 ) begin
+			ff_display_r	<= w_display_r[14:7];
+			ff_display_g	<= w_display_g[14:7];
+			ff_display_b	<= w_display_b[14:7];
+		end
 	end
 
 	assign w_display_en	= ff_h_en & ff_v_en;

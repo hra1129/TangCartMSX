@@ -27,7 +27,7 @@ Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_vdp_ca
 Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_vdp_cartridge_step7\src\th9958\vdp_upscan_line_buffer.v'
 Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_vdp_cartridge_step7\src\th9958\vdp_video_double_buffer.v'
 Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_vdp_cartridge_step7\src\th9958\vdp_video_out.v'
-Undeclared symbol 'w_display_en', assumed default net type 'wire'("D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_vdp_cartridge_step7\src\th9958\vdp_video_out.v":401)
+Undeclared symbol 'w_display_en', assumed default net type 'wire'("D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_vdp_cartridge_step7\src\th9958\vdp_video_out.v":405)
 Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_vdp_cartridge_step7\src\th9958\vdp_video_out_bilinear.v'
 Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_vdp_cartridge_step7\src\th9958\vdp_video_ram_line_buffer.v'
 Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_vdp_cartridge_step7\src\th9958\vdp_vram_interface.v'

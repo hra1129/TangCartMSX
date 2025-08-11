@@ -115,6 +115,7 @@ module vdp_timing_control (
 	wire				w_screen_v_active;
 	wire		[ 2:0]	w_horizontal_offset_l;
 	wire		[ 8:3]	w_horizontal_offset_h;
+	wire				w_sprite_off;
 
 	// --------------------------------------------------------------------
 	//	Output assignment
@@ -165,6 +166,7 @@ module vdp_timing_control (
 		.vram_valid									( screen_mode_vram_valid					),
 		.vram_rdata									( screen_mode_vram_rdata					),
 		.display_color								( screen_mode_display_color					),
+		.sprite_off									( w_sprite_off								),
 		.horizontal_offset_l						( w_horizontal_offset_l						),
 		.reg_screen_mode							( reg_screen_mode							),
 		.reg_display_on								( reg_display_on							),
@@ -196,6 +198,7 @@ module vdp_timing_control (
 		.clear_sprite_collision_xy					( clear_sprite_collision_xy					),
 		.sprite_collision_x							( sprite_collision_x						),
 		.sprite_collision_y							( sprite_collision_y						),
+		.sprite_off									( w_sprite_off								),
 		.reg_screen_mode							( reg_screen_mode							),
 		.reg_display_on								( reg_display_on							),
 		.reg_color0_opaque							( reg_color0_opaque							),
