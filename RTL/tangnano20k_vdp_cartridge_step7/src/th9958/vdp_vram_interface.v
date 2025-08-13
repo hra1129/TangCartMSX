@@ -61,6 +61,7 @@ module vdp_vram_interface (
 
 	input				initial_busy,
 	input		[3:0]	h_count,
+	input				vram_interleave,
 
 	input		[16:0]	screen_mode_vram_address,
 	input				screen_mode_vram_valid,
@@ -105,6 +106,9 @@ module vdp_vram_interface (
 	localparam			c_timming_a	= 4'd1;
 	localparam			c_timming_b	= 4'd9;
 
+	wire		[16:0]	w_vram_address0;
+	wire		[16:0]	w_vram_address1;
+	wire		[16:0]	w_vram_address2;
 	reg			[16:0]	ff_vram_address;
 	reg			[1:0]	ff_vram_byte_sel;
 	reg					ff_vram_valid;
@@ -164,6 +168,15 @@ module vdp_vram_interface (
 		end
 	end
 
+	assign w_vram_address0			= sprite_vram_valid                       ? sprite_vram_address:
+	                     			  screen_mode_vram_valid                  ? screen_mode_vram_address:
+	                     			  (cpu_vram_valid && is_access_timming_b) ? cpu_vram_address: command_vram_address;
+
+	assign w_vram_address1			= vram_interleave ? { w_vram_address0[0], w_vram_address0[16:1] }: w_vram_address0;
+
+	assign w_vram_address2[16:14]	= reg_vram_type ? w_vram_address1[16:14]: 3'd0;
+	assign w_vram_address2[13: 0]	= w_vram_address1[13:0];
+
 	always @( posedge clk or negedge reset_n ) begin
 		if( !reset_n ) begin
 			ff_vram_address		<= 17'd0;
@@ -179,32 +192,28 @@ module vdp_vram_interface (
 				ff_vram_valid		<= 1'b0;
 			end
 			else if( sprite_vram_valid ) begin
-				ff_vram_address[16:14]	<= reg_vram_type ? sprite_vram_address[16:14]: 3'd0;
-				ff_vram_address[13:0]	<= sprite_vram_address[13:0];
-				ff_vram_valid			<= 1'b1;
-				ff_vram_write			<= 1'b0;
-				ff_vram_wdata			<= 8'd0;
+				ff_vram_address		<= w_vram_address2;
+				ff_vram_valid		<= 1'b1;
+				ff_vram_write		<= 1'b0;
+				ff_vram_wdata		<= 8'd0;
 			end
 			else if( screen_mode_vram_valid ) begin
-				ff_vram_address[16:14]	<= reg_vram_type ? screen_mode_vram_address[16:14]: 3'd0;
-				ff_vram_address[13:0]	<= screen_mode_vram_address[13:0];
-				ff_vram_valid			<= 1'b1;
-				ff_vram_write			<= 1'b0;
-				ff_vram_wdata			<= 8'd0;
+				ff_vram_address		<= w_vram_address2;
+				ff_vram_valid		<= 1'b1;
+				ff_vram_write		<= 1'b0;
+				ff_vram_wdata		<= 8'd0;
 			end
 			else if( cpu_vram_valid && is_access_timming_b ) begin
-				ff_vram_address[16:14]	<= reg_vram_type ? cpu_vram_address[16:14]: 3'd0;
-				ff_vram_address[13:0]	<= cpu_vram_address[13:0];
-				ff_vram_valid			<= 1'b1;
-				ff_vram_write			<= cpu_vram_write;
-				ff_vram_wdata			<= cpu_vram_wdata;
+				ff_vram_address		<= w_vram_address2;
+				ff_vram_valid		<= 1'b1;
+				ff_vram_write		<= cpu_vram_write;
+				ff_vram_wdata		<= cpu_vram_wdata;
 			end
 			else if( command_vram_valid && (is_access_timming_a || is_access_timming_b) ) begin
-				ff_vram_address[16:14]	<= reg_vram_type ? command_vram_address[16:14]: 3'd0;
-				ff_vram_address[13:0]	<= command_vram_address[13:0];
-				ff_vram_valid			<= 1'b1;
-				ff_vram_write			<= command_vram_write;
-				ff_vram_wdata			<= command_vram_wdata;
+				ff_vram_address		<= w_vram_address2;
+				ff_vram_valid		<= 1'b1;
+				ff_vram_write		<= command_vram_write;
+				ff_vram_wdata		<= command_vram_wdata;
 			end
 		end
 	end

@@ -67,6 +67,7 @@ module vdp_timing_control (
 	output				intr_line,				//	pulse
 	output				intr_frame,				//	pulse
 	output				vram_refresh,
+	output				vram_interleave,
 
 	output		[16:0]	screen_mode_vram_address,
 	output				screen_mode_vram_valid,
@@ -172,6 +173,7 @@ module vdp_timing_control (
 		.vram_address								( screen_mode_vram_address					),
 		.vram_valid									( screen_mode_vram_valid					),
 		.vram_rdata									( screen_mode_vram_rdata					),
+		.vram_interleave							( vram_interleave							),
 		.display_color								( screen_mode_display_color					),
 		.sprite_off									( w_sprite_off								),
 		.horizontal_offset_l						( w_horizontal_offset_l						),

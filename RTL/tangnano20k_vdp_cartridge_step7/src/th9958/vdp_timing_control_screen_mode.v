@@ -68,6 +68,7 @@ module vdp_timing_control_screen_mode (
 	output		[16:0]	vram_address,
 	output				vram_valid,
 	input		[31:0]	vram_rdata,
+	output				vram_interleave,
 
 	output		[7:0]	display_color,
 	output				sprite_off,
@@ -178,8 +179,9 @@ module vdp_timing_control_screen_mode (
 		endcase
 	endfunction
 
-	assign w_mode		= func_screen_mode_decoder( reg_screen_mode );
-	assign sprite_off	= (w_mode == c_t1) || (w_mode == c_t2);
+	assign w_mode				= func_screen_mode_decoder( reg_screen_mode );
+	assign sprite_off			= (w_mode == c_t1) || (w_mode == c_t2);
+	assign vram_interleave		= (w_mode == c_g6) || (w_mode == c_g7);
 
 	// --------------------------------------------------------------------
 	//	Screen Position for active area
@@ -257,7 +259,7 @@ module vdp_timing_control_screen_mode (
 	// --------------------------------------------------------------------
 	assign w_pattern_name_g123m			= { reg_pattern_name_table_base, pixel_pos_y[7:3], w_pos_x[7:3] };
 	assign w_pattern_name_g45			= { reg_pattern_name_table_base[16], w_blink_page, (reg_pattern_name_table_base[14:10] & pixel_pos_y[7:3]), pixel_pos_y[2:0], w_pos_x[7:3], 2'd0 };
-	assign w_pattern_name_g67			= { w_pos_x[0],                      w_blink_page, (reg_pattern_name_table_base[14:10] & pixel_pos_y[7:3]), pixel_pos_y[2:0], w_pos_x[7:3], 2'd0 };
+	assign w_pattern_name_g67			= {                                  w_blink_page, (reg_pattern_name_table_base[14:10] & pixel_pos_y[7:3]), pixel_pos_y[2:0], w_pos_x[7:2], 2'd0 };
 	assign w_pattern_name_t12_pre		= { 1'b0, screen_pos_y[7:3], 5'd0 } + { 3'd0, screen_pos_y[7:3], 3'd0 } + { 5'd0, ff_pos_x };
 	assign w_pattern_name_t1			= { reg_pattern_name_table_base, 8'd0 } + { 6'd0, w_pattern_name_t12_pre };
 	assign w_pattern_name_t2			= { reg_pattern_name_table_base, 8'd0 } + { 5'd0, w_pattern_name_t12_pre, 1'b0 };
@@ -621,7 +623,7 @@ module vdp_timing_control_screen_mode (
 		end
 		else begin
 			if( w_sub_phase == 4'd15 ) begin
-				if( w_mode == c_g7 ) begin
+				if( w_mode == c_g6 ) begin
 					ff_display_color <= { 4'd0, ff_pattern0[7:4] };
 				end
 				else begin
