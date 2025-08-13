@@ -103,6 +103,7 @@ module vdp_cpu_interface (
 	output	[16:11]		reg_sprite_pattern_generator_table_base,
 	output	[7:0]		reg_backdrop_color,
 	output				reg_sprite_disable,
+	output				reg_vram_type,
 	output				reg_color0_opaque,
 	output				reg_50hz_mode,
 	output				reg_interleaving_mode,
@@ -136,6 +137,7 @@ module vdp_cpu_interface (
 	reg		[16:11]		ff_sprite_pattern_generator_table_base;
 	reg		[7:0]		ff_backdrop_color;
 	reg					ff_sprite_disable;
+	reg					ff_vram_type;
 	reg					ff_color0_opaque;
 	reg					ff_50hz_mode;
 	reg					ff_interleaving_mode;
@@ -340,6 +342,7 @@ module vdp_cpu_interface (
 			ff_sprite_pattern_generator_table_base <= 6'd0;
 			ff_backdrop_color <= 8'd0;
 			ff_sprite_disable <= 1'b0;
+			ff_vram_type <= 1'b1;
 			ff_color0_opaque <= 1'b0;
 			ff_50hz_mode <= 1'b0;
 			ff_interleaving_mode <= 1'b0;
@@ -404,6 +407,7 @@ module vdp_cpu_interface (
 			6'd8:	//	R#8 = [N/A][N/A][TP][N/A][N/A][N/A][SPD][N/A]
 				begin
 					ff_sprite_disable <= ff_1st_byte[1];
+					ff_vram_type <= ff_1st_byte[3];
 					ff_color0_opaque <= ff_1st_byte[5];
 				end
 			6'd9:	//	R#9 = [LN][N/A][N/A][N/A][IL][EO][NT][N/A]
@@ -627,6 +631,7 @@ module vdp_cpu_interface (
 	assign reg_sprite_pattern_generator_table_base	= ff_sprite_pattern_generator_table_base;
 	assign reg_backdrop_color						= ff_backdrop_color;
 	assign reg_sprite_disable						= ff_sprite_disable;
+	assign reg_vram_type							= ff_vram_type;
 	assign reg_color0_opaque						= ff_color0_opaque;
 	assign reg_50hz_mode							= ff_50hz_mode;
 	assign reg_interleaving_mode					= ff_interleaving_mode;

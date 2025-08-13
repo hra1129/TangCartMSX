@@ -151,9 +151,15 @@ vdp_io_select::
 			scope	set_vram_write_address
 set_vram_write_address::
 			push	de
-			xor		a, a
+			push	hl
+			ld		a, [vram_bit16]
+			rl		h
+			rl		a
+			rl		h
+			rl		a
 			ld		e, 14
 			call	write_control_register
+			pop		hl
 			pop		de
 			di
 			ld		a, l
@@ -182,7 +188,7 @@ p_vdp_port1	:= $ + 1
 			scope	set_vram_read_address
 set_vram_read_address::
 			push	de
-			xor		a, a
+			ld		a, [vram_bit16]
 			ld		e, 14
 			call	write_control_register
 			pop		de
@@ -787,6 +793,97 @@ hscroll::
 			endscope
 
 ; =============================================================================
+;	水平スクロールレジスタ
+;	input:
+;		none
+;	output:
+;		none
+;	break:
+;		AF
+;	comment:
+;		none
+; =============================================================================
+			scope	hscroll2
+hscroll2::
+			ld		a, 0x3F
+			ld		e, 2
+			call	write_control_register		; R#2 = page1
+
+			ld		a, 0x01
+			ld		e, 25
+			call	write_control_register		; R#25: SP2=1
+
+			ld		d, 0
+	loop:
+			ld		a, d
+			add		a, a
+			and		a, 6
+			xor		a, 7
+			ld		e, 27
+			call	write_control_register		; R#27 = D
+			ld		a, d
+			rrca
+			rrca
+			and		a, 0x3F
+			ld		e, 26
+			call	write_control_register		; R#26 = D
+
+			xor		a, a
+	wait_loop1:
+			ld		e, 10
+	wait_loop2:
+			dec		e
+			jr		nz, wait_loop2
+			dec		a
+			jr		nz, wait_loop1
+
+			inc		d							; D++
+			jr		nz, loop
+
+			xor		a, a
+			ld		e, 26
+			call	write_control_register		; R#26 = 0
+			xor		a, a
+			ld		e, 27
+			call	write_control_register		; R#27 = 0
+
+			ld		a, 0x1F
+			ld		e, 2
+			call	write_control_register		; R#2 = page0
+
+			xor		a, a
+			ld		e, 25
+			call	write_control_register		; R#25: SP2=0
+
+			jp		wait_push_space_key
+			endscope
+
+; =============================================================================
+;	ブリンクレジスタ
+;	input:
+;		none
+;	output:
+;		none
+;	break:
+;		AF
+;	comment:
+;		none
+; =============================================================================
+			scope	blink
+blink::
+			ld		a, 0x3F
+			ld		e, 2
+			call	write_control_register		; R#2 = page1
+			ld		a, 0x33						; ブリンク周期 3 * 1/6s, 3 * 1/6s
+			ld		e, 13
+			call	write_control_register
+			ld		a, 0x84						; 212lines, EO=1
+			ld		e, 9
+			call	write_control_register
+			ret
+			endscope
+
+; =============================================================================
 ;	画面位置調整
 ;	input:
 ;		none
@@ -852,3 +949,6 @@ puts::
 			call	write_vram
 			jr		loop
 			endscope
+
+vram_bit16::
+			db		0

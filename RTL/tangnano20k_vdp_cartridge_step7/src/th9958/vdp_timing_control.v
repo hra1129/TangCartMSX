@@ -94,6 +94,8 @@ module vdp_timing_control (
 	input		[7:0]	reg_vertical_offset,
 	input		[2:0]	reg_horizontal_offset_l,
 	input		[8:3]	reg_horizontal_offset_h,
+	input				reg_interleaving_mode,
+	input		[7:0]	reg_blink_period,
 	input		[4:0]	reg_screen_mode,
 	input				reg_display_on,
 	input				reg_color0_opaque,
@@ -106,7 +108,8 @@ module vdp_timing_control (
 	input				reg_sprite_16x16,
 	input				reg_sprite_disable,
 	input		[7:0]	reg_backdrop_color,
-	input				reg_left_mask
+	input				reg_left_mask,
+	input				reg_scroll_planes
 );
 	wire		[13:0]	w_screen_pos_x;			//	signed   (Coordinates not affected by scroll register)
 	wire		[ 9:0]	w_screen_pos_y;			//	signed   (Coordinates not affected by scroll register)
@@ -116,6 +119,7 @@ module vdp_timing_control (
 	wire		[ 2:0]	w_horizontal_offset_l;
 	wire		[ 8:3]	w_horizontal_offset_h;
 	wire				w_sprite_off;
+	wire				w_interleaving_page;
 
 	// --------------------------------------------------------------------
 	//	Output assignment
@@ -147,8 +151,11 @@ module vdp_timing_control (
 		.reg_vertical_offset						( reg_vertical_offset						),
 		.reg_horizontal_offset_l					( reg_horizontal_offset_l					),
 		.reg_horizontal_offset_h					( reg_horizontal_offset_h					),
+		.reg_interleaving_mode						( reg_interleaving_mode						),
+		.reg_blink_period							( reg_blink_period							),
 		.horizontal_offset_l						( w_horizontal_offset_l						),
-		.horizontal_offset_h						( w_horizontal_offset_h						)
+		.horizontal_offset_h						( w_horizontal_offset_h						),
+		.interleaving_page							( w_interleaving_page						)
 	);
 
 	// --------------------------------------------------------------------
@@ -168,12 +175,14 @@ module vdp_timing_control (
 		.display_color								( screen_mode_display_color					),
 		.sprite_off									( w_sprite_off								),
 		.horizontal_offset_l						( w_horizontal_offset_l						),
+		.interleaving_page							( w_interleaving_page						),
 		.reg_screen_mode							( reg_screen_mode							),
 		.reg_display_on								( reg_display_on							),
 		.reg_pattern_name_table_base				( reg_pattern_name_table_base				),
 		.reg_color_table_base						( reg_color_table_base						),
 		.reg_pattern_generator_table_base			( reg_pattern_generator_table_base			),
-		.reg_backdrop_color							( reg_backdrop_color						)
+		.reg_backdrop_color							( reg_backdrop_color						),
+		.reg_scroll_planes							( reg_scroll_planes							)
 	);
 
 	// --------------------------------------------------------------------

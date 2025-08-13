@@ -93,7 +93,9 @@ module vdp_vram_interface (
 	output		[7:0]	vram_wdata,
 	input		[31:0]	vram_rdata,
 	input				vram_rdata_en,
-	input				vram_refresh
+	input				vram_refresh,
+
+	input				reg_vram_type
 );
 	localparam			c_idle		= 3'd0;
 	localparam			c_bg		= 3'd1;
@@ -177,28 +179,32 @@ module vdp_vram_interface (
 				ff_vram_valid		<= 1'b0;
 			end
 			else if( sprite_vram_valid ) begin
-				ff_vram_address		<= sprite_vram_address;
-				ff_vram_valid		<= 1'b1;
-				ff_vram_write		<= 1'b0;
-				ff_vram_wdata		<= 8'd0;
+				ff_vram_address[16:14]	<= reg_vram_type ? sprite_vram_address[16:14]: 3'd0;
+				ff_vram_address[13:0]	<= sprite_vram_address[13:0];
+				ff_vram_valid			<= 1'b1;
+				ff_vram_write			<= 1'b0;
+				ff_vram_wdata			<= 8'd0;
 			end
 			else if( screen_mode_vram_valid ) begin
-				ff_vram_address		<= screen_mode_vram_address;
-				ff_vram_valid		<= 1'b1;
-				ff_vram_write		<= 1'b0;
-				ff_vram_wdata		<= 8'd0;
+				ff_vram_address[16:14]	<= reg_vram_type ? screen_mode_vram_address[16:14]: 3'd0;
+				ff_vram_address[13:0]	<= screen_mode_vram_address[13:0];
+				ff_vram_valid			<= 1'b1;
+				ff_vram_write			<= 1'b0;
+				ff_vram_wdata			<= 8'd0;
 			end
 			else if( cpu_vram_valid && is_access_timming_b ) begin
-				ff_vram_address		<= cpu_vram_address;
-				ff_vram_valid		<= 1'b1;
-				ff_vram_write		<= cpu_vram_write;
-				ff_vram_wdata		<= cpu_vram_wdata;
+				ff_vram_address[16:14]	<= reg_vram_type ? cpu_vram_address[16:14]: 3'd0;
+				ff_vram_address[13:0]	<= cpu_vram_address[13:0];
+				ff_vram_valid			<= 1'b1;
+				ff_vram_write			<= cpu_vram_write;
+				ff_vram_wdata			<= cpu_vram_wdata;
 			end
 			else if( command_vram_valid && (is_access_timming_a || is_access_timming_b) ) begin
-				ff_vram_address		<= command_vram_address;
-				ff_vram_valid		<= 1'b1;
-				ff_vram_write		<= command_vram_write;
-				ff_vram_wdata		<= command_vram_wdata;
+				ff_vram_address[16:14]	<= reg_vram_type ? command_vram_address[16:14]: 3'd0;
+				ff_vram_address[13:0]	<= command_vram_address[13:0];
+				ff_vram_valid			<= 1'b1;
+				ff_vram_write			<= command_vram_write;
+				ff_vram_wdata			<= command_vram_wdata;
 			end
 		end
 	end

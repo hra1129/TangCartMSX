@@ -78,7 +78,8 @@ module vdp_color_palette (
 	input		[4:0]	reg_screen_mode,
 	input				reg_yjk_mode,
 	input				reg_yae_mode,
-	input				reg_color0_opaque
+	input				reg_color0_opaque,
+	input		[7:0]	reg_backdrop_color
 );
 	wire				w_256colors_mode;
 	wire				w_4colors_mode;
@@ -162,7 +163,7 @@ module vdp_color_palette (
 	                        	  (reg_screen_mode == 5'b01001);	// Text2 (SCREEN0:W80)
 	assign w_g5_mode			= (reg_screen_mode == 5'b10000);	// Graphic5 (SCREEN6)
 	assign w_g6_mode			= (reg_screen_mode == 5'b10100);	// Graphic6 (SCREEN7)
-	assign w_high_resolution	= w_g5_mode | w_g6_mode;			// Graphic5 or 6 (SCREEN6 or 7)
+	assign w_high_resolution	= w_g5_mode | w_g6_mode | (reg_screen_mode == 5'b01001);		// Text2 or Graphic5 or 6 (SCREEN0(W80) or SCREEN6 or 7)
 
 	// --------------------------------------------------------------------
 	//	Palette RAM Read Signal ( screen_pos_x = 0 )
@@ -183,9 +184,11 @@ module vdp_color_palette (
 		end
 		else if( screen_pos_x == 4'd0 ) begin
 			if( w_t12_mode ) begin
+				//	SCREEN0
 				ff_display_color <= { 4'd0, display_color_screen_mode };
 			end
 			else if( display_color_sprite_en && (display_color_sprite != 4'd0 || reg_color0_opaque) ) begin
+				//	Sprite
 				if( w_g5_mode ) begin
 					ff_display_color <= { 6'd0, display_color_sprite[1:0] };
 				end
@@ -193,13 +196,28 @@ module vdp_color_palette (
 					ff_display_color <= { 4'd0, display_color_sprite };
 				end
 			end
-			else begin
+			else if( (display_color_screen_mode != 4'd0 || reg_color0_opaque) ) begin
+				//	Background
 				ff_display_color <= { 4'd0, display_color_screen_mode };
+			end
+			else begin
+				//	Background (Transparent)
+				if( w_g5_mode ) begin
+					ff_display_color <= { 6'd0, reg_backdrop_color[1:0] };
+				end
+				else begin
+					ff_display_color <= { 4'd0, reg_backdrop_color[3:0] };
+				end
 			end
 			ff_display_color_oe <= 1'b1;
 		end
 		else if( w_high_resolution && screen_pos_x == 4'd8 ) begin
-			if( display_color_sprite_en && (display_color_sprite != 4'd0 || reg_color0_opaque) ) begin
+			if( w_t12_mode ) begin
+				//	SCREEN0
+				ff_display_color <= { 4'd0, display_color_screen_mode };
+			end
+			else if( display_color_sprite_en && (display_color_sprite != 4'd0 || reg_color0_opaque) ) begin
+				//	Sprite
 				if( w_g5_mode ) begin
 					ff_display_color <= { 6'd0, display_color_sprite[3:2] };
 				end
@@ -207,12 +225,22 @@ module vdp_color_palette (
 					ff_display_color <= { 4'd0, display_color_sprite };
 				end
 			end
-			else begin
+			else if( (display_color_screen_mode != 4'd0 || reg_color0_opaque) ) begin
+				//	Background
 				if( w_g5_mode ) begin
 					ff_display_color <= { 4'd0, display_color_screen_mode[3:2] };
 				end
 				else begin
 					ff_display_color <= { 4'd0, display_color_screen_mode[3:0] };
+				end
+			end
+			else begin
+				//	Background (Transparent)
+				if( w_g5_mode ) begin
+					ff_display_color <= { 4'd0, reg_backdrop_color[3:2] };
+				end
+				else begin
+					ff_display_color <= { 4'd0, reg_backdrop_color[3:0] };
 				end
 			end
 			ff_display_color_oe <= 1'b1;

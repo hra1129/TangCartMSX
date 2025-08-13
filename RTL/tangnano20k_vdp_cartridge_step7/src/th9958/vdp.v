@@ -153,6 +153,7 @@ module vdp (
 	wire		[16:11]	reg_sprite_pattern_generator_table_base;
 	wire		[7:0]	reg_backdrop_color;
 	wire				reg_sprite_disable;
+	wire				reg_vram_type;
 	wire				reg_color0_opaque;
 	wire				reg_50hz_mode;
 	wire				reg_interleaving_mode;
@@ -218,6 +219,7 @@ module vdp (
 		.reg_sprite_pattern_generator_table_base	( reg_sprite_pattern_generator_table_base	),
 		.reg_backdrop_color							( reg_backdrop_color						),
 		.reg_sprite_disable							( reg_sprite_disable						),
+		.reg_vram_type								( reg_vram_type								),
 		.reg_color0_opaque							( reg_color0_opaque							),
 		.reg_50hz_mode								( reg_50hz_mode								),
 		.reg_interleaving_mode						( reg_interleaving_mode						),
@@ -273,6 +275,8 @@ module vdp (
 		.reg_vertical_offset						( reg_vertical_offset						),
 		.reg_horizontal_offset_l					( reg_horizontal_offset_l					),
 		.reg_horizontal_offset_h					( reg_horizontal_offset_h					),
+		.reg_interleaving_mode						( reg_interleaving_mode						),
+		.reg_blink_period							( reg_blink_period							),
 		.reg_screen_mode							( reg_screen_mode							),
 		.reg_display_on								( reg_display_on							),
 		.reg_color0_opaque							( reg_color0_opaque							),
@@ -285,7 +289,8 @@ module vdp (
 		.reg_sprite_16x16							( reg_sprite_16x16							),
 		.reg_sprite_disable							( reg_sprite_disable						),
 		.reg_backdrop_color							( reg_backdrop_color						),
-		.reg_left_mask								( reg_left_mask								)
+		.reg_left_mask								( reg_left_mask								),
+		.reg_scroll_planes							( reg_scroll_planes							)
 	);
 
 	// --------------------------------------------------------------------
@@ -331,7 +336,8 @@ module vdp (
 		.vram_wdata									( vram_wdata								),
 		.vram_rdata									( vram_rdata								),
 		.vram_rdata_en								( vram_rdata_en								),
-		.vram_refresh								( w_vram_refresh							)
+		.vram_refresh								( w_vram_refresh							),
+		.reg_vram_type								( reg_vram_type								)
 	);
 
 	// --------------------------------------------------------------------
@@ -355,7 +361,8 @@ module vdp (
 		.reg_screen_mode							( reg_screen_mode							),
 		.reg_yjk_mode								( reg_yjk_mode								),
 		.reg_yae_mode								( reg_yae_mode								),
-		.reg_color0_opaque							( reg_color0_opaque							)
+		.reg_color0_opaque							( reg_color0_opaque							),
+		.reg_backdrop_color							( reg_backdrop_color						)
 	);
 
 	// --------------------------------------------------------------------

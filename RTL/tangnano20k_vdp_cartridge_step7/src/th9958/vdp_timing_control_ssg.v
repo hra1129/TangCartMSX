@@ -80,11 +80,15 @@ module vdp_timing_control_ssg (
 	input		[7:0]	reg_vertical_offset,
 	input		[2:0]	reg_horizontal_offset_l,
 	input		[8:3]	reg_horizontal_offset_h,
+	input				reg_interleaving_mode,
+	input		[7:0]	reg_blink_period,
 	output		[2:0]	horizontal_offset_l,
-	output		[8:3]	horizontal_offset_h
+	output		[8:3]	horizontal_offset_h,
+	output				interleaving_page
 );
 	localparam			c_left_pos			= 14'd640;		//	16の倍数
-	localparam			c_top_pos			= 10'd48;		//	画面上の垂直位置。小さくすると上へ、大きくすると下へ寄る。
+	localparam			c_top_pos192		= 10'd48;		//	画面上の垂直位置(192 lines mode)。小さくすると上へ、大きくすると下へ寄る。
+	localparam			c_top_pos212		= 10'd38;		//	画面上の垂直位置(212 lines mode)。小さくすると上へ、大きくすると下へ寄る。
 	localparam			c_h_count_max		= 12'd2735;
 	localparam			c_v_count_max_60p	= 10'd523;
 	localparam			c_v_count_max_60i	= 10'd524;
@@ -108,6 +112,12 @@ module vdp_timing_control_ssg (
 	reg			[2:0]	ff_horizontal_offset_l;
 	reg			[8:3]	ff_horizontal_offset_h;
 	reg					ff_vram_refresh;
+	reg			[3:0]	ff_blink_counter;
+	reg			[3:0]	ff_blink_base;				//	10 frame counter
+	wire				w_10frame;
+	reg					ff_interleaving_page;
+	reg					ff_field;
+	wire		[3:0]	w_next_blink_counter;
 
 	// --------------------------------------------------------------------
 	//	Latch horizontal scroll register
@@ -192,6 +202,18 @@ module vdp_timing_control_ssg (
 							  (                                          ff_v_count == c_v_count_max_50p );
 
 	// --------------------------------------------------------------------
+	//	Field selector
+	// --------------------------------------------------------------------
+	always @( posedge clk or negedge reset_n ) begin
+		if( !reset_n ) begin
+			ff_field <= 1'b0;
+		end
+		else if( w_h_count_end && w_v_count_end ) begin
+			ff_field <= ~ff_field;
+		end
+	end
+
+	// --------------------------------------------------------------------
 	//	Active area
 	// --------------------------------------------------------------------
 	always @( posedge clk or negedge reset_n ) begin
@@ -219,17 +241,79 @@ module vdp_timing_control_ssg (
 			else if( ff_v_count[0] == 1'b1 && (w_screen_pos_y == 10'd191) && (reg_212lines_mode == 1'b0) ) begin
 				ff_v_active <= 1'b0;
 			end
-			else if( ff_v_count[0] == 1'b1 && (w_screen_pos_y == 10'd211) ) begin
+			else if( ff_v_count[0] == 1'b1 && (w_screen_pos_y == 10'd211) && (reg_212lines_mode == 1'b1) ) begin
+				ff_v_active <= 1'b0;
+			end
+			else if( w_v_count_end ) begin
 				ff_v_active <= 1'b0;
 			end
 		end
 	end
 
 	assign w_screen_pos_x	= { 1'b0, ff_half_count   } - c_left_pos;
-	assign w_screen_pos_y	= { 1'b0, ff_v_count[9:1] } - c_top_pos  + { 6'd0, ~reg_display_adjust[7], reg_display_adjust[6:4] };
+	assign w_screen_pos_y	= { 1'b0, ff_v_count[9:1] } - (reg_212lines_mode ? c_top_pos212: c_top_pos192) + { 6'd0, ~reg_display_adjust[7], reg_display_adjust[6:4] };
 
 	assign w_pixel_pos_x	= w_screen_pos_x[12:4] + { ff_horizontal_offset_h, 3'd0 };
 	assign w_pixel_pos_y	= w_screen_pos_y[ 7:0] + reg_vertical_offset;
+
+	// --------------------------------------------------------------------
+	//	blink counter
+	// --------------------------------------------------------------------
+	always @( posedge clk or negedge reset_n ) begin
+		if( !reset_n ) begin
+			ff_blink_base <= 4'd0;
+		end
+		else if( !reg_interleaving_mode ) begin
+			ff_blink_base <= 4'd0;
+		end
+		else if( w_h_count_end && w_v_count_end ) begin
+			if( w_10frame ) begin
+				ff_blink_base <= 4'd0;
+			end
+			else begin
+				ff_blink_base <= ff_blink_base + 4'd1;
+			end
+		end
+	end
+
+	assign w_10frame			= (ff_blink_base == 4'd9);
+	assign w_next_blink_counter	= ff_interleaving_page ? reg_blink_period[7:4]: reg_blink_period[3:0];
+
+	always @( posedge clk or negedge reset_n ) begin
+		if( !reset_n ) begin
+			ff_blink_counter <= 4'd0;
+		end
+		else if( !reg_interleaving_mode || reg_blink_period == 8'd0 ) begin
+			ff_blink_counter <= 4'd0;
+		end
+		else if( w_10frame && w_h_count_end && w_v_count_end ) begin
+			if( ff_blink_counter == 4'd0 ) begin
+				ff_blink_counter <= w_next_blink_counter;
+			end
+			else begin
+				ff_blink_counter <= ff_blink_counter - 4'd1;
+			end
+		end
+	end
+
+	always @( posedge clk or negedge reset_n ) begin
+		if( !reset_n ) begin
+			ff_interleaving_page <= 1'b1;
+		end
+		else if( !reg_interleaving_mode || reg_blink_period == 8'd0 ) begin
+			ff_interleaving_page <= 1'b1;
+		end
+		else if( w_10frame && w_h_count_end && w_v_count_end ) begin
+			if( ff_blink_counter == 4'd0 ) begin
+				if( w_next_blink_counter != 4'd0 ) begin
+					ff_interleaving_page <= ~ff_interleaving_page;
+				end
+				else begin
+					//	hold
+				end
+			end
+		end
+	end
 
 	// --------------------------------------------------------------------
 	//	Interrupt
@@ -240,14 +324,15 @@ module vdp_timing_control_ssg (
 	// --------------------------------------------------------------------
 	//	Output assignment
 	// --------------------------------------------------------------------
-	assign h_count			= ff_h_count;
-	assign v_count			= ff_v_count;
-	assign screen_pos_x		= w_screen_pos_x;
-	assign screen_pos_y		= w_screen_pos_y;
-	assign pixel_pos_x		= w_pixel_pos_x[8:0];
-	assign pixel_pos_y		= w_pixel_pos_y;
-	assign intr_line		= (w_screen_pos_y == { 2'd0, reg_interrupt_line } ) ? 1'b1: 1'b0;
-	assign intr_frame		= w_intr_frame_timing & w_intr_line_timing;
-	assign screen_v_active	= ff_v_active;
-	assign dot_phase		= ff_half_count[0];
+	assign h_count				= ff_h_count;
+	assign v_count				= ff_v_count;
+	assign screen_pos_x			= w_screen_pos_x;
+	assign screen_pos_y			= w_screen_pos_y;
+	assign pixel_pos_x			= w_pixel_pos_x[8:0];
+	assign pixel_pos_y			= w_pixel_pos_y;
+	assign intr_line			= (w_screen_pos_y == { 2'd0, reg_interrupt_line } ) ? 1'b1: 1'b0;
+	assign intr_frame			= w_intr_frame_timing & w_intr_line_timing;
+	assign screen_v_active		= ff_v_active;
+	assign dot_phase			= ff_half_count[0];
+	assign interleaving_page	= reg_interleaving_mode ? (ff_interleaving_page & ff_field): 1'b1;
 endmodule

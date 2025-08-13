@@ -71,6 +71,7 @@ module vdp_timing_control_screen_mode (
 
 	output		[7:0]	display_color,
 	output				sprite_off,
+	input				interleaving_page,
 
 	input		[2:0]	horizontal_offset_l,
 	input		[4:0]	reg_screen_mode,
@@ -78,7 +79,8 @@ module vdp_timing_control_screen_mode (
 	input		[16:10]	reg_pattern_name_table_base,
 	input		[16:6]	reg_color_table_base,
 	input		[16:11]	reg_pattern_generator_table_base,
-	input		[7:0]	reg_backdrop_color
+	input		[7:0]	reg_backdrop_color,
+	input				reg_scroll_planes
 );
 	//	Screen mode
 	localparam			c_mode_g1	= 5'b000_00;	//	Graphic1 (SCREEN1)
@@ -111,6 +113,8 @@ module vdp_timing_control_screen_mode (
 	//	Position
 	wire		[9:0]	w_scroll_pos_x;
 	wire		[9:0]	w_pos_x;
+	wire				w_scroll_page;
+	wire				w_blink_page;
 	reg			[5:0]	ff_pos_x;					//	Text width40 column position
 	//	Pattern name table address
 	wire		[10:0]	w_pattern_name_t12_pre;
@@ -183,6 +187,8 @@ module vdp_timing_control_screen_mode (
 	assign w_sub_phase			= screen_pos_x[3:0];
 	assign w_scroll_pos_x		= screen_pos_x[13:4]              - { 7'd0, horizontal_offset_l };
 	assign w_pos_x				= { pixel_pos_x[8], pixel_pos_x } - { 7'd0, horizontal_offset_l };
+	assign w_scroll_page		= ( reg_scroll_planes && reg_pattern_name_table_base[15] ) ? w_pos_x[8]: reg_pattern_name_table_base[15];
+	assign w_blink_page			= w_scroll_page & interleaving_page;
 
 	always @( posedge clk or negedge reset_n ) begin
 		if( !reset_n ) begin
@@ -249,9 +255,9 @@ module vdp_timing_control_screen_mode (
 	// --------------------------------------------------------------------
 	//	Pattern name table address
 	// --------------------------------------------------------------------
-	assign w_pattern_name_g123m			= {          reg_pattern_name_table_base, pixel_pos_y[7:3], w_pos_x[7:3] };
-	assign w_pattern_name_g45			= {          reg_pattern_name_table_base[16:15], (reg_pattern_name_table_base[14:10] & pixel_pos_y[7:3]), pixel_pos_y[2:0], w_pos_x[7:3], 2'd0 };
-	assign w_pattern_name_g67			= { w_pos_x[0], reg_pattern_name_table_base[15], (reg_pattern_name_table_base[14:10] & pixel_pos_y[7:3]), pixel_pos_y[2:0], w_pos_x[7:3], 2'd0 };
+	assign w_pattern_name_g123m			= { reg_pattern_name_table_base, pixel_pos_y[7:3], w_pos_x[7:3] };
+	assign w_pattern_name_g45			= { reg_pattern_name_table_base[16], w_blink_page, (reg_pattern_name_table_base[14:10] & pixel_pos_y[7:3]), pixel_pos_y[2:0], w_pos_x[7:3], 2'd0 };
+	assign w_pattern_name_g67			= { w_pos_x[0],                      w_blink_page, (reg_pattern_name_table_base[14:10] & pixel_pos_y[7:3]), pixel_pos_y[2:0], w_pos_x[7:3], 2'd0 };
 	assign w_pattern_name_t12_pre		= { 1'b0, screen_pos_y[7:3], 5'd0 } + { 3'd0, screen_pos_y[7:3], 3'd0 } + { 5'd0, ff_pos_x };
 	assign w_pattern_name_t1			= { reg_pattern_name_table_base, 8'd0 } + { 6'd0, w_pattern_name_t12_pre };
 	assign w_pattern_name_t2			= { reg_pattern_name_table_base, 8'd0 } + { 5'd0, w_pattern_name_t12_pre, 1'b0 };
