@@ -73,8 +73,9 @@ module vdp_timing_control_screen_mode (
 	output		[7:0]	display_color,
 	output				sprite_off,
 	input				interleaving_page,
-
+	output		[3:0]	screen_mode,
 	input		[2:0]	horizontal_offset_l,
+
 	input		[4:0]	reg_screen_mode,
 	input				reg_display_on,
 	input		[16:10]	reg_pattern_name_table_base,
@@ -95,7 +96,7 @@ module vdp_timing_control_screen_mode (
 	localparam			c_mode_t1	= 5'b00x_01;	//	Text1    (SCREEN0:WIDTH40)
 	localparam			c_mode_t2	= 5'b010_01;	//	Text2    (SCREEN0:WIDTH80)
 	localparam			c_mode_gm	= 5'b00x_10;	//	Mosaic   (SCREEN3)
-	wire		[9:0]	w_mode;
+	wire		[3:0]	w_mode;
 	localparam			c_g1		= 0;			//	Graphic1 (SCREEN1) w_mode index
 	localparam			c_g2		= 1;			//	Graphic2 (SCREEN2) w_mode index
 	localparam			c_g3		= 2;			//	Graphic3 (SCREEN4) w_mode index
@@ -182,6 +183,7 @@ module vdp_timing_control_screen_mode (
 	endfunction
 
 	assign w_mode				= func_screen_mode_decoder( reg_screen_mode );
+	assign screen_mode			= w_mode;
 	assign sprite_off			= (w_mode == c_t1) || (w_mode == c_t2);
 	assign vram_interleave		= (w_mode == c_g6) || (w_mode == c_g7);
 

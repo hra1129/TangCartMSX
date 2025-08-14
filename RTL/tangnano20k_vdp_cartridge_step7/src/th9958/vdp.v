@@ -71,10 +71,11 @@ module vdp (
 
 	output				int_n,
 
-	output		[16:0]	vram_address,
+	output		[16:2]	vram_address,
 	output				vram_write,
 	output				vram_valid,
-	output		[7:0]	vram_wdata,
+	output		[31:0]	vram_wdata,
+	output		[3:0]	vram_wdata_mask,
 	input		[31:0]	vram_rdata,
 	input				vram_rdata_en,
 	output				vram_refresh,
@@ -120,6 +121,7 @@ module vdp (
 	wire				w_screen_mode_vram_valid;
 	wire		[31:0]	w_screen_mode_vram_rdata;
 	wire		[7:0]	w_screen_mode_display_color;
+	wire		[3:0]	w_screen_mode;
 
 	wire		[16:0]	w_sprite_vram_address;
 	wire				w_sprite_vram_valid;
@@ -132,7 +134,8 @@ module vdp (
 	wire				w_command_vram_valid;
 	wire				w_command_vram_ready;
 	wire				w_command_vram_write;
-	wire		[7:0]	w_command_vram_wdata;
+	wire		[31:0]	w_command_vram_wdata;
+	wire		[3:0]	w_command_vram_wdata_mask;
 	wire		[31:0]	w_command_vram_rdata;
 	wire				w_command_vram_rdata_en;
 
@@ -141,6 +144,10 @@ module vdp (
 	wire				w_clear_sprite_collision_xy;
 	wire		[8:0]	w_sprite_collision_x;
 	wire		[9:0]	w_sprite_collision_y;
+
+	wire				w_register_write;
+	wire		[5:0]	w_register_num;
+	wire		[7:0]	w_register_data;
 
 	wire		[4:0]	reg_screen_mode;
 	wire				reg_sprite_magify;
@@ -208,6 +215,9 @@ module vdp (
 		.clear_sprite_collision_xy					( w_clear_sprite_collision_xy				),
 		.sprite_collision_x							( w_sprite_collision_x						),
 		.sprite_collision_y							( w_sprite_collision_y						),
+		.register_write								( w_register_write							),
+		.register_num								( w_register_num							),
+		.register_data								( w_register_data							),
 		.reg_screen_mode							( reg_screen_mode							),
 		.reg_sprite_magify							( reg_sprite_magify							),
 		.reg_sprite_16x16							( reg_sprite_16x16							),
@@ -257,6 +267,7 @@ module vdp (
 		.screen_mode_vram_valid						( w_screen_mode_vram_valid					),
 		.screen_mode_vram_rdata						( w_screen_mode_vram_rdata					),
 		.screen_mode_display_color					( w_screen_mode_display_color				),
+		.screen_mode								( w_screen_mode								),
 		.sprite_vram_address						( w_sprite_vram_address						),
 		.sprite_vram_valid							( w_sprite_vram_valid						),
 		.sprite_vram_rdata							( w_sprite_vram_rdata						),
@@ -297,10 +308,23 @@ module vdp (
 	// --------------------------------------------------------------------
 	//	VDP Command Processor
 	// --------------------------------------------------------------------
-	assign w_command_vram_address	= 17'd0;
-	assign w_command_vram_valid		= 1'b0;
-	assign w_command_vram_write		= 1'b0;
-	assign w_command_vram_wdata		= 8'd0;
+	vdp_command u_command (
+		.reset_n									( reset_n									),
+		.clk										( clk										),
+		.command_vram_address						( w_command_vram_address					),
+		.command_vram_valid							( w_command_vram_valid						),
+		.command_vram_ready							( w_command_vram_ready						),
+		.command_vram_write							( w_command_vram_write						),
+		.command_vram_wdata							( w_command_vram_wdata						),
+		.command_vram_wdata_mask					( w_command_vram_wdata_mask					),
+		.command_vram_rdata							( w_command_vram_rdata						),
+		.command_vram_rdata_en						( w_command_vram_rdata_en					),
+		.register_write								( w_register_write							),
+		.register_num								( w_register_num							),
+		.register_data								( w_register_data							),
+		.screen_mode								( w_screen_mode								),
+		.reg_command_enable							( reg_command_enable						)
+	);
 
 	// --------------------------------------------------------------------
 	//	VRAM interface
@@ -323,6 +347,7 @@ module vdp (
 		.command_vram_ready							( w_command_vram_ready						),
 		.command_vram_write							( w_command_vram_write						),
 		.command_vram_wdata							( w_command_vram_wdata						),
+		.command_vram_wdata_mask					( w_command_vram_wdata_mask					),
 		.command_vram_rdata							( w_command_vram_rdata						),
 		.command_vram_rdata_en						( w_command_vram_rdata_en					),
 		.cpu_vram_address							( w_cpu_vram_address						),
@@ -336,6 +361,7 @@ module vdp (
 		.vram_valid									( vram_valid								),
 		.vram_write									( vram_write								),
 		.vram_wdata									( vram_wdata								),
+		.vram_wdata_mask							( vram_wdata_mask							),
 		.vram_rdata									( vram_rdata								),
 		.vram_rdata_en								( vram_rdata_en								),
 		.vram_refresh								( w_vram_refresh							),

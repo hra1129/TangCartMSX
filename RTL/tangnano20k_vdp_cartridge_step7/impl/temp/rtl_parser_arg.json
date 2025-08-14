@@ -104,6 +104,10 @@
   {
    "Path" : "D:/github/HRA_product/TangCartMSX/RTL/tangnano20k_vdp_cartridge_step7/src/th9958/vdp_vram_interface.v",
    "Type" : "verilog"
+  },
+  {
+   "Path" : "D:/github/HRA_product/TangCartMSX/RTL/tangnano20k_vdp_cartridge_step7/src/th9958/vdp_command.v",
+   "Type" : "verilog"
   }
  ],
  "IncludePath" : [

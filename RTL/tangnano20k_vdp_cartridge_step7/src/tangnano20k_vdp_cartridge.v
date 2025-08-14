@@ -79,11 +79,12 @@ module tangnano20k_vdp_cartridge (
 
 	wire			w_sdram_init_busy;
 
-	wire	[22:0]	w_sdram_address;
+	wire	[22:2]	w_sdram_address;
 	wire			w_sdram_write;
 	wire			w_sdram_valid;
 	wire			w_sdram_refresh;
-	wire	[7:0]	w_sdram_wdata;
+	wire	[31:0]	w_sdram_wdata;
+	wire	[3:0]	w_sdram_wdata_mask;
 	wire	[31:0]	w_sdram_rdata;
 	wire			w_sdram_rdata_en;
 
@@ -171,10 +172,11 @@ module tangnano20k_vdp_cartridge (
 		.bus_rdata			( w_bus_vdp_rdata		),
 		.bus_rdata_en		( w_bus_vdp_rdata_en	),
 		.int_n				( int_n					),
-		.vram_address		( w_sdram_address[16:0]	),
+		.vram_address		( w_sdram_address[16:2]	),
 		.vram_write			( w_sdram_write			),
 		.vram_valid			( w_sdram_valid			),
 		.vram_wdata			( w_sdram_wdata			),
+		.vram_wdata_mask	( w_sdram_wdata_mask	),
 		.vram_rdata			( w_sdram_rdata			),
 		.vram_rdata_en		( w_sdram_rdata_en		),
 		.vram_refresh		( w_sdram_refresh		),
@@ -225,6 +227,7 @@ module tangnano20k_vdp_cartridge (
 		.bus_write			( w_sdram_write			),
 		.bus_refresh		( w_sdram_refresh		),
 		.bus_wdata			( w_sdram_wdata			),
+		.bus_wdata_mask		( w_sdram_wdata_mask	),
 		.bus_rdata			( w_sdram_rdata			),
 		.bus_rdata_en		( w_sdram_rdata_en		),
 		.O_sdram_clk		( O_sdram_clk			),

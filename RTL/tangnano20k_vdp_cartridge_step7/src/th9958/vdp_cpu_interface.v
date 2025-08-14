@@ -92,6 +92,10 @@ module vdp_cpu_interface (
 	input		[8:0]	sprite_collision_x,
 	input		[9:0]	sprite_collision_y,
 
+	output				register_write,
+	output		[5:0]	register_num,
+	output		[7:0]	register_data,
+
 	output	[4:0]		reg_screen_mode,
 	output				reg_sprite_magify,
 	output				reg_sprite_16x16,
@@ -606,6 +610,10 @@ module vdp_cpu_interface (
 	// --------------------------------------------------------------------
 	//	Output assignment
 	// --------------------------------------------------------------------
+	assign register_write							= ff_register_write;
+	assign register_num								= ff_register_num;
+	assign register_data							= ff_1st_byte;
+
 	assign bus_rdata								= ff_bus_rdata;
 	assign bus_rdata_en								= ff_bus_rdata_en;
 

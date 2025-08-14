@@ -62,11 +62,12 @@ module ip_sdram #(
 	input				clk_sdram,
 	output				sdram_init_busy,
 
-	input	[22:0]		bus_address,
+	input	[22:2]		bus_address,
 	input				bus_valid,
 	input				bus_write,
 	input				bus_refresh,
-	input	[ 7:0]		bus_wdata,
+	input	[31:0]		bus_wdata,
+	input	[3:0]		bus_wdata_mask,
 	output	[31:0]		bus_rdata,
 	output				bus_rdata_en,
 
@@ -142,13 +143,11 @@ module ip_sdram #(
 	reg							ff_sdr_read_data_en;
 	reg							ff_do_command;
 	reg							ff_write;
-	reg		[ 7:0]				ff_wdata;
+	reg		[31:0]				ff_wdata;
+	reg		[ 3:0]				ff_wdata_mask;
 	reg		[ 1:0]				ff_bank;
 	reg		[10:0]				ff_row_address;
 	reg		[ 7:0]				ff_col_address;
-	reg		[ 1:0]				ff_write_mask;
-	reg		[ 7:0]				ff_col_address2;
-	reg		[ 1:0]				ff_write_mask2;
 	wire						w_busy;
 	reg							ff_initial_finish;
 
@@ -159,11 +158,11 @@ module ip_sdram #(
 		if( !reset_n ) begin
 			ff_do_command	<= 1'b0;
 			ff_write		<= 1'b0;
-			ff_wdata		<= 8'd0;
+			ff_wdata		<= 32'd0;
+			ff_wdata_mask	<= 4'd0;
 			ff_bank			<= 2'd0;
 			ff_row_address	<= 11'd0;
 			ff_col_address	<= 8'd0;
-			ff_write_mask	<= 2'd0;
 			ff_do_refresh	<= 1'b0;
 		end
 		else if( (ff_main_state == c_main_state_ready) && (bus_valid || bus_refresh) ) begin
@@ -171,21 +170,16 @@ module ip_sdram #(
 			ff_do_refresh	<= bus_refresh;
 			ff_write		<= bus_write;
 			ff_wdata		<= bus_wdata;
+			ff_wdata_mask	<= bus_wdata_mask;
 			ff_bank			<= bus_address[22:21];
 			ff_row_address	<= bus_address[20:10];
 			ff_col_address	<= bus_address[9:2];
-			ff_write_mask	<= bus_address[1:0];
 		end
 		else if( (ff_main_state == c_main_state_finish) || (ff_main_state == c_main_state_finish2) ) begin
 			ff_do_command	<= 1'b0;
 			ff_do_refresh	<= 1'b0;
 			ff_write		<= 1'b0;
 		end
-	end
-
-	always @( posedge clk ) begin
-		ff_col_address2		<= ff_col_address;
-		ff_write_mask2		<= ff_write_mask;
 	end
 
 	// --------------------------------------------------------------------
@@ -344,13 +338,7 @@ module ip_sdram #(
 						end
 						else if( ff_write ) begin
 							ff_sdr_command		<= c_sdr_command_write;
-							case( ff_write_mask2 )
-							2'd0:		ff_sdr_dq_mask	<= 4'b1110;
-							2'd1:		ff_sdr_dq_mask	<= 4'b1101;
-							2'd2:		ff_sdr_dq_mask	<= 4'b1011;
-							2'd3:		ff_sdr_dq_mask	<= 4'b0111;
-							default:	ff_sdr_dq_mask	<= 4'b1111;
-							endcase
+							ff_sdr_dq_mask		<= ff_wdata_mask;
 						end
 						else begin
 							ff_sdr_command		<= c_sdr_command_read;
@@ -426,7 +414,7 @@ module ip_sdram #(
 						ff_sdr_address <= { 
 							1'b1,				// Enable auto precharge
 							2'd0,				// 00
-							ff_col_address2	 	// Column address
+							ff_col_address	 	// Column address
 						};
 					end
 				end
@@ -443,7 +431,7 @@ module ip_sdram #(
 			ff_sdr_write_data <= 32'dz;
 		end
 		else if( ff_main_state == c_main_state_read_or_write ) begin
-			ff_sdr_write_data <= { ff_wdata, ff_wdata, ff_wdata, ff_wdata };
+			ff_sdr_write_data <= ff_wdata;
 		end
 		else begin
 			ff_sdr_write_data <= 32'dz;
