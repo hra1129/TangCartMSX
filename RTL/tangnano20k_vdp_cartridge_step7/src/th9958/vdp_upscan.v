@@ -74,7 +74,7 @@ module vdp_upscan (
 	output		[7:0]	upscan_g,
 	output		[7:0]	upscan_b
 );
-	localparam			c_left_pos		= 11'd64;		//	画面上の水平位置。小さくすると左へ、大きくすると右に寄る。
+	localparam			c_left_pos		= 11'd32;		//	画面上の水平位置。小さくすると左へ、大きくすると右に寄る。
 	wire		[10:0]	w_write_pos;
 	wire		[9:0]	w_read_pos;
 	wire		[9:0]	w_even_address;

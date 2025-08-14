@@ -81,7 +81,8 @@ module vdp_timing_control_screen_mode (
 	input		[16:6]	reg_color_table_base,
 	input		[16:11]	reg_pattern_generator_table_base,
 	input		[7:0]	reg_backdrop_color,
-	input				reg_scroll_planes
+	input				reg_scroll_planes,
+	input				reg_left_mask
 );
 	//	Screen mode
 	localparam			c_mode_g1	= 5'b000_00;	//	Graphic1 (SCREEN1)
@@ -157,6 +158,7 @@ module vdp_timing_control_screen_mode (
 	reg			[7:0]	ff_pattern5;
 	reg			[7:0]	ff_pattern6;
 	reg			[7:0]	ff_pattern7;
+	wire		[7:0]	w_pattern0;
 
 	// --------------------------------------------------------------------
 	//	Screen mode decoder
@@ -612,22 +614,24 @@ module vdp_timing_control_screen_mode (
 		end
 	end
 
+	assign w_pattern0	= (reg_left_mask && (screen_pos_x[13:4] < 10'd15)) ? reg_backdrop_color: ff_pattern0;
+
 	always @( posedge clk or negedge reset_n ) begin
 		if( !reset_n ) begin
 			ff_display_color <= 4'd0;
 		end
 		else if( w_mode == c_t2 || w_mode == c_g5 || w_mode == c_g6 ) begin
 			if( w_sub_phase == 4'd7 ) begin
-				ff_display_color <= { 4'd0, ff_pattern0[3:0] };
+				ff_display_color <= { 4'd0, w_pattern0[3:0] };
 			end
 		end
 		else begin
 			if( w_sub_phase == 4'd15 ) begin
 				if( w_mode == c_g6 ) begin
-					ff_display_color <= { 4'd0, ff_pattern0[7:4] };
+					ff_display_color <= { 4'd0, w_pattern0[7:4] };
 				end
 				else begin
-					ff_display_color <= ff_pattern0;
+					ff_display_color <= w_pattern0;
 				end
 			end
 		end

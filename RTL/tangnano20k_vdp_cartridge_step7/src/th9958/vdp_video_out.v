@@ -90,6 +90,8 @@ module vdp_video_out (
 	localparam		vs_start			= 10'd13;
 	localparam		vs_end				= 10'd19;
 	localparam		c_numerator			= 576 / 4;
+
+	wire			w_enable;
 	wire	[9:0]	w_x_position_w;
 	reg		[9:0]	ff_x_position_r;
 	reg				ff_active;
@@ -108,11 +110,6 @@ module vdp_video_out (
 	reg		[7:0]	ff_coeff;
 	reg		[7:0]	ff_coeff1;
 	reg		[7:0]	ff_coeff2;
-	reg				ff_hold0;
-	reg				ff_hold1;
-	reg				ff_hold2;
-	reg				ff_hold3;
-	reg				ff_hold4;
 	reg		[7:0]	ff_tap0_r;
 	reg		[7:0]	ff_tap0_g;
 	reg		[7:0]	ff_tap0_b;
@@ -251,6 +248,9 @@ module vdp_video_out (
 		else if( w_active_start ) begin
 			ff_x_position_r <= 10'd0;
 		end
+		else if( !w_enable ) begin
+			//	hold
+		end
 		else if( ff_active ) begin
 			if( w_hold ) begin
 				//	hold
@@ -271,6 +271,9 @@ module vdp_video_out (
 		else if( w_active_start ) begin
 			ff_numerator <= 8'b0;
 		end
+		else if( !w_enable ) begin
+			//	hold
+		end
 		else if( ff_active ) begin
 			if( w_hold ) begin
 				ff_numerator <= w_next_numerator[7:0];
@@ -283,15 +286,8 @@ module vdp_video_out (
 
 	assign w_next_numerator		= { 1'b0, ff_numerator } + c_numerator;
 	assign w_sub_numerator		= w_next_numerator - { 1'b0, reg_denominator };
-	assign w_hold				= w_sub_numerator[8] | ~h_count[0];
-
-	always @( posedge clk ) begin
-		ff_hold0 <= w_hold & ff_active;
-		ff_hold1 <= ff_hold0;
-		ff_hold2 <= ff_hold1;
-		ff_hold3 <= ff_hold2;
-		ff_hold4 <= ff_hold3;
-	end
+	assign w_enable				= h_count[0];
+	assign w_hold				= w_sub_numerator[8];
 
 	// --------------------------------------------------------------------
 	//	Delay line memory
@@ -321,13 +317,13 @@ module vdp_video_out (
 		if( !reset_n ) begin
 			ff_coeff <= 8'd0;
 		end
-		if( h_count[0] == 1'b1 ) begin
+		if( w_enable ) begin
 			ff_coeff <= w_normalized_numerator[14:7];					//	0 ... 63
 		end
 	end
 
 	always @( posedge clk ) begin
-		if( h_count[0] == 1'b1 ) begin
+		if( w_enable ) begin
 			ff_coeff1	<= ff_coeff;
 			ff_coeff2	<= ff_coeff1;
 		end
@@ -337,10 +333,7 @@ module vdp_video_out (
 	//	Bilinear interpolation
 	// --------------------------------------------------------------------
 	always @( posedge clk ) begin
-		if( ff_hold4 ) begin
-			//	hold
-		end
-		else begin
+		if( w_enable ) begin
 			ff_tap0_r	<= w_pixel_r;
 			ff_tap0_g	<= w_pixel_g;
 			ff_tap0_b	<= w_pixel_b;
@@ -352,6 +345,7 @@ module vdp_video_out (
 
 	vdp_video_out_bilinear u_bilinear_r (
 		.clk			( clk					),
+		.enable			( w_enable				),
 		.coeff			( ff_coeff2				),
 		.tap0			( ff_tap0_r				),
 		.tap1			( ff_tap1_r				),
@@ -360,6 +354,7 @@ module vdp_video_out (
 
 	vdp_video_out_bilinear u_bilinear_g (
 		.clk			( clk					),
+		.enable			( w_enable				),
 		.coeff			( ff_coeff2				),
 		.tap0			( ff_tap0_g				),
 		.tap1			( ff_tap1_g				),
@@ -368,6 +363,7 @@ module vdp_video_out (
 
 	vdp_video_out_bilinear u_bilinear_b (
 		.clk			( clk					),
+		.enable			( w_enable				),
 		.coeff			( ff_coeff2				),
 		.tap0			( ff_tap0_b				),
 		.tap1			( ff_tap1_b				),
@@ -382,7 +378,7 @@ module vdp_video_out (
 							  (~v_count[0]          ) ? 8'd128: { 1'b0, w_scanline_gain[9:3] };
 
 	always @( posedge clk ) begin
-		if( h_count[0] == 1'b1 ) begin
+		if( w_enable ) begin
 			ff_bilinear_r	<= w_bilinear_r;
 			ff_bilinear_g	<= w_bilinear_g;
 			ff_bilinear_b	<= w_bilinear_b;
@@ -395,7 +391,7 @@ module vdp_video_out (
 	assign w_display_b	= ff_bilinear_b * ff_gain;
 
 	always @( posedge clk ) begin
-		if( h_count[0] == 1'b1 ) begin
+		if( w_enable ) begin
 			ff_display_r	<= w_display_r[14:7];
 			ff_display_g	<= w_display_g[14:7];
 			ff_display_b	<= w_display_b[14:7];

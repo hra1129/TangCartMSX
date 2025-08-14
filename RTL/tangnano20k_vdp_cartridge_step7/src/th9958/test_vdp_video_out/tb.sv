@@ -54,7 +54,7 @@
 // --------------------------------------------------------------------
 
 module tb ();
-	localparam			clk_base		= 1_000_000_000/42_954_540;	//	ns
+	localparam			clk_base		= 1_000_000_000/85_909_080;	//	ns
 
 	// --------------------------------------------------------------------
 	//	Signal declarations for DUT ports
@@ -126,8 +126,8 @@ module tb ();
 		vdp_r = 0;
 		vdp_g = 0;
 		vdp_b = 0;
-		reg_denominator = 8'd144;		// Default value
-		reg_normalize = 8'd228;			// Default value (8192/144 ≈ 57)
+		reg_denominator = 8'd200;		// Default value
+		reg_normalize = 8'd41;			// Default value (8192/200 ≈ 41)
 
 		// Reset sequence
 		@( posedge clk );
@@ -139,55 +139,36 @@ module tb ();
 		$display( "[test001] vdp_video_out basic functionality test" );
 		
 		// Test basic video input/output
-		for( j = 0; j < 16; j++ ) begin
+		for( j = 0; j < 64; j++ ) begin
 			for( i = 0; i < 2736; i++ ) begin	// One line
 				h_count <= i;
 				v_count <= j;
 				has_scanline <= (j % 2 == 1);	// Scanline every other line
 				
 				// Set some test colors
-				vdp_r <= 8'hFF;
-				vdp_g <= 8'h80;
-				vdp_b <= 8'h40;
-				
-				@( posedge clk );
-			end
-		end
+				case( (i >> 1) % 4 )
+				0: begin
+					vdp_r <= 8'hFF;
+					vdp_g <= 8'h80;
+					vdp_b <= 8'h40;
+				end
+				1: begin
+					vdp_r <= 8'h00;
+					vdp_g <= 8'h40;
+					vdp_b <= 8'h20;
+				end
+				2: begin
+					vdp_r <= 8'hFF;
+					vdp_g <= 8'h80;
+					vdp_b <= 8'h40;
+				end
+				3: begin
+					vdp_r <= 8'h80;
+					vdp_g <= 8'hC0;
+					vdp_b <= 8'h80;
+				end
+				endcase
 
-		$display( "[test002] Different denominator values" );
-		
-		// Test different denominator values
-		reg_denominator <= 8'd200;
-		reg_normalize <= 8'd160;		// 8192/200 ≈ 41
-		
-		for( j = 0; j < 8; j++ ) begin
-			for( i = 0; i < 2736; i++ ) begin	// One line
-				h_count <= i;
-				v_count <= j;
-				has_scanline <= 0;
-				
-				// Set different test colors
-				vdp_r <= 8'h00;
-				vdp_g <= 8'hFF;
-				vdp_b <= 8'h80;
-				
-				@( posedge clk );
-			end
-		end
-
-		$display( "[test003] Scanline mode test" );
-		
-		for( j = 0; j < 8; j++ ) begin
-			for( i = 0; i < 2736; i++ ) begin	// One line
-				h_count <= i;
-				v_count <= j;
-				has_scanline <= 1;
-				
-				// Set test colors
-				vdp_r <= 8'h80;
-				vdp_g <= 8'h40;
-				vdp_b <= 8'hFF;
-				
 				@( posedge clk );
 			end
 		end

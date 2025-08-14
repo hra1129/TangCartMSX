@@ -58,7 +58,8 @@
 // -----------------------------------------------------------------------------
 
 module vdp_video_out_bilinear (
-	input			clk,						//	42.95454MHz
+	input			clk,						//	85.90908MHz
+	input			enable,
 	input	[7:0]	coeff,
 	input	[7:0]	tap0,
 	input	[7:0]	tap1,
@@ -79,8 +80,10 @@ module vdp_video_out_bilinear (
 	// --------------------------------------------------------------------
 
 	always @( posedge clk ) begin
-		ff_tap1_delay	<= tap1;
-		ff_mul			<= w_mul[17:7];		//	小数部8bit → 小数部1bit
+		if( enable ) begin
+			ff_tap1_delay	<= tap1;
+			ff_mul			<= w_mul[17:7];		//	小数部8bit → 小数部1bit
+		end
 	end
 
 	assign w_sub		= { 1'b0, tap0 } - { 1'b0, tap1 };					//	小数部0bit - 小数部0bit
@@ -88,7 +91,10 @@ module vdp_video_out_bilinear (
 	assign w_add		= ff_mul + { 2'd0, ff_tap1_delay, 1'b1 };			//	小数部2bit + 小数部2bit, 四捨五入
 
 	always @( posedge clk ) begin
-		if( w_add[10:9] == 2'b01 ) begin
+		if( !enable ) begin
+			//	hold
+		end
+		else if( w_add[10:9] == 2'b01 ) begin
 			//	Clip overflow
 			ff_out <= 8'hFF;
 		end

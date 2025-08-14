@@ -184,7 +184,8 @@ module vdp_timing_control (
 		.reg_color_table_base						( reg_color_table_base						),
 		.reg_pattern_generator_table_base			( reg_pattern_generator_table_base			),
 		.reg_backdrop_color							( reg_backdrop_color						),
-		.reg_scroll_planes							( reg_scroll_planes							)
+		.reg_scroll_planes							( reg_scroll_planes							),
+		.reg_left_mask								( reg_left_mask								)
 	);
 
 	// --------------------------------------------------------------------
