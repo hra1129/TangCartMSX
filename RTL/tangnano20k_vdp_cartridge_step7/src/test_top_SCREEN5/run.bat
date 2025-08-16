@@ -22,6 +22,7 @@ vlog ..\th9958\vdp_cpu_interface.v
 vlog ..\th9958\vdp_color_palette_ram.v
 vlog ..\th9958\vdp_color_palette.v
 vlog ..\th9958\vdp_vram_interface.v
+vlog ..\th9958\vdp_command_cache.v
 vlog ..\th9958\vdp_command.v
 vlog ..\th9958\vdp.v
 vlog ..\tangnano20k_vdp_cartridge.v

@@ -88,6 +88,7 @@ module vdp_command (
 	localparam c_point	= 4'b0100;
 	localparam c_stop	= 4'b0000;
 
+	reg					ff_active;
 	reg			[8:0]	ff_sx;
 	reg			[9:0]	ff_sy;
 	reg			[8:0]	ff_dx;
@@ -105,6 +106,16 @@ module vdp_command (
 	reg			[3:0]	ff_logical_opration;
 	reg			[3:0]	ff_command;
 	reg					ff_start;
+
+	wire		[16:0]	w_cache_vram_address;
+	wire				w_cache_vram_valid;
+	wire				w_cache_vram_ready;
+	wire				w_cache_vram_write;
+	wire		[7:0]	w_cache_vram_wdata;
+	wire		[7:0]	w_cache_vram_rdata;
+	wire				w_cache_vram_rdata_en;
+	wire				w_cache_flush_start;
+	wire				w_cache_flush_end;
 
 	// --------------------------------------------------------------------
 	//	Registers
@@ -249,11 +260,49 @@ module vdp_command (
 	end
 
 	// --------------------------------------------------------------------
-	//	VRAM Access
+	//	State machine
 	// --------------------------------------------------------------------
-	assign command_vram_address		= 17'd0;
-	assign command_vram_valid		= 1'b0;
-	assign command_vram_write		= 1'b0;
-	assign command_vram_wdata		= 32'd0;
-	assign command_vram_wdata_mask	= 4'd0;
+	always @( posedge clk or negedge reset_n ) begin
+		if( !reset_n ) begin
+			ff_active <= 1'b0;
+		end
+		else if( ff_start ) begin
+			ff_active <= 1'b1;
+		end
+		else if( w_cache_flush_end ) begin
+			ff_active <= 1'b0;
+		end
+	end
+
+	assign w_cache_vram_address	= 17'd0;
+	assign w_cache_vram_valid	= 1'b0;
+	assign w_cache_vram_write	= 1'b0;
+	assign w_cache_vram_wdata	= 8'd0;
+	assign w_cache_flush_start	= 1'b0;
+
+	// --------------------------------------------------------------------
+	//	VRAM Access Cache
+	// --------------------------------------------------------------------
+	vdp_command_cache u_cache (
+		.reset_n						( reset_n						),
+		.clk							( clk							),
+		.start							( ff_start						),
+		.cache_vram_address				( w_cache_vram_address			),
+		.cache_vram_valid				( w_cache_vram_valid			),
+		.cache_vram_ready				( w_cache_vram_ready			),
+		.cache_vram_write				( w_cache_vram_write			),
+		.cache_vram_wdata				( w_cache_vram_wdata			),
+		.cache_vram_rdata				( w_cache_vram_rdata			),
+		.cache_vram_rdata_en			( w_cache_vram_rdata_en			),
+		.cache_flush_start				( w_cache_flush_start			),
+		.cache_flush_end				( w_cache_flush_end				),
+		.command_vram_address			( command_vram_address			),
+		.command_vram_valid				( command_vram_valid			),
+		.command_vram_ready				( command_vram_ready			),
+		.command_vram_write				( command_vram_write			),
+		.command_vram_wdata				( command_vram_wdata			),
+		.command_vram_wdata_mask		( command_vram_wdata_mask		),
+		.command_vram_rdata				( command_vram_rdata			),
+		.command_vram_rdata_en			( command_vram_rdata_en			)
+	);
 endmodule

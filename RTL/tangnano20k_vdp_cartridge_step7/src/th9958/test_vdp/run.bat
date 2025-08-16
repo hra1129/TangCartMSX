@@ -21,6 +21,7 @@ vlog ..\vdp_color_palette_ram.v
 vlog ..\vdp_color_palette.v
 vlog ..\vdp_vram_interface.v
 vlog ..\vdp_command.v
+vlog ..\vdp_command_cache.v
 vlog ..\vdp.v
 vlog tb.sv
 vsim -c -t 1ns -do run.do tb

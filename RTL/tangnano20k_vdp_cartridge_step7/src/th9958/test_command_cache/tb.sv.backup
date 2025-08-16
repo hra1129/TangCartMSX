@@ -1,0 +1,689 @@
+// -----------------------------------------------------------------------------
+//	Test of vdp_command_cache.v
+//	Copyright (C)2025 Takayuki Hara (HRA!)
+//
+//	本ソフトウェアおよび本ソフトウェアに基づいて作成された派生物は、以下の条件を
+//	満たす場合に限り、再頒布および使用が許可されます。
+//
+//	1.ソースコード形式で再頒布する場合、上記の著作権表示、本条件一覧、および下記
+//	  免責条項をそのままの形で保持すること。
+//	2.バイナリ形式で再頒布する場合、頒布物に付属のドキュメント等の資料に、上記の
+//	  著作権表示、本条件一覧、および下記免責条項を含めること。
+//	3.書面による事前の許可なしに、本ソフトウェアを販売、および商業的な製品や活動
+//	  に使用しないこと。
+//
+//	本ソフトウェアは、著作権者によって「現状のまま」提供されています。著作権者は、
+//	特定目的への適合性の保証、商品性の保証、またそれに限定されない、いかなる明示
+//	的もしくは暗黙な保証責任も負いません。著作権者は、事由のいかんを問わず、損害
+//	発生の原因いかんを問わず、かつ責任の根拠が契約であるか厳格責任であるか（過失
+//	その他の）不法行為であるかを問わず、仮にそのような損害が発生する可能性を知ら
+//	されていたとしても、本ソフトウェアの使用によって発生した（代替品または代用サ
+//	ービスの調達、使用の喪失、データの喪失、利益の喪失、業務の中断も含め、またそ
+//	れに限定されない）直接損害、間接損害、偶発的な損害、特別損害、懲罰的損害、ま
+//	たは結果損害について、一切責任を負わないものとします。
+//
+//	Note that above Japanese version license is the formal document.
+//	The following translation is only for reference.
+//
+//	Redistribution and use of this software or any derivative works,
+//	are permitted provided that the following conditions are met:
+//
+//	1. Redistributions of source code must retain the above copyright
+//	   notice, this list of conditions and the following disclaimer.
+//	2. Redistributions in binary form must reproduce the above
+//	   copyright notice, this list of conditions and the following
+//	   disclaimer in the documentation and/or other materials
+//	   provided with the distribution.
+//	3. Redistributions may not be sold, nor may they be used in a
+//	   commercial product or activity without specific prior written
+//	   permission.
+//
+//	THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+//	"AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+//	LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS
+//	FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE
+//	COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT,
+//	INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING,
+//	BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+//	LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
+//	CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT
+//	LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN
+//	ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+//	POSSIBILITY OF SUCH DAMAGE.
+//
+// --------------------------------------------------------------------
+
+module tb ();
+	localparam		clk_base	= 1_000_000_000/42_954_540;    //      ns
+
+	// --------------------------------------------------------------------
+	//	Signal declarations for DUT ports
+	// --------------------------------------------------------------------
+	logic			reset_n;
+	logic			clk;
+	logic			start;
+	
+	// VDP command interface
+	logic	[16:0]		cache_vram_address;
+	logic			cache_vram_valid;
+	wire			cache_vram_ready;
+	logic			cache_vram_write;
+	logic	[7:0]		cache_vram_wdata;
+	wire	[7:0]		cache_vram_rdata;
+	wire			cache_vram_rdata_en;
+	
+	// VRAM interface
+	wire	[16:0]		command_vram_address;
+	wire			command_vram_valid;
+	logic			command_vram_ready;
+	wire			command_vram_write;
+	wire	[31:0]		command_vram_wdata;
+	wire	[3:0]		command_vram_wdata_mask;
+	logic	[31:0]		command_vram_rdata;
+	logic			command_vram_rdata_en;
+
+	// --------------------------------------------------------------------
+	//	Internal signals
+	// --------------------------------------------------------------------
+	logic	[31:0]		vram_memory [0:32767];		// 128KB VRAM simulation (32K×32bit)
+	integer			vram_delay_counter;
+	integer			timeout_counter;
+
+	// --------------------------------------------------------------------
+	//	Loop variables
+	// --------------------------------------------------------------------
+	integer			i, j, k;
+
+	// --------------------------------------------------------------------
+	//	DUT: Device Under Test
+	// --------------------------------------------------------------------
+	vdp_command_cache u_dut (
+		.reset_n		( reset_n		 ),
+		.clk			( clk			 ),
+		.start			( start			 ),
+		// VDP command interface
+		.cache_vram_address	( cache_vram_address	 ),
+		.cache_vram_valid	( cache_vram_valid	 ),
+		.cache_vram_ready	( cache_vram_ready	 ),
+		.cache_vram_write	( cache_vram_write	 ),
+		.cache_vram_wdata	( cache_vram_wdata	 ),
+		.cache_vram_rdata	( cache_vram_rdata	 ),
+		.cache_vram_rdata_en	( cache_vram_rdata_en	 ),
+		// VRAM interface
+		.command_vram_address	( command_vram_address	 ),
+		.command_vram_valid	( command_vram_valid	 ),
+		.command_vram_ready	( command_vram_ready	 ),
+		.command_vram_write	( command_vram_write	 ),
+		.command_vram_wdata	( command_vram_wdata	 ),
+		.command_vram_wdata_mask( command_vram_wdata_mask),
+		.command_vram_rdata	( command_vram_rdata	 ),
+		.command_vram_rdata_en	( command_vram_rdata_en	 )
+	);
+
+	// --------------------------------------------------------------------
+	//	Clock generation
+	// --------------------------------------------------------------------
+	initial begin
+		clk = 1'b0;
+		forever begin
+			#(clk_base/2) clk = ~clk;
+		end
+	end
+
+	// --------------------------------------------------------------------
+	//	VRAM memory simulation
+	// --------------------------------------------------------------------
+	always_ff @( posedge clk ) begin
+		if( !reset_n ) begin
+			vram_delay_counter	<= 0;
+			command_vram_ready	<= 1'b1;
+			command_vram_rdata	<= 32'd0;
+			command_vram_rdata_en	<= 1'b0;
+		end
+		else begin
+			command_vram_rdata_en	<= 1'b0;
+			
+			if( command_vram_valid && command_vram_ready ) begin
+				command_vram_ready	<= 1'b0;
+				vram_delay_counter	<= 8;  // 8 clock delay for VRAM access
+
+				if( command_vram_write ) begin
+					// Write operation
+					if( command_vram_address[16:2] < 32768 ) begin
+						if( !command_vram_wdata_mask[0] ) vram_memory[command_vram_address[16:2]][7:0]	 <= command_vram_wdata[7:0];
+						if( !command_vram_wdata_mask[1] ) vram_memory[command_vram_address[16:2]][15:8]	 <= command_vram_wdata[15:8];
+						if( !command_vram_wdata_mask[2] ) vram_memory[command_vram_address[16:2]][23:16] <= command_vram_wdata[23:16];
+						if( !command_vram_wdata_mask[3] ) vram_memory[command_vram_address[16:2]][31:24] <= command_vram_wdata[31:24];
+					end
+				end
+				else begin
+					// Read operation
+					if( command_vram_address[16:2] < 32768 ) begin
+						command_vram_rdata <= vram_memory[command_vram_address[16:2]];
+					end
+					else begin
+						command_vram_rdata <= 32'h00000000;
+					end
+				end
+			end
+			else if( vram_delay_counter > 0 ) begin
+				vram_delay_counter <= vram_delay_counter - 1;
+				if( vram_delay_counter == 1 ) begin
+					command_vram_ready	<= 1'b1;
+					command_vram_rdata_en	<= !command_vram_write;
+				end
+			end
+		end
+	end
+
+	// --------------------------------------------------------------------
+	//	Test task: Wait for specified clock cycles
+	// --------------------------------------------------------------------
+	task wait_clocks;
+		input integer clocks;
+		begin
+			repeat( clocks ) @( posedge clk );
+		end
+	endtask
+
+	// --------------------------------------------------------------------
+	//	Test task: Generate start pulse
+	// --------------------------------------------------------------------
+	task generate_start_pulse;
+		begin
+			start = 1'b1;
+			wait_clocks( 1 );
+			start = 1'b0;
+		end
+	endtask
+
+	// --------------------------------------------------------------------
+	//	Test task: Reset sequence
+	// --------------------------------------------------------------------
+	task reset_sequence;
+		begin
+			$display( "[%t] Reset sequence start", $time );
+			reset_n = 1'b0;
+			start = 1'b0;
+			cache_vram_address	= 17'd0;
+			cache_vram_valid	= 1'b0;
+			cache_vram_write	= 1'b0;
+			cache_vram_wdata	= 8'd0;
+			wait_clocks( 10 );
+			reset_n = 1'b1;
+			wait_clocks( 2 );
+			// Generate 1-clock pulse for start signal
+			generate_start_pulse();
+			wait_clocks( 2 );
+			$display( "[%t] Reset sequence complete", $time );
+		end
+	endtask
+
+	// --------------------------------------------------------------------
+	//	Test task: Write to cache
+	// --------------------------------------------------------------------
+	task cache_write;
+		input [16:0] address;
+		input [7:0]  data;
+		begin
+			$display( "[%t] Cache write: addr=0x%05X, data=0x%02X", $time, address, data );
+			
+			cache_vram_address	<= address;
+			cache_vram_write	<= 1'b1;
+			cache_vram_wdata	<= data;
+			cache_vram_valid	<= 1'b1;
+			wait_clocks( 1 );
+
+			timeout_counter = 100;
+			while( !cache_vram_ready && timeout_counter > 0 ) begin
+				wait_clocks( 1 );
+				timeout_counter = timeout_counter - 1;
+			end
+			
+			if( timeout_counter == 0 ) begin
+				$display( "[%t] ERROR: Cache write timeout", $time );
+				$finish;
+			end
+			cache_vram_valid	<= 1'b0;
+			cache_vram_write	<= 1'b0;
+			
+			$display( "[%t] Cache write completed", $time );
+		end
+	endtask
+
+	// --------------------------------------------------------------------
+	//	Test task: Read from cache
+	// --------------------------------------------------------------------
+	task cache_read;
+		input  [16:0] address;
+		output [7:0]  data;
+		begin
+			$display( "[%t] Cache read: addr=0x%05X", $time, address );
+			
+			cache_vram_address	<= address;
+			cache_vram_write	<= 1'b0;
+			cache_vram_valid	<= 1'b1;
+			wait_clocks( 1 );
+			
+			timeout_counter = 100;
+			while( !cache_vram_ready && timeout_counter > 0 ) begin
+				wait_clocks( 1 );
+				timeout_counter = timeout_counter - 1;
+			end
+			
+			if( timeout_counter == 0 ) begin
+				$display( "[%t] ERROR: Cache read timeout", $time );
+				$finish;
+			end
+			cache_vram_valid	<= 1'b0;
+			
+			// Wait for rdata_en signal
+			timeout_counter = 100;
+			while( !cache_vram_rdata_en && timeout_counter > 0 ) begin
+				wait_clocks( 1 );
+				timeout_counter = timeout_counter - 1;
+			end
+			
+			if( timeout_counter == 0 ) begin
+				$display( "[%t] ERROR: Cache read data timeout", $time );
+				$finish;
+			end
+			
+			data = cache_vram_rdata;
+			
+			$display( "[%t] Cache read completed: data=0x%02X", $time, data );
+		end
+	endtask
+
+	// --------------------------------------------------------------------
+	//	Test task: Initialize VRAM with test pattern
+	// --------------------------------------------------------------------
+	task init_vram;
+		begin
+			$display( "[%t] Initializing VRAM with test pattern", $time );
+			for( i = 0; i < 32768; i = i + 1 ) begin
+				vram_memory[i] = {8'h80+i[7:0], 8'h40+i[7:0], 8'h20+i[7:0], 8'h10+i[7:0]};
+			end
+			$display( "[%t] VRAM initialization complete", $time );
+		end
+	endtask
+
+	// --------------------------------------------------------------------
+	//	Test case: Basic read/write operations
+	// --------------------------------------------------------------------
+	task test_basic_operations;
+		logic [7:0] read_data;
+		begin
+			$display( "\n=== Test Case: Basic Operations ===" );
+			
+			// Test single byte write/read at different positions
+			cache_write( 17'h00000, 8'hAA );
+			cache_read( 17'h00000, read_data );
+			if( read_data != 8'hAA ) begin
+				$error( "ERROR: Basic write/read failed. Expected: 0xAA, Got: 0x%02X", read_data );
+				assert( 0 );
+				$finish;
+			end
+			
+			cache_write( 17'h00001, 8'hBB );
+			cache_read( 17'h00001, read_data );
+			if( read_data != 8'hBB ) begin
+				$error( "ERROR: Basic write/read failed. Expected: 0xBB, Got: 0x%02X", read_data );
+				assert( 0 );
+				$finish;
+			end
+			
+			cache_write( 17'h00002, 8'hCC );
+			cache_read( 17'h00002, read_data );
+			if( read_data != 8'hCC ) begin
+				$error( "ERROR: Basic write/read failed. Expected: 0xCC, Got: 0x%02X", read_data );
+				assert( 0 );
+				$finish;
+			end
+			
+			cache_write( 17'h00003, 8'hDD );
+			cache_read( 17'h00003, read_data );
+			if( read_data != 8'hDD ) begin
+				$error( "ERROR: Basic write/read failed. Expected: 0xDD, Got: 0x%02X", read_data );
+				assert( 0 );
+				$finish;
+			end
+			
+			$display( "Basic operations test PASSED" );
+		end
+	endtask
+
+	// --------------------------------------------------------------------
+	//	Test case: Cache hit test
+	// --------------------------------------------------------------------
+	task test_cache_hit;
+		logic [7:0] read_data;
+		begin
+			$display( "\n=== Test Case: Cache Hit Test ===" );
+			
+			// Write to same 32-bit boundary multiple times (should hit cache)
+			cache_write( 17'h01000, 8'h11 );
+			cache_write( 17'h01001, 8'h22 );
+			cache_write( 17'h01002, 8'h33 );
+			cache_write( 17'h01003, 8'h44 );
+			
+			// Read back from cache
+			cache_read( 17'h01000, read_data );
+			if( read_data != 8'h11 ) begin
+				$error( "ERROR: Cache hit test failed. Expected: 0x11, Got: 0x%02X", read_data );
+				assert( 0 );
+				$finish;
+			end
+			
+			cache_read( 17'h01001, read_data );
+			if( read_data != 8'h22 ) begin
+				$error( "ERROR: Cache hit test failed. Expected: 0x22, Got: 0x%02X", read_data );
+				assert( 0 );
+				$finish;
+			end
+			
+			cache_read( 17'h01002, read_data );
+			if( read_data != 8'h33 ) begin
+				$error( "ERROR: Cache hit test failed. Expected: 0x33, Got: 0x%02X", read_data );
+				assert( 0 );
+				$finish;
+			end
+			
+			cache_read( 17'h01003, read_data );
+			if( read_data != 8'h44 ) begin
+				$error( "ERROR: Cache hit test failed. Expected: 0x44, Got: 0x%02X", read_data );
+				assert( 0 );
+				$finish;
+			end
+			
+			$display( "Cache hit test PASSED" );
+		end
+	endtask
+
+	// --------------------------------------------------------------------
+	//	Test case: Cache miss and replacement test
+	// --------------------------------------------------------------------
+	task test_cache_replacement;
+		logic [7:0] read_data;
+		begin
+			$display( "\n=== Test Case: Cache Replacement Test ===" );
+			
+			// Fill up cache entries with different addresses
+			cache_write( 17'h02000, 8'hA1 );  // Cache entry 0
+			cache_write( 17'h03000, 8'hA2 );  // Cache entry 1
+			cache_write( 17'h04000, 8'hA3 );  // Cache entry 2
+			cache_write( 17'h05000, 8'hA4 );  // Cache entry 3
+			
+			// Access that should cause cache replacement
+			cache_write( 17'h06000, 8'hA5 );  // Should replace entry 0
+			cache_write( 17'h07000, 8'hA6 );  // Should replace entry 1
+			
+			// Read back to verify replacement worked
+			cache_read( 17'h06000, read_data );
+			if( read_data != 8'hA5 ) begin
+				$error( "ERROR: Cache replacement test failed. Expected: 0xA5, Got: 0x%02X", read_data );
+				assert( 0 );
+				$finish;
+			end
+			
+			cache_read( 17'h07000, read_data );
+			if( read_data != 8'hA6 ) begin
+				$error( "ERROR: Cache replacement test failed. Expected: 0xA6, Got: 0x%02X", read_data );
+				assert( 0 );
+				$finish;
+			end
+			
+			$display( "Cache replacement test PASSED" );
+		end
+	endtask
+
+	// --------------------------------------------------------------------
+	//	Test case: Read from pre-initialized VRAM
+	// --------------------------------------------------------------------
+	task test_vram_read;
+		logic [7:0] read_data;
+		logic [7:0] expected_data;
+		begin
+			$display( "\n=== Test Case: VRAM Read Test ===" );
+			
+			// Read from VRAM locations with known pattern
+			cache_read( 17'h08000, read_data );
+			expected_data = 8'h10;	// From init_vram pattern
+			if( read_data != expected_data ) begin
+				$error( "ERROR: VRAM read test failed. Expected: 0x%02X, Got: 0x%02X", expected_data, read_data );
+				assert( 0 );
+				$finish;
+			end
+			
+			cache_read( 17'h08001, read_data );
+			expected_data = 8'h20;	// From init_vram pattern
+			if( read_data != expected_data ) begin
+				$error( "ERROR: VRAM read test failed. Expected: 0x%02X, Got: 0x%02X", expected_data, read_data );
+				assert( 0 );
+				$finish;
+			end
+			
+			cache_read( 17'h08002, read_data );
+			expected_data = 8'h40;	// From init_vram pattern
+			if( read_data != expected_data ) begin
+				$error( "ERROR: VRAM read test failed. Expected: 0x%02X, Got: 0x%02X", expected_data, read_data );
+				assert( 0 );
+				$finish;
+			end
+			
+			cache_read( 17'h08003, read_data );
+			expected_data = 8'h80;	// From init_vram pattern
+			if( read_data != expected_data ) begin
+				$error( "ERROR: VRAM read test failed. Expected: 0x%02X, Got: 0x%02X", expected_data, read_data );
+				assert( 0 );
+				$finish;
+			end
+			
+			$display( "VRAM read test PASSED" );
+		end
+	endtask
+
+	// --------------------------------------------------------------------
+	//	Test case: 4way full test
+	// --------------------------------------------------------------------
+	task test_vram_cache_full();
+		logic [7:0] read_data;
+		logic [7:0] expected_data;
+		begin
+			$display( "\n=== Test Case: 4way Full Test ===" );
+
+			cache_read( 17'h08000, read_data );
+			expected_data = 8'h10;	// From init_vram pattern
+			if( read_data != expected_data ) begin
+				$error( "ERROR: VRAM read test failed. Expected: 0x%02X, Got: 0x%02X", expected_data, read_data );
+				assert( 0 );
+				$finish;
+			end
+
+			cache_read( 17'h08004, read_data );
+			expected_data = 8'h10;	// From init_vram pattern
+			if( read_data != expected_data ) begin
+				$error( "ERROR: VRAM read test failed. Expected: 0x%02X, Got: 0x%02X", expected_data, read_data );
+				assert( 0 );
+				$finish;
+			end
+
+			cache_read( 17'h08008, read_data );
+			expected_data = 8'h10;	// From init_vram pattern
+			if( read_data != expected_data ) begin
+				$error( "ERROR: VRAM read test failed. Expected: 0x%02X, Got: 0x%02X", expected_data, read_data );
+				assert( 0 );
+				$finish;
+			end
+
+			cache_read( 17'h0800C, read_data );
+			expected_data = 8'h10;	// From init_vram pattern
+			if( read_data != expected_data ) begin
+				$error( "ERROR: VRAM read test failed. Expected: 0x%02X, Got: 0x%02X", expected_data, read_data );
+				assert( 0 );
+				$finish;
+			end
+
+			cache_read( 17'h08000, read_data );
+			expected_data = 8'h10;	// From init_vram pattern
+			if( read_data != expected_data ) begin
+				$error( "ERROR: VRAM read test failed. Expected: 0x%02X, Got: 0x%02X", expected_data, read_data );
+				assert( 0 );
+				$finish;
+			end
+
+			cache_read( 17'h08004, read_data );
+			expected_data = 8'h10;	// From init_vram pattern
+			if( read_data != expected_data ) begin
+				$error( "ERROR: VRAM read test failed. Expected: 0x%02X, Got: 0x%02X", expected_data, read_data );
+				assert( 0 );
+				$finish;
+			end
+
+			cache_read( 17'h08008, read_data );
+			expected_data = 8'h10;	// From init_vram pattern
+			if( read_data != expected_data ) begin
+				$error( "ERROR: VRAM read test failed. Expected: 0x%02X, Got: 0x%02X", expected_data, read_data );
+				assert( 0 );
+				$finish;
+			end
+
+			cache_read( 17'h0800C, read_data );
+			expected_data = 8'h10;	// From init_vram pattern
+			if( read_data != expected_data ) begin
+				$error( "ERROR: VRAM read test failed. Expected: 0x%02X, Got: 0x%02X", expected_data, read_data );
+				assert( 0 );
+				$finish;
+			end
+
+			cache_read( 17'h08000, read_data );
+			expected_data = 8'h10;	// From init_vram pattern
+			if( read_data != expected_data ) begin
+				$error( "ERROR: VRAM read test failed. Expected: 0x%02X, Got: 0x%02X", expected_data, read_data );
+				assert( 0 );
+				$finish;
+			end
+
+			cache_read( 17'h08004, read_data );
+			expected_data = 8'h10;	// From init_vram pattern
+			if( read_data != expected_data ) begin
+				$error( "ERROR: VRAM read test failed. Expected: 0x%02X, Got: 0x%02X", expected_data, read_data );
+				assert( 0 );
+				$finish;
+			end
+
+			cache_read( 17'h08008, read_data );
+			expected_data = 8'h10;	// From init_vram pattern
+			if( read_data != expected_data ) begin
+				$error( "ERROR: VRAM read test failed. Expected: 0x%02X, Got: 0x%02X", expected_data, read_data );
+				assert( 0 );
+				$finish;
+			end
+
+			cache_read( 17'h0800C, read_data );
+			expected_data = 8'h10;	// From init_vram pattern
+			if( read_data != expected_data ) begin
+				$error( "ERROR: VRAM read test failed. Expected: 0x%02X, Got: 0x%02X", expected_data, read_data );
+				assert( 0 );
+				$finish;
+			end
+
+			cache_read( 17'h08000, read_data );
+			expected_data = 8'h10;	// From init_vram pattern
+			if( read_data != expected_data ) begin
+				$error( "ERROR: VRAM read test failed. Expected: 0x%02X, Got: 0x%02X", expected_data, read_data );
+				assert( 0 );
+				$finish;
+			end
+
+			cache_read( 17'h08004, read_data );
+			expected_data = 8'h10;	// From init_vram pattern
+			if( read_data != expected_data ) begin
+				$error( "ERROR: VRAM read test failed. Expected: 0x%02X, Got: 0x%02X", expected_data, read_data );
+				assert( 0 );
+				$finish;
+			end
+
+			cache_read( 17'h08008, read_data );
+			expected_data = 8'h10;	// From init_vram pattern
+			if( read_data != expected_data ) begin
+				$error( "ERROR: VRAM read test failed. Expected: 0x%02X, Got: 0x%02X", expected_data, read_data );
+				assert( 0 );
+				$finish;
+			end
+
+			cache_read( 17'h0800C, read_data );
+			expected_data = 8'h10;	// From init_vram pattern
+			if( read_data != expected_data ) begin
+				$error( "ERROR: VRAM read test failed. Expected: 0x%02X, Got: 0x%02X", expected_data, read_data );
+				assert( 0 );
+				$finish;
+			end
+		end
+	endtask
+
+	// --------------------------------------------------------------------
+	//	Test case: Start signal control test
+	// --------------------------------------------------------------------
+	task test_start_control;
+		logic [7:0] read_data;
+		begin
+			$display( "\n=== Test Case: Start Signal Control Test ===" );
+			
+			// Start signal should be normally 0
+			start = 1'b0;
+			wait_clocks( 2 );
+			
+			// Try normal operation (start should be pulsed when needed)
+			cache_write( 17'h09000, 8'h55 );
+			
+			// Generate start pulse for cache operation
+			generate_start_pulse();
+			wait_clocks( 1 );
+
+			// Try read operation
+			cache_read( 17'h09000, read_data );
+			if( read_data != 8'h55 ) begin
+				$error( "ERROR: Start control test failed. Expected: 0x55, Got: 0x%02X", read_data );
+				assert( 0 );
+				$finish;
+			end
+			
+			$display( "Start signal control test PASSED" );
+		end
+	endtask
+
+	// --------------------------------------------------------------------
+	//	Main test sequence
+	// --------------------------------------------------------------------
+	initial begin
+		$display( "=== VDP Command Cache Test Start ===" );
+		
+		init_vram();
+		reset_sequence();
+		
+		test_basic_operations();
+		test_cache_hit();
+		test_cache_replacement();
+		test_vram_read();
+		test_vram_cache_full();
+		test_start_control();
+		
+		wait_clocks( 100 );
+		
+		$display( "\n=== All Tests PASSED ===" );
+		$display( "Test completed successfully at time %t", $time );
+		$finish;
+	end
+
+	// --------------------------------------------------------------------
+	//	Timeout watchdog
+	// --------------------------------------------------------------------
+	initial begin
+		#(clk_base * 50000);   // 50000 clock timeout
+		$error( "ERROR: Test timeout!" );
+		assert( 0 );
+		$finish;
+	end
+
+endmodule
