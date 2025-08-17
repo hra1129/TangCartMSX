@@ -149,6 +149,12 @@ module vdp (
 	wire		[5:0]	w_register_num;
 	wire		[7:0]	w_register_data;
 
+	wire				w_status_command_enable;
+	wire				w_status_border_detect;
+	wire				w_status_transfer_ready;
+	wire		[7:0]	w_status_color;
+	wire		[8:0]	w_status_border_position;
+
 	wire		[4:0]	reg_screen_mode;
 	wire				reg_sprite_magify;
 	wire				reg_sprite_16x16;
@@ -218,6 +224,11 @@ module vdp (
 		.register_write								( w_register_write							),
 		.register_num								( w_register_num							),
 		.register_data								( w_register_data							),
+		.status_command_enable						( w_status_command_enable					),
+		.status_border_detect						( w_status_border_detect					),
+		.status_transfer_ready						( w_status_transfer_ready					),
+		.status_color								( w_status_color							),
+		.status_border_position						( w_status_border_position					),
 		.reg_screen_mode							( reg_screen_mode							),
 		.reg_sprite_magify							( reg_sprite_magify							),
 		.reg_sprite_16x16							( reg_sprite_16x16							),
@@ -322,6 +333,11 @@ module vdp (
 		.register_write								( w_register_write							),
 		.register_num								( w_register_num							),
 		.register_data								( w_register_data							),
+		.status_command_enable						( w_status_command_enable					),
+		.status_border_detect						( w_status_border_detect					),
+		.status_transfer_ready						( w_status_transfer_ready					),
+		.status_color								( w_status_color							),
+		.status_border_position						( w_status_border_position					),
 		.screen_mode								( w_screen_mode								),
 		.reg_command_enable							( reg_command_enable						)
 	);

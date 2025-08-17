@@ -17,6 +17,7 @@
         <File path="src/th9958/vdp_color_palette.v" type="file.verilog" enable="1"/>
         <File path="src/th9958/vdp_color_palette_ram.v" type="file.verilog" enable="1"/>
         <File path="src/th9958/vdp_command.v" type="file.verilog" enable="1"/>
+        <File path="src/th9958/vdp_command_cache.v" type="file.verilog" enable="1"/>
         <File path="src/th9958/vdp_cpu_interface.v" type="file.verilog" enable="1"/>
         <File path="src/th9958/vdp_sprite_info_collect.v" type="file.verilog" enable="1"/>
         <File path="src/th9958/vdp_sprite_makeup_pixel.v" type="file.verilog" enable="1"/>

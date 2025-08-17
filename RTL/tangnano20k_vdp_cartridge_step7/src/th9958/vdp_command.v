@@ -70,25 +70,71 @@ module vdp_command (
 	input				register_write,
 	input		[5:0]	register_num,
 	input		[7:0]	register_data,
+	output				status_command_enable,			//	S#2 bit0
+	output				status_border_detect,			//	S#2 bit4
+	output				status_transfer_ready,			//	S#2 bit7
+	output		[7:0]	status_color,					//	S#7
+	output		[8:0]	status_border_position,			//	S#8, S#9
 	//	Screen mode
 	input		[3:0]	screen_mode,
 	input				reg_command_enable
 );
-	localparam c_hmmc	= 4'b1111;
-	localparam c_ymmm	= 4'b1110;
-	localparam c_hmmm	= 4'b1101;
-	localparam c_hmmv	= 4'b1100;
-	localparam c_lmmc	= 4'b1011;
-	localparam c_lmcm	= 4'b1010;
-	localparam c_lmmm	= 4'b1001;
-	localparam c_lmmv	= 4'b1000;
-	localparam c_line	= 4'b0111;
-	localparam c_srch	= 4'b0110;
-	localparam c_pset	= 4'b0101;
-	localparam c_point	= 4'b0100;
-	localparam c_stop	= 4'b0000;
+	localparam	c_hmmc		= 4'b1111;
+	localparam	c_ymmm		= 4'b1110;
+	localparam	c_hmmm		= 4'b1101;
+	localparam	c_hmmv		= 4'b1100;
+	localparam	c_lmmc		= 4'b1011;
+	localparam	c_lmcm		= 4'b1010;
+	localparam	c_lmmm		= 4'b1001;
+	localparam	c_lmmv		= 4'b1000;
+	localparam	c_line		= 4'b0111;
+	localparam	c_srch		= 4'b0110;
+	localparam	c_pset		= 4'b0101;
+	localparam	c_point		= 4'b0100;
+	localparam	c_stop		= 4'b0000;
 
-	reg					ff_active;
+	localparam	c_imp		= 4'b0000;
+	localparam	c_and		= 4'b0001;
+	localparam	c_or		= 4'b0010;
+	localparam	c_eor		= 4'b0011;
+	localparam	c_nor		= 4'b0100;
+	localparam	c_rsv1		= 4'b0101;
+	localparam	c_rsv2		= 4'b0110;
+	localparam	c_rsv3		= 4'b0111;
+	localparam	c_timp		= 4'b1000;
+	localparam	c_tand		= 4'b1001;
+	localparam	c_tor		= 4'b1010;
+	localparam	c_teor		= 4'b1011;
+	localparam	c_tnor		= 4'b1100;
+	localparam	c_trsv1		= 4'b1101;
+	localparam	c_trsv2		= 4'b1110;
+	localparam	c_trsv3		= 4'b1111;
+
+	//	screen_mode code
+	localparam	c_g1		= 0;			//	Graphic1 (SCREEN1) w_mode index
+	localparam	c_g2		= 1;			//	Graphic2 (SCREEN2) w_mode index
+	localparam	c_g3		= 2;			//	Graphic3 (SCREEN4) w_mode index
+	localparam	c_g4		= 3;			//	Graphic4 (SCREEN5) w_mode index
+	localparam	c_g5		= 4;			//	Graphic5 (SCREEN6) w_mode index
+	localparam	c_g6		= 5;			//	Graphic6 (SCREEN7) w_mode index
+	localparam	c_g7		= 6;			//	Graphic7 (SCREEN8) w_mode index
+	localparam	c_t1		= 7;			//	Text1    (SCREEN0:WIDTH40) w_mode index
+	localparam	c_t2		= 8;			//	Text2    (SCREEN0:WIDTH80) w_mode index
+	localparam	c_gm		= 9;			//	Mosaic   (SCREEN3) w_mode index
+
+	localparam	c_bpp_2bit	= 0;
+	localparam	c_bpp_4bit	= 1;
+	localparam	c_bpp_8bit	= 2;
+
+	reg					ff_command_enable;
+	reg			[7:0]	ff_read_pixel;
+	reg			[7:0]	ff_read_byte;
+	reg			[7:0]	ff_source;
+	wire		[7:0]	w_destination;
+
+	reg			[8:0]	reg_sx;
+	reg			[8:0]	reg_dx;
+	reg			[8:0]	reg_nx;
 	reg			[8:0]	ff_sx;
 	reg			[9:0]	ff_sy;
 	reg			[8:0]	ff_dx;
@@ -107,29 +153,69 @@ module vdp_command (
 	reg			[3:0]	ff_command;
 	reg					ff_start;
 
-	wire		[16:0]	w_cache_vram_address;
-	wire				w_cache_vram_valid;
+	reg			[16:0]	ff_cache_vram_address;
+	reg					ff_cache_vram_valid;
 	wire				w_cache_vram_ready;
-	wire				w_cache_vram_write;
-	wire		[7:0]	w_cache_vram_wdata;
+	reg					ff_cache_vram_write;
+	reg			[7:0]	ff_cache_vram_wdata;
 	wire		[7:0]	w_cache_vram_rdata;
 	wire				w_cache_vram_rdata_en;
-	wire				w_cache_flush_start;
+	reg					ff_cache_flush_start;
 	wire				w_cache_flush_end;
+	wire				w_effective_mode;
+	wire		[1:0]	w_bpp;					//	c_bpp_Xbit
+	wire				w_width256b;			//	0: width 128bytes, 1: width 256bytes
+	wire		[16:0]	w_address_s;
+	wire		[16:0]	w_address_d;
+
+	localparam			c_state_idle			= 6'd0;
+	localparam			c_state_stop			= 6'd1;
+	localparam			c_state_point			= 6'd2;
+	localparam			c_state_pset			= 6'd3;
+	localparam			c_state_srch			= 6'd4;
+	localparam			c_state_line			= 6'd5;
+	localparam			c_state_lmmv			= 6'd6;
+	localparam			c_state_lmmm			= 6'd7;
+	localparam			c_state_lmcm			= 6'd8;
+	localparam			c_state_lmmc			= 6'd9;
+	localparam			c_state_hmmv			= 6'd10;
+	localparam			c_state_hmmm			= 6'd11;
+	localparam			c_state_ymmm			= 6'd12;
+	localparam			c_state_hmmc			= 6'd13;
+	localparam			c_state_pset_make		= 6'd14;
+	localparam			c_state_wait_rdata_en	= 6'd62;
+	localparam			c_state_finish			= 6'd63;
+
+	reg			[5:0]	ff_state;
+	reg			[5:0]	ff_next_state;
+
+	// --------------------------------------------------------------------
+	//	Mode select
+	// --------------------------------------------------------------------
+	assign w_effective_mode		= reg_command_enable || (screen_mode == c_g4 || screen_mode == c_g5 || screen_mode == c_g6 || screen_mode == c_g7);
+	assign w_bpp				= (screen_mode == c_g7) ? c_bpp_8bit:
+	            				  (screen_mode == c_g6) ? c_bpp_2bit: c_bpp_4bit;
+	assign w_width256b			= (screen_mode == c_g6 || screen_mode == c_g7) ? 1'b1: 1'b0;
+
+	// --------------------------------------------------------------------
+	//	Address
+	// --------------------------------------------------------------------
+	assign w_address_s			= w_width256b ? { ff_sy[8:0], ff_sx[8:1] }: { ff_sy, ff_sx[8:2] };
+	assign w_address_d			= w_width256b ? { ff_dy[8:0], ff_dx[8:1] }: { ff_dy, ff_dx[8:2] };
 
 	// --------------------------------------------------------------------
 	//	Registers
 	// --------------------------------------------------------------------
 	always @( posedge clk or negedge reset_n ) begin
 		if( !reset_n ) begin
-			ff_sx	<= 9'd0;
+			reg_sx	<= 9'd0;
 		end
 		else if( register_write ) begin
 			if( register_num == 6'd32 ) begin
-				ff_sx[7:0]	<= register_data;
+				reg_sx[7:0]	<= register_data;
 			end
 			else if( register_num == 6'd33 ) begin
-				ff_sx[8]	<= register_data[0];
+				reg_sx[8]	<= register_data[0];
 			end
 		end
 	end
@@ -150,14 +236,14 @@ module vdp_command (
 
 	always @( posedge clk or negedge reset_n ) begin
 		if( !reset_n ) begin
-			ff_dx	<= 9'd0;
+			reg_dx	<= 9'd0;
 		end
 		else if( register_write ) begin
 			if( register_num == 6'd36 ) begin
-				ff_dx[7:0]	<= register_data;
+				reg_dx[7:0]	<= register_data;
 			end
 			else if( register_num == 6'd37 ) begin
-				ff_dx[8]	<= register_data[0];
+				reg_dx[8]	<= register_data[0];
 			end
 		end
 	end
@@ -178,14 +264,14 @@ module vdp_command (
 
 	always @( posedge clk or negedge reset_n ) begin
 		if( !reset_n ) begin
-			ff_nx	<= 9'd0;
+			reg_nx	<= 9'd0;
 		end
 		else if( register_write ) begin
 			if( register_num == 6'd40 ) begin
-				ff_nx[7:0]	<= register_data;
+				reg_nx[7:0]	<= register_data;
 			end
 			else if( register_num == 6'd41 ) begin
-				ff_nx[8]	<= register_data[0];
+				reg_nx[8]	<= register_data[0];
 			end
 		end
 	end
@@ -264,21 +350,180 @@ module vdp_command (
 	// --------------------------------------------------------------------
 	always @( posedge clk or negedge reset_n ) begin
 		if( !reset_n ) begin
-			ff_active <= 1'b0;
+			ff_command_enable <= 1'b0;
 		end
 		else if( ff_start ) begin
-			ff_active <= 1'b1;
+			ff_command_enable <= 1'b1;
 		end
 		else if( w_cache_flush_end ) begin
-			ff_active <= 1'b0;
+			ff_command_enable <= 1'b0;
 		end
 	end
 
-	assign w_cache_vram_address	= 17'd0;
-	assign w_cache_vram_valid	= 1'b0;
-	assign w_cache_vram_write	= 1'b0;
-	assign w_cache_vram_wdata	= 8'd0;
-	assign w_cache_flush_start	= 1'b0;
+	always @( posedge clk or negedge reset_n ) begin
+		if( !reset_n ) begin
+			ff_read_pixel <= 8'd0;
+			ff_read_byte <= 8'd0;
+		end
+		else if( ff_start ) begin
+			ff_read_pixel <= 8'd0;
+			ff_read_byte <= 8'd0;
+		end
+		else if( w_cache_vram_rdata_en ) begin
+			case( w_bpp )
+			c_bpp_8bit: begin
+				ff_read_pixel <= w_cache_vram_rdata;
+			end
+			c_bpp_4bit: begin
+				ff_read_pixel <= ff_sx[0] ? { 4'd0, w_cache_vram_rdata[7:4] }: { 4'd0, w_cache_vram_rdata[3:0] };
+			end
+			c_bpp_2bit: begin
+				case( ff_sx[1:0] )
+				2'd0:	ff_read_pixel <= { 6'd0, w_cache_vram_rdata[7:6] };
+				2'd1:	ff_read_pixel <= { 6'd0, w_cache_vram_rdata[5:4] };
+				2'd2:	ff_read_pixel <= { 6'd0, w_cache_vram_rdata[3:2] };
+				2'd3:	ff_read_pixel <= { 6'd0, w_cache_vram_rdata[1:0] };
+				endcase
+			end
+			default: begin
+				ff_read_pixel <= w_cache_vram_rdata;
+			end
+			endcase
+			ff_read_byte <= w_cache_vram_rdata;
+		end
+	end
+
+	always @( posedge clk or negedge reset_n ) begin
+		if( !reset_n ) begin
+			ff_state				<= c_state_idle;
+			ff_cache_vram_address	<= 17'd0;
+			ff_cache_flush_start	<= 1'b0;
+		end
+		else if( ff_start ) begin
+			case( ff_command )
+			c_stop:		ff_state <= c_state_stop;
+			c_point:	ff_state <= c_state_point;
+			default:	ff_state <= c_state_stop;
+			endcase
+		end
+		else if( ff_cache_vram_valid ) begin
+			if( w_cache_vram_ready ) begin
+				ff_cache_vram_valid <= 1'b0;
+			end
+		end
+		else begin
+			case( ff_state )
+			c_state_stop: begin
+				//	Activate cache flush and wait for it to complete.
+				ff_cache_flush_start	<= 1'b1;
+				ff_state				<= c_state_finish;
+			end
+			c_state_point: begin
+				//	Read the location of (SX, SY)
+				ff_cache_vram_address	<= w_address_s;
+				ff_cache_vram_valid		<= 1'b1;
+				ff_cache_vram_write		<= 1'b0;
+				ff_state				<= c_state_wait_rdata_en;
+				ff_next_state			<= c_state_finish;
+			end
+			c_state_pset: begin
+				//	Read the location of (DX, DY)
+				ff_cache_vram_address	<= w_address_d;
+				ff_cache_vram_valid		<= 1'b1;
+				ff_cache_vram_write		<= 1'b0;
+				ff_state				<= c_state_wait_rdata_en;
+				ff_next_state			<= c_state_pset_make;
+				ff_source				<= ff_color;
+			end
+			c_state_pset_make: begin
+				//	Write the location of (DX, DY)
+				ff_cache_vram_address	<= w_address_d;
+				ff_cache_vram_valid		<= 1'b1;
+				ff_cache_vram_write		<= 1'b1;
+				ff_cache_vram_wdata		<= w_destination;
+				ff_state				<= c_state_finish;
+			end
+			c_state_wait_rdata_en: begin
+				//	Wait until the results of the lead request arrive.
+				if( w_cache_vram_rdata_en ) begin
+					//	Activate cache flush and wait for it to complete.
+					ff_cache_flush_start	<= 1'b1;
+					ff_state				<= ff_next_state;
+				end
+			end
+			c_state_finish: begin
+				//	Wait until the cache flush is complete.
+				ff_cache_flush_start	<= 1'b0;
+				if( w_cache_flush_end ) begin
+					ff_state <= c_state_idle;
+				end
+			end
+			endcase
+		end
+	end
+
+	// --------------------------------------------------------------------
+	//	Logical operation
+	// --------------------------------------------------------------------
+	function [7:0] func_lop(
+		input		[3:0]	logical_operation,
+		input		[7:0]	source_pixel,
+		input		[7:0]	destination_pixel
+	);
+		case( logical_operation )
+		c_imp:		func_lop = source_pixel;
+		c_and:		func_lop = source_pixel & destination_pixel;
+		c_or:		func_lop = source_pixel | destination_pixel;
+		c_eor:		func_lop = source_pixel ^ destination_pixel;
+		c_nor:		func_lop = ~source_pixel;
+		c_rsv1:		func_lop = source_pixel;
+		c_rsv2:		func_lop = source_pixel;
+		c_rsv3:		func_lop = source_pixel;
+		c_timp:		func_lop = (source_pixel == 8'd0) ? destination_pixel: source_pixel;
+		c_tand:		func_lop = (source_pixel == 8'd0) ? destination_pixel: source_pixel & destination_pixel;
+		c_tor:		func_lop = (source_pixel == 8'd0) ? destination_pixel: source_pixel | destination_pixel;
+		c_teor:		func_lop = (source_pixel == 8'd0) ? destination_pixel: source_pixel ^ destination_pixel;
+		c_tnor:		func_lop = (source_pixel == 8'd0) ? destination_pixel: ~source_pixel;
+		c_trsv1:	func_lop = (source_pixel == 8'd0) ? destination_pixel: source_pixel;
+		c_trsv2:	func_lop = (source_pixel == 8'd0) ? destination_pixel: source_pixel;
+		c_trsv3:	func_lop = (source_pixel == 8'd0) ? destination_pixel: source_pixel;
+		default:	func_lop = source_pixel;
+		endcase
+	endfunction
+
+	assign w_lop_pixel		= func_lop( ff_logical_opration, ff_source, ff_read_pixel );
+
+	function [7:0] func_destination(
+		input		[1:0]	bpp,
+		input		[1:0]	dx,
+		input		[7:0]	write_pixel,
+		input		[7:0]	base_pixel
+	);
+		case( bpp )
+		c_bpp_2bit: begin
+			case( dx )
+			2'd0:	func_destination = {                  write_pixel[1:0], base_pixel[5:0] };
+			2'd1:	func_destination = { base_pixel[7:6], write_pixel[1:0], base_pixel[3:0] };
+			2'd2:	func_destination = { base_pixel[7:4], write_pixel[1:0], base_pixel[1:0] };
+			2'd3:	func_destination = { base_pixel[7:2], write_pixel[1:0] };
+			endcase
+		end
+		c_bpp_4bit: begin
+			case( dx[0] )
+			1'd0:	func_destination = {                  write_pixel[3:0], base_pixel[3:0] };
+			1'd1:	func_destination = { base_pixel[7:4], write_pixel[3:0] };
+			endcase
+		end
+		c_bpp_8bit: begin
+			func_destination = write_pixel;
+		end
+		default: begin
+			func_destination = write_pixel;
+		end
+		endcase
+	endfunction
+
+	assign w_destination	= func_destination( w_bpp, ff_dx[1:0], w_lop_pixel, ff_read_byte );
 
 	// --------------------------------------------------------------------
 	//	VRAM Access Cache
@@ -287,14 +532,14 @@ module vdp_command (
 		.reset_n						( reset_n						),
 		.clk							( clk							),
 		.start							( ff_start						),
-		.cache_vram_address				( w_cache_vram_address			),
-		.cache_vram_valid				( w_cache_vram_valid			),
+		.cache_vram_address				( ff_cache_vram_address			),
+		.cache_vram_valid				( ff_cache_vram_valid			),
 		.cache_vram_ready				( w_cache_vram_ready			),
-		.cache_vram_write				( w_cache_vram_write			),
-		.cache_vram_wdata				( w_cache_vram_wdata			),
+		.cache_vram_write				( ff_cache_vram_write			),
+		.cache_vram_wdata				( ff_cache_vram_wdata			),
 		.cache_vram_rdata				( w_cache_vram_rdata			),
 		.cache_vram_rdata_en			( w_cache_vram_rdata_en			),
-		.cache_flush_start				( w_cache_flush_start			),
+		.cache_flush_start				( ff_cache_flush_start			),
 		.cache_flush_end				( w_cache_flush_end				),
 		.command_vram_address			( command_vram_address			),
 		.command_vram_valid				( command_vram_valid			),
@@ -305,4 +550,13 @@ module vdp_command (
 		.command_vram_rdata				( command_vram_rdata			),
 		.command_vram_rdata_en			( command_vram_rdata_en			)
 	);
+
+	// --------------------------------------------------------------------
+	//	Status registers
+	// --------------------------------------------------------------------
+	assign status_command_enable	= ff_command_enable;
+	assign status_border_detect		= 1'b0;
+	assign status_transfer_ready	= 1'b0;
+	assign status_color				= ff_read_pixel;
+	assign status_border_position	= 9'd0;
 endmodule

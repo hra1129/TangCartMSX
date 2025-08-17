@@ -96,6 +96,12 @@ module vdp_cpu_interface (
 	output		[5:0]	register_num,
 	output		[7:0]	register_data,
 
+	input				status_command_enable,		//	S#2 bit0
+	input				status_border_detect,		//	S#2 bit4
+	input				status_transfer_ready,		//	S#2 bit7
+	input		[7:0]	status_color,				//	S#7
+	input		[8:0]	status_border_position,		//	S#8, S#9
+
 	output	[4:0]		reg_screen_mode,
 	output				reg_sprite_magify,
 	output				reg_sprite_16x16,
@@ -543,14 +549,14 @@ module vdp_cpu_interface (
 			case( ff_status_register_pointer )
 			4'd0:		ff_bus_rdata <= { ff_frame_interrupt, sprite_collision, 1'b0, 5'b00000 };
 			4'd1:		ff_bus_rdata <= { 2'd0, 5'b00010, ff_line_interrupt };
-			4'd2:		ff_bus_rdata <= { 1'b0, 1'b0, 1'b0, 1'b0, 2'b11, 1'b0, 1'b0 };
+			4'd2:		ff_bus_rdata <= { status_transfer_ready, 1'b0, 1'b0, status_border_detect, 2'b11, 1'b0, status_command_enable };
 			4'd3:		ff_bus_rdata <= sprite_collision_x[7:0];
 			4'd4:		ff_bus_rdata <= { 7'b1111111, sprite_collision_x[8] };
 			4'd5:		ff_bus_rdata <= sprite_collision_y[7:0];
 			4'd6:		ff_bus_rdata <= { 6'b111111, sprite_collision_y[9:8] };
-			4'd7:		ff_bus_rdata <= 8'd0;
-			4'd8:		ff_bus_rdata <= 8'd0;
-			4'd9:		ff_bus_rdata <= { 7'b1111111, 1'b0 };
+			4'd7:		ff_bus_rdata <= status_color;
+			4'd8:		ff_bus_rdata <= status_border_position[7:0];
+			4'd9:		ff_bus_rdata <= { 7'b1111111, status_border_position[8] };
 			default:	ff_bus_rdata <= 8'b11111111;
 			endcase
 			ff_bus_rdata_en <= 1'b1;
