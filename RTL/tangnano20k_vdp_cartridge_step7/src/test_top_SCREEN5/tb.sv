@@ -351,39 +351,25 @@ module tb ();
 			write_io( vdp_io0, (i & 255) );
 		end
 
-		repeat(5000000) @( posedge clk14m );
+		repeat(1000000) @( posedge clk14m );
 
-//		repeat( 200 ) begin
-//			write_io( vdp_io0, 8'h01 );
-//			@( posedge clk14m );
-//			@( posedge clk14m );
-//			@( posedge clk14m );
-//			write_io( vdp_io0, 8'h23 );
-//			@( posedge clk14m );
-//			@( posedge clk14m );
-//			write_io( vdp_io0, 8'h45 );
-//			@( posedge clk14m );
-//			write_io( vdp_io0, 8'h67 );
-//			@( posedge clk14m );
-//			@( posedge clk14m );
-//			write_io( vdp_io0, 8'h89 );
-//			@( posedge clk14m );
-//			@( posedge clk14m );
-//			@( posedge clk14m );
-//			write_io( vdp_io0, 8'hAB );
-//			@( posedge clk14m );
-//			write_io( vdp_io0, 8'hCD );
-//			@( posedge clk14m );
-//			@( posedge clk14m );
-//			@( posedge clk14m );
-//			@( posedge clk14m );
-//			@( posedge clk14m );
-//			write_io( vdp_io0, 8'hEF );
-//			@( posedge clk14m );
-//			@( posedge clk14m );
-//		end
-//
-//		repeat(5000000) @( posedge clk14m );
+		//	VDP Command PSET
+		write_io( vdp_io1, 8'd36 );
+		write_io( vdp_io1, 8'h80 + 8'd17 );
+
+		write_io( vdp_io3, 8'd32 );				//	R#36 DXl
+		write_io( vdp_io3, 8'd0 );				//	R#37 DXh
+		write_io( vdp_io3, 8'd32 );				//	R#38 DYl
+		write_io( vdp_io3, 8'd0 );				//	R#39 DYh
+		write_io( vdp_io3, 8'd0 );				//	R#40 ---
+		write_io( vdp_io3, 8'd0 );				//	R#41 ---
+		write_io( vdp_io3, 8'd0 );				//	R#42 ---
+		write_io( vdp_io3, 8'd0 );				//	R#43 ---
+		write_io( vdp_io3, 8'd15 );				//	R#44 COLOR
+		write_io( vdp_io3, 8'd0 );				//	R#45 ---
+		write_io( vdp_io3, 8'h50 );				//	R#46 PSET, IMP
+
+		repeat(1000000) @( posedge clk14m );
 
 		$display( "[test---] All tests completed" );
 		repeat( 100 ) @( posedge clk14m );

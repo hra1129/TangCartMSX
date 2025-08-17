@@ -19,6 +19,7 @@ start:
 			call	s5_blink
 			call	s5_blink2
 			call	s5_display_adjust
+			call	s5_pset_point
 			; 後始末
 			call	clear_key_buffer
 			ld		c, _TERM0
@@ -316,4 +317,92 @@ s5_load_image::
 			db		0x01,0xFF,0xF1,0x1F,0xFF,0xF1,0x1F,0xF1		;	D
 			db		0x00,0x11,0xFF,0xF1,0x11,0x1F,0xFF,0x10		;	E
 			db		0x00,0x00,0x11,0x10,0x00,0x01,0x11,0x00		;	F
+			endscope
+
+; =============================================================================
+;	[SCREEN5] VDP command test : PSET, POINT
+;	input:
+;		none
+;	output:
+;		none
+;	break:
+;		AF
+;	comment:
+;		none
+; =============================================================================
+			scope	s5_pset_point
+s5_pset_point::
+			ld		hl, 32
+			ld		de, 32
+			ld		c, 15
+			ld		b, LOP_IMP
+			call	pset
+
+			ld		hl, 33
+			ld		de, 33
+			ld		c, 15
+			ld		b, LOP_IMP
+			call	pset
+
+			ld		hl, 34
+			ld		de, 34
+			ld		c, 15
+			ld		b, LOP_IMP
+			call	pset
+
+			ld		hl, 35
+			ld		de, 35
+			ld		c, 15
+			ld		b, LOP_IMP
+			call	pset
+
+			call	wait_push_space_key
+			endscope
+
+; =============================================================================
+;	PSET
+;	input:
+;		hl ........ X座標
+;		de ........ Y座標
+;		c ......... 色
+;		b ......... LOGICAL OPERATION
+;	output:
+;		none
+;	break:
+;		AF
+;	comment:
+;		none
+; =============================================================================
+			scope	pset
+pset::
+			push	de
+			ld		a, 36		; DX
+			ld		e, 17
+			call	write_control_register
+			pop		de
+
+			di
+			ld		a, l
+			call	write_register
+			ld		a, h
+			call	write_register
+			ld		a, e
+			call	write_register
+			ld		a, d
+			call	write_register
+
+			ld		a, 44		; COLOR
+			ld		e, 17
+			call	write_control_register
+
+			ld		a, c
+			call	write_register
+			xor		a, a
+			call	write_register
+			ld		a, b
+			and		a, 0x0F
+			or		a, 0x50		; PSET
+			call	write_register
+			ei
+			ret
 			endscope

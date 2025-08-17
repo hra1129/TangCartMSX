@@ -495,6 +495,7 @@ module vdp_command_cache (
 			ff_busy						<= 1'b0;
 			case( ff_priority )
 			2'd0:	begin
+				ff_cache0_address		<= ff_vram_address;
 				ff_cache0_data[ 7: 0]	<= ff_cache0_data_mask[0] ? command_vram_rdata[ 7: 0]: ff_cache0_data[ 7: 0];
 				ff_cache0_data[15: 8]	<= ff_cache0_data_mask[1] ? command_vram_rdata[15: 8]: ff_cache0_data[15: 8];
 				ff_cache0_data[23:16]	<= ff_cache0_data_mask[2] ? command_vram_rdata[23:16]: ff_cache0_data[23:16];
@@ -504,6 +505,7 @@ module vdp_command_cache (
 				ff_cache0_already_read	<= 1'b1;
 			end
 			2'd1:	begin
+				ff_cache1_address		<= ff_vram_address;
 				ff_cache1_data[ 7: 0]	<= ff_cache1_data_mask[0] ? command_vram_rdata[ 7: 0]: ff_cache1_data[ 7: 0];
 				ff_cache1_data[15: 8]	<= ff_cache1_data_mask[1] ? command_vram_rdata[15: 8]: ff_cache1_data[15: 8];
 				ff_cache1_data[23:16]	<= ff_cache1_data_mask[2] ? command_vram_rdata[23:16]: ff_cache1_data[23:16];
@@ -513,6 +515,7 @@ module vdp_command_cache (
 				ff_cache1_already_read	<= 1'b1;
 			end
 			2'd2:	begin
+				ff_cache2_address		<= ff_vram_address;
 				ff_cache2_data[ 7: 0]	<= ff_cache2_data_mask[0] ? command_vram_rdata[ 7: 0]: ff_cache2_data[ 7: 0];
 				ff_cache2_data[15: 8]	<= ff_cache2_data_mask[1] ? command_vram_rdata[15: 8]: ff_cache2_data[15: 8];
 				ff_cache2_data[23:16]	<= ff_cache2_data_mask[2] ? command_vram_rdata[23:16]: ff_cache2_data[23:16];
@@ -522,6 +525,7 @@ module vdp_command_cache (
 				ff_cache2_already_read	<= 1'b1;
 			end
 			2'd3:	begin
+				ff_cache3_address		<= ff_vram_address;
 				ff_cache3_data[ 7: 0]	<= ff_cache3_data_mask[0] ? command_vram_rdata[ 7: 0]: ff_cache3_data[ 7: 0];
 				ff_cache3_data[15: 8]	<= ff_cache3_data_mask[1] ? command_vram_rdata[15: 8]: ff_cache3_data[15: 8];
 				ff_cache3_data[23:16]	<= ff_cache3_data_mask[2] ? command_vram_rdata[23:16]: ff_cache3_data[23:16];

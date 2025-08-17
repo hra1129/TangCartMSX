@@ -304,3 +304,5 @@ th9958(仮) 開発日誌
 
 2025年8月17日 52日目
 	VDP Command にステータスレジスタポートを追加。CPU interface にその読み出しを追加。
+	VDP Command STOP, PSET, POINT を実装。
+	R#17経由の間接レジスタライト機能が未実装だったバグを修正。

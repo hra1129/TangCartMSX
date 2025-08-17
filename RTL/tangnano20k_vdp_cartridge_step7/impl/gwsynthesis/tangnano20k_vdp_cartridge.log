@@ -16,7 +16,7 @@ Undeclared symbol 'w_vram_interleave', assumed default net type 'wire'("D:\githu
 Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_vdp_cartridge_step7\src\th9958\vdp_color_palette.v'
 Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_vdp_cartridge_step7\src\th9958\vdp_color_palette_ram.v'
 Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_vdp_cartridge_step7\src\th9958\vdp_command.v'
-Undeclared symbol 'w_lop_pixel', assumed default net type 'wire'("D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_vdp_cartridge_step7\src\th9958\vdp_command.v":494)
+Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_vdp_cartridge_step7\src\th9958\vdp_command_cache.v'
 Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_vdp_cartridge_step7\src\th9958\vdp_cpu_interface.v'
 Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_vdp_cartridge_step7\src\th9958\vdp_sprite_info_collect.v'
 Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_vdp_cartridge_step7\src\th9958\vdp_sprite_makeup_pixel.v'
@@ -34,7 +34,6 @@ Undeclared symbol 'w_display_en', assumed default net type 'wire'("D:\github\HRA
 Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_vdp_cartridge_step7\src\th9958\vdp_video_out_bilinear.v'
 Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_vdp_cartridge_step7\src\th9958\vdp_video_ram_line_buffer.v'
 Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_vdp_cartridge_step7\src\th9958\vdp_vram_interface.v'
-Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_vdp_cartridge_step7\src\th9958\vdp_command_cache.v'
 Compiling module 'tangnano20k_vdp_cartridge'("D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_vdp_cartridge_step7\src\tangnano20k_vdp_cartridge.v":24)
 Compiling module 'Gowin_rPLL'("D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_vdp_cartridge_step7\src\gowin_rpll\gowin_rpll.v":10)
 Compiling module 'Gowin_rPLL2'("D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_vdp_cartridge_step7\src\gowin_rpll2\gowin_rpll2.v":10)
@@ -50,10 +49,7 @@ Compiling module 'vdp_sprite_select_visible_planes'("D:\github\HRA_product\TangC
 Compiling module 'vdp_sprite_info_collect'("D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_vdp_cartridge_step7\src\th9958\vdp_sprite_info_collect.v":58)
 Compiling module 'vdp_sprite_makeup_pixel'("D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_vdp_cartridge_step7\src\th9958\vdp_sprite_makeup_pixel.v":58)
 Compiling module 'vdp_command'("D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_vdp_cartridge_step7\src\th9958\vdp_command.v":57)
-WARN  (EX3791) : Expression size 8 truncated to fit in target size 1("D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_vdp_cartridge_step7\src\th9958\vdp_command.v":494)
 Compiling module 'vdp_command_cache'("D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_vdp_cartridge_step7\src\th9958\vdp_command_cache.v":57)
-WARN  (EX1998) : Net 'ff_sx[8]' does not have a driver("D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_vdp_cartridge_step7\src\th9958\vdp_command.v":138)
-WARN  (EX1998) : Net 'ff_dx[8]' does not have a driver("D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_vdp_cartridge_step7\src\th9958\vdp_command.v":140)
 Compiling module 'vdp_vram_interface'("D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_vdp_cartridge_step7\src\th9958\vdp_vram_interface.v":58)
 Compiling module 'vdp_color_palette'("D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_vdp_cartridge_step7\src\th9958\vdp_color_palette.v":58)
 Compiling module 'vdp_color_palette_ram'("D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_vdp_cartridge_step7\src\th9958\vdp_color_palette_ram.v":58)

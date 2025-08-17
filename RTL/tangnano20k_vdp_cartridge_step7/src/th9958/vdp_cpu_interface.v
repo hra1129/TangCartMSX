@@ -240,8 +240,32 @@ module vdp_cpu_interface (
 				endcase
 			end
 		end
+		else if( bus_valid && bus_write && w_ready && bus_address == 2'd3 ) begin
+			ff_register_write	<= 1'b1;
+			ff_register_num		<= ff_register_pointer;
+			ff_1st_byte			<= bus_wdata;
+		end
 		else begin
 			ff_register_write <= 1'b0;
+		end
+	end
+
+	always @( posedge clk or negedge reset_n ) begin
+		if( !reset_n ) begin
+			ff_register_pointer	<= 5'd0;
+			ff_not_increment	<= 1'b0;
+		end
+		else if( bus_valid && bus_write && w_ready && bus_address == 2'd3 ) begin
+			if( !ff_not_increment ) begin
+				ff_register_pointer <= ff_register_pointer + 5'd1;
+			end
+		end
+		else if( ff_register_write ) begin
+			if( ff_register_num == 8'd17 ) begin
+				//	R#17 = [AII][N/A][R5][R4][R3][R2][R1][R0]
+				ff_register_pointer	<= ff_1st_byte[5:0];
+				ff_not_increment	<= ff_1st_byte[7];
+			end
 		end
 	end
 
@@ -361,8 +385,6 @@ module vdp_cpu_interface (
 			ff_text_back_color <= 8'd0;
 			ff_blink_period <= 8'd0;
 			ff_status_register_pointer <= 4'd0;
-			ff_register_pointer <= 5'd0;
-			ff_not_increment <= 1'b0;
 			ff_display_adjust <= 8'd0;
 			ff_interrupt_line <= 8'd0;
 			ff_vertical_offset <= 8'd0;
@@ -453,11 +475,8 @@ module vdp_cpu_interface (
 
 			//	6'd16 は、color palette interface の always文にある
 
-			8'd17:	//	R#17 = [AII][N/A][R5][R4][R3][R2][R1][R0]
-				begin
-					ff_register_pointer <= ff_1st_byte[5:0];
-					ff_not_increment <= ff_1st_byte[7];
-				end
+			//	6'd17 は、register pointer の always文にある
+
 			8'd18:	//	R#18 = [V3][V2][V1][V0][H3][H2][H1][H0]
 				begin
 					ff_display_adjust <= ff_1st_byte;

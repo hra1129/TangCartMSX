@@ -16,6 +16,7 @@
         <File path="D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_vdp_cartridge_step7\src\th9958\vdp_color_palette.v" type="verilog"/>
         <File path="D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_vdp_cartridge_step7\src\th9958\vdp_color_palette_ram.v" type="verilog"/>
         <File path="D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_vdp_cartridge_step7\src\th9958\vdp_command.v" type="verilog"/>
+        <File path="D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_vdp_cartridge_step7\src\th9958\vdp_command_cache.v" type="verilog"/>
         <File path="D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_vdp_cartridge_step7\src\th9958\vdp_cpu_interface.v" type="verilog"/>
         <File path="D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_vdp_cartridge_step7\src\th9958\vdp_sprite_info_collect.v" type="verilog"/>
         <File path="D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_vdp_cartridge_step7\src\th9958\vdp_sprite_makeup_pixel.v" type="verilog"/>
@@ -31,7 +32,6 @@
         <File path="D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_vdp_cartridge_step7\src\th9958\vdp_video_out_bilinear.v" type="verilog"/>
         <File path="D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_vdp_cartridge_step7\src\th9958\vdp_video_ram_line_buffer.v" type="verilog"/>
         <File path="D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_vdp_cartridge_step7\src\th9958\vdp_vram_interface.v" type="verilog"/>
-        <File path="D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_vdp_cartridge_step7\src\th9958\vdp_command_cache.v" type="verilog"/>
     </FileList>
     <OptionList>
         <Option type="disable_insert_pad" value="0"/>

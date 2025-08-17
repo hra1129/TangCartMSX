@@ -131,6 +131,7 @@ module vdp_command (
 	reg			[7:0]	ff_read_byte;
 	reg			[7:0]	ff_source;
 	wire		[7:0]	w_destination;
+	wire		[7:0]	w_lop_pixel;
 
 	reg			[8:0]	reg_sx;
 	reg			[8:0]	reg_dx;
@@ -183,7 +184,8 @@ module vdp_command (
 	localparam			c_state_ymmm			= 6'd12;
 	localparam			c_state_hmmc			= 6'd13;
 	localparam			c_state_pset_make		= 6'd14;
-	localparam			c_state_wait_rdata_en	= 6'd62;
+	localparam			c_state_wait_rdata_en	= 6'd61;
+	localparam			c_state_pre_finish		= 6'd62;
 	localparam			c_state_finish			= 6'd63;
 
 	reg			[5:0]	ff_state;
@@ -222,6 +224,15 @@ module vdp_command (
 
 	always @( posedge clk or negedge reset_n ) begin
 		if( !reset_n ) begin
+			ff_sx <= 9'd0;
+		end
+		else if( ff_start ) begin
+			ff_sx <= reg_sx;
+		end
+	end
+
+	always @( posedge clk or negedge reset_n ) begin
+		if( !reset_n ) begin
 			ff_sy	<= 10'd0;
 		end
 		else if( register_write ) begin
@@ -250,6 +261,15 @@ module vdp_command (
 
 	always @( posedge clk or negedge reset_n ) begin
 		if( !reset_n ) begin
+			ff_dx <= 9'd0;
+		end
+		else if( ff_start ) begin
+			ff_dx <= reg_dx;
+		end
+	end
+
+	always @( posedge clk or negedge reset_n ) begin
+		if( !reset_n ) begin
 			ff_dy	<= 10'd0;
 		end
 		else if( register_write ) begin
@@ -273,6 +293,15 @@ module vdp_command (
 			else if( register_num == 6'd41 ) begin
 				reg_nx[8]	<= register_data[0];
 			end
+		end
+	end
+
+	always @( posedge clk or negedge reset_n ) begin
+		if( !reset_n ) begin
+			ff_nx <= 9'd0;
+		end
+		else if( ff_start ) begin
+			ff_nx <= reg_nx;
 		end
 	end
 
@@ -398,11 +427,15 @@ module vdp_command (
 			ff_state				<= c_state_idle;
 			ff_cache_vram_address	<= 17'd0;
 			ff_cache_flush_start	<= 1'b0;
+			ff_cache_vram_valid		<= 1'b0;
+			ff_cache_vram_write		<= 1'b0;
+			ff_cache_vram_wdata		<= 8'd0;
 		end
 		else if( ff_start ) begin
 			case( ff_command )
 			c_stop:		ff_state <= c_state_stop;
 			c_point:	ff_state <= c_state_point;
+			c_pset:		ff_state <= c_state_pset;
 			default:	ff_state <= c_state_stop;
 			endcase
 		end
@@ -441,18 +474,25 @@ module vdp_command (
 				ff_cache_vram_valid		<= 1'b1;
 				ff_cache_vram_write		<= 1'b1;
 				ff_cache_vram_wdata		<= w_destination;
-				ff_state				<= c_state_finish;
+				ff_state				<= c_state_pre_finish;
 			end
 			c_state_wait_rdata_en: begin
 				//	Wait until the results of the lead request arrive.
 				if( w_cache_vram_rdata_en ) begin
 					//	Activate cache flush and wait for it to complete.
-					ff_cache_flush_start	<= 1'b1;
 					ff_state				<= ff_next_state;
+					ff_cache_flush_start	<= (ff_next_state == c_state_finish);
 				end
+			end
+			c_state_pre_finish: begin
+				ff_state				<= c_state_finish;
+				ff_cache_flush_start	<= 1'b1;
 			end
 			c_state_finish: begin
 				//	Wait until the cache flush is complete.
+				ff_cache_vram_valid		<= 1'b0;
+				ff_cache_vram_write		<= 1'b0;
+				ff_cache_vram_wdata		<= 8'd0;
 				ff_cache_flush_start	<= 1'b0;
 				if( w_cache_flush_end ) begin
 					ff_state <= c_state_idle;

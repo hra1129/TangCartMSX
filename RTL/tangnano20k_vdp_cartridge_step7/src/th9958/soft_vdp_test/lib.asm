@@ -76,6 +76,17 @@ _FFIRST		:= 0x40
 _FNEXT		:= 0x41
 _FNEW		:= 0x42
 
+LOP_IMP		:= 0
+LOP_AND		:= 1
+LOP_OR		:= 2
+LOP_EOR		:= 3
+LOP_NOT		:= 4
+LOP_TIMP	:= 0 + 8
+LOP_TAND	:= 1 + 8
+LOP_TOR		:= 2 + 8
+LOP_TEOR	:= 3 + 8
+LOP_TNOT	:= 4 + 8
+
 ; =============================================================================
 ;	VDP の I/O アドレスを選択する
 ;	input:
