@@ -341,6 +341,9 @@ module tb ();
 		//	VDP R#1 = 0x40
 		write_io( vdp_io1, 8'h40 );
 		write_io( vdp_io1, 8'h81 );
+		//	VDP R#2 = 0x1F
+		write_io( vdp_io1, 8'h1F );
+		write_io( vdp_io1, 8'h82 );
 
 		$display( "[test001] Write VRAM" );
 		//	VRAM 0x00000 ... 0x07FFF = 0x00
@@ -351,12 +354,11 @@ module tb ();
 			write_io( vdp_io0, (i & 255) );
 		end
 
-		repeat(1000000) @( posedge clk14m );
+		repeat(5000) @( posedge clk14m );
 
 		//	VDP Command PSET
 		write_io( vdp_io1, 8'd36 );
 		write_io( vdp_io1, 8'h80 + 8'd17 );
-
 		write_io( vdp_io3, 8'd32 );				//	R#36 DXl
 		write_io( vdp_io3, 8'd0 );				//	R#37 DXh
 		write_io( vdp_io3, 8'd32 );				//	R#38 DYl
@@ -368,8 +370,92 @@ module tb ();
 		write_io( vdp_io3, 8'd15 );				//	R#44 COLOR
 		write_io( vdp_io3, 8'd0 );				//	R#45 ---
 		write_io( vdp_io3, 8'h50 );				//	R#46 PSET, IMP
+		repeat(500) @( posedge clk14m );
 
-		repeat(1000000) @( posedge clk14m );
+		write_io( vdp_io1, 8'd36 );
+		write_io( vdp_io1, 8'h80 + 8'd17 );
+		write_io( vdp_io3, 8'd33 );				//	R#36 DXl
+		write_io( vdp_io3, 8'd0 );				//	R#37 DXh
+		write_io( vdp_io3, 8'd33 );				//	R#38 DYl
+		write_io( vdp_io3, 8'd0 );				//	R#39 DYh
+		write_io( vdp_io3, 8'd0 );				//	R#40 ---
+		write_io( vdp_io3, 8'd0 );				//	R#41 ---
+		write_io( vdp_io3, 8'd0 );				//	R#42 ---
+		write_io( vdp_io3, 8'd0 );				//	R#43 ---
+		write_io( vdp_io3, 8'd14 );				//	R#44 COLOR
+		write_io( vdp_io3, 8'd0 );				//	R#45 ---
+		write_io( vdp_io3, 8'h50 );				//	R#46 PSET, IMP
+		repeat(500) @( posedge clk14m );
+
+		write_io( vdp_io1, 8'd36 );
+		write_io( vdp_io1, 8'h80 + 8'd17 );
+		write_io( vdp_io3, 8'd34 );				//	R#36 DXl
+		write_io( vdp_io3, 8'd0 );				//	R#37 DXh
+		write_io( vdp_io3, 8'd34 );				//	R#38 DYl
+		write_io( vdp_io3, 8'd0 );				//	R#39 DYh
+		write_io( vdp_io3, 8'd0 );				//	R#40 ---
+		write_io( vdp_io3, 8'd0 );				//	R#41 ---
+		write_io( vdp_io3, 8'd0 );				//	R#42 ---
+		write_io( vdp_io3, 8'd0 );				//	R#43 ---
+		write_io( vdp_io3, 8'd13 );				//	R#44 COLOR
+		write_io( vdp_io3, 8'd0 );				//	R#45 ---
+		write_io( vdp_io3, 8'h50 );				//	R#46 PSET, IMP
+		repeat(500) @( posedge clk14m );
+
+		write_io( vdp_io1, 8'd36 );
+		write_io( vdp_io1, 8'h80 + 8'd17 );
+		write_io( vdp_io3, 8'd35 );				//	R#36 DXl
+		write_io( vdp_io3, 8'd0 );				//	R#37 DXh
+		write_io( vdp_io3, 8'd35 );				//	R#38 DYl
+		write_io( vdp_io3, 8'd0 );				//	R#39 DYh
+		write_io( vdp_io3, 8'd0 );				//	R#40 ---
+		write_io( vdp_io3, 8'd0 );				//	R#41 ---
+		write_io( vdp_io3, 8'd0 );				//	R#42 ---
+		write_io( vdp_io3, 8'd0 );				//	R#43 ---
+		write_io( vdp_io3, 8'd12 );				//	R#44 COLOR
+		write_io( vdp_io3, 8'd0 );				//	R#45 ---
+		write_io( vdp_io3, 8'h50 );				//	R#46 PSET, IMP
+		repeat(500) @( posedge clk14m );
+
+		//	VDP Command POINT
+		write_io( vdp_io1, 8'd32 );
+		write_io( vdp_io1, 8'h80 + 8'd17 );
+		write_io( vdp_io3, 8'd32 );				//	R#32 SXl
+		write_io( vdp_io3, 8'd0 );				//	R#33 SXh
+		write_io( vdp_io3, 8'd32 );				//	R#34 SYl
+		write_io( vdp_io3, 8'd0 );				//	R#35 SYh
+		write_io( vdp_io1, 8'h40 );				//	R#46 POINT
+		write_io( vdp_io1, 8'h80 + 8'd46 );
+
+		write_io( vdp_io1, 8'd32 );
+		write_io( vdp_io1, 8'h80 + 8'd17 );
+		write_io( vdp_io3, 8'd33 );				//	R#32 SXl
+		write_io( vdp_io3, 8'd0 );				//	R#33 SXh
+		write_io( vdp_io3, 8'd33 );				//	R#34 SYl
+		write_io( vdp_io3, 8'd0 );				//	R#35 SYh
+		write_io( vdp_io1, 8'h40 );				//	R#46 POINT
+		write_io( vdp_io1, 8'h80 + 8'd46 );
+
+		write_io( vdp_io1, 8'd32 );
+		write_io( vdp_io1, 8'h80 + 8'd17 );
+		write_io( vdp_io3, 8'd34 );				//	R#32 SXl
+		write_io( vdp_io3, 8'd0 );				//	R#33 SXh
+		write_io( vdp_io3, 8'd34 );				//	R#34 SYl
+		write_io( vdp_io3, 8'd0 );				//	R#35 SYh
+		write_io( vdp_io1, 8'h40 );				//	R#46 POINT
+		write_io( vdp_io1, 8'h80 + 8'd46 );
+
+		write_io( vdp_io1, 8'd32 );
+		write_io( vdp_io1, 8'h80 + 8'd17 );
+		write_io( vdp_io3, 8'd35 );				//	R#32 SXl
+		write_io( vdp_io3, 8'd0 );				//	R#33 SXh
+		write_io( vdp_io3, 8'd35 );				//	R#34 SYl
+		write_io( vdp_io3, 8'd0 );				//	R#35 SYh
+		write_io( vdp_io1, 8'h40 );				//	R#46 POINT
+		write_io( vdp_io1, 8'h80 + 8'd46 );
+		repeat(500) @( posedge clk14m );
+
+		repeat(2000000) @( posedge clk14m );
 
 		$display( "[test---] All tests completed" );
 		repeat( 100 ) @( posedge clk14m );

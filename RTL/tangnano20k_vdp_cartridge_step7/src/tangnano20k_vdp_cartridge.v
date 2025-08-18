@@ -98,8 +98,10 @@ module tangnano20k_vdp_cartridge (
 	assign slot_wait		= w_sdram_init_busy;
 	assign slot_intr		= 1'b0;
     assign oe_n             = 1'b0;
-    assign busdir           = ( { slot_a[7:2], 2'd0 } == 8'h10 && !slot_iorq_n ) ? ~slot_rd_n: 1'b0;
+    assign busdir           = ( { slot_a[7:2], 2'd0 } == 8'h88 && !slot_iorq_n ) ? ~slot_rd_n: 1'b0;
     assign ws2812_led       = 1'b0;
+//	assign w_bus_vdp_ioreq	= w_bus_ioreq & ( {w_bus_address[7:2], 2'd0} == 8'h98 );
+	assign w_bus_vdp_ioreq	= w_bus_ioreq & ( {w_bus_address[7:2], 2'd0} == 8'h88 );
 
 	// --------------------------------------------------------------------
 	//	clock
@@ -187,9 +189,6 @@ module tangnano20k_vdp_cartridge (
 		.display_g			( w_video_g				),
 		.display_b			( w_video_b				)
 	);
-
-//	assign w_bus_vdp_ioreq	= w_bus_ioreq & ( {w_bus_address[7:2], 2'd0} == 8'h98 );
-	assign w_bus_vdp_ioreq	= w_bus_ioreq & ( {w_bus_address[7:2], 2'd0} == 8'h88 );
 
 	assign w_sdram_address[22:17]	= 6'd0;
 

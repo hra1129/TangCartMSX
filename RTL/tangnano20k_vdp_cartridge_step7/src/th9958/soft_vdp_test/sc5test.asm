@@ -333,29 +333,39 @@ s5_load_image::
 			scope	s5_pset_point
 s5_pset_point::
 			ld		hl, 32
-			ld		de, 32
+			ld		b, 100
 			ld		c, 15
+			; for B=0 to 99
+	loop:
+			push	bc
+			push	hl
+			; pset (32+B, 32+B), C
+			ld		e, l
+			ld		d, h
 			ld		b, LOP_IMP
 			call	pset
-
-			ld		hl, 33
-			ld		de, 33
-			ld		c, 15
+			pop		hl
+			; A = point(32+B, 32+B)
+			push	hl
+			ld		e, l
+			ld		d, h
+			call	point
+			pop		hl
+			push	hl
+			; pset (64+B, 32+B), C
+			ld		a, e
+			ld		e, l
+			ld		d, h
+			ld		bc, 32
+			add		hl, bc
+			ld		c, a
 			ld		b, LOP_IMP
 			call	pset
-
-			ld		hl, 34
-			ld		de, 34
-			ld		c, 15
-			ld		b, LOP_IMP
-			call	pset
-
-			ld		hl, 35
-			ld		de, 35
-			ld		c, 15
-			ld		b, LOP_IMP
-			call	pset
-
+			pop		hl
+			pop		bc
+			inc		hl
+			inc		c
+			djnz	loop
 			call	wait_push_space_key
 			endscope
 
@@ -403,6 +413,51 @@ pset::
 			and		a, 0x0F
 			or		a, 0x50		; PSET
 			call	write_register
+			ei
+			ret
+			endscope
+
+; =============================================================================
+;	POINT
+;	input:
+;		hl ........ Xç¿ïW
+;		de ........ Yç¿ïW
+;	output:
+;		e ......... color
+;	break:
+;		AF
+;	comment:
+;		none
+; =============================================================================
+			scope	point
+point::
+			push	de
+			ld		a, 32		; SX
+			ld		e, 17
+			call	write_control_register
+			pop		de
+
+			di
+			ld		a, l
+			call	write_register
+			ld		a, h
+			call	write_register
+			ld		a, e
+			call	write_register
+			ld		a, d
+			call	write_register
+
+			ld		a, 0x40		; POINT
+			ld		e, 46
+			call	write_control_register
+
+			nop
+			nop
+			nop
+			nop
+
+			ld		e, 7
+			call	read_status_register
 			ei
 			ret
 			endscope

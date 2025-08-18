@@ -133,6 +133,10 @@ vdp_io_select::
 			ex		de, hl
 			jr		update_loop
 	update_table:
+			dw		io_vdp_port0
+			dw		io_vdp_port1
+			dw		io_vdp_port2
+			dw		io_vdp_port3
 			dw		p_vdp_port0
 			dw		p_vdp_port1
 			dw		p_vdp_port2
@@ -145,7 +149,19 @@ vdp_io_select::
 			dw		p_vdp_port9
 			dw		p_vdp_port10
 			dw		p_vdp_port11
+			dw		p_vdp_port12
+			dw		p_vdp_port13
+			dw		p_vdp_port14
+			dw		p_vdp_port15
 			dw		0				; end mark
+io_vdp_port0::
+			db		0x98
+io_vdp_port1::
+			db		0x99
+io_vdp_port2::
+			db		0x9A
+io_vdp_port3::
+			db		0x9B
 			endscope
 
 ; =============================================================================
@@ -266,18 +282,33 @@ p_vdp_port7	:= $ + 1
 ; =============================================================================
 ;	ステータスレジスタのリード
 ;	input:
-;		none
+;		E .... ステータスレジスタ番号
 ;	output:
-;		A .... 読みだした値
+;		E .... 読みだした値
 ;	break:
-;		AF
+;		AF E
 ;	comment:
 ;		none
 ; =============================================================================
 			scope	read_status_register
 read_status_register::
-p_vdp_port8	:= $ + 1
+			ld		a, e
+			di
+p_vdp_port8		:= $ + 1
+			out		[ vdp_port1 ], a
+			ld		a, 0x8F
+p_vdp_port9		:= $ + 1
+			out		[ vdp_port1 ], a
+p_vdp_port10	:= $ + 1
 			in		a, [ vdp_port1 ]
+			ld		e, a
+			xor		a, a
+p_vdp_port11	:= $ + 1
+			out		[ vdp_port1 ], a
+			ld		a, 0x8F
+p_vdp_port12	:= $ + 1
+			out		[ vdp_port1 ], a
+			ei
 			ret
 			endscope
 
@@ -294,7 +325,7 @@ p_vdp_port8	:= $ + 1
 ; =============================================================================
 			scope	read_vram
 read_vram::
-p_vdp_port9	:= $ + 1
+p_vdp_port13	:= $ + 1
 			in		a, [ vdp_port0 ]
 			ret
 			endscope
@@ -312,7 +343,7 @@ p_vdp_port9	:= $ + 1
 ; =============================================================================
 			scope	write_vram
 write_vram::
-p_vdp_port10	:= $ + 1
+p_vdp_port14	:= $ + 1
 			out		[ vdp_port0 ], a
 			ret
 			endscope
@@ -330,7 +361,7 @@ p_vdp_port10	:= $ + 1
 ; =============================================================================
 			scope	write_register
 write_register::
-p_vdp_port11	:= $ + 1
+p_vdp_port15	:= $ + 1
 			out		[ vdp_port3 ], a
 			ret
 			endscope

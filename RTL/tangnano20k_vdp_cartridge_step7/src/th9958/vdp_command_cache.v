@@ -558,7 +558,7 @@ module vdp_command_cache (
 	assign cache_vram_ready			= ~w_vram_busy;
 	assign cache_vram_rdata			= ff_cache_vram_rdata;
 	assign cache_vram_rdata_en		= ff_cache_vram_rdata_en;
-	assign command_vram_address		= ff_vram_address;
+	assign command_vram_address		= { ff_vram_address, 2'd0 };
 	assign command_vram_valid		= ff_vram_valid;
 	assign command_vram_write		= ff_vram_write;
 	assign command_vram_wdata		= ff_vram_wdata;

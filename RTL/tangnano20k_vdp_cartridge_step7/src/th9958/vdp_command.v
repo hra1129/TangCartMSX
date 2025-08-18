@@ -165,7 +165,6 @@ module vdp_command (
 	wire				w_cache_flush_end;
 	wire				w_effective_mode;
 	wire		[1:0]	w_bpp;					//	c_bpp_Xbit
-	wire				w_width256b;			//	0: width 128bytes, 1: width 256bytes
 	wire		[16:0]	w_address_s;
 	wire		[16:0]	w_address_d;
 
@@ -197,13 +196,19 @@ module vdp_command (
 	assign w_effective_mode		= reg_command_enable || (screen_mode == c_g4 || screen_mode == c_g5 || screen_mode == c_g6 || screen_mode == c_g7);
 	assign w_bpp				= (screen_mode == c_g7) ? c_bpp_8bit:
 	            				  (screen_mode == c_g6) ? c_bpp_2bit: c_bpp_4bit;
-	assign w_width256b			= (screen_mode == c_g6 || screen_mode == c_g7) ? 1'b1: 1'b0;
 
 	// --------------------------------------------------------------------
 	//	Address
 	// --------------------------------------------------------------------
-	assign w_address_s			= w_width256b ? { ff_sy[8:0], ff_sx[8:1] }: { ff_sy, ff_sx[8:2] };
-	assign w_address_d			= w_width256b ? { ff_dy[8:0], ff_dx[8:1] }: { ff_dy, ff_dx[8:2] };
+	assign w_address_s			= (screen_mode == c_g4) ? { ff_sy[9:0], ff_sx[7:1] }:		// SCREEN5, 128byte/line, 2pixel/byte
+	                  			  (screen_mode == c_g5) ? { ff_sy[9:0], ff_sx[8:2] }:		// SCREEN6, 128byte/line, 4pixel/byte
+	                  			  (screen_mode == c_g6) ? { ff_sy[8:0], ff_sx[8:1] }:		// SCREEN7, 256byte/line, 2pixel/byte
+	                  			                          { ff_sy[8:0], ff_sx[7:0] };		// SCREEN8, 256byte/line, 1pixel/byte
+
+	assign w_address_d			= (screen_mode == c_g4) ? { ff_dy[9:0], ff_dx[7:1] }:		// SCREEN5, 128byte/line, 2pixel/byte
+	                  			  (screen_mode == c_g5) ? { ff_dy[9:0], ff_dx[8:2] }:		// SCREEN6, 128byte/line, 4pixel/byte
+	                  			  (screen_mode == c_g6) ? { ff_dy[8:0], ff_dx[8:1] }:		// SCREEN7, 256byte/line, 2pixel/byte
+	                  			                          { ff_dy[8:0], ff_dx[7:0] };		// SCREEN8, 256byte/line, 1pixel/byte
 
 	// --------------------------------------------------------------------
 	//	Registers
@@ -404,7 +409,7 @@ module vdp_command (
 				ff_read_pixel <= w_cache_vram_rdata;
 			end
 			c_bpp_4bit: begin
-				ff_read_pixel <= ff_sx[0] ? { 4'd0, w_cache_vram_rdata[7:4] }: { 4'd0, w_cache_vram_rdata[3:0] };
+				ff_read_pixel <= ff_sx[0] ? { 4'd0, w_cache_vram_rdata[3:0] }: { 4'd0, w_cache_vram_rdata[7:4] };
 			end
 			c_bpp_2bit: begin
 				case( ff_sx[1:0] )
