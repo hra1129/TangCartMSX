@@ -20,6 +20,7 @@ start:
 			call	s5_blink2
 			call	s5_display_adjust
 			call	s5_pset_point
+			call	s5_line
 			; 後始末
 			call	clear_key_buffer
 			ld		c, _TERM0
@@ -370,6 +371,52 @@ s5_pset_point::
 			endscope
 
 ; =============================================================================
+;	[SCREEN5] VDP command test : LINE
+;	input:
+;		none
+;	output:
+;		none
+;	break:
+;		AF
+;	comment:
+;		none
+; =============================================================================
+			scope	s5_line
+s5_line::
+			ld		hl, 10
+			ld		[cmd_dx], hl
+			ld		hl, 20
+			ld		[cmd_dy], hl
+			ld		hl, 100
+			ld		[cmd_nx], hl
+			ld		hl, 100
+			ld		[cmd_ny], hl
+			ld		a, 15
+			ld		[cmd_color], a
+			xor		a, a
+			ld		[cmd_arg], a
+			call	line
+			call	wait_command
+
+			ld		hl, 10
+			ld		[cmd_dx], hl
+			ld		hl, 20
+			ld		[cmd_dy], hl
+			ld		hl, 100
+			ld		[cmd_nx], hl
+			ld		hl, 50
+			ld		[cmd_ny], hl
+			ld		a, 10
+			ld		[cmd_color], a
+			xor		a, a
+			ld		[cmd_arg], a
+			call	line
+			call	wait_command
+			call	wait_push_space_key
+			ret
+			endscope
+
+; =============================================================================
 ;	PSET
 ;	input:
 ;		hl ........ X座標
@@ -460,4 +507,54 @@ point::
 			call	read_status_register
 			ei
 			ret
+			endscope
+
+; =============================================================================
+;	LINE
+;	input:
+;		cmd_xxxx .... パラメータ
+;	output:
+;		none
+;	break:
+;		AF
+;	comment:
+;		none
+; =============================================================================
+			scope	line
+line::
+			ld		a, 0x70
+			ld		[cmd_exec], a
+
+			ld		a, 32
+			ld		e, 17
+			call	write_control_register
+
+			ld		a, [io_vdp_port3]
+			ld		c, a
+			ld		hl, cmd_sx
+			ld		b, 15
+			otir
+			ret
+			endscope
+
+; =============================================================================
+			scope	vdp_command
+cmd_sx::
+			dw		0
+cmd_sy::
+			dw		0
+cmd_dx::
+			dw		0
+cmd_dy::
+			dw		0
+cmd_nx::
+			dw		0
+cmd_ny::
+			dw		0
+cmd_color::
+			db		0
+cmd_arg::
+			db		0
+cmd_exec::
+			db		0
 			endscope

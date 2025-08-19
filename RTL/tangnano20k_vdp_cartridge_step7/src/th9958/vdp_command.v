@@ -140,8 +140,9 @@ module vdp_command (
 	reg			[9:0]	ff_sy;
 	reg			[8:0]	ff_dx;
 	reg			[9:0]	ff_dy;
-	reg			[8:0]	ff_nx;
+	reg			[9:0]	ff_nx;
 	reg			[9:0]	ff_ny;
+	reg			[9:0]	ff_nyb;
 	reg			[7:0]	ff_color;
 	reg					ff_maj;
 	reg					ff_eq;
@@ -167,6 +168,10 @@ module vdp_command (
 	wire		[1:0]	w_bpp;					//	c_bpp_Xbit
 	wire		[16:0]	w_address_s;
 	wire		[16:0]	w_address_d;
+	wire		[10:0]	w_next_nyb;
+	wire		[9:0]	w_next_dx;
+	wire		[10:0]	w_next_dy;
+	wire				w_line_shift;
 
 	localparam			c_state_idle			= 6'd0;
 	localparam			c_state_stop			= 6'd1;
@@ -183,6 +188,8 @@ module vdp_command (
 	localparam			c_state_ymmm			= 6'd12;
 	localparam			c_state_hmmc			= 6'd13;
 	localparam			c_state_pset_make		= 6'd14;
+	localparam			c_state_line_make		= 6'd15;
+	localparam			c_state_line_next		= 6'd16;
 	localparam			c_state_wait_rdata_en	= 6'd61;
 	localparam			c_state_pre_finish		= 6'd62;
 	localparam			c_state_finish			= 6'd63;
@@ -211,7 +218,7 @@ module vdp_command (
 	                  			                          { ff_dy[8:0], ff_dx[7:0] };		// SCREEN8, 256byte/line, 1pixel/byte
 
 	// --------------------------------------------------------------------
-	//	Registers
+	//	Source position registers
 	// --------------------------------------------------------------------
 	always @( posedge clk or negedge reset_n ) begin
 		if( !reset_n ) begin
@@ -250,6 +257,9 @@ module vdp_command (
 		end
 	end
 
+	// --------------------------------------------------------------------
+	//	Destination position registers
+	// --------------------------------------------------------------------
 	always @( posedge clk or negedge reset_n ) begin
 		if( !reset_n ) begin
 			reg_dx	<= 9'd0;
@@ -271,7 +281,26 @@ module vdp_command (
 		else if( ff_start ) begin
 			ff_dx <= reg_dx;
 		end
+		else if( ff_cache_vram_valid ) begin
+			//	hold
+		end
+		else if( ff_command == c_line ) begin
+			if( ff_state == c_state_line_next ) begin
+				if( ff_maj == 1'b0 ) begin
+					//	Long side is X-axis
+					ff_dx <= w_next_dx[8:0];
+				end
+				else begin
+					//	Long side is Y-axis
+					if( w_line_shift ) begin
+						ff_dx <= w_next_dx[8:0];
+					end
+				end
+			end
+		end
 	end
+
+	assign w_line_shift	= w_next_nyb[10] || (w_next_nyb[9:0] == 10'd0);
 
 	always @( posedge clk or negedge reset_n ) begin
 		if( !reset_n ) begin
@@ -285,8 +314,31 @@ module vdp_command (
 				ff_dy[9:8]	<= register_data[1:0];
 			end
 		end
+		else if( ff_cache_vram_valid ) begin
+			//	hold
+		end
+		else if( ff_command == c_line ) begin
+			if( ff_state == c_state_line_next ) begin
+				if( ff_maj == 1'b0 ) begin
+					//	Long side is X-axis
+					if( w_line_shift ) begin
+						ff_dy <= w_next_dy[9:0];
+					end
+				end
+				else begin
+					//	Long side is Y-axis
+					ff_dy <= w_next_dy[9:0];
+				end
+			end
+		end
 	end
 
+	assign w_next_dx	= ff_dix ? ( { 1'b0, ff_dx } - 10'd1 ): ( { 1'b0, ff_dx } + 10'd1 );
+	assign w_next_dy	= ff_diy ? ( { 1'b0, ff_dy } - 11'd1 ): ( { 1'b0, ff_dy } + 11'd1 );
+
+	// --------------------------------------------------------------------
+	//	Count N registers
+	// --------------------------------------------------------------------
 	always @( posedge clk or negedge reset_n ) begin
 		if( !reset_n ) begin
 			reg_nx	<= 9'd0;
@@ -303,10 +355,21 @@ module vdp_command (
 
 	always @( posedge clk or negedge reset_n ) begin
 		if( !reset_n ) begin
-			ff_nx <= 9'd0;
+			ff_nx <= 10'd0;
 		end
 		else if( ff_start ) begin
-			ff_nx <= reg_nx;
+			if( ff_command == c_line ) begin
+				ff_nx <= reg_nx;
+			end
+			else begin
+				ff_nx <= 10'd0;
+			end
+		end
+		else if( ff_cache_vram_valid ) begin
+			//	hold
+		end
+		else if( ff_state == c_state_line_next ) begin
+			ff_nx <= ff_nx - 10'd1;
 		end
 	end
 
@@ -323,6 +386,28 @@ module vdp_command (
 			end
 		end
 	end
+
+	always @( posedge clk or negedge reset_n ) begin
+		if( !reset_n ) begin
+			ff_nyb	<= 10'd0;
+		end
+		else if( ff_start ) begin
+			ff_nyb	<= { 1'b0, reg_nx };
+		end
+		else if( ff_cache_vram_valid ) begin
+			//	hold
+		end
+		else if( ff_state == c_state_line_next ) begin
+			if( w_line_shift ) begin
+				ff_nyb	<= w_next_nyb[9:0] + { 1'b0, reg_nx };
+			end
+			else begin
+				ff_nyb	<= w_next_nyb[9:0];
+			end
+		end
+	end
+
+	assign w_next_nyb	= { 1'b0, ff_nyb } - { 2'd0, ff_ny[8:0] };
 
 	always @( posedge clk or negedge reset_n ) begin
 		if( !reset_n ) begin
@@ -441,6 +526,8 @@ module vdp_command (
 			c_stop:		ff_state <= c_state_stop;
 			c_point:	ff_state <= c_state_point;
 			c_pset:		ff_state <= c_state_pset;
+			c_srch:		ff_state <= c_state_srch;
+			c_line:		ff_state <= c_state_line;
 			default:	ff_state <= c_state_stop;
 			endcase
 		end
@@ -451,11 +538,13 @@ module vdp_command (
 		end
 		else begin
 			case( ff_state )
+			//	STOP command --------------------------------------------------
 			c_state_stop: begin
 				//	Activate cache flush and wait for it to complete.
 				ff_cache_flush_start	<= 1'b1;
 				ff_state				<= c_state_finish;
 			end
+			//	POINT command -------------------------------------------------
 			c_state_point: begin
 				//	Read the location of (SX, SY)
 				ff_cache_vram_address	<= w_address_s;
@@ -464,6 +553,7 @@ module vdp_command (
 				ff_state				<= c_state_wait_rdata_en;
 				ff_next_state			<= c_state_finish;
 			end
+			//	PSET command --------------------------------------------------
 			c_state_pset: begin
 				//	Read the location of (DX, DY)
 				ff_cache_vram_address	<= w_address_d;
@@ -481,6 +571,35 @@ module vdp_command (
 				ff_cache_vram_wdata		<= w_destination;
 				ff_state				<= c_state_pre_finish;
 			end
+			//	SRCH command --------------------------------------------------
+
+			//	LINE command --------------------------------------------------
+			c_state_line: begin
+				//	Read the location of (DX, DY)
+				ff_cache_vram_address	<= w_address_d;
+				ff_cache_vram_valid		<= 1'b1;
+				ff_cache_vram_write		<= 1'b0;
+				ff_state				<= c_state_wait_rdata_en;
+				ff_next_state			<= c_state_line_make;
+				ff_source				<= ff_color;
+			end
+			c_state_line_make: begin
+				//	Write the location of (DX, DY)
+				ff_cache_vram_address	<= w_address_d;
+				ff_cache_vram_valid		<= 1'b1;
+				ff_cache_vram_write		<= 1'b1;
+				ff_cache_vram_wdata		<= w_destination;
+				ff_state				<= c_state_line_next;
+			end
+			c_state_line_next: begin
+				if( ff_nx == 10'd0 ) begin
+					ff_state				<= c_state_pre_finish;
+				end
+				else begin
+					ff_state				<= c_state_line;
+				end
+			end
+			//	Wait RDATA_EN subroutine --------------------------------------
 			c_state_wait_rdata_en: begin
 				//	Wait until the results of the lead request arrive.
 				if( w_cache_vram_rdata_en ) begin
@@ -489,6 +608,7 @@ module vdp_command (
 					ff_cache_flush_start	<= (ff_next_state == c_state_finish);
 				end
 			end
+			//	Do Finish process ---------------------------------------------
 			c_state_pre_finish: begin
 				ff_state				<= c_state_finish;
 				ff_cache_flush_start	<= 1'b1;

@@ -994,3 +994,24 @@ puts::
 
 vram_bit16::
 			db		0
+
+; =============================================================================
+;	VDPƒRƒ}ƒ“ƒhŠ®—¹‘Ò‚¿
+;	input:
+;		none
+;	output:
+;		none
+;	break:
+;		all
+;	comment:
+;		none
+; =============================================================================
+			scope	wait_command
+wait_command::
+			ld		e, 2
+			call	read_status_register
+			ld		a, e
+			and		a, 1
+			ret		z
+			jr		wait_command
+			endscope
