@@ -96,7 +96,8 @@ module vdp_vram_interface (
 	output		[3:0]	vram_wdata_mask,
 	input		[31:0]	vram_rdata,
 	input				vram_rdata_en,
-	input				vram_refresh,
+	input				pre_vram_refresh,
+	output				vram_refresh,
 
 	input				reg_vram_type
 );
@@ -130,9 +131,10 @@ module vdp_vram_interface (
 	wire				is_access_timming_a;
 	wire				is_access_timming_b;
 	reg					ff_vram_refresh;
+	reg					ff_vram_refresh_pulse;
 	wire				w_vram_refresh;
 
-	assign w_vram_refresh		= vram_refresh | ff_vram_refresh;
+	assign w_vram_refresh		= pre_vram_refresh | ff_vram_refresh;
 	assign is_access_timming_a	= (h_count == c_timming_a) ? ~w_vram_refresh: 1'b0;	//	g123m, g4567, sprite, vdp-command
 	assign is_access_timming_b	= (h_count == c_timming_b) ? ~w_vram_refresh: 1'b0;	//	cpu, vdp-command
 
@@ -164,10 +166,15 @@ module vdp_vram_interface (
 
 	always @( posedge clk or negedge reset_n ) begin
 		if( !reset_n ) begin
-			ff_vram_refresh <= 1'b0;
+			ff_vram_refresh			<= 1'b0;
+			ff_vram_refresh_pulse	<= 1'b0;
 		end
 		else if( h_count == 4'd2 || h_count == 4'd10 ) begin
-			ff_vram_refresh <= vram_refresh;
+			ff_vram_refresh			<= pre_vram_refresh;
+			ff_vram_refresh_pulse	<= pre_vram_refresh;
+		end
+		else begin
+			ff_vram_refresh_pulse	<= 1'b0;
 		end
 	end
 
@@ -294,4 +301,5 @@ module vdp_vram_interface (
 	assign vram_write				= ff_vram_write;
 	assign vram_wdata				= ff_vram_wdata;
 	assign vram_wdata_mask			= ff_vram_wdata_mask;
+	assign vram_refresh				= ff_vram_refresh_pulse;
 endmodule

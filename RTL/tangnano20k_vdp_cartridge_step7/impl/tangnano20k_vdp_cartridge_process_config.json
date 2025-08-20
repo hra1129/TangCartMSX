@@ -28,7 +28,7 @@
  "Generate_SDF_File" : false,
  "Generate_VHDL_Post_PNR_Simulation_Model_File" : false,
  "Global_Freq" : "default",
- "GwSyn_Loop_Limit" : 8000,
+ "GwSyn_Loop_Limit" : 100000,
  "HOTBOOT" : false,
  "I2C" : false,
  "I2C_SLAVE_ADDR" : "00",
@@ -87,6 +87,6 @@
  "VHDL_Standard" : "VHDL_Std_1993",
  "Verilog_Standard" : "Vlg_Std_2001",
  "WAKE_UP" : "0",
- "show_all_warnings" : false,
+ "show_all_warnings" : true,
  "turn_off_bg" : false
 }

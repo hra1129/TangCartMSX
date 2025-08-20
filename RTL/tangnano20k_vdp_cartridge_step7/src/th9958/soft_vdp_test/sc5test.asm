@@ -21,6 +21,8 @@ start:
 			call	s5_display_adjust
 			call	s5_pset_point
 			call	s5_line
+			call	s5_lmmv
+			call	s5_hmmv
 			; 後始末
 			call	clear_key_buffer
 			ld		c, _TERM0
@@ -417,6 +419,100 @@ s5_line::
 			endscope
 
 ; =============================================================================
+;	[SCREEN5] VDP command test : LMMV
+;	input:
+;		none
+;	output:
+;		none
+;	break:
+;		AF
+;	comment:
+;		none
+; =============================================================================
+			scope	s5_lmmv
+s5_lmmv::
+			ld		hl, 100
+			ld		[cmd_dx], hl
+			ld		hl, 20
+			ld		[cmd_dy], hl
+			ld		hl, 99
+			ld		[cmd_nx], hl
+			ld		hl, 50
+			ld		[cmd_ny], hl
+			ld		a, 15
+			ld		[cmd_color], a
+			xor		a, a
+			ld		[cmd_arg], a
+			call	lmmv
+			call	wait_command
+
+			ld		hl, 10
+			ld		[cmd_dx], hl
+			ld		hl, 20
+			ld		[cmd_dy], hl
+			ld		hl, 100
+			ld		[cmd_nx], hl
+			ld		hl, 50
+			ld		[cmd_ny], hl
+			ld		a, 10
+			ld		[cmd_color], a
+			xor		a, a
+			ld		[cmd_arg], a
+			ld		a, 0x03				;	EOR
+			ld		[cmd_exec], a
+			call	lmmv
+			call	wait_command
+			call	wait_push_space_key
+			ret
+			endscope
+
+; =============================================================================
+;	[SCREEN5] VDP command test : HMMV
+;	input:
+;		none
+;	output:
+;		none
+;	break:
+;		AF
+;	comment:
+;		none
+; =============================================================================
+			scope	s5_hmmv
+s5_hmmv::
+			ld		hl, 100
+			ld		[cmd_dx], hl
+			ld		hl, 20
+			ld		[cmd_dy], hl
+			ld		hl, 99
+			ld		[cmd_nx], hl
+			ld		hl, 50
+			ld		[cmd_ny], hl
+			ld		a, 0x1F
+			ld		[cmd_color], a
+			xor		a, a
+			ld		[cmd_arg], a
+			call	hmmv
+			call	wait_command
+
+			ld		hl, 10
+			ld		[cmd_dx], hl
+			ld		hl, 20
+			ld		[cmd_dy], hl
+			ld		hl, 100
+			ld		[cmd_nx], hl
+			ld		hl, 50
+			ld		[cmd_ny], hl
+			ld		a, 0x85
+			ld		[cmd_color], a
+			xor		a, a
+			ld		[cmd_arg], a
+			call	hmmv
+			call	wait_command
+			call	wait_push_space_key
+			ret
+			endscope
+
+; =============================================================================
 ;	PSET
 ;	input:
 ;		hl ........ X座標
@@ -516,13 +612,73 @@ point::
 ;	output:
 ;		none
 ;	break:
-;		AF
+;		AF BC DE HL
 ;	comment:
 ;		none
 ; =============================================================================
 			scope	line
 line::
-			ld		a, 0x70
+			ld		a, [cmd_exec]
+			and		a, 0x0F
+			or		a, 0x70
+			ld		[cmd_exec], a
+
+			ld		a, 32
+			ld		e, 17
+			call	write_control_register
+
+			ld		a, [io_vdp_port3]
+			ld		c, a
+			ld		hl, cmd_sx
+			ld		b, 15
+			otir
+			ret
+			endscope
+
+; =============================================================================
+;	LMMV (塗りつぶし)
+;	input:
+;		cmd_xxxx .... パラメータ
+;	output:
+;		none
+;	break:
+;		AF BC DE HL
+;	comment:
+;		none
+; =============================================================================
+			scope	lmmv
+lmmv::
+			ld		a, [cmd_exec]
+			and		a, 0x0F
+			or		a, 0x80
+			ld		[cmd_exec], a
+
+			ld		a, 32
+			ld		e, 17
+			call	write_control_register
+
+			ld		a, [io_vdp_port3]
+			ld		c, a
+			ld		hl, cmd_sx
+			ld		b, 15
+			otir
+			ret
+			endscope
+
+; =============================================================================
+;	HMMV (高速塗りつぶし)
+;	input:
+;		cmd_xxxx .... パラメータ
+;	output:
+;		none
+;	break:
+;		AF BC DE HL
+;	comment:
+;		none
+; =============================================================================
+			scope	hmmv
+hmmv::
+			ld		a, 0xC0
 			ld		[cmd_exec], a
 
 			ld		a, 32

@@ -117,7 +117,7 @@
  "IncludePath" : [
 
  ],
- "LoopLimit" : 8000,
+ "LoopLimit" : 100000,
  "ResultFile" : "D:/github/HRA_product/TangCartMSX/RTL/tangnano20k_vdp_cartridge_step7/impl/temp/rtl_parser.result",
  "Top" : "tangnano20k_vdp_cartridge",
  "VerilogStd" : "verilog_2001",

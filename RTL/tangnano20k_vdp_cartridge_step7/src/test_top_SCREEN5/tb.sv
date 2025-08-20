@@ -239,7 +239,7 @@ module tb ();
 				ff_slot_data	= wdata;
 			end
 		join
-	endtask: write_io
+	endtask
 
 	// --------------------------------------------------------------------
 	task write_io_ex(
@@ -307,7 +307,95 @@ module tb ();
 				ff_slot_data	= wdata;
 			end
 		join
-	endtask: write_io_ex
+	endtask
+
+	// --------------------------------------------------------------------
+	task read_io(
+		input	[15:0]	address,
+		output	[7:0]	rdata
+	);
+		fork
+			//	CPU clock
+			begin
+				//	T1
+				s_state		= "T1";
+				slot_clk	= 1'b1;
+				#(cpu_clk_base/2) slot_clk	= 1'b0;
+				//	T2
+				s_state		= "T2";
+				#(cpu_clk_base/2) slot_clk	= 1'b1;
+				#(cpu_clk_base/2) slot_clk	= 1'b0;
+				//	TW
+				s_state		= "TW";
+				#(cpu_clk_base/2) slot_clk	= 1'b1;
+				#(cpu_clk_base/2) slot_clk	= 1'b0;
+				//	T3
+				s_state		= "T3";
+				#(cpu_clk_base/2) slot_clk	= 1'b1;
+				#(cpu_clk_base/2) slot_clk	= 1'b0;
+				//	T4
+				s_state		= "T4";
+				#(cpu_clk_base/2) slot_clk	= 1'b1;
+				#(cpu_clk_base/2) slot_clk	= 1'b0;
+				//	T5
+				s_state		= "T5";
+				#(cpu_clk_base/2) slot_clk	= 1'b1;
+				#(cpu_clk_base/2) slot_clk	= 1'b0;
+			end
+			//	Address
+			begin
+				#170ns slot_a = address;
+			end
+			//	/IORQ
+			begin
+				slot_iorq_n = 1'b1;
+				//	T1
+				@( negedge slot_clk );
+				@( posedge slot_clk );
+				#135ns slot_iorq_n = 1'b0;
+				@( negedge slot_clk );
+				@( negedge slot_clk );
+				@( negedge slot_clk );
+				#145ns slot_iorq_n = 1'b1;
+			end
+			//	/RD
+			begin
+				slot_rd_n = 1'b1;
+				//	T1
+				@( negedge slot_iorq_n );
+				#10ns slot_rd_n = 1'b0;
+				@( posedge slot_iorq_n );
+				rdata = slot_d;
+				slot_rd_n = 1'b1;
+			end
+		join
+	endtask
+
+	// --------------------------------------------------------------------
+	task wait_vdp_command;
+		logic [7:0] rdata;
+		integer		time_out;
+
+		write_io( vdp_io1, 8'd2 );
+		write_io( vdp_io1, 8'h80 + 8'd15 );
+
+		time_out	= 10000;
+		forever begin
+			read_io( vdp_io1, rdata );
+			if( rdata[0] == 1'b0 ) begin
+				break;
+			end
+			@( posedge clk14m );
+			time_out = time_out - 1;
+			if( time_out == 0 ) begin
+				$error( "Time out in wait_vdp_command" );
+				$finish;
+			end
+		end
+
+		write_io( vdp_io1, 8'd0 );
+		write_io( vdp_io1, 8'h80 + 8'd15 );
+	endtask
 
 	// --------------------------------------------------------------------
 	//	Test bench
@@ -357,6 +445,7 @@ module tb ();
 		repeat(5000) @( posedge clk14m );
 
 		//	VDP Command PSET
+		$display( "[test002] VDP Command PSET" );
 		write_io( vdp_io1, 8'd36 );
 		write_io( vdp_io1, 8'h80 + 8'd17 );
 		write_io( vdp_io3, 8'd32 );				//	R#36 DXl
@@ -418,6 +507,7 @@ module tb ();
 		repeat(500) @( posedge clk14m );
 
 		//	VDP Command POINT
+		$display( "[test003] VDP Command POINT" );
 		write_io( vdp_io1, 8'd32 );
 		write_io( vdp_io1, 8'h80 + 8'd17 );
 		write_io( vdp_io3, 8'd32 );				//	R#32 SXl
@@ -453,8 +543,12 @@ module tb ();
 		write_io( vdp_io3, 8'd0 );				//	R#35 SYh
 		write_io( vdp_io1, 8'h40 );				//	R#46 POINT
 		write_io( vdp_io1, 8'h80 + 8'd46 );
-		repeat(500) @( posedge clk14m );
 
+		wait_vdp_command();
+		repeat( 100 ) @( posedge clk14m );
+
+		//	VDP Command LINE
+		$display( "[test004] VDP Command LINE" );
 		write_io( vdp_io1, 8'd36 );
 		write_io( vdp_io1, 8'h80 + 8'd17 );
 		write_io( vdp_io3, 8'd10 );				//	R#36 DXl
@@ -469,7 +563,8 @@ module tb ();
 		write_io( vdp_io3, 8'd0 );				//	R#45 ARG
 		write_io( vdp_io3, 8'h70 );				//	R#46 LINE, IMP
 
-		repeat( 2500 ) @( posedge clk14m );
+		wait_vdp_command();
+		repeat( 100 ) @( posedge clk14m );
 
 		write_io( vdp_io1, 8'd36 );
 		write_io( vdp_io1, 8'h80 + 8'd17 );
@@ -485,7 +580,63 @@ module tb ();
 		write_io( vdp_io3, 8'd0 );				//	R#45 ARG
 		write_io( vdp_io3, 8'h70 );				//	R#46 LINE, IMP
 
-		repeat( 300 ) @( posedge clk14m );
+		wait_vdp_command();
+		repeat( 100 ) @( posedge clk14m );
+
+		//	VDP Command LMMV
+		$display( "[test005] VDP Command LMMV (Box fill)" );
+		write_io( vdp_io1, 8'd36 );
+		write_io( vdp_io1, 8'h80 + 8'd17 );
+		write_io( vdp_io3, 8'd10 );				//	R#36 DXl
+		write_io( vdp_io3, 8'd0 );				//	R#37 DXh
+		write_io( vdp_io3, 8'd20 );				//	R#38 DYl
+		write_io( vdp_io3, 8'd0 );				//	R#39 DYh
+		write_io( vdp_io3, 8'd120 );			//	R#40 NXl
+		write_io( vdp_io3, 8'd0 );				//	R#41 NXh
+		write_io( vdp_io3, 8'd53 );				//	R#42 NYl
+		write_io( vdp_io3, 8'd0 );				//	R#43 NYh
+		write_io( vdp_io3, 8'd15 );				//	R#44 COLOR
+		write_io( vdp_io3, 8'd0 );				//	R#45 ARG
+		write_io( vdp_io3, 8'h80 );				//	R#46 LMMV, IMP
+
+		wait_vdp_command();
+		repeat( 100 ) @( posedge clk14m );
+
+		write_io( vdp_io1, 8'd36 );
+		write_io( vdp_io1, 8'h80 + 8'd17 );
+		write_io( vdp_io3, 8'd20 );				//	R#36 DXl
+		write_io( vdp_io3, 8'd0 );				//	R#37 DXh
+		write_io( vdp_io3, 8'd90 );				//	R#38 DYl
+		write_io( vdp_io3, 8'd0 );				//	R#39 DYh
+		write_io( vdp_io3, 8'd60 );				//	R#40 NXl
+		write_io( vdp_io3, 8'd0 );				//	R#41 NXh
+		write_io( vdp_io3, 8'd53 );				//	R#42 NYl
+		write_io( vdp_io3, 8'd0 );				//	R#43 NYh
+		write_io( vdp_io3, 8'd13 );				//	R#44 COLOR
+		write_io( vdp_io3, 8'd0 );				//	R#45 ARG
+		write_io( vdp_io3, 8'h83 );				//	R#46 LMMV, IMP
+
+		wait_vdp_command();
+		repeat( 100 ) @( posedge clk14m );
+
+		//	VDP Command HMMV
+		$display( "[test006] VDP Command HMMV (High speed box fill)" );
+		write_io( vdp_io1, 8'd36 );
+		write_io( vdp_io1, 8'h80 + 8'd17 );
+		write_io( vdp_io3, 8'd10 );				//	R#36 DXl
+		write_io( vdp_io3, 8'd0 );				//	R#37 DXh
+		write_io( vdp_io3, 8'd150 );			//	R#38 DYl
+		write_io( vdp_io3, 8'd0 );				//	R#39 DYh
+		write_io( vdp_io3, 8'd121 );			//	R#40 NXl
+		write_io( vdp_io3, 8'd0 );				//	R#41 NXh
+		write_io( vdp_io3, 8'd67 );				//	R#42 NYl
+		write_io( vdp_io3, 8'd0 );				//	R#43 NYh
+		write_io( vdp_io3, 8'd12 );				//	R#44 COLOR
+		write_io( vdp_io3, 8'd0 );				//	R#45 ARG
+		write_io( vdp_io3, 8'hC0 );				//	R#46 HMMV
+
+		wait_vdp_command();
+		repeat( 100 ) @( posedge clk14m );
 
 		repeat(2000000) @( posedge clk14m );
 

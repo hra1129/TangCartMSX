@@ -70,7 +70,7 @@ module vdp_timing_control_ssg (
 
 	output				intr_line,				//	pulse
 	output				intr_frame,				//	pulse
-	output				vram_refresh,
+	output				pre_vram_refresh,
 
 	input				reg_50hz_mode,
 	input				reg_212lines_mode,
@@ -169,7 +169,7 @@ module vdp_timing_control_ssg (
 		if( !reset_n ) begin
 			ff_vram_refresh <= 1'b0;
 		end
-		else if( ff_v_count[0] == 1'b1 && ff_h_count == 12'd2705 ) begin
+		else if( ff_v_count[0] == 1'b1 && ff_h_count == 12'd2704 ) begin
 			ff_vram_refresh <= 1'b1;
 		end
 		else begin
@@ -177,7 +177,7 @@ module vdp_timing_control_ssg (
 		end
 	end
 
-	assign vram_refresh		= ff_vram_refresh;
+	assign pre_vram_refresh		= ff_vram_refresh;
 
 	// --------------------------------------------------------------------
 	//	Vertical Counter
