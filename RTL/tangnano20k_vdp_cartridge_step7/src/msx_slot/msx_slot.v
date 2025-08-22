@@ -57,7 +57,6 @@
 
 module msx_slot(
 	input			clk,
-	output			reset_n,
 	input			initial_busy,
 	//	MSX Slot Signal
 	input			p_slot_reset_n,
@@ -111,7 +110,7 @@ module msx_slot(
 	assign w_merq_rd	= ~p_slot_mreq_n  & ~p_slot_rd_n & ~p_slot_sltsl_n;
 	assign w_active		= ff_iorq_wr | ff_iorq_rd | ff_merq_wr | ff_merq_rd;
 
-	always @( posedge clk or negedge p_slot_reset_n ) begin
+	always @( posedge clk ) begin
 		if( !p_slot_reset_n ) begin
 			ff_iorq_wr		<= 1'b0;
 			ff_iorq_rd		<= 1'b0;
@@ -137,7 +136,7 @@ module msx_slot(
 		end
 	end
 
-	always @( posedge clk or negedge p_slot_reset_n ) begin
+	always @( posedge clk ) begin
 		if( !p_slot_reset_n ) begin
 			ff_initial_busy	<= 1'b1;
 		end
@@ -149,7 +148,7 @@ module msx_slot(
 	// --------------------------------------------------------------------
 	//	Transaction active signal
 	// --------------------------------------------------------------------
-	always @( posedge clk or negedge p_slot_reset_n ) begin
+	always @( posedge clk ) begin
 		if( !p_slot_reset_n ) begin
 			ff_active <= 1'b0;
 		end
@@ -161,7 +160,7 @@ module msx_slot(
 	// --------------------------------------------------------------------
 	//	Valid signal
 	// --------------------------------------------------------------------
-	always @( posedge clk or negedge p_slot_reset_n ) begin
+	always @( posedge clk ) begin
 		if( !p_slot_reset_n ) begin
 			ff_valid <= 1'b0;
 		end
@@ -178,7 +177,7 @@ module msx_slot(
 	// --------------------------------------------------------------------
 	//	Address latch
 	// --------------------------------------------------------------------
-	always @( posedge clk or negedge p_slot_reset_n ) begin
+	always @( posedge clk ) begin
 		if( !p_slot_reset_n ) begin
 			ff_address	<= 16'd0;
 			ff_write	<= 1'b1;
@@ -203,7 +202,7 @@ module msx_slot(
 	// --------------------------------------------------------------------
 	//	Read data
 	// --------------------------------------------------------------------
-	always @( posedge clk or negedge p_slot_reset_n ) begin
+	always @( posedge clk ) begin
 		if( !p_slot_reset_n ) begin
 			ff_rdata <= 8'h00;
 		end
@@ -212,7 +211,6 @@ module msx_slot(
 		end
 	end
 
-	assign reset_n			= p_slot_reset_n;
 	assign bus_memreq		= ff_memreq;
 	assign bus_ioreq		= ff_ioreq;
 	assign bus_address		= ff_address;

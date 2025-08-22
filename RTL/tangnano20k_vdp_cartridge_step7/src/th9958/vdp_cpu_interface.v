@@ -59,7 +59,7 @@ module vdp_cpu_interface (
 	input				reset_n,
 	input				clk,					//	42.95454MHz
 
-	input	[1:0]		bus_address,
+	input	[2:0]		bus_address,
 	input				bus_ioreq,
 	input				bus_write,
 	input				bus_valid,
@@ -113,7 +113,6 @@ module vdp_cpu_interface (
 	output	[16:11]		reg_sprite_pattern_generator_table_base,
 	output	[7:0]		reg_backdrop_color,
 	output				reg_sprite_disable,
-	output				reg_vram_type,
 	output				reg_color0_opaque,
 	output				reg_50hz_mode,
 	output				reg_interleaving_mode,
@@ -132,6 +131,16 @@ module vdp_cpu_interface (
 	output	[2:0]		reg_horizontal_offset_l,
 	output	[8:3]		reg_horizontal_offset_h
 );
+	wire				w_port0;
+	wire				w_port1;
+	wire				w_port2;
+	wire				w_port3;
+	wire				w_port4;
+	wire				w_port5;
+	wire				w_port6;
+	wire				w_port7;
+	wire				w_write;
+	wire				w_read;
 	reg		[7:0]		ff_bus_rdata;
 	reg					ff_bus_rdata_en;
 	reg		[4:0]		ff_screen_mode;
@@ -196,6 +205,18 @@ module vdp_cpu_interface (
 	assign w_ready		= ~ff_busy & ~ff_register_write & bus_ioreq;
 	assign bus_ready	= w_ready;
 
+	assign w_port0		= (bus_address == 3'd0);
+	assign w_port1		= (bus_address == 3'd1);
+	assign w_port2		= (bus_address == 3'd2);
+	assign w_port3		= (bus_address == 3'd3);
+	assign w_port4		= (bus_address == 3'd4);
+	assign w_port5		= (bus_address == 3'd5);
+	assign w_port6		= (bus_address == 3'd6);
+	assign w_port7		= (bus_address == 3'd7);
+
+	assign w_write		= bus_valid && bus_write && w_ready;
+	assign w_read		= bus_valid && !bus_write && w_ready;
+
 	// --------------------------------------------------------------------
 	//	VRAM Read/Write access
 	// --------------------------------------------------------------------
@@ -210,7 +231,7 @@ module vdp_cpu_interface (
 		else if( ff_busy ) begin
 			//	hold
 		end
-		else if( bus_valid && bus_write && w_ready && bus_address == 2'd1 ) begin
+		else if( w_write && w_port1 ) begin
 			if( !ff_2nd_access ) begin
 				//	1st write access
 				ff_1st_byte <= bus_wdata;
@@ -240,7 +261,7 @@ module vdp_cpu_interface (
 				endcase
 			end
 		end
-		else if( bus_valid && bus_write && w_ready && bus_address == 2'd3 ) begin
+		else if( w_write && w_port3 ) begin
 			ff_register_write	<= 1'b1;
 			ff_register_num		<= ff_register_pointer;
 			ff_1st_byte			<= bus_wdata;
@@ -255,7 +276,7 @@ module vdp_cpu_interface (
 			ff_register_pointer	<= 5'd0;
 			ff_not_increment	<= 1'b0;
 		end
-		else if( bus_valid && bus_write && w_ready && bus_address == 2'd3 ) begin
+		else if( w_write && w_port3 ) begin
 			if( !ff_not_increment ) begin
 				ff_register_pointer <= ff_register_pointer + 5'd1;
 			end
@@ -293,7 +314,7 @@ module vdp_cpu_interface (
 				//	hold
 			end
 		end
-		else if( bus_valid && w_ready && bus_address == 2'd0 ) begin
+		else if( bus_valid && w_ready && w_port0 ) begin
 			ff_vram_valid <= 1'b1;
 			ff_vram_write <= bus_write;
 			ff_vram_wdata <= bus_wdata;
@@ -313,7 +334,7 @@ module vdp_cpu_interface (
 		else if( ff_busy ) begin
 			//	hold
 		end
-		else if( bus_valid && bus_write && w_ready && bus_address == 2'd1 ) begin
+		else if( w_write && w_port1 ) begin
 			if( ff_2nd_access ) begin
 				//	2nd write access
 				case( bus_wdata[7:6] )
@@ -338,6 +359,9 @@ module vdp_cpu_interface (
 
 	always @( posedge clk or negedge reset_n ) begin
 		if( !reset_n ) begin
+			ff_vram_address[16:14] <= 3'd0;
+		end
+		else if( !ff_vram_type ) begin
 			ff_vram_address[16:14] <= 3'd0;
 		end
 		else if( ff_register_write && ff_register_num == 6'd14 ) begin
@@ -532,7 +556,7 @@ module vdp_cpu_interface (
 				ff_color_palette_g_phase <= 1'b0;
 			end
 		end
-		else if( bus_valid && bus_write && w_ready && bus_address == 2'd2 ) begin
+		else if( w_write && w_port2 ) begin
 			if( ff_color_palette_g_phase == 1'b0 ) begin
 				//	P#2 = [0][R][R][R][0][B][B][B]
 				ff_palette_r <= bus_wdata[6:4];
@@ -564,7 +588,7 @@ module vdp_cpu_interface (
 			ff_bus_rdata <= vram_rdata;
 			ff_bus_rdata_en <= 1'b1;
 		end
-		else if( bus_valid && !bus_write && w_ready && bus_address == 2'd1 ) begin
+		else if( w_read && w_port1 ) begin
 			case( ff_status_register_pointer )
 			4'd0:		ff_bus_rdata <= { ff_frame_interrupt, sprite_collision, 1'b0, 5'b00000 };
 			4'd1:		ff_bus_rdata <= { 2'd0, 5'b00010, ff_line_interrupt };
@@ -580,14 +604,28 @@ module vdp_cpu_interface (
 			endcase
 			ff_bus_rdata_en <= 1'b1;
 		end
+		else if( w_read && w_port4 ) begin
+			ff_bus_rdata	<= ff_vram_address[7:0];
+			ff_bus_rdata_en	<= 1'b1;
+		end
+		else if( w_read && w_port5 ) begin
+			ff_bus_rdata	<= ff_vram_address[15:8];
+			ff_bus_rdata_en	<= 1'b1;
+		end
+		else if( w_read && w_port6 ) begin
+			ff_bus_rdata	<= { 7'd0, ff_vram_address[16] };
+			ff_bus_rdata_en	<= 1'b1;
+		end
+		else if( w_read && w_port7 ) begin
+		end
 		else begin
 			ff_bus_rdata <= 8'd0;
 			ff_bus_rdata_en <= 1'b0;
 		end
 	end
 
-	assign clear_sprite_collision		= (bus_valid && !bus_write && w_ready && bus_address == 2'd1 && ff_status_register_pointer == 4'd0);
-	assign clear_sprite_collision_xy	= (bus_valid && !bus_write && w_ready && bus_address == 2'd1 && ff_status_register_pointer == 4'd5);
+	assign clear_sprite_collision		= (w_read && w_port1 && ff_status_register_pointer == 4'd0);
+	assign clear_sprite_collision_xy	= (w_read && w_port1 && ff_status_register_pointer == 4'd5);
 
 	// --------------------------------------------------------------------
 	//	Interrupt
@@ -599,7 +637,7 @@ module vdp_cpu_interface (
 		else if( ff_line_interrupt_enable == 1'b0 ) begin
 			ff_line_interrupt <= 1'b0;
 		end
-		else if( bus_valid && !bus_write && w_ready && bus_address == 2'd1 ) begin
+		else if( w_read && w_port1 ) begin
 			if( ff_status_register_pointer == 4'd1 ) begin
 				//	Clear line interrupt flag
 				ff_line_interrupt <= 1'b0;
@@ -618,7 +656,7 @@ module vdp_cpu_interface (
 		else if( ff_frame_interrupt_enable == 1'b0 ) begin
 			ff_frame_interrupt <= 1'b0;
 		end
-		else if( bus_valid && !bus_write && w_ready && bus_address == 2'd1 ) begin
+		else if( w_read && w_port1 ) begin
 			if( ff_status_register_pointer == 4'd0 ) begin
 				//	Clear frame interrupt flag
 				ff_frame_interrupt <= 1'b0;
@@ -664,7 +702,6 @@ module vdp_cpu_interface (
 	assign reg_sprite_pattern_generator_table_base	= ff_sprite_pattern_generator_table_base;
 	assign reg_backdrop_color						= ff_backdrop_color;
 	assign reg_sprite_disable						= ff_sprite_disable;
-	assign reg_vram_type							= ff_vram_type;
 	assign reg_color0_opaque						= ff_color0_opaque;
 	assign reg_50hz_mode							= ff_50hz_mode;
 	assign reg_interleaving_mode					= ff_interleaving_mode;

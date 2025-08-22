@@ -432,6 +432,9 @@ module tb ();
 		//	VDP R#2 = 0x1F
 		write_io( vdp_io1, 8'h1F );
 		write_io( vdp_io1, 8'h82 );
+		//	VDP R#8 = 0x0A
+		write_io( vdp_io1, 8'h0A );
+		write_io( vdp_io1, 8'h88 );
 
 		$display( "[test001] Write VRAM" );
 		//	VRAM 0x00000 ... 0x07FFF = 0x00
@@ -559,7 +562,7 @@ module tb ();
 		write_io( vdp_io3, 8'd0 );				//	R#41 NXh
 		write_io( vdp_io3, 8'd100 );			//	R#42 NYl
 		write_io( vdp_io3, 8'd0 );				//	R#43 NYh
-		write_io( vdp_io3, 8'd15 );				//	R#44 COLOR
+		write_io( vdp_io3, 8'd8 );				//	R#44 COLOR
 		write_io( vdp_io3, 8'd0 );				//	R#45 ARG
 		write_io( vdp_io3, 8'h70 );				//	R#46 LINE, IMP
 
@@ -623,22 +626,68 @@ module tb ();
 		$display( "[test006] VDP Command HMMV (High speed box fill)" );
 		write_io( vdp_io1, 8'd36 );
 		write_io( vdp_io1, 8'h80 + 8'd17 );
-		write_io( vdp_io3, 8'd10 );				//	R#36 DXl
+		write_io( vdp_io3, 8'd100 );			//	R#36 DXl
 		write_io( vdp_io3, 8'd0 );				//	R#37 DXh
-		write_io( vdp_io3, 8'd150 );			//	R#38 DYl
+		write_io( vdp_io3, 8'd20 );				//	R#38 DYl
 		write_io( vdp_io3, 8'd0 );				//	R#39 DYh
-		write_io( vdp_io3, 8'd121 );			//	R#40 NXl
+		write_io( vdp_io3, 8'd99 );				//	R#40 NXl
 		write_io( vdp_io3, 8'd0 );				//	R#41 NXh
-		write_io( vdp_io3, 8'd67 );				//	R#42 NYl
+		write_io( vdp_io3, 8'd50 );				//	R#42 NYl
 		write_io( vdp_io3, 8'd0 );				//	R#43 NYh
-		write_io( vdp_io3, 8'd12 );				//	R#44 COLOR
+		write_io( vdp_io3, 8'h1F );				//	R#44 COLOR
 		write_io( vdp_io3, 8'd0 );				//	R#45 ARG
 		write_io( vdp_io3, 8'hC0 );				//	R#46 HMMV
 
 		wait_vdp_command();
 		repeat( 100 ) @( posedge clk14m );
 
-		repeat(2000000) @( posedge clk14m );
+		//	VDP Command LMMM
+		$display( "[test007] VDP Command LMMM (Block copy)" );
+		write_io( vdp_io1, 8'd32 );
+		write_io( vdp_io1, 8'h80 + 8'd17 );
+		write_io( vdp_io3, 8'd0 );				//	R#32 SXl
+		write_io( vdp_io3, 8'd0 );				//	R#33 SXh
+		write_io( vdp_io3, 8'd0 );				//	R#34 SYl
+		write_io( vdp_io3, 8'd0 );				//	R#35 SYh
+		write_io( vdp_io3, 8'd51 );				//	R#36 DXl
+		write_io( vdp_io3, 8'd0 );				//	R#37 DXh
+		write_io( vdp_io3, 8'd153 );			//	R#38 DYl
+		write_io( vdp_io3, 8'd0 );				//	R#39 DYh
+		write_io( vdp_io3, 8'd80 );				//	R#40 NXl
+		write_io( vdp_io3, 8'd0 );				//	R#41 NXh
+		write_io( vdp_io3, 8'd16 );				//	R#42 NYl
+		write_io( vdp_io3, 8'd0 );				//	R#43 NYh
+		write_io( vdp_io3, 8'd0 );				//	R#44 COLOR
+		write_io( vdp_io3, 8'd0 );				//	R#45 ARG
+		write_io( vdp_io3, 8'h90 );				//	R#46 LMMM
+
+		wait_vdp_command();
+		repeat( 100 ) @( posedge clk14m );
+
+		//	VDP Command HMMM
+		$display( "[test007] VDP Command HMMM (High speed block copy)" );
+		write_io( vdp_io1, 8'd32 );
+		write_io( vdp_io1, 8'h80 + 8'd17 );
+		write_io( vdp_io3, 8'd0 );				//	R#32 SXl
+		write_io( vdp_io3, 8'd0 );				//	R#33 SXh
+		write_io( vdp_io3, 8'd0 );				//	R#34 SYl
+		write_io( vdp_io3, 8'd0 );				//	R#35 SYh
+		write_io( vdp_io3, 8'd0 );				//	R#36 DXl
+		write_io( vdp_io3, 8'd0 );				//	R#37 DXh
+		write_io( vdp_io3, 8'd16 );				//	R#38 DYl
+		write_io( vdp_io3, 8'd0 );				//	R#39 DYh
+		write_io( vdp_io3, 8'd0 );				//	R#40 NXl
+		write_io( vdp_io3, 8'd1 );				//	R#41 NXh
+		write_io( vdp_io3, 8'd16 );				//	R#42 NYl
+		write_io( vdp_io3, 8'd0 );				//	R#43 NYh
+		write_io( vdp_io3, 8'd0 );				//	R#44 COLOR
+		write_io( vdp_io3, 8'd0 );				//	R#45 ARG
+		write_io( vdp_io3, 8'hD0 );				//	R#46 HMMM
+
+		wait_vdp_command();
+		repeat( 100 ) @( posedge clk14m );
+
+//		repeat(2000000) @( posedge clk14m );
 
 		$display( "[test---] All tests completed" );
 		repeat( 100 ) @( posedge clk14m );

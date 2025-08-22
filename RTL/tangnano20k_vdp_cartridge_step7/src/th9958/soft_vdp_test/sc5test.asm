@@ -23,6 +23,8 @@ start:
 			call	s5_line
 			call	s5_lmmv
 			call	s5_hmmv
+			call	s5_lmmm
+			call	s5_hmmm
 			; 後始末
 			call	clear_key_buffer
 			ld		c, _TERM0
@@ -513,6 +515,106 @@ s5_hmmv::
 			endscope
 
 ; =============================================================================
+;	[SCREEN5] VDP command test : LMMM
+;	input:
+;		none
+;	output:
+;		none
+;	break:
+;		AF
+;	comment:
+;		none
+; =============================================================================
+			scope	s5_lmmm
+s5_lmmm::
+			ld		hl, 0
+			ld		[cmd_sx], hl
+			ld		hl, 0
+			ld		[cmd_sy], hl
+			ld		hl, 51
+			ld		[cmd_dx], hl
+			ld		hl, 153
+			ld		[cmd_dy], hl
+			ld		hl, 80
+			ld		[cmd_nx], hl
+			ld		hl, 16
+			ld		[cmd_ny], hl
+			xor		a, a
+			ld		[cmd_arg], a
+			call	lmmm
+			call	wait_command
+
+			ld		hl, 1
+			ld		[cmd_sx], hl
+			ld		hl, 0
+			ld		[cmd_sy], hl
+			ld		hl, 0
+			ld		[cmd_dx], hl
+			ld		hl, 0
+			ld		[cmd_dy], hl
+			ld		hl, 100
+			ld		[cmd_nx], hl
+			ld		hl, 16
+			ld		[cmd_ny], hl
+			xor		a, a
+			ld		[cmd_arg], a
+			call	lmmm
+			call	wait_command
+			call	wait_push_space_key
+			ret
+			endscope
+
+; =============================================================================
+;	[SCREEN5] VDP command test : HMMM
+;	input:
+;		none
+;	output:
+;		none
+;	break:
+;		AF
+;	comment:
+;		none
+; =============================================================================
+			scope	s5_hmmm
+s5_hmmm::
+			ld		hl, 0
+			ld		[cmd_sx], hl
+			ld		hl, 0
+			ld		[cmd_sy], hl
+			ld		hl, 0
+			ld		[cmd_dx], hl
+			ld		hl, 16
+			ld		[cmd_dy], hl
+			ld		hl, 256
+			ld		[cmd_nx], hl
+			ld		hl, 16
+			ld		[cmd_ny], hl
+			xor		a, a
+			ld		[cmd_arg], a
+			call	hmmm
+			call	wait_command
+
+			ld		hl, 0
+			ld		[cmd_sx], hl
+			ld		hl, 0
+			ld		[cmd_sy], hl
+			ld		hl, 100
+			ld		[cmd_dx], hl
+			ld		hl, 80
+			ld		[cmd_dy], hl
+			ld		hl, 100
+			ld		[cmd_nx], hl
+			ld		hl, 32
+			ld		[cmd_ny], hl
+			xor		a, a
+			ld		[cmd_arg], a
+			call	hmmm
+			call	wait_command
+			call	wait_push_space_key
+			ret
+			endscope
+
+; =============================================================================
 ;	PSET
 ;	input:
 ;		hl ........ X座標
@@ -679,6 +781,64 @@ lmmv::
 			scope	hmmv
 hmmv::
 			ld		a, 0xC0
+			ld		[cmd_exec], a
+
+			ld		a, 32
+			ld		e, 17
+			call	write_control_register
+
+			ld		a, [io_vdp_port3]
+			ld		c, a
+			ld		hl, cmd_sx
+			ld		b, 15
+			otir
+			ret
+			endscope
+
+; =============================================================================
+;	LMMM (ブロック転送)
+;	input:
+;		cmd_xxxx .... パラメータ
+;	output:
+;		none
+;	break:
+;		AF BC DE HL
+;	comment:
+;		none
+; =============================================================================
+			scope	lmmm
+lmmm::
+			ld		a, [cmd_exec]
+			and		a, 0x0F
+			or		a, 0x90
+			ld		[cmd_exec], a
+
+			ld		a, 32
+			ld		e, 17
+			call	write_control_register
+
+			ld		a, [io_vdp_port3]
+			ld		c, a
+			ld		hl, cmd_sx
+			ld		b, 15
+			otir
+			ret
+			endscope
+
+; =============================================================================
+;	LMMM (ブロック転送)
+;	input:
+;		cmd_xxxx .... パラメータ
+;	output:
+;		none
+;	break:
+;		AF BC DE HL
+;	comment:
+;		none
+; =============================================================================
+			scope	hmmm
+hmmm::
+			ld		a, 0xD0
 			ld		[cmd_exec], a
 
 			ld		a, 32

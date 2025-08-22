@@ -60,7 +60,7 @@ module vdp (
 	input				clk,					//	85.90908MHz
 
 	input				initial_busy,
-	input		[1:0]	bus_address,
+	input		[2:0]	bus_address,
 	input				bus_ioreq,
 	input				bus_write,
 	input				bus_valid,
@@ -238,7 +238,6 @@ module vdp (
 		.reg_sprite_pattern_generator_table_base	( reg_sprite_pattern_generator_table_base	),
 		.reg_backdrop_color							( reg_backdrop_color						),
 		.reg_sprite_disable							( reg_sprite_disable						),
-		.reg_vram_type								( reg_vram_type								),
 		.reg_color0_opaque							( reg_color0_opaque							),
 		.reg_50hz_mode								( reg_50hz_mode								),
 		.reg_interleaving_mode						( reg_interleaving_mode						),
@@ -379,8 +378,7 @@ module vdp (
 		.vram_rdata									( vram_rdata								),
 		.vram_rdata_en								( vram_rdata_en								),
 		.pre_vram_refresh							( w_pre_vram_refresh						),
-		.vram_refresh								( vram_refresh								),
-		.reg_vram_type								( reg_vram_type								)
+		.vram_refresh								( vram_refresh								)
 	);
 
 	// --------------------------------------------------------------------

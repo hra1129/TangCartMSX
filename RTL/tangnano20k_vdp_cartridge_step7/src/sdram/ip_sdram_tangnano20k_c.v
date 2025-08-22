@@ -237,7 +237,7 @@ module ip_sdram #(
 		end
 	end
 
-	always @( posedge clk or negedge reset_n ) begin
+	always @( posedge clk ) begin
 		if( !reset_n ) begin
 			ff_initial_finish	<= 1'b0;
 		end

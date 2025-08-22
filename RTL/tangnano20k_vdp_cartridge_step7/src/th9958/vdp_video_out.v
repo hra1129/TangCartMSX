@@ -151,7 +151,7 @@ module vdp_video_out (
 	assign w_active_end		= (h_count == active_area_end      );
 	assign w_h_cnt_end		= (h_count == (clocks_per_line - 1));
 
-	always @( posedge clk ) begin
+	always @( posedge clk or negedge reset_n ) begin
 		if( !reset_n ) begin
 			ff_active <= 1'b0;
 		end
@@ -241,7 +241,7 @@ module vdp_video_out (
 	// --------------------------------------------------------------------
 	assign w_x_position_w	= h_count[11:2];
 
-	always @( posedge clk ) begin
+	always @( posedge clk or negedge reset_n ) begin
 		if( !reset_n ) begin
 			ff_x_position_r <= 10'd0;
 		end
@@ -264,7 +264,7 @@ module vdp_video_out (
 		end
 	end
 
-	always @( posedge clk ) begin
+	always @( posedge clk or negedge reset_n ) begin
 		if( !reset_n ) begin
 			ff_numerator <= 8'b0;
 		end
@@ -313,11 +313,11 @@ module vdp_video_out (
 	// --------------------------------------------------------------------
 	assign w_normalized_numerator	= ff_numerator * reg_normalize;		//	8bit * 10bit = 16bit
 
-	always @( posedge clk ) begin
+	always @( posedge clk or negedge reset_n ) begin
 		if( !reset_n ) begin
 			ff_coeff <= 8'd0;
 		end
-		if( w_enable ) begin
+		else if( w_enable ) begin
 			ff_coeff <= w_normalized_numerator[14:7];					//	0 ... 63
 		end
 	end

@@ -92,10 +92,10 @@ module vdp_color_palette (
 	reg					ff_display_color_oe;
 	wire		[2:0]	w_display_r;
 	wire		[2:0]	w_display_g;
-	wire		[2:0]	w_display_b;
 	wire		[2:0]	w_display_r16;
 	wire		[2:0]	w_display_g16;
 	wire		[2:0]	w_display_b16;
+	reg					ff_rgb_load;
 	reg			[7:0]	ff_vdp_r;
 	reg			[7:0]	ff_vdp_g;
 	reg			[7:0]	ff_vdp_b;
@@ -307,14 +307,17 @@ module vdp_color_palette (
 	// --------------------------------------------------------------------
 	assign w_display_r = w_256colors_mode ? ff_display_color256[4:2]          : w_display_r16;
 	assign w_display_g = w_256colors_mode ? ff_display_color256[7:5]          : w_display_g16;
-	assign w_display_b = w_256colors_mode ? { 1'b0, ff_display_color256[1:0] }: w_display_b16;
+
+	always @( posedge clk ) begin
+		ff_rgb_load	<= (screen_pos_x == 4'd3) || (w_high_resolution && screen_pos_x == 4'd11);
+	end
 
 	always @( posedge clk or negedge reset_n ) begin
 		if( !reset_n ) begin
 			ff_vdp_r <= 8'd0;
 			ff_vdp_g <= 8'd0;
 		end
-		else if( screen_pos_x == 4'd4 || (w_high_resolution && screen_pos_x == 4'd12) ) begin
+		else if( ff_rgb_load ) begin
 			case( w_display_r )
 			3'd0:		ff_vdp_r <= 8'd0;
 			3'd1:		ff_vdp_r <= 8'd37;
@@ -345,9 +348,9 @@ module vdp_color_palette (
 		if( !reset_n ) begin
 			ff_vdp_b <= 8'd0;
 		end
-		else if( screen_pos_x == 4'd4 || (w_high_resolution && screen_pos_x == 4'd12) ) begin
+		else if( ff_rgb_load ) begin
 			if( w_256colors_mode ) begin
-				case( w_display_b[1:0] )
+				case( ff_display_color256[1:0] )
 				3'd0:		ff_vdp_b <= 8'd0;
 				3'd1:		ff_vdp_b <= 8'd85;
 				3'd2:		ff_vdp_b <= 8'd170;
@@ -356,7 +359,7 @@ module vdp_color_palette (
 				endcase
 			end
 			else begin
-				case( w_display_b )
+				case( w_display_b16 )
 				3'd0:		ff_vdp_b <= 8'd0;
 				3'd1:		ff_vdp_b <= 8'd37;
 				3'd2:		ff_vdp_b <= 8'd73;

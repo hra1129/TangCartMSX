@@ -103,23 +103,6 @@ module vdp_timing_control_sprite (
 	assign w_sprite_disable	= reg_sprite_disable | sprite_off;
 
 	// --------------------------------------------------------------------
-	//	Horizontal active
-	// --------------------------------------------------------------------
-	always @( posedge clk or negedge reset_n ) begin
-		if( !reset_n ) begin
-			ff_screen_h_active <= 1'b0;
-		end
-		else if( screen_pos_x[13:4] == 10'd255 && screen_pos_x[3:0] == 4'd15 ) begin
-			ff_screen_h_active <= 1'b0;
-		end
-		else if( screen_pos_x[13:4] == 10'h3FF && screen_pos_x[3:0] == 4'd15 ) begin
-			ff_screen_h_active <= 1'b1;
-		end
-	end
-
-	assign w_screen_active	= screen_v_active & ff_screen_h_active;
-
-	// --------------------------------------------------------------------
 	//	Wire declarations
 	// --------------------------------------------------------------------
 	wire				w_selected_en;
@@ -144,6 +127,23 @@ module vdp_timing_control_sprite (
 	wire				w_vp_vram_valid;
 	wire		[16:0]	w_ic_vram_address;
 	wire				w_ic_vram_valid;
+
+	// --------------------------------------------------------------------
+	//	Horizontal active
+	// --------------------------------------------------------------------
+	always @( posedge clk or negedge reset_n ) begin
+		if( !reset_n ) begin
+			ff_screen_h_active <= 1'b0;
+		end
+		else if( screen_pos_x[13:4] == 10'd255 && screen_pos_x[3:0] == 4'd15 ) begin
+			ff_screen_h_active <= 1'b0;
+		end
+		else if( screen_pos_x[13:4] == 10'h3FF && screen_pos_x[3:0] == 4'd15 ) begin
+			ff_screen_h_active <= 1'b1;
+		end
+	end
+
+	assign w_screen_active	= screen_v_active & ff_screen_h_active;
 
 	assign vram_address		= w_vp_vram_address | w_ic_vram_address;
 	assign vram_valid		= w_vp_vram_valid   | w_ic_vram_valid;
