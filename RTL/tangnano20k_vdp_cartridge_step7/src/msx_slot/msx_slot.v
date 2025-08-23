@@ -81,6 +81,20 @@ module msx_slot(
 	input	[7:0]	bus_rdata,
 	input			bus_rdata_en
 );
+	reg				ff_pre_slot_sltsl_n	= 1'b1;
+	reg				ff_pre_slot_mreq_n	= 1'b1;
+	reg				ff_pre_slot_ioreq_n	= 1'b1;
+	reg				ff_pre_slot_wr_n	= 1'b1;
+	reg				ff_pre_slot_rd_n	= 1'b1;
+
+	reg				ff_slot_sltsl_n		= 1'b1;
+	reg				ff_slot_mreq_n		= 1'b1;
+	reg				ff_slot_ioreq_n		= 1'b1;
+	reg				ff_slot_wr_n		= 1'b1;
+	reg				ff_slot_rd_n		= 1'b1;
+
+	reg	[15:0]		ff_slot_address;
+	reg	[7:0]		ff_slot_data;
 	wire			w_iorq_wr;
 	wire			w_iorq_rd;
 	wire			w_merq_wr;
@@ -104,10 +118,31 @@ module msx_slot(
 	reg		[7:0]	ff_wdata;
 	reg		[7:0]	ff_rdata;
 
-	assign w_iorq_wr	= ~p_slot_ioreq_n & ~p_slot_wr_n;
-	assign w_iorq_rd	= ~p_slot_ioreq_n & ~p_slot_rd_n;
-	assign w_merq_wr	= ~p_slot_mreq_n  & ~p_slot_wr_n & ~p_slot_sltsl_n;
-	assign w_merq_rd	= ~p_slot_mreq_n  & ~p_slot_rd_n & ~p_slot_sltsl_n;
+	always @( posedge clk ) begin
+		ff_pre_slot_sltsl_n		<= p_slot_sltsl_n;
+		ff_pre_slot_mreq_n		<= p_slot_mreq_n;
+		ff_pre_slot_ioreq_n		<= p_slot_ioreq_n;
+		ff_pre_slot_wr_n		<= p_slot_wr_n;
+		ff_pre_slot_rd_n		<= p_slot_rd_n;
+
+		ff_slot_sltsl_n			<= ff_pre_slot_sltsl_n;
+		ff_slot_mreq_n			<= ff_pre_slot_mreq_n;
+		ff_slot_ioreq_n			<= ff_pre_slot_ioreq_n;
+		ff_slot_wr_n			<= ff_pre_slot_wr_n;
+		ff_slot_rd_n			<= ff_pre_slot_rd_n;
+	end
+
+	always @( posedge clk ) begin
+		if( !ff_slot_ioreq_n || !ff_slot_sltsl_n ) begin
+			ff_slot_address			<= p_slot_address;
+			ff_slot_data			<= p_slot_data;
+		end
+	end
+
+	assign w_iorq_wr	= ~ff_slot_ioreq_n & ~ff_slot_wr_n;
+	assign w_iorq_rd	= ~ff_slot_ioreq_n & ~ff_slot_rd_n;
+	assign w_merq_wr	= ~ff_slot_mreq_n  & ~ff_slot_wr_n & ~ff_slot_sltsl_n;
+	assign w_merq_rd	= ~ff_slot_mreq_n  & ~ff_slot_rd_n & ~ff_slot_sltsl_n;
 	assign w_active		= ff_iorq_wr | ff_iorq_rd | ff_merq_wr | ff_merq_rd;
 
 	always @( posedge clk ) begin
@@ -140,7 +175,7 @@ module msx_slot(
 		if( !p_slot_reset_n ) begin
 			ff_initial_busy	<= 1'b1;
 		end
-		else if( !initial_busy && (p_slot_ioreq_n || p_slot_sltsl_n) ) begin
+		else if( !initial_busy && (ff_slot_ioreq_n || ff_slot_sltsl_n) ) begin
 			ff_initial_busy	<= 1'b0;
 		end
 	end
@@ -186,12 +221,12 @@ module msx_slot(
 			ff_memreq	<= 1'b0;
 		end
 		else if( !ff_active && w_active ) begin
-			ff_address	<= p_slot_address;
+			ff_address	<= ff_slot_address;
 			ff_write	<= ff_iorq_wr | ff_merq_wr;
 			ff_ioreq	<= ff_iorq_wr | ff_iorq_rd;
 			ff_memreq	<= ff_merq_wr | ff_merq_rd;
 			if( ff_iorq_wr | ff_merq_wr ) begin
-				ff_wdata <= p_slot_data;
+				ff_wdata <= ff_slot_data;
 			end
 		end
 		else if( !ff_active ) begin

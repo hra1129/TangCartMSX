@@ -136,6 +136,7 @@ module vdp_cpu_interface (
 	reg					ff_bus_valid;
 	reg					ff_bus_ready;
 	reg		[7:0]		ff_bus_wdata;
+	reg		[7:0]		ff_status_register;
 
 	reg					ff_port0;
 	reg					ff_port1;
@@ -197,7 +198,6 @@ module vdp_cpu_interface (
 	reg		[7:0]		ff_vram_wdata;
 	reg					ff_vram_address_inc;		//	アドレスインクリメント要求
 	reg					ff_vram_valid;
-	wire				w_address_14bit;			//	test1, test1q, multi, multiq, graphic1, graphic2 は、アドレスインクリメントが bit14 に繰り上がらない
 	reg					ff_busy;
 
 	reg					ff_line_interrupt;
@@ -215,6 +215,8 @@ module vdp_cpu_interface (
 			ff_port1		<= 1'b0;
 			ff_port2		<= 1'b0;
 			ff_port3		<= 1'b0;
+			ff_bus_valid	<= 1'b0;
+			ff_bus_ready	<= 1'b1;
 		end
 		else if( bus_valid && ff_bus_ready ) begin
 			ff_bus_ioreq	<= bus_ioreq;
@@ -224,28 +226,19 @@ module vdp_cpu_interface (
 			ff_port1		<= (bus_address == 2'd1);
 			ff_port2		<= (bus_address == 2'd2);
 			ff_port3		<= (bus_address == 2'd3);
-		end
-	end
-
-	always @( posedge clk or negedge reset_n ) begin
-		if( !reset_n ) begin
-			ff_bus_valid <= 1'b0;
-			ff_bus_ready <= 1'b1;
-		end
-		else if( bus_valid && ff_bus_ready ) begin
-			ff_bus_valid <= 1'b1;
-			ff_bus_ready <= 1'b0;
+			ff_bus_valid	<= 1'b1;
+			ff_bus_ready	<= 1'b0;
 		end
 		else begin
-			ff_bus_valid <= 1'b0;
-			ff_bus_ready <= ~ff_busy & bus_ioreq;
+			ff_bus_valid	<= 1'b0;
+			ff_bus_ready	<= bus_ioreq;
 		end
 	end
 
-	assign bus_ready	= ff_bus_ready;
+	assign bus_ready	= ff_bus_ready & ~ff_busy;
 
-	assign w_write		= ff_bus_valid &&  ff_bus_write && !ff_busy;
-	assign w_read		= ff_bus_valid && !ff_bus_write && !ff_busy;
+	assign w_write		= ff_bus_valid &  ff_bus_write & ~ff_busy;
+	assign w_read		= ff_bus_valid & ~ff_bus_write & ~ff_busy;
 
 	// --------------------------------------------------------------------
 	//	VRAM Read/Write access
@@ -324,33 +317,24 @@ module vdp_cpu_interface (
 
 	always @( posedge clk or negedge reset_n ) begin
 		if( !reset_n ) begin
-			ff_vram_valid <= 1'b0;
+			ff_vram_valid	<= 1'b0;
+			ff_vram_write	<= 1'b0;
+			ff_vram_wdata	<= 8'd0;
 		end
 		else if( ff_vram_valid ) begin
 			if( vram_ready ) begin
-				ff_vram_valid <= 1'b0;
+				ff_vram_valid	<= 1'b0;
 			end
 		end
 		else if( w_write && ff_port0 ) begin
-			ff_vram_valid <= 1'b1;
+			ff_vram_valid	<= 1'b1;
+			ff_vram_write	<= 1'b1;
+			ff_vram_wdata	<= ff_bus_wdata;
 		end
 		else if( w_read && ff_port0 ) begin
-			ff_vram_valid <= 1'b1;
-		end
-	end
-
-	always @( posedge clk or negedge reset_n ) begin
-		if( !reset_n ) begin
-			ff_vram_write <= 1'b0;
-			ff_vram_wdata <= 8'd0;
-		end
-		else if( w_write && ff_port0 ) begin
-			ff_vram_write <= 1'b1;
-			ff_vram_wdata <= ff_bus_wdata;
-		end
-		else if( w_read && ff_port0 ) begin
-			ff_vram_write <= 1'b0;
-			ff_vram_wdata <= 8'd0;
+			ff_vram_valid	<= 1'b1;
+			ff_vram_write	<= 1'b0;
+			ff_vram_wdata	<= 8'd0;
 		end
 	end
 
@@ -366,11 +350,11 @@ module vdp_cpu_interface (
 		else if( vram_rdata_en ) begin
 			ff_vram_address_inc <= 1'b1;
 		end
-		else if( ff_vram_valid ) begin
-			if( vram_ready ) begin
-				ff_vram_address_inc	<= ff_vram_write;
-				ff_busy				<= ff_port0;
-			end
+		else if( ff_bus_valid ) begin
+			ff_busy				<= ff_port0;
+		end
+		else if( ff_vram_valid && vram_ready && ff_bus_write ) begin
+			ff_vram_address_inc <= 1'b1;
 		end
 	end
 
@@ -378,13 +362,24 @@ module vdp_cpu_interface (
 
 	always @( posedge clk or negedge reset_n ) begin
 		if( !reset_n ) begin
-			ff_vram_address[13:0]	<= 14'd0;
+			ff_vram_address	<= 17'd0;
 		end
-		else if( ff_vram_address_inc ) begin
-			ff_vram_address[13:0] <= w_next_vram_address[13:0];
+		else if( ff_vram_address_inc ) begin		//	1clock pulse
+			if( (ff_screen_mode[4:3] == 2'b00) || !ff_vram_type ) begin
+				ff_vram_address[13:0]	<= w_next_vram_address[13:0];
+			end
+			else begin
+				ff_vram_address			<= w_next_vram_address;
+			end
 		end
-		else if( ff_busy ) begin
-			//	hold
+		else if( ff_register_write && ff_register_num == 6'd14 ) begin
+			//	R#14 = [N/A][N/A][N/A][N/A][N/A][A16][A15][A14]
+			if( !ff_vram_type ) begin
+				ff_vram_address[16:14]	<= 3'd0;
+			end
+			else begin
+				ff_vram_address[16:14]	<= ff_1st_byte[2:0];
+			end
 		end
 		else if( w_write && ff_port1 ) begin
 			if( ff_2nd_access ) begin
@@ -408,31 +403,6 @@ module vdp_cpu_interface (
 			end
 		end
 	end
-
-	always @( posedge clk or negedge reset_n ) begin
-		if( !reset_n ) begin
-			ff_vram_address[16:14] <= 3'd0;
-		end
-		else if( !ff_vram_type ) begin
-			ff_vram_address[16:14] <= 3'd0;
-		end
-		else if( ff_register_write && ff_register_num == 6'd14 ) begin
-			//	R#14 = [N/A][N/A][N/A][N/A][N/A][A16][A15][A14]
-			ff_vram_address[16:14] <= ff_1st_byte[2:0];
-		end
-		else if( ff_vram_address_inc ) begin
-			if( !w_address_14bit ) begin
-				ff_vram_address[16:14] <= w_next_vram_address[16:14];
-			end
-		end
-	end
-
-	assign w_address_14bit = (ff_screen_mode == 5'b00001) | 	//	Text1
-	                         (ff_screen_mode == 5'b00101) | 	//	Text1Q
-	                         (ff_screen_mode == 5'b00000) | 	//	Graphic1
-	                         (ff_screen_mode == 5'b00100) | 	//	Graphic2
-	                         (ff_screen_mode == 5'b00010) | 	//	Multi
-	                         (ff_screen_mode == 5'b00110);  	//	MultiQ
 
 	// --------------------------------------------------------------------
 	//	Control registers
@@ -594,76 +564,82 @@ module vdp_cpu_interface (
 	// --------------------------------------------------------------------
 	always @( posedge clk or negedge reset_n ) begin
 		if( !reset_n ) begin
-			ff_color_palette_address <= 4'd0;
-			ff_color_palette_valid <= 1'b0;
-			ff_color_palette_g_phase <= 1'b0;
-			ff_palette_r <= 3'd0;
-			ff_palette_g <= 3'd0;
-			ff_palette_b <= 3'd0;
+			ff_color_palette_address	<= 4'd0;
+			ff_color_palette_valid		<= 1'b0;
+			ff_color_palette_g_phase	<= 1'b0;
 		end
 		else if( ff_register_write ) begin
 			if( ff_register_num == 6'd16 ) begin
 				//	R#16 = [N/A][N/A][N/A][N/A][C3][C2][C1][C0]
-				ff_color_palette_address <= ff_1st_byte[3:0];
-				ff_color_palette_g_phase <= 1'b0;
+				ff_color_palette_address	<= ff_1st_byte[3:0];
+				ff_color_palette_g_phase	<= 1'b0;
 			end
 		end
 		else if( w_write && ff_port2 ) begin
 			if( ff_color_palette_g_phase == 1'b0 ) begin
 				//	P#2 = [0][R][R][R][0][B][B][B]
-				ff_palette_r <= ff_bus_wdata[6:4];
-				ff_palette_b <= ff_bus_wdata[2:0];
-				ff_color_palette_g_phase <= 1'b1;
+				ff_palette_r				<= ff_bus_wdata[6:4];
+				ff_palette_b				<= ff_bus_wdata[2:0];
+				ff_color_palette_g_phase	<= 1'b1;
 			end
 			else begin
 				//	P#2 = [0][0][0][0][0][G][G][G]
-				ff_palette_g <= ff_bus_wdata[2:0];
-				ff_color_palette_valid <= 1'b1;
-				ff_color_palette_g_phase <= 1'b0;
+				ff_palette_g				<= ff_bus_wdata[2:0];
+				ff_color_palette_valid		<= 1'b1;
+				ff_color_palette_g_phase	<= 1'b0;
 			end
 		end
 		else if( ff_color_palette_valid ) begin
-			ff_color_palette_address <= ff_color_palette_address + 4'd1;
-			ff_color_palette_valid <= 1'b0;
+			ff_color_palette_address	<= ff_color_palette_address + 4'd1;
+			ff_color_palette_valid		<= 1'b0;
 		end
 	end
 
 	// --------------------------------------------------------------------
 	//	Read data latch
 	// --------------------------------------------------------------------
+
+	always @( posedge clk ) begin
+		case( ff_status_register_pointer )
+		4'd0:		ff_status_register <= { ff_frame_interrupt, sprite_collision, 1'b0, 5'b00000 };
+		4'd1:		ff_status_register <= { 2'd0, 5'b00010, ff_line_interrupt };
+		4'd2:		ff_status_register <= { status_transfer_ready, 1'b0, 1'b0, status_border_detect, 2'b11, 1'b0, status_command_enable };
+		4'd3:		ff_status_register <= sprite_collision_x[7:0];
+		4'd4:		ff_status_register <= { 7'b1111111, sprite_collision_x[8] };
+		4'd5:		ff_status_register <= sprite_collision_y[7:0];
+		4'd6:		ff_status_register <= { 6'b111111, sprite_collision_y[9:8] };
+		4'd7:		ff_status_register <= status_color;
+		4'd8:		ff_status_register <= status_border_position[7:0];
+		4'd9:		ff_status_register <= { 7'b1111111, status_border_position[8] };
+		default:	ff_status_register <= 8'b11111111;
+		endcase
+	end
+
 	always @( posedge clk or negedge reset_n ) begin
 		if( !reset_n ) begin
-			ff_bus_rdata <= 8'd0;
-			ff_bus_rdata_en <= 1'b0;
+			ff_bus_rdata_en		<= 1'b0;
 		end
 		else if( vram_rdata_en ) begin
-			ff_bus_rdata <= vram_rdata;
-			ff_bus_rdata_en <= 1'b1;
+			ff_bus_rdata		<= vram_rdata;
+			ff_bus_rdata_en		<= 1'b1;
 		end
 		else if( w_read ) begin
-			if( ff_port1 ) begin
-				case( ff_status_register_pointer )
-				4'd0:		ff_bus_rdata <= { ff_frame_interrupt, sprite_collision, 1'b0, 5'b00000 };
-				4'd1:		ff_bus_rdata <= { 2'd0, 5'b00010, ff_line_interrupt };
-				4'd2:		ff_bus_rdata <= { status_transfer_ready, 1'b0, 1'b0, status_border_detect, 2'b11, 1'b0, status_command_enable };
-				4'd3:		ff_bus_rdata <= sprite_collision_x[7:0];
-				4'd4:		ff_bus_rdata <= { 7'b1111111, sprite_collision_x[8] };
-				4'd5:		ff_bus_rdata <= sprite_collision_y[7:0];
-				4'd6:		ff_bus_rdata <= { 6'b111111, sprite_collision_y[9:8] };
-				4'd7:		ff_bus_rdata <= status_color;
-				4'd8:		ff_bus_rdata <= status_border_position[7:0];
-				4'd9:		ff_bus_rdata <= { 7'b1111111, status_border_position[8] };
-				default:	ff_bus_rdata <= 8'b11111111;
-				endcase
+			if( ff_port0 ) begin
+				ff_bus_rdata	<= 8'b11111111;
+				ff_bus_rdata_en	<= 1'b0;
+			end
+			else if( ff_port1 ) begin
+				ff_bus_rdata	<= ff_status_register;
+				ff_bus_rdata_en	<= 1'b1;
 			end
 			else begin
-				ff_bus_rdata <= 8'b11111111;
+				ff_bus_rdata	<= 8'b11111111;
+				ff_bus_rdata_en	<= 1'b1;
 			end
-			ff_bus_rdata_en <= 1'b1;
 		end
 		else begin
-			ff_bus_rdata <= 8'd0;
-			ff_bus_rdata_en <= 1'b0;
+			ff_bus_rdata	<= 8'd0;
+			ff_bus_rdata_en	<= 1'b0;
 		end
 	end
 
@@ -675,39 +651,35 @@ module vdp_cpu_interface (
 	// --------------------------------------------------------------------
 	always @( posedge clk or negedge reset_n ) begin
 		if( !reset_n ) begin
-			ff_line_interrupt <= 1'b0;
-		end
-		else if( ff_line_interrupt_enable == 1'b0 ) begin
-			ff_line_interrupt <= 1'b0;
-		end
-		else if( w_read && ff_port1 ) begin
-			if( ff_status_register_pointer == 4'd1 ) begin
-				//	Clear line interrupt flag
-				ff_line_interrupt <= 1'b0;
-			end
-		end
-		else if( intr_line ) begin
-			//	Happend line interrupt
-			ff_line_interrupt <= 1'b1;
-		end
-	end
-
-	always @( posedge clk or negedge reset_n ) begin
-		if( !reset_n ) begin
-			ff_frame_interrupt <= 1'b0;
-		end
-		else if( ff_frame_interrupt_enable == 1'b0 ) begin
-			ff_frame_interrupt <= 1'b0;
+			ff_frame_interrupt	<= 1'b0;
+			ff_line_interrupt	<= 1'b0;
 		end
 		else if( w_read && ff_port1 ) begin
 			if( ff_status_register_pointer == 4'd0 ) begin
 				//	Clear frame interrupt flag
 				ff_frame_interrupt <= 1'b0;
 			end
+			else if( ff_status_register_pointer == 4'd1 ) begin
+				//	Clear line interrupt flag
+				ff_line_interrupt <= 1'b0;
+			end
 		end
-		else if( intr_frame ) begin
-			//	Happend line interrupt
-			ff_frame_interrupt <= 1'b1;
+		else begin
+			if( ff_frame_interrupt_enable == 1'b0 ) begin
+				ff_frame_interrupt <= 1'b0;
+			end
+			else if( intr_frame ) begin
+				//	Happend line interrupt
+				ff_frame_interrupt <= 1'b1;
+			end
+
+			if( ff_line_interrupt_enable == 1'b0 ) begin
+				ff_line_interrupt <= 1'b0;
+			end
+			else if( intr_line ) begin
+				//	Happend line interrupt
+				ff_line_interrupt <= 1'b1;
+			end
 		end
 	end
 

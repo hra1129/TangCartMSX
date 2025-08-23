@@ -316,28 +316,38 @@ module vdp (
 	// --------------------------------------------------------------------
 	//	VDP Command Processor
 	// --------------------------------------------------------------------
-	vdp_command u_command (
-		.reset_n									( reset_n									),
-		.clk										( clk										),
-		.command_vram_address						( w_command_vram_address					),
-		.command_vram_valid							( w_command_vram_valid						),
-		.command_vram_ready							( w_command_vram_ready						),
-		.command_vram_write							( w_command_vram_write						),
-		.command_vram_wdata							( w_command_vram_wdata						),
-		.command_vram_wdata_mask					( w_command_vram_wdata_mask					),
-		.command_vram_rdata							( w_command_vram_rdata						),
-		.command_vram_rdata_en						( w_command_vram_rdata_en					),
-		.register_write								( w_register_write							),
-		.register_num								( w_register_num							),
-		.register_data								( w_register_data							),
-		.status_command_enable						( w_status_command_enable					),
-		.status_border_detect						( w_status_border_detect					),
-		.status_transfer_ready						( w_status_transfer_ready					),
-		.status_color								( w_status_color							),
-		.status_border_position						( w_status_border_position					),
-		.screen_mode								( w_screen_mode								),
-		.reg_command_enable							( reg_command_enable						)
-	);
+//	vdp_command u_command (
+//		.reset_n									( reset_n									),
+//		.clk										( clk										),
+//		.command_vram_address						( w_command_vram_address					),
+//		.command_vram_valid							( w_command_vram_valid						),
+//		.command_vram_ready							( w_command_vram_ready						),
+//		.command_vram_write							( w_command_vram_write						),
+//		.command_vram_wdata							( w_command_vram_wdata						),
+//		.command_vram_wdata_mask					( w_command_vram_wdata_mask					),
+//		.command_vram_rdata							( w_command_vram_rdata						),
+//		.command_vram_rdata_en						( w_command_vram_rdata_en					),
+//		.register_write								( w_register_write							),
+//		.register_num								( w_register_num							),
+//		.register_data								( w_register_data							),
+//		.status_command_enable						( w_status_command_enable					),
+//		.status_border_detect						( w_status_border_detect					),
+//		.status_transfer_ready						( w_status_transfer_ready					),
+//		.status_color								( w_status_color							),
+//		.status_border_position						( w_status_border_position					),
+//		.screen_mode								( w_screen_mode								),
+//		.reg_command_enable							( reg_command_enable						)
+//	);
+
+	assign w_command_vram_address		= 17'b0;
+	assign w_command_vram_valid			= 1'b0;
+	assign w_command_vram_wdata			= 32'd0;
+	assign w_command_vram_wdata_mask	= 4'd0;
+	assign w_status_command_enable		= 1'b0;
+	assign w_status_border_detect		= 1'b0;
+	assign w_status_transfer_ready		= 1'b0;
+	assign w_status_color				= 8'd0;
+	assign w_status_border_position		= 9'd0;
 
 	// --------------------------------------------------------------------
 	//	VRAM interface

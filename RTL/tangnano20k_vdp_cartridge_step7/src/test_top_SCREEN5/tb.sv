@@ -443,6 +443,8 @@ module tb ();
 
 		for( i = 0; i < 32768; i = i + 1 ) begin
 			write_io( vdp_io0, (i & 255) );
+			@( posedge clk14m );
+			@( posedge clk14m );
 		end
 
 		repeat(5000) @( posedge clk14m );

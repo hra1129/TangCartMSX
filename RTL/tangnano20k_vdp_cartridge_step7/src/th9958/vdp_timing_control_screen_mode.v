@@ -137,8 +137,7 @@ module vdp_timing_control_screen_mode (
 	//	Pattern generator table address
 	wire		[16:0]	w_pattern_generator_g1;
 	wire		[16:0]	w_pattern_generator_g23;
-    wire        [16:0]  w_pattern_generator_t1;
-    wire        [16:0]  w_pattern_generator_t2;
+    wire        [16:0]  w_pattern_generator_t12;
 	//	Color table address
 	wire		[16:0]	w_color_g1;
 	wire		[16:0]	w_color_g23;
@@ -184,8 +183,8 @@ module vdp_timing_control_screen_mode (
 
 	assign w_mode				= func_screen_mode_decoder( reg_screen_mode );
 	assign screen_mode			= w_mode;
-	assign sprite_off			= (w_mode == c_t1) || (w_mode == c_t2);
-	assign vram_interleave		= (w_mode == c_g6) || (w_mode == c_g7);
+	assign sprite_off			= (w_mode == c_t1 || w_mode == c_t2);
+	assign vram_interleave		= (w_mode == c_g6 || w_mode == c_g7);
 
 	// --------------------------------------------------------------------
 	//	Screen Position for active area
@@ -201,10 +200,7 @@ module vdp_timing_control_screen_mode (
 			ff_phase <= 3'd0;
 		end
 		else if( w_sub_phase == 4'd15 ) begin
-			if( w_scroll_pos_x == 10'h3FF ) begin
-				ff_phase <= 3'd0;
-			end
-			else if( w_mode == c_t1 || w_mode == c_t2 ) begin
+			if( w_mode == c_t1 || w_mode == c_t2 ) begin
 				if( ff_phase == 3'd5 || w_scroll_pos_x == 10'd7 ) begin
 					ff_phase <= 3'd0;
 				end
@@ -213,7 +209,12 @@ module vdp_timing_control_screen_mode (
 				end
 			end
 			else begin
-				ff_phase <= ff_phase + 3'd1;
+				if( w_scroll_pos_x == 10'h3FF ) begin
+					ff_phase <= 3'd0;
+				end
+				else begin
+					ff_phase <= ff_phase + 3'd1;
+				end
 			end
 		end
 	end
@@ -273,8 +274,7 @@ module vdp_timing_control_screen_mode (
 	// --------------------------------------------------------------------
 	assign w_pattern_generator_g1		= { reg_pattern_generator_table_base, ff_next_vram0, pixel_pos_y[2:0] };
 	assign w_pattern_generator_g23		= { reg_pattern_generator_table_base[16:13], (pixel_pos_y[7:6] & reg_pattern_generator_table_base[12:11]), ff_next_vram0, pixel_pos_y[2:0] };
-	assign w_pattern_generator_t1		= { reg_pattern_generator_table_base, ff_next_vram0, pixel_pos_y[2:0] };
-	assign w_pattern_generator_t2		= { reg_pattern_generator_table_base, ff_next_vram0, pixel_pos_y[2:0] };
+	assign w_pattern_generator_t12		= { reg_pattern_generator_table_base, ff_next_vram0, pixel_pos_y[2:0] };
 
 	// --------------------------------------------------------------------
 	//	Color table address
@@ -354,10 +354,8 @@ module vdp_timing_control_screen_mode (
 					endcase
 				3'd2:
 					casex( w_mode )
-					c_t1:
-						ff_vram_address <= w_pattern_generator_t1;
-					c_t2:
-						ff_vram_address <= w_pattern_generator_t2;
+					c_t1, c_t2:
+						ff_vram_address <= w_pattern_generator_t12;
 					c_g1:
 						ff_vram_address <= w_pattern_generator_g1;
 					c_g2, c_g3:
@@ -616,7 +614,7 @@ module vdp_timing_control_screen_mode (
 		end
 	end
 
-	assign w_pattern0	= (!reg_display_on || (reg_left_mask && (screen_pos_x[13:4] < 10'd15))) ? reg_backdrop_color: ff_pattern0;
+	assign w_pattern0	= (!reg_display_on || (reg_left_mask && (screen_pos_x[13:8] < 6'd15))) ? reg_backdrop_color: ff_pattern0;
 
 	always @( posedge clk or negedge reset_n ) begin
 		if( !reset_n ) begin
