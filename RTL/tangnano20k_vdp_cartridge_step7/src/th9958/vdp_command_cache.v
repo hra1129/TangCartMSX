@@ -264,9 +264,6 @@ module vdp_command_cache (
 				ff_cache3_data_en		<= 1'b0;
 				ff_flush_state			<= 3'd1;
 			end
-			3'd1: begin
-				ff_flush_state <= 3'd0;
-			end
 			default: begin
 				ff_flush_state <= 3'd0;
 			end
@@ -294,10 +291,10 @@ module vdp_command_cache (
 						//	Read VRAM
 						ff_vram_address		<= cache_vram_address[16:2];
 						ff_vram_valid		<= 1'b1;
-						ff_vram_write		<= 1'b0;
 						ff_vram_data_mask	<= 4'b1111;
 						ff_priority			<= 2'd0;
 					end
+					ff_vram_write		<= 1'b0;
 					ff_busy				<= 1'b1;
 				end
 				else if( w_cache1_hit ) begin
@@ -315,10 +312,10 @@ module vdp_command_cache (
 						//	Read VRAM
 						ff_vram_address		<= cache_vram_address[16:2];
 						ff_vram_valid		<= 1'b1;
-						ff_vram_write		<= 1'b0;
 						ff_vram_data_mask	<= 4'b1111;
 						ff_priority			<= 2'd1;
 					end
+					ff_vram_write		<= 1'b0;
 					ff_busy				<= 1'b1;
 				end
 				else if( w_cache2_hit ) begin
@@ -336,10 +333,10 @@ module vdp_command_cache (
 						//	Read VRAM
 						ff_vram_address		<= cache_vram_address[16:2];
 						ff_vram_valid		<= 1'b1;
-						ff_vram_write		<= 1'b0;
 						ff_vram_data_mask	<= 4'b1111;
 						ff_priority			<= 2'd2;
 					end
+					ff_vram_write		<= 1'b0;
 					ff_busy				<= 1'b1;
 				end
 				else if( w_cache3_hit ) begin
@@ -357,10 +354,10 @@ module vdp_command_cache (
 						//	Read VRAM
 						ff_vram_address		<= cache_vram_address[16:2];
 						ff_vram_valid		<= 1'b1;
-						ff_vram_write		<= 1'b0;
 						ff_vram_data_mask	<= 4'b1111;
 						ff_priority			<= 2'd3;
 					end
+					ff_vram_write		<= 1'b0;
 					ff_busy				<= 1'b1;
 				end
 				else begin
@@ -682,9 +679,6 @@ module vdp_command_cache (
 
 			ff_cache_vram_rdata_en		<= 1'b1;
 			ff_priority					<= ff_priority + 2'd1;
-		end
-		else begin
-			ff_cache_vram_rdata_en		<= 1'b0;
 		end
 	end
 
