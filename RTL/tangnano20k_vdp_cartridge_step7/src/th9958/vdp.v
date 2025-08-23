@@ -60,7 +60,7 @@ module vdp (
 	input				clk,					//	85.90908MHz
 
 	input				initial_busy,
-	input		[2:0]	bus_address,
+	input		[1:0]	bus_address,
 	input				bus_ioreq,
 	input				bus_write,
 	input				bus_valid,
