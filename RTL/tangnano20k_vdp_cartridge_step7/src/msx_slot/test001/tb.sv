@@ -57,27 +57,24 @@ module tb ();
 	localparam		clk_base		= 1_000_000_000/85_909_080;	//	ps
 	localparam		cpu_clk_base	= 1_000_000_000/ 3_579_545;	//	ps
 	reg				clk;
-	reg				reset_n;
 	reg				initial_busy;
 	reg				p_slot_clk;
 	reg				p_slot_reset_n;
-	reg				p_slot_sltsl_n;
-	reg				p_slot_mreq_n;
 	reg				p_slot_ioreq_n;
 	reg				p_slot_wr_n;
 	reg				p_slot_rd_n;
-	reg		[15:0]	p_slot_address;
+	reg		[7:0]	p_slot_address;
 	wire	[7:0]	p_slot_data;
 	reg		[7:0]	ff_slot_data;
-	wire			p_slot_data_dir;
 	wire			p_slot_int;
+	wire			p_slot_data_dir;
+	wire			busdir;
 	reg				int_n;
-	wire			bus_memreq;
 	wire			bus_ioreq;
-	wire	[15:0]	bus_address;
+	wire	[7:0]	bus_address;
 	wire			bus_write;
 	wire			bus_valid;
-	reg				bus_ready;
+	wire			bus_ready;
 	wire	[7:0]	bus_wdata;
 	reg		[7:0]	bus_rdata;
 	reg				bus_rdata_en;
@@ -88,20 +85,17 @@ module tb ();
 	// --------------------------------------------------------------------
 	msx_slot u_msx_slot (
 		.clk					( clk					),
-		.reset_n				( reset_n				),
 		.initial_busy			( initial_busy			),
 		.p_slot_reset_n			( p_slot_reset_n		),
-		.p_slot_sltsl_n			( p_slot_sltsl_n		),
-		.p_slot_mreq_n			( p_slot_mreq_n			),
 		.p_slot_ioreq_n			( p_slot_ioreq_n		),
 		.p_slot_wr_n			( p_slot_wr_n			),
 		.p_slot_rd_n			( p_slot_rd_n			),
 		.p_slot_address			( p_slot_address		),
 		.p_slot_data			( p_slot_data			),
-		.p_slot_data_dir		( p_slot_data_dir		),
 		.p_slot_int				( p_slot_int			),
+		.p_slot_data_dir		( p_slot_data_dir		),
+		.busdir					( busdir				),
 		.int_n					( int_n					),
-		.bus_memreq				( bus_memreq			),
 		.bus_ioreq				( bus_ioreq				),
 		.bus_address			( bus_address			),
 		.bus_write				( bus_write				),
@@ -112,6 +106,7 @@ module tb ();
 		.bus_rdata_en			( bus_rdata_en			)
 	);
 
+	//	1: Read, 0: Write
 	assign p_slot_data	= (p_slot_data_dir == 1'b1) ? 8'hZZ: ff_slot_data;
 
 	// --------------------------------------------------------------------
@@ -122,10 +117,21 @@ module tb ();
 	end
 
 	// --------------------------------------------------------------------
+	//	response
+	// --------------------------------------------------------------------
+	reg		[2:0]	ff_bus_valid = 0;
+
+	always @( clk ) begin
+		ff_bus_valid = { bus_valid, ff_bus_valid[2:1] };
+	end
+
+	assign bus_ready = ff_bus_valid[0];
+
+	// --------------------------------------------------------------------
 	//	tasks
 	// --------------------------------------------------------------------
 	task write_io(
-		input	[15:0]	address,
+		input	[7:0]	address,
 		input	[7:0]	wdata
 	);
 		fork
@@ -184,36 +190,16 @@ module tb ();
 				@( negedge p_slot_clk );
 				#120ns p_slot_wr_n = 1'b1;
 			end
-			//	bus_ready
-			begin
-				assert( bus_valid == 1'b0 );
-				@( posedge bus_valid );
-				@( posedge clk );
-				@( posedge clk );
-				@( posedge clk );
-				bus_ready = 1'b1;
-				@( negedge clk );
-				assert( bus_address == address );
-				assert( bus_valid == 1'b1 );
-				assert( bus_write == 1'b1 );
-				assert( bus_ioreq == 1'b1 );
-				@( posedge clk );
-				bus_ready = 1'b0;
-				@( negedge clk );
-				assert( bus_valid == 1'b0 );
-			end
 			//	others
 			begin
 				ff_slot_data	= wdata;
-				p_slot_sltsl_n	= 1'b1;
-				p_slot_mreq_n	= 1'b1;
 			end
 		join
-	endtask: write_io
+	endtask
 
 	// --------------------------------------------------------------------
 	task write_io_ex(
-		input	[15:0]	address,
+		input	[7:0]	address,
 		input	[7:0]	wdata
 	);
 		fork
@@ -272,48 +258,89 @@ module tb ();
 				@( negedge p_slot_clk );
 				#150ns p_slot_wr_n = 1'b1;
 			end
-			//	bus_ready
-			begin
-				assert( bus_valid == 1'b0 );
-				@( posedge bus_valid );
-				@( posedge clk );
-				@( posedge clk );
-				@( posedge clk );
-				bus_ready = 1'b1;
-				@( negedge clk );
-				assert( bus_address == address );
-				assert( bus_valid == 1'b1 );
-				assert( bus_write == 1'b1 );
-				assert( bus_ioreq == 1'b1 );
-				@( posedge clk );
-				bus_ready = 1'b0;
-				@( negedge clk );
-				assert( bus_valid == 1'b0 );
-			end
 			//	others
 			begin
 				ff_slot_data	= wdata;
-				p_slot_sltsl_n	= 1'b1;
-				p_slot_mreq_n	= 1'b1;
 			end
 		join
-	endtask: write_io_ex
+	endtask
+
+	// --------------------------------------------------------------------
+	task read_io(
+		input	[7:0]	address,
+		output	[7:0]	rdata
+	);
+		fork
+			//	CPU clock
+			begin
+				//	T1
+				s_state		= "T1";
+				p_slot_clk	= 1'b1;
+				#(cpu_clk_base/2) p_slot_clk	= 1'b0;
+				//	T2
+				s_state		= "T2";
+				#(cpu_clk_base/2) p_slot_clk	= 1'b1;
+				#(cpu_clk_base/2) p_slot_clk	= 1'b0;
+				//	TW
+				s_state		= "TW";
+				#(cpu_clk_base/2) p_slot_clk	= 1'b1;
+				#(cpu_clk_base/2) p_slot_clk	= 1'b0;
+				//	T3
+				s_state		= "T3";
+				#(cpu_clk_base/2) p_slot_clk	= 1'b1;
+				#(cpu_clk_base/2) p_slot_clk	= 1'b0;
+				//	T4
+				s_state		= "T4";
+				#(cpu_clk_base/2) p_slot_clk	= 1'b1;
+				#(cpu_clk_base/2) p_slot_clk	= 1'b0;
+				//	T5
+				s_state		= "T5";
+				#(cpu_clk_base/2) p_slot_clk	= 1'b1;
+				#(cpu_clk_base/2) p_slot_clk	= 1'b0;
+			end
+			//	Address
+			begin
+				#170ns p_slot_address = address;
+			end
+			//	/IORQ
+			begin
+				p_slot_ioreq_n = 1'b1;
+				//	T1
+				@( negedge p_slot_clk );
+				@( posedge p_slot_clk );
+				#135ns p_slot_ioreq_n = 1'b0;
+				@( negedge p_slot_clk );
+				@( negedge p_slot_clk );
+				@( negedge p_slot_clk );
+				#145ns p_slot_ioreq_n = 1'b1;
+			end
+			//	/RD
+			begin
+				p_slot_rd_n = 1'b1;
+				//	T1
+				@( negedge p_slot_ioreq_n );
+				#10ns p_slot_rd_n = 1'b0;
+				@( posedge p_slot_ioreq_n );
+				rdata = p_slot_data;
+				p_slot_rd_n = 1'b1;
+			end
+		join
+	endtask
 
 	// --------------------------------------------------------------------
 	//	Test bench
 	// --------------------------------------------------------------------
 	initial begin
-		clk				= 0;			//	42.95454MHz
+		logic [7:0] rdata;
+
+		clk					= 0;			//	42.95454MHz
 		initial_busy		= 0;
 		p_slot_clk			= 0;
 		p_slot_reset_n		= 0;
-		p_slot_sltsl_n		= 1;
-		p_slot_mreq_n		= 1;
 		p_slot_ioreq_n		= 1;
 		p_slot_wr_n			= 1;
 		p_slot_rd_n			= 1;
 		p_slot_address		= 0;
-		bus_ready			= 0;
 		bus_rdata			= 0;
 		bus_rdata_en		= 0;
 		int_n				= 1;
@@ -326,19 +353,24 @@ module tb ();
 		@( posedge clk );
 
 		// --------------------------------------------------------------------
-		write_io( 16'h98, 8'h12 );
-		write_io( 16'h89, 8'h23 );
-		write_io( 16'h78, 8'h34 );
-		write_io( 16'h67, 8'h45 );
-		write_io( 16'h56, 8'h56 );
-		write_io( 16'h45, 8'h67 );
+		write_io( 8'h88, 8'h12 );
+		write_io( 8'h89, 8'h23 );
+		write_io( 8'h8A, 8'h34 );
+		write_io( 8'h8B, 8'h45 );
+		write_io( 8'h88, 8'h56 );
+		write_io( 8'h89, 8'h67 );
 
-		write_io_ex( 16'h98, 8'h12 );
-		write_io_ex( 16'h89, 8'h23 );
-		write_io_ex( 16'h78, 8'h34 );
-		write_io_ex( 16'h67, 8'h45 );
-		write_io_ex( 16'h56, 8'h56 );
-		write_io_ex( 16'h45, 8'h67 );
+		write_io_ex( 8'h88, 8'h12 );
+		write_io_ex( 8'h89, 8'h23 );
+		write_io_ex( 8'h8A, 8'h34 );
+		write_io_ex( 8'h8B, 8'h45 );
+		write_io_ex( 8'h88, 8'h56 );
+		write_io_ex( 8'h89, 8'h67 );
+
+		read_io( 8'h88, rdata );
+		read_io( 8'h89, rdata );
+		read_io( 8'h8A, rdata );
+		read_io( 8'h8B, rdata );
 
 		repeat( 10 ) @( posedge clk );
 		$finish;

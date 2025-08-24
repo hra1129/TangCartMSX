@@ -98,6 +98,16 @@ module tb ();
 	reg			[8:0]	sprite_collision_x;
 	reg			[9:0]	sprite_collision_y;
 
+	wire				register_write;
+	wire		[5:0]	register_num;
+	wire		[7:0]	register_data;
+
+	reg					status_command_enable;		//	S#2 bit0
+	reg					status_border_detect;		//	S#2 bit4
+	reg					status_transfer_ready;		//	S#2 bit7
+	reg			[7:0]	status_color;				//	S#7
+	reg			[8:0]	status_border_position;		//	S#8, S#9
+
 	wire	[4:0]		reg_screen_mode;
 	wire				reg_sprite_magify;
 	wire				reg_sprite_16x16;
@@ -126,6 +136,8 @@ module tb ();
 	wire				reg_yae_mode;
 	wire				reg_command_enable;
 	wire	[8:0]		reg_horizontal_offset;
+	reg		[2:0]		reg_horizontal_offset_l;
+	reg		[8:3]		reg_horizontal_offset_h;
 	reg		[16:0]		ff_last_vram_address;
 	reg		[7:0]		ff_last_vram_wdata;
 
@@ -287,6 +299,12 @@ module tb ();
 		sprite_collision = 0;
 		sprite_collision_x = 0;
 		sprite_collision_y = 0;
+
+		status_command_enable = 0;		//	S#2 bit0
+		status_border_detect = 0;		//	S#2 bit4
+		status_transfer_ready = 0;		//	S#2 bit7
+		status_color = 0;				//	S#7
+		status_border_position = 0;		//	S#8, S#9
 
 		fork
 			vram_response();
@@ -705,32 +723,32 @@ module tb ();
 		$display( "-- R#26 = FFh" );
 		write_io( 1, 8'hFF );
 		write_io( 1, 8'h9A );
-		assert( reg_horizontal_offset[8:3] == 6'h3F );
+		assert( reg_horizontal_offset_h == 6'h3F );
 
 		$display( "-- R#26 = 55h" );
 		write_io( 1, 8'h55 );
 		write_io( 1, 8'h9A );
-		assert( reg_horizontal_offset[8:3] == 6'h15 );
+		assert( reg_horizontal_offset_h == 6'h15 );
 
 		$display( "-- R#26 = AAh" );
 		write_io( 1, 8'hAA );
 		write_io( 1, 8'h9A );
-		assert( reg_horizontal_offset[8:3] == 6'h2A );
+		assert( reg_horizontal_offset_h == 6'h2A );
 
 		$display( "-- R#27 = FFh" );
 		write_io( 1, 8'hFF );
 		write_io( 1, 8'h9B );
-		assert( reg_horizontal_offset[2:0] == 3'h7 );
+		assert( reg_horizontal_offset_l == 3'h7 );
 
 		$display( "-- R#27 = 55h" );
 		write_io( 1, 8'h55 );
 		write_io( 1, 8'h9B );
-		assert( reg_horizontal_offset[2:0] == 3'h5 );
+		assert( reg_horizontal_offset_l == 3'h5 );
 
 		$display( "-- R#27 = AAh" );
 		write_io( 1, 8'hAA );
 		write_io( 1, 8'h9B );
-		assert( reg_horizontal_offset[2:0] == 3'h2 );
+		assert( reg_horizontal_offset_l == 3'h2 );
 
 		$display( "[test006] Palette Write" );
 		$display( "-- R#16 = 4" );

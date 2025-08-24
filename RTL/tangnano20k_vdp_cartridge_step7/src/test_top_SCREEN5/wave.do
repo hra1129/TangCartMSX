@@ -1,143 +1,42 @@
 onerror {resume}
+quietly virtual signal -install /tb/u_vdp_cartridge/u_v9958/u_timing_control/u_ssg { /tb/u_vdp_cartridge/u_v9958/u_timing_control/u_ssg/h_count[3:0]} H_COUNT
 quietly WaveActivateNextPane {} 0
-add wave -noupdate -radix hexadecimal /tb/u_vdp_cartridge/u_v9958/u_cpu_interface/reset_n
-add wave -noupdate -radix hexadecimal /tb/u_vdp_cartridge/u_v9958/u_cpu_interface/clk
-add wave -noupdate -radix hexadecimal /tb/u_vdp_cartridge/u_v9958/u_cpu_interface/bus_address
-add wave -noupdate -radix hexadecimal /tb/u_vdp_cartridge/u_v9958/u_cpu_interface/bus_ioreq
-add wave -noupdate -radix hexadecimal /tb/u_vdp_cartridge/u_v9958/u_cpu_interface/bus_write
-add wave -noupdate -radix hexadecimal /tb/u_vdp_cartridge/u_v9958/u_cpu_interface/bus_valid
-add wave -noupdate -radix hexadecimal /tb/u_vdp_cartridge/u_v9958/u_cpu_interface/bus_ready
-add wave -noupdate -radix hexadecimal /tb/u_vdp_cartridge/u_v9958/u_cpu_interface/bus_wdata
-add wave -noupdate -radix hexadecimal /tb/u_vdp_cartridge/u_v9958/u_cpu_interface/bus_rdata
-add wave -noupdate -radix hexadecimal /tb/u_vdp_cartridge/u_v9958/u_cpu_interface/bus_rdata_en
-add wave -noupdate -radix hexadecimal /tb/u_vdp_cartridge/u_v9958/u_cpu_interface/vram_address
-add wave -noupdate -radix hexadecimal /tb/u_vdp_cartridge/u_v9958/u_cpu_interface/vram_write
-add wave -noupdate -radix hexadecimal /tb/u_vdp_cartridge/u_v9958/u_cpu_interface/vram_valid
-add wave -noupdate -radix hexadecimal /tb/u_vdp_cartridge/u_v9958/u_cpu_interface/vram_ready
-add wave -noupdate -radix hexadecimal /tb/u_vdp_cartridge/u_v9958/u_cpu_interface/vram_wdata
-add wave -noupdate -radix hexadecimal /tb/u_vdp_cartridge/u_v9958/u_cpu_interface/vram_rdata
-add wave -noupdate -radix hexadecimal /tb/u_vdp_cartridge/u_v9958/u_cpu_interface/vram_rdata_en
-add wave -noupdate -radix hexadecimal /tb/u_vdp_cartridge/u_v9958/u_cpu_interface/palette_valid
-add wave -noupdate -radix hexadecimal /tb/u_vdp_cartridge/u_v9958/u_cpu_interface/palette_num
-add wave -noupdate -radix hexadecimal /tb/u_vdp_cartridge/u_v9958/u_cpu_interface/palette_r
-add wave -noupdate -radix hexadecimal /tb/u_vdp_cartridge/u_v9958/u_cpu_interface/palette_g
-add wave -noupdate -radix hexadecimal /tb/u_vdp_cartridge/u_v9958/u_cpu_interface/palette_b
-add wave -noupdate -radix hexadecimal /tb/u_vdp_cartridge/u_v9958/u_cpu_interface/int_n
-add wave -noupdate -radix hexadecimal /tb/u_vdp_cartridge/u_v9958/u_cpu_interface/intr_line
-add wave -noupdate -radix hexadecimal /tb/u_vdp_cartridge/u_v9958/u_cpu_interface/intr_frame
-add wave -noupdate -radix hexadecimal /tb/u_vdp_cartridge/u_v9958/u_cpu_interface/clear_sprite_collision
-add wave -noupdate -radix hexadecimal /tb/u_vdp_cartridge/u_v9958/u_cpu_interface/sprite_collision
-add wave -noupdate -radix hexadecimal /tb/u_vdp_cartridge/u_v9958/u_cpu_interface/clear_sprite_collision_xy
-add wave -noupdate -radix hexadecimal /tb/u_vdp_cartridge/u_v9958/u_cpu_interface/sprite_collision_x
-add wave -noupdate -radix hexadecimal /tb/u_vdp_cartridge/u_v9958/u_cpu_interface/sprite_collision_y
-add wave -noupdate -radix hexadecimal /tb/u_vdp_cartridge/u_v9958/u_cpu_interface/register_write
-add wave -noupdate -radix hexadecimal /tb/u_vdp_cartridge/u_v9958/u_cpu_interface/register_num
-add wave -noupdate -radix hexadecimal /tb/u_vdp_cartridge/u_v9958/u_cpu_interface/register_data
-add wave -noupdate -radix hexadecimal /tb/u_vdp_cartridge/u_v9958/u_cpu_interface/status_command_enable
-add wave -noupdate -radix hexadecimal /tb/u_vdp_cartridge/u_v9958/u_cpu_interface/status_border_detect
-add wave -noupdate -radix hexadecimal /tb/u_vdp_cartridge/u_v9958/u_cpu_interface/status_transfer_ready
-add wave -noupdate -radix hexadecimal /tb/u_vdp_cartridge/u_v9958/u_cpu_interface/status_color
-add wave -noupdate -radix hexadecimal /tb/u_vdp_cartridge/u_v9958/u_cpu_interface/status_border_position
-add wave -noupdate -radix hexadecimal /tb/u_vdp_cartridge/u_v9958/u_cpu_interface/reg_screen_mode
-add wave -noupdate -radix hexadecimal /tb/u_vdp_cartridge/u_v9958/u_cpu_interface/reg_sprite_magify
-add wave -noupdate -radix hexadecimal /tb/u_vdp_cartridge/u_v9958/u_cpu_interface/reg_sprite_16x16
-add wave -noupdate -radix hexadecimal /tb/u_vdp_cartridge/u_v9958/u_cpu_interface/reg_display_on
-add wave -noupdate -radix hexadecimal /tb/u_vdp_cartridge/u_v9958/u_cpu_interface/reg_pattern_name_table_base
-add wave -noupdate -radix hexadecimal /tb/u_vdp_cartridge/u_v9958/u_cpu_interface/reg_color_table_base
-add wave -noupdate -radix hexadecimal /tb/u_vdp_cartridge/u_v9958/u_cpu_interface/reg_pattern_generator_table_base
-add wave -noupdate -radix hexadecimal /tb/u_vdp_cartridge/u_v9958/u_cpu_interface/reg_sprite_attribute_table_base
-add wave -noupdate -radix hexadecimal /tb/u_vdp_cartridge/u_v9958/u_cpu_interface/reg_sprite_pattern_generator_table_base
-add wave -noupdate -radix hexadecimal /tb/u_vdp_cartridge/u_v9958/u_cpu_interface/reg_backdrop_color
-add wave -noupdate -radix hexadecimal /tb/u_vdp_cartridge/u_v9958/u_cpu_interface/reg_sprite_disable
-add wave -noupdate -radix hexadecimal /tb/u_vdp_cartridge/u_v9958/u_cpu_interface/reg_color0_opaque
-add wave -noupdate -radix hexadecimal /tb/u_vdp_cartridge/u_v9958/u_cpu_interface/reg_50hz_mode
-add wave -noupdate -radix hexadecimal /tb/u_vdp_cartridge/u_v9958/u_cpu_interface/reg_interleaving_mode
-add wave -noupdate -radix hexadecimal /tb/u_vdp_cartridge/u_v9958/u_cpu_interface/reg_interlace_mode
-add wave -noupdate -radix hexadecimal /tb/u_vdp_cartridge/u_v9958/u_cpu_interface/reg_212lines_mode
-add wave -noupdate -radix hexadecimal /tb/u_vdp_cartridge/u_v9958/u_cpu_interface/reg_text_back_color
-add wave -noupdate -radix hexadecimal /tb/u_vdp_cartridge/u_v9958/u_cpu_interface/reg_blink_period
-add wave -noupdate -radix hexadecimal /tb/u_vdp_cartridge/u_v9958/u_cpu_interface/reg_display_adjust
-add wave -noupdate -radix hexadecimal /tb/u_vdp_cartridge/u_v9958/u_cpu_interface/reg_interrupt_line
-add wave -noupdate -radix hexadecimal /tb/u_vdp_cartridge/u_v9958/u_cpu_interface/reg_vertical_offset
-add wave -noupdate -radix hexadecimal /tb/u_vdp_cartridge/u_v9958/u_cpu_interface/reg_scroll_planes
-add wave -noupdate -radix hexadecimal /tb/u_vdp_cartridge/u_v9958/u_cpu_interface/reg_left_mask
-add wave -noupdate -radix hexadecimal /tb/u_vdp_cartridge/u_v9958/u_cpu_interface/reg_yjk_mode
-add wave -noupdate -radix hexadecimal /tb/u_vdp_cartridge/u_v9958/u_cpu_interface/reg_yae_mode
-add wave -noupdate -radix hexadecimal /tb/u_vdp_cartridge/u_v9958/u_cpu_interface/reg_command_enable
-add wave -noupdate -radix hexadecimal /tb/u_vdp_cartridge/u_v9958/u_cpu_interface/reg_horizontal_offset_l
-add wave -noupdate -radix hexadecimal /tb/u_vdp_cartridge/u_v9958/u_cpu_interface/reg_horizontal_offset_h
-add wave -noupdate -radix hexadecimal /tb/u_vdp_cartridge/u_v9958/u_cpu_interface/ff_bus_ioreq
-add wave -noupdate -radix hexadecimal /tb/u_vdp_cartridge/u_v9958/u_cpu_interface/ff_bus_write
-add wave -noupdate -radix hexadecimal /tb/u_vdp_cartridge/u_v9958/u_cpu_interface/ff_bus_valid
-add wave -noupdate -radix hexadecimal /tb/u_vdp_cartridge/u_v9958/u_cpu_interface/ff_bus_ready
-add wave -noupdate -radix hexadecimal /tb/u_vdp_cartridge/u_v9958/u_cpu_interface/ff_bus_wdata
-add wave -noupdate -radix hexadecimal /tb/u_vdp_cartridge/u_v9958/u_cpu_interface/ff_status_register
-add wave -noupdate -radix hexadecimal /tb/u_vdp_cartridge/u_v9958/u_cpu_interface/ff_port0
-add wave -noupdate -radix hexadecimal /tb/u_vdp_cartridge/u_v9958/u_cpu_interface/ff_port1
-add wave -noupdate -radix hexadecimal /tb/u_vdp_cartridge/u_v9958/u_cpu_interface/ff_port2
-add wave -noupdate -radix hexadecimal /tb/u_vdp_cartridge/u_v9958/u_cpu_interface/ff_port3
-add wave -noupdate -radix hexadecimal /tb/u_vdp_cartridge/u_v9958/u_cpu_interface/w_write
-add wave -noupdate -radix hexadecimal /tb/u_vdp_cartridge/u_v9958/u_cpu_interface/w_read
-add wave -noupdate -radix hexadecimal /tb/u_vdp_cartridge/u_v9958/u_cpu_interface/ff_bus_rdata
-add wave -noupdate -radix hexadecimal /tb/u_vdp_cartridge/u_v9958/u_cpu_interface/ff_bus_rdata_en
-add wave -noupdate -radix hexadecimal /tb/u_vdp_cartridge/u_v9958/u_cpu_interface/ff_screen_mode
-add wave -noupdate -radix hexadecimal /tb/u_vdp_cartridge/u_v9958/u_cpu_interface/ff_line_interrupt_enable
-add wave -noupdate -radix hexadecimal /tb/u_vdp_cartridge/u_v9958/u_cpu_interface/ff_frame_interrupt_enable
-add wave -noupdate -radix hexadecimal /tb/u_vdp_cartridge/u_v9958/u_cpu_interface/ff_sprite_magify
-add wave -noupdate -radix hexadecimal /tb/u_vdp_cartridge/u_v9958/u_cpu_interface/ff_sprite_16x16
-add wave -noupdate -radix hexadecimal /tb/u_vdp_cartridge/u_v9958/u_cpu_interface/ff_display_on
-add wave -noupdate -radix hexadecimal /tb/u_vdp_cartridge/u_v9958/u_cpu_interface/ff_pattern_name_table_base
-add wave -noupdate -radix hexadecimal /tb/u_vdp_cartridge/u_v9958/u_cpu_interface/ff_color_table_base
-add wave -noupdate -radix hexadecimal /tb/u_vdp_cartridge/u_v9958/u_cpu_interface/ff_pattern_generator_table_base
-add wave -noupdate -radix hexadecimal /tb/u_vdp_cartridge/u_v9958/u_cpu_interface/ff_sprite_attribute_table_base
-add wave -noupdate -radix hexadecimal /tb/u_vdp_cartridge/u_v9958/u_cpu_interface/ff_sprite_pattern_generator_table_base
-add wave -noupdate -radix hexadecimal /tb/u_vdp_cartridge/u_v9958/u_cpu_interface/ff_backdrop_color
-add wave -noupdate -radix hexadecimal /tb/u_vdp_cartridge/u_v9958/u_cpu_interface/ff_sprite_disable
-add wave -noupdate -radix hexadecimal /tb/u_vdp_cartridge/u_v9958/u_cpu_interface/ff_vram_type
-add wave -noupdate -radix hexadecimal /tb/u_vdp_cartridge/u_v9958/u_cpu_interface/ff_color0_opaque
-add wave -noupdate -radix hexadecimal /tb/u_vdp_cartridge/u_v9958/u_cpu_interface/ff_50hz_mode
-add wave -noupdate -radix hexadecimal /tb/u_vdp_cartridge/u_v9958/u_cpu_interface/ff_interleaving_mode
-add wave -noupdate -radix hexadecimal /tb/u_vdp_cartridge/u_v9958/u_cpu_interface/ff_interlace_mode
-add wave -noupdate -radix hexadecimal /tb/u_vdp_cartridge/u_v9958/u_cpu_interface/ff_212lines_mode
-add wave -noupdate -radix hexadecimal /tb/u_vdp_cartridge/u_v9958/u_cpu_interface/ff_text_back_color
-add wave -noupdate -radix hexadecimal /tb/u_vdp_cartridge/u_v9958/u_cpu_interface/ff_blink_period
-add wave -noupdate -radix hexadecimal /tb/u_vdp_cartridge/u_v9958/u_cpu_interface/ff_status_register_pointer
-add wave -noupdate -radix hexadecimal /tb/u_vdp_cartridge/u_v9958/u_cpu_interface/ff_color_palette_address
-add wave -noupdate -radix hexadecimal /tb/u_vdp_cartridge/u_v9958/u_cpu_interface/ff_color_palette_g_phase
-add wave -noupdate -radix hexadecimal /tb/u_vdp_cartridge/u_v9958/u_cpu_interface/ff_color_palette_valid
-add wave -noupdate -radix hexadecimal /tb/u_vdp_cartridge/u_v9958/u_cpu_interface/ff_palette_r
-add wave -noupdate -radix hexadecimal /tb/u_vdp_cartridge/u_v9958/u_cpu_interface/ff_palette_g
-add wave -noupdate -radix hexadecimal /tb/u_vdp_cartridge/u_v9958/u_cpu_interface/ff_palette_b
-add wave -noupdate -radix hexadecimal /tb/u_vdp_cartridge/u_v9958/u_cpu_interface/ff_register_pointer
-add wave -noupdate -radix hexadecimal /tb/u_vdp_cartridge/u_v9958/u_cpu_interface/ff_not_increment
-add wave -noupdate -radix hexadecimal /tb/u_vdp_cartridge/u_v9958/u_cpu_interface/ff_display_adjust
-add wave -noupdate -radix hexadecimal /tb/u_vdp_cartridge/u_v9958/u_cpu_interface/ff_interrupt_line
-add wave -noupdate -radix hexadecimal /tb/u_vdp_cartridge/u_v9958/u_cpu_interface/ff_vertical_offset
-add wave -noupdate -radix hexadecimal /tb/u_vdp_cartridge/u_v9958/u_cpu_interface/ff_scroll_planes
-add wave -noupdate -radix hexadecimal /tb/u_vdp_cartridge/u_v9958/u_cpu_interface/ff_left_mask
-add wave -noupdate -radix hexadecimal /tb/u_vdp_cartridge/u_v9958/u_cpu_interface/ff_yjk_mode
-add wave -noupdate -radix hexadecimal /tb/u_vdp_cartridge/u_v9958/u_cpu_interface/ff_yae_mode
-add wave -noupdate -radix hexadecimal /tb/u_vdp_cartridge/u_v9958/u_cpu_interface/ff_command_enable
-add wave -noupdate -radix hexadecimal /tb/u_vdp_cartridge/u_v9958/u_cpu_interface/ff_horizontal_offset_l
-add wave -noupdate -radix hexadecimal /tb/u_vdp_cartridge/u_v9958/u_cpu_interface/ff_horizontal_offset_h
-add wave -noupdate -radix hexadecimal /tb/u_vdp_cartridge/u_v9958/u_cpu_interface/ff_2nd_access
-add wave -noupdate -radix hexadecimal /tb/u_vdp_cartridge/u_v9958/u_cpu_interface/ff_1st_byte
-add wave -noupdate -radix hexadecimal /tb/u_vdp_cartridge/u_v9958/u_cpu_interface/ff_register_write
-add wave -noupdate -radix hexadecimal /tb/u_vdp_cartridge/u_v9958/u_cpu_interface/ff_register_num
-add wave -noupdate -radix hexadecimal /tb/u_vdp_cartridge/u_v9958/u_cpu_interface/ff_vram_address
-add wave -noupdate -radix hexadecimal /tb/u_vdp_cartridge/u_v9958/u_cpu_interface/w_next_vram_address
-add wave -noupdate -radix hexadecimal /tb/u_vdp_cartridge/u_v9958/u_cpu_interface/ff_vram_address_write
-add wave -noupdate -radix hexadecimal /tb/u_vdp_cartridge/u_v9958/u_cpu_interface/ff_vram_write
-add wave -noupdate -radix hexadecimal /tb/u_vdp_cartridge/u_v9958/u_cpu_interface/ff_vram_wdata
-add wave -noupdate -radix hexadecimal /tb/u_vdp_cartridge/u_v9958/u_cpu_interface/ff_vram_address_inc
-add wave -noupdate -radix hexadecimal /tb/u_vdp_cartridge/u_v9958/u_cpu_interface/ff_vram_valid
-add wave -noupdate -radix hexadecimal /tb/u_vdp_cartridge/u_v9958/u_cpu_interface/ff_busy
-add wave -noupdate -radix hexadecimal /tb/u_vdp_cartridge/u_v9958/u_cpu_interface/ff_line_interrupt
-add wave -noupdate -radix hexadecimal /tb/u_vdp_cartridge/u_v9958/u_cpu_interface/ff_frame_interrupt
+add wave -noupdate -radix unsigned -childformat {{{/tb/u_vdp_cartridge/u_v9958/u_vram_interface/cpu_vram_address[16]} -radix unsigned} {{/tb/u_vdp_cartridge/u_v9958/u_vram_interface/cpu_vram_address[15]} -radix unsigned} {{/tb/u_vdp_cartridge/u_v9958/u_vram_interface/cpu_vram_address[14]} -radix unsigned} {{/tb/u_vdp_cartridge/u_v9958/u_vram_interface/cpu_vram_address[13]} -radix unsigned} {{/tb/u_vdp_cartridge/u_v9958/u_vram_interface/cpu_vram_address[12]} -radix unsigned} {{/tb/u_vdp_cartridge/u_v9958/u_vram_interface/cpu_vram_address[11]} -radix unsigned} {{/tb/u_vdp_cartridge/u_v9958/u_vram_interface/cpu_vram_address[10]} -radix unsigned} {{/tb/u_vdp_cartridge/u_v9958/u_vram_interface/cpu_vram_address[9]} -radix unsigned} {{/tb/u_vdp_cartridge/u_v9958/u_vram_interface/cpu_vram_address[8]} -radix unsigned} {{/tb/u_vdp_cartridge/u_v9958/u_vram_interface/cpu_vram_address[7]} -radix unsigned} {{/tb/u_vdp_cartridge/u_v9958/u_vram_interface/cpu_vram_address[6]} -radix unsigned} {{/tb/u_vdp_cartridge/u_v9958/u_vram_interface/cpu_vram_address[5]} -radix unsigned} {{/tb/u_vdp_cartridge/u_v9958/u_vram_interface/cpu_vram_address[4]} -radix unsigned} {{/tb/u_vdp_cartridge/u_v9958/u_vram_interface/cpu_vram_address[3]} -radix unsigned} {{/tb/u_vdp_cartridge/u_v9958/u_vram_interface/cpu_vram_address[2]} -radix unsigned} {{/tb/u_vdp_cartridge/u_v9958/u_vram_interface/cpu_vram_address[1]} -radix unsigned} {{/tb/u_vdp_cartridge/u_v9958/u_vram_interface/cpu_vram_address[0]} -radix unsigned}} -subitemconfig {{/tb/u_vdp_cartridge/u_v9958/u_vram_interface/cpu_vram_address[16]} {-height 15 -radix unsigned} {/tb/u_vdp_cartridge/u_v9958/u_vram_interface/cpu_vram_address[15]} {-height 15 -radix unsigned} {/tb/u_vdp_cartridge/u_v9958/u_vram_interface/cpu_vram_address[14]} {-height 15 -radix unsigned} {/tb/u_vdp_cartridge/u_v9958/u_vram_interface/cpu_vram_address[13]} {-height 15 -radix unsigned} {/tb/u_vdp_cartridge/u_v9958/u_vram_interface/cpu_vram_address[12]} {-height 15 -radix unsigned} {/tb/u_vdp_cartridge/u_v9958/u_vram_interface/cpu_vram_address[11]} {-height 15 -radix unsigned} {/tb/u_vdp_cartridge/u_v9958/u_vram_interface/cpu_vram_address[10]} {-height 15 -radix unsigned} {/tb/u_vdp_cartridge/u_v9958/u_vram_interface/cpu_vram_address[9]} {-height 15 -radix unsigned} {/tb/u_vdp_cartridge/u_v9958/u_vram_interface/cpu_vram_address[8]} {-height 15 -radix unsigned} {/tb/u_vdp_cartridge/u_v9958/u_vram_interface/cpu_vram_address[7]} {-height 15 -radix unsigned} {/tb/u_vdp_cartridge/u_v9958/u_vram_interface/cpu_vram_address[6]} {-height 15 -radix unsigned} {/tb/u_vdp_cartridge/u_v9958/u_vram_interface/cpu_vram_address[5]} {-height 15 -radix unsigned} {/tb/u_vdp_cartridge/u_v9958/u_vram_interface/cpu_vram_address[4]} {-height 15 -radix unsigned} {/tb/u_vdp_cartridge/u_v9958/u_vram_interface/cpu_vram_address[3]} {-height 15 -radix unsigned} {/tb/u_vdp_cartridge/u_v9958/u_vram_interface/cpu_vram_address[2]} {-height 15 -radix unsigned} {/tb/u_vdp_cartridge/u_v9958/u_vram_interface/cpu_vram_address[1]} {-height 15 -radix unsigned} {/tb/u_vdp_cartridge/u_v9958/u_vram_interface/cpu_vram_address[0]} {-height 15 -radix unsigned}} /tb/u_vdp_cartridge/u_v9958/u_vram_interface/cpu_vram_address
+add wave -noupdate -radix unsigned /tb/u_vdp_cartridge/u_v9958/u_timing_control/u_ssg/H_COUNT
+add wave -noupdate /tb/u_vdp_cartridge/u_v9958/u_vram_interface/is_access_timming_a
+add wave -noupdate /tb/u_vdp_cartridge/u_v9958/u_vram_interface/is_access_timming_b
+add wave -noupdate /tb/u_vdp_cartridge/u_v9958/u_vram_interface/ff_vram_refresh
+add wave -noupdate /tb/u_vdp_cartridge/u_v9958/u_vram_interface/ff_vram_refresh_pulse
+add wave -noupdate /tb/u_vdp_cartridge/u_v9958/u_vram_interface/vram_refresh
+add wave -noupdate /tb/u_vdp_cartridge/u_v9958/u_vram_interface/ff_vram_refresh
+add wave -noupdate /tb/u_vdp_cartridge/u_v9958/u_vram_interface/ff_vram_refresh_pulse
+add wave -noupdate -radix hexadecimal /tb/u_vdp_cartridge/u_v9958/u_vram_interface/cpu_vram_valid
+add wave -noupdate -radix hexadecimal /tb/u_vdp_cartridge/u_v9958/u_vram_interface/cpu_vram_ready
+add wave -noupdate -radix hexadecimal /tb/u_vdp_cartridge/u_v9958/u_vram_interface/cpu_vram_write
+add wave -noupdate -radix hexadecimal /tb/u_vdp_cartridge/u_v9958/u_vram_interface/cpu_vram_wdata
+add wave -noupdate -radix hexadecimal /tb/u_vdp_cartridge/u_v9958/u_vram_interface/cpu_vram_rdata
+add wave -noupdate -radix hexadecimal /tb/u_vdp_cartridge/u_v9958/u_vram_interface/cpu_vram_rdata_en
+add wave -noupdate -radix hexadecimal /tb/u_vdp_cartridge/u_v9958/u_vram_interface/vram_address
+add wave -noupdate -radix hexadecimal /tb/u_vdp_cartridge/u_v9958/u_vram_interface/vram_valid
+add wave -noupdate -radix hexadecimal /tb/u_vdp_cartridge/u_v9958/u_vram_interface/vram_write
+add wave -noupdate -radix hexadecimal /tb/u_vdp_cartridge/u_v9958/u_vram_interface/vram_wdata
+add wave -noupdate -radix hexadecimal /tb/u_vdp_cartridge/u_v9958/u_vram_interface/vram_wdata_mask
+add wave -noupdate -radix hexadecimal -childformat {{{/tb/u_vdp_cartridge/u_v9958/u_vram_interface/vram_rdata[31]} -radix hexadecimal} {{/tb/u_vdp_cartridge/u_v9958/u_vram_interface/vram_rdata[30]} -radix hexadecimal} {{/tb/u_vdp_cartridge/u_v9958/u_vram_interface/vram_rdata[29]} -radix hexadecimal} {{/tb/u_vdp_cartridge/u_v9958/u_vram_interface/vram_rdata[28]} -radix hexadecimal} {{/tb/u_vdp_cartridge/u_v9958/u_vram_interface/vram_rdata[27]} -radix hexadecimal} {{/tb/u_vdp_cartridge/u_v9958/u_vram_interface/vram_rdata[26]} -radix hexadecimal} {{/tb/u_vdp_cartridge/u_v9958/u_vram_interface/vram_rdata[25]} -radix hexadecimal} {{/tb/u_vdp_cartridge/u_v9958/u_vram_interface/vram_rdata[24]} -radix hexadecimal} {{/tb/u_vdp_cartridge/u_v9958/u_vram_interface/vram_rdata[23]} -radix hexadecimal} {{/tb/u_vdp_cartridge/u_v9958/u_vram_interface/vram_rdata[22]} -radix hexadecimal} {{/tb/u_vdp_cartridge/u_v9958/u_vram_interface/vram_rdata[21]} -radix hexadecimal} {{/tb/u_vdp_cartridge/u_v9958/u_vram_interface/vram_rdata[20]} -radix hexadecimal} {{/tb/u_vdp_cartridge/u_v9958/u_vram_interface/vram_rdata[19]} -radix hexadecimal} {{/tb/u_vdp_cartridge/u_v9958/u_vram_interface/vram_rdata[18]} -radix hexadecimal} {{/tb/u_vdp_cartridge/u_v9958/u_vram_interface/vram_rdata[17]} -radix hexadecimal} {{/tb/u_vdp_cartridge/u_v9958/u_vram_interface/vram_rdata[16]} -radix hexadecimal} {{/tb/u_vdp_cartridge/u_v9958/u_vram_interface/vram_rdata[15]} -radix hexadecimal} {{/tb/u_vdp_cartridge/u_v9958/u_vram_interface/vram_rdata[14]} -radix hexadecimal} {{/tb/u_vdp_cartridge/u_v9958/u_vram_interface/vram_rdata[13]} -radix hexadecimal} {{/tb/u_vdp_cartridge/u_v9958/u_vram_interface/vram_rdata[12]} -radix hexadecimal} {{/tb/u_vdp_cartridge/u_v9958/u_vram_interface/vram_rdata[11]} -radix hexadecimal} {{/tb/u_vdp_cartridge/u_v9958/u_vram_interface/vram_rdata[10]} -radix hexadecimal} {{/tb/u_vdp_cartridge/u_v9958/u_vram_interface/vram_rdata[9]} -radix hexadecimal} {{/tb/u_vdp_cartridge/u_v9958/u_vram_interface/vram_rdata[8]} -radix hexadecimal} {{/tb/u_vdp_cartridge/u_v9958/u_vram_interface/vram_rdata[7]} -radix hexadecimal} {{/tb/u_vdp_cartridge/u_v9958/u_vram_interface/vram_rdata[6]} -radix hexadecimal} {{/tb/u_vdp_cartridge/u_v9958/u_vram_interface/vram_rdata[5]} -radix hexadecimal} {{/tb/u_vdp_cartridge/u_v9958/u_vram_interface/vram_rdata[4]} -radix hexadecimal} {{/tb/u_vdp_cartridge/u_v9958/u_vram_interface/vram_rdata[3]} -radix hexadecimal} {{/tb/u_vdp_cartridge/u_v9958/u_vram_interface/vram_rdata[2]} -radix hexadecimal} {{/tb/u_vdp_cartridge/u_v9958/u_vram_interface/vram_rdata[1]} -radix hexadecimal} {{/tb/u_vdp_cartridge/u_v9958/u_vram_interface/vram_rdata[0]} -radix hexadecimal}} -subitemconfig {{/tb/u_vdp_cartridge/u_v9958/u_vram_interface/vram_rdata[31]} {-height 15 -radix hexadecimal} {/tb/u_vdp_cartridge/u_v9958/u_vram_interface/vram_rdata[30]} {-height 15 -radix hexadecimal} {/tb/u_vdp_cartridge/u_v9958/u_vram_interface/vram_rdata[29]} {-height 15 -radix hexadecimal} {/tb/u_vdp_cartridge/u_v9958/u_vram_interface/vram_rdata[28]} {-height 15 -radix hexadecimal} {/tb/u_vdp_cartridge/u_v9958/u_vram_interface/vram_rdata[27]} {-height 15 -radix hexadecimal} {/tb/u_vdp_cartridge/u_v9958/u_vram_interface/vram_rdata[26]} {-height 15 -radix hexadecimal} {/tb/u_vdp_cartridge/u_v9958/u_vram_interface/vram_rdata[25]} {-height 15 -radix hexadecimal} {/tb/u_vdp_cartridge/u_v9958/u_vram_interface/vram_rdata[24]} {-height 15 -radix hexadecimal} {/tb/u_vdp_cartridge/u_v9958/u_vram_interface/vram_rdata[23]} {-height 15 -radix hexadecimal} {/tb/u_vdp_cartridge/u_v9958/u_vram_interface/vram_rdata[22]} {-height 15 -radix hexadecimal} {/tb/u_vdp_cartridge/u_v9958/u_vram_interface/vram_rdata[21]} {-height 15 -radix hexadecimal} {/tb/u_vdp_cartridge/u_v9958/u_vram_interface/vram_rdata[20]} {-height 15 -radix hexadecimal} {/tb/u_vdp_cartridge/u_v9958/u_vram_interface/vram_rdata[19]} {-height 15 -radix hexadecimal} {/tb/u_vdp_cartridge/u_v9958/u_vram_interface/vram_rdata[18]} {-height 15 -radix hexadecimal} {/tb/u_vdp_cartridge/u_v9958/u_vram_interface/vram_rdata[17]} {-height 15 -radix hexadecimal} {/tb/u_vdp_cartridge/u_v9958/u_vram_interface/vram_rdata[16]} {-height 15 -radix hexadecimal} {/tb/u_vdp_cartridge/u_v9958/u_vram_interface/vram_rdata[15]} {-height 15 -radix hexadecimal} {/tb/u_vdp_cartridge/u_v9958/u_vram_interface/vram_rdata[14]} {-height 15 -radix hexadecimal} {/tb/u_vdp_cartridge/u_v9958/u_vram_interface/vram_rdata[13]} {-height 15 -radix hexadecimal} {/tb/u_vdp_cartridge/u_v9958/u_vram_interface/vram_rdata[12]} {-height 15 -radix hexadecimal} {/tb/u_vdp_cartridge/u_v9958/u_vram_interface/vram_rdata[11]} {-height 15 -radix hexadecimal} {/tb/u_vdp_cartridge/u_v9958/u_vram_interface/vram_rdata[10]} {-height 15 -radix hexadecimal} {/tb/u_vdp_cartridge/u_v9958/u_vram_interface/vram_rdata[9]} {-height 15 -radix hexadecimal} {/tb/u_vdp_cartridge/u_v9958/u_vram_interface/vram_rdata[8]} {-height 15 -radix hexadecimal} {/tb/u_vdp_cartridge/u_v9958/u_vram_interface/vram_rdata[7]} {-height 15 -radix hexadecimal} {/tb/u_vdp_cartridge/u_v9958/u_vram_interface/vram_rdata[6]} {-height 15 -radix hexadecimal} {/tb/u_vdp_cartridge/u_v9958/u_vram_interface/vram_rdata[5]} {-height 15 -radix hexadecimal} {/tb/u_vdp_cartridge/u_v9958/u_vram_interface/vram_rdata[4]} {-height 15 -radix hexadecimal} {/tb/u_vdp_cartridge/u_v9958/u_vram_interface/vram_rdata[3]} {-height 15 -radix hexadecimal} {/tb/u_vdp_cartridge/u_v9958/u_vram_interface/vram_rdata[2]} {-height 15 -radix hexadecimal} {/tb/u_vdp_cartridge/u_v9958/u_vram_interface/vram_rdata[1]} {-height 15 -radix hexadecimal} {/tb/u_vdp_cartridge/u_v9958/u_vram_interface/vram_rdata[0]} {-height 15 -radix hexadecimal}} /tb/u_vdp_cartridge/u_v9958/u_vram_interface/vram_rdata
+add wave -noupdate -radix hexadecimal /tb/u_vdp_cartridge/u_v9958/u_vram_interface/vram_rdata_en
+add wave -noupdate -radix hexadecimal /tb/u_vdp_cartridge/u_sdram/bus_address
+add wave -noupdate -radix hexadecimal /tb/u_vdp_cartridge/u_sdram/bus_valid
+add wave -noupdate -radix hexadecimal /tb/u_vdp_cartridge/u_sdram/bus_write
+add wave -noupdate /tb/u_vdp_cartridge/u_v9958/u_timing_control/u_ssg/pre_vram_refresh
+add wave -noupdate -radix hexadecimal /tb/u_vdp_cartridge/u_sdram/bus_refresh
+add wave -noupdate -radix hexadecimal /tb/u_vdp_cartridge/u_sdram/bus_wdata
+add wave -noupdate -radix hexadecimal /tb/u_vdp_cartridge/u_sdram/bus_wdata_mask
+add wave -noupdate -radix hexadecimal /tb/u_vdp_cartridge/u_sdram/bus_rdata
+add wave -noupdate -radix hexadecimal /tb/u_vdp_cartridge/u_sdram/bus_rdata_en
+add wave -noupdate -radix hexadecimal /tb/u_vdp_cartridge/u_sdram/ff_main_state
 TreeUpdate [SetDefaultTree]
-WaveRestoreCursors {{Cursor 1} {289129 ns} 0}
-quietly wave cursor active 1
-configure wave -namecolwidth 298
+WaveRestoreCursors {{Cursor 1} {50820636 ns} 0} {{Cursor 2} {711026 ns} 0}
+quietly wave cursor active 2
+configure wave -namecolwidth 273
 configure wave -valuecolwidth 100
 configure wave -justifyvalue left
 configure wave -signalnamewidth 2
@@ -151,4 +50,4 @@ configure wave -griddelta 40
 configure wave -timeline 0
 configure wave -timelineunits ps
 update
-WaveRestoreZoom {289012 ns} {289519 ns}
+WaveRestoreZoom {711007 ns} {711571 ns}

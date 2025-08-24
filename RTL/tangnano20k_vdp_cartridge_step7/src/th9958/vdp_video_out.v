@@ -98,9 +98,6 @@ module vdp_video_out (
 	reg		[7:0]	ff_numerator;
 	wire	[10:0]	w_next_numerator;
 	wire	[11:0]	w_sub_numerator;
-	wire			w_active_start;
-	wire			w_active_end;
-	wire			w_h_cnt_end;
 	wire			w_is_write_odd;
 	wire	[7:0]	w_pixel_r;
 	wire	[7:0]	w_pixel_g;
@@ -135,30 +132,18 @@ module vdp_video_out (
 	reg				ff_v_en;
 	reg				ff_hs;
 	reg				ff_vs;
-	wire			w_h_en_start;
-	wire			w_h_en_end;
-	wire			w_v_en_start;
-	wire			w_v_en_end;
-	wire			w_hs_start;
-	wire			w_hs_end;
-	wire			w_vs_start;
-	wire			w_vs_end;
 
 	// --------------------------------------------------------------------
 	//	Active period
 	// --------------------------------------------------------------------
-	assign w_active_start	= (h_count == active_area_start    );
-	assign w_active_end		= (h_count == active_area_end      );
-	assign w_h_cnt_end		= (h_count == (clocks_per_line - 1));
-
 	always @( posedge clk or negedge reset_n ) begin
 		if( !reset_n ) begin
 			ff_active <= 1'b0;
 		end
-		else if( w_active_end ) begin
+		else if( h_count == active_area_end ) begin
 			ff_active <= 1'b0;
 		end
-		else if( w_active_start ) begin
+		else if( h_count == active_area_start ) begin
 			ff_active <= 1'b1;
 		end
 		else begin
@@ -169,65 +154,53 @@ module vdp_video_out (
 	// --------------------------------------------------------------------
 	//	Synchronous signals
 	// --------------------------------------------------------------------
-	assign w_h_en_start		= (h_count == h_en_start);
-	assign w_h_en_end		= (h_count == h_en_end  );
-
 	always @( posedge clk or negedge reset_n ) begin
 		if( !reset_n ) begin
 			ff_h_en <= 1'b0;
 		end
-		else if( w_h_en_end ) begin
+		else if( h_count == h_en_end ) begin
 			ff_h_en <= 1'b0;
 		end
-		else if( w_h_en_start ) begin
+		else if( h_count == h_en_start ) begin
 			ff_h_en <= 1'b1;
 		end
 	end
-
-	assign w_v_en_start		= (v_count == v_en_start);
-	assign w_v_en_end		= (v_count == v_en_end  );
 
 	always @( posedge clk or negedge reset_n ) begin
 		if( !reset_n ) begin
 			ff_v_en <= 1'b0;
 		end
-		else if( w_h_cnt_end ) begin
-			if( w_v_en_end ) begin
+		else if( h_count == (clocks_per_line - 1) ) begin
+			if( v_count == v_en_end ) begin
 				ff_v_en <= 1'b0;
 			end
-			else if( w_v_en_start ) begin
+			else if( v_count == v_en_start ) begin
 				ff_v_en <= 1'b1;
 			end
 		end
 	end
 
-	assign w_hs_start		= (h_count == hs_start);
-	assign w_hs_end			= (h_count == hs_end  );
-
 	always @( posedge clk or negedge reset_n ) begin
 		if( !reset_n ) begin
 			ff_hs <= 1'b1;
 		end
-		else if( w_hs_end ) begin
+		else if( h_count == hs_end ) begin
 			ff_hs <= 1'b1;
 		end
-		else if( w_hs_start ) begin
+		else if( h_count == hs_start ) begin
 			ff_hs <= 1'b0;
 		end
 	end
-
-	assign w_vs_start		= (v_count == vs_start);
-	assign w_vs_end			= (v_count == vs_end  );
 
 	always @( posedge clk or negedge reset_n ) begin
 		if( !reset_n ) begin
 			ff_vs <= 1'b1;
 		end
-		else if( w_h_cnt_end ) begin
-			if( w_vs_end ) begin
+		else if( h_count == (clocks_per_line - 1) ) begin
+			if( v_count == vs_end ) begin
 				ff_vs <= 1'b1;
 			end
-			else if( w_vs_start ) begin
+			else if( v_count == vs_start ) begin
 				ff_vs <= 1'b0;
 			end
 		end
@@ -239,13 +212,11 @@ module vdp_video_out (
 	// --------------------------------------------------------------------
 	//	Buffer address
 	// --------------------------------------------------------------------
-	assign w_x_position_w	= h_count[11:2];
-
 	always @( posedge clk or negedge reset_n ) begin
 		if( !reset_n ) begin
 			ff_x_position_r <= 10'd0;
 		end
-		else if( w_active_start ) begin
+		else if( h_count == active_area_start ) begin
 			ff_x_position_r <= 10'd0;
 		end
 		else if( !w_enable ) begin
@@ -268,7 +239,7 @@ module vdp_video_out (
 		if( !reset_n ) begin
 			ff_numerator <= 8'b0;
 		end
-		else if( w_active_start ) begin
+		else if( h_count == active_area_start ) begin
 			ff_numerator <= 8'b0;
 		end
 		else if( !w_enable ) begin
@@ -306,6 +277,7 @@ module vdp_video_out (
 		.rdata_b		( w_pixel_b			)
 	);
 
+	assign w_x_position_w	= h_count[11:2];
 	assign w_is_write_odd	= v_count[0];
 
 	// --------------------------------------------------------------------
@@ -315,34 +287,16 @@ module vdp_video_out (
 
 	always @( posedge clk or negedge reset_n ) begin
 		if( !reset_n ) begin
-			ff_coeff <= 8'd0;
+			ff_coeff	<= 8'd0;
 		end
 		else if( w_enable ) begin
-			ff_coeff <= w_normalized_numerator[14:7];					//	0 ... 63
-		end
-	end
-
-	always @( posedge clk ) begin
-		if( w_enable ) begin
-			ff_coeff1	<= ff_coeff;
-			ff_coeff2	<= ff_coeff1;
+			ff_coeff	<= w_normalized_numerator[14:7];					//	0 ... 63
 		end
 	end
 
 	// --------------------------------------------------------------------
 	//	Bilinear interpolation
 	// --------------------------------------------------------------------
-	always @( posedge clk ) begin
-		if( w_enable ) begin
-			ff_tap0_r	<= w_pixel_r;
-			ff_tap0_g	<= w_pixel_g;
-			ff_tap0_b	<= w_pixel_b;
-			ff_tap1_r	<= ff_tap0_r;
-			ff_tap1_g	<= ff_tap0_g;
-			ff_tap1_b	<= ff_tap0_b;
-		end
-	end
-
 	vdp_video_out_bilinear u_bilinear_r (
 		.clk			( clk					),
 		.enable			( w_enable				),
@@ -377,21 +331,24 @@ module vdp_video_out (
 	assign w_gain			= (has_scanline == 1'b0 ) ? 8'd128:
 							  (~v_count[0]          ) ? 8'd128: { 1'b0, w_scanline_gain[9:3] };
 
-	always @( posedge clk ) begin
-		if( w_enable ) begin
-			ff_bilinear_r	<= w_bilinear_r;
-			ff_bilinear_g	<= w_bilinear_g;
-			ff_bilinear_b	<= w_bilinear_b;
-			ff_gain		<= w_gain;
-		end
-	end
-
 	assign w_display_r	= ff_bilinear_r * ff_gain;
 	assign w_display_g	= ff_bilinear_g * ff_gain;
 	assign w_display_b	= ff_bilinear_b * ff_gain;
 
 	always @( posedge clk ) begin
 		if( w_enable ) begin
+			ff_coeff1		<= ff_coeff;
+			ff_coeff2		<= ff_coeff1;
+			ff_tap0_r		<= w_pixel_r;
+			ff_tap0_g		<= w_pixel_g;
+			ff_tap0_b		<= w_pixel_b;
+			ff_tap1_r		<= ff_tap0_r;
+			ff_tap1_g		<= ff_tap0_g;
+			ff_tap1_b		<= ff_tap0_b;
+			ff_bilinear_r	<= w_bilinear_r;
+			ff_bilinear_g	<= w_bilinear_g;
+			ff_bilinear_b	<= w_bilinear_b;
+			ff_gain			<= w_gain;
 			ff_display_r	<= w_display_r[14:7];
 			ff_display_g	<= w_display_g[14:7];
 			ff_display_b	<= w_display_b[14:7];

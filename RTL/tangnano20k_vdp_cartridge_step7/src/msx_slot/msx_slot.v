@@ -60,19 +60,17 @@ module msx_slot(
 	input			initial_busy,
 	//	MSX Slot Signal
 	input			p_slot_reset_n,
-	input			p_slot_sltsl_n,
-	input			p_slot_mreq_n,
 	input			p_slot_ioreq_n,
 	input			p_slot_wr_n,
 	input			p_slot_rd_n,
-	input	[15:0]	p_slot_address,
+	input	[7:0]	p_slot_address,
 	inout	[7:0]	p_slot_data,
-	output			p_slot_data_dir,		//	0: MSX→Cartridge (Write), 1: Cartridge→MSX (Read)
 	output			p_slot_int,				//	0 or HiZ: Normal, 1: Interrupt
+	output			p_slot_data_dir,		//	0: MSX→Cartridge (Write), 1: Cartridge→MSX (Read)
+	output			busdir,					//	0: MSX→Cartridge (Write), 1: Cartridge→MSX (Read)
 	//	Local BUS
 	input			int_n,
-	output	[15:0]	bus_address,
-	output			bus_memreq,
+	output	[7:0]	bus_address,
 	output			bus_ioreq,
 	output			bus_write,
 	output			bus_valid,
@@ -81,93 +79,69 @@ module msx_slot(
 	input	[7:0]	bus_rdata,
 	input			bus_rdata_en
 );
-	reg				ff_pre_slot_sltsl_n	= 1'b1;
-	reg				ff_pre_slot_mreq_n	= 1'b1;
 	reg				ff_pre_slot_ioreq_n	= 1'b1;
 	reg				ff_pre_slot_wr_n	= 1'b1;
 	reg				ff_pre_slot_rd_n	= 1'b1;
 
-	reg				ff_slot_sltsl_n		= 1'b1;
-	reg				ff_slot_mreq_n		= 1'b1;
 	reg				ff_slot_ioreq_n		= 1'b1;
 	reg				ff_slot_wr_n		= 1'b1;
 	reg				ff_slot_rd_n		= 1'b1;
 
-	reg	[15:0]		ff_slot_address;
-	reg	[7:0]		ff_slot_data;
+	reg		[7:0]	ff_slot_address;
+	reg		[7:0]	ff_slot_data;
 	wire			w_iorq_wr;
 	wire			w_iorq_rd;
-	wire			w_merq_wr;
-	wire			w_merq_rd;
 	wire			w_active;
 	reg				ff_initial_busy;
-	reg				ff_iorq_wr;
-	reg				ff_iorq_rd;
-	reg				ff_merq_wr;
-	reg				ff_merq_rd;
-	reg				ff_iorq_wr_pre;
-	reg				ff_iorq_rd_pre;
-	reg				ff_merq_wr_pre;
-	reg				ff_merq_rd_pre;
-	reg				ff_active;
-	reg		[15:0]	ff_address;
-	reg				ff_write;
-	reg				ff_valid;
-	reg				ff_ioreq;
-	reg				ff_memreq;
-	reg		[7:0]	ff_wdata;
-	reg		[7:0]	ff_rdata;
+	reg				ff_iorq_wr = 1'b0;
+	reg				ff_iorq_rd = 1'b0;
+	reg				ff_iorq_wr_pre = 1'b0;
+	reg				ff_iorq_rd_pre = 1'b0;
+	reg				ff_active = 1'b0;
+	reg		[7:0]	ff_address = 8'd0;
+	reg				ff_write = 1'b0;
+	reg				ff_valid = 1'b0;
+	reg				ff_ioreq = 1'b0;
+	reg		[7:0]	ff_wdata = 8'd0;
+	reg		[7:0]	ff_rdata = 8'd0;
+	reg				ff_rdata_en = 1'b0;
 
 	always @( posedge clk ) begin
-		ff_pre_slot_sltsl_n		<= p_slot_sltsl_n;
-		ff_pre_slot_mreq_n		<= p_slot_mreq_n;
 		ff_pre_slot_ioreq_n		<= p_slot_ioreq_n;
 		ff_pre_slot_wr_n		<= p_slot_wr_n;
 		ff_pre_slot_rd_n		<= p_slot_rd_n;
 
-		ff_slot_sltsl_n			<= ff_pre_slot_sltsl_n;
-		ff_slot_mreq_n			<= ff_pre_slot_mreq_n;
 		ff_slot_ioreq_n			<= ff_pre_slot_ioreq_n;
 		ff_slot_wr_n			<= ff_pre_slot_wr_n;
 		ff_slot_rd_n			<= ff_pre_slot_rd_n;
 	end
 
 	always @( posedge clk ) begin
-		if( !ff_slot_ioreq_n || !ff_slot_sltsl_n ) begin
-			ff_slot_address			<= p_slot_address;
-			ff_slot_data			<= p_slot_data;
+		if( !ff_slot_ioreq_n ) begin
+			ff_slot_address		<= p_slot_address;
+			ff_slot_data		<= p_slot_data;
 		end
 	end
 
 	assign w_iorq_wr	= ~ff_slot_ioreq_n & ~ff_slot_wr_n;
 	assign w_iorq_rd	= ~ff_slot_ioreq_n & ~ff_slot_rd_n;
-	assign w_merq_wr	= ~ff_slot_mreq_n  & ~ff_slot_wr_n & ~ff_slot_sltsl_n;
-	assign w_merq_rd	= ~ff_slot_mreq_n  & ~ff_slot_rd_n & ~ff_slot_sltsl_n;
-	assign w_active		= ff_iorq_wr | ff_iorq_rd | ff_merq_wr | ff_merq_rd;
+	assign w_active		= ff_iorq_wr | ff_iorq_rd;
 
-	always @( posedge clk ) begin
+	always @( posedge clk or negedge p_slot_reset_n ) begin
 		if( !p_slot_reset_n ) begin
-			ff_iorq_wr		<= 1'b0;
-			ff_iorq_rd		<= 1'b0;
-			ff_merq_wr		<= 1'b0;
-			ff_merq_rd		<= 1'b0;
 			ff_iorq_wr_pre	<= 1'b0;
 			ff_iorq_rd_pre	<= 1'b0;
-			ff_merq_wr_pre	<= 1'b0;
-			ff_merq_rd_pre	<= 1'b0;
+			ff_iorq_wr		<= 1'b0;
+			ff_iorq_rd		<= 1'b0;
 		end
 		else if( ff_initial_busy ) begin
 			//	hold
 		end
 		else begin
-			ff_iorq_wr		<= ff_iorq_wr_pre;
-			ff_iorq_rd		<= ff_iorq_rd_pre;
-			ff_merq_wr		<= ff_merq_wr_pre;
-			ff_merq_rd		<= ff_merq_rd_pre;
 			ff_iorq_wr_pre	<= w_iorq_wr;
 			ff_iorq_rd_pre	<= w_iorq_rd;
-			ff_merq_wr_pre	<= w_merq_wr;
-			ff_merq_rd_pre	<= w_merq_rd;
+			ff_iorq_wr		<= ff_iorq_wr_pre;
+			ff_iorq_rd		<= ff_iorq_rd_pre;
 		end
 	end
 
@@ -175,8 +149,8 @@ module msx_slot(
 		if( !p_slot_reset_n ) begin
 			ff_initial_busy	<= 1'b1;
 		end
-		else if( !initial_busy && (ff_slot_ioreq_n || ff_slot_sltsl_n) ) begin
-			ff_initial_busy	<= 1'b0;
+		else begin
+			ff_initial_busy	<= initial_busy;
 		end
 	end
 
@@ -193,43 +167,33 @@ module msx_slot(
 	end
 
 	// --------------------------------------------------------------------
-	//	Valid signal
-	// --------------------------------------------------------------------
-	always @( posedge clk ) begin
-		if( !p_slot_reset_n ) begin
-			ff_valid <= 1'b0;
-		end
-		else if( !ff_active ) begin
-			ff_valid <= w_active;
-		end
-		else begin
-			if( bus_ready ) begin
-				ff_valid <= 1'b0;
-			end
-		end
-	end
-
-	// --------------------------------------------------------------------
 	//	Address latch
 	// --------------------------------------------------------------------
 	always @( posedge clk ) begin
 		if( !p_slot_reset_n ) begin
-			ff_address	<= 16'd0;
+			ff_valid	<= 1'b0;
+			ff_address	<= 8'd0;
+			ff_ioreq	<= 1'b0;
 			ff_write	<= 1'b1;
 			ff_wdata	<= 8'd0;
-			ff_ioreq	<= 1'b0;
-			ff_memreq	<= 1'b0;
 		end
 		else if( !ff_active && w_active ) begin
+			ff_valid	<= 1'b1;
 			ff_address	<= ff_slot_address;
-			ff_write	<= ff_iorq_wr | ff_merq_wr;
-			ff_ioreq	<= ff_iorq_wr | ff_iorq_rd;
-			ff_memreq	<= ff_merq_wr | ff_merq_rd;
-			if( ff_iorq_wr | ff_merq_wr ) begin
-				ff_wdata <= ff_slot_data;
+			if( { ff_slot_address[7:2], 2'd0 } == 8'h88 ) begin
+				ff_ioreq	<= ff_iorq_wr | ff_iorq_rd;
 			end
+			else begin
+				ff_ioreq	<= 1'b0;
+			end
+			ff_write	<= ff_iorq_wr;
+			ff_wdata	<= ff_slot_data;
+		end
+		else if( bus_ready ) begin
+			ff_valid	<= 1'b0;
 		end
 		else if( !ff_active ) begin
+			ff_ioreq	<= 1'b0;
 			ff_write	<= 1'b1;
 		end
 	end
@@ -239,22 +203,28 @@ module msx_slot(
 	// --------------------------------------------------------------------
 	always @( posedge clk ) begin
 		if( !p_slot_reset_n ) begin
-			ff_rdata <= 8'h00;
+			ff_rdata	<= 8'h00;
+			ff_rdata_en	<= 1'b0;
+		end
+		else if( !ff_ioreq ) begin
+			ff_rdata	<= 8'h00;
+			ff_rdata_en	<= 1'b0;
 		end
 		else if( bus_rdata_en ) begin
-			ff_rdata <= bus_rdata;
+			ff_rdata	<= bus_rdata;
+			ff_rdata_en	<= 1'b1;
 		end
 	end
 
-	assign bus_memreq		= ff_memreq;
 	assign bus_ioreq		= ff_ioreq;
 	assign bus_address		= ff_address;
 	assign bus_write		= ff_write;
 	assign bus_valid		= ff_valid;
 	assign bus_wdata		= ff_wdata;
-	assign p_slot_data		= ff_write ? 8'hZZ: ff_rdata;
+	assign p_slot_data		= (!ff_write && ff_ioreq) ? ff_rdata: 8'hZZ;
 	assign p_slot_int		= ~int_n;
 
-	//	0: Cartridge <- CPU, 1: Cartridge -> CPU
-	assign p_slot_data_dir	= ~ff_write & (ff_ioreq | ff_memreq);
+	//	0: Cartridge <- CPU (Write or Idle), 1: Cartridge -> CPU (Read)
+	assign p_slot_data_dir	= ff_ioreq & ff_iorq_rd;
+	assign busdir			= ff_ioreq & ff_iorq_rd;
 endmodule

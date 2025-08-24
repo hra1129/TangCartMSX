@@ -98,6 +98,7 @@ module tb ();
 
 	reg		[7:0]	ff_slot_data;
 	reg				slot_clk;
+	reg		[7:0]	rdata;
 
 	// --------------------------------------------------------------------
 	//	Internal signals
@@ -439,16 +440,28 @@ module tb ();
 		$display( "[test001] Write VRAM" );
 		//	VRAM 0x00000 ... 0x07FFF = 0x00
 		write_io( vdp_io1, 8'h00 );
+		write_io( vdp_io1, 8'h8E );
+		write_io( vdp_io1, 8'h00 );
 		write_io( vdp_io1, 8'h40 );
 
 		for( i = 0; i < 32768; i = i + 1 ) begin
 			write_io( vdp_io0, (i & 255) );
-			@( posedge clk14m );
-			@( posedge clk14m );
+			repeat( $urandom(40) ) @( posedge clk14m );
+		end
+
+		$display( "[test001] Read VRAM" );
+		write_io( vdp_io1, 8'h00 );
+		write_io( vdp_io1, 8'h8E );
+		write_io( vdp_io1, 8'h00 );
+		write_io( vdp_io1, 8'h00 );
+
+		for( i = 0; i < 32768; i = i + 1 ) begin
+			read_io( vdp_io0, rdata );
+			assert( rdata == (i & 255) );
 		end
 
 		repeat(5000) @( posedge clk14m );
-
+/*
 		//	VDP Command PSET
 		$display( "[test002] VDP Command PSET" );
 		write_io( vdp_io1, 8'd36 );
@@ -690,7 +703,7 @@ module tb ();
 		repeat( 100 ) @( posedge clk14m );
 
 //		repeat(2000000) @( posedge clk14m );
-
+*/
 		$display( "[test---] All tests completed" );
 		repeat( 100 ) @( posedge clk14m );
 		$finish;

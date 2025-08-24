@@ -168,15 +168,23 @@ module vdp_vram_interface (
 	always @( posedge clk or negedge reset_n ) begin
 		if( !reset_n ) begin
 			ff_vram_refresh			<= 1'b0;
-			ff_vram_refresh_pulse	<= 1'b0;
 		end
 		else if( pre_vram_refresh ) begin
 			//	c_timming_a
 			ff_vram_refresh			<= 1'b1;
-			ff_vram_refresh_pulse	<= 1'b1;
 		end
-		else if( h_count == c_timming_a ) begin
+		else if( (h_count == c_timming_a) && !ff_vram_refresh_pulse ) begin
 			ff_vram_refresh			<= 1'b0;
+		end
+	end
+
+	always @( posedge clk or negedge reset_n ) begin
+		if( !reset_n ) begin
+			ff_vram_refresh_pulse	<= 1'b0;
+		end
+		else if( pre_vram_refresh ) begin
+			//	c_timming_a
+			ff_vram_refresh_pulse	<= 1'b1;
 		end
 		else begin
 			ff_vram_refresh_pulse	<= 1'b0;

@@ -175,7 +175,7 @@ module vdp_timing_control_ssg (
 		if( !reset_n ) begin
 			ff_vram_refresh <= 1'b0;
 		end
-		else if( ff_v_count[0] == 1'b1 && ff_h_count == 12'd2704 ) begin
+		else if( ff_v_count[0] == 1'b1 && ff_h_count == { 9'd338, 3'd0 } ) begin
 			ff_vram_refresh <= 1'b1;
 		end
 		else begin

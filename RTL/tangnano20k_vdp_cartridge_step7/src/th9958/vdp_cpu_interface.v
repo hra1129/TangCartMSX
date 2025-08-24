@@ -222,10 +222,10 @@ module vdp_cpu_interface (
 			ff_bus_ioreq	<= bus_ioreq;
 			ff_bus_write	<= bus_write;
 			ff_bus_wdata	<= bus_wdata;
-			ff_port0		<= (bus_address == 2'd0);
-			ff_port1		<= (bus_address == 2'd1);
-			ff_port2		<= (bus_address == 2'd2);
-			ff_port3		<= (bus_address == 2'd3);
+			ff_port0		<= (!bus_address[1] && !bus_address[0]);
+			ff_port1		<= (!bus_address[1] &&  bus_address[0]);
+			ff_port2		<= ( bus_address[1] && !bus_address[0]);
+			ff_port3		<= ( bus_address[1] &&  bus_address[0]);
 			ff_bus_valid	<= 1'b1;
 			ff_bus_ready	<= 1'b0;
 		end
@@ -255,35 +255,22 @@ module vdp_cpu_interface (
 			//	hold
 		end
 		else if( w_write && ff_port1 ) begin
+			ff_2nd_access	<= ~ff_2nd_access;
 			if( !ff_2nd_access ) begin
 				//	1st write access
 				ff_1st_byte		<= ff_bus_wdata;
-				ff_2nd_access	<= 1'b1;
 			end
 			else begin
 				//	2nd write access
-				ff_2nd_access	<= 1'b0;
 				ff_register_num	<= ff_bus_wdata[5:0];
-				case( ff_bus_wdata[7:6] )
-				2'd0:			//	Set VRAM Read Address
-					begin
-						ff_register_write		<= 1'b0;
-						ff_vram_address_write	<= 1'b0;
-					end
-				2'd1:			//	Set VRAM Write Address
-					begin
-						ff_register_write		<= 1'b0;
-						ff_vram_address_write	<= 1'b1;
-					end
-				2'd2, 2'd3:		//	Direct Register Write Access
-					begin
-						ff_register_write		<= 1'b1;
-					end
-				default:
-					begin
-						//	none
-					end
-				endcase
+				if( !ff_bus_wdata[7] ) begin
+					//	Set VRAM Address
+					ff_register_write		<= 1'b0;
+					ff_vram_address_write	<= ff_bus_wdata[6];
+				end
+				else begin
+					ff_register_write		<= 1'b1;
+				end
 			end
 		end
 		else if( w_write && ff_port3 ) begin
@@ -317,44 +304,36 @@ module vdp_cpu_interface (
 
 	always @( posedge clk or negedge reset_n ) begin
 		if( !reset_n ) begin
-			ff_vram_valid	<= 1'b0;
-			ff_vram_write	<= 1'b0;
-			ff_vram_wdata	<= 8'd0;
-		end
-		else if( ff_vram_valid ) begin
-			if( vram_ready ) begin
-				ff_vram_valid	<= 1'b0;
-			end
-		end
-		else if( w_write && ff_port0 ) begin
-			ff_vram_valid	<= 1'b1;
-			ff_vram_write	<= 1'b1;
-			ff_vram_wdata	<= ff_bus_wdata;
-		end
-		else if( w_read && ff_port0 ) begin
-			ff_vram_valid	<= 1'b1;
-			ff_vram_write	<= 1'b0;
-			ff_vram_wdata	<= 8'd0;
-		end
-	end
-
-	always @( posedge clk or negedge reset_n ) begin
-		if( !reset_n ) begin
-			ff_vram_address_inc	<= 1'b0;
-			ff_busy				<= 1'b0;
-		end
-		else if( ff_vram_address_inc ) begin
+			ff_vram_valid		<= 1'b0;
+			ff_vram_write		<= 1'b0;
+			ff_vram_wdata		<= 8'd0;
 			ff_vram_address_inc	<= 1'b0;
 			ff_busy				<= 1'b0;
 		end
 		else if( vram_rdata_en ) begin
 			ff_vram_address_inc <= 1'b1;
 		end
-		else if( ff_bus_valid ) begin
-			ff_busy				<= ff_port0;
+		else if( ff_vram_address_inc ) begin
+			ff_vram_address_inc	<= 1'b0;
+			ff_busy				<= 1'b0;
 		end
-		else if( ff_vram_valid && vram_ready && ff_bus_write ) begin
-			ff_vram_address_inc <= 1'b1;
+		else if( ff_vram_valid ) begin
+			if( vram_ready ) begin
+				ff_vram_valid		<= 1'b0;
+				ff_vram_address_inc <= ff_bus_write;
+			end
+		end
+		else if( w_write && ff_port0 ) begin
+			ff_vram_valid	<= 1'b1;
+			ff_vram_write	<= 1'b1;
+			ff_vram_wdata	<= ff_bus_wdata;
+			ff_busy			<= 1'b1;
+		end
+		else if( w_read && ff_port0 ) begin
+			ff_vram_valid	<= 1'b1;
+			ff_vram_write	<= 1'b0;
+			ff_vram_wdata	<= 8'd0;
+			ff_busy			<= 1'b1;
 		end
 	end
 

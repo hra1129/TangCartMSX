@@ -68,7 +68,7 @@ module tangnano20k_vdp_cartridge (
 	wire			clk215m;			//	214.7727MHz
 	wire			reset_n;
 	wire			reset_n2;
-	wire	[15:0]	w_bus_address;
+	wire	[7:0]	w_bus_address;
 	wire			w_bus_ioreq;
 	wire			w_bus_write;
 	wire			w_bus_valid;
@@ -103,9 +103,7 @@ module tangnano20k_vdp_cartridge (
 	assign slot_wait		= w_sdram_init_busy;
 	assign slot_intr		= 1'b0;
 	assign oe_n				= 1'b0;
-	assign busdir			= ( { slot_a[7:2], 2'd0 } == 8'h88 && !slot_iorq_n ) ? ~slot_rd_n: 1'b0;
 	assign ws2812_led		= 1'b0;
-	assign w_bus_vdp_ioreq	= w_bus_ioreq & ( {w_bus_address[7:2], 2'd0} == 8'h88 );
 
 	always @( posedge clk85m ) begin
 		ff_reset_n0		<= slot_reset_n;
@@ -146,18 +144,16 @@ module tangnano20k_vdp_cartridge (
 		.clk				( clk85m					),
 		.initial_busy		( w_sdram_init_busy			),
 		.p_slot_reset_n		( reset_n					),
-		.p_slot_sltsl_n		( 1'b1						),
-		.p_slot_mreq_n		( 1'b1						),
 		.p_slot_ioreq_n		( slot_iorq_n				),
 		.p_slot_wr_n		( slot_wr_n					),
 		.p_slot_rd_n		( slot_rd_n					),
-		.p_slot_address		( { 8'd0, slot_a }			),
+		.p_slot_address		( slot_a					),
 		.p_slot_data		( slot_d					),
-		.p_slot_data_dir	( slot_data_dir				),
 		.p_slot_int			( slot_int					),
+		.p_slot_data_dir	( slot_data_dir				),
+		.busdir				( busdir					),
 		.int_n				( 1'b1						),
 		.bus_address		( w_bus_address				),
-		.bus_memreq			( 							),
 		.bus_ioreq			( w_bus_ioreq				),
 		.bus_write			( w_bus_write				),
 		.bus_valid			( w_bus_valid				),
@@ -179,7 +175,7 @@ module tangnano20k_vdp_cartridge (
 		.clk				( clk85m				),
 		.initial_busy		( w_sdram_init_busy		),
 		.bus_address		( w_bus_address[1:0]	),
-		.bus_ioreq			( w_bus_vdp_ioreq		),
+		.bus_ioreq			( w_bus_ioreq			),
 		.bus_write			( w_bus_write			),
 		.bus_valid			( w_bus_valid			),
 		.bus_ready			( w_bus_vdp_ready		),
