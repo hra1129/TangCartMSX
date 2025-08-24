@@ -182,7 +182,7 @@ module vdp_timing_control_screen_mode (
 	assign w_mode				= func_screen_mode_decoder( reg_screen_mode );
 	assign screen_mode			= w_mode;
 	assign sprite_off			= (w_mode == c_t1 || w_mode == c_t2);
-	assign vram_interleave		= (reg_screen_mode == c_mode_g6 || reg_screen_mode == c_mode_g7);
+	assign vram_interleave		= (w_mode == c_g6 || w_mode == c_g7);
 
 	// --------------------------------------------------------------------
 	//	Screen Position for active area
@@ -329,7 +329,7 @@ module vdp_timing_control_screen_mode (
 			if( w_sub_phase == 4'd0 ) begin
 				case( ff_phase )
 				3'd0:
-					case( w_mode )
+					casex( w_mode )
 					c_g1, c_g2, c_g3, c_gm:
 						ff_vram_address <= w_pattern_name_g123m;
 					c_g4, c_g5:
@@ -407,7 +407,7 @@ module vdp_timing_control_screen_mode (
 			if( w_sub_phase == 4'd12 ) begin
 				case( ff_phase )
 				3'd0:
-					case( w_mode )
+					casex( w_mode )
 					c_g1, c_g2, c_g3, c_gm, c_t1:
 						//	SCREEN1, 2, 3, 4, 0(W40) では、PCG の番号を保持する
 						case( ff_vram_address[1:0] )
@@ -452,7 +452,7 @@ module vdp_timing_control_screen_mode (
 						end
 					endcase
 				3'd1:
-					case( w_mode )
+					casex( w_mode )
 					c_g6, c_g7:
 						//	SCREEN7, 8 では、この1回の読み出しで 後半4ドット分の画素値を一気に読める
 						begin
@@ -467,7 +467,7 @@ module vdp_timing_control_screen_mode (
 						end
 					endcase
 				3'd2:
-					case( w_mode )
+					casex( w_mode )
 					c_g1, c_g2, c_g3, c_t1:
 						//	SCREEN1, 2, 4, 0(W40), 0(W80) では、ドットパターンを保持する。
 						case( ff_vram_address[1:0] )
@@ -482,7 +482,7 @@ module vdp_timing_control_screen_mode (
 						end
 					endcase
 				3'd3:
-					case( w_mode )
+					casex( w_mode )
 					c_g1, c_g2, c_g3, c_gm:
 						//	SCREEN1, 2, 4 では、色を保持する。
 						case( ff_vram_address[1:0] )
@@ -503,7 +503,7 @@ module vdp_timing_control_screen_mode (
 						end
 					endcase
 				3'd4:
-					case( w_mode )
+					casex( w_mode )
 					c_t2:
 						//	SCREEN0(W80) では、ドットパターンを保持する。
 						case( ff_vram_address[1:0] )
@@ -555,7 +555,7 @@ module vdp_timing_control_screen_mode (
 				ff_pattern7 <= w_backdrop_color;
 			end
 			else if( ff_phase == 3'd5 ) begin
-				case( w_mode )
+				casex( w_mode )
 				c_g1, c_g2, c_g3, c_t1:
 					//	SCREEN 1, 2, 4, 0(W40) bit pattern --> color code
 					begin
@@ -623,8 +623,11 @@ module vdp_timing_control_screen_mode (
 
 	assign w_pattern0	= (!reg_display_on || (reg_left_mask && (screen_pos_x[13:8] < 6'd15))) ? reg_backdrop_color: ff_pattern0;
 
-	always @( posedge clk ) begin
-		if( w_mode == c_t2 || w_mode == c_g5 || w_mode == c_g6 ) begin
+	always @( posedge clk or negedge reset_n ) begin
+		if( !reset_n ) begin
+			ff_display_color <= 4'd0;
+		end
+		else if( w_mode == c_t2 || w_mode == c_g5 || w_mode == c_g6 ) begin
 			if( w_sub_phase == 4'd7 ) begin
 				ff_display_color <= { 4'd0, w_pattern0[3:0] };
 			end

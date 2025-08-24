@@ -623,8 +623,11 @@ module vdp_timing_control_screen_mode (
 
 	assign w_pattern0	= (!reg_display_on || (reg_left_mask && (screen_pos_x[13:8] < 6'd15))) ? reg_backdrop_color: ff_pattern0;
 
-	always @( posedge clk ) begin
-		if( w_mode == c_t2 || w_mode == c_g5 || w_mode == c_g6 ) begin
+	always @( posedge clk or negedge reset_n ) begin
+		if( !reset_n ) begin
+			ff_display_color <= 4'd0;
+		end
+		else if( w_mode == c_t2 || w_mode == c_g5 || w_mode == c_g6 ) begin
 			if( w_sub_phase == 4'd7 ) begin
 				ff_display_color <= { 4'd0, w_pattern0[3:0] };
 			end
