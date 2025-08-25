@@ -5,6 +5,7 @@
     <Version>5</Version>
     <Device name="GW2AR-18C" pn="GW2AR-LV18QN88C8/I7">gw2ar18c-000</Device>
     <FileList>
+        <File path="src/debugger/ip_debugger.v" type="file.verilog" enable="1"/>
         <File path="src/dvi_tx/dvi_tx.v" type="file.verilog" enable="1"/>
         <File path="src/gowin_clkdiv/gowin_clkdiv.v" type="file.verilog" enable="1"/>
         <File path="src/gowin_rpll/gowin_rpll.v" type="file.verilog" enable="1"/>
@@ -33,6 +34,7 @@
         <File path="src/th9958/vdp_video_out_bilinear.v" type="file.verilog" enable="1"/>
         <File path="src/th9958/vdp_video_ram_line_buffer.v" type="file.verilog" enable="1"/>
         <File path="src/th9958/vdp_vram_interface.v" type="file.verilog" enable="1"/>
+        <File path="src/ws2812_led/ip_ws2812_led.v" type="file.verilog" enable="1"/>
         <File path="src/tangnano20k_vdp_cartridge.cst" type="file.cst" enable="1"/>
         <File path="src/v9958/vdp.vsdx" type="file.other" enable="1"/>
         <File path="src/video_out/video_out.vsdx" type="file.other" enable="1"/>

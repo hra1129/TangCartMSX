@@ -89,23 +89,33 @@ module msx_slot(
 
 	reg		[7:0]	ff_slot_address;
 	reg		[7:0]	ff_slot_data;
-	wire			w_iorq_wr;
-	wire			w_iorq_rd;
 	wire			w_active;
-	reg				ff_initial_busy;
-	reg				ff_iorq_wr = 1'b0;
-	reg				ff_iorq_rd = 1'b0;
-	reg				ff_iorq_wr_pre = 1'b0;
-	reg				ff_iorq_rd_pre = 1'b0;
-	reg				ff_active = 1'b0;
-	reg		[7:0]	ff_address = 8'd0;
-	reg				ff_write = 1'b0;
-	reg				ff_valid = 1'b0;
-	reg				ff_ioreq = 1'b0;
-	reg		[7:0]	ff_wdata = 8'd0;
-	reg		[7:0]	ff_rdata = 8'd0;
-	reg				ff_rdata_en = 1'b0;
+	reg				ff_initial_busy		= 1'b1;
+	reg				ff_iorq_wr			= 1'b0;
+	reg				ff_iorq_rd			= 1'b0;
+	reg				ff_active			= 1'b0;
+	reg				ff_write			= 1'b0;
+	reg				ff_valid			= 1'b0;
+	reg				ff_ioreq			= 1'b0;
+	reg		[7:0]	ff_rdata			= 8'd0;
+	reg				ff_rdata_en			= 1'b0;
 
+	// --------------------------------------------------------------------
+	//	Initial busy latch
+	// --------------------------------------------------------------------
+	always @( posedge clk ) begin
+		if( !p_slot_reset_n ) begin
+			ff_initial_busy	<= 1'b1;
+		end
+		else begin
+			ff_initial_busy	<= initial_busy;
+		end
+	end
+
+	// --------------------------------------------------------------------
+	//	非同期載せ替えのために 2回叩いておく
+	//	Pass through FF twice for asynchronous replacement.
+	// --------------------------------------------------------------------
 	always @( posedge clk ) begin
 		ff_pre_slot_ioreq_n		<= p_slot_ioreq_n;
 		ff_pre_slot_wr_n		<= p_slot_wr_n;
@@ -116,41 +126,28 @@ module msx_slot(
 		ff_slot_rd_n			<= ff_pre_slot_rd_n;
 	end
 
-	always @( posedge clk ) begin
-		if( !ff_slot_ioreq_n ) begin
-			ff_slot_address		<= p_slot_address;
-			ff_slot_data		<= p_slot_data;
-		end
-	end
-
-	assign w_iorq_wr	= ~ff_slot_ioreq_n & ~ff_slot_wr_n;
-	assign w_iorq_rd	= ~ff_slot_ioreq_n & ~ff_slot_rd_n;
-	assign w_active		= ff_iorq_wr | ff_iorq_rd;
-
 	always @( posedge clk or negedge p_slot_reset_n ) begin
 		if( !p_slot_reset_n ) begin
-			ff_iorq_wr_pre	<= 1'b0;
-			ff_iorq_rd_pre	<= 1'b0;
-			ff_iorq_wr		<= 1'b0;
-			ff_iorq_rd		<= 1'b0;
+			ff_iorq_wr			<= 1'b0;
+			ff_iorq_rd			<= 1'b0;
 		end
 		else if( ff_initial_busy ) begin
 			//	hold
 		end
 		else begin
-			ff_iorq_wr_pre	<= w_iorq_wr;
-			ff_iorq_rd_pre	<= w_iorq_rd;
-			ff_iorq_wr		<= ff_iorq_wr_pre;
-			ff_iorq_rd		<= ff_iorq_rd_pre;
+			ff_iorq_wr			<= ~ff_slot_ioreq_n & ~ff_slot_wr_n;
+			ff_iorq_rd			<= ~ff_slot_ioreq_n & ~ff_slot_rd_n;
 		end
 	end
 
+	// --------------------------------------------------------------------
+	//	ff_slot_ioreq_n == 0 のタイミングでは、
+	//	アドレスと書き込み時のデータは確定済み
+	// --------------------------------------------------------------------
 	always @( posedge clk ) begin
-		if( !p_slot_reset_n ) begin
-			ff_initial_busy	<= 1'b1;
-		end
-		else begin
-			ff_initial_busy	<= initial_busy;
+		if( !ff_slot_ioreq_n ) begin
+			ff_slot_address		<= p_slot_address;
+			ff_slot_data		<= p_slot_data;
 		end
 	end
 
@@ -166,31 +163,31 @@ module msx_slot(
 		end
 	end
 
+	assign w_active		= ff_iorq_wr | ff_iorq_rd;
+
 	// --------------------------------------------------------------------
 	//	Address latch
 	// --------------------------------------------------------------------
 	always @( posedge clk ) begin
 		if( !p_slot_reset_n ) begin
 			ff_valid	<= 1'b0;
-			ff_address	<= 8'd0;
 			ff_ioreq	<= 1'b0;
 			ff_write	<= 1'b1;
-			ff_wdata	<= 8'd0;
+		end
+		else if( ff_valid ) begin
+			if( bus_ready || !ff_ioreq ) begin
+				ff_valid	<= 1'b0;
+			end
 		end
 		else if( !ff_active && w_active ) begin
-			ff_valid	<= 1'b1;
-			ff_address	<= ff_slot_address;
 			if( { ff_slot_address[7:2], 2'd0 } == 8'h88 ) begin
 				ff_ioreq	<= ff_iorq_wr | ff_iorq_rd;
+				ff_valid	<= 1'b1;
 			end
 			else begin
 				ff_ioreq	<= 1'b0;
 			end
 			ff_write	<= ff_iorq_wr;
-			ff_wdata	<= ff_slot_data;
-		end
-		else if( bus_ready ) begin
-			ff_valid	<= 1'b0;
 		end
 		else if( !ff_active ) begin
 			ff_ioreq	<= 1'b0;
@@ -217,11 +214,11 @@ module msx_slot(
 	end
 
 	assign bus_ioreq		= ff_ioreq;
-	assign bus_address		= ff_address;
+	assign bus_address		= ff_slot_address;
+	assign bus_wdata		= ff_slot_data;
 	assign bus_write		= ff_write;
 	assign bus_valid		= ff_valid;
-	assign bus_wdata		= ff_wdata;
-	assign p_slot_data		= (!ff_write && ff_ioreq) ? ff_rdata: 8'hZZ;
+	assign p_slot_data		= (ff_ioreq & ff_iorq_rd) ? ff_rdata: 8'hZZ;
 	assign p_slot_int		= ~int_n;
 
 	//	0: Cartridge <- CPU (Write or Idle), 1: Cartridge -> CPU (Read)

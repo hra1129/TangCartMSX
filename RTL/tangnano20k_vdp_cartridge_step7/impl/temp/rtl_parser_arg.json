@@ -112,6 +112,14 @@
   {
    "Path" : "D:/github/HRA_product/TangCartMSX/RTL/tangnano20k_vdp_cartridge_step7/src/th9958/vdp_vram_interface.v",
    "Type" : "verilog"
+  },
+  {
+   "Path" : "D:/github/HRA_product/TangCartMSX/RTL/tangnano20k_vdp_cartridge_step7/src/ws2812_led/ip_ws2812_led.v",
+   "Type" : "verilog"
+  },
+  {
+   "Path" : "D:/github/HRA_product/TangCartMSX/RTL/tangnano20k_vdp_cartridge_step7/src/debugger/ip_debugger.v",
+   "Type" : "verilog"
   }
  ],
  "IncludePath" : [

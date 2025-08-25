@@ -372,6 +372,17 @@ module tb ();
 		read_io( 8'h8A, rdata );
 		read_io( 8'h8B, rdata );
 
+		write_io( 8'h00, 8'h12 );
+		write_io( 8'h11, 8'h23 );
+		write_io( 8'h22, 8'h34 );
+		write_io( 8'h33, 8'h45 );
+		write_io( 8'h99, 8'h56 );
+		write_io( 8'hAA, 8'h67 );
+		write_io( 8'hBB, 8'h67 );
+		write_io( 8'hCC, 8'h67 );
+		write_io( 8'hDD, 8'h67 );
+		write_io( 8'hEE, 8'h67 );
+
 		repeat( 10 ) @( posedge clk );
 		$finish;
 	end

@@ -460,8 +460,8 @@ module tb ();
 			assert( rdata == (i & 255) );
 		end
 
-		repeat(5000) @( posedge clk14m );
-/*
+		repeat(500) @( posedge clk14m );
+
 		//	VDP Command PSET
 		$display( "[test002] VDP Command PSET" );
 		write_io( vdp_io1, 8'd36 );
@@ -703,7 +703,7 @@ module tb ();
 		repeat( 100 ) @( posedge clk14m );
 
 //		repeat(2000000) @( posedge clk14m );
-*/
+
 		$display( "[test---] All tests completed" );
 		repeat( 100 ) @( posedge clk14m );
 		$finish;

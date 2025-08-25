@@ -64,13 +64,13 @@ module ip_ws2812_led(
 	input	[7:0]	blue,
 	output			ws2812_led
 );
-	localparam c_t0h_count	= 14'd	13	;
-	localparam c_t0l_count	= 14'd	34	;
-	localparam c_t1h_count	= 14'd	34	;
-	localparam c_t1l_count	= 14'd	34	;
-	localparam c_res_count	= 14'd	12887	;
+	localparam c_t0h_count	= 15'd26;
+	localparam c_t0l_count	= 15'd68;
+	localparam c_t1h_count	= 15'd68;
+	localparam c_t1l_count	= 15'd68;
+	localparam c_res_count	= 15'd25773;
 
-	reg		[13:0]	ff_count;
+	reg		[14:0]	ff_count;
 	reg		[23:0]	ff_send_data;
 	reg				ff_sending;
 	reg		[5:0]	ff_state;
@@ -137,7 +137,7 @@ module ip_ws2812_led(
 		else if( (ff_state == c_st_idle) && wr ) begin
 			ff_sending		<= 1'b1;
 		end
-		else if( (ff_state == c_st_finish) && (ff_count == 'd0) ) begin
+		else if( (ff_state == c_st_finish) && (ff_count == 15'd0) ) begin
 			ff_sending		<= 1'b0;
 		end
 	end
@@ -148,11 +148,11 @@ module ip_ws2812_led(
 	always @( posedge clk or negedge reset_n ) begin
 		if( !reset_n ) begin
 			ff_state	<= c_st_idle;
-			ff_count	<= 'd0;
+			ff_count	<= 15'd0;
 			ff_led		<= 1'b0;
 		end
-		else if( ff_count != 'd0 ) begin
-			ff_count <= ff_count - 'd1;
+		else if( ff_count != 15'd0 ) begin
+			ff_count <= ff_count - 15'd1;
 		end
 		else begin
 			case( ff_state )

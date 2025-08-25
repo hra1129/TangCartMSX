@@ -100,10 +100,23 @@ module tangnano20k_vdp_cartridge (
 	wire	[7:0]	w_video_g;
 	wire	[7:0]	w_video_b;
 
+	wire			w_pulse0;
+	wire			w_pulse1;
+	wire			w_pulse2;
+	wire			w_pulse3;
+	wire			w_pulse4;
+	wire			w_pulse5;
+	wire			w_pulse6;
+	wire			w_pulse7;
+	wire			w_wr;
+	wire			w_sending;
+	wire	[7:0]	w_red;
+	wire	[7:0]	w_green;
+	wire	[7:0]	w_blue;
+
 	assign slot_wait		= w_sdram_init_busy;
 	assign slot_intr		= 1'b0;
 	assign oe_n				= 1'b0;
-	assign ws2812_led		= 1'b0;
 
 	always @( posedge clk85m ) begin
 		ff_reset_n0		<= slot_reset_n;
@@ -196,7 +209,15 @@ module tangnano20k_vdp_cartridge (
 		.display_en			( w_video_de			),
 		.display_r			( w_video_r				),
 		.display_g			( w_video_g				),
-		.display_b			( w_video_b				)
+		.display_b			( w_video_b				),
+		.pulse0				( w_pulse0				),
+		.pulse1				( w_pulse1				),
+		.pulse2				( w_pulse2				),
+		.pulse3				( w_pulse3				),
+		.pulse4				( w_pulse4				),
+		.pulse5				( w_pulse5				),
+		.pulse6				( w_pulse6				),
+		.pulse7				( w_pulse7				)
 	);
 
 	assign w_sdram_address[22:17]	= 6'd0;
@@ -248,5 +269,40 @@ module tangnano20k_vdp_cartridge (
 		.O_sdram_addr		( O_sdram_addr			),		// 11 bit multiplexed address bus
 		.O_sdram_ba			( O_sdram_ba			),		// two banks
 		.O_sdram_dqm		( O_sdram_dqm			)		// data mask
+	);
+
+	// --------------------------------------------------------------------
+	//	Debug—p LED
+	// --------------------------------------------------------------------
+	ip_ws2812_led u_led (
+		.reset_n			( reset_n				),
+		.clk				( clk85m				),
+		.wr					( w_wr					),
+		.sending			( w_sending				),
+		.red				( w_red					),
+		.green				( w_green				),
+		.blue				( w_blue				),
+		.ws2812_led			( ws2812_led			)
+	);
+
+	// --------------------------------------------------------------------
+	//	Debugger
+	// --------------------------------------------------------------------
+	ip_debugger u_debugger (
+		.reset_n			( reset_n				),
+		.clk				( clk85m				),
+		.pulse0				( w_pulse0				),
+		.pulse1				( w_pulse1				),
+		.pulse2				( w_pulse2				),
+		.pulse3				( w_pulse3				),
+		.pulse4				( w_pulse4				),
+		.pulse5				( w_pulse5				),
+		.pulse6				( w_pulse6				),
+		.pulse7				( w_pulse7				),
+		.wr					( w_wr					),
+		.sending			( w_sending				),
+		.red				( w_red					),
+		.green				( w_green				),
+		.blue				( w_blue				)
 	);
 endmodule

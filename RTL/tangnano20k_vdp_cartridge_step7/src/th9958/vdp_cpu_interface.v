@@ -129,7 +129,16 @@ module vdp_cpu_interface (
 	output				reg_yae_mode,
 	output				reg_command_enable,
 	output	[2:0]		reg_horizontal_offset_l,
-	output	[8:3]		reg_horizontal_offset_h
+	output	[8:3]		reg_horizontal_offset_h,
+
+	output				pulse0,
+	output				pulse1,
+	output				pulse2,
+	output				pulse3,
+	output				pulse4,
+	output				pulse5,
+	output				pulse6,
+	output				pulse7
 );
 	reg					ff_bus_ioreq;
 	reg					ff_bus_write;
@@ -202,6 +211,15 @@ module vdp_cpu_interface (
 
 	reg					ff_line_interrupt;
 	reg					ff_frame_interrupt;
+
+	assign pulse0		= ff_register_write;						// red
+	assign pulse1		= ff_vram_valid;							// green
+	assign pulse2		= ff_vram_address_inc;						// blue
+	assign pulse3		= (bus_valid && bus_address == 2'b00);		// yellow
+	assign pulse4		= 1'b0;
+	assign pulse5		= 1'b0;
+	assign pulse6		= 1'b0;
+	assign pulse7		= 1'b0;
 
 	// --------------------------------------------------------------------
 	//	Latch
