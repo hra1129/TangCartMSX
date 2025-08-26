@@ -388,10 +388,6 @@ module vdp_timing_control_screen_mode (
 	// --------------------------------------------------------------------
 	//	VRAM read data latch
 	// --------------------------------------------------------------------
-	assign w_vram_rdata8	= (ff_vram_address[1:0] == 2'd0) ? vram_rdata[ 7: 0]:
-	                    	  (ff_vram_address[1:0] == 2'd1) ? vram_rdata[15: 8]:
-	                    	  (ff_vram_address[1:0] == 2'd2) ? vram_rdata[23:16]: vram_rdata[31:24];
-
 	always @( posedge clk or negedge reset_n ) begin
 		if( !reset_n ) begin
 			ff_next_vram0 <= 8'd0;

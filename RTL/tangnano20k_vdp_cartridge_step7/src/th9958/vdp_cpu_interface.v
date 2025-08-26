@@ -212,13 +212,13 @@ module vdp_cpu_interface (
 	reg					ff_line_interrupt;
 	reg					ff_frame_interrupt;
 
-	assign pulse0		= ff_register_write;						// red
+	assign pulse0		= 1'b0;										// red
 	assign pulse1		= ff_vram_valid;							// green
 	assign pulse2		= ff_vram_address_inc;						// blue
 	assign pulse3		= (bus_valid && bus_address == 2'b00);		// yellow
-	assign pulse4		= 1'b0;
-	assign pulse5		= 1'b0;
-	assign pulse6		= 1'b0;
+	assign pulse4		= (bus_valid && bus_address == 2'b01);		// cyan
+	assign pulse5		= (bus_valid && bus_address == 2'b10);		// purple
+	assign pulse6		= (bus_valid && bus_address == 2'b11);		// pink
 	assign pulse7		= 1'b0;
 
 	// --------------------------------------------------------------------

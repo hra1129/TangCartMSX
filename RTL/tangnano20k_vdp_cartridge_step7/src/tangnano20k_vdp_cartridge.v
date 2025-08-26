@@ -68,7 +68,7 @@ module tangnano20k_vdp_cartridge (
 	wire			clk215m;			//	214.7727MHz
 	wire			reset_n;
 	wire			reset_n2;
-	wire	[7:0]	w_bus_address;
+	wire	[1:0]	w_bus_address;
 	wire			w_bus_ioreq;
 	wire			w_bus_write;
 	wire			w_bus_valid;
@@ -187,7 +187,7 @@ module tangnano20k_vdp_cartridge (
 		.reset_n			( reset_n				),
 		.clk				( clk85m				),
 		.initial_busy		( w_sdram_init_busy		),
-		.bus_address		( w_bus_address[1:0]	),
+		.bus_address		( w_bus_address			),
 		.bus_ioreq			( w_bus_ioreq			),
 		.bus_write			( w_bus_write			),
 		.bus_valid			( w_bus_valid			),

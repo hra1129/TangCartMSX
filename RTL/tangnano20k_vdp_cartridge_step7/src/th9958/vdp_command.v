@@ -133,6 +133,7 @@ module vdp_command (
 	wire		[7:0]	w_destination;
 	wire		[7:0]	w_lop_pixel;
 
+	reg			[1:0]	ff_xsel;
 	reg			[8:0]	reg_sx;
 	reg			[8:0]	reg_dx;
 	reg			[8:0]	reg_nx;
@@ -142,6 +143,8 @@ module vdp_command (
 	reg			[9:0]	ff_dy;
 	reg			[8:0]	ff_nx;
 	reg			[9:0]	ff_ny;
+	wire		[8:0]	w_nx;
+	wire		[9:0]	w_ny;
 	reg			[9:0]	ff_nyb;
 	reg			[7:0]	ff_color;
 	reg					ff_maj;
@@ -426,14 +429,14 @@ module vdp_command (
 			if( ff_nx == 9'd0 ) begin
 				if( ff_command[3:2] == 2'b11 ) begin
 					case( w_bpp )
-					c_bpp_8bit:		ff_nx <= reg_nx;
-					c_bpp_4bit:		ff_nx <= { reg_nx[8:1], 1'b0 };
-					c_bpp_2bit:		ff_nx <= { reg_nx[8:2], 2'd0 };
-					default:		ff_nx <= reg_nx;
+					c_bpp_8bit:		ff_nx <= w_nx;
+					c_bpp_4bit:		ff_nx <= { w_nx[8:1], 1'b0 };
+					c_bpp_2bit:		ff_nx <= { w_nx[8:2], 2'd0 };
+					default:		ff_nx <= w_nx;
 					endcase
 				end
 				else begin
-					ff_nx <= reg_nx;
+					ff_nx <= w_nx;
 				end
 			end
 			else begin
@@ -454,12 +457,15 @@ module vdp_command (
 				ff_ny[9:8]	<= register_data[1:0];
 			end
 		end
+		else if( ff_start ) begin
+			ff_ny <= w_ny;
+		end
 		else if( !ff_command_enable || ff_cache_vram_valid ) begin
 			//	hold
 		end
 		else if( ff_count_valid ) begin
 			if( ff_nx == 9'd0 && ff_ny != 10'd0 ) begin
-				ff_ny <= ff_ny - 10'd1;
+				ff_ny <= w_ny;
 			end
 		end
 	end
@@ -484,6 +490,8 @@ module vdp_command (
 		end
 	end
 
+	assign w_nx			= reg_nx - 9'd1;
+	assign w_ny			= ff_ny - 10'd1;
 	assign w_next_nyb	= { 1'b0, ff_nyb } - { 2'd0, ff_ny[8:0] };
 
 	always @( posedge clk or negedge reset_n ) begin
@@ -571,10 +579,10 @@ module vdp_command (
 				ff_read_pixel <= w_cache_vram_rdata;
 			end
 			c_bpp_4bit: begin
-				ff_read_pixel <= ff_dx[0] ? { 4'd0, w_cache_vram_rdata[3:0] }: { 4'd0, w_cache_vram_rdata[7:4] };
+				ff_read_pixel <= ff_xsel[0] ? { 4'd0, w_cache_vram_rdata[3:0] }: { 4'd0, w_cache_vram_rdata[7:4] };
 			end
 			c_bpp_2bit: begin
-				case( ff_dx[1:0] )
+				case( ff_xsel[1:0] )
 				2'd0:	ff_read_pixel <= { 6'd0, w_cache_vram_rdata[7:6] };
 				2'd1:	ff_read_pixel <= { 6'd0, w_cache_vram_rdata[5:4] };
 				2'd2:	ff_read_pixel <= { 6'd0, w_cache_vram_rdata[3:2] };
@@ -636,6 +644,7 @@ module vdp_command (
 				ff_cache_vram_write		<= 1'b0;
 				ff_state				<= c_state_wait_rdata_en;
 				ff_next_state			<= c_state_finish;
+				ff_xsel					<= ff_sx[1:0];
 			end
 			//	PSET command --------------------------------------------------
 			c_state_pset: begin
@@ -645,6 +654,7 @@ module vdp_command (
 				ff_cache_vram_write		<= 1'b0;
 				ff_state				<= c_state_wait_rdata_en;
 				ff_next_state			<= c_state_pset_make;
+				ff_xsel					<= ff_dx[1:0];
 			end
 			c_state_pset_make: begin
 				//	Write the location of (DX, DY)
@@ -664,6 +674,7 @@ module vdp_command (
 				ff_cache_vram_write		<= 1'b0;
 				ff_state				<= c_state_wait_rdata_en;
 				ff_next_state			<= c_state_line_make;
+				ff_xsel					<= ff_dx[1:0];
 			end
 			c_state_line_make: begin
 				//	Write the location of (DX, DY)
@@ -691,6 +702,7 @@ module vdp_command (
 				ff_cache_vram_write		<= 1'b0;
 				ff_state				<= c_state_wait_rdata_en;
 				ff_next_state			<= c_state_lmmv_make;
+				ff_xsel					<= ff_dx[1:0];
 			end
 			c_state_lmmv_make: begin
 				//	Write the location of (DX, DY)
@@ -719,6 +731,7 @@ module vdp_command (
 				ff_cache_vram_write		<= 1'b0;
 				ff_state				<= c_state_wait_rdata_en;
 				ff_next_state			<= c_state_lmmm_wait_source;
+				ff_xsel					<= ff_sx[1:0];
 			end
 			c_state_lmmm_wait_source: begin
 				//	Copy source pixel value
@@ -729,6 +742,7 @@ module vdp_command (
 				ff_cache_vram_write		<= 1'b0;
 				ff_state				<= c_state_wait_rdata_en;
 				ff_next_state			<= c_state_lmmm_make;
+				ff_xsel					<= ff_dx[1:0];
 			end
 			c_state_lmmm_make: begin
 				//	Write the location of (DX, DY)

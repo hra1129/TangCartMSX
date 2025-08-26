@@ -70,7 +70,7 @@ module msx_slot(
 	output			busdir,					//	0: MSX→Cartridge (Write), 1: Cartridge→MSX (Read)
 	//	Local BUS
 	input			int_n,
-	output	[7:0]	bus_address,
+	output	[1:0]	bus_address,
 	output			bus_ioreq,
 	output			bus_write,
 	output			bus_valid,
@@ -89,6 +89,7 @@ module msx_slot(
 
 	reg		[7:0]	ff_slot_address;
 	reg		[7:0]	ff_slot_data;
+	reg		[1:0]	ff_bus_address;
 	wire			w_active;
 	reg				ff_initial_busy		= 1'b1;
 	reg				ff_iorq_wr			= 1'b0;
@@ -147,6 +148,11 @@ module msx_slot(
 	always @( posedge clk ) begin
 		if( !ff_slot_ioreq_n ) begin
 			ff_slot_address		<= p_slot_address;
+		end
+	end
+
+	always @( posedge clk ) begin
+		if( !ff_slot_wr_n ) begin
 			ff_slot_data		<= p_slot_data;
 		end
 	end
@@ -181,8 +187,9 @@ module msx_slot(
 		end
 		else if( !ff_active && w_active ) begin
 			if( { ff_slot_address[7:2], 2'd0 } == 8'h88 ) begin
-				ff_ioreq	<= ff_iorq_wr | ff_iorq_rd;
-				ff_valid	<= 1'b1;
+				ff_bus_address	<= ff_slot_address[1:0];
+				ff_ioreq		<= ff_iorq_wr | ff_iorq_rd;
+				ff_valid		<= 1'b1;
 			end
 			else begin
 				ff_ioreq	<= 1'b0;
@@ -214,7 +221,7 @@ module msx_slot(
 	end
 
 	assign bus_ioreq		= ff_ioreq;
-	assign bus_address		= ff_slot_address;
+	assign bus_address		= ff_bus_address;
 	assign bus_wdata		= ff_slot_data;
 	assign bus_write		= ff_write;
 	assign bus_valid		= ff_valid;
