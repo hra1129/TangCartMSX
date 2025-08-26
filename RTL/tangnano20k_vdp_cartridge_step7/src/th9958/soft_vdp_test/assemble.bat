@@ -7,6 +7,7 @@ zma sc5test.asm  SC5TEST.COM
 zma sc6test.asm  SC6TEST.COM
 zma sc7test.asm  SC7TEST.COM
 zma sc8test.asm  SC8TEST.COM
+zma sc5line.asm  SC5LINE.COM
 
 if exist D:\download\msx\DOS2\MSXDOS2 (
 	if exist D:\download\msx\DOS2\MSXDOS2\SC0TEST.COM (
@@ -36,6 +37,9 @@ if exist D:\download\msx\DOS2\MSXDOS2 (
 	if exist D:\download\msx\DOS2\MSXDOS2\SC8TEST.COM (
 		del D:\download\msx\DOS2\MSXDOS2\SC8TEST.COM
 	)
+	if exist D:\download\msx\DOS2\MSXDOS2\SC5LINE.COM (
+		del D:\download\msx\DOS2\MSXDOS2\SC5LINE.COM
+	)
 	copy SC0TEST.COM  D:\download\msx\DOS2\MSXDOS2\
 	copy SC1TEST.COM  D:\download\msx\DOS2\MSXDOS2\
 	copy SC2TEST.COM  D:\download\msx\DOS2\MSXDOS2\
@@ -45,6 +49,7 @@ if exist D:\download\msx\DOS2\MSXDOS2 (
 	copy SC6TEST.COM  D:\download\msx\DOS2\MSXDOS2\
 	copy SC7TEST.COM  D:\download\msx\DOS2\MSXDOS2\
 	copy SC8TEST.COM  D:\download\msx\DOS2\MSXDOS2\
+	copy SC5LINE.COM  D:\download\msx\DOS2\MSXDOS2\
 )
 
 pause
