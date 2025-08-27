@@ -51,6 +51,71 @@ start:
 			call	test030
 			call	test031
 			call	test032
+
+			call	test033
+			call	test034
+			call	test035
+			call	test036
+
+			call	test037
+			call	test038
+			call	test039
+			call	test040
+
+			call	test041
+			call	test042
+			call	test043
+			call	test044
+
+			call	test045
+			call	test046
+			call	test047
+			call	test048
+
+			call	test049
+			call	test050
+			call	test051
+			call	test052
+
+			call	test053
+			call	test054
+			call	test055
+			call	test056
+
+			call	test057
+			call	test058
+			call	test059
+			call	test060
+
+			call	test061
+			call	test062
+			call	test063
+			call	test064
+
+			call	test065
+			call	test066
+			call	test067
+			call	test068
+
+			call	test069
+			call	test070
+			call	test071
+			call	test072
+
+			call	test073
+			call	test074
+			call	test075
+			call	test076
+
+			call	test077
+			call	test078
+			call	test079
+			call	test080
+
+			call	test081
+			call	test082
+			call	test083
+			call	test084
 			; 後始末
 			call	clear_key_buffer
 			ld		c, _TERM0
@@ -133,58 +198,27 @@ screen5::
 			endscope
 
 ; =============================================================================
-;	LINE
-;	input:
-;		cmd_xxxx .... パラメータ
-;	output:
-;		none
-;	break:
-;		AF BC DE HL
-;	comment:
-;		none
-; =============================================================================
-			scope	line
-line::
-			ld		a, [cmd_exec]
-			and		a, 0x0F
-			or		a, 0x70
-			ld		[cmd_exec], a
-
-			ld		a, 32
-			ld		e, 17
-			call	write_control_register
-
-			ld		a, [io_vdp_port3]
-			ld		c, a
-			ld		hl, cmd_sx
-			ld		b, 15
-			otir
-			ret
-			endscope
-
-; =============================================================================
 			scope	test001
 test001::
 			ld		a, 2
 			ld		e, 7
 			call	write_control_register
 
-			ld		hl, 10
-			ld		[cmd_dx], hl
-			ld		hl, 11
-			ld		[cmd_dy], hl
-			ld		hl, 0
-			ld		[cmd_nx], hl
-			ld		hl, 0
-			ld		[cmd_ny], hl
-			ld		a, 15
-			ld		[cmd_color], a
-			ld		a, 0x00
-			ld		[cmd_arg], a
-			call	line
+			ld		hl, data
+			ld		a, 36
+			ld		b, 11
+			call	run_command
 			call	wait_command
 			call	wait_push_space_key
 			ret
+	data:
+			dw		10			; DX
+			dw		11			; DY
+			dw		0			; NX
+			dw		0			; NY
+			db		15			; CLR
+			db		0			; ARG
+			db		0x70		; CMD (LINE)
 			endscope
 
 ; =============================================================================
@@ -194,22 +228,21 @@ test002::
 			ld		e, 7
 			call	write_control_register
 
-			ld		hl, 11
-			ld		[cmd_dx], hl
-			ld		hl, 10
-			ld		[cmd_dy], hl
-			ld		hl, 0
-			ld		[cmd_nx], hl
-			ld		hl, 0
-			ld		[cmd_ny], hl
-			ld		a, 12
-			ld		[cmd_color], a
-			ld		a, 0x00
-			ld		[cmd_arg], a
-			call	line
+			ld		hl, data
+			ld		a, 36
+			ld		b, 11
+			call	run_command
 			call	wait_command
 			call	wait_push_space_key
 			ret
+	data:
+			dw		11			; DX
+			dw		10			; DY
+			dw		0			; NX
+			dw		0			; NY
+			db		12			; CLR
+			db		0			; ARG
+			db		0x70		; CMD (LINE)
 			endscope
 
 ; =============================================================================
@@ -219,22 +252,21 @@ test003::
 			ld		e, 7
 			call	write_control_register
 
-			ld		hl, 10
-			ld		[cmd_dx], hl
-			ld		hl, 10
-			ld		[cmd_dy], hl
-			ld		hl, 0
-			ld		[cmd_nx], hl
-			ld		hl, 0
-			ld		[cmd_ny], hl
-			ld		a, 13
-			ld		[cmd_color], a
-			ld		a, 0x00
-			ld		[cmd_arg], a
-			call	line
+			ld		hl, data
+			ld		a, 36
+			ld		b, 11
+			call	run_command
 			call	wait_command
 			call	wait_push_space_key
 			ret
+	data:
+			dw		10			; DX
+			dw		10			; DY
+			dw		0			; NX
+			dw		0			; NY
+			db		13			; CLR
+			db		0			; ARG
+			db		0x70		; CMD (LINE)
 			endscope
 
 ; =============================================================================
@@ -244,22 +276,21 @@ test004::
 			ld		e, 7
 			call	write_control_register
 
-			ld		hl, 11
-			ld		[cmd_dx], hl
-			ld		hl, 11
-			ld		[cmd_dy], hl
-			ld		hl, 0
-			ld		[cmd_nx], hl
-			ld		hl, 0
-			ld		[cmd_ny], hl
-			ld		a, 6
-			ld		[cmd_color], a
-			ld		a, 0x00
-			ld		[cmd_arg], a
-			call	line
+			ld		hl, data
+			ld		a, 36
+			ld		b, 11
+			call	run_command
 			call	wait_command
 			call	wait_push_space_key
 			ret
+	data:
+			dw		11			; DX
+			dw		11			; DY
+			dw		0			; NX
+			dw		0			; NY
+			db		6			; CLR
+			db		0			; ARG
+			db		0x70		; CMD (LINE)
 			endscope
 
 ; =============================================================================
@@ -269,22 +300,21 @@ test005::
 			ld		e, 7
 			call	write_control_register
 
-			ld		hl, 20
-			ld		[cmd_dx], hl
-			ld		hl, 11
-			ld		[cmd_dy], hl
-			ld		hl, 0
-			ld		[cmd_nx], hl
-			ld		hl, 0
-			ld		[cmd_ny], hl
-			ld		a, 15
-			ld		[cmd_color], a
-			ld		a, 0x04
-			ld		[cmd_arg], a
-			call	line
+			ld		hl, data
+			ld		a, 36
+			ld		b, 11
+			call	run_command
 			call	wait_command
 			call	wait_push_space_key
 			ret
+	data:
+			dw		20			; DX
+			dw		11			; DY
+			dw		0			; NX
+			dw		0			; NY
+			db		15			; CLR
+			db		0x04		; ARG
+			db		0x70		; CMD (LINE)
 			endscope
 
 ; =============================================================================
@@ -294,22 +324,21 @@ test006::
 			ld		e, 7
 			call	write_control_register
 
-			ld		hl, 21
-			ld		[cmd_dx], hl
-			ld		hl, 10
-			ld		[cmd_dy], hl
-			ld		hl, 0
-			ld		[cmd_nx], hl
-			ld		hl, 0
-			ld		[cmd_ny], hl
-			ld		a, 12
-			ld		[cmd_color], a
-			ld		a, 0x04
-			ld		[cmd_arg], a
-			call	line
+			ld		hl, data
+			ld		a, 36
+			ld		b, 11
+			call	run_command
 			call	wait_command
 			call	wait_push_space_key
 			ret
+	data:
+			dw		21			; DX
+			dw		10			; DY
+			dw		0			; NX
+			dw		0			; NY
+			db		12			; CLR
+			db		0x04		; ARG
+			db		0x70		; CMD (LINE)
 			endscope
 
 ; =============================================================================
@@ -319,22 +348,21 @@ test007::
 			ld		e, 7
 			call	write_control_register
 
-			ld		hl, 20
-			ld		[cmd_dx], hl
-			ld		hl, 10
-			ld		[cmd_dy], hl
-			ld		hl, 0
-			ld		[cmd_nx], hl
-			ld		hl, 0
-			ld		[cmd_ny], hl
-			ld		a, 13
-			ld		[cmd_color], a
-			ld		a, 0x04
-			ld		[cmd_arg], a
-			call	line
+			ld		hl, data
+			ld		a, 36
+			ld		b, 11
+			call	run_command
 			call	wait_command
 			call	wait_push_space_key
 			ret
+	data:
+			dw		20			; DX
+			dw		10			; DY
+			dw		0			; NX
+			dw		0			; NY
+			db		13			; CLR
+			db		0x04		; ARG
+			db		0x70		; CMD (LINE)
 			endscope
 
 ; =============================================================================
@@ -344,22 +372,21 @@ test008::
 			ld		e, 7
 			call	write_control_register
 
-			ld		hl, 21
-			ld		[cmd_dx], hl
-			ld		hl, 11
-			ld		[cmd_dy], hl
-			ld		hl, 0
-			ld		[cmd_nx], hl
-			ld		hl, 0
-			ld		[cmd_ny], hl
-			ld		a, 6
-			ld		[cmd_color], a
-			ld		a, 0x04
-			ld		[cmd_arg], a
-			call	line
+			ld		hl, data
+			ld		a, 36
+			ld		b, 11
+			call	run_command
 			call	wait_command
 			call	wait_push_space_key
 			ret
+	data:
+			dw		21			; DX
+			dw		11			; DY
+			dw		0			; NX
+			dw		0			; NY
+			db		6			; CLR
+			db		0x04		; ARG
+			db		0x70		; CMD (LINE)
 			endscope
 
 ; =============================================================================
@@ -369,22 +396,21 @@ test009::
 			ld		e, 7
 			call	write_control_register
 
-			ld		hl, 30
-			ld		[cmd_dx], hl
-			ld		hl, 11
-			ld		[cmd_dy], hl
-			ld		hl, 0
-			ld		[cmd_nx], hl
-			ld		hl, 0
-			ld		[cmd_ny], hl
-			ld		a, 15
-			ld		[cmd_color], a
-			ld		a, 0x08
-			ld		[cmd_arg], a
-			call	line
+			ld		hl, data
+			ld		a, 36
+			ld		b, 11
+			call	run_command
 			call	wait_command
 			call	wait_push_space_key
 			ret
+	data:
+			dw		30			; DX
+			dw		11			; DY
+			dw		0			; NX
+			dw		0			; NY
+			db		15			; CLR
+			db		0x04		; ARG
+			db		0x70		; CMD (LINE)
 			endscope
 
 ; =============================================================================
@@ -394,22 +420,21 @@ test010::
 			ld		e, 7
 			call	write_control_register
 
-			ld		hl, 31
-			ld		[cmd_dx], hl
-			ld		hl, 10
-			ld		[cmd_dy], hl
-			ld		hl, 0
-			ld		[cmd_nx], hl
-			ld		hl, 0
-			ld		[cmd_ny], hl
-			ld		a, 12
-			ld		[cmd_color], a
-			ld		a, 0x08
-			ld		[cmd_arg], a
-			call	line
+			ld		hl, data
+			ld		a, 36
+			ld		b, 11
+			call	run_command
 			call	wait_command
 			call	wait_push_space_key
 			ret
+	data:
+			dw		31			; DX
+			dw		10			; DY
+			dw		0			; NX
+			dw		0			; NY
+			db		12			; CLR
+			db		0x08		; ARG
+			db		0x70		; CMD (LINE)
 			endscope
 
 ; =============================================================================
@@ -419,22 +444,21 @@ test011::
 			ld		e, 7
 			call	write_control_register
 
-			ld		hl, 30
-			ld		[cmd_dx], hl
-			ld		hl, 10
-			ld		[cmd_dy], hl
-			ld		hl, 0
-			ld		[cmd_nx], hl
-			ld		hl, 0
-			ld		[cmd_ny], hl
-			ld		a, 13
-			ld		[cmd_color], a
-			ld		a, 0x08
-			ld		[cmd_arg], a
-			call	line
+			ld		hl, data
+			ld		a, 36
+			ld		b, 11
+			call	run_command
 			call	wait_command
 			call	wait_push_space_key
 			ret
+	data:
+			dw		30			; DX
+			dw		10			; DY
+			dw		0			; NX
+			dw		0			; NY
+			db		13			; CLR
+			db		0x08		; ARG
+			db		0x70		; CMD (LINE)
 			endscope
 
 ; =============================================================================
@@ -444,22 +468,21 @@ test012::
 			ld		e, 7
 			call	write_control_register
 
-			ld		hl, 31
-			ld		[cmd_dx], hl
-			ld		hl, 11
-			ld		[cmd_dy], hl
-			ld		hl, 0
-			ld		[cmd_nx], hl
-			ld		hl, 0
-			ld		[cmd_ny], hl
-			ld		a, 6
-			ld		[cmd_color], a
-			ld		a, 0x08
-			ld		[cmd_arg], a
-			call	line
+			ld		hl, data
+			ld		a, 36
+			ld		b, 11
+			call	run_command
 			call	wait_command
 			call	wait_push_space_key
 			ret
+	data:
+			dw		31			; DX
+			dw		11			; DY
+			dw		0			; NX
+			dw		0			; NY
+			db		6			; CLR
+			db		0x08		; ARG
+			db		0x70		; CMD (LINE)
 			endscope
 
 ; =============================================================================
@@ -469,22 +492,21 @@ test013::
 			ld		e, 7
 			call	write_control_register
 
-			ld		hl, 40
-			ld		[cmd_dx], hl
-			ld		hl, 11
-			ld		[cmd_dy], hl
-			ld		hl, 0
-			ld		[cmd_nx], hl
-			ld		hl, 0
-			ld		[cmd_ny], hl
-			ld		a, 15
-			ld		[cmd_color], a
-			ld		a, 0x0C
-			ld		[cmd_arg], a
-			call	line
+			ld		hl, data
+			ld		a, 36
+			ld		b, 11
+			call	run_command
 			call	wait_command
 			call	wait_push_space_key
 			ret
+	data:
+			dw		40			; DX
+			dw		11			; DY
+			dw		0			; NX
+			dw		0			; NY
+			db		15			; CLR
+			db		0x0C		; ARG
+			db		0x70		; CMD (LINE)
 			endscope
 
 ; =============================================================================
@@ -494,22 +516,21 @@ test014::
 			ld		e, 7
 			call	write_control_register
 
-			ld		hl, 41
-			ld		[cmd_dx], hl
-			ld		hl, 10
-			ld		[cmd_dy], hl
-			ld		hl, 0
-			ld		[cmd_nx], hl
-			ld		hl, 0
-			ld		[cmd_ny], hl
-			ld		a, 12
-			ld		[cmd_color], a
-			ld		a, 0x0C
-			ld		[cmd_arg], a
-			call	line
+			ld		hl, data
+			ld		a, 36
+			ld		b, 11
+			call	run_command
 			call	wait_command
 			call	wait_push_space_key
 			ret
+	data:
+			dw		41			; DX
+			dw		10			; DY
+			dw		0			; NX
+			dw		0			; NY
+			db		12			; CLR
+			db		0x0C		; ARG
+			db		0x70		; CMD (LINE)
 			endscope
 
 ; =============================================================================
@@ -519,22 +540,21 @@ test015::
 			ld		e, 7
 			call	write_control_register
 
-			ld		hl, 40
-			ld		[cmd_dx], hl
-			ld		hl, 10
-			ld		[cmd_dy], hl
-			ld		hl, 0
-			ld		[cmd_nx], hl
-			ld		hl, 0
-			ld		[cmd_ny], hl
-			ld		a, 13
-			ld		[cmd_color], a
-			ld		a, 0x0C
-			ld		[cmd_arg], a
-			call	line
+			ld		hl, data
+			ld		a, 36
+			ld		b, 11
+			call	run_command
 			call	wait_command
 			call	wait_push_space_key
 			ret
+	data:
+			dw		40			; DX
+			dw		10			; DY
+			dw		0			; NX
+			dw		0			; NY
+			db		13			; CLR
+			db		0x0C		; ARG
+			db		0x70		; CMD (LINE)
 			endscope
 
 ; =============================================================================
@@ -544,22 +564,21 @@ test016::
 			ld		e, 7
 			call	write_control_register
 
-			ld		hl, 41
-			ld		[cmd_dx], hl
-			ld		hl, 11
-			ld		[cmd_dy], hl
-			ld		hl, 0
-			ld		[cmd_nx], hl
-			ld		hl, 0
-			ld		[cmd_ny], hl
-			ld		a, 6
-			ld		[cmd_color], a
-			ld		a, 0x0C
-			ld		[cmd_arg], a
-			call	line
+			ld		hl, data
+			ld		a, 36
+			ld		b, 11
+			call	run_command
 			call	wait_command
 			call	wait_push_space_key
 			ret
+	data:
+			dw		41			; DX
+			dw		11			; DY
+			dw		0			; NX
+			dw		0			; NY
+			db		6			; CLR
+			db		0x0C		; ARG
+			db		0x70		; CMD (LINE)
 			endscope
 
 ; =============================================================================
@@ -569,23 +588,21 @@ test017::
 			ld		a, 2
 			ld		e, 7
 			call	write_control_register
-
-			ld		hl, 40
-			ld		[cmd_dx], hl
-			ld		hl, 40
-			ld		[cmd_dy], hl
-			ld		hl, 10
-			ld		[cmd_nx], hl
-			ld		hl, 0
-			ld		[cmd_ny], hl
-			ld		a, 15
-			ld		[cmd_color], a
-			ld		a, 0x00
-			ld		[cmd_arg], a
-			call	line
+			ld		hl, data
+			ld		a, 36
+			ld		b, 11
+			call	run_command
 			call	wait_command
 			call	wait_push_space_key
 			ret
+	data:
+			dw		40			; DX
+			dw		40			; DY
+			dw		10			; NX
+			dw		0			; NY
+			db		15			; CLR
+			db		0x00		; ARG
+			db		0x70		; CMD (LINE)
 			endscope
 
 ; =============================================================================
@@ -595,22 +612,21 @@ test018::
 			ld		e, 7
 			call	write_control_register
 
-			ld		hl, 40
-			ld		[cmd_dx], hl
-			ld		hl, 40
-			ld		[cmd_dy], hl
-			ld		hl, 10
-			ld		[cmd_nx], hl
-			ld		hl, 5
-			ld		[cmd_ny], hl
-			ld		a, 12
-			ld		[cmd_color], a
-			ld		a, 0x00
-			ld		[cmd_arg], a
-			call	line
+			ld		hl, data
+			ld		a, 36
+			ld		b, 11
+			call	run_command
 			call	wait_command
 			call	wait_push_space_key
 			ret
+	data:
+			dw		40			; DX
+			dw		40			; DY
+			dw		10			; NX
+			dw		5			; NY
+			db		12			; CLR
+			db		0x00		; ARG
+			db		0x70		; CMD (LINE)
 			endscope
 
 ; =============================================================================
@@ -620,22 +636,21 @@ test019::
 			ld		e, 7
 			call	write_control_register
 
-			ld		hl, 40
-			ld		[cmd_dx], hl
-			ld		hl, 40
-			ld		[cmd_dy], hl
-			ld		hl, 10
-			ld		[cmd_nx], hl
-			ld		hl, 10
-			ld		[cmd_ny], hl
-			ld		a, 13
-			ld		[cmd_color], a
-			ld		a, 0x00
-			ld		[cmd_arg], a
-			call	line
+			ld		hl, data
+			ld		a, 36
+			ld		b, 11
+			call	run_command
 			call	wait_command
 			call	wait_push_space_key
 			ret
+	data:
+			dw		40			; DX
+			dw		40			; DY
+			dw		10			; NX
+			dw		10			; NY
+			db		13			; CLR
+			db		0x00		; ARG
+			db		0x70		; CMD (LINE)
 			endscope
 
 ; =============================================================================
@@ -645,22 +660,21 @@ test020::
 			ld		e, 7
 			call	write_control_register
 
-			ld		hl, 40
-			ld		[cmd_dx], hl
-			ld		hl, 40
-			ld		[cmd_dy], hl
-			ld		hl, 10
-			ld		[cmd_nx], hl
-			ld		hl, 5
-			ld		[cmd_ny], hl
-			ld		a, 6
-			ld		[cmd_color], a
-			ld		a, 0x01
-			ld		[cmd_arg], a
-			call	line
+			ld		hl, data
+			ld		a, 36
+			ld		b, 11
+			call	run_command
 			call	wait_command
 			call	wait_push_space_key
 			ret
+	data:
+			dw		40			; DX
+			dw		40			; DY
+			dw		10			; NX
+			dw		5			; NY
+			db		6			; CLR
+			db		0x01		; ARG
+			db		0x70		; CMD (LINE)
 			endscope
 
 ; =============================================================================
@@ -670,22 +684,21 @@ test021::
 			ld		e, 7
 			call	write_control_register
 
-			ld		hl, 40
-			ld		[cmd_dx], hl
-			ld		hl, 40
-			ld		[cmd_dy], hl
-			ld		hl, 10
-			ld		[cmd_nx], hl
-			ld		hl, 0
-			ld		[cmd_ny], hl
-			ld		a, 15
-			ld		[cmd_color], a
-			ld		a, 0x05
-			ld		[cmd_arg], a
-			call	line
+			ld		hl, data
+			ld		a, 36
+			ld		b, 11
+			call	run_command
 			call	wait_command
 			call	wait_push_space_key
 			ret
+	data:
+			dw		40			; DX
+			dw		40			; DY
+			dw		10			; NX
+			dw		0			; NY
+			db		15			; CLR
+			db		0x05		; ARG
+			db		0x70		; CMD (LINE)
 			endscope
 
 ; =============================================================================
@@ -695,22 +708,21 @@ test022::
 			ld		e, 7
 			call	write_control_register
 
-			ld		hl, 40
-			ld		[cmd_dx], hl
-			ld		hl, 40
-			ld		[cmd_dy], hl
-			ld		hl, 10
-			ld		[cmd_nx], hl
-			ld		hl, 5
-			ld		[cmd_ny], hl
-			ld		a, 12
-			ld		[cmd_color], a
-			ld		a, 0x05
-			ld		[cmd_arg], a
-			call	line
+			ld		hl, data
+			ld		a, 36
+			ld		b, 11
+			call	run_command
 			call	wait_command
 			call	wait_push_space_key
 			ret
+	data:
+			dw		40			; DX
+			dw		40			; DY
+			dw		10			; NX
+			dw		5			; NY
+			db		12			; CLR
+			db		0x05		; ARG
+			db		0x70		; CMD (LINE)
 			endscope
 
 ; =============================================================================
@@ -720,22 +732,21 @@ test023::
 			ld		e, 7
 			call	write_control_register
 
-			ld		hl, 40
-			ld		[cmd_dx], hl
-			ld		hl, 40
-			ld		[cmd_dy], hl
-			ld		hl, 10
-			ld		[cmd_nx], hl
-			ld		hl, 10
-			ld		[cmd_ny], hl
-			ld		a, 13
-			ld		[cmd_color], a
-			ld		a, 0x04
-			ld		[cmd_arg], a
-			call	line
+			ld		hl, data
+			ld		a, 36
+			ld		b, 11
+			call	run_command
 			call	wait_command
 			call	wait_push_space_key
 			ret
+	data:
+			dw		40			; DX
+			dw		40			; DY
+			dw		10			; NX
+			dw		10			; NY
+			db		13			; CLR
+			db		0x04		; ARG
+			db		0x70		; CMD (LINE)
 			endscope
 
 ; =============================================================================
@@ -745,22 +756,21 @@ test024::
 			ld		e, 7
 			call	write_control_register
 
-			ld		hl, 40
-			ld		[cmd_dx], hl
-			ld		hl, 40
-			ld		[cmd_dy], hl
-			ld		hl, 10
-			ld		[cmd_nx], hl
-			ld		hl, 5
-			ld		[cmd_ny], hl
-			ld		a, 6
-			ld		[cmd_color], a
-			ld		a, 0x04
-			ld		[cmd_arg], a
-			call	line
+			ld		hl, data
+			ld		a, 36
+			ld		b, 11
+			call	run_command
 			call	wait_command
 			call	wait_push_space_key
 			ret
+	data:
+			dw		40			; DX
+			dw		40			; DY
+			dw		10			; NX
+			dw		5			; NY
+			db		6			; CLR
+			db		0x04		; ARG
+			db		0x70		; CMD (LINE)
 			endscope
 
 ; =============================================================================
@@ -770,22 +780,21 @@ test025::
 			ld		e, 7
 			call	write_control_register
 
-			ld		hl, 40
-			ld		[cmd_dx], hl
-			ld		hl, 40
-			ld		[cmd_dy], hl
-			ld		hl, 10
-			ld		[cmd_nx], hl
-			ld		hl, 0
-			ld		[cmd_ny], hl
-			ld		a, 15
-			ld		[cmd_color], a
-			ld		a, 0x0C
-			ld		[cmd_arg], a
-			call	line
+			ld		hl, data
+			ld		a, 36
+			ld		b, 11
+			call	run_command
 			call	wait_command
 			call	wait_push_space_key
 			ret
+	data:
+			dw		40			; DX
+			dw		40			; DY
+			dw		10			; NX
+			dw		0			; NY
+			db		15			; CLR
+			db		0x0C		; ARG
+			db		0x70		; CMD (LINE)
 			endscope
 
 ; =============================================================================
@@ -795,22 +804,21 @@ test026::
 			ld		e, 7
 			call	write_control_register
 
-			ld		hl, 40
-			ld		[cmd_dx], hl
-			ld		hl, 40
-			ld		[cmd_dy], hl
-			ld		hl, 10
-			ld		[cmd_nx], hl
-			ld		hl, 5
-			ld		[cmd_ny], hl
-			ld		a, 12
-			ld		[cmd_color], a
-			ld		a, 0x0C
-			ld		[cmd_arg], a
-			call	line
+			ld		hl, data
+			ld		a, 36
+			ld		b, 11
+			call	run_command
 			call	wait_command
 			call	wait_push_space_key
 			ret
+	data:
+			dw		40			; DX
+			dw		40			; DY
+			dw		10			; NX
+			dw		5			; NY
+			db		12			; CLR
+			db		0x0C		; ARG
+			db		0x70		; CMD (LINE)
 			endscope
 
 ; =============================================================================
@@ -820,22 +828,21 @@ test027::
 			ld		e, 7
 			call	write_control_register
 
-			ld		hl, 40
-			ld		[cmd_dx], hl
-			ld		hl, 40
-			ld		[cmd_dy], hl
-			ld		hl, 10
-			ld		[cmd_nx], hl
-			ld		hl, 10
-			ld		[cmd_ny], hl
-			ld		a, 13
-			ld		[cmd_color], a
-			ld		a, 0x0C
-			ld		[cmd_arg], a
-			call	line
+			ld		hl, data
+			ld		a, 36
+			ld		b, 11
+			call	run_command
 			call	wait_command
 			call	wait_push_space_key
 			ret
+	data:
+			dw		40			; DX
+			dw		40			; DY
+			dw		10			; NX
+			dw		10			; NY
+			db		13			; CLR
+			db		0x0C		; ARG
+			db		0x70		; CMD (LINE)
 			endscope
 
 ; =============================================================================
@@ -845,22 +852,21 @@ test028::
 			ld		e, 7
 			call	write_control_register
 
-			ld		hl, 40
-			ld		[cmd_dx], hl
-			ld		hl, 40
-			ld		[cmd_dy], hl
-			ld		hl, 10
-			ld		[cmd_nx], hl
-			ld		hl, 5
-			ld		[cmd_ny], hl
-			ld		a, 6
-			ld		[cmd_color], a
-			ld		a, 0x0D
-			ld		[cmd_arg], a
-			call	line
+			ld		hl, data
+			ld		a, 36
+			ld		b, 11
+			call	run_command
 			call	wait_command
 			call	wait_push_space_key
 			ret
+	data:
+			dw		40			; DX
+			dw		40			; DY
+			dw		10			; NX
+			dw		5			; NY
+			db		6			; CLR
+			db		0x0D		; ARG
+			db		0x70		; CMD (LINE)
 			endscope
 
 ; =============================================================================
@@ -870,22 +876,21 @@ test029::
 			ld		e, 7
 			call	write_control_register
 
-			ld		hl, 40
-			ld		[cmd_dx], hl
-			ld		hl, 40
-			ld		[cmd_dy], hl
-			ld		hl, 10
-			ld		[cmd_nx], hl
-			ld		hl, 0
-			ld		[cmd_ny], hl
-			ld		a, 15
-			ld		[cmd_color], a
-			ld		a, 0x09
-			ld		[cmd_arg], a
-			call	line
+			ld		hl, data
+			ld		a, 36
+			ld		b, 11
+			call	run_command
 			call	wait_command
 			call	wait_push_space_key
 			ret
+	data:
+			dw		40			; DX
+			dw		40			; DY
+			dw		10			; NX
+			dw		0			; NY
+			db		15			; CLR
+			db		0x09		; ARG
+			db		0x70		; CMD (LINE)
 			endscope
 
 ; =============================================================================
@@ -895,22 +900,21 @@ test030::
 			ld		e, 7
 			call	write_control_register
 
-			ld		hl, 40
-			ld		[cmd_dx], hl
-			ld		hl, 40
-			ld		[cmd_dy], hl
-			ld		hl, 10
-			ld		[cmd_nx], hl
-			ld		hl, 5
-			ld		[cmd_ny], hl
-			ld		a, 12
-			ld		[cmd_color], a
-			ld		a, 0x09
-			ld		[cmd_arg], a
-			call	line
+			ld		hl, data
+			ld		a, 36
+			ld		b, 11
+			call	run_command
 			call	wait_command
 			call	wait_push_space_key
 			ret
+	data:
+			dw		40			; DX
+			dw		40			; DY
+			dw		10			; NX
+			dw		5			; NY
+			db		12			; CLR
+			db		0x09		; ARG
+			db		0x70		; CMD (LINE)
 			endscope
 
 ; =============================================================================
@@ -920,22 +924,21 @@ test031::
 			ld		e, 7
 			call	write_control_register
 
-			ld		hl, 40
-			ld		[cmd_dx], hl
-			ld		hl, 40
-			ld		[cmd_dy], hl
-			ld		hl, 10
-			ld		[cmd_nx], hl
-			ld		hl, 10
-			ld		[cmd_ny], hl
-			ld		a, 13
-			ld		[cmd_color], a
-			ld		a, 0x08
-			ld		[cmd_arg], a
-			call	line
+			ld		hl, data
+			ld		a, 36
+			ld		b, 11
+			call	run_command
 			call	wait_command
 			call	wait_push_space_key
 			ret
+	data:
+			dw		40			; DX
+			dw		40			; DY
+			dw		10			; NX
+			dw		10			; NY
+			db		13			; CLR
+			db		0x08		; ARG
+			db		0x70		; CMD (LINE)
 			endscope
 
 ; =============================================================================
@@ -945,42 +948,1268 @@ test032::
 			ld		e, 7
 			call	write_control_register
 
-			ld		hl, 40
-			ld		[cmd_dx], hl
-			ld		hl, 40
-			ld		[cmd_dy], hl
-			ld		hl, 10
-			ld		[cmd_nx], hl
-			ld		hl, 5
-			ld		[cmd_ny], hl
-			ld		a, 6
-			ld		[cmd_color], a
-			ld		a, 0x08
-			ld		[cmd_arg], a
-			call	line
+			ld		hl, data
+			ld		a, 36
+			ld		b, 11
+			call	run_command
 			call	wait_command
 			call	wait_push_space_key
 			ret
+	data:
+			dw		40			; DX
+			dw		40			; DY
+			dw		10			; NX
+			dw		5			; NY
+			db		6			; CLR
+			db		0x08		; ARG
+			db		0x70		; CMD (LINE)
 			endscope
 
 ; =============================================================================
-			scope	vdp_command
-cmd_sx::
-			dw		0
-cmd_sy::
-			dw		0
-cmd_dx::
-			dw		0
-cmd_dy::
-			dw		0
-cmd_nx::
-			dw		0
-cmd_ny::
-			dw		0
-cmd_color::
-			db		0
-cmd_arg::
-			db		0
-cmd_exec::
-			db		0
+; =============================================================================
+			scope	test033
+test033::
+			ld		a, 2
+			ld		e, 7
+			call	write_control_register
+			ld		hl, data
+			ld		a, 36
+			ld		b, 11
+			call	run_command
+			call	wait_command
+			call	wait_push_space_key
+			ret
+	data:
+			dw		81			; DX
+			dw		40			; DY
+			dw		10			; NX
+			dw		0			; NY
+			db		15			; CLR
+			db		0x00		; ARG
+			db		0x70		; CMD (LINE)
+			endscope
+
+; =============================================================================
+			scope	test034
+test034::
+			ld		a, 4
+			ld		e, 7
+			call	write_control_register
+
+			ld		hl, data
+			ld		a, 36
+			ld		b, 11
+			call	run_command
+			call	wait_command
+			call	wait_push_space_key
+			ret
+	data:
+			dw		81			; DX
+			dw		40			; DY
+			dw		10			; NX
+			dw		5			; NY
+			db		12			; CLR
+			db		0x00		; ARG
+			db		0x70		; CMD (LINE)
+			endscope
+
+; =============================================================================
+			scope	test035
+test035::
+			ld		a, 8
+			ld		e, 7
+			call	write_control_register
+
+			ld		hl, data
+			ld		a, 36
+			ld		b, 11
+			call	run_command
+			call	wait_command
+			call	wait_push_space_key
+			ret
+	data:
+			dw		81			; DX
+			dw		40			; DY
+			dw		10			; NX
+			dw		10			; NY
+			db		13			; CLR
+			db		0x00		; ARG
+			db		0x70		; CMD (LINE)
+			endscope
+
+; =============================================================================
+			scope	test036
+test036::
+			ld		a, 10
+			ld		e, 7
+			call	write_control_register
+
+			ld		hl, data
+			ld		a, 36
+			ld		b, 11
+			call	run_command
+			call	wait_command
+			call	wait_push_space_key
+			ret
+	data:
+			dw		81			; DX
+			dw		40			; DY
+			dw		10			; NX
+			dw		5			; NY
+			db		6			; CLR
+			db		0x01		; ARG
+			db		0x70		; CMD (LINE)
+			endscope
+
+; =============================================================================
+			scope	test037
+test037::
+			ld		a, 2
+			ld		e, 7
+			call	write_control_register
+
+			ld		hl, data
+			ld		a, 36
+			ld		b, 11
+			call	run_command
+			call	wait_command
+			call	wait_push_space_key
+			ret
+	data:
+			dw		81			; DX
+			dw		40			; DY
+			dw		10			; NX
+			dw		0			; NY
+			db		15			; CLR
+			db		0x05		; ARG
+			db		0x70		; CMD (LINE)
+			endscope
+
+; =============================================================================
+			scope	test038
+test038::
+			ld		a, 4
+			ld		e, 7
+			call	write_control_register
+
+			ld		hl, data
+			ld		a, 36
+			ld		b, 11
+			call	run_command
+			call	wait_command
+			call	wait_push_space_key
+			ret
+	data:
+			dw		81			; DX
+			dw		40			; DY
+			dw		10			; NX
+			dw		5			; NY
+			db		12			; CLR
+			db		0x05		; ARG
+			db		0x70		; CMD (LINE)
+			endscope
+
+; =============================================================================
+			scope	test039
+test039::
+			ld		a, 8
+			ld		e, 7
+			call	write_control_register
+
+			ld		hl, data
+			ld		a, 36
+			ld		b, 11
+			call	run_command
+			call	wait_command
+			call	wait_push_space_key
+			ret
+	data:
+			dw		81			; DX
+			dw		40			; DY
+			dw		10			; NX
+			dw		10			; NY
+			db		13			; CLR
+			db		0x04		; ARG
+			db		0x70		; CMD (LINE)
+			endscope
+
+; =============================================================================
+			scope	test040
+test040::
+			ld		a, 10
+			ld		e, 7
+			call	write_control_register
+
+			ld		hl, data
+			ld		a, 36
+			ld		b, 11
+			call	run_command
+			call	wait_command
+			call	wait_push_space_key
+			ret
+	data:
+			dw		81			; DX
+			dw		40			; DY
+			dw		10			; NX
+			dw		5			; NY
+			db		6			; CLR
+			db		0x04		; ARG
+			db		0x70		; CMD (LINE)
+			endscope
+
+; =============================================================================
+			scope	test041
+test041::
+			ld		a, 2
+			ld		e, 7
+			call	write_control_register
+
+			ld		hl, data
+			ld		a, 36
+			ld		b, 11
+			call	run_command
+			call	wait_command
+			call	wait_push_space_key
+			ret
+	data:
+			dw		81			; DX
+			dw		40			; DY
+			dw		10			; NX
+			dw		0			; NY
+			db		15			; CLR
+			db		0x0C		; ARG
+			db		0x70		; CMD (LINE)
+			endscope
+
+; =============================================================================
+			scope	test042
+test042::
+			ld		a, 4
+			ld		e, 7
+			call	write_control_register
+
+			ld		hl, data
+			ld		a, 36
+			ld		b, 11
+			call	run_command
+			call	wait_command
+			call	wait_push_space_key
+			ret
+	data:
+			dw		81			; DX
+			dw		40			; DY
+			dw		10			; NX
+			dw		5			; NY
+			db		12			; CLR
+			db		0x0C		; ARG
+			db		0x70		; CMD (LINE)
+			endscope
+
+; =============================================================================
+			scope	test043
+test043::
+			ld		a, 8
+			ld		e, 7
+			call	write_control_register
+
+			ld		hl, data
+			ld		a, 36
+			ld		b, 11
+			call	run_command
+			call	wait_command
+			call	wait_push_space_key
+			ret
+	data:
+			dw		81			; DX
+			dw		40			; DY
+			dw		10			; NX
+			dw		10			; NY
+			db		13			; CLR
+			db		0x0C		; ARG
+			db		0x70		; CMD (LINE)
+			endscope
+
+; =============================================================================
+			scope	test044
+test044::
+			ld		a, 10
+			ld		e, 7
+			call	write_control_register
+
+			ld		hl, data
+			ld		a, 36
+			ld		b, 11
+			call	run_command
+			call	wait_command
+			call	wait_push_space_key
+			ret
+	data:
+			dw		81			; DX
+			dw		40			; DY
+			dw		10			; NX
+			dw		5			; NY
+			db		6			; CLR
+			db		0x0D		; ARG
+			db		0x70		; CMD (LINE)
+			endscope
+
+; =============================================================================
+			scope	test045
+test045::
+			ld		a, 2
+			ld		e, 7
+			call	write_control_register
+
+			ld		hl, data
+			ld		a, 36
+			ld		b, 11
+			call	run_command
+			call	wait_command
+			call	wait_push_space_key
+			ret
+	data:
+			dw		81			; DX
+			dw		40			; DY
+			dw		10			; NX
+			dw		0			; NY
+			db		15			; CLR
+			db		0x09		; ARG
+			db		0x70		; CMD (LINE)
+			endscope
+
+; =============================================================================
+			scope	test046
+test046::
+			ld		a, 4
+			ld		e, 7
+			call	write_control_register
+
+			ld		hl, data
+			ld		a, 36
+			ld		b, 11
+			call	run_command
+			call	wait_command
+			call	wait_push_space_key
+			ret
+	data:
+			dw		81			; DX
+			dw		40			; DY
+			dw		10			; NX
+			dw		5			; NY
+			db		12			; CLR
+			db		0x09		; ARG
+			db		0x70		; CMD (LINE)
+			endscope
+
+; =============================================================================
+			scope	test047
+test047::
+			ld		a, 8
+			ld		e, 7
+			call	write_control_register
+
+			ld		hl, data
+			ld		a, 36
+			ld		b, 11
+			call	run_command
+			call	wait_command
+			call	wait_push_space_key
+			ret
+	data:
+			dw		81			; DX
+			dw		40			; DY
+			dw		10			; NX
+			dw		10			; NY
+			db		13			; CLR
+			db		0x08		; ARG
+			db		0x70		; CMD (LINE)
+			endscope
+
+; =============================================================================
+			scope	test048
+test048::
+			ld		a, 10
+			ld		e, 7
+			call	write_control_register
+
+			ld		hl, data
+			ld		a, 36
+			ld		b, 11
+			call	run_command
+			call	wait_command
+			call	wait_push_space_key
+			ret
+	data:
+			dw		81			; DX
+			dw		40			; DY
+			dw		10			; NX
+			dw		5			; NY
+			db		6			; CLR
+			db		0x08		; ARG
+			db		0x70		; CMD (LINE)
+			endscope
+
+; =============================================================================
+; =============================================================================
+			scope	test049
+test049::
+			ld		a, 2
+			ld		e, 7
+			call	write_control_register
+			ld		hl, data
+			ld		a, 36
+			ld		b, 11
+			call	run_command
+			call	wait_command
+			call	wait_push_space_key
+			ret
+	data:
+			dw		120			; DX
+			dw		41			; DY
+			dw		10			; NX
+			dw		0			; NY
+			db		15			; CLR
+			db		0x00		; ARG
+			db		0x70		; CMD (LINE)
+			endscope
+
+; =============================================================================
+			scope	test050
+test050::
+			ld		a, 4
+			ld		e, 7
+			call	write_control_register
+
+			ld		hl, data
+			ld		a, 36
+			ld		b, 11
+			call	run_command
+			call	wait_command
+			call	wait_push_space_key
+			ret
+	data:
+			dw		120			; DX
+			dw		41			; DY
+			dw		10			; NX
+			dw		5			; NY
+			db		12			; CLR
+			db		0x00		; ARG
+			db		0x70		; CMD (LINE)
+			endscope
+
+; =============================================================================
+			scope	test051
+test051::
+			ld		a, 8
+			ld		e, 7
+			call	write_control_register
+
+			ld		hl, data
+			ld		a, 36
+			ld		b, 11
+			call	run_command
+			call	wait_command
+			call	wait_push_space_key
+			ret
+	data:
+			dw		120			; DX
+			dw		41			; DY
+			dw		10			; NX
+			dw		10			; NY
+			db		13			; CLR
+			db		0x00		; ARG
+			db		0x70		; CMD (LINE)
+			endscope
+
+; =============================================================================
+			scope	test052
+test052::
+			ld		a, 10
+			ld		e, 7
+			call	write_control_register
+
+			ld		hl, data
+			ld		a, 36
+			ld		b, 11
+			call	run_command
+			call	wait_command
+			call	wait_push_space_key
+			ret
+	data:
+			dw		120			; DX
+			dw		41			; DY
+			dw		10			; NX
+			dw		5			; NY
+			db		6			; CLR
+			db		0x01		; ARG
+			db		0x70		; CMD (LINE)
+			endscope
+
+; =============================================================================
+			scope	test053
+test053::
+			ld		a, 2
+			ld		e, 7
+			call	write_control_register
+
+			ld		hl, data
+			ld		a, 36
+			ld		b, 11
+			call	run_command
+			call	wait_command
+			call	wait_push_space_key
+			ret
+	data:
+			dw		120			; DX
+			dw		41			; DY
+			dw		10			; NX
+			dw		0			; NY
+			db		15			; CLR
+			db		0x05		; ARG
+			db		0x70		; CMD (LINE)
+			endscope
+
+; =============================================================================
+			scope	test054
+test054::
+			ld		a, 4
+			ld		e, 7
+			call	write_control_register
+
+			ld		hl, data
+			ld		a, 36
+			ld		b, 11
+			call	run_command
+			call	wait_command
+			call	wait_push_space_key
+			ret
+	data:
+			dw		120			; DX
+			dw		41			; DY
+			dw		10			; NX
+			dw		5			; NY
+			db		12			; CLR
+			db		0x05		; ARG
+			db		0x70		; CMD (LINE)
+			endscope
+
+; =============================================================================
+			scope	test055
+test055::
+			ld		a, 8
+			ld		e, 7
+			call	write_control_register
+
+			ld		hl, data
+			ld		a, 36
+			ld		b, 11
+			call	run_command
+			call	wait_command
+			call	wait_push_space_key
+			ret
+	data:
+			dw		120			; DX
+			dw		41			; DY
+			dw		10			; NX
+			dw		10			; NY
+			db		13			; CLR
+			db		0x04		; ARG
+			db		0x70		; CMD (LINE)
+			endscope
+
+; =============================================================================
+			scope	test056
+test056::
+			ld		a, 10
+			ld		e, 7
+			call	write_control_register
+
+			ld		hl, data
+			ld		a, 36
+			ld		b, 11
+			call	run_command
+			call	wait_command
+			call	wait_push_space_key
+			ret
+	data:
+			dw		120			; DX
+			dw		41			; DY
+			dw		10			; NX
+			dw		5			; NY
+			db		6			; CLR
+			db		0x04		; ARG
+			db		0x70		; CMD (LINE)
+			endscope
+
+; =============================================================================
+			scope	test057
+test057::
+			ld		a, 2
+			ld		e, 7
+			call	write_control_register
+
+			ld		hl, data
+			ld		a, 36
+			ld		b, 11
+			call	run_command
+			call	wait_command
+			call	wait_push_space_key
+			ret
+	data:
+			dw		120			; DX
+			dw		41			; DY
+			dw		10			; NX
+			dw		0			; NY
+			db		15			; CLR
+			db		0x0C		; ARG
+			db		0x70		; CMD (LINE)
+			endscope
+
+; =============================================================================
+			scope	test058
+test058::
+			ld		a, 4
+			ld		e, 7
+			call	write_control_register
+
+			ld		hl, data
+			ld		a, 36
+			ld		b, 11
+			call	run_command
+			call	wait_command
+			call	wait_push_space_key
+			ret
+	data:
+			dw		120			; DX
+			dw		41			; DY
+			dw		10			; NX
+			dw		5			; NY
+			db		12			; CLR
+			db		0x0C		; ARG
+			db		0x70		; CMD (LINE)
+			endscope
+
+; =============================================================================
+			scope	test059
+test059::
+			ld		a, 8
+			ld		e, 7
+			call	write_control_register
+
+			ld		hl, data
+			ld		a, 36
+			ld		b, 11
+			call	run_command
+			call	wait_command
+			call	wait_push_space_key
+			ret
+	data:
+			dw		120			; DX
+			dw		41			; DY
+			dw		10			; NX
+			dw		10			; NY
+			db		13			; CLR
+			db		0x0C		; ARG
+			db		0x70		; CMD (LINE)
+			endscope
+
+; =============================================================================
+			scope	test060
+test060::
+			ld		a, 10
+			ld		e, 7
+			call	write_control_register
+
+			ld		hl, data
+			ld		a, 36
+			ld		b, 11
+			call	run_command
+			call	wait_command
+			call	wait_push_space_key
+			ret
+	data:
+			dw		120			; DX
+			dw		41			; DY
+			dw		10			; NX
+			dw		5			; NY
+			db		6			; CLR
+			db		0x0D		; ARG
+			db		0x70		; CMD (LINE)
+			endscope
+
+; =============================================================================
+			scope	test061
+test061::
+			ld		a, 2
+			ld		e, 7
+			call	write_control_register
+
+			ld		hl, data
+			ld		a, 36
+			ld		b, 11
+			call	run_command
+			call	wait_command
+			call	wait_push_space_key
+			ret
+	data:
+			dw		120			; DX
+			dw		41			; DY
+			dw		10			; NX
+			dw		0			; NY
+			db		15			; CLR
+			db		0x09		; ARG
+			db		0x70		; CMD (LINE)
+			endscope
+
+; =============================================================================
+			scope	test062
+test062::
+			ld		a, 4
+			ld		e, 7
+			call	write_control_register
+
+			ld		hl, data
+			ld		a, 36
+			ld		b, 11
+			call	run_command
+			call	wait_command
+			call	wait_push_space_key
+			ret
+	data:
+			dw		120			; DX
+			dw		41			; DY
+			dw		10			; NX
+			dw		5			; NY
+			db		12			; CLR
+			db		0x09		; ARG
+			db		0x70		; CMD (LINE)
+			endscope
+
+; =============================================================================
+			scope	test063
+test063::
+			ld		a, 8
+			ld		e, 7
+			call	write_control_register
+
+			ld		hl, data
+			ld		a, 36
+			ld		b, 11
+			call	run_command
+			call	wait_command
+			call	wait_push_space_key
+			ret
+	data:
+			dw		120			; DX
+			dw		41			; DY
+			dw		10			; NX
+			dw		10			; NY
+			db		13			; CLR
+			db		0x08		; ARG
+			db		0x70		; CMD (LINE)
+			endscope
+
+; =============================================================================
+			scope	test064
+test064::
+			ld		a, 10
+			ld		e, 7
+			call	write_control_register
+
+			ld		hl, data
+			ld		a, 36
+			ld		b, 11
+			call	run_command
+			call	wait_command
+			call	wait_push_space_key
+			ret
+	data:
+			dw		120			; DX
+			dw		41			; DY
+			dw		10			; NX
+			dw		5			; NY
+			db		6			; CLR
+			db		0x08		; ARG
+			db		0x70		; CMD (LINE)
+			endscope
+
+; =============================================================================
+; =============================================================================
+			scope	test065
+test065::
+			ld		a, 2
+			ld		e, 7
+			call	write_control_register
+			ld		hl, data
+			ld		a, 36
+			ld		b, 11
+			call	run_command
+			call	wait_command
+			call	wait_push_space_key
+			ret
+	data:
+			dw		161			; DX
+			dw		41			; DY
+			dw		10			; NX
+			dw		0			; NY
+			db		15			; CLR
+			db		0x00		; ARG
+			db		0x70		; CMD (LINE)
+			endscope
+
+; =============================================================================
+			scope	test066
+test066::
+			ld		a, 4
+			ld		e, 7
+			call	write_control_register
+
+			ld		hl, data
+			ld		a, 36
+			ld		b, 11
+			call	run_command
+			call	wait_command
+			call	wait_push_space_key
+			ret
+	data:
+			dw		161			; DX
+			dw		41			; DY
+			dw		10			; NX
+			dw		5			; NY
+			db		12			; CLR
+			db		0x00		; ARG
+			db		0x70		; CMD (LINE)
+			endscope
+
+; =============================================================================
+			scope	test067
+test067::
+			ld		a, 8
+			ld		e, 7
+			call	write_control_register
+
+			ld		hl, data
+			ld		a, 36
+			ld		b, 11
+			call	run_command
+			call	wait_command
+			call	wait_push_space_key
+			ret
+	data:
+			dw		161			; DX
+			dw		41			; DY
+			dw		10			; NX
+			dw		10			; NY
+			db		13			; CLR
+			db		0x00		; ARG
+			db		0x70		; CMD (LINE)
+			endscope
+
+; =============================================================================
+			scope	test068
+test068::
+			ld		a, 10
+			ld		e, 7
+			call	write_control_register
+
+			ld		hl, data
+			ld		a, 36
+			ld		b, 11
+			call	run_command
+			call	wait_command
+			call	wait_push_space_key
+			ret
+	data:
+			dw		161			; DX
+			dw		41			; DY
+			dw		10			; NX
+			dw		5			; NY
+			db		6			; CLR
+			db		0x01		; ARG
+			db		0x70		; CMD (LINE)
+			endscope
+
+; =============================================================================
+			scope	test069
+test069::
+			ld		a, 2
+			ld		e, 7
+			call	write_control_register
+
+			ld		hl, data
+			ld		a, 36
+			ld		b, 11
+			call	run_command
+			call	wait_command
+			call	wait_push_space_key
+			ret
+	data:
+			dw		161			; DX
+			dw		41			; DY
+			dw		10			; NX
+			dw		0			; NY
+			db		15			; CLR
+			db		0x05		; ARG
+			db		0x70		; CMD (LINE)
+			endscope
+
+; =============================================================================
+			scope	test070
+test070::
+			ld		a, 4
+			ld		e, 7
+			call	write_control_register
+
+			ld		hl, data
+			ld		a, 36
+			ld		b, 11
+			call	run_command
+			call	wait_command
+			call	wait_push_space_key
+			ret
+	data:
+			dw		161			; DX
+			dw		41			; DY
+			dw		10			; NX
+			dw		5			; NY
+			db		12			; CLR
+			db		0x05		; ARG
+			db		0x70		; CMD (LINE)
+			endscope
+
+; =============================================================================
+			scope	test071
+test071::
+			ld		a, 8
+			ld		e, 7
+			call	write_control_register
+
+			ld		hl, data
+			ld		a, 36
+			ld		b, 11
+			call	run_command
+			call	wait_command
+			call	wait_push_space_key
+			ret
+	data:
+			dw		161			; DX
+			dw		41			; DY
+			dw		10			; NX
+			dw		10			; NY
+			db		13			; CLR
+			db		0x04		; ARG
+			db		0x70		; CMD (LINE)
+			endscope
+
+; =============================================================================
+			scope	test072
+test072::
+			ld		a, 10
+			ld		e, 7
+			call	write_control_register
+
+			ld		hl, data
+			ld		a, 36
+			ld		b, 11
+			call	run_command
+			call	wait_command
+			call	wait_push_space_key
+			ret
+	data:
+			dw		161			; DX
+			dw		41			; DY
+			dw		10			; NX
+			dw		5			; NY
+			db		6			; CLR
+			db		0x04		; ARG
+			db		0x70		; CMD (LINE)
+			endscope
+
+; =============================================================================
+			scope	test073
+test073::
+			ld		a, 2
+			ld		e, 7
+			call	write_control_register
+
+			ld		hl, data
+			ld		a, 36
+			ld		b, 11
+			call	run_command
+			call	wait_command
+			call	wait_push_space_key
+			ret
+	data:
+			dw		161			; DX
+			dw		41			; DY
+			dw		10			; NX
+			dw		0			; NY
+			db		15			; CLR
+			db		0x0C		; ARG
+			db		0x70		; CMD (LINE)
+			endscope
+
+; =============================================================================
+			scope	test074
+test074::
+			ld		a, 4
+			ld		e, 7
+			call	write_control_register
+
+			ld		hl, data
+			ld		a, 36
+			ld		b, 11
+			call	run_command
+			call	wait_command
+			call	wait_push_space_key
+			ret
+	data:
+			dw		161			; DX
+			dw		41			; DY
+			dw		10			; NX
+			dw		5			; NY
+			db		12			; CLR
+			db		0x0C		; ARG
+			db		0x70		; CMD (LINE)
+			endscope
+
+; =============================================================================
+			scope	test075
+test075::
+			ld		a, 8
+			ld		e, 7
+			call	write_control_register
+
+			ld		hl, data
+			ld		a, 36
+			ld		b, 11
+			call	run_command
+			call	wait_command
+			call	wait_push_space_key
+			ret
+	data:
+			dw		161			; DX
+			dw		41			; DY
+			dw		10			; NX
+			dw		10			; NY
+			db		13			; CLR
+			db		0x0C		; ARG
+			db		0x70		; CMD (LINE)
+			endscope
+
+; =============================================================================
+			scope	test076
+test076::
+			ld		a, 10
+			ld		e, 7
+			call	write_control_register
+
+			ld		hl, data
+			ld		a, 36
+			ld		b, 11
+			call	run_command
+			call	wait_command
+			call	wait_push_space_key
+			ret
+	data:
+			dw		161			; DX
+			dw		41			; DY
+			dw		10			; NX
+			dw		5			; NY
+			db		6			; CLR
+			db		0x0D		; ARG
+			db		0x70		; CMD (LINE)
+			endscope
+
+; =============================================================================
+			scope	test077
+test077::
+			ld		a, 2
+			ld		e, 7
+			call	write_control_register
+
+			ld		hl, data
+			ld		a, 36
+			ld		b, 11
+			call	run_command
+			call	wait_command
+			call	wait_push_space_key
+			ret
+	data:
+			dw		161			; DX
+			dw		41			; DY
+			dw		10			; NX
+			dw		0			; NY
+			db		15			; CLR
+			db		0x09		; ARG
+			db		0x70		; CMD (LINE)
+			endscope
+
+; =============================================================================
+			scope	test078
+test078::
+			ld		a, 4
+			ld		e, 7
+			call	write_control_register
+
+			ld		hl, data
+			ld		a, 36
+			ld		b, 11
+			call	run_command
+			call	wait_command
+			call	wait_push_space_key
+			ret
+	data:
+			dw		161			; DX
+			dw		41			; DY
+			dw		10			; NX
+			dw		5			; NY
+			db		12			; CLR
+			db		0x09		; ARG
+			db		0x70		; CMD (LINE)
+			endscope
+
+; =============================================================================
+			scope	test079
+test079::
+			ld		a, 8
+			ld		e, 7
+			call	write_control_register
+
+			ld		hl, data
+			ld		a, 36
+			ld		b, 11
+			call	run_command
+			call	wait_command
+			call	wait_push_space_key
+			ret
+	data:
+			dw		161			; DX
+			dw		41			; DY
+			dw		10			; NX
+			dw		10			; NY
+			db		13			; CLR
+			db		0x08		; ARG
+			db		0x70		; CMD (LINE)
+			endscope
+
+; =============================================================================
+			scope	test080
+test080::
+			ld		a, 10
+			ld		e, 7
+			call	write_control_register
+
+			ld		hl, data
+			ld		a, 36
+			ld		b, 11
+			call	run_command
+			call	wait_command
+			call	wait_push_space_key
+			ret
+	data:
+			dw		161			; DX
+			dw		41			; DY
+			dw		10			; NX
+			dw		5			; NY
+			db		6			; CLR
+			db		0x08		; ARG
+			db		0x70		; CMD (LINE)
+			endscope
+
+; =============================================================================
+; =============================================================================
+			scope	test081
+test081::
+			ld		a, 2
+			ld		e, 7
+			call	write_control_register
+
+			ld		hl, data
+			ld		a, 36
+			ld		b, 11
+			call	run_command
+			call	wait_command
+			call	wait_push_space_key
+			ret
+	data:
+			dw		0			; DX
+			dw		80			; DY
+			dw		255			; NX
+			dw		19			; NY
+			db		15			; CLR
+			db		0x00		; ARG
+			db		0x70		; CMD (LINE)
+			endscope
+
+; =============================================================================
+			scope	test082
+test082::
+			ld		a, 4
+			ld		e, 7
+			call	write_control_register
+
+			ld		hl, data
+			ld		a, 36
+			ld		b, 11
+			call	run_command
+			call	wait_command
+			call	wait_push_space_key
+			ret
+	data:
+			dw		0			; DX
+			dw		120			; DY
+			dw		255			; NX
+			dw		19			; NY
+			db		12			; CLR
+			db		0x08		; ARG
+			db		0x70		; CMD (LINE)
+			endscope
+
+; =============================================================================
+			scope	test083
+test083::
+			ld		a, 8
+			ld		e, 7
+			call	write_control_register
+
+			ld		hl, data
+			ld		a, 36
+			ld		b, 11
+			call	run_command
+			call	wait_command
+			call	wait_push_space_key
+			ret
+	data:
+			dw		255			; DX
+			dw		80			; DY
+			dw		255			; NX
+			dw		19			; NY
+			db		13			; CLR
+			db		0x04		; ARG
+			db		0x70		; CMD (LINE)
+			endscope
+
+; =============================================================================
+			scope	test084
+test084::
+			ld		a, 10
+			ld		e, 7
+			call	write_control_register
+
+			ld		hl, data
+			ld		a, 36
+			ld		b, 11
+			call	run_command
+			call	wait_command
+			call	wait_push_space_key
+			ret
+	data:
+			dw		255			; DX
+			dw		120			; DY
+			dw		255			; NX
+			dw		19			; NY
+			db		6			; CLR
+			db		0x0C		; ARG
+			db		0x70		; CMD (LINE)
 			endscope

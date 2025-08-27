@@ -153,6 +153,7 @@ vdp_io_select::
 			dw		p_vdp_port13
 			dw		p_vdp_port14
 			dw		p_vdp_port15
+			dw		p_vdp_port16
 			dw		0				; end mark
 io_vdp_port0::
 			db		0x98
@@ -994,6 +995,34 @@ puts::
 
 vram_bit16::
 			db		0
+
+; =============================================================================
+;	VDPコマンド実行
+;	input:
+;		HL .... コマンドデータアドレス
+;		A ..... 最初のレジスタ
+;		B ..... レジスタ数
+;	output:
+;		none
+;	break:
+;		all
+;	comment:
+;		none
+; =============================================================================
+			scope	run_command
+run_command::
+p_vdp_port16 := $ + 1
+			ld		c, vdp_port1
+			di
+			out		[c], a
+			ld		a, 0x80 + 17
+			out		[c], a
+			inc		c
+			inc		c
+			otir
+			ei
+			ret
+			endscope
 
 ; =============================================================================
 ;	VDPコマンド完了待ち

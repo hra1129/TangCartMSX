@@ -422,6 +422,9 @@ module vdp_command (
 				default:		ff_nx <= 9'd255;
 				endcase
 			end
+			else if( ff_command == c_line ) begin
+				ff_nx <= reg_nx;
+			end
 			else if( ff_command[3:2] == 2'b11 ) begin
 				case( w_bpp )
 				c_bpp_8bit:		ff_nx <= w_nx;
@@ -438,7 +441,10 @@ module vdp_command (
 			//	hold
 		end
 		else if( ff_count_valid ) begin
-			if( ff_nx == 9'd0 || w_next_sx[9] || w_next_dx[9] || (!w_512pixel && (w_next_sx[8] || w_next_dx[8])) ) begin
+			if( ff_command == c_line ) begin
+				ff_nx <= ff_nx - 9'd1;
+			end
+			else if( ff_nx == 9'd0 || w_next_sx[9] || w_next_dx[9] || (!w_512pixel && (w_next_sx[8] || w_next_dx[8])) ) begin
 				if( ff_command == c_ymmm ) begin
 					case( w_bpp )
 					c_bpp_8bit:		ff_nx <= 9'd255;
@@ -478,9 +484,17 @@ module vdp_command (
 			end
 		end
 		else if( ff_start ) begin
-			ff_ny <= w_ny;
+			if( ff_command == c_line ) begin
+				//	hold
+			end
+			else begin
+				ff_ny <= w_ny;
+			end
 		end
 		else if( !ff_command_enable || ff_cache_vram_valid ) begin
+			//	hold
+		end
+		else if( ff_command == c_line ) begin
 			//	hold
 		end
 		else if( ff_count_valid ) begin
@@ -495,7 +509,7 @@ module vdp_command (
 			ff_nyb	<= 10'd0;
 		end
 		else if( ff_start ) begin
-			ff_nyb	<= { 1'b0, reg_nx };
+			ff_nyb	<= { 2'd0, reg_nx[8:1] };
 		end
 		else if( !ff_command_enable || ff_cache_vram_valid ) begin
 			//	hold
