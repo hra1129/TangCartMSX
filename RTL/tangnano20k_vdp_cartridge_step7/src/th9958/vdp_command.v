@@ -673,23 +673,35 @@ module vdp_command (
 			end
 			//	POINT command -------------------------------------------------
 			c_state_point: begin
-				//	Read the location of (SX, SY)
-				ff_cache_vram_address	<= w_address_s;
-				ff_cache_vram_valid		<= 1'b1;
-				ff_cache_vram_write		<= 1'b0;
-				ff_state				<= c_state_wait_rdata_en;
-				ff_next_state			<= c_state_finish;
-				ff_xsel					<= ff_sx[1:0];
+				if( ff_sx[8] && !w_512pixel ) begin
+					//	Go to finish state when start position is outside of screen.
+					ff_state				<= c_state_pre_finish;
+				end
+				else begin
+					//	Read the location of (SX, SY)
+					ff_cache_vram_address	<= w_address_s;
+					ff_cache_vram_valid		<= 1'b1;
+					ff_cache_vram_write		<= 1'b0;
+					ff_state				<= c_state_wait_rdata_en;
+					ff_next_state			<= c_state_pre_finish;
+					ff_xsel					<= ff_sx[1:0];
+				end
 			end
 			//	PSET command --------------------------------------------------
 			c_state_pset: begin
-				//	Read the location of (DX, DY)
-				ff_cache_vram_address	<= w_address_d;
-				ff_cache_vram_valid		<= 1'b1;
-				ff_cache_vram_write		<= 1'b0;
-				ff_state				<= c_state_wait_rdata_en;
-				ff_next_state			<= c_state_pset_make;
-				ff_xsel					<= ff_dx[1:0];
+				if( ff_dx[8] && !w_512pixel ) begin
+					//	Go to finish state when start position is outside of screen.
+					ff_state				<= c_state_pre_finish;
+				end
+				else begin
+					//	Read the location of (DX, DY)
+					ff_cache_vram_address	<= w_address_d;
+					ff_cache_vram_valid		<= 1'b1;
+					ff_cache_vram_write		<= 1'b0;
+					ff_state				<= c_state_wait_rdata_en;
+					ff_next_state			<= c_state_pset_make;
+					ff_xsel					<= ff_dx[1:0];
+				end
 			end
 			c_state_pset_make: begin
 				//	Write the location of (DX, DY)
@@ -703,13 +715,19 @@ module vdp_command (
 
 			//	LINE command --------------------------------------------------
 			c_state_line: begin
-				//	Read the location of (DX, DY)
-				ff_cache_vram_address	<= w_address_d;
-				ff_cache_vram_valid		<= 1'b1;
-				ff_cache_vram_write		<= 1'b0;
-				ff_state				<= c_state_wait_rdata_en;
-				ff_next_state			<= c_state_line_make;
-				ff_xsel					<= ff_dx[1:0];
+				if( ff_dx[8] && !w_512pixel ) begin
+					//	Go to finish state when start position is outside of screen.
+					ff_state				<= c_state_pre_finish;
+				end
+				else begin
+					//	Read the location of (DX, DY)
+					ff_cache_vram_address	<= w_address_d;
+					ff_cache_vram_valid		<= 1'b1;
+					ff_cache_vram_write		<= 1'b0;
+					ff_state				<= c_state_wait_rdata_en;
+					ff_next_state			<= c_state_line_make;
+					ff_xsel					<= ff_dx[1:0];
+				end
 			end
 			c_state_line_make: begin
 				//	Write the location of (DX, DY)
@@ -722,7 +740,7 @@ module vdp_command (
 			end
 			c_state_line_next: begin
 				ff_count_valid			<= 1'b0;
-				if( ff_nx == 9'd0 ) begin
+				if( ff_nx == 9'd0 || w_next_dx[9] || (!w_512pixel && w_next_dx[8]) ) begin
 					ff_state				<= c_state_pre_finish;
 				end
 				else begin

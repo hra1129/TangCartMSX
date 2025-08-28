@@ -106,7 +106,24 @@ DX, DY = 奇数, 奇数 でいろんな方向のテスト
 	TEST080(10): DX=161, DY=41, NX=10, NY= 5, CLR= 6, DIX=0, DIY=1, MAJ=0
 
 左端から右端まで到達するラインのテスト
-	TEST081( 2): DX=0,   DY=80,  NX=256, NY= 19, CLR=15, DIX=0, DIY=0, MAJ=0
-	TEST082( 4): DX=0,   DY=120, NX=256, NY= 19, CLR=12, DIX=0, DIY=1, MAJ=0
-	TEST083( 8): DX=255, DY=80,  NX=256, NY= 19, CLR=13, DIX=1, DIY=0, MAJ=0
-	TEST084(10): DX=255, DY=120, NX=256, NY= 19, CLR= 6, DIX=1, DIY=1, MAJ=0
+	TEST081( 2): DX=0,   DY=80,  NX=255, NY= 19, CLR=15, DIX=0, DIY=0, MAJ=0
+	TEST082( 4): DX=0,   DY=120, NX=255, NY= 19, CLR=12, DIX=0, DIY=1, MAJ=0
+	TEST083( 8): DX=255, DY=80,  NX=255, NY= 19, CLR=13, DIX=1, DIY=0, MAJ=0
+	TEST084(10): DX=255, DY=120, NX=255, NY= 19, CLR= 6, DIX=1, DIY=1, MAJ=0
+
+ロジカルオペレーションテスト
+	TEST085( 2): DX=0,   DY=---, NX=255, NY= 0, CLR=4, DIX=0, DIY=0, MAJ=0
+	DY=10+256, 13+256, 16+256, 19+256, 21+256, 24+256, 27+256, 30+256, 33+256
+
+線分の終点が VRAM の範囲外にはみ出すテスト (左右)
+	TEST086( 4): DX=128, DY=40+256, NX=234, NY= 0, CLR=3, DIX=0, DIY=0, MAJ=0
+	             DX=127, DY=45+256, NX=234, NY= 0, CLR=9, DIX=1, DIY=0, MAJ=0
+
+線分の終点が VRAM の範囲外にはみ出すテスト (上)
+	TEST087(10): DX=200, DY=50, NX=234, NY=0, CLR=11, DIX=0, DIY=1, MAJ=1
+
+線分の終点が VRAM の範囲外にはみ出すテスト (下)
+	TEST088( 2): DX=210, DY=205+768, NX=234, NY=0, CLR=14, DIX=0, DIY=0, MAJ=1
+
+線分の始点が VRAM の範囲外にはみ出すテスト（右）
+	TEST089( 4): DX=300, DY=50, NX=234, NY= 0, CLR=3, DIX=1, DIY=0, MAJ=0

@@ -116,6 +116,14 @@ start:
 			call	test082
 			call	test083
 			call	test084
+
+			call	test085
+			call	test086
+			call	test087
+			call	test088
+
+			call	test089
+
 			; 後始末
 			call	clear_key_buffer
 			ld		c, _TERM0
@@ -170,26 +178,26 @@ screen5::
 			xor		a, a
 			ld		[vram_bit16], a
 			ld		hl, 0x0000
-			ld		bc, 128 * 212
+			ld		bc, 128 * 256
 			ld		e, 0x44
 			call	fill_vram
 
 			ld		hl, 0x8000
 			ld		d, 0
-			ld		bc, 128 * 212
-			ld		e, 0x55
+			ld		bc, 128 * 256
+			ld		e, 0x85
 			call	fill_vram
 
 			ld		a, 1
 			ld		[vram_bit16], a
 			ld		hl, 0x0000
-			ld		bc, 128 * 212
+			ld		bc, 128 * 256
 			ld		e, 0x88
 			call	fill_vram
 
 			ld		hl, 0x8000
 			ld		d, 1
-			ld		bc, 128 * 212
+			ld		bc, 128 * 256
 			ld		e, 0x99
 			call	fill_vram
 
@@ -197,6 +205,8 @@ screen5::
 			ret
 			endscope
 
+; =============================================================================
+;	NX, NY = 0, 0 のテスト
 ; =============================================================================
 			scope	test001
 test001::
@@ -582,6 +592,7 @@ test016::
 			endscope
 
 ; =============================================================================
+;	DX, DY = 偶数, 偶数 でいろんな方向のテスト
 ; =============================================================================
 			scope	test017
 test017::
@@ -966,6 +977,7 @@ test032::
 			endscope
 
 ; =============================================================================
+;	DX, DY = 奇数, 偶数 でいろんな方向のテスト
 ; =============================================================================
 			scope	test033
 test033::
@@ -1350,6 +1362,7 @@ test048::
 			endscope
 
 ; =============================================================================
+;	DX, DY = 偶数, 奇数 でいろんな方向のテスト
 ; =============================================================================
 			scope	test049
 test049::
@@ -1734,6 +1747,7 @@ test064::
 			endscope
 
 ; =============================================================================
+;	DX, DY = 奇数, 奇数 でいろんな方向のテスト
 ; =============================================================================
 			scope	test065
 test065::
@@ -2118,6 +2132,7 @@ test080::
 			endscope
 
 ; =============================================================================
+;	左端から右端まで到達するラインのテスト
 ; =============================================================================
 			scope	test081
 test081::
@@ -2211,5 +2226,304 @@ test084::
 			dw		19			; NY
 			db		6			; CLR
 			db		0x0C		; ARG
+			db		0x70		; CMD (LINE)
+			endscope
+
+; =============================================================================
+;	ロジカルオペレーションテスト
+; =============================================================================
+			scope	test085
+test085::
+			ld		a, 2
+			ld		e, 7
+			call	write_control_register
+			; set page 1
+			ld		a, 0x1F + (1 << 5)
+			ld		e, 2
+			call	write_control_register
+
+			ld		a, 10
+			ld		e, 7
+			call	write_control_register
+
+			ld		hl, data_and_4
+			ld		a, 36
+			ld		b, 11
+			call	run_command
+			call	wait_command
+
+			ld		hl, data_or_4
+			ld		a, 36
+			ld		b, 11
+			call	run_command
+			call	wait_command
+
+			ld		hl, data_xor_4
+			ld		a, 36
+			ld		b, 11
+			call	run_command
+			call	wait_command
+
+			ld		hl, data_not_4
+			ld		a, 36
+			ld		b, 11
+			call	run_command
+			call	wait_command
+
+			ld		hl, data_timp_4
+			ld		a, 36
+			ld		b, 11
+			call	run_command
+			call	wait_command
+
+			ld		hl, data_tand_4
+			ld		a, 36
+			ld		b, 11
+			call	run_command
+			call	wait_command
+
+			ld		hl, data_tor_4
+			ld		a, 36
+			ld		b, 11
+			call	run_command
+			call	wait_command
+
+			ld		hl, data_txor_4
+			ld		a, 36
+			ld		b, 11
+			call	run_command
+			call	wait_command
+
+			ld		hl, data_tnot_4
+			ld		a, 36
+			ld		b, 11
+			call	run_command
+			call	wait_command
+			call	wait_push_space_key
+			ret
+			; page1 は 85h を埋め尽くしてある
+			;	8 and 4 = 0
+			;	5 and 4 = 4
+	data_and_4:
+			dw		0			; DX
+			dw		10 + 256	; DY
+			dw		255			; NX
+			dw		0			; NY
+			db		4			; CLR
+			db		0x00		; ARG
+			db		0x71		; CMD (LINE), LOP=AND
+
+	data_or_4:
+			dw		0			; DX
+			dw		13 + 256	; DY
+			dw		255			; NX
+			dw		0			; NY
+			db		4			; CLR
+			db		0x00		; ARG
+			db		0x72		; CMD (LINE), LOP=OR
+
+	data_xor_4:
+			dw		0			; DX
+			dw		16 + 256	; DY
+			dw		255			; NX
+			dw		0			; NY
+			db		4			; CLR
+			db		0x00		; ARG
+			db		0x73		; CMD (LINE), LOP=XOR
+
+	data_not_4:
+			dw		0			; DX
+			dw		19 + 256	; DY
+			dw		255			; NX
+			dw		0			; NY
+			db		4			; CLR
+			db		0x00		; ARG
+			db		0x74		; CMD (LINE), LOP=NOT
+
+	data_timp_4:
+			dw		0			; DX
+			dw		21 + 256	; DY
+			dw		255			; NX
+			dw		0			; NY
+			db		4			; CLR
+			db		0x00		; ARG
+			db		0x78		; CMD (LINE), LOP=TIMP
+
+	data_tand_4:
+			dw		0			; DX
+			dw		24 + 256	; DY
+			dw		255			; NX
+			dw		0			; NY
+			db		4			; CLR
+			db		0x00		; ARG
+			db		0x79		; CMD (LINE), LOP=TAND
+
+	data_tor_4:
+			dw		0			; DX
+			dw		27 + 256	; DY
+			dw		255			; NX
+			dw		0			; NY
+			db		4			; CLR
+			db		0x00		; ARG
+			db		0x7A		; CMD (LINE), LOP=TOR
+
+	data_txor_4:
+			dw		0			; DX
+			dw		30 + 256	; DY
+			dw		255			; NX
+			dw		0			; NY
+			db		4			; CLR
+			db		0x00		; ARG
+			db		0x7B		; CMD (LINE), LOP=TXOR
+
+	data_tnot_4:
+			dw		0			; DX
+			dw		33 + 256	; DY
+			dw		255			; NX
+			dw		0			; NY
+			db		4			; CLR
+			db		0x00		; ARG
+			db		0x7C		; CMD (LINE), LOP=TNOT
+			endscope
+
+; =============================================================================
+;	線分の終点が VRAM の範囲外にはみ出すテスト (左右)
+; =============================================================================
+			scope	test086
+test086::
+			ld		a, 4
+			ld		e, 7
+			call	write_control_register
+
+			ld		hl, data_1
+			ld		a, 36
+			ld		b, 11
+			call	run_command
+			call	wait_command
+
+			ld		hl, data_2
+			ld		a, 36
+			ld		b, 11
+			call	run_command
+			call	wait_command
+
+			call	wait_push_space_key
+			ret
+	data_1:
+			dw		128			; DX
+			dw		40+256		; DY
+			dw		234			; NX
+			dw		0			; NY
+			db		3			; CLR
+			db		0x00		; ARG
+			db		0x70		; CMD (LINE)
+
+	data_2:
+			dw		127			; DX
+			dw		45+256		; DY
+			dw		234			; NX
+			dw		0			; NY
+			db		9			; CLR
+			db		0x04		; ARG
+			db		0x70		; CMD (LINE)
+			endscope
+
+; =============================================================================
+;	線分の終点が VRAM の範囲外にはみ出すテスト (上)
+; =============================================================================
+			scope	test087
+test087::
+			;	set page 0
+			ld		a, 0x1F + (0 << 5)
+			ld		e, 2
+			call	write_control_register
+
+			ld		a, 10
+			ld		e, 7
+			call	write_control_register
+
+			ld		hl, data
+			ld		a, 36
+			ld		b, 11
+			call	run_command
+			call	wait_command
+			call	wait_push_space_key
+
+			;	set page 3
+			ld		a, 0x1F + (3 << 5)
+			ld		e, 2
+			call	write_control_register
+			call	wait_push_space_key
+			ret
+	data:
+			dw		200			; DX
+			dw		50			; DY
+			dw		234			; NX
+			dw		0			; NY
+			db		11			; CLR
+			db		0x09		; ARG
+			db		0x70		; CMD (LINE)
+			endscope
+
+; =============================================================================
+;	線分の終点が VRAM の範囲外にはみ出すテスト (下)
+; =============================================================================
+			scope	test088
+test088::
+			;	set page 3
+			ld		a, 0x1F + (3 << 5)
+			ld		e, 2
+			call	write_control_register
+
+			ld		a, 2
+			ld		e, 7
+			call	write_control_register
+
+			ld		hl, data
+			ld		a, 36
+			ld		b, 11
+			call	run_command
+			call	wait_command
+			call	wait_push_space_key
+
+			;	set page 0
+			ld		a, 0x1F + (0 << 5)
+			ld		e, 2
+			call	write_control_register
+			call	wait_push_space_key
+			ret
+	data:
+			dw		210			; DX
+			dw		205+768		; DY
+			dw		234			; NX
+			dw		0			; NY
+			db		14			; CLR
+			db		0x01		; ARG
+			db		0x70		; CMD (LINE)
+			endscope
+
+; =============================================================================
+;	線分の始点が VRAM の範囲外にはみ出すテスト (右)
+; =============================================================================
+			scope	test089
+test089::
+			ld		a, 4
+			ld		e, 7
+			call	write_control_register
+
+			ld		hl, data
+			ld		a, 36
+			ld		b, 11
+			call	run_command
+			call	wait_command
+			call	wait_push_space_key
+			ret
+	data:
+			dw		300			; DX
+			dw		50			; DY
+			dw		234			; NX
+			dw		0			; NY
+			db		3			; CLR
+			db		0x04		; ARG
 			db		0x70		; CMD (LINE)
 			endscope
