@@ -168,7 +168,8 @@ io_vdp_port3::
 ; =============================================================================
 ;	書き込み用 VRAM アドレスセット
 ;	input:
-;		HL .... 0x0000~0x3FFF VRAM address
+;		HL ........... 0x0000~0xFFFF VRAM address
+;		vram_bit16 ... bit16 0 or 1
 ;	output:
 ;		none
 ;	break:
@@ -205,7 +206,8 @@ p_vdp_port1	:= $ + 1
 ; =============================================================================
 ;	読みだし用 VRAM アドレスセット
 ;	input:
-;		HL .... 0x0000~0x3FFF VRAM address
+;		HL ........... 0x0000~0xFFFF VRAM address
+;		vram_bit16 ... bit16 0 or 1
 ;	output:
 ;		none
 ;	break:
@@ -216,9 +218,15 @@ p_vdp_port1	:= $ + 1
 			scope	set_vram_read_address
 set_vram_read_address::
 			push	de
+			push	hl
 			ld		a, [vram_bit16]
+			rl		h
+			rl		a
+			rl		h
+			rl		a
 			ld		e, 14
 			call	write_control_register
+			pop		hl
 			pop		de
 			di
 			ld		a, l

@@ -137,7 +137,7 @@ module vdp_command (
 	reg			[8:0]	reg_sx;
 	reg			[8:0]	reg_dx;
 	reg			[8:0]	reg_nx;
-	reg			[8:0]	ff_sx;
+	reg			[9:0]	ff_sx;
 	reg			[9:0]	ff_sy;
 	reg			[8:0]	ff_dx;
 	reg			[9:0]	ff_dy;
@@ -257,20 +257,20 @@ module vdp_command (
 
 	always @( posedge clk or negedge reset_n ) begin
 		if( !reset_n ) begin
-			ff_sx <= 9'd0;
+			ff_sx <= 10'd0;
 		end
 		else if( ff_start ) begin
-			ff_sx <= (ff_command == c_ymmm) ? reg_dx: reg_sx;
+			ff_sx <= (ff_command == c_ymmm) ? { 1'b0, reg_dx }: { 1'b0, reg_sx };
 		end
 		else if( !ff_command_enable || ff_cache_vram_valid ) begin
 			//	hold
 		end
 		else if( ff_count_valid ) begin
 			if( ff_nx == 9'd0 || w_next_sx[9] || w_next_dx[9] || (!w_512pixel && (w_next_sx[8] || w_next_dx[8])) ) begin
-				ff_sx <= (ff_command == c_ymmm) ? reg_dx: reg_sx;
+				ff_sx <= (ff_command == c_ymmm) ? { 1'b0, reg_dx }: { 1'b0, reg_sx };
 			end
 			else begin
-				ff_sx <= w_next_sx[8:0];
+				ff_sx <= w_next_sx;
 			end
 		end
 	end
@@ -297,7 +297,7 @@ module vdp_command (
 		end
 	end
 
-	assign w_next_sx	= ff_dix ? ( { 1'b0, ff_sx } - w_next ): ( { 1'b0, ff_sx } + w_next );
+	assign w_next_sx	= ff_dix ? (         ff_sx   - w_next ): (         ff_sx   + w_next );
 	assign w_next_sy	= ff_diy ? ( { 1'b0, ff_sy } - 11'd1  ): ( { 1'b0, ff_sy } + 11'd1  );
 
 	// --------------------------------------------------------------------
@@ -711,7 +711,35 @@ module vdp_command (
 				ff_cache_vram_wdata		<= w_destination;
 				ff_state				<= c_state_pre_finish;
 			end
+
 			//	SRCH command --------------------------------------------------
+			c_state_srch: begin
+				ff_count_valid			<= 1'b0;
+				if( ff_sx[9] || (ff_sx[8] && !w_512pixel) ) begin
+					//	Go to finish state when start position is outside of screen.
+					ff_state				<= c_state_pre_finish;
+				end
+				else begin
+					//	Read the location of (SX, SY)
+					ff_cache_vram_address	<= w_address_s;
+					ff_cache_vram_valid		<= 1'b1;
+					ff_cache_vram_write		<= 1'b0;
+					ff_state				<= c_state_wait_rdata_en;
+					ff_next_state			<= c_state_srch_compare;
+					ff_xsel					<= ff_sx[1:0];
+				end
+			end
+
+			c_state_srch_compare: begin
+				//	Write the location of (DX, DY)
+				if( ff_read_pixel == ff_color ) begin
+					ff_cache_flush_start	<= 1'b1;
+					ff_state				<= c_state_finish;
+				end
+				else begin
+					ff_count_valid			<= 1'b1;
+				end
+			end
 
 			//	LINE command --------------------------------------------------
 			c_state_line: begin
@@ -816,6 +844,14 @@ module vdp_command (
 				end
 			end
 
+			//	LMCM command --------------------------------------------------
+			c_state_lmcm: begin
+			end
+
+			//	LMMC command --------------------------------------------------
+			c_state_lmmc: begin
+			end
+
 			//	HMMV command --------------------------------------------------
 			c_state_hmmv: begin
 				//	Write the location of (DX, DY)
@@ -890,6 +926,10 @@ module vdp_command (
 				else begin
 					ff_state				<= c_state_ymmm;
 				end
+			end
+
+			//	HMMC command --------------------------------------------------
+			c_state_hmmc: begin
 			end
 
 			//	Wait RDATA_EN subroutine --------------------------------------
@@ -1019,5 +1059,5 @@ module vdp_command (
 	assign status_border_detect		= 1'b0;
 	assign status_transfer_ready	= 1'b0;
 	assign status_color				= ff_read_pixel;
-	assign status_border_position	= 9'd0;
+	assign status_border_position	= ff_sx;
 endmodule
