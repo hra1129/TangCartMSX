@@ -1,0 +1,18 @@
+初期化 (周辺色 7)
+
+右探索 境界色
+	TEST001( 2): DX=20, DY=30, NX=0, NY=0, CLR= 6, DIX=0, DIY=0, EQ=0
+	TEST002( 4): DX=20, DY=33, NX=0, NY=0, CLR=12, DIX=0, DIY=0, EQ=0
+左探索 境界色
+	TEST003( 8): DX=49, DY=42, NX=0, NY=0, CLR=11, DIX=1, DIY=0, EQ=0
+	TEST004(10): DX=49, DY=45, NX=0, NY=0, CLR= 7, DIX=1, DIY=0, EQ=0
+右探索 境界色以外
+	TEST005( 2): DX=20, DY=36, NX=0, NY=0, CLR= 3, DIX=0, DIY=0, EQ=1
+	TEST006( 4): DX=20, DY=39, NX=0, NY=0, CLR= 5, DIX=0, DIY=0, EQ=1
+左探索 境界色以外
+	TEST007( 8): DX=49, DY=48, NX=0, NY=0, CLR= 3, DIX=1, DIY=0, EQ=1
+	TEST008(10): DX=49, DY=51, NX=0, NY=0, CLR= 5, DIX=1, DIY=0, EQ=1
+右探索 始点が画面外
+	TEST009( 2): DX=345, DY=123, NX=0, NY=0, CLR=15, DIX=0, DIY=0, EQ=0
+左探索 始点が画面外
+	TEST010( 4): DX=456, DY=346, NX=0, NY=0, CLR=12, DIX=1, DIY=0, EQ=1

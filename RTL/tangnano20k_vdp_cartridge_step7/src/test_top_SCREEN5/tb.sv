@@ -565,6 +565,111 @@ module tb ();
 		wait_vdp_command();
 		repeat( 100 ) @( posedge clk14m );
 
+		//	VDP Command SRCH
+		$display( "[test005] VDP Command SRCH" );
+
+		//	( 20, 30 ) --> (20 >> 1) + (30 * 128) = 10 + 3840 = 3850 = 0F0Ah
+		write_io( vdp_io1, 8'h00 );
+		write_io( vdp_io1, 8'h8E );
+		write_io( vdp_io1, 8'h0A );
+		write_io( vdp_io1, 8'h4F );
+
+		write_io( vdp_io0, 8'h11 );
+		write_io( vdp_io0, 8'h22 );
+		write_io( vdp_io0, 8'h33 );
+		write_io( vdp_io0, 8'h44 );
+		write_io( vdp_io0, 8'h55 );
+		write_io( vdp_io0, 8'h66 );
+		write_io( vdp_io0, 8'h77 );
+		write_io( vdp_io0, 8'h88 );
+		write_io( vdp_io0, 8'h99 );
+		write_io( vdp_io0, 8'hAA );
+		write_io( vdp_io0, 8'hBB );
+		write_io( vdp_io0, 8'hCC );
+		write_io( vdp_io0, 8'hDD );
+		write_io( vdp_io0, 8'hEE );
+		write_io( vdp_io0, 8'hFF );
+		repeat( 50 ) @( posedge clk14m );
+
+		write_io( vdp_io1, 8'd32 );
+		write_io( vdp_io1, 8'h80 + 8'd17 );
+		write_io( vdp_io3, 8'd20 );				//	R#32 SXl
+		write_io( vdp_io3, 8'd0 );				//	R#33 SXh
+		write_io( vdp_io3, 8'd30 );				//	R#34 SYl
+		write_io( vdp_io3, 8'd0 );				//	R#35 SYh
+		write_io( vdp_io3, 8'd0 );				//	R#36 DXl
+		write_io( vdp_io3, 8'd0 );				//	R#37 DXh
+		write_io( vdp_io3, 8'd0 );				//	R#38 DYl
+		write_io( vdp_io3, 8'd0 );				//	R#39 DYh
+		write_io( vdp_io3, 8'd0 );				//	R#40 NXl
+		write_io( vdp_io3, 8'd0 );				//	R#41 NXh
+		write_io( vdp_io3, 8'd0 );				//	R#42 NYl
+		write_io( vdp_io3, 8'd0 );				//	R#43 NYh
+		write_io( vdp_io3, 8'd6 );				//	R#44 COLOR
+		write_io( vdp_io3, 8'h00 );				//	R#45 ARG
+		write_io( vdp_io3, 8'h60 );				//	R#46 SRCH, IMP
+
+		wait_vdp_command();
+		repeat( 100 ) @( posedge clk14m );
+
+		//	( 20, 33 ) --> (20 >> 1) + (33 * 128) = 10 + 4224 = 4234 = 1080h
+		write_io( vdp_io1, 8'h00 );
+		write_io( vdp_io1, 8'h8E );
+		write_io( vdp_io1, 8'h80 );
+		write_io( vdp_io1, 8'h50 );
+
+		write_io( vdp_io0, 8'h12 );
+		write_io( vdp_io0, 8'h34 );
+		write_io( vdp_io0, 8'h56 );
+		write_io( vdp_io0, 8'h78 );
+		write_io( vdp_io0, 8'h9A );
+		write_io( vdp_io0, 8'hBC );
+		write_io( vdp_io0, 8'hDE );
+		write_io( vdp_io0, 8'hF0 );
+		repeat( 50 ) @( posedge clk14m );
+
+		write_io( vdp_io1, 8'd32 );
+		write_io( vdp_io1, 8'h80 + 8'd17 );
+		write_io( vdp_io3, 8'd20 );				//	R#32 SXl
+		write_io( vdp_io3, 8'd0 );				//	R#33 SXh
+		write_io( vdp_io3, 8'd33 );				//	R#34 SYl
+		write_io( vdp_io3, 8'd0 );				//	R#35 SYh
+		write_io( vdp_io3, 8'd0 );				//	R#36 DXl
+		write_io( vdp_io3, 8'd0 );				//	R#37 DXh
+		write_io( vdp_io3, 8'd0 );				//	R#38 DYl
+		write_io( vdp_io3, 8'd0 );				//	R#39 DYh
+		write_io( vdp_io3, 8'd0 );				//	R#40 NXl
+		write_io( vdp_io3, 8'd0 );				//	R#41 NXh
+		write_io( vdp_io3, 8'd0 );				//	R#42 NYl
+		write_io( vdp_io3, 8'd0 );				//	R#43 NYh
+		write_io( vdp_io3, 8'd12 );				//	R#44 COLOR
+		write_io( vdp_io3, 8'b00000010 );		//	R#45 ARG
+		write_io( vdp_io3, 8'h60 );				//	R#46 SRCH, IMP
+
+		wait_vdp_command();
+		repeat( 100 ) @( posedge clk14m );
+
+		write_io( vdp_io1, 8'd32 );
+		write_io( vdp_io1, 8'h80 + 8'd17 );
+		write_io( vdp_io3, 8'd49 );				//	R#32 SXl
+		write_io( vdp_io3, 8'd0 );				//	R#33 SXh
+		write_io( vdp_io3, 8'd42 );				//	R#34 SYl
+		write_io( vdp_io3, 8'd0 );				//	R#35 SYh
+		write_io( vdp_io3, 8'd0 );				//	R#36 DXl
+		write_io( vdp_io3, 8'd0 );				//	R#37 DXh
+		write_io( vdp_io3, 8'd0 );				//	R#38 DYl
+		write_io( vdp_io3, 8'd0 );				//	R#39 DYh
+		write_io( vdp_io3, 8'd0 );				//	R#40 NXl
+		write_io( vdp_io3, 8'd0 );				//	R#41 NXh
+		write_io( vdp_io3, 8'd0 );				//	R#42 NYl
+		write_io( vdp_io3, 8'd0 );				//	R#43 NYh
+		write_io( vdp_io3, 8'd11 );				//	R#44 COLOR
+		write_io( vdp_io3, 8'b00000110 );		//	R#45 ARG
+		write_io( vdp_io3, 8'h60 );				//	R#46 SRCH, IMP
+
+		wait_vdp_command();
+		repeat( 100 ) @( posedge clk14m );
+
 		//	VDP Command LINE
 		$display( "[test005] VDP Command LINE" );
 		write_io( vdp_io1, 8'd32 );
