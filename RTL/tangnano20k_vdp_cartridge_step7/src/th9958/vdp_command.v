@@ -148,6 +148,7 @@ module vdp_command (
 	wire		[9:0]	w_ny;
 	reg			[9:0]	ff_nyb;
 	reg			[7:0]	ff_color;
+	reg					ff_color_latched;
 	reg					ff_maj;
 	reg					ff_eq;
 	reg					ff_dix;
@@ -212,6 +213,9 @@ module vdp_command (
 	localparam			c_state_ymmm_next			= 6'd26;
 	localparam			c_state_srch_compare		= 6'd27;
 	localparam			c_state_srch_next			= 6'd28;
+	localparam			c_state_hmmc_next			= 6'd29;
+	localparam			c_state_lmmc_make			= 6'd30;
+	localparam			c_state_lmmc_next			= 6'd31;
 	localparam			c_state_wait_rdata_en		= 6'd61;
 	localparam			c_state_pre_finish			= 6'd62;
 	localparam			c_state_finish				= 6'd63;
@@ -552,6 +556,23 @@ module vdp_command (
 
 	always @( posedge clk or negedge reset_n ) begin
 		if( !reset_n ) begin
+			ff_color_latched		<= 1'b0;
+		end
+		else if( register_write && (register_num == 6'd44) ) begin
+			ff_color_latched		<= 1'b1;
+		end
+		else if( (ff_command == c_lmmc && ff_state == c_state_lmmc_next) || 
+		         (ff_command == c_hmmc && ff_state == c_state_hmmc_next) || 
+		         (ff_command == c_lmcm && ff_start) ) begin
+			ff_color_latched		<= 1'b0;
+		end
+		else begin
+			//	hold
+		end
+	end
+
+	always @( posedge clk or negedge reset_n ) begin
+		if( !reset_n ) begin
 			ff_maj	<= 1'b0;
 			ff_eq	<= 1'b0;
 			ff_dix	<= 1'b0;
@@ -579,15 +600,10 @@ module vdp_command (
 			ff_command			<= 4'd0;
 			ff_start			<= 1'b0;
 		end
-		else if( register_write ) begin
-			if( register_num == 6'd46 ) begin
-				ff_logical_opration	<= register_data[3:0];
-				ff_command			<= register_data[7:4];
-				ff_start			<= 1'b1;
-			end
-			else begin
-				ff_start			<= 1'b0;
-			end
+		else if( register_write && (register_num == 6'd46) ) begin
+			ff_logical_opration	<= register_data[3:0];
+			ff_command			<= register_data[7:4];
+			ff_start			<= 1'b1;
 		end
 		else begin
 			ff_start			<= 1'b0;
@@ -659,19 +675,19 @@ module vdp_command (
 
 	always @( posedge clk or negedge reset_n ) begin
 		if( !reset_n ) begin
-			ff_state				<= c_state_idle;
-			ff_cache_vram_address	<= 17'd0;
-			ff_cache_flush_start	<= 1'b0;
-			ff_cache_vram_valid		<= 1'b0;
-			ff_cache_vram_write		<= 1'b0;
-			ff_cache_vram_wdata		<= 8'd0;
-			ff_count_valid			<= 1'b0;
-			ff_border_detect_request		<= 1'b0;
+			ff_state					<= c_state_idle;
+			ff_cache_vram_address		<= 17'd0;
+			ff_cache_flush_start		<= 1'b0;
+			ff_cache_vram_valid			<= 1'b0;
+			ff_cache_vram_write			<= 1'b0;
+			ff_cache_vram_wdata			<= 8'd0;
+			ff_count_valid				<= 1'b0;
+			ff_border_detect_request	<= 1'b0;
 		end
 		else if( ff_start ) begin
-			ff_source				<= ff_color;
-			ff_count_valid			<= 1'b0;
-			ff_border_detect_request		<= 1'b0;
+			ff_source					<= ff_color;
+			ff_count_valid				<= 1'b0;
+			ff_border_detect_request	<= 1'b0;
 			case( ff_command )
 			c_stop:		ff_state <= c_state_stop;
 			c_point:	ff_state <= c_state_point;
@@ -896,6 +912,36 @@ module vdp_command (
 
 			//	LMMC command --------------------------------------------------
 			c_state_lmmc: begin
+				//	Copy source pixel value
+				ff_source				<= ff_color;
+				//	Read the location of (DX, DY)
+				ff_cache_vram_address	<= w_address_d;
+				ff_cache_vram_valid		<= 1'b1;
+				ff_cache_vram_write		<= 1'b0;
+				ff_state				<= c_state_wait_rdata_en;
+				ff_next_state			<= c_state_lmmc_make;
+				ff_xsel					<= ff_dx[1:0];
+			end
+			c_state_lmmc_make: begin
+				//	Write the location of (DX, DY)
+				ff_cache_vram_address	<= w_address_d;
+				ff_cache_vram_valid		<= 1'b1;
+				ff_cache_vram_write		<= 1'b1;
+				ff_cache_vram_wdata		<= w_destination;
+				ff_state				<= c_state_lmmc_next;
+				ff_count_valid			<= 1'b1;
+			end
+			c_state_lmmc_next: begin
+				ff_count_valid			<= 1'b0;
+				if( ff_nx == 9'd0 && ff_ny == 10'd0 ) begin
+					ff_state				<= c_state_pre_finish;
+				end
+				else if( ff_color_latched ) begin
+					ff_state				<= c_state_lmmc;
+				end
+				else begin
+					//	hold
+				end
 			end
 
 			//	HMMV command --------------------------------------------------
@@ -976,6 +1022,25 @@ module vdp_command (
 
 			//	HMMC command --------------------------------------------------
 			c_state_hmmc: begin
+				//	Write the location of (DX, DY)
+				ff_cache_vram_address	<= w_address_d;
+				ff_cache_vram_valid		<= 1'b1;
+				ff_cache_vram_write		<= 1'b1;
+				ff_cache_vram_wdata		<= ff_color;
+				ff_state				<= c_state_hmmc_next;
+				ff_count_valid			<= 1'b1;
+			end
+			c_state_hmmc_next: begin
+				ff_count_valid			<= 1'b0;
+				if( ff_nx == 9'd0 && ff_ny == 10'd0 ) begin
+					ff_state				<= c_state_pre_finish;
+				end
+				else if( ff_color_latched ) begin
+					ff_state				<= c_state_hmmc;
+				end
+				else begin
+					//	hold
+				end
 			end
 
 			//	Wait RDATA_EN subroutine --------------------------------------
@@ -1105,7 +1170,7 @@ module vdp_command (
 	// --------------------------------------------------------------------
 	assign status_command_execute	= ff_command_execute;
 	assign status_border_detect		= ff_border_detect;
-	assign status_transfer_ready	= 1'b0;
+	assign status_transfer_ready	= ~ff_color_latched;
 	assign status_color				= ff_read_pixel;
 	assign status_border_position	= ff_sx[8:0];
 endmodule
