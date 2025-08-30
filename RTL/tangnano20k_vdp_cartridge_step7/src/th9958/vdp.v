@@ -158,8 +158,9 @@ module vdp (
 	wire				w_register_write;
 	wire		[5:0]	w_register_num;
 	wire		[7:0]	w_register_data;
+	wire				w_clear_border_detect;
 
-	wire				w_status_command_enable;
+	wire				w_status_command_execute;
 	wire				w_status_border_detect;
 	wire				w_status_transfer_ready;
 	wire		[7:0]	w_status_color;
@@ -229,10 +230,11 @@ module vdp (
 		.clear_sprite_collision_xy					( w_clear_sprite_collision_xy				),
 		.sprite_collision_x							( w_sprite_collision_x						),
 		.sprite_collision_y							( w_sprite_collision_y						),
+		.clear_border_detect						( w_clear_border_detect						),
 		.register_write								( w_register_write							),
 		.register_num								( w_register_num							),
 		.register_data								( w_register_data							),
-		.status_command_enable						( w_status_command_enable					),
+		.status_command_execute						( w_status_command_execute					),
 		.status_border_detect						( w_status_border_detect					),
 		.status_transfer_ready						( w_status_transfer_ready					),
 		.status_color								( w_status_color							),
@@ -348,7 +350,8 @@ module vdp (
 		.register_write								( w_register_write							),
 		.register_num								( w_register_num							),
 		.register_data								( w_register_data							),
-		.status_command_enable						( w_status_command_enable					),
+		.clear_border_detect						( w_clear_border_detect						),
+		.status_command_execute						( w_status_command_execute					),
 		.status_border_detect						( w_status_border_detect					),
 		.status_transfer_ready						( w_status_transfer_ready					),
 		.status_color								( w_status_color							),

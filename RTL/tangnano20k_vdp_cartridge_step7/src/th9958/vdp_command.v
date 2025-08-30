@@ -70,7 +70,8 @@ module vdp_command (
 	input				register_write,
 	input		[5:0]	register_num,
 	input		[7:0]	register_data,
-	output				status_command_enable,			//	S#2 bit0
+	input				clear_border_detect,
+	output				status_command_execute,			//	S#2 bit0
 	output				status_border_detect,			//	S#2 bit4
 	output				status_transfer_ready,			//	S#2 bit7
 	output		[7:0]	status_color,					//	S#7
@@ -126,7 +127,7 @@ module vdp_command (
 	localparam	c_bpp_4bit	= 1;
 	localparam	c_bpp_8bit	= 2;
 
-	reg					ff_command_enable;
+	reg					ff_command_execute;
 	reg			[7:0]	ff_read_pixel;
 	reg			[7:0]	ff_read_byte;
 	reg			[7:0]	ff_source;
@@ -179,6 +180,8 @@ module vdp_command (
 	wire		[9:0]	w_next_dx;
 	wire		[10:0]	w_next_dy;
 	wire				w_line_shift;
+	reg					ff_border_detect_request;
+	reg					ff_border_detect;
 
 	localparam			c_state_idle				= 6'd0;
 	localparam			c_state_stop				= 6'd1;
@@ -264,7 +267,7 @@ module vdp_command (
 		else if( ff_start ) begin
 			ff_sx <= (ff_command == c_ymmm) ? { 1'b0, reg_dx }: { 1'b0, reg_sx };
 		end
-		else if( !ff_command_enable || ff_cache_vram_valid ) begin
+		else if( !ff_command_execute || ff_cache_vram_valid ) begin
 			//	hold
 		end
 		else if( ff_count_valid ) begin
@@ -292,7 +295,7 @@ module vdp_command (
 				ff_sy[9:8]	<= register_data[1:0];
 			end
 		end
-		else if( !ff_command_enable || ff_cache_vram_valid ) begin
+		else if( !ff_command_execute || ff_cache_vram_valid ) begin
 			//	hold
 		end
 		else if( ff_count_valid ) begin
@@ -332,7 +335,7 @@ module vdp_command (
 		else if( ff_start ) begin
 			ff_dx <= reg_dx;
 		end
-		else if( !ff_command_enable || ff_cache_vram_valid ) begin
+		else if( !ff_command_execute || ff_cache_vram_valid ) begin
 			//	hold
 		end
 		else if( ff_count_valid ) begin
@@ -373,7 +376,7 @@ module vdp_command (
 				ff_dy[9:8]	<= register_data[1:0];
 			end
 		end
-		else if( !ff_command_enable || ff_cache_vram_valid ) begin
+		else if( !ff_command_execute || ff_cache_vram_valid ) begin
 			//	hold
 		end
 		else if( ff_count_valid ) begin
@@ -445,7 +448,7 @@ module vdp_command (
 				ff_nx <= w_nx;
 			end
 		end
-		else if( !ff_command_enable || ff_cache_vram_valid ) begin
+		else if( !ff_command_execute || ff_cache_vram_valid ) begin
 			//	hold
 		end
 		else if( ff_count_valid ) begin
@@ -499,7 +502,7 @@ module vdp_command (
 				ff_ny <= w_ny;
 			end
 		end
-		else if( !ff_command_enable || ff_cache_vram_valid ) begin
+		else if( !ff_command_execute || ff_cache_vram_valid ) begin
 			//	hold
 		end
 		else if( ff_command == c_line ) begin
@@ -519,7 +522,7 @@ module vdp_command (
 		else if( ff_start ) begin
 			ff_nyb	<= { 2'd0, reg_nx[8:1] };
 		end
-		else if( !ff_command_enable || ff_cache_vram_valid ) begin
+		else if( !ff_command_execute || ff_cache_vram_valid ) begin
 			//	hold
 		end
 		else if( ff_count_valid ) begin
@@ -596,13 +599,28 @@ module vdp_command (
 	// --------------------------------------------------------------------
 	always @( posedge clk or negedge reset_n ) begin
 		if( !reset_n ) begin
-			ff_command_enable <= 1'b0;
+			ff_command_execute <= 1'b0;
 		end
 		else if( ff_start ) begin
-			ff_command_enable <= 1'b1;
+			ff_command_execute <= 1'b1;
 		end
 		else if( w_cache_flush_end ) begin
-			ff_command_enable <= 1'b0;
+			ff_command_execute <= 1'b0;
+		end
+	end
+
+	always @( posedge clk or negedge reset_n ) begin
+		if( !reset_n ) begin
+			ff_border_detect <= 1'b0;
+		end
+		else if( ff_start ) begin
+			ff_border_detect <= 1'b0;
+		end
+		else if( w_cache_flush_end ) begin
+			ff_border_detect <= ff_border_detect_request;
+		end
+		else if( clear_border_detect ) begin
+			ff_border_detect <= 1'b0;
 		end
 	end
 
@@ -648,10 +666,12 @@ module vdp_command (
 			ff_cache_vram_write		<= 1'b0;
 			ff_cache_vram_wdata		<= 8'd0;
 			ff_count_valid			<= 1'b0;
+			ff_border_detect_request		<= 1'b0;
 		end
 		else if( ff_start ) begin
 			ff_source				<= ff_color;
 			ff_count_valid			<= 1'b0;
+			ff_border_detect_request		<= 1'b0;
 			case( ff_command )
 			c_stop:		ff_state <= c_state_stop;
 			c_point:	ff_state <= c_state_point;
@@ -726,17 +746,24 @@ module vdp_command (
 			c_state_srch: begin
 				if( ff_sx[9] || (ff_sx[8] && !w_512pixel) ) begin
 					//	Go to finish state when start position is outside of screen.
-					ff_cache_flush_start	<= 1'b1;
-					ff_state				<= c_state_finish;
+					if( ff_sx == reg_sx ) begin
+						ff_count_valid				<= ~ff_eq;
+						ff_border_detect_request	<= ff_eq;
+					end
+					else begin
+						ff_count_valid				<= 1'b0;
+						ff_border_detect_request	<= 1'b0;
+					end
+					ff_state					<= c_state_pre_finish;
 				end
 				else begin
 					//	Read the location of (SX, SY)
-					ff_cache_vram_address	<= w_address_s;
-					ff_cache_vram_valid		<= 1'b1;
-					ff_cache_vram_write		<= 1'b0;
-					ff_state				<= c_state_wait_rdata_en;
-					ff_next_state			<= c_state_srch_compare;
-					ff_xsel					<= ff_sx[1:0];
+					ff_cache_vram_address		<= w_address_s;
+					ff_cache_vram_valid			<= 1'b1;
+					ff_cache_vram_write			<= 1'b0;
+					ff_state					<= c_state_wait_rdata_en;
+					ff_next_state				<= c_state_srch_compare;
+					ff_xsel						<= ff_sx[1:0];
 				end
 			end
 
@@ -744,18 +771,19 @@ module vdp_command (
 				//	Compare (SX,SY) and R#44
 				if( (ff_read_pixel == ff_color) == ff_eq ) begin
 					//	Increment/Decrement
-					ff_count_valid			<= 1'b1;
-					ff_state				<= c_state_srch_next;
+					ff_count_valid				<= 1'b1;
+					ff_state					<= c_state_srch_next;
 				end
 				else begin
-					ff_cache_flush_start	<= 1'b1;
-					ff_state				<= c_state_finish;
+					ff_cache_flush_start		<= 1'b1;
+					ff_state					<= c_state_finish;
+					ff_border_detect_request	<= 1'b1;
 				end
 			end
 
 			c_state_srch_next: begin
-				ff_count_valid			<= 1'b0;
-				ff_state				<= c_state_srch;
+				ff_count_valid				<= 1'b0;
+				ff_state					<= c_state_srch;
 			end
 
 			//	LINE command --------------------------------------------------
@@ -786,7 +814,7 @@ module vdp_command (
 			end
 			c_state_line_next: begin
 				ff_count_valid			<= 1'b0;
-				if( ff_nx == 9'd0 || w_next_dx[9] || (!w_512pixel && w_next_dx[8]) ) begin
+				if( ff_nx == 9'd0 || w_next_dx[9] || (!w_512pixel && w_next_dx[8]) || (ff_diy == 1'b1 && ff_dy == 10'd0 && w_next_dy[9] == 1'b1) ) begin
 					ff_state				<= c_state_pre_finish;
 				end
 				else begin
@@ -961,6 +989,7 @@ module vdp_command (
 			end
 			//	Do Finish process ---------------------------------------------
 			c_state_pre_finish: begin
+				ff_count_valid			<= 1'b0;
 				ff_state				<= c_state_finish;
 				ff_cache_flush_start	<= 1'b1;
 			end
@@ -971,7 +1000,8 @@ module vdp_command (
 				ff_cache_vram_wdata		<= 8'd0;
 				ff_cache_flush_start	<= 1'b0;
 				if( w_cache_flush_end ) begin
-					ff_state <= c_state_idle;
+					ff_state					<= c_state_idle;
+					ff_border_detect_request	<= 1'b0;
 				end
 			end
 			default: begin
@@ -1073,8 +1103,8 @@ module vdp_command (
 	// --------------------------------------------------------------------
 	//	Status registers
 	// --------------------------------------------------------------------
-	assign status_command_enable	= ff_command_enable;
-	assign status_border_detect		= 1'b0;
+	assign status_command_execute	= ff_command_execute;
+	assign status_border_detect		= ff_border_detect;
 	assign status_transfer_ready	= 1'b0;
 	assign status_color				= ff_read_pixel;
 	assign status_border_position	= ff_sx[8:0];

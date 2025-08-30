@@ -91,12 +91,13 @@ module vdp_cpu_interface (
 	output				clear_sprite_collision_xy,	//	pulse
 	input		[8:0]	sprite_collision_x,
 	input		[9:0]	sprite_collision_y,
+	output				clear_border_detect,		//	pulse
 
 	output				register_write,
 	output		[5:0]	register_num,
 	output		[7:0]	register_data,
 
-	input				status_command_enable,		//	S#2 bit0
+	input				status_command_execute,		//	S#2 bit0
 	input				status_border_detect,		//	S#2 bit4
 	input				status_transfer_ready,		//	S#2 bit7
 	input		[7:0]	status_color,				//	S#7
@@ -600,7 +601,7 @@ module vdp_cpu_interface (
 		case( ff_status_register_pointer )
 		4'd0:		ff_status_register <= { ff_frame_interrupt, sprite_collision, 1'b0, 5'b00000 };
 		4'd1:		ff_status_register <= { 2'd0, 5'b00010, ff_line_interrupt };
-		4'd2:		ff_status_register <= { status_transfer_ready, 1'b0, 1'b0, status_border_detect, 2'b11, 1'b0, status_command_enable };
+		4'd2:		ff_status_register <= { status_transfer_ready, 1'b0, 1'b0, status_border_detect, 2'b11, 1'b0, status_command_execute };
 		4'd3:		ff_status_register <= sprite_collision_x[7:0];
 		4'd4:		ff_status_register <= { 7'b1111111, sprite_collision_x[8] };
 		4'd5:		ff_status_register <= sprite_collision_y[7:0];
@@ -641,6 +642,7 @@ module vdp_cpu_interface (
 	end
 
 	assign clear_sprite_collision		= (w_read && ff_port1 && ff_status_register_pointer == 4'd0);
+	assign clear_border_detect			= (w_read && ff_port1 && ff_status_register_pointer == 4'd2);
 	assign clear_sprite_collision_xy	= (w_read && ff_port1 && ff_status_register_pointer == 4'd5);
 
 	// --------------------------------------------------------------------

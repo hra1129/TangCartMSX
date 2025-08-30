@@ -12,6 +12,7 @@ start:
 			call	copy_rom_font
 			; テスト
 			call	screen5
+
 			call	test001
 			call	test002
 			call	test003
@@ -22,13 +23,21 @@ start:
 			call	test008
 			call	test009
 			call	test010
+			call	test011
+			call	test012
+			call	test013
+			call	test014
+			call	test015
+			call	test016
+			call	test017
+			call	test018
 
 			; 後始末
 			call	clear_key_buffer
 
 			; 結果を表示
 			ld		hl, test001_result
-			ld		b, 10
+			ld		b, 18
 	result_loop:
 			push	bc
 
@@ -42,6 +51,27 @@ start:
 			call	put_hl
 
 			pop		hl
+			push	hl
+
+			ld		l, [hl]
+			call	put_l
+
+			pop		hl
+			inc		hl
+			push	hl
+
+			ld		l, [hl]
+			call	put_l
+
+			ld		e, 13
+			ld		c, 2
+			call	bdos
+			ld		e, 10
+			ld		c, 2
+			call	bdos
+
+			pop		hl
+			inc		hl
 			pop		bc
 			djnz	result_loop
 
@@ -176,7 +206,54 @@ screen5::
 			ld		hl, data8
 			ld		b, 15
 			call	write_data
-			call	wait_push_space_key
+
+			ld		hl, 113 + (60 * 128)		;	( 226, 60 ) にアドレスセット
+			call	set_vram_write_address
+			ld		hl, data11
+			ld		b, 15
+			call	write_data
+
+			ld		hl, 120 + (63 * 128)		;	( 240, 63 ) にアドレスセット
+			call	set_vram_write_address
+			ld		hl, data12
+			ld		b, 8
+			call	write_data
+
+			ld		hl, 118 + (66 * 128)		;	( 236, 66 ) にアドレスセット
+			call	set_vram_write_address
+			ld		hl, data13
+			ld		b, 10
+			call	write_data
+
+			ld		hl, 118 + (69 * 128)		;	( 236, 69 ) にアドレスセット
+			call	set_vram_write_address
+			ld		hl, data14
+			ld		b, 10
+			call	write_data
+
+			ld		hl, 0 + (72 * 128)		;	( 0, 72 ) にアドレスセット
+			call	set_vram_write_address
+			ld		hl, data15
+			ld		b, 15
+			call	write_data
+
+			ld		hl, 0 + (75 * 128)		;	( 0, 75 ) にアドレスセット
+			call	set_vram_write_address
+			ld		hl, data16
+			ld		b, 15
+			call	write_data
+
+			ld		hl, 0 + (78 * 128)		;	( 0, 78 ) にアドレスセット
+			call	set_vram_write_address
+			ld		hl, data17
+			ld		b, 15
+			call	write_data
+
+			ld		hl, 0 + (81 * 128)		;	( 0, 81 ) にアドレスセット
+			call	set_vram_write_address
+			ld		hl, data18
+			ld		b, 15
+			call	write_data
 			ret
 
 	write_data:
@@ -202,6 +279,22 @@ screen5::
 			db		0x44, 0x44, 0x44, 0x44, 0x44, 0xAA, 0x33, 0x33, 0x33, 0x33, 0x33, 0x33, 0x33, 0x33, 0x33	; 15byte
 	data8:	;	( 20, 51 )
 			db		0x44, 0x44, 0x44, 0x44, 0x44, 0xA5, 0x55, 0x55, 0x55, 0x55, 0x55, 0x55, 0x55, 0x55, 0x55	; 15byte
+	data11:	;	( 226, 60 )
+			db		0x11, 0x22, 0x33, 0x44, 0x55, 0x00, 0x77, 0x88, 0x99, 0xAA, 0xBB, 0xCC, 0xDD, 0xEE, 0xFF	; 15byte
+	data12:	;	( 240, 63 )
+			db		0x12, 0x34, 0x56, 0x78, 0x9A, 0xBB, 0xDE, 0xF0												; 8byte
+	data13:	;	( 236, 66 )
+			db		0x33, 0x33, 0x33, 0x33, 0x33, 0x33, 0x33, 0x33, 0x33, 0x33									; 10byte
+	data14:	;	( 236, 69 )
+			db		0x55, 0x55, 0x55, 0x55, 0x55, 0x55, 0x55, 0x55, 0x55, 0x55									; 10byte
+	data15:	;	( 0, 72 )
+			db		0x11, 0x22, 0x33, 0x44, 0x55, 0x66, 0x77, 0x88, 0x99, 0xAA, 0x76, 0xCC, 0xDD, 0xEE, 0xFF	; 15byte
+	data16:	;	( 0, 75 )
+			db		0x44, 0x44, 0x44, 0x44, 0x44, 0x44, 0x44, 0x12, 0x34, 0x56, 0x58, 0x9A, 0xBC, 0xDE, 0xF0	; 15byte
+	data17:	;	( 0, 78 )
+			db		0x33, 0x33, 0x33, 0x33, 0x33, 0x33, 0x33, 0x33, 0x33, 0x33, 0x33, 0x33, 0x33, 0x33, 0x30	; 15byte
+	data18:	;	( 0, 81 )
+			db		0x55, 0x55, 0x55, 0x55, 0x55, 0x55, 0x55, 0x55, 0x55, 0x55, 0x55, 0x55, 0x55, 0x55, 0x55	; 15byte
 			endscope
 
 ; =============================================================================
@@ -216,6 +309,16 @@ read_status_bx::
 			ld		e, 9
 			call	read_status_register
 			ld		[hl], e
+			inc		hl
+			ld		a, [last_s2]
+			and		a, 0x10
+			ld		[hl], a
+			inc		hl
+			ld		e, 2
+			call	read_status_register
+			ld		a, e
+			and		a, 0x10
+			ld		[hl], a
 			ret
 			endscope
 
@@ -228,6 +331,43 @@ put_hl::
 			call	put_one
 			ld		de, 1000
 			call	put_one
+			ld		de, 100
+			call	put_one
+			ld		de, 10
+			call	put_one
+			ld		de, 1
+			call	put_one
+			ld		e, ' '
+			ld		c, 2
+			call	bdos
+			ret
+
+	put_one:
+			ld		b, 0
+	loop:
+			or		a, a
+			inc		b
+			sbc		hl, de
+			jr		nc, loop
+
+			add		hl, de
+			push	hl
+			dec		b
+			ld		a, b
+			add		a, '0'
+			ld		e, a
+			ld		c, 2		;	コンソール出力 _CONOUT
+			call	bdos
+			pop		hl
+			ret
+			endscope
+
+; =============================================================================
+;	L の値を表示
+; =============================================================================
+			scope	put_l
+put_l::
+			ld		h, 0
 			ld		de, 100
 			call	put_one
 			ld		de, 10
@@ -562,25 +702,317 @@ test010::
 			endscope
 
 ; =============================================================================
+;	右探索 境界色
+; =============================================================================
+			scope	test011
+test011::
+			ld		a, 2
+			ld		e, 7
+			call	write_control_register
+
+			ld		hl, data
+			ld		a, 32
+			ld		b, 15
+			call	run_command
+			call	wait_command
+			; ステータスレジスタを読んで、結果保管場所に書き込む
+			ld		hl, test011_result
+			call	read_status_bx
+			call	wait_push_space_key
+			ret
+	data:
+			dw		226			; SX
+			dw		60			; SY
+			dw		0			; DX (dummy)
+			dw		0			; DY (dummy)
+			dw		0			; NX (dummy)
+			dw		0			; NY (dummy)
+			db		6			; CLR
+			db		0b0000000	; ARG [-][-][-][-][-][DIX][EQ][-] EQ=0: 不一致でインクリメント, EQ=1: 一致でインクリメント
+			db		0x60		; CMD (SRCH)
+			endscope
+
+; =============================================================================
+			scope	test012
+test012::
+			ld		a, 4
+			ld		e, 7
+			call	write_control_register
+
+			ld		hl, data
+			ld		a, 32
+			ld		b, 15
+			call	run_command
+			call	wait_command
+			; ステータスレジスタを読んで、結果保管場所に書き込む
+			ld		hl, test012_result
+			call	read_status_bx
+			call	wait_push_space_key
+			ret
+	data:
+			dw		240			; SX
+			dw		63			; SY
+			dw		0			; DX (dummy)
+			dw		0			; DY (dummy)
+			dw		0			; NX (dummy)
+			dw		0			; NY (dummy)
+			db		12			; CLR
+			db		0b0000000	; ARG [-][-][-][-][-][DIX][EQ][-] EQ=0: 不一致でインクリメント, EQ=1: 一致でインクリメント
+			db		0x60		; CMD (SRCH)
+			endscope
+
+; =============================================================================
+;	左探索 境界色
+; =============================================================================
+			scope	test013
+test013::
+			ld		a, 8
+			ld		e, 7
+			call	write_control_register
+
+			ld		hl, data
+			ld		a, 32
+			ld		b, 15
+			call	run_command
+			call	wait_command
+			; ステータスレジスタを読んで、結果保管場所に書き込む
+			ld		hl, test013_result
+			call	read_status_bx
+			call	wait_push_space_key
+			ret
+	data:
+			dw		28			; SX
+			dw		72			; SY
+			dw		0			; DX (dummy)
+			dw		0			; DY (dummy)
+			dw		0			; NX (dummy)
+			dw		0			; NY (dummy)
+			db		11			; CLR
+			db		0b0000100	; ARG [-][-][-][-][-][DIX][EQ][-] EQ=0: 不一致でインクリメント, EQ=1: 一致でインクリメント
+			db		0x60		; CMD (SRCH)
+			endscope
+
+; =============================================================================
+			scope	test014
+test014::
+			ld		a, 10
+			ld		e, 7
+			call	write_control_register
+
+			ld		hl, data
+			ld		a, 32
+			ld		b, 15
+			call	run_command
+			call	wait_command
+			; ステータスレジスタを読んで、結果保管場所に書き込む
+			ld		hl, test014_result
+			call	read_status_bx
+			call	wait_push_space_key
+			ret
+	data:
+			dw		29			; SX
+			dw		75			; SY
+			dw		0			; DX (dummy)
+			dw		0			; DY (dummy)
+			dw		0			; NX (dummy)
+			dw		0			; NY (dummy)
+			db		7			; CLR
+			db		0b0000100	; ARG [-][-][-][-][-][DIX][EQ][-] EQ=0: 不一致でインクリメント, EQ=1: 一致でインクリメント
+			db		0x60		; CMD (SRCH)
+			endscope
+
+; =============================================================================
+;	右探索 境界色以外
+; =============================================================================
+			scope	test015
+test015::
+			ld		a, 2
+			ld		e, 7
+			call	write_control_register
+
+			ld		hl, data
+			ld		a, 32
+			ld		b, 15
+			call	run_command
+			call	wait_command
+			; ステータスレジスタを読んで、結果保管場所に書き込む
+			ld		hl, test015_result
+			call	read_status_bx
+			call	wait_push_space_key
+			ret
+	data:
+			dw		236			; SX
+			dw		66			; SY
+			dw		0			; DX (dummy)
+			dw		0			; DY (dummy)
+			dw		0			; NX (dummy)
+			dw		0			; NY (dummy)
+			db		3			; CLR
+			db		0b0000010	; ARG [-][-][-][-][-][DIX][EQ][-] EQ=0: 不一致でインクリメント, EQ=1: 一致でインクリメント
+			db		0x60		; CMD (SRCH)
+			endscope
+
+; =============================================================================
+			scope	test016
+test016::
+			ld		a, 4
+			ld		e, 7
+			call	write_control_register
+
+			ld		hl, data
+			ld		a, 32
+			ld		b, 15
+			call	run_command
+			call	wait_command
+			; ステータスレジスタを読んで、結果保管場所に書き込む
+			ld		hl, test016_result
+			call	read_status_bx
+			call	wait_push_space_key
+			ret
+	data:
+			dw		236			; SX
+			dw		69			; SY
+			dw		0			; DX (dummy)
+			dw		0			; DY (dummy)
+			dw		0			; NX (dummy)
+			dw		0			; NY (dummy)
+			db		5			; CLR
+			db		0b0000010	; ARG [-][-][-][-][-][DIX][EQ][-] EQ=0: 不一致でインクリメント, EQ=1: 一致でインクリメント
+			db		0x60		; CMD (SRCH)
+			endscope
+
+; =============================================================================
+;	左探索 境界色以外
+; =============================================================================
+			scope	test017
+test017::
+			ld		a, 8
+			ld		e, 7
+			call	write_control_register
+
+			ld		hl, data
+			ld		a, 32
+			ld		b, 15
+			call	run_command
+			call	wait_command
+			; ステータスレジスタを読んで、結果保管場所に書き込む
+			ld		hl, test017_result
+			call	read_status_bx
+			call	wait_push_space_key
+			ret
+	data:
+			dw		28			; SX
+			dw		78			; SY
+			dw		0			; DX (dummy)
+			dw		0			; DY (dummy)
+			dw		0			; NX (dummy)
+			dw		0			; NY (dummy)
+			db		3			; CLR
+			db		0b0000110	; ARG [-][-][-][-][-][DIX][EQ][-] EQ=0: 不一致でインクリメント, EQ=1: 一致でインクリメント
+			db		0x60		; CMD (SRCH)
+			endscope
+
+; =============================================================================
+			scope	test018
+test018::
+			ld		a, 10
+			ld		e, 7
+			call	write_control_register
+
+			ld		hl, data
+			ld		a, 32
+			ld		b, 15
+			call	run_command
+			call	wait_command
+			; ステータスレジスタを読んで、結果保管場所に書き込む
+			ld		hl, test018_result
+			call	read_status_bx
+			call	wait_push_space_key
+			ret
+	data:
+			dw		29			; SX
+			dw		81			; SY
+			dw		0			; DX (dummy)
+			dw		0			; DY (dummy)
+			dw		0			; NX (dummy)
+			dw		0			; NY (dummy)
+			db		5			; CLR
+			db		0b0000110	; ARG [-][-][-][-][-][DIX][EQ][-] EQ=0: 不一致でインクリメント, EQ=1: 一致でインクリメント
+			db		0x60		; CMD (SRCH)
+			endscope
+
+; =============================================================================
 			scope	results
 test001_result::
 			dw		0
+			db		0
+			db		0
 test002_result::
 			dw		0
+			db		0
+			db		0
 test003_result::
 			dw		0
+			db		0
+			db		0
 test004_result::
 			dw		0
+			db		0
+			db		0
 test005_result::
 			dw		0
+			db		0
+			db		0
 test006_result::
 			dw		0
+			db		0
+			db		0
 test007_result::
 			dw		0
+			db		0
+			db		0
 test008_result::
 			dw		0
+			db		0
+			db		0
 test009_result::
 			dw		0
+			db		0
+			db		0
 test010_result::
 			dw		0
+			db		0
+			db		0
+test011_result::
+			dw		0
+			db		0
+			db		0
+test012_result::
+			dw		0
+			db		0
+			db		0
+test013_result::
+			dw		0
+			db		0
+			db		0
+test014_result::
+			dw		0
+			db		0
+			db		0
+test015_result::
+			dw		0
+			db		0
+			db		0
+test016_result::
+			dw		0
+			db		0
+			db		0
+test017_result::
+			dw		0
+			db		0
+			db		0
+test018_result::
+			dw		0
+			db		0
+			db		0
 			endscope

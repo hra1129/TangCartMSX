@@ -1001,9 +1001,6 @@ puts::
 			jr		loop
 			endscope
 
-vram_bit16::
-			db		0
-
 ; =============================================================================
 ;	VDPコマンド実行
 ;	input:
@@ -1049,6 +1046,13 @@ wait_command::
 			call	read_status_register
 			ld		a, e
 			and		a, 1
+			ld		a, e
+			ld		[last_s2], a
 			ret		z
 			jr		wait_command
 			endscope
+
+vram_bit16::
+			db		0
+last_s2::
+			db		0
