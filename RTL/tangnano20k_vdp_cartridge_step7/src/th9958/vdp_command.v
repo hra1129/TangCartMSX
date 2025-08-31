@@ -71,6 +71,7 @@ module vdp_command (
 	input		[5:0]	register_num,
 	input		[7:0]	register_data,
 	input				clear_border_detect,
+	input				read_color,
 	output				status_command_execute,			//	S#2 bit0
 	output				status_border_detect,			//	S#2 bit4
 	output				status_transfer_ready,			//	S#2 bit7
@@ -216,6 +217,8 @@ module vdp_command (
 	localparam			c_state_hmmc_next			= 6'd29;
 	localparam			c_state_lmmc_make			= 6'd30;
 	localparam			c_state_lmmc_next			= 6'd31;
+	localparam			c_state_lmcm_make			= 6'd32;
+	localparam			c_state_lmcm_next			= 6'd33;
 	localparam			c_state_wait_rdata_en		= 6'd61;
 	localparam			c_state_pre_finish			= 6'd62;
 	localparam			c_state_finish				= 6'd63;
@@ -269,13 +272,23 @@ module vdp_command (
 			ff_sx <= 10'd0;
 		end
 		else if( ff_start ) begin
-			ff_sx <= (ff_command == c_ymmm) ? { 1'b0, reg_dx }: { 1'b0, reg_sx };
+			case( ff_command )
+			c_ymmm:
+				ff_sx	<= { 1'b0, reg_dx };
+			c_hmmc, c_lmmc, c_hmmv, c_lmmv:
+				ff_sx	<= 10'd128;
+			default:
+				ff_sx	<= { 1'b0, reg_sx };
+			endcase
 		end
 		else if( !ff_command_execute || ff_cache_vram_valid ) begin
 			//	hold
 		end
 		else if( ff_count_valid ) begin
-			if( ff_command == c_srch ) begin
+			if( ff_command == c_hmmc || ff_command == c_lmmc ) begin
+				//	hold
+			end
+			else if( ff_command == c_srch ) begin
 				ff_sx <= w_next_sx;
 			end
 			else if( ff_nx == 9'd0 || w_next_sx[9] || w_next_dx[9] || (!w_512pixel && (w_next_sx[8] || w_next_dx[8])) ) begin
@@ -303,7 +316,7 @@ module vdp_command (
 			//	hold
 		end
 		else if( ff_count_valid ) begin
-			if( ff_command == c_srch ) begin
+			if( ff_command == c_srch || ff_command == c_hmmc || ff_command == c_lmmc || ff_command == c_hmmv || ff_command == c_lmmv ) begin
 				//	hold
 			end
 			else if( ff_nx == 9'd0 || w_next_sx[9] || w_next_dx[9] || (!w_512pixel && (w_next_sx[8] || w_next_dx[8])) ) begin
@@ -552,6 +565,9 @@ module vdp_command (
 				ff_color	<= register_data;
 			end
 		end
+		else if( ff_state == c_state_lmcm_make ) begin
+			ff_color	<= ff_read_pixel;
+		end
 	end
 
 	always @( posedge clk or negedge reset_n ) begin
@@ -565,6 +581,9 @@ module vdp_command (
 		         (ff_command == c_hmmc && ff_state == c_state_hmmc_next) || 
 		         (ff_command == c_lmcm && ff_start) ) begin
 			ff_color_latched		<= 1'b0;
+		end
+		else if( ff_state == c_state_lmcm_make ) begin
+			ff_color_latched		<= 1'b1;
 		end
 		else begin
 			//	hold
@@ -699,6 +718,9 @@ module vdp_command (
 			c_hmmv:		ff_state <= c_state_hmmv;
 			c_hmmm:		ff_state <= c_state_hmmm;
 			c_ymmm:		ff_state <= c_state_ymmm;
+			c_lmmc:		ff_state <= c_state_lmmc;
+			c_hmmc:		ff_state <= c_state_hmmc;
+			c_lmcm:		ff_state <= c_state_lmcm;
 			default:	ff_state <= c_state_stop;
 			endcase
 		end
@@ -908,8 +930,29 @@ module vdp_command (
 
 			//	LMCM command --------------------------------------------------
 			c_state_lmcm: begin
-				//	dummy
-				ff_state				<= c_state_pre_finish;
+				//	Read the location of (DX, DY)
+				ff_cache_vram_address	<= w_address_d;
+				ff_cache_vram_valid		<= 1'b1;
+				ff_cache_vram_write		<= 1'b0;
+				ff_state				<= c_state_wait_rdata_en;
+				ff_next_state			<= c_state_lmcm_make;
+				ff_xsel					<= ff_dx[1:0];
+			end
+			c_state_lmcm_make: begin
+				ff_count_valid			<= 1'b1;
+				ff_state				<= c_state_lmcm_next;
+			end
+			c_state_lmcm_next: begin
+				ff_count_valid			<= 1'b0;
+				if( ff_nx == 9'd0 && ff_ny == 10'd0 ) begin
+					ff_state				<= c_state_pre_finish;
+				end
+				else if( read_color ) begin
+					ff_state				<= c_state_lmcm;
+				end
+				else begin
+					//	hold
+				end
 			end
 
 			//	LMMC command --------------------------------------------------

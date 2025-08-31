@@ -159,6 +159,7 @@ module vdp (
 	wire		[5:0]	w_register_num;
 	wire		[7:0]	w_register_data;
 	wire				w_clear_border_detect;
+	wire				w_read_color;
 
 	wire				w_status_command_execute;
 	wire				w_status_border_detect;
@@ -231,6 +232,7 @@ module vdp (
 		.sprite_collision_x							( w_sprite_collision_x						),
 		.sprite_collision_y							( w_sprite_collision_y						),
 		.clear_border_detect						( w_clear_border_detect						),
+		.read_color									( w_read_color								),
 		.register_write								( w_register_write							),
 		.register_num								( w_register_num							),
 		.register_data								( w_register_data							),
@@ -351,6 +353,7 @@ module vdp (
 		.register_num								( w_register_num							),
 		.register_data								( w_register_data							),
 		.clear_border_detect						( w_clear_border_detect						),
+		.read_color									( w_read_color								),
 		.status_command_execute						( w_status_command_execute					),
 		.status_border_detect						( w_status_border_detect					),
 		.status_transfer_ready						( w_status_transfer_ready					),

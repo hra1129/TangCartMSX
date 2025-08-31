@@ -1,0 +1,21 @@
+初期化 (周辺色 7)
+
+TR bit の扱いのテスト
+	TEST001( 2): LMCMコマンドの実行で TR=1 になる。複数回読んでも TR=1 のままである。
+	TEST002( 4): R#44への書き込みで TR=0 になる。複数回読んでも TR=0 のままである。
+
+シンプルな転送
+	TEST003( 8): DX= 0,DY= 0,NX=16,NY=16,DIX=0,DIY=0,HMMC,IMP
+	TEST004(10): DX=31,DY= 0,NX=16,NY=16,DIX=1,DIY=0,HMMC,IMP
+	TEST005(13): DX=32,DY=15,NX=16,NY=16,DIX=0,DIY=1,HMMC,IMP
+	TEST006( 2): DX=63,DY=15,NX=16,NY=16,DIX=1,DIY=1,HMMC,IMP
+
+	TEST007( 8): DX= 1,DY=16,NX=16,NY=16,DIX=0,DIY=0,HMMC,IMP
+	TEST008(10): DX=32,DY=16,NX=16,NY=16,DIX=1,DIY=0,HMMC,IMP
+	TEST009(13): DX=33,DY=31,NX=16,NY=16,DIX=0,DIY=1,HMMC,IMP
+	TEST010( 2): DX=64,DY=31,NX=16,NY=16,DIX=1,DIY=1,HMMC,IMP
+
+===============================================================================
+test item: S#2  S#2   ※S#2 は and 80h している。
+  test001: 128  128
+  test002: 000  000
