@@ -908,6 +908,8 @@ module vdp_command (
 
 			//	LMCM command --------------------------------------------------
 			c_state_lmcm: begin
+				//	dummy
+				ff_state				<= c_state_pre_finish;
 			end
 
 			//	LMMC command --------------------------------------------------

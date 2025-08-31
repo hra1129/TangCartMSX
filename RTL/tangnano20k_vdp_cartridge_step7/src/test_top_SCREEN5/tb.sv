@@ -671,7 +671,7 @@ module tb ();
 		repeat( 100 ) @( posedge clk14m );
 
 		//	VDP Command LINE
-		$display( "[test005] VDP Command LINE" );
+		$display( "[test006] VDP Command LINE" );
 		write_io( vdp_io1, 8'd32 );
 		write_io( vdp_io1, 8'h80 + 8'd17 );
 		write_io( vdp_io3, 8'd0 );				//	R#32 SXl
@@ -728,7 +728,7 @@ module tb ();
 		repeat( 100 ) @( posedge clk14m );
 
 		//	VDP Command LMMV
-		$display( "[test006] VDP Command LMMV (Box fill)" );
+		$display( "[test007] VDP Command LMMV (Box fill)" );
 		write_io( vdp_io1, 8'd36 );
 		write_io( vdp_io1, 8'h80 + 8'd17 );
 		write_io( vdp_io3, 8'd10 );				//	R#36 DXl
@@ -764,7 +764,7 @@ module tb ();
 		repeat( 100 ) @( posedge clk14m );
 
 		//	VDP Command HMMV
-		$display( "[test007] VDP Command HMMV (High speed box fill)" );
+		$display( "[test008] VDP Command HMMV (High speed box fill)" );
 		write_io( vdp_io1, 8'd36 );
 		write_io( vdp_io1, 8'h80 + 8'd17 );
 		write_io( vdp_io3, 8'd100 );			//	R#36 DXl
@@ -783,7 +783,7 @@ module tb ();
 		repeat( 100 ) @( posedge clk14m );
 
 		//	VDP Command LMMM
-		$display( "[test008] VDP Command LMMM (Block copy)" );
+		$display( "[test009] VDP Command LMMM (Block copy)" );
 		write_io( vdp_io1, 8'd32 );
 		write_io( vdp_io1, 8'h80 + 8'd17 );
 		write_io( vdp_io3, 8'd0 );				//	R#32 SXl
@@ -806,7 +806,7 @@ module tb ();
 		repeat( 100 ) @( posedge clk14m );
 
 		//	VDP Command HMMM
-		$display( "[test009] VDP Command HMMM (High speed block copy)" );
+		$display( "[test010] VDP Command HMMM (High speed block copy)" );
 		write_io( vdp_io1, 8'd32 );
 		write_io( vdp_io1, 8'h80 + 8'd17 );
 		write_io( vdp_io3, 8'd0 );				//	R#32 SXl
@@ -828,7 +828,298 @@ module tb ();
 		wait_vdp_command();
 		repeat( 100 ) @( posedge clk14m );
 
-//		repeat(2000000) @( posedge clk14m );
+		//	VDP Command LMMC
+		$display( "[test010] VDP Command LMMC (block copy)" );
+		write_io( vdp_io1, 8'd36 );
+		write_io( vdp_io1, 8'h80 + 8'd17 );
+		write_io( vdp_io3, 8'd0 );				//	R#36 DXl
+		write_io( vdp_io3, 8'd0 );				//	R#37 DXh
+		write_io( vdp_io3, 8'd0 );				//	R#38 DYl
+		write_io( vdp_io3, 8'd0 );				//	R#39 DYh
+		write_io( vdp_io3, 8'd16 );				//	R#40 NXl
+		write_io( vdp_io3, 8'd0 );				//	R#41 NXh
+		write_io( vdp_io3, 8'd16 );				//	R#42 NYl
+		write_io( vdp_io3, 8'd0 );				//	R#43 NYh
+		write_io( vdp_io3, 8'd0 );				//	R#44 COLOR
+		write_io( vdp_io3, 8'd0 );				//	R#45 ARG
+		write_io( vdp_io3, 8'hB0 );				//	R#46 HMMM
+
+		write_io( vdp_io1, 8'h80 + 8'd44 );
+		write_io( vdp_io1, 8'h80 + 8'd17 );
+
+		write_io( vdp_io3, 8'h00 );
+		write_io( vdp_io3, 8'h01 );
+		write_io( vdp_io3, 8'h01 );
+		write_io( vdp_io3, 8'h01 );
+		write_io( vdp_io3, 8'h01 );
+		write_io( vdp_io3, 8'h01 );
+		write_io( vdp_io3, 8'h01 );
+		write_io( vdp_io3, 8'h01 );
+		write_io( vdp_io3, 8'h00 );
+		write_io( vdp_io3, 8'h00 );
+		write_io( vdp_io3, 8'h00 );
+		write_io( vdp_io3, 8'h00 );
+		write_io( vdp_io3, 8'h00 );
+		write_io( vdp_io3, 8'h00 );
+		write_io( vdp_io3, 8'h00 );
+	
+		write_io( vdp_io3, 8'h00 );
+		write_io( vdp_io3, 8'h01 );
+		write_io( vdp_io3, 8'h0F );
+		write_io( vdp_io3, 8'h0F );
+		write_io( vdp_io3, 8'h0F );
+		write_io( vdp_io3, 8'h0F );
+		write_io( vdp_io3, 8'h0F );
+		write_io( vdp_io3, 8'h0F );
+		write_io( vdp_io3, 8'h0F );
+		write_io( vdp_io3, 8'h01 );
+		write_io( vdp_io3, 8'h01 );
+		write_io( vdp_io3, 8'h00 );
+		write_io( vdp_io3, 8'h00 );
+		write_io( vdp_io3, 8'h00 );
+		write_io( vdp_io3, 8'h00 );
+		write_io( vdp_io3, 8'h00 );
+	
+		write_io( vdp_io3, 8'h00 );
+		write_io( vdp_io3, 8'h01 );
+		write_io( vdp_io3, 8'h01 );
+		write_io( vdp_io3, 8'h01 );
+		write_io( vdp_io3, 8'h01 );
+		write_io( vdp_io3, 8'h01 );
+		write_io( vdp_io3, 8'h01 );
+		write_io( vdp_io3, 8'h0F );
+		write_io( vdp_io3, 8'h0F );
+		write_io( vdp_io3, 8'h0F );
+		write_io( vdp_io3, 8'h0F );
+		write_io( vdp_io3, 8'h01 );
+		write_io( vdp_io3, 8'h00 );
+		write_io( vdp_io3, 8'h00 );
+		write_io( vdp_io3, 8'h00 );
+		write_io( vdp_io3, 8'h00 );
+	
+		write_io( vdp_io3, 8'h01 );
+		write_io( vdp_io3, 8'h0F );
+		write_io( vdp_io3, 8'h0F );
+		write_io( vdp_io3, 8'h0F );
+		write_io( vdp_io3, 8'h0F );
+		write_io( vdp_io3, 8'h0F );
+		write_io( vdp_io3, 8'h0F );
+		write_io( vdp_io3, 8'h0F );
+		write_io( vdp_io3, 8'h0F );
+		write_io( vdp_io3, 8'h0F );
+		write_io( vdp_io3, 8'h0F );
+		write_io( vdp_io3, 8'h0F );
+		write_io( vdp_io3, 8'h01 );
+		write_io( vdp_io3, 8'h00 );
+		write_io( vdp_io3, 8'h00 );
+		write_io( vdp_io3, 8'h00 );
+	
+		write_io( vdp_io3, 8'h00 );
+		write_io( vdp_io3, 8'h01 );
+		write_io( vdp_io3, 8'h01 );
+		write_io( vdp_io3, 8'h01 );
+		write_io( vdp_io3, 8'h01 );
+		write_io( vdp_io3, 8'h0F );
+		write_io( vdp_io3, 8'h0F );
+		write_io( vdp_io3, 8'h0F );
+		write_io( vdp_io3, 8'h0F );
+		write_io( vdp_io3, 8'h0F );
+		write_io( vdp_io3, 8'h01 );
+		write_io( vdp_io3, 8'h0F );
+		write_io( vdp_io3, 8'h01 );
+		write_io( vdp_io3, 8'h00 );
+		write_io( vdp_io3, 8'h00 );
+		write_io( vdp_io3, 8'h00 );
+	
+		write_io( vdp_io3, 8'h00 );
+		write_io( vdp_io3, 8'h00 );
+		write_io( vdp_io3, 8'h00 );
+		write_io( vdp_io3, 8'h01 );
+		write_io( vdp_io3, 8'h0F );
+		write_io( vdp_io3, 8'h0F );
+		write_io( vdp_io3, 8'h0F );
+		write_io( vdp_io3, 8'h0F );
+		write_io( vdp_io3, 8'h0F );
+		write_io( vdp_io3, 8'h0F );
+		write_io( vdp_io3, 8'h01 );
+		write_io( vdp_io3, 8'h0F );
+		write_io( vdp_io3, 8'h0F );
+		write_io( vdp_io3, 8'h01 );
+		write_io( vdp_io3, 8'h00 );
+		write_io( vdp_io3, 8'h00 );
+	
+		write_io( vdp_io3, 8'h00 );
+		write_io( vdp_io3, 8'h00 );
+		write_io( vdp_io3, 8'h01 );
+		write_io( vdp_io3, 8'h0F );
+		write_io( vdp_io3, 8'h0F );
+		write_io( vdp_io3, 8'h0F );
+		write_io( vdp_io3, 8'h0F );
+		write_io( vdp_io3, 8'h0F );
+		write_io( vdp_io3, 8'h0D );
+		write_io( vdp_io3, 8'h0D );
+		write_io( vdp_io3, 8'h0D );
+		write_io( vdp_io3, 8'h0F );
+		write_io( vdp_io3, 8'h0F );
+		write_io( vdp_io3, 8'h01 );
+		write_io( vdp_io3, 8'h00 );
+		write_io( vdp_io3, 8'h00 );
+
+		write_io( vdp_io3, 8'h00 );
+		write_io( vdp_io3, 8'h00 );
+		write_io( vdp_io3, 8'h01 );
+		write_io( vdp_io3, 8'h0F );
+		write_io( vdp_io3, 8'h0F );
+		write_io( vdp_io3, 8'h0F );
+		write_io( vdp_io3, 8'h0F );
+		write_io( vdp_io3, 8'h0F );
+		write_io( vdp_io3, 8'h0F );
+		write_io( vdp_io3, 8'h0F );
+		write_io( vdp_io3, 8'h0F );
+		write_io( vdp_io3, 8'h0F );
+		write_io( vdp_io3, 8'h0F );
+		write_io( vdp_io3, 8'h01 );
+		write_io( vdp_io3, 8'h00 );
+		write_io( vdp_io3, 8'h00 );
+
+		write_io( vdp_io3, 8'h00 );
+		write_io( vdp_io3, 8'h01 );
+		write_io( vdp_io3, 8'h01 );
+		write_io( vdp_io3, 8'h0F );
+		write_io( vdp_io3, 8'h0F );
+		write_io( vdp_io3, 8'h01 );
+		write_io( vdp_io3, 8'h0F );
+		write_io( vdp_io3, 8'h0F );
+		write_io( vdp_io3, 8'h0F );
+		write_io( vdp_io3, 8'h0F );
+		write_io( vdp_io3, 8'h0F );
+		write_io( vdp_io3, 8'h0F );
+		write_io( vdp_io3, 8'h0F );
+		write_io( vdp_io3, 8'h01 );
+		write_io( vdp_io3, 8'h00 );
+		write_io( vdp_io3, 8'h00 );
+	
+		write_io( vdp_io3, 8'h01 );
+		write_io( vdp_io3, 8'h0F );
+		write_io( vdp_io3, 8'h0F );
+		write_io( vdp_io3, 8'h0F );
+		write_io( vdp_io3, 8'h01 );
+		write_io( vdp_io3, 8'h0F );
+		write_io( vdp_io3, 8'h0F );
+		write_io( vdp_io3, 8'h0F );
+		write_io( vdp_io3, 8'h0F );
+		write_io( vdp_io3, 8'h0F );
+		write_io( vdp_io3, 8'h0F );
+		write_io( vdp_io3, 8'h0F );
+		write_io( vdp_io3, 8'h0F );
+		write_io( vdp_io3, 8'h01 );
+		write_io( vdp_io3, 8'h00 );
+		write_io( vdp_io3, 8'h00 );
+	
+		write_io( vdp_io3, 8'h01 );
+		write_io( vdp_io3, 8'h0F );
+		write_io( vdp_io3, 8'h0F );
+		write_io( vdp_io3, 8'h0F );
+		write_io( vdp_io3, 8'h01 );
+		write_io( vdp_io3, 8'h0F );
+		write_io( vdp_io3, 8'h0F );
+		write_io( vdp_io3, 8'h01 );
+		write_io( vdp_io3, 8'h0F );
+		write_io( vdp_io3, 8'h0F );
+		write_io( vdp_io3, 8'h0F );
+		write_io( vdp_io3, 8'h0F );
+		write_io( vdp_io3, 8'h0F );
+		write_io( vdp_io3, 8'h01 );
+		write_io( vdp_io3, 8'h00 );
+		write_io( vdp_io3, 8'h00 );
+
+		write_io( vdp_io3, 8'h00 );
+		write_io( vdp_io3, 8'h01 );
+		write_io( vdp_io3, 8'h0F );
+		write_io( vdp_io3, 8'h0F );
+		write_io( vdp_io3, 8'h0F );
+		write_io( vdp_io3, 8'h01 );
+		write_io( vdp_io3, 8'h01 );
+		write_io( vdp_io3, 8'h0F );
+		write_io( vdp_io3, 8'h0F );
+		write_io( vdp_io3, 8'h0F );
+		write_io( vdp_io3, 8'h0F );
+		write_io( vdp_io3, 8'h0F );
+		write_io( vdp_io3, 8'h01 );
+		write_io( vdp_io3, 8'h01 );
+		write_io( vdp_io3, 8'h01 );
+		write_io( vdp_io3, 8'h00 );
+
+		write_io( vdp_io3, 8'h01 );
+		write_io( vdp_io3, 8'h0F );
+		write_io( vdp_io3, 8'h01 );
+		write_io( vdp_io3, 8'h0F );
+		write_io( vdp_io3, 8'h0F );
+		write_io( vdp_io3, 8'h0F );
+		write_io( vdp_io3, 8'h0F );
+		write_io( vdp_io3, 8'h0F );
+		write_io( vdp_io3, 8'h0F );
+		write_io( vdp_io3, 8'h0F );
+		write_io( vdp_io3, 8'h0F );
+		write_io( vdp_io3, 8'h01 );
+		write_io( vdp_io3, 8'h01 );
+		write_io( vdp_io3, 8'h0F );
+		write_io( vdp_io3, 8'h0F );
+		write_io( vdp_io3, 8'h01 );
+
+		write_io( vdp_io3, 8'h01 );
+		write_io( vdp_io3, 8'h0F );
+		write_io( vdp_io3, 8'h0F );
+		write_io( vdp_io3, 8'h01 );
+		write_io( vdp_io3, 8'h01 );
+		write_io( vdp_io3, 8'h0F );
+		write_io( vdp_io3, 8'h0F );
+		write_io( vdp_io3, 8'h0F );
+		write_io( vdp_io3, 8'h0F );
+		write_io( vdp_io3, 8'h01 );
+		write_io( vdp_io3, 8'h01 );
+		write_io( vdp_io3, 8'h0F );
+		write_io( vdp_io3, 8'h0F );
+		write_io( vdp_io3, 8'h0F );
+		write_io( vdp_io3, 8'h01 );
+		write_io( vdp_io3, 8'h00 );
+
+		write_io( vdp_io3, 8'h00 );
+		write_io( vdp_io3, 8'h01 );
+		write_io( vdp_io3, 8'h0F );
+		write_io( vdp_io3, 8'h0F );
+		write_io( vdp_io3, 8'h0F );
+		write_io( vdp_io3, 8'h01 );
+		write_io( vdp_io3, 8'h01 );
+		write_io( vdp_io3, 8'h01 );
+		write_io( vdp_io3, 8'h01 );
+		write_io( vdp_io3, 8'h0F );
+		write_io( vdp_io3, 8'h0F );
+		write_io( vdp_io3, 8'h0F );
+		write_io( vdp_io3, 8'h01 );
+		write_io( vdp_io3, 8'h01 );
+		write_io( vdp_io3, 8'h00 );
+		write_io( vdp_io3, 8'h00 );
+
+		write_io( vdp_io3, 8'h00 );
+		write_io( vdp_io3, 8'h00 );
+		write_io( vdp_io3, 8'h01 );
+		write_io( vdp_io3, 8'h01 );
+		write_io( vdp_io3, 8'h01 );
+		write_io( vdp_io3, 8'h00 );
+		write_io( vdp_io3, 8'h00 );
+		write_io( vdp_io3, 8'h00 );
+		write_io( vdp_io3, 8'h00 );
+		write_io( vdp_io3, 8'h01 );
+		write_io( vdp_io3, 8'h01 );
+		write_io( vdp_io3, 8'h01 );
+		write_io( vdp_io3, 8'h00 );
+		write_io( vdp_io3, 8'h00 );
+		write_io( vdp_io3, 8'h00 );
+		write_io( vdp_io3, 8'h00 );
+
+		wait_vdp_command();
+		repeat( 100 ) @( posedge clk14m );
 
 		$display( "[test---] All tests completed" );
 		repeat( 100 ) @( posedge clk14m );
