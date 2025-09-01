@@ -31,13 +31,16 @@ start:
 			call	test016
 			call	test017
 			call	test018
+			call	test019
+			call	test020
+			call	test021
 
 			; 後始末
 			call	clear_key_buffer
 
 			; 結果を表示
 			ld		hl, test001_result
-			ld		b, 18
+			ld		b, 21
 	result_loop:
 			push	bc
 
@@ -254,6 +257,12 @@ screen5::
 			ld		hl, data18
 			ld		b, 15
 			call	write_data
+
+			ld		hl, 0 + (83 * 128)		;	( 0, 83 ) にアドレスセット
+			call	set_vram_write_address
+			ld		hl, data19
+			ld		b, 90
+			call	write_data
 			ret
 
 	write_data:
@@ -295,6 +304,13 @@ screen5::
 			db		0x33, 0x33, 0x33, 0x33, 0x33, 0x33, 0x33, 0x33, 0x33, 0x33, 0x33, 0x33, 0x33, 0x33, 0x30	; 15byte
 	data18:	;	( 0, 81 )
 			db		0x55, 0x55, 0x55, 0x55, 0x55, 0x55, 0x55, 0x55, 0x55, 0x55, 0x55, 0x55, 0x55, 0x55, 0x55	; 15byte
+	data19:	;	( 0, 83 )
+			db		0x55, 0x55, 0x55, 0x55, 0x55, 0x55, 0x55, 0x55, 0x55, 0x55, 0x55, 0x55, 0x55, 0x55, 0x55	; 15byte
+			db		0x55, 0x55, 0x55, 0x55, 0x55, 0x55, 0x55, 0x55, 0x55, 0x55, 0x55, 0x55, 0x55, 0x55, 0x55	; 30byte
+			db		0x55, 0x55, 0x55, 0x55, 0x55, 0x55, 0x55, 0x55, 0x55, 0x55, 0x55, 0x55, 0x55, 0x55, 0x55	; 45byte
+			db		0x55, 0x55, 0x55, 0x55, 0x55, 0x55, 0x55, 0x55, 0x55, 0x55, 0x55, 0x55, 0x55, 0x55, 0x55	; 60byte
+			db		0x55, 0x55, 0x55, 0x55, 0x55, 0x55, 0x55, 0x55, 0x55, 0x55, 0x55, 0x55, 0x55, 0x55, 0x55	; 75byte
+			db		0x55, 0x55, 0x55, 0x55, 0x55, 0x55, 0x55, 0x55, 0x55, 0x55, 0x55, 0x55, 0x55, 0x55, 0x5A	; 90byte
 			endscope
 
 ; =============================================================================
@@ -942,6 +958,201 @@ test018::
 			endscope
 
 ; =============================================================================
+;	右探索 境界色 → 右探索 未検出
+; =============================================================================
+			scope	test0
+test019::
+			ld		a, 2
+			ld		e, 7
+			call	write_control_register
+
+			ld		hl, data1
+			ld		a, 32
+			ld		b, 15
+			call	run_command
+
+			; Wait finish SRCH command (NOT READ S#2!!)
+			ld		b, 0
+	wait_loop1:
+			nop
+			djnz	wait_loop1
+			; BD = 1
+
+			ld		hl, data2
+			ld		a, 32
+			ld		b, 15
+			call	run_command
+
+			; Wait finish SRCH command (NOT READ S#2!!)
+			ld		b, 0
+	wait_loop2:
+			nop
+			djnz	wait_loop2
+			; Not detect border
+
+			; ステータスレジスタを読んで、結果保管場所に書き込む
+			ld		hl, test019_result
+			call	read_status_bx
+			call	wait_push_space_key
+			ret
+
+	data1:
+			dw		20			; SX
+			dw		30			; SY
+			dw		0			; DX (dummy)
+			dw		0			; DY (dummy)
+			dw		0			; NX (dummy)
+			dw		0			; NY (dummy)
+			db		6			; CLR
+			db		0b0000000	; ARG [-][-][-][-][-][DIX][EQ][-] EQ=0: 不一致でインクリメント, EQ=1: 一致でインクリメント
+			db		0x60		; CMD (SRCH)
+
+	data2:
+			dw		226			; SX
+			dw		60			; SY
+			dw		0			; DX (dummy)
+			dw		0			; DY (dummy)
+			dw		0			; NX (dummy)
+			dw		0			; NY (dummy)
+			db		6			; CLR
+			db		0b0000000	; ARG [-][-][-][-][-][DIX][EQ][-] EQ=0: 不一致でインクリメント, EQ=1: 一致でインクリメント
+			db		0x60		; CMD (SRCH)
+			endscope
+
+; =============================================================================
+;	右探索 BD=1 → 境界色 → 即ステータスリード
+; =============================================================================
+			scope	test020
+test020::
+			ld		a, 4
+			ld		e, 7
+			call	write_control_register
+
+			ld		a, 2
+			ld		e, 15
+			call	write_control_register
+
+			ld		hl, data1
+			ld		a, 32
+			ld		b, 15
+			call	run_command
+
+			; Wait finish SRCH command (NOT READ S#2!!)
+			ld		b, 0
+	wait_loop1:
+			nop
+			djnz	wait_loop1
+			; BD = 1
+
+			ld		hl, data2
+			ld		a, 32
+			ld		b, 15
+			call	run_command
+
+			; Read S#2
+			ld		a, [io_vdp_port1]
+			ld		c, a
+			in		a, [c]
+			and		a, 0x10
+			push	af
+
+			call	wait_command
+			; ステータスレジスタを読んで、結果保管場所に書き込む
+			ld		hl, test020_result
+			call	read_status_bx
+
+			pop		af
+			ld		[test020_result + 3], a
+
+			call	wait_push_space_key
+			ret
+
+	data1:
+			dw		20			; SX
+			dw		30			; SY
+			dw		0			; DX (dummy)
+			dw		0			; DY (dummy)
+			dw		0			; NX (dummy)
+			dw		0			; NY (dummy)
+			db		6			; CLR
+			db		0b0000000	; ARG [-][-][-][-][-][DIX][EQ][-] EQ=0: 不一致でインクリメント, EQ=1: 一致でインクリメント
+			db		0x60		; CMD (SRCH)
+
+	data2:
+			dw		0			; SX
+			dw		83			; SY
+			dw		0			; DX (dummy)
+			dw		0			; DY (dummy)
+			dw		0			; NX (dummy)
+			dw		0			; NY (dummy)
+			db		1			; CLR
+			db		0b0000000	; ARG [-][-][-][-][-][DIX][EQ][-] EQ=0: 不一致でインクリメント, EQ=1: 一致でインクリメント
+			db		0x60		; CMD (SRCH)
+			endscope
+
+; =============================================================================
+;	右探索 BD=0 → 境界色 → 即ステータスリード
+; =============================================================================
+			scope	test021
+test021::
+			ld		a, 4
+			ld		e, 7
+			call	write_control_register
+
+			ld		a, 2
+			ld		e, 15
+			call	write_control_register
+
+			call	wait_command
+			; BD = 0
+
+			ld		hl, data2
+			ld		a, 32
+			ld		b, 15
+			call	run_command
+
+			; Read S#2
+			ld		a, [io_vdp_port1]
+			ld		c, a
+			in		a, [c]
+			and		a, 0x10
+			push	af
+
+			call	wait_command
+			; ステータスレジスタを読んで、結果保管場所に書き込む
+			ld		hl, test021_result
+			call	read_status_bx
+
+			pop		af
+			ld		[test021_result + 3], a
+
+			call	wait_push_space_key
+			ret
+
+	data1:
+			dw		20			; SX
+			dw		30			; SY
+			dw		0			; DX (dummy)
+			dw		0			; DY (dummy)
+			dw		0			; NX (dummy)
+			dw		0			; NY (dummy)
+			db		6			; CLR
+			db		0b0000000	; ARG [-][-][-][-][-][DIX][EQ][-] EQ=0: 不一致でインクリメント, EQ=1: 一致でインクリメント
+			db		0x60		; CMD (SRCH)
+
+	data2:
+			dw		0			; SX
+			dw		83			; SY
+			dw		0			; DX (dummy)
+			dw		0			; DY (dummy)
+			dw		0			; NX (dummy)
+			dw		0			; NY (dummy)
+			db		1			; CLR
+			db		0b0000000	; ARG [-][-][-][-][-][DIX][EQ][-] EQ=0: 不一致でインクリメント, EQ=1: 一致でインクリメント
+			db		0x60		; CMD (SRCH)
+			endscope
+
+; =============================================================================
 			scope	results
 test001_result::
 			dw		0
@@ -1012,6 +1223,18 @@ test017_result::
 			db		0
 			db		0
 test018_result::
+			dw		0
+			db		0
+			db		0
+test019_result::
+			dw		0
+			db		0
+			db		0
+test020_result::
+			dw		0
+			db		0
+			db		0
+test021_result::
 			dw		0
 			db		0
 			db		0
