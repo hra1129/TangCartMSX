@@ -292,7 +292,12 @@ module vdp_command (
 				ff_sx <= w_next_sx;
 			end
 			else if( ff_nx == 9'd0 || w_next_sx[9] || w_next_dx[9] || (!w_512pixel && (w_next_sx[8] || w_next_dx[8])) ) begin
-				ff_sx <= (ff_command == c_ymmm) ? { 1'b0, reg_dx }: { 1'b0, reg_sx };
+				if( ff_command == c_ymmm ) begin
+					ff_sx <= { 1'b0, reg_dx };
+				end
+				else begin
+					ff_sx <= { 1'b0, reg_sx };
+				end
 			end
 			else begin
 				ff_sx <= w_next_sx;
@@ -474,12 +479,7 @@ module vdp_command (
 			end
 			else if( ff_nx == 9'd0 || w_next_sx[9] || w_next_dx[9] || (!w_512pixel && (w_next_sx[8] || w_next_dx[8])) ) begin
 				if( ff_command == c_ymmm ) begin
-					case( w_bpp )
-					c_bpp_8bit:		ff_nx <= 9'd255;
-					c_bpp_4bit:		ff_nx <= 9'd510;
-					c_bpp_2bit:		ff_nx <= 9'd508;
-					default:		ff_nx <= 9'd255;
-					endcase
+					ff_nx <= 9'd510;
 				end
 				else if( ff_command[3:2] == 2'b11 ) begin
 					case( w_bpp )
@@ -1057,7 +1057,7 @@ module vdp_command (
 			end
 			c_state_ymmm_next: begin
 				ff_count_valid			<= 1'b0;
-				if( ff_nx == 9'd0 && ff_ny == 10'd0 ) begin
+				if( (ff_nx == 9'd0 || w_next_dx[9] || (!w_512pixel && w_next_dx[8])) && ff_ny == 10'd0 ) begin
 					ff_state				<= c_state_pre_finish;
 				end
 				else begin

@@ -37,6 +37,9 @@ if errorlevel 1 pause ==========================
 zma sc5hmmc.asm  SC5HMMC.COM
 if errorlevel 1 pause ==========================
 
+zma sc5ymmm.asm  SC5YMMM.COM
+if errorlevel 1 pause ==========================
+
 if exist D:\download\msx\DOS2\MSXDOS2 (
 	if exist D:\download\msx\DOS2\MSXDOS2\SC0TEST.COM (
 		del D:\download\msx\DOS2\MSXDOS2\SC0TEST.COM
@@ -102,6 +105,11 @@ if exist D:\download\msx\DOS2\MSXDOS2 (
 		del D:\download\msx\DOS2\MSXDOS2\SC5HMMC.COM
 	)
 	copy SC5HMMC.COM  D:\download\msx\DOS2\MSXDOS2\
+
+	if exist D:\download\msx\DOS2\MSXDOS2\SC5YMMM.COM (
+		del D:\download\msx\DOS2\MSXDOS2\SC5YMMM.COM
+	)
+	copy SC5YMMM.COM  D:\download\msx\DOS2\MSXDOS2\
 )
 
 pause
