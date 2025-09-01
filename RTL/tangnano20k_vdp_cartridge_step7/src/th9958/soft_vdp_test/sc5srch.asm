@@ -34,13 +34,14 @@ start:
 			call	test019
 			call	test020
 			call	test021
+			call	test022
 
 			; 後始末
 			call	clear_key_buffer
 
 			; 結果を表示
 			ld		hl, test001_result
-			ld		b, 21
+			ld		b, 22
 	result_loop:
 			push	bc
 
@@ -77,13 +78,6 @@ start:
 			inc		hl
 			pop		bc
 			djnz	result_loop
-
-			ld		e, 13
-			ld		c, 2
-			call	bdos
-			ld		e, 10
-			ld		c, 2
-			call	bdos
 
 			ld		c, _TERM0
 			jp		bdos
@@ -327,13 +321,13 @@ read_status_bx::
 			ld		[hl], e
 			inc		hl
 			ld		a, [last_s2]
-			and		a, 0x10
+			and		a, 0x11
 			ld		[hl], a
 			inc		hl
 			ld		e, 2
 			call	read_status_register
 			ld		a, e
-			and		a, 0x10
+			and		a, 0x11
 			ld		[hl], a
 			ret
 			endscope
@@ -1053,7 +1047,7 @@ test020::
 			ld		a, [io_vdp_port1]
 			ld		c, a
 			in		a, [c]
-			and		a, 0x10
+			and		a, 0x11
 			push	af
 
 			call	wait_command
@@ -1106,7 +1100,7 @@ test021::
 			call	wait_command
 			; BD = 0
 
-			ld		hl, data2
+			ld		hl, data
 			ld		a, 32
 			ld		b, 15
 			call	run_command
@@ -1115,7 +1109,7 @@ test021::
 			ld		a, [io_vdp_port1]
 			ld		c, a
 			in		a, [c]
-			and		a, 0x10
+			and		a, 0x11
 			push	af
 
 			call	wait_command
@@ -1129,9 +1123,69 @@ test021::
 			call	wait_push_space_key
 			ret
 
+	data:
+			dw		0			; SX
+			dw		83			; SY
+			dw		0			; DX (dummy)
+			dw		0			; DY (dummy)
+			dw		0			; NX (dummy)
+			dw		0			; NY (dummy)
+			db		1			; CLR
+			db		0b0000000	; ARG [-][-][-][-][-][DIX][EQ][-] EQ=0: 不一致でインクリメント, EQ=1: 一致でインクリメント
+			db		0x60		; CMD (SRCH)
+			endscope
+
+; =============================================================================
+;	右探索 BD=0 → 境界色 → 即ステータスリード
+; =============================================================================
+			scope	test022
+test022::
+			ld		a, 4
+			ld		e, 7
+			call	write_control_register
+
+			ld		a, 2
+			ld		e, 15
+			call	write_control_register
+
+			ld		hl, data1
+			ld		a, 32
+			ld		b, 15
+			call	run_command
+
+			; Wait finish SRCH command (NOT READ S#2!!)
+			ld		b, 0
+	wait_loop1:
+			nop
+			djnz	wait_loop1
+			; BD = 0
+
+			ld		hl, data2
+			ld		a, 32
+			ld		b, 15
+			call	run_command
+
+			; Read S#2
+			ld		a, [io_vdp_port1]
+			ld		c, a
+			in		a, [c]
+			and		a, 0x11
+			push	af
+
+			call	wait_command
+			; ステータスレジスタを読んで、結果保管場所に書き込む
+			ld		hl, test022_result
+			call	read_status_bx
+
+			pop		af
+			ld		[test022_result + 3], a
+
+			call	wait_push_space_key
+			ret
+
 	data1:
-			dw		20			; SX
-			dw		30			; SY
+			dw		226			; SX
+			dw		60			; SY
 			dw		0			; DX (dummy)
 			dw		0			; DY (dummy)
 			dw		0			; NX (dummy)
@@ -1235,6 +1289,10 @@ test020_result::
 			db		0
 			db		0
 test021_result::
+			dw		0
+			db		0
+			db		0
+test022_result::
 			dw		0
 			db		0
 			db		0
