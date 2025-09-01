@@ -41,12 +41,13 @@ start:
 			; ŒãŽn––
 			call	clear_key_buffer
 
+			scope	result_dump1
 			; Œ‹‰Ê‚ð•\Ž¦
 			ld		hl, test001_result
-			ld		b, 22
+			ld		b, 19
 	result_loop:
 			push	bc
-
+			; dump BX 1st
 			ld		e, [hl]
 			inc		hl
 			ld		d, [hl]
@@ -55,8 +56,20 @@ start:
 
 			ex		de, hl
 			call	put_hl
-
 			pop		hl
+
+			; dump BX 2nd
+			ld		e, [hl]
+			inc		hl
+			ld		d, [hl]
+			inc		hl
+			push	hl
+
+			ex		de, hl
+			call	put_hl
+			pop		hl
+
+			; dump S#2 when CE=0
 			push	hl
 
 			ld		l, [hl]
@@ -64,6 +77,15 @@ start:
 
 			pop		hl
 			inc		hl
+			; dump S#2  2nd
+			push	hl
+
+			ld		l, [hl]
+			call	put_l
+
+			pop		hl
+			inc		hl
+			; dump S#2  3rd
 			push	hl
 
 			ld		l, [hl]
@@ -80,6 +102,78 @@ start:
 			inc		hl
 			pop		bc
 			djnz	result_loop
+			endscope
+
+			scope	result_dump2
+			; Œ‹‰Ê‚ð•\Ž¦
+			ld		hl, test020_result
+			ld		b, 3
+	result_loop:
+			push	bc
+			; dump BX 1st
+			ld		e, [hl]
+			inc		hl
+			ld		d, [hl]
+			inc		hl
+			push	hl
+
+			ex		de, hl
+			call	put_hl
+			pop		hl
+
+			; dump BX 2nd
+			ld		e, [hl]
+			inc		hl
+			ld		d, [hl]
+			inc		hl
+			push	hl
+
+			ex		de, hl
+			call	put_hl
+			pop		hl
+
+			; dump S#2 when CE=0
+			push	hl
+
+			ld		l, [hl]
+			call	put_l
+
+			pop		hl
+			inc		hl
+			; dump S#2  2nd
+			push	hl
+
+			ld		l, [hl]
+			call	put_l
+
+			pop		hl
+			inc		hl
+			; dump S#2  3rd
+			push	hl
+
+			ld		l, [hl]
+			call	put_l
+
+			pop		hl
+			inc		hl
+			; dump S#2  4th
+			push	hl
+
+			ld		l, [hl]
+			call	put_l
+
+			ld		e, 13
+			ld		c, 2
+			call	bdos
+			ld		e, 10
+			ld		c, 2
+			call	bdos
+
+			pop		hl
+			inc		hl
+			pop		bc
+			djnz	result_loop
+			endscope
 
 			ld		c, _TERM0
 			jp		bdos
@@ -314,18 +408,54 @@ screen5::
 ; =============================================================================
 			scope	read_status_bx
 read_status_bx::
-			ld		e, 8
-			call	read_status_register
-			ld		[hl], e
-			inc		hl
-			ld		e, 9
-			call	read_status_register
-			ld		[hl], e
-			inc		hl
+			inc		hl					; +1
+			inc		hl					; +2
+			inc		hl					; +3
+			inc		hl					; +4
+
+			;	S#2 CE=0
 			ld		a, [last_s2]
 			and		a, 0x11
 			ld		[hl], a
-			inc		hl
+			inc		hl					; +5
+
+			;	S#2 2nd
+			ld		e, 2
+			call	read_status_register
+			ld		a, e
+			and		a, 0x11
+			ld		[hl], a
+
+			dec		hl					; +4
+			dec		hl					; +3
+			dec		hl					; +2
+			dec		hl					; +1
+			dec		hl					; +0
+
+			;	BX 1st
+			ld		e, 8
+			call	read_status_register
+			ld		[hl], e
+			inc		hl					; +1
+			ld		e, 9
+			call	read_status_register
+			ld		[hl], e
+			inc		hl					; +2
+
+			;	BX 2nd
+			ld		e, 8
+			call	read_status_register
+			ld		[hl], e
+			inc		hl					; +3
+			ld		e, 9
+			call	read_status_register
+			ld		[hl], e
+			inc		hl					; +4
+
+			inc		hl					; +5
+			inc		hl					; +6
+
+			;	S#2 3rd
 			ld		e, 2
 			call	read_status_register
 			ld		a, e
@@ -1058,7 +1188,7 @@ test020::
 			call	read_status_bx
 
 			pop		af
-			ld		[test020_result + 3], a
+			ld		[test020_result + 7], a
 
 			ld		a, 0
 			ld		e, 15
@@ -1124,7 +1254,7 @@ test021::
 			call	read_status_bx
 
 			pop		af
-			ld		[test021_result + 3], a
+			ld		[test021_result + 7], a
 
 			call	wait_push_space_key
 			ret
@@ -1184,7 +1314,7 @@ test022::
 			call	read_status_bx
 
 			pop		af
-			ld		[test022_result + 3], a
+			ld		[test022_result + 7], a
 
 			call	wait_push_space_key
 			ret
@@ -1215,91 +1345,138 @@ test022::
 ; =============================================================================
 			scope	results
 test001_result::
-			dw		0
-			db		0
-			db		0
+			dw		0	; +0 BX 1st
+			dw		0	; +2 BX 2nd
+			db		0	; +4 S#2 CE=0
+			db		0	; +5 S#2 2nd
+			db		0	; +6 S#2 3rd
 test002_result::
-			dw		0
-			db		0
-			db		0
+			dw		0	; +0 BX 1st
+			dw		0	; +2 BX 2nd
+			db		0	; +4 S#2 CE=0
+			db		0	; +5 S#2 2nd
+			db		0	; +6 S#2 3rd
 test003_result::
-			dw		0
-			db		0
-			db		0
+			dw		0	; +0 BX 1st
+			dw		0	; +2 BX 2nd
+			db		0	; +4 S#2 CE=0
+			db		0	; +5 S#2 2nd
+			db		0	; +6 S#2 3rd
 test004_result::
-			dw		0
-			db		0
-			db		0
+			dw		0	; +0 BX 1st
+			dw		0	; +2 BX 2nd
+			db		0	; +4 S#2 CE=0
+			db		0	; +5 S#2 2nd
+			db		0	; +6 S#2 3rd
 test005_result::
-			dw		0
-			db		0
-			db		0
+			dw		0	; +0 BX 1st
+			dw		0	; +2 BX 2nd
+			db		0	; +4 S#2 CE=0
+			db		0	; +5 S#2 2nd
+			db		0	; +6 S#2 3rd
 test006_result::
-			dw		0
-			db		0
-			db		0
+			dw		0	; +0 BX 1st
+			dw		0	; +2 BX 2nd
+			db		0	; +4 S#2 CE=0
+			db		0	; +5 S#2 2nd
+			db		0	; +6 S#2 3rd
 test007_result::
-			dw		0
-			db		0
-			db		0
+			dw		0	; +0 BX 1st
+			dw		0	; +2 BX 2nd
+			db		0	; +4 S#2 CE=0
+			db		0	; +5 S#2 2nd
+			db		0	; +6 S#2 3rd
 test008_result::
-			dw		0
-			db		0
-			db		0
+			dw		0	; +0 BX 1st
+			dw		0	; +2 BX 2nd
+			db		0	; +4 S#2 CE=0
+			db		0	; +5 S#2 2nd
+			db		0	; +6 S#2 3rd
 test009_result::
-			dw		0
-			db		0
-			db		0
+			dw		0	; +0 BX 1st
+			dw		0	; +2 BX 2nd
+			db		0	; +4 S#2 CE=0
+			db		0	; +5 S#2 2nd
+			db		0	; +6 S#2 3rd
 test010_result::
-			dw		0
-			db		0
-			db		0
+			dw		0	; +0 BX 1st
+			dw		0	; +2 BX 2nd
+			db		0	; +4 S#2 CE=0
+			db		0	; +5 S#2 2nd
+			db		0	; +6 S#2 3rd
 test011_result::
-			dw		0
-			db		0
-			db		0
+			dw		0	; +0 BX 1st
+			dw		0	; +2 BX 2nd
+			db		0	; +4 S#2 CE=0
+			db		0	; +5 S#2 2nd
+			db		0	; +6 S#2 3rd
 test012_result::
-			dw		0
-			db		0
-			db		0
+			dw		0	; +0 BX 1st
+			dw		0	; +2 BX 2nd
+			db		0	; +4 S#2 CE=0
+			db		0	; +5 S#2 2nd
+			db		0	; +6 S#2 3rd
 test013_result::
-			dw		0
-			db		0
-			db		0
+			dw		0	; +0 BX 1st
+			dw		0	; +2 BX 2nd
+			db		0	; +4 S#2 CE=0
+			db		0	; +5 S#2 2nd
+			db		0	; +6 S#2 3rd
 test014_result::
-			dw		0
-			db		0
-			db		0
+			dw		0	; +0 BX 1st
+			dw		0	; +2 BX 2nd
+			db		0	; +4 S#2 CE=0
+			db		0	; +5 S#2 2nd
+			db		0	; +6 S#2 3rd
 test015_result::
-			dw		0
-			db		0
-			db		0
+			dw		0	; +0 BX 1st
+			dw		0	; +2 BX 2nd
+			db		0	; +4 S#2 CE=0
+			db		0	; +5 S#2 2nd
+			db		0	; +6 S#2 3rd
 test016_result::
-			dw		0
-			db		0
-			db		0
+			dw		0	; +0 BX 1st
+			dw		0	; +2 BX 2nd
+			db		0	; +4 S#2 CE=0
+			db		0	; +5 S#2 2nd
+			db		0	; +6 S#2 3rd
 test017_result::
-			dw		0
-			db		0
-			db		0
+			dw		0	; +0 BX 1st
+			dw		0	; +2 BX 2nd
+			db		0	; +4 S#2 CE=0
+			db		0	; +5 S#2 2nd
+			db		0	; +6 S#2 3rd
 test018_result::
-			dw		0
-			db		0
-			db		0
+			dw		0	; +0 BX 1st
+			dw		0	; +2 BX 2nd
+			db		0	; +4 S#2 CE=0
+			db		0	; +5 S#2 2nd
+			db		0	; +6 S#2 3rd
 test019_result::
-			dw		0
-			db		0
-			db		0
+			dw		0	; +0 BX 1st
+			dw		0	; +2 BX 2nd
+			db		0	; +4 S#2 CE=0
+			db		0	; +5 S#2 2nd
+			db		0	; +6 S#2 3rd
 test020_result::
-			dw		0
-			db		0
-			db		0
+			dw		0	; +0 BX 1st
+			dw		0	; +2 BX 2nd
+			db		0	; +4 S#2 CE=0
+			db		0	; +5 S#2 2nd
+			db		0	; +6 S#2 3rd
+			db		0	; +7 S#2 CE=1
 test021_result::
-			dw		0
-			db		0
-			db		0
+			dw		0	; +0 BX 1st
+			dw		0	; +2 BX 2nd
+			db		0	; +4 S#2 CE=0
+			db		0	; +5 S#2 2nd
+			db		0	; +6 S#2 3rd
+			db		0	; +7 S#2 CE=1
 test022_result::
-			dw		0
-			db		0
-			db		0
+			dw		0	; +0 BX 1st
+			dw		0	; +2 BX 2nd
+			db		0	; +4 S#2 CE=0
+			db		0	; +5 S#2 2nd
+			db		0	; +6 S#2 3rd
+			db		0	; +7 S#2 CE=1
 			endscope
