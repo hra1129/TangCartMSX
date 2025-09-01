@@ -11,6 +11,7 @@ start:
 			call	vdp_io_select
 			call	copy_rom_font
 			; テスト
+			di
 			call	screen5
 
 			call	test001
@@ -25,6 +26,7 @@ start:
 			call	test008
 			call	test009
 			call	test010
+			ei
 
 			; 後始末
 			call	clear_key_buffer
@@ -295,7 +297,6 @@ test003::
 			out		[c], a		; R#46
 
 			ld		b, 16 * 16 - 1
-			di
 			dec		c
 			dec		c
 			ld		a, 0x80 + 44
@@ -318,7 +319,6 @@ test003::
 			dec		c
 			dec		c
 			djnz	loop
-			ei
 			call	wait_command
 			call	wait_push_space_key
 			ret
@@ -356,7 +356,6 @@ test004::
 			out		[c], a		; R#46
 
 			ld		b, 16 * 16 - 1
-			di
 			dec		c
 			dec		c
 			ld		a, 0x80 + 44
@@ -379,7 +378,6 @@ test004::
 			dec		c
 			dec		c
 			djnz	loop
-			ei
 			call	wait_command
 			call	wait_push_space_key
 			ret
@@ -417,7 +415,6 @@ test005::
 			out		[c], a		; R#46
 
 			ld		b, 16 * 16 - 1
-			di
 			dec		c
 			dec		c
 			ld		a, 0x80 + 44
@@ -440,7 +437,6 @@ test005::
 			dec		c
 			dec		c
 			djnz	loop
-			ei
 			call	wait_command
 			call	wait_push_space_key
 			ret
@@ -478,7 +474,6 @@ test006::
 			out		[c], a		; R#46
 
 			ld		b, 16 * 16 - 1
-			di
 			dec		c
 			dec		c
 			ld		a, 0x80 + 44
@@ -501,7 +496,6 @@ test006::
 			dec		c
 			dec		c
 			djnz	loop
-			ei
 			call	wait_command
 			call	wait_push_space_key
 			ret
@@ -539,7 +533,6 @@ test007::
 			out		[c], a		; R#46
 
 			ld		b, 16 * 16 - 1
-			di
 			dec		c
 			dec		c
 			ld		a, 0x80 + 44
@@ -562,7 +555,6 @@ test007::
 			dec		c
 			dec		c
 			djnz	loop
-			ei
 			call	wait_command
 			call	wait_push_space_key
 			ret
@@ -600,7 +592,6 @@ test008::
 			out		[c], a		; R#46
 
 			ld		b, 16 * 16 - 1
-			di
 			dec		c
 			dec		c
 			ld		a, 0x80 + 44
@@ -623,7 +614,6 @@ test008::
 			dec		c
 			dec		c
 			djnz	loop
-			ei
 			call	wait_command
 			call	wait_push_space_key
 			ret
@@ -661,7 +651,6 @@ test009::
 			out		[c], a		; R#46
 
 			ld		b, 16 * 16 - 1
-			di
 			dec		c
 			dec		c
 			ld		a, 0x80 + 44
@@ -684,7 +673,6 @@ test009::
 			dec		c
 			dec		c
 			djnz	loop
-			ei
 			call	wait_command
 			call	wait_push_space_key
 			ret
@@ -722,7 +710,6 @@ test010::
 			out		[c], a		; R#46
 
 			ld		b, 16 * 16 - 1
-			di
 			dec		c
 			dec		c
 			ld		a, 0x80 + 44
@@ -745,7 +732,6 @@ test010::
 			dec		c
 			dec		c
 			djnz	loop
-			ei
 			call	wait_command
 			call	wait_push_space_key
 			ret

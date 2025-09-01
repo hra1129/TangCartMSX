@@ -190,7 +190,6 @@ set_vram_write_address::
 			call	write_control_register
 			pop		hl
 			pop		de
-			di
 			ld		a, l
 p_vdp_port0	:= $ + 1
 			out		[ vdp_port1 ], a
@@ -199,7 +198,6 @@ p_vdp_port0	:= $ + 1
 			or		a, 0x40
 p_vdp_port1	:= $ + 1
 			out		[ vdp_port1 ], a
-			ei
 			ret
 			endscope
 
@@ -228,7 +226,6 @@ set_vram_read_address::
 			call	write_control_register
 			pop		hl
 			pop		de
-			di
 			ld		a, l
 p_vdp_port2	:= $ + 1
 			out		[ vdp_port1 ], a
@@ -236,7 +233,6 @@ p_vdp_port2	:= $ + 1
 			and		a, 0x3F
 p_vdp_port3	:= $ + 1
 			out		[ vdp_port1 ], a
-			ei
 			ret
 			endscope
 
@@ -254,7 +250,6 @@ p_vdp_port3	:= $ + 1
 ; =============================================================================
 			scope	write_control_register
 write_control_register::
-			di
 p_vdp_port4	:= $ + 1
 			out		[ vdp_port1 ], a
 			ld		a, e
@@ -262,7 +257,6 @@ p_vdp_port4	:= $ + 1
 			or		a, 0x80
 p_vdp_port5	:= $ + 1
 			out		[ vdp_port1 ], a
-			ei
 			ret
 			endscope
 
@@ -302,7 +296,6 @@ p_vdp_port7	:= $ + 1
 			scope	read_status_register
 read_status_register::
 			ld		a, e
-			di
 p_vdp_port8		:= $ + 1
 			out		[ vdp_port1 ], a
 			ld		a, 0x8F
@@ -317,7 +310,6 @@ p_vdp_port11	:= $ + 1
 			ld		a, 0x8F
 p_vdp_port12	:= $ + 1
 			out		[ vdp_port1 ], a
-			ei
 			ret
 			endscope
 
@@ -640,7 +632,6 @@ wait_push_space_key::
 			call	calslt
 			or		a, a
 			jr		z, wait_press_loop
-			ei
 			ret
 			endscope
 
@@ -1018,14 +1009,12 @@ puts::
 run_command::
 p_vdp_port16 := $ + 1
 			ld		c, vdp_port1
-			di
 			out		[c], a
 			ld		a, 0x80 + 17
 			out		[c], a
 			inc		c
 			inc		c
 			otir
-			ei
 			ret
 			endscope
 

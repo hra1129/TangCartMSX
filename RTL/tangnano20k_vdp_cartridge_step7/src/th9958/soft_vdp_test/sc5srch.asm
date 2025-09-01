@@ -11,6 +11,7 @@ start:
 			call	vdp_io_select
 			call	copy_rom_font
 			; テスト
+			di
 			call	screen5
 
 			call	test001
@@ -35,6 +36,7 @@ start:
 			call	test020
 			call	test021
 			call	test022
+			ei
 
 			; 後始末
 			call	clear_key_buffer
@@ -1057,6 +1059,10 @@ test020::
 
 			pop		af
 			ld		[test020_result + 3], a
+
+			ld		a, 0
+			ld		e, 15
+			call	write_control_register
 
 			call	wait_push_space_key
 			ret
