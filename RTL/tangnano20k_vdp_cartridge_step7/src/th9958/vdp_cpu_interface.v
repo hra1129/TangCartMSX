@@ -643,9 +643,9 @@ module vdp_cpu_interface (
 	end
 
 	assign clear_sprite_collision		= (w_read && ff_port1 && ff_status_register_pointer == 4'd0);
-	assign clear_border_detect			= (w_read && ff_port1 && ff_status_register_pointer == 4'd2);
 	assign clear_sprite_collision_xy	= (w_read && ff_port1 && ff_status_register_pointer == 4'd5);
 	assign read_color					= (w_read && ff_port1 && ff_status_register_pointer == 4'd7);
+	assign clear_border_detect			= (w_read && ff_port1 && ff_status_register_pointer == 4'd9);
 
 	// --------------------------------------------------------------------
 	//	Interrupt

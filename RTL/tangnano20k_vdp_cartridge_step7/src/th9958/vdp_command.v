@@ -707,6 +707,8 @@ module vdp_command (
 			ff_source					<= ff_color;
 			ff_count_valid				<= 1'b0;
 			ff_border_detect_request	<= 1'b0;
+			ff_cache_flush_start		<= 1'b0;
+			ff_cache_vram_valid			<= 1'b0;
 			case( ff_command )
 			c_stop:		ff_state <= c_state_stop;
 			c_point:	ff_state <= c_state_point;
@@ -785,10 +787,12 @@ module vdp_command (
 				if( ff_sx[9] || (ff_sx[8] && !w_512pixel) ) begin
 					//	Go to finish state when start position is outside of screen.
 					if( ff_sx == reg_sx ) begin
+						//	Start point is out of screen.
 						ff_count_valid				<= ~ff_eq;
 						ff_border_detect_request	<= ff_eq;
 					end
 					else begin
+						//	
 						ff_count_valid				<= 1'b0;
 						ff_border_detect_request	<= 1'b0;
 					end

@@ -36,6 +36,10 @@ start:
 			call	test020
 			call	test021
 			call	test022
+
+			xor		a, a
+			ld		e, 15
+			call	write_control_register
 			ei
 
 			; 後始末
@@ -1076,7 +1080,7 @@ test019::
 			ld		e, 7
 			call	write_control_register
 
-			ld		hl, data1
+			ld		hl, data1				; BD=1 になるコマンド
 			ld		a, 32
 			ld		b, 15
 			call	run_command
@@ -1088,7 +1092,7 @@ test019::
 			djnz	wait_loop1
 			; BD = 1
 
-			ld		hl, data2
+			ld		hl, data2				; BD=0 になるコマンド
 			ld		a, 32
 			ld		b, 15
 			call	run_command
@@ -1099,6 +1103,12 @@ test019::
 			nop
 			djnz	wait_loop2
 			; Not detect border
+
+			;	S#2 CE=0
+			ld		e, 2
+			call	read_status_register
+			ld		a, e
+			ld		[last_s2],a 
 
 			; ステータスレジスタを読んで、結果保管場所に書き込む
 			ld		hl, test019_result
@@ -1142,12 +1152,14 @@ test020::
 			ld		e, 15
 			call	write_control_register
 
-			ld		hl, data1
+			ld		hl, data1				; BD=1 になるコマンド
 			ld		a, 32
 			ld		b, 15
 			call	run_command
 
 			; Wait finish SRCH command (NOT READ S#2!!)
+			; S#2 を読みだすと、BD bit (bit4)がクリアされるのではないか？という疑惑のために、S#2 を読まないで対処
+			; 実際のところ、S#2 を読んでも、BD bit はクリアされないことが分かった。
 			ld		b, 0
 	wait_loop1:
 			nop
@@ -1213,12 +1225,14 @@ test021::
 			ld		e, 7
 			call	write_control_register
 
+			;	S#9 BX MSB (Clear BD)
+			ld		e, 9
+			call	read_status_register
+			; BD = 0
+
 			ld		a, 2
 			ld		e, 15
 			call	write_control_register
-
-			call	wait_command
-			; BD = 0
 
 			ld		hl, data
 			ld		a, 32
