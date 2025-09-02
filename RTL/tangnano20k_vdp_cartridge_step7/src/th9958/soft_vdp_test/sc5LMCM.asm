@@ -213,7 +213,58 @@ s5_load_image::
 			endscope
 
 ; =============================================================================
-;	左端から右端までを別のラインへコピーする
+;	LMCM の結果を受け取る
+;	input:
+;		HL .... 結果の格納先アドレス
+; =============================================================================
+			scope	get_lmcm_result
+get_lmcm_result::
+			ld		a, [io_vdp_port1]
+			ld		c, a
+	loop:
+			ld		a, 2
+			out		[c], a
+			ld		a, 15 + 0x80
+			out		[c], a						; R#15 = 2
+	wait_tr:
+			in		a, [c]						; a = S#2
+			or		a, a
+			jp		m, get_pixel				; if TR=1 goto get_pixel
+			rrca
+			jr		c, wait_tr					; if CE=1 goto wait_tr
+			ret
+	get_pixel:
+			ld		a, 7
+			out		[c], a
+			ld		a, 15 + 0x80
+			out		[c], a						; R#15 = 7
+			in		a, [c]
+			ld		[hl], a
+			inc		hl
+			jr		loop
+			endscope
+
+; =============================================================================
+;	メモリ比較
+;	input:
+;		HL .... 比較元1
+;		DE .... 比較元2
+;		BC .... サイズ
+;	output:
+;		Z ..... 1: 一致, 0: 不一致
+; =============================================================================
+			scope	memcmp
+memcmp::
+			ld		a, [de]
+			inc		de
+			cpi
+			ret		pe
+			jp		z, memcmp
+			ret
+			endscope
+
+; =============================================================================
+;	左上Xが偶数座標になる 16x16 のブロックを読む
 ; =============================================================================
 			scope	test001
 test001::
@@ -222,196 +273,32 @@ test001::
 			call	write_control_register
 
 			ld		hl, data
-			ld		a, 34
-			ld		b, 13
+			ld		a, 32
+			ld		b, 15
 			call	run_command
-			call	wait_command
+			ld		hl, work
+			call	get_lmcm_result
+			ld		hl, work
+			ld		de, reference
+			ld		bc, 16 * 16
+			call	memcmp
+			
 			call	wait_push_space_key
 			ret
 	data:
+			dw		0			; SX
 			dw		0			; SY
-			dw		0			; DX
-			dw		16			; DY
-			dw		123			; NX (dummy)
+			dw		0			; DX (dummy)
+			dw		0			; DY (dummy)
+			dw		16			; NX
 			dw		16			; NY
 			db		0			; CLR (dummy)
 			db		0b0000000	; ARG [-][-][-][-][DIY][DIX][-][-]
-			db		0xE0		; CMD (YMMM)
+			db		0xA0		; CMD (LMCM)
+	reference:
+			db
 			endscope
 
 ; =============================================================================
-			scope	test002
-test002::
-			ld		a, 4
-			ld		e, 7
-			call	write_control_register
-
-			ld		hl, data
-			ld		a, 34
-			ld		b, 13
-			call	run_command
-			call	wait_command
-			call	wait_push_space_key
-			ret
-	data:
-			dw		0			; SY
-			dw		255			; DX
-			dw		32			; DY
-			dw		234			; NX (dummy)
-			dw		16			; NY
-			db		0			; CLR (dummy)
-			db		0b0000100	; ARG [-][-][-][-][DIY][DIX][-][-]
-			db		0xE0		; CMD (YMMM)
-			endscope
-
-; =============================================================================
-			scope	test003
-test003::
-			ld		a, 8
-			ld		e, 7
-			call	write_control_register
-
-			ld		hl, data
-			ld		a, 34
-			ld		b, 13
-			call	run_command
-			call	wait_command
-			call	wait_push_space_key
-			ret
-	data:
-			dw		15			; SY
-			dw		0			; DX
-			dw		63			; DY
-			dw		345			; NX (dummy)
-			dw		16			; NY
-			db		0			; CLR (dummy)
-			db		0b0001000	; ARG [-][-][-][-][DIY][DIX][-][-]
-			db		0xE0		; CMD (YMMM)
-			endscope
-
-; =============================================================================
-			scope	test004
-test004::
-			ld		a, 10
-			ld		e, 7
-			call	write_control_register
-
-			ld		hl, data
-			ld		a, 34
-			ld		b, 13
-			call	run_command
-			call	wait_command
-			call	wait_push_space_key
-			ret
-	data:
-			dw		15			; SY
-			dw		255			; DX
-			dw		79			; DY
-			dw		456			; NX (dummy)
-			dw		16			; NY
-			db		0			; CLR (dummy)
-			db		0b0001100	; ARG [-][-][-][-][DIY][DIX][-][-]
-			db		0xE0		; CMD (YMMM)
-			endscope
-
-; =============================================================================
-;	幅が256に満たないパターン
-; =============================================================================
-			scope	test005
-test005::
-			ld		a, 2
-			ld		e, 7
-			call	write_control_register
-
-			ld		hl, data
-			ld		a, 34
-			ld		b, 13
-			call	run_command
-			call	wait_command
-			call	wait_push_space_key
-			ret
-	data:
-			dw		256			; SY
-			dw		50			; DX
-			dw		80			; DY
-			dw		123			; NX (dummy)
-			dw		16			; NY
-			db		0			; CLR (dummy)
-			db		0b0000000	; ARG [-][-][-][-][DIY][DIX][-][-]
-			db		0xE0		; CMD (YMMM)
-			endscope
-
-; =============================================================================
-			scope	test006
-test006::
-			ld		a, 4
-			ld		e, 7
-			call	write_control_register
-
-			ld		hl, data
-			ld		a, 34
-			ld		b, 13
-			call	run_command
-			call	wait_command
-			call	wait_push_space_key
-			ret
-	data:
-			dw		256			; SY
-			dw		81			; DX
-			dw		96			; DY
-			dw		234			; NX (dummy)
-			dw		16			; NY
-			db		0			; CLR (dummy)
-			db		0b0000100	; ARG [-][-][-][-][DIY][DIX][-][-]
-			db		0xE0		; CMD (YMMM)
-			endscope
-
-; =============================================================================
-			scope	test007
-test007::
-			ld		a, 8
-			ld		e, 7
-			call	write_control_register
-
-			ld		hl, data
-			ld		a, 34
-			ld		b, 13
-			call	run_command
-			call	wait_command
-			call	wait_push_space_key
-			ret
-	data:
-			dw		271			; SY
-			dw		63			; DX
-			dw		127			; DY
-			dw		345			; NX (dummy)
-			dw		16			; NY
-			db		0			; CLR (dummy)
-			db		0b0001000	; ARG [-][-][-][-][DIY][DIX][-][-]
-			db		0xE0		; CMD (YMMM)
-			endscope
-
-; =============================================================================
-			scope	test008
-test008::
-			ld		a, 10
-			ld		e, 7
-			call	write_control_register
-
-			ld		hl, data
-			ld		a, 34
-			ld		b, 13
-			call	run_command
-			call	wait_command
-			call	wait_push_space_key
-			ret
-	data:
-			dw		271			; SY
-			dw		90			; DX
-			dw		143			; DY
-			dw		456			; NX (dummy)
-			dw		16			; NY
-			db		0			; CLR (dummy)
-			db		0b0001100	; ARG [-][-][-][-][DIY][DIX][-][-]
-			db		0xE0		; CMD (YMMM)
-			endscope
+work::
+			ds		16 * 16		; 256bytes

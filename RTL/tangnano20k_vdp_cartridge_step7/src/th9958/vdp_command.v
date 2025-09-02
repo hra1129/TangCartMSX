@@ -649,7 +649,7 @@ module vdp_command (
 			ff_border_detect <= 1'b0;
 		end
 		else if( w_cache_flush_end ) begin
-			ff_border_detect <= ff_border_detect_request;
+			ff_border_detect <= ff_border_detect | ff_border_detect_request;
 		end
 		else if( clear_border_detect ) begin
 			ff_border_detect <= 1'b0;
