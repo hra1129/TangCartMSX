@@ -47,53 +47,61 @@ start:
 			ld		b, 19
 	result_loop:
 			push	bc
-			; dump BX 1st
-			ld		e, [hl]
+			; dump S#2 1st CE=0
+			push	hl
+			ld		l, [hl]		; +0 S#2 1st CE=0
+			call	put_l
+			pop		hl
 			inc		hl
-			ld		d, [hl]
+
+			; dump S#2 2nd
+			push	hl
+			ld		l, [hl]		; +1 S#2 2nd
+			call	put_l
+			pop		hl
+			inc		hl
+
+			; dump BX
+			ld		e, [hl]		; +2 BX 1st LSB
+			inc		hl
+			ld		a, [hl]		; +3 S#2 3rd
+			inc		hl
+			ld		d, [hl]		; +4 BX 1st MSB
 			inc		hl
 			push	hl
+			push	af
+			ex		de, hl
+			call	put_hl
+			pop		af
 
+			ld		l, a		;    S#2 3rd
+			call	put_l
+			pop		hl
+
+			push	hl
+			ld		l, [hl]		; +5 S#2 4th
+			call	put_l
+			pop		hl
+			inc		hl
+
+			ld		e, [hl]		; +6 BX 2nd LSB
+			inc		hl
+			ld		d, [hl]		; +7 BX 2nd MSB
+			inc		hl
+			push	hl
 			ex		de, hl
 			call	put_hl
 			pop		hl
 
-			; dump BX 2nd
-			ld		e, [hl]
-			inc		hl
-			ld		d, [hl]
-			inc		hl
+			; dump S#2 5th
 			push	hl
-
-			ex		de, hl
-			call	put_hl
-			pop		hl
-
-			; dump S#2 when CE=0
-			push	hl
-
-			ld		l, [hl]
-			call	put_l
-
-			pop		hl
-			inc		hl
-			; dump S#2  2nd
-			push	hl
-
-			ld		l, [hl]
-			call	put_l
-
-			pop		hl
-			inc		hl
-			; dump S#2  3rd
-			push	hl
-
-			ld		l, [hl]
+			ld		l, [hl]		; +8 S#2 5th
 			call	put_l
 
 			ld		e, 13
 			ld		c, 2
 			call	bdos
+
 			ld		e, 10
 			ld		c, 2
 			call	bdos
@@ -110,61 +118,68 @@ start:
 			ld		b, 3
 	result_loop:
 			push	bc
-			; dump BX 1st
-			ld		e, [hl]
+			; dump S#2 1st CE=0
+			push	hl
+			ld		l, [hl]		; +0 S#2 1st CE=0
+			call	put_l
+			pop		hl
 			inc		hl
-			ld		d, [hl]
+
+			; dump S#2 2nd
+			push	hl
+			ld		l, [hl]		; +1 S#2 2nd
+			call	put_l
+			pop		hl
+			inc		hl
+
+			; dump BX
+			ld		e, [hl]		; +2 BX 1st LSB
+			inc		hl
+			ld		a, [hl]		; +3 S#2 3rd
+			inc		hl
+			ld		d, [hl]		; +4 BX 1st MSB
 			inc		hl
 			push	hl
+			push	af
+			ex		de, hl
+			call	put_hl
+			pop		af
 
+			ld		l, a		;    S#2 3rd
+			call	put_l
+			pop		hl
+
+			push	hl
+			ld		l, [hl]		; +5 S#2 4th
+			call	put_l
+			pop		hl
+			inc		hl
+
+			ld		e, [hl]		; +6 BX 2nd LSB
+			inc		hl
+			ld		d, [hl]		; +7 BX 2nd MSB
+			inc		hl
+			push	hl
 			ex		de, hl
 			call	put_hl
 			pop		hl
 
-			; dump BX 2nd
-			ld		e, [hl]
-			inc		hl
-			ld		d, [hl]
-			inc		hl
+			; dump S#2 5th
 			push	hl
-
-			ex		de, hl
-			call	put_hl
-			pop		hl
-
-			; dump S#2 when CE=0
-			push	hl
-
-			ld		l, [hl]
+			ld		l, [hl]		; +8 S#2 5th
 			call	put_l
-
 			pop		hl
 			inc		hl
-			; dump S#2  2nd
+
+			; dump S#2 6th
 			push	hl
-
-			ld		l, [hl]
-			call	put_l
-
-			pop		hl
-			inc		hl
-			; dump S#2  3rd
-			push	hl
-
-			ld		l, [hl]
-			call	put_l
-
-			pop		hl
-			inc		hl
-			; dump S#2  4th
-			push	hl
-
-			ld		l, [hl]
+			ld		l, [hl]		; +9 S#2 6th
 			call	put_l
 
 			ld		e, 13
 			ld		c, 2
 			call	bdos
+
 			ld		e, 10
 			ld		c, 2
 			call	bdos
@@ -408,59 +423,65 @@ screen5::
 ; =============================================================================
 			scope	read_status_bx
 read_status_bx::
-			inc		hl					; +1
-			inc		hl					; +2
-			inc		hl					; +3
-			inc		hl					; +4
-
 			;	S#2 CE=0
 			ld		a, [last_s2]
 			and		a, 0x11
-			ld		[hl], a
-			inc		hl					; +5
+			ld		[hl], a				; +0 write
+			inc		hl					; +1
 
 			;	S#2 2nd
 			ld		e, 2
 			call	read_status_register
 			ld		a, e
 			and		a, 0x11
-			ld		[hl], a
-
-			dec		hl					; +4
-			dec		hl					; +3
-			dec		hl					; +2
-			dec		hl					; +1
-			dec		hl					; +0
-
-			;	BX 1st
-			ld		e, 8
-			call	read_status_register
-			ld		[hl], e
-			inc		hl					; +1
-			ld		e, 9
-			call	read_status_register
-			ld		[hl], e
+			ld		[hl], a				; +1 write
 			inc		hl					; +2
 
-			;	BX 2nd
+			;	BX 1st LSB
 			ld		e, 8
 			call	read_status_register
-			ld		[hl], e
+			ld		[hl], e				; +2 write
 			inc		hl					; +3
-			ld		e, 9
-			call	read_status_register
-			ld		[hl], e
-			inc		hl					; +4
-
-			inc		hl					; +5
-			inc		hl					; +6
 
 			;	S#2 3rd
 			ld		e, 2
 			call	read_status_register
 			ld		a, e
 			and		a, 0x11
-			ld		[hl], a
+			ld		[hl], a				; +3 write
+			inc		hl					; +4
+
+			;	BX 1st MSB
+			ld		e, 9
+			call	read_status_register
+			ld		[hl], e				; +4 write
+			inc		hl					; +5
+
+			;	S#2 4th
+			ld		e, 2
+			call	read_status_register
+			ld		a, e
+			and		a, 0x11
+			ld		[hl], a				; +5 write
+			inc		hl					; +6
+
+			;	BX 2nd LSB
+			ld		e, 8
+			call	read_status_register
+			ld		[hl], e				; +6 write
+			inc		hl					; +7
+			;	BX 2nd MSB
+			ld		e, 9
+			call	read_status_register
+			ld		[hl], e				; +7 write
+			inc		hl					; +8
+
+			;	S#2 5th
+			ld		e, 2
+			call	read_status_register
+			ld		a, e
+			and		a, 0x11
+			ld		[hl], a				; +8 write
 			ret
 			endscope
 
@@ -469,75 +490,38 @@ read_status_bx::
 ; =============================================================================
 			scope	put_hl
 put_hl::
-			ld		de, 10000
-			call	put_one
-			ld		de, 1000
-			call	put_one
-			ld		de, 100
-			call	put_one
-			ld		de, 10
-			call	put_one
-			ld		de, 1
-			call	put_one
-			ld		e, ' '
-			ld		c, 2
-			call	bdos
-			ret
-
-	put_one:
-			ld		b, 0
-	loop:
-			or		a, a
-			inc		b
-			sbc		hl, de
-			jr		nc, loop
-
-			add		hl, de
+			ld		a, h
 			push	hl
-			dec		b
-			ld		a, b
-			add		a, '0'
-			ld		e, a
-			ld		c, 2		;	コンソール出力 _CONOUT
-			call	bdos
+			call	put_hex
 			pop		hl
-			ret
-			endscope
-
-; =============================================================================
-;	L の値を表示
-; =============================================================================
-			scope	put_l
 put_l::
-			ld		h, 0
-			ld		de, 100
-			call	put_one
-			ld		de, 10
-			call	put_one
-			ld		de, 1
-			call	put_one
+			ld		a, l
+			call	put_hex
+
 			ld		e, ' '
 			ld		c, 2
 			call	bdos
 			ret
 
+	put_hex:
+			ld		b, a
+			push	bc
+			rrca
+			rrca
+			rrca
+			rrca
+			call	put_one
+			pop		af
 	put_one:
-			ld		b, 0
-	loop:
-			or		a, a
-			inc		b
-			sbc		hl, de
-			jr		nc, loop
-
-			add		hl, de
-			push	hl
-			dec		b
-			ld		a, b
+			and		a, 0x0F
 			add		a, '0'
+			cp		a, '9'+1
+			jr		c, skip
+			add		a, 'A'-('9'+1)
+	skip:
 			ld		e, a
-			ld		c, 2		;	コンソール出力 _CONOUT
+			ld		c, 2
 			call	bdos
-			pop		hl
 			ret
 			endscope
 
@@ -1188,7 +1172,7 @@ test020::
 			call	read_status_bx
 
 			pop		af
-			ld		[test020_result + 7], a
+			ld		[test020_result + 9], a
 
 			ld		a, 0
 			ld		e, 15
@@ -1254,7 +1238,7 @@ test021::
 			call	read_status_bx
 
 			pop		af
-			ld		[test021_result + 7], a
+			ld		[test021_result + 9], a
 
 			call	wait_push_space_key
 			ret
@@ -1314,7 +1298,7 @@ test022::
 			call	read_status_bx
 
 			pop		af
-			ld		[test022_result + 7], a
+			ld		[test022_result + 9], a
 
 			call	wait_push_space_key
 			ret
@@ -1345,138 +1329,47 @@ test022::
 ; =============================================================================
 			scope	results
 test001_result::
-			dw		0	; +0 BX 1st
-			dw		0	; +2 BX 2nd
-			db		0	; +4 S#2 CE=0
-			db		0	; +5 S#2 2nd
-			db		0	; +6 S#2 3rd
+			db		0,0,0,0,0,0,0,0,0
 test002_result::
-			dw		0	; +0 BX 1st
-			dw		0	; +2 BX 2nd
-			db		0	; +4 S#2 CE=0
-			db		0	; +5 S#2 2nd
-			db		0	; +6 S#2 3rd
+			db		0,0,0,0,0,0,0,0,0
 test003_result::
-			dw		0	; +0 BX 1st
-			dw		0	; +2 BX 2nd
-			db		0	; +4 S#2 CE=0
-			db		0	; +5 S#2 2nd
-			db		0	; +6 S#2 3rd
+			db		0,0,0,0,0,0,0,0,0
 test004_result::
-			dw		0	; +0 BX 1st
-			dw		0	; +2 BX 2nd
-			db		0	; +4 S#2 CE=0
-			db		0	; +5 S#2 2nd
-			db		0	; +6 S#2 3rd
+			db		0,0,0,0,0,0,0,0,0
 test005_result::
-			dw		0	; +0 BX 1st
-			dw		0	; +2 BX 2nd
-			db		0	; +4 S#2 CE=0
-			db		0	; +5 S#2 2nd
-			db		0	; +6 S#2 3rd
+			db		0,0,0,0,0,0,0,0,0
 test006_result::
-			dw		0	; +0 BX 1st
-			dw		0	; +2 BX 2nd
-			db		0	; +4 S#2 CE=0
-			db		0	; +5 S#2 2nd
-			db		0	; +6 S#2 3rd
+			db		0,0,0,0,0,0,0,0,0
 test007_result::
-			dw		0	; +0 BX 1st
-			dw		0	; +2 BX 2nd
-			db		0	; +4 S#2 CE=0
-			db		0	; +5 S#2 2nd
-			db		0	; +6 S#2 3rd
+			db		0,0,0,0,0,0,0,0,0
 test008_result::
-			dw		0	; +0 BX 1st
-			dw		0	; +2 BX 2nd
-			db		0	; +4 S#2 CE=0
-			db		0	; +5 S#2 2nd
-			db		0	; +6 S#2 3rd
+			db		0,0,0,0,0,0,0,0,0
 test009_result::
-			dw		0	; +0 BX 1st
-			dw		0	; +2 BX 2nd
-			db		0	; +4 S#2 CE=0
-			db		0	; +5 S#2 2nd
-			db		0	; +6 S#2 3rd
+			db		0,0,0,0,0,0,0,0,0
 test010_result::
-			dw		0	; +0 BX 1st
-			dw		0	; +2 BX 2nd
-			db		0	; +4 S#2 CE=0
-			db		0	; +5 S#2 2nd
-			db		0	; +6 S#2 3rd
+			db		0,0,0,0,0,0,0,0,0
 test011_result::
-			dw		0	; +0 BX 1st
-			dw		0	; +2 BX 2nd
-			db		0	; +4 S#2 CE=0
-			db		0	; +5 S#2 2nd
-			db		0	; +6 S#2 3rd
+			db		0,0,0,0,0,0,0,0,0
 test012_result::
-			dw		0	; +0 BX 1st
-			dw		0	; +2 BX 2nd
-			db		0	; +4 S#2 CE=0
-			db		0	; +5 S#2 2nd
-			db		0	; +6 S#2 3rd
+			db		0,0,0,0,0,0,0,0,0
 test013_result::
-			dw		0	; +0 BX 1st
-			dw		0	; +2 BX 2nd
-			db		0	; +4 S#2 CE=0
-			db		0	; +5 S#2 2nd
-			db		0	; +6 S#2 3rd
+			db		0,0,0,0,0,0,0,0,0
 test014_result::
-			dw		0	; +0 BX 1st
-			dw		0	; +2 BX 2nd
-			db		0	; +4 S#2 CE=0
-			db		0	; +5 S#2 2nd
-			db		0	; +6 S#2 3rd
+			db		0,0,0,0,0,0,0,0,0
 test015_result::
-			dw		0	; +0 BX 1st
-			dw		0	; +2 BX 2nd
-			db		0	; +4 S#2 CE=0
-			db		0	; +5 S#2 2nd
-			db		0	; +6 S#2 3rd
+			db		0,0,0,0,0,0,0,0,0
 test016_result::
-			dw		0	; +0 BX 1st
-			dw		0	; +2 BX 2nd
-			db		0	; +4 S#2 CE=0
-			db		0	; +5 S#2 2nd
-			db		0	; +6 S#2 3rd
+			db		0,0,0,0,0,0,0,0,0
 test017_result::
-			dw		0	; +0 BX 1st
-			dw		0	; +2 BX 2nd
-			db		0	; +4 S#2 CE=0
-			db		0	; +5 S#2 2nd
-			db		0	; +6 S#2 3rd
+			db		0,0,0,0,0,0,0,0,0
 test018_result::
-			dw		0	; +0 BX 1st
-			dw		0	; +2 BX 2nd
-			db		0	; +4 S#2 CE=0
-			db		0	; +5 S#2 2nd
-			db		0	; +6 S#2 3rd
+			db		0,0,0,0,0,0,0,0,0
 test019_result::
-			dw		0	; +0 BX 1st
-			dw		0	; +2 BX 2nd
-			db		0	; +4 S#2 CE=0
-			db		0	; +5 S#2 2nd
-			db		0	; +6 S#2 3rd
+			db		0,0,0,0,0,0,0,0,0
 test020_result::
-			dw		0	; +0 BX 1st
-			dw		0	; +2 BX 2nd
-			db		0	; +4 S#2 CE=0
-			db		0	; +5 S#2 2nd
-			db		0	; +6 S#2 3rd
-			db		0	; +7 S#2 CE=1
+			db		0,0,0,0,0,0,0,0,0,0
 test021_result::
-			dw		0	; +0 BX 1st
-			dw		0	; +2 BX 2nd
-			db		0	; +4 S#2 CE=0
-			db		0	; +5 S#2 2nd
-			db		0	; +6 S#2 3rd
-			db		0	; +7 S#2 CE=1
+			db		0,0,0,0,0,0,0,0,0,0
 test022_result::
-			dw		0	; +0 BX 1st
-			dw		0	; +2 BX 2nd
-			db		0	; +4 S#2 CE=0
-			db		0	; +5 S#2 2nd
-			db		0	; +6 S#2 3rd
-			db		0	; +7 S#2 CE=1
+			db		0,0,0,0,0,0,0,0,0,0
 			endscope
