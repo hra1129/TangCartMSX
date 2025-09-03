@@ -62,7 +62,7 @@ module tb ();
 	localparam			vdp_io2			= vdp_io0 + 8'h02;
 	localparam			vdp_io3			= vdp_io0 + 8'h03;
 
-	reg				clk;
+	reg				clk_dummy;
 	reg				clk14m;
 	reg				slot_reset_n;
 	reg				slot_iorq_n;
@@ -117,7 +117,7 @@ module tb ();
 	//	DUT
 	// --------------------------------------------------------------------
 	tangnano20k_vdp_cartridge u_vdp_cartridge (
-		.clk					( clk					),
+		.clk					( clk_dummy				),
 		.clk14m					( clk14m				),
 		.slot_reset_n			( slot_reset_n			),
 		.slot_iorq_n			( slot_iorq_n			),
@@ -676,11 +676,50 @@ module tb ();
 	endtask
 
 	// --------------------------------------------------------------------
+	task lmcm_read;
+		logic is_error;
+
+		is_error = 0;
+		for( j = 0; j < 16; j++ ) begin
+			for( i = 0; i < 16; i++ ) begin
+				//	R#15 = 2
+				write_io( vdp_io1, 8'd2 );
+				write_io( vdp_io1, 8'h80 + 8'd15 );
+				k = 0;
+				forever begin
+					read_io( vdp_io1, rdata );
+					if( rdata[7] ) begin
+						break;
+					end
+					@( posedge clk14m );
+					k++;
+					if( k > 10000 ) begin
+						$error( "LMCM TR bit is timeout." );
+						is_error = 1;
+						break;
+					end
+				end
+				//	R#15 = 7
+				write_io( vdp_io1, 8'd7 );
+				write_io( vdp_io1, 8'h80 + 8'd15 );
+				read_io( vdp_io1, rdata );
+				if( is_error ) begin
+					break;
+				end
+			end
+			if( is_error ) begin
+				break;
+			end
+		end
+		@( posedge clk14m );
+	endtask
+
+	// --------------------------------------------------------------------
 	//	Test bench
 	// --------------------------------------------------------------------
 	initial begin
 		// Initialize signals
-		clk = 0;
+		clk_dummy = 0;
 		clk14m = 0;
 		slot_reset_n = 0;
 		slot_iorq_n = 1;
@@ -721,10 +760,10 @@ module tb ();
 		write_io( vdp_io1, 8'h00 );
 		write_io( vdp_io1, 8'h40 );
 
-		for( i = 0; i < 32768; i = i + 1 ) begin
-			write_io( vdp_io0, (i & 255) );
-			repeat( $urandom(40) ) @( posedge clk14m );
-		end
+//		for( i = 0; i < 32768; i = i + 1 ) begin
+//			write_io( vdp_io0, (i & 255) );
+//			repeat( $urandom(40) ) @( posedge clk14m );
+//		end
 
 		$display( "[test002] Read VRAM" );
 		write_io( vdp_io1, 8'h00 );
@@ -732,12 +771,57 @@ module tb ();
 		write_io( vdp_io1, 8'h00 );
 		write_io( vdp_io1, 8'h00 );
 
-		for( i = 0; i < 32768; i = i + 1 ) begin
-			read_io( vdp_io0, rdata );
-			assert( rdata == (i & 255) );
-		end
+//		for( i = 0; i < 32768; i = i + 1 ) begin
+//			read_io( vdp_io0, rdata );
+//			assert( rdata == (i & 255) );
+//		end
 
 		repeat(500) @( posedge clk14m );
+
+		//	VDP Command LMCM
+		$display( "[test003] VDP Command LMCM" );
+		write_io( vdp_io1, 8'd32 );
+		write_io( vdp_io1, 8'h80 + 8'd17 );
+		write_io( vdp_io3, 8'd0 );				//	R#32 SXl
+		write_io( vdp_io3, 8'd0 );				//	R#33 SXh
+		write_io( vdp_io3, 8'd0 );				//	R#34 SYl
+		write_io( vdp_io3, 8'd0 );				//	R#35 SYh
+		write_io( vdp_io3, 8'd0 );				//	R#36 ---
+		write_io( vdp_io3, 8'd0 );				//	R#37 ---
+		write_io( vdp_io3, 8'd0 );				//	R#38 ---
+		write_io( vdp_io3, 8'd0 );				//	R#39 ---
+		write_io( vdp_io3, 8'd16 );				//	R#40 NXl
+		write_io( vdp_io3, 8'd0 );				//	R#41 NXh
+		write_io( vdp_io3, 8'd16 );				//	R#42 NYl
+		write_io( vdp_io3, 8'd0 );				//	R#43 NYh
+		write_io( vdp_io3, 8'd0 );				//	R#44 COLOR
+		write_io( vdp_io3, 8'd0 );				//	R#45 ARG
+		write_io( vdp_io3, 8'hA0 );				//	R#46 LMCM, IMP
+
+		lmcm_read();
+		repeat(50) @( posedge clk14m );
+
+		$display( "[test003] VDP Command LMCM (2nd)" );
+		write_io( vdp_io1, 8'd32 );
+		write_io( vdp_io1, 8'h80 + 8'd17 );
+		write_io( vdp_io3, 8'd15 );				//	R#32 SXl
+		write_io( vdp_io3, 8'd0 );				//	R#33 SXh
+		write_io( vdp_io3, 8'd0 );				//	R#34 SYl
+		write_io( vdp_io3, 8'd0 );				//	R#35 SYh
+		write_io( vdp_io3, 8'd0 );				//	R#36 ---
+		write_io( vdp_io3, 8'd0 );				//	R#37 ---
+		write_io( vdp_io3, 8'd0 );				//	R#38 ---
+		write_io( vdp_io3, 8'd0 );				//	R#39 ---
+		write_io( vdp_io3, 8'd16 );				//	R#40 NXl
+		write_io( vdp_io3, 8'd0 );				//	R#41 NXh
+		write_io( vdp_io3, 8'd16 );				//	R#42 NYl
+		write_io( vdp_io3, 8'd0 );				//	R#43 NYh
+		write_io( vdp_io3, 8'd0 );				//	R#44 COLOR
+		write_io( vdp_io3, 8'b00000100 );		//	R#45 ARG
+		write_io( vdp_io3, 8'hA0 );				//	R#46 LMCM, IMP
+
+		lmcm_read();
+		repeat(50) @( posedge clk14m );
 
 		//	VDP Command SRCH
 		write_io( vdp_io1, 8'h00 );

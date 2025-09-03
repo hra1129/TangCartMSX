@@ -149,7 +149,7 @@ module vdp_command (
 	wire		[9:0]	w_ny;
 	reg			[9:0]	ff_nyb;
 	reg			[7:0]	ff_color;
-	reg					ff_color_latched;
+	reg					ff_transfer_ready;
 	reg					ff_maj;
 	reg					ff_eq;
 	reg					ff_dix;
@@ -184,6 +184,7 @@ module vdp_command (
 	wire				w_line_shift;
 	reg					ff_border_detect_request;
 	reg					ff_border_detect;
+	reg					ff_read_color;
 
 	localparam			c_state_idle				= 6'd0;
 	localparam			c_state_stop				= 6'd1;
@@ -572,18 +573,43 @@ module vdp_command (
 
 	always @( posedge clk or negedge reset_n ) begin
 		if( !reset_n ) begin
-			ff_color_latched		<= 1'b0;
+			ff_read_color	<= 1'b0;
+		end
+		else if( ff_start ) begin
+			ff_read_color	<= 1'b0;
+		end
+		else if( read_color ) begin
+			ff_read_color	<= 1'b1;
+		end
+		else if( ff_state == c_state_lmcm_next ) begin
+			ff_read_color	<= 1'b0;
+		end
+	end
+
+	always @( posedge clk or negedge reset_n ) begin
+		if( !reset_n ) begin
+			ff_transfer_ready		<= 1'b0;
 		end
 		else if( register_write && (register_num == 6'd44) ) begin
-			ff_color_latched		<= 1'b1;
+			//	lmmc, hmmc が VRAM へ書き終えるまで、転送禁止 (CPU→R#44)
+			ff_transfer_ready		<= 1'b0;
 		end
 		else if( (ff_command == c_lmmc && ff_state == c_state_lmmc_next) || 
-		         (ff_command == c_hmmc && ff_state == c_state_hmmc_next) || 
-		         (ff_command == c_lmcm && ff_start) ) begin
-			ff_color_latched		<= 1'b0;
+		         (ff_command == c_hmmc && ff_state == c_state_hmmc_next) ) begin
+			//	lmmc, hmmc が VRAM へ書き終えたので、転送許可 (CPU→R#44)
+			ff_transfer_ready		<= 1'b1;
 		end
-		else if( ff_state == c_state_lmcm_make ) begin
-			ff_color_latched		<= 1'b1;
+		else if( ff_command == c_lmcm && ff_start ) begin
+			//	lmcm が開始されたので、転送禁止 (S#7→CPU)
+			ff_transfer_ready		<= 1'b0;
+		end
+		else if( ff_command == c_lmcm && ff_count_valid ) begin
+			//	lmcm が VRAM を読みだしたので、転送許可 (S#7→CPU)
+			ff_transfer_ready		<= 1'b1;
+		end
+		else if( read_color ) begin
+			//	lmcm で 読みだした VRAM の値を転送し終えたので、次のために転送禁止 (S#7→CPU)
+			ff_transfer_ready		<= 1'b0;
 		end
 		else begin
 			//	hold
@@ -948,7 +974,7 @@ module vdp_command (
 				if( ff_nx == 9'd0 && ff_ny == 10'd0 ) begin
 					ff_state				<= c_state_pre_finish;
 				end
-				else if( read_color ) begin
+				else if( ff_read_color ) begin
 					ff_state				<= c_state_lmcm;
 				end
 				else begin
@@ -982,7 +1008,7 @@ module vdp_command (
 				if( ff_nx == 9'd0 && ff_ny == 10'd0 ) begin
 					ff_state				<= c_state_pre_finish;
 				end
-				else if( ff_color_latched ) begin
+				else if( !ff_transfer_ready ) begin
 					ff_state				<= c_state_lmmc;
 				end
 				else begin
@@ -1081,7 +1107,7 @@ module vdp_command (
 				if( ff_nx == 9'd0 && ff_ny == 10'd0 ) begin
 					ff_state				<= c_state_pre_finish;
 				end
-				else if( ff_color_latched ) begin
+				else if( !ff_transfer_ready ) begin
 					ff_state				<= c_state_hmmc;
 				end
 				else begin
@@ -1216,7 +1242,7 @@ module vdp_command (
 	// --------------------------------------------------------------------
 	assign status_command_execute	= ff_command_execute;
 	assign status_border_detect		= ff_border_detect;
-	assign status_transfer_ready	= ~ff_color_latched;
+	assign status_transfer_ready	= ff_transfer_ready;
 	assign status_color				= ff_read_pixel;
 	assign status_border_position	= ff_sx[8:0];
 endmodule
