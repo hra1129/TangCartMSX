@@ -11,6 +11,7 @@ start:
 			call	vdp_io_select
 			call	copy_rom_font
 			; テスト
+			di
 			call	screen5
 			call	s5_load_image
 			call	s5_vscroll
@@ -31,7 +32,7 @@ start:
 			call	s8_vscroll
 			call	s8_hscroll
 			call	s8_display_adjust
-
+			ei
 			; 後始末
 			call	clear_key_buffer
 			ld		c, _TERM0

@@ -11,6 +11,7 @@ start:
 			call	vdp_io_select
 			call	copy_rom_font
 			; テスト
+			di
 			call	screen0_w40
 			call	s0w40_font_test
 			call	s0w40_color
@@ -19,6 +20,7 @@ start:
 			call	s0w40_hscroll
 			call	s0w40_display_adjust
 			call	s0w40_interlace
+			ei
 			; 後始末
 			call	clear_key_buffer
 			ld		c, _TERM0

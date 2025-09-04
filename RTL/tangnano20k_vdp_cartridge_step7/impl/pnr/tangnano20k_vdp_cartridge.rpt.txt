@@ -12,27 +12,27 @@
   <Part Number>: GW2AR-LV18QN88C8/I7
   <Device>: GW2AR-18
   <Device Version>: C
-  <Created Time>:Thu Sep  4 06:56:08 2025
+  <Created Time>:Thu Sep  4 21:17:24 2025
 
 
 2. PnR Details
 
   Running placement:
     Placement Phase 0: CPU time = 0h 0m 1s, Elapsed time = 0h 0m 1s
-    Placement Phase 1: CPU time = 0h 0m 0.413s, Elapsed time = 0h 0m 0.413s
+    Placement Phase 1: CPU time = 0h 0m 0.464s, Elapsed time = 0h 0m 0.463s
     Placement Phase 2: CPU time = 0h 0m 2s, Elapsed time = 0h 0m 2s
     Placement Phase 3: CPU time = 0h 0m 3s, Elapsed time = 0h 0m 3s
     Total Placement: CPU time = 0h 0m 7s, Elapsed time = 0h 0m 7s
  Running routing:
-    Routing Phase 0: CPU time = 0h 0m 0.003s, Elapsed time = 0h 0m 0.003s
-    Routing Phase 1: CPU time = 0h 0m 0.449s, Elapsed time = 0h 0m 0.449s
+    Routing Phase 0: CPU time = 0h 0m 0.004s, Elapsed time = 0h 0m 0.004s
+    Routing Phase 1: CPU time = 0h 0m 0.505s, Elapsed time = 0h 0m 0.505s
     Routing Phase 2: CPU time = 0h 0m 5s, Elapsed time = 0h 0m 5s
     Routing Phase 3: CPU time = 0h 0m 0s, Elapsed time = 0h 0m 0s
-    Total Routing: CPU time = 0h 0m 5s, Elapsed time = 0h 0m 5s
+    Total Routing: CPU time = 0h 0m 6s, Elapsed time = 0h 0m 6s
  Generate output files:
     CPU time = 0h 0m 4s, Elapsed time = 0h 0m 4s
 
- Total Time and Memory Usage: CPU time = 0h 0m 16s, Elapsed time = 0h 0m 16s, Peak memory usage = 505MB
+ Total Time and Memory Usage: CPU time = 0h 0m 17s, Elapsed time = 0h 0m 17s, Peak memory usage = 505MB
 
 
 3. Resource Usage Summary
@@ -40,15 +40,15 @@
   --------------------------------------------------------------------------------
   Resources                   | Usage                               | Utilization
   --------------------------------------------------------------------------------
-  Logic                       | 4512/20736                          |  22%
-    --LUT,ALU,ROM16           | 4416(3978 LUT, 438 ALU, 0 ROM16)    | -
+  Logic                       | 4603/20736                          |  23%
+    --LUT,ALU,ROM16           | 4507(4069 LUT, 438 ALU, 0 ROM16)    | -
     --SSRAM(RAM16)            | 16                                  | -
   Register                    | 2216/15915                          |  14%
     --Logic Register as Latch | 0/15552                             |  0%
     --Logic Register as FF    | 2146/15552                          |  14%
     --I/O Register as Latch   | 0/363                               |  0%
     --I/O Register as FF      | 70/363                              |  20%
-  CLS                         | 3185/10368                          |  31%
+  CLS                         | 3262/10368                          |  32%
   I/O Port                    | 39/66                               |  60%
   I/O Buf                     | 31                                  | -
     --Input Buf               | 13                                  | -

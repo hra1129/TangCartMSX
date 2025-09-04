@@ -478,6 +478,14 @@ module vdp_command (
 			if( ff_command == c_line ) begin
 				ff_nx <= ff_nx - 9'd1;
 			end
+			else if( ff_command == c_lmcm ) begin
+				if( ff_nx == 9'd0 || w_next_sx[9] || (!w_512pixel && w_next_sx[8]) ) begin
+					ff_nx <= w_nx;
+				end
+				else begin
+					ff_nx <= ff_nx - w_next[8:0];
+				end
+			end
 			else if( ff_nx == 9'd0 || w_next_sx[9] || w_next_dx[9] || (!w_512pixel && (w_next_sx[8] || w_next_dx[8])) ) begin
 				if( ff_command == c_ymmm ) begin
 					ff_nx <= 9'd510;
@@ -527,7 +535,12 @@ module vdp_command (
 			//	hold
 		end
 		else if( ff_count_valid ) begin
-			if( (ff_nx == 9'd0 || w_next_sx[9] || w_next_dx[9] || (!w_512pixel && (w_next_sx[8] || w_next_dx[8]))) && ff_ny != 10'd0 ) begin
+			if( ff_command == c_lmcm ) begin
+				if( (ff_nx == 9'd0 || w_next_sx[9] || (!w_512pixel && w_next_sx[8])) && ff_ny != 10'd0 ) begin
+					ff_ny <= w_ny;
+				end
+			end
+			else if( (ff_nx == 9'd0 || w_next_sx[9] || w_next_dx[9] || (!w_512pixel && (w_next_sx[8] || w_next_dx[8]))) && ff_ny != 10'd0 ) begin
 				ff_ny <= w_ny;
 			end
 		end

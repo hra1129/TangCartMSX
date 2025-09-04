@@ -11,6 +11,7 @@ start:
 			call	vdp_io_select
 			call	copy_rom_font
 			; テスト
+			di
 			call	screen5
 			call	test001
 			call	test002
@@ -123,7 +124,7 @@ start:
 			call	test088
 
 			call	test089
-
+			ei
 			; 後始末
 			call	clear_key_buffer
 			ld		c, _TERM0

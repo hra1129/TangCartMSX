@@ -376,9 +376,6 @@ module vdp_timing_control_screen_mode (
 					ff_vram_address <= 17'd0;
 				endcase
 			end
-			else begin
-				ff_vram_address <= 17'd0;
-			end
 		end
 	end
 

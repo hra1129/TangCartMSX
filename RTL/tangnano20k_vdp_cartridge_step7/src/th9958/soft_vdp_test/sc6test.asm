@@ -11,11 +11,12 @@ start:
 			call	vdp_io_select
 			call	copy_rom_font
 			; テスト
+			di
 			call	screen6
 			call	s6_vscroll
 			call	s6_hscroll
 			call	s6_display_adjust
-
+			ei
 			; 後始末
 			call	clear_key_buffer
 			ld		c, _TERM0

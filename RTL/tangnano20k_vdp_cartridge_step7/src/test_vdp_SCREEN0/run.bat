@@ -25,6 +25,8 @@ vlog ..\th9958\vdp_vram_interface.v
 vlog ..\th9958\vdp_command_cache.v
 vlog ..\th9958\vdp_command.v
 vlog ..\th9958\vdp.v
+vlog ..\ws2812_led\ip_ws2812_led.v
+vlog ..\debugger\ip_debugger.v
 vlog ..\tangnano20k_vdp_cartridge.v
 vlog tb.sv
 vsim -c -t 1ns -do run.do tb

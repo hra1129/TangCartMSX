@@ -11,10 +11,12 @@ start:
 			call	vdp_io_select
 			call	copy_rom_font
 			; テスト
+			di
 			call	screen3
 			call	s3_vscroll
 			call	s3_hscroll
 			call	s3_display_adjust
+			ei
 			; 後始末
 			call	clear_key_buffer
 			ld		c, _TERM0

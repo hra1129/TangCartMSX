@@ -11,6 +11,7 @@ start:
 			call	vdp_io_select
 			call	copy_rom_font
 			; テスト
+			di
 			call	screen5
 			call	s5_load_image
 			call	s5_vscroll
@@ -25,6 +26,7 @@ start:
 			call	s5_hmmv
 			call	s5_lmmm
 			call	s5_hmmm
+			ei
 			; 後始末
 			call	clear_key_buffer
 			ld		c, _TERM0
@@ -636,7 +638,6 @@ pset::
 			call	write_control_register
 			pop		de
 
-			di
 			ld		a, l
 			call	write_register
 			ld		a, h
@@ -658,7 +659,6 @@ pset::
 			and		a, 0x0F
 			or		a, 0x50		; PSET
 			call	write_register
-			ei
 			ret
 			endscope
 
@@ -682,7 +682,6 @@ point::
 			call	write_control_register
 			pop		de
 
-			di
 			ld		a, l
 			call	write_register
 			ld		a, h
@@ -703,7 +702,6 @@ point::
 
 			ld		e, 7
 			call	read_status_register
-			ei
 			ret
 			endscope
 

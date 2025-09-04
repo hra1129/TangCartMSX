@@ -11,6 +11,7 @@ start:
 			call	vdp_io_select
 			call	copy_rom_font
 			; テスト
+			di
 			call	screen1
 			call	s1_font_test
 			call	s1_color
@@ -19,6 +20,7 @@ start:
 			call	s1_hscroll
 			call	s1_display_adjust
 			call	s1_interlace
+			ei
 			; 後始末
 			call	clear_key_buffer
 			ld		c, _TERM0

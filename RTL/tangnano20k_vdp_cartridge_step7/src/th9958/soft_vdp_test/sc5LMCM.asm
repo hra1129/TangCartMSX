@@ -11,6 +11,7 @@ start:
 			call	vdp_io_select
 			call	copy_rom_font
 			; ƒeƒXƒg
+			di
 			call	screen5
 			call	s5_load_image
 
@@ -24,8 +25,8 @@ start:
 			call	test007
 			call	test008
 
-			ld		e, 0
-			ld		a, 15
+			ld		a, 0
+			ld		e, 15
 			call	write_control_register
 			ei
 
@@ -77,7 +78,7 @@ include		"lib.asm"
 ; =============================================================================
 			scope	screen5
 screen5::
-			; R#0 = 0x0E
+			; R#0 = 0x06
 			ld		a, 0x06
 			ld		e, 0
 			call	write_control_register
