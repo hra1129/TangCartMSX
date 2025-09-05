@@ -1,6 +1,9 @@
 zma sc0test.asm  SC0TEST.COM
 if errorlevel 1 pause ==========================
 
+zma sc0wtest.asm  SC0WTEST.COM
+if errorlevel 1 pause ==========================
+
 zma sc1test.asm  SC1TEST.COM
 if errorlevel 1 pause ==========================
 
@@ -48,6 +51,11 @@ if exist D:\download\msx\DOS2\MSXDOS2 (
 		del D:\download\msx\DOS2\MSXDOS2\SC0TEST.COM
 	)
 	copy SC0TEST.COM  D:\download\msx\DOS2\MSXDOS2\
+
+	if exist D:\download\msx\DOS2\MSXDOS2\SC0WTEST.COM (
+		del D:\download\msx\DOS2\MSXDOS2\SC0WTEST.COM
+	)
+	copy SC0WTEST.COM  D:\download\msx\DOS2\MSXDOS2\
 
 	if exist D:\download\msx\DOS2\MSXDOS2\SC1TEST.COM (
 		del D:\download\msx\DOS2\MSXDOS2\SC1TEST.COM
