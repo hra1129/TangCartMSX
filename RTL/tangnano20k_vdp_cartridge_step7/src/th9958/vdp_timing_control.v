@@ -109,6 +109,7 @@ module vdp_timing_control (
 	input				reg_sprite_magify,
 	input				reg_sprite_16x16,
 	input				reg_sprite_disable,
+	input		[7:0]	reg_text_back_color,
 	input		[7:0]	reg_backdrop_color,
 	input				reg_left_mask,
 	input				reg_scroll_planes
@@ -122,6 +123,7 @@ module vdp_timing_control (
 	wire		[ 8:3]	w_horizontal_offset_h;
 	wire				w_sprite_off;
 	wire				w_interleaving_page;
+	wire				w_blink;
 
 	// --------------------------------------------------------------------
 	//	Output assignment
@@ -157,7 +159,8 @@ module vdp_timing_control (
 		.reg_blink_period							( reg_blink_period							),
 		.horizontal_offset_l						( w_horizontal_offset_l						),
 		.horizontal_offset_h						( w_horizontal_offset_h						),
-		.interleaving_page							( w_interleaving_page						)
+		.interleaving_page							( w_interleaving_page						),
+		.blink										( w_blink									)
 	);
 
 	// --------------------------------------------------------------------
@@ -178,6 +181,7 @@ module vdp_timing_control (
 		.display_color								( screen_mode_display_color					),
 		.sprite_off									( w_sprite_off								),
 		.interleaving_page							( w_interleaving_page						),
+		.blink										( w_blink									),
 		.screen_mode								( screen_mode								),
 		.horizontal_offset_l						( w_horizontal_offset_l						),
 		.reg_screen_mode							( reg_screen_mode							),
@@ -185,6 +189,7 @@ module vdp_timing_control (
 		.reg_pattern_name_table_base				( reg_pattern_name_table_base				),
 		.reg_color_table_base						( reg_color_table_base						),
 		.reg_pattern_generator_table_base			( reg_pattern_generator_table_base			),
+		.reg_text_back_color						( reg_text_back_color						),
 		.reg_backdrop_color							( reg_backdrop_color						),
 		.reg_scroll_planes							( reg_scroll_planes							),
 		.reg_left_mask								( reg_left_mask								)

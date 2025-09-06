@@ -73,6 +73,7 @@ module vdp_timing_control_screen_mode (
 	output		[7:0]	display_color,
 	output				sprite_off,
 	input				interleaving_page,
+	input				blink,
 	output		[3:0]	screen_mode,
 	input		[2:0]	horizontal_offset_l,
 
@@ -81,6 +82,7 @@ module vdp_timing_control_screen_mode (
 	input		[16:10]	reg_pattern_name_table_base,
 	input		[16:6]	reg_color_table_base,
 	input		[16:11]	reg_pattern_generator_table_base,
+	input		[7:0]	reg_text_back_color,
 	input		[7:0]	reg_backdrop_color,
 	input				reg_scroll_planes,
 	input				reg_left_mask
@@ -143,6 +145,9 @@ module vdp_timing_control_screen_mode (
 	wire		[16:0]	w_color_g1;
 	wire		[16:0]	w_color_g23;
 	wire		[16:0]	w_color_gm;
+	wire		[16:0]	w_color_t2;
+	wire		[1:0]	w_blink_pattern;
+	wire		[1:0]	w_blink;
 	//	VRAM address
 	reg			[16:0]	ff_vram_address;
 	reg					ff_vram_valid;
@@ -282,6 +287,7 @@ module vdp_timing_control_screen_mode (
 	assign w_color_g1					= { reg_color_table_base, 1'b0, ff_next_vram0[7:3] };
 	assign w_color_g23					= { reg_color_table_base[16:13], (pixel_pos_y[7:6] & reg_color_table_base[12:11]), (ff_next_vram0[7:3] & reg_color_table_base[10:6]), ff_next_vram0[2:0], pixel_pos_y[2:0] };
 	assign w_color_gm					= { reg_pattern_generator_table_base, ff_next_vram0, pixel_pos_y[4:2] };
+	assign w_color_t2					= { reg_color_table_base[16:9], (reg_color_table_base[8:6] & w_pattern_name_t12_pre[10:8]), w_pattern_name_t12_pre[7:3] };
 
 	// --------------------------------------------------------------------
 	//	VRAM read access request
@@ -375,7 +381,8 @@ module vdp_timing_control_screen_mode (
 				3'd3:
 					case( w_mode )
 					c_t2:
-						ff_vram_address <= 17'd0;				//	★ブリンクアドレス 
+						//	ブリンク情報を読む
+						ff_vram_address <= w_color_t2;
 					c_g1:
 						//	色情報を読む
 						ff_vram_address <= w_color_g1;
@@ -500,7 +507,7 @@ module vdp_timing_control_screen_mode (
 					endcase
 				3'd3:
 					case( w_mode )
-					c_g1, c_g2, c_g3, c_gm:
+					c_g1, c_g2, c_g3, c_gm, c_t2:
 						//	SCREEN1, 2, 4 では、色を保持する。
 						case( ff_vram_address[1:0] )
 						2'd0:	ff_next_vram2 <= vram_rdata[ 7: 0];
@@ -511,13 +518,15 @@ module vdp_timing_control_screen_mode (
 					c_t1:
 						//	SCREEN0(W40) では、色はレジスタから引っ張ってくる。
 						ff_next_vram2 <= reg_backdrop_color;
-					c_t2:
-						//	SCREEN0(W80) では、色はレジスタから引っ張ってくる。ブリンクで入れ替わる。
-						ff_next_vram2 <= reg_backdrop_color;
 					default: begin
 						//	none
 					end
 					endcase
+				3'd4:
+					if( w_mode == c_t2 ) begin
+						ff_next_vram2 <= w_blink[1] ? reg_text_back_color: reg_backdrop_color;
+						ff_next_vram3 <= w_blink[0] ? reg_text_back_color: reg_backdrop_color;
+					end
 				default: begin
 					//	hold
 				end
@@ -525,6 +534,11 @@ module vdp_timing_control_screen_mode (
 			end
 		end
 	end
+
+	assign w_blink_pattern	= (ff_pos_x[1:0] == 2'd0) ? ff_next_vram2[7:6]:
+	                      	  (ff_pos_x[1:0] == 2'd0) ? ff_next_vram2[5:4]:
+	                      	  (ff_pos_x[1:0] == 2'd0) ? ff_next_vram2[3:2]: ff_next_vram2[1:0];
+	assign w_blink			= blink ? w_blink_pattern: 2'b00;
 
 	// --------------------------------------------------------------------
 	//	Display color generate
@@ -575,11 +589,11 @@ module vdp_timing_control_screen_mode (
 						ff_pattern0 <= { ff_next_vram1[7] ? { ff_next_vram2[ 7: 4] }: { ff_next_vram2[ 3: 0] }, ff_next_vram1[6] ? { ff_next_vram2[ 7: 4] }: { ff_next_vram2[ 3: 0] } };
 						ff_pattern1 <= { ff_next_vram1[5] ? { ff_next_vram2[ 7: 4] }: { ff_next_vram2[ 3: 0] }, ff_next_vram1[4] ? { ff_next_vram2[ 7: 4] }: { ff_next_vram2[ 3: 0] } };
 						ff_pattern2 <= { ff_next_vram1[3] ? { ff_next_vram2[ 7: 4] }: { ff_next_vram2[ 3: 0] }, ff_next_vram1[2] ? { ff_next_vram2[ 7: 4] }: { ff_next_vram2[ 3: 0] } };
-						ff_pattern3 <= { ff_next_vram5[7] ? { ff_next_vram2[ 7: 4] }: { ff_next_vram2[ 3: 0] }, ff_next_vram5[6] ? { ff_next_vram2[ 7: 4] }: { ff_next_vram2[ 3: 0] } };
-						ff_pattern4 <= { ff_next_vram5[5] ? { ff_next_vram2[ 7: 4] }: { ff_next_vram2[ 3: 0] }, ff_next_vram5[4] ? { ff_next_vram2[ 7: 4] }: { ff_next_vram2[ 3: 0] } };
-						ff_pattern5 <= { ff_next_vram5[3] ? { ff_next_vram2[ 7: 4] }: { ff_next_vram2[ 3: 0] }, ff_next_vram5[2] ? { ff_next_vram2[ 7: 4] }: { ff_next_vram2[ 3: 0] } };
-						ff_pattern6 <= { ff_next_vram2[ 3: 0], ff_next_vram2[ 3: 0] };
-						ff_pattern7 <= { ff_next_vram2[ 3: 0], ff_next_vram2[ 3: 0] };
+						ff_pattern3 <= { ff_next_vram5[7] ? { ff_next_vram3[ 7: 4] }: { ff_next_vram3[ 3: 0] }, ff_next_vram5[6] ? { ff_next_vram3[ 7: 4] }: { ff_next_vram3[ 3: 0] } };
+						ff_pattern4 <= { ff_next_vram5[5] ? { ff_next_vram3[ 7: 4] }: { ff_next_vram3[ 3: 0] }, ff_next_vram5[4] ? { ff_next_vram3[ 7: 4] }: { ff_next_vram3[ 3: 0] } };
+						ff_pattern5 <= { ff_next_vram5[3] ? { ff_next_vram3[ 7: 4] }: { ff_next_vram3[ 3: 0] }, ff_next_vram5[2] ? { ff_next_vram3[ 7: 4] }: { ff_next_vram3[ 3: 0] } };
+						ff_pattern6 <= { w_backdrop_color[ 3: 0], w_backdrop_color[ 3: 0] };
+						ff_pattern7 <= { w_backdrop_color[ 3: 0], w_backdrop_color[ 3: 0] };
 					end
 				c_gm:
 					begin

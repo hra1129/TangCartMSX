@@ -330,6 +330,7 @@ module vdp (
 		.reg_sprite_magify							( reg_sprite_magify							),
 		.reg_sprite_16x16							( reg_sprite_16x16							),
 		.reg_sprite_disable							( reg_sprite_disable						),
+		.reg_text_back_color						( reg_text_back_color						),
 		.reg_backdrop_color							( reg_backdrop_color						),
 		.reg_left_mask								( reg_left_mask								),
 		.reg_scroll_planes							( reg_scroll_planes							)

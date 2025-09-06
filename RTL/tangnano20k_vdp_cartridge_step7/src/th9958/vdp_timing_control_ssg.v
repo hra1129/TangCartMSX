@@ -84,7 +84,8 @@ module vdp_timing_control_ssg (
 	input		[7:0]	reg_blink_period,
 	output		[2:0]	horizontal_offset_l,
 	output		[8:3]	horizontal_offset_h,
-	output				interleaving_page
+	output				interleaving_page,
+	output				blink
 );
 	localparam			c_left_pos			= 14'd640;		//	16の倍数
 	localparam			c_top_pos192		= 10'd48;		//	画面上の垂直位置(192 lines mode)。小さくすると上へ、大きくすると下へ寄る。
@@ -300,7 +301,7 @@ module vdp_timing_control_ssg (
 		if( !reset_n ) begin
 			ff_blink_counter <= 4'd0;
 		end
-		else if( !reg_interleaving_mode || reg_blink_period == 8'd0 ) begin
+		else if( reg_blink_period == 8'd0 ) begin
 			ff_blink_counter <= 4'd0;
 		end
 		else if( w_10frame && w_h_count_end && w_v_count_end ) begin
@@ -315,10 +316,10 @@ module vdp_timing_control_ssg (
 
 	always @( posedge clk or negedge reset_n ) begin
 		if( !reset_n ) begin
-			ff_interleaving_page <= 1'b1;
+			ff_interleaving_page <= 1'b0;
 		end
-		else if( !reg_interleaving_mode || reg_blink_period == 8'd0 ) begin
-			ff_interleaving_page <= 1'b1;
+		else if( reg_blink_period == 8'd0 ) begin
+			ff_interleaving_page <= 1'b0;
 		end
 		else if( w_10frame && w_h_count_end && w_v_count_end ) begin
 			if( ff_blink_counter == 4'd0 ) begin
@@ -359,4 +360,5 @@ module vdp_timing_control_ssg (
 	assign screen_v_active		= ff_v_active;
 	assign dot_phase			= ff_half_count[0];
 	assign interleaving_page	= reg_interleaving_mode ? (ff_interleaving_page & ff_field): 1'b1;
+	assign blink				= ff_interleaving_page;
 endmodule
