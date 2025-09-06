@@ -194,7 +194,7 @@ module vdp_vram_interface (
 	assign w_cpu_vram_address				= vram_interleave ? { cpu_vram_address[0]        , cpu_vram_address[16:1]         }: cpu_vram_address;
 	assign w_sprite_vram_address			= vram_interleave ? { sprite_vram_address[0]     , sprite_vram_address[16:1]      }: sprite_vram_address;
 	assign w_screen_mode_vram_address		= vram_interleave ? { screen_mode_vram_address[0], screen_mode_vram_address[16:1] }: screen_mode_vram_address;
-	assign w_command_vram_address			= vram_interleave ? { command_vram_address[0]    , command_vram_address[16:1]     }: command_vram_address;
+	assign w_command_vram_address			= command_vram_address;		//	※VDP Command は、VDP Command 内部でインターリーブ処理してるのでここではやらない 
 
 	always @( posedge clk or negedge reset_n ) begin
 		if( !reset_n ) begin

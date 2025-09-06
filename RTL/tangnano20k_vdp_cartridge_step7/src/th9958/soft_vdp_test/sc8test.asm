@@ -16,6 +16,7 @@ start:
 			call	s8_vscroll
 			call	s8_hscroll
 			call	s8_display_adjust
+			call	s8_random_boxfill
 			ei
 			; 後始末
 			call	clear_key_buffer
@@ -162,4 +163,70 @@ s8_hscroll::
 			scope	s8_display_adjust
 s8_display_adjust::
 			jp		display_adjust
+			endscope
+
+; =============================================================================
+;	[SCREEN8] ランダムに矩形を 65000個表示するテスト
+;	input:
+;		none
+;	output:
+;		none
+;	break:
+;		AF
+;	comment:
+;		none
+; =============================================================================
+			scope	s8_random_boxfill
+s8_random_boxfill::
+			ld		bc, 65000
+	loop:
+			push	bc
+			call	random
+			ld		[data_dx], a
+			call	random
+			ld		[data_dy], a
+			call	random
+			ld		[data_nx], a
+			call	random
+			ld		[data_ny], a
+			call	random
+			ld		[data_clr], a
+			call	wait_command
+			ld		hl, data
+			ld		a, 36
+			ld		b, 11
+			call	run_command
+			pop		bc
+			dec		bc
+			ld		a, c
+			or		a, b
+			jr		nz, loop
+			call	wait_push_space_key
+			ret
+	data:
+	data_dx:
+			dw		0			; DX
+	data_dy:
+			dw		0			; DY
+	data_nx:
+			dw		0			; NX
+	data_ny:
+			dw		0			; NY
+	data_clr:
+			db		0			; CLR
+			db		0			; ARG
+			db		0xC0		; CMD (HMMV)
+			endscope
+
+			scope	random
+random::
+			ld		a, [data1]
+			add		a, 19
+			xor		a, 17
+			rlca
+			ld		[data1], a
+			add		a, 209
+			ret
+	data1:
+			db		0x12
 			endscope

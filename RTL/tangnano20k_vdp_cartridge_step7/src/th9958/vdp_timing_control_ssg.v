@@ -281,9 +281,6 @@ module vdp_timing_control_ssg (
 		if( !reset_n ) begin
 			ff_blink_base <= 4'd0;
 		end
-		else if( !reg_interleaving_mode ) begin
-			ff_blink_base <= 4'd0;
-		end
 		else if( w_h_count_end && w_v_count_end ) begin
 			if( w_10frame ) begin
 				ff_blink_base <= 4'd0;
@@ -316,10 +313,10 @@ module vdp_timing_control_ssg (
 
 	always @( posedge clk or negedge reset_n ) begin
 		if( !reset_n ) begin
-			ff_interleaving_page <= 1'b0;
+			ff_interleaving_page <= 1'b1;
 		end
 		else if( reg_blink_period == 8'd0 ) begin
-			ff_interleaving_page <= 1'b0;
+			ff_interleaving_page <= 1'b1;
 		end
 		else if( w_10frame && w_h_count_end && w_v_count_end ) begin
 			if( ff_blink_counter == 4'd0 ) begin
@@ -360,5 +357,5 @@ module vdp_timing_control_ssg (
 	assign screen_v_active		= ff_v_active;
 	assign dot_phase			= ff_half_count[0];
 	assign interleaving_page	= reg_interleaving_mode ? (ff_interleaving_page & ff_field): 1'b1;
-	assign blink				= ff_interleaving_page;
+	assign blink				= ~ff_interleaving_page;
 endmodule

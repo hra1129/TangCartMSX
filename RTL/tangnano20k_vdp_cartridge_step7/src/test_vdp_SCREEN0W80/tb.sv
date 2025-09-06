@@ -416,7 +416,7 @@ module tb ();
 		//	VDP R#1 = 0x50
 		write_io( vdp_io1, 8'h50 );
 		write_io( vdp_io1, 8'h81 );
-		//	VDP R#2 = 0x00	Pattern Name Table        0x00000
+		//	VDP R#2 = 0x03	Pattern Name Table        0x00000
 		write_io( vdp_io1, 8'h03 );
 		write_io( vdp_io1, 8'h82 );
 		//	VDP R#3 = 0x00	Color Table               0x00800
@@ -428,6 +428,12 @@ module tb ();
 		//	VDP R#7 = 0xF4	Text Color/Backdrop Color
 		write_io( vdp_io1, 8'hF4 );
 		write_io( vdp_io1, 8'h87 );
+		//	VDP R#12 = 0x36	Text Color/Backdrop Color
+		write_io( vdp_io1, 8'h36 );
+		write_io( vdp_io1, 8'h80 + 8'd12 );
+		//	VDP R#13 = 0x12	Text Color/Backdrop Color
+		write_io( vdp_io1, 8'h12 );
+		write_io( vdp_io1, 8'h80 + 8'd13 );
 		//	VDP R#23 = 0	Vertical Scroll
 		write_io( vdp_io1, 8'd0 );
 		write_io( vdp_io1, 8'h80 + 8'd23 );
@@ -447,7 +453,7 @@ module tb ();
 		write_io( vdp_io1, 8'h50 );
 		`include "font.sv"
 
-		repeat(500000) @( posedge clk14m );
+		repeat(5000000) @( posedge clk14m );
 
 		$display( "[test---] All tests completed" );
 		repeat( 100 ) @( posedge clk14m );
