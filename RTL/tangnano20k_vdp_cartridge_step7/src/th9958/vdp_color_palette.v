@@ -351,10 +351,10 @@ module vdp_color_palette (
 		else if( ff_rgb_load ) begin
 			if( w_256colors_mode ) begin
 				case( ff_display_color256[1:0] )
-				3'd0:		ff_vdp_b <= 8'd0;
-				3'd1:		ff_vdp_b <= 8'd85;
-				3'd2:		ff_vdp_b <= 8'd170;
-				3'd3:		ff_vdp_b <= 8'd255;
+				2'd0:		ff_vdp_b <= 8'd0;
+				2'd1:		ff_vdp_b <= 8'd85;
+				2'd2:		ff_vdp_b <= 8'd170;
+				2'd3:		ff_vdp_b <= 8'd255;
 				default:	ff_vdp_b <= 8'd0;
 				endcase
 			end
