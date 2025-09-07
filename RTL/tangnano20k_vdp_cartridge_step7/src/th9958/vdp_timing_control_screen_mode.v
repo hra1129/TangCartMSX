@@ -71,6 +71,7 @@ module vdp_timing_control_screen_mode (
 	output				vram_interleave,
 
 	output		[7:0]	display_color,
+	output				display_color_en,
 	output				sprite_off,
 	input				interleaving_page,
 	input				blink,
@@ -153,6 +154,7 @@ module vdp_timing_control_screen_mode (
 	reg					ff_vram_valid;
 	//	Display color
 	reg			[7:0]	ff_display_color;
+	reg					ff_display_color_en;
 	wire		[7:0]	w_backdrop_color;
 	reg			[7:0]	ff_pattern0;
 	reg			[7:0]	ff_pattern1;
@@ -162,7 +164,10 @@ module vdp_timing_control_screen_mode (
 	reg			[7:0]	ff_pattern5;
 	reg			[7:0]	ff_pattern6;
 	reg			[7:0]	ff_pattern7;
-	wire		[7:0]	w_pattern0;
+	//	YJK
+	reg			[4:0]	ff_y;
+	reg			[5:0]	ff_j;
+	reg			[5:0]	ff_k;
 
 	// --------------------------------------------------------------------
 	//	Screen mode decoder
@@ -636,23 +641,33 @@ module vdp_timing_control_screen_mode (
 		end
 	end
 
-	assign w_pattern0	= (!reg_display_on || (reg_left_mask && (screen_pos_x[13:8] < 6'd15))) ? reg_backdrop_color: ff_pattern0;
-
+	// --------------------------------------------------------------------
+	//	Output pixel
+	// --------------------------------------------------------------------
 	always @( posedge clk ) begin
 		if( w_sub_phase == 4'd7 ) begin
 			if( w_mode == c_t2 || w_mode == c_g5 || w_mode == c_g6 ) begin
-				ff_display_color <= { 4'd0, w_pattern0[3:0] };
+				ff_display_color <= { 4'd0, ff_pattern0[3:0] };
+				ff_display_color_en	= reg_display_on && (!reg_left_mask || (screen_pos_x[13:8] >= 6'd15));
+			end
+			else begin
+				//	hold
 			end
 		end
 		else if( w_sub_phase == 4'd15 ) begin
+			ff_display_color_en	= reg_display_on && (!reg_left_mask || (screen_pos_x[13:8] >= 6'd15));
 			if( w_mode == c_t2 || w_mode == c_g5 || w_mode == c_g6 ) begin
-				ff_display_color <= { 4'd0, w_pattern0[7:4] };
+				ff_display_color <= { 4'd0, ff_pattern0[7:4] };
 			end
 			else begin
-				ff_display_color <= w_pattern0;
+				ff_display_color <= ff_pattern0;
 			end
+		end
+		else begin
+			//	hold
 		end
 	end
 
-	assign display_color = ff_display_color;
+	assign display_color		= ff_display_color;
+	assign display_color_en		= ff_display_color_en;
 endmodule

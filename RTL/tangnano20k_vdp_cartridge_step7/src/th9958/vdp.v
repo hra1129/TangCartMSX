@@ -131,6 +131,7 @@ module vdp (
 	wire				w_screen_mode_vram_valid;
 	wire		[31:0]	w_screen_mode_vram_rdata;
 	wire		[7:0]	w_screen_mode_display_color;
+	wire				w_screen_mode_display_color_en;
 	wire		[3:0]	w_screen_mode;
 
 	wire		[16:0]	w_sprite_vram_address;
@@ -297,6 +298,7 @@ module vdp (
 		.screen_mode_vram_valid						( w_screen_mode_vram_valid					),
 		.screen_mode_vram_rdata						( w_screen_mode_vram_rdata					),
 		.screen_mode_display_color					( w_screen_mode_display_color				),
+		.screen_mode_display_color_en				( w_screen_mode_display_color_en			),
 		.screen_mode								( w_screen_mode								),
 		.sprite_vram_address						( w_sprite_vram_address						),
 		.sprite_vram_valid							( w_sprite_vram_valid						),
@@ -420,6 +422,7 @@ module vdp (
 		.palette_g									( w_palette_g								),
 		.palette_b									( w_palette_b								),
 		.display_color_screen_mode					( w_screen_mode_display_color				),
+		.display_color_screen_mode_en				( w_screen_mode_display_color_en			),
 		.display_color_sprite						( w_sprite_display_color					),
 		.display_color_sprite_en					( w_sprite_display_color_en					),
 		.vdp_r										( w_vdp_r									),

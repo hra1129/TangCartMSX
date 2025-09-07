@@ -59,7 +59,7 @@ module vdp_color_palette (
 	input				reset_n,
 	input				clk,					//	42.95454MHz
 
-	input		[3:0]	screen_pos_x,
+	input		[5:0]	screen_pos_x,
 
 	input				palette_valid,
 	input		[3:0]	palette_num,
@@ -68,6 +68,7 @@ module vdp_color_palette (
 	input		[2:0]	palette_b,
 
 	input		[7:0]	display_color_screen_mode,
+	input				display_color_screen_mode_en,
 	input		[3:0]	display_color_sprite,
 	input				display_color_sprite_en,
 
@@ -109,6 +110,26 @@ module vdp_color_palette (
 	reg			[2:0]	ff_palette_g;
 	reg			[2:0]	ff_palette_b;
 	wire				w_high_resolution;
+	reg			[8:0]	ff_display_color_delay0;	//	{ palette_flag(1bit), pixel_byte(8bit) }
+	reg			[8:0]	ff_display_color_delay1;	//	{ palette_flag(1bit), pixel_byte(8bit) }
+	reg			[8:0]	ff_display_color_delay2;	//	{ palette_flag(1bit), pixel_byte(8bit) }
+	reg			[8:0]	ff_display_color_delay3;	//	{ palette_flag(1bit), pixel_byte(8bit) }
+	reg			[5:0]	ff_y;
+	reg			[5:0]	ff_j;
+	reg			[5:0]	ff_k;
+	wire		[6:0]	w_r_yjk;
+	wire		[6:0]	w_g_yjk;
+	wire		[8:0]	w_b_yjk_pre;
+	wire		[6:0]	w_b_yjk;
+	wire		[7:0]	w_b_y;
+	wire		[7:0]	w_b_jk;
+	wire		[7:0]	w_b_yjk;
+	wire		[4:0]	w_r;
+	wire		[4:0]	w_g;
+	wire		[4:0]	w_b;
+	reg			[4:0]	ff_yjk_r;
+	reg			[4:0]	ff_yjk_g;
+	reg			[4:0]	ff_yjk_b;
 
 	// --------------------------------------------------------------------
 	//	Palette initializer
@@ -150,6 +171,95 @@ module vdp_color_palette (
 	assign w_palette_b		= ff_palette_num[4] ? palette_b : ff_palette_b;
 
 	// --------------------------------------------------------------------
+	//	Pixel delay (screen_pos_x = 0)
+	// --------------------------------------------------------------------
+	always @( posedge clk ) begin
+		if( screen_pos_x[3:0] == 4'd0 ) begin
+			if( reg_yjk_mode && !reg_yae_mode ) begin
+				if( display_color_screen_mode_en ) begin
+					ff_display_color_delay0 <= { 1'b0, display_color_screen_mode };
+				end
+				else begin
+					ff_display_color_delay0 <= { 1'b1, reg_backdrop_color[3:0], 1'b0, display_color_screen_mode[2:0] };
+				end
+			end
+			else if( reg_yjk_mode && reg_yae_mode ) begin
+				if( display_color_screen_mode_en ) begin
+					ff_display_color_delay0 <= { display_color_screen_mode[3], display_color_screen_mode[7:4], 1'b0, display_color_screen_mode[2:0] };
+				end
+				else begin
+					ff_display_color_delay0 <= { 1'b1, reg_backdrop_color[3:0], 1'b0, display_color_screen_mode[2:0] };
+				end
+			end
+			else begin
+				if( display_color_screen_mode_en ) begin
+					ff_display_color_delay0 <= { 1'b1, display_color_screen_mode };
+				end
+				else begin
+					ff_display_color_delay0 <= { 1'b1, reg_backdrop_color };
+				end
+			end
+		end
+	end
+
+	always @( posedge clk ) begin
+		if( screen_pos_x[3:0] == 4'd0 ) begin
+			ff_display_color_delay1 <= ff_display_color_delay0;
+			ff_display_color_delay2 <= ff_display_color_delay1;
+			ff_display_color_delay3 <= ff_display_color_delay2;
+		end
+		else begin
+			//	hold
+		end
+	end
+
+	// --------------------------------------------------------------------
+	//	Latch YJK color (screen_pos_x = 0)
+	// --------------------------------------------------------------------
+	always @( posedge clk ) begin
+		if( screen_pos_x[5:0] == 6'b11_0000 ) begin
+			ff_j <= { ff_display_color_delay0[2:0], ff_display_color_delay1[2:0] };
+			ff_k <= { ff_display_color_delay2[2:0], ff_display_color_delay3[2:0] };
+		end
+		else begin
+			//	hold
+		end
+	end
+
+	always @( posedge clk ) begin
+		if( screen_pos_x[3:0] == 4'd0 ) begin
+			ff_y <= ff_display_color_delay3;
+		end
+		else begin
+			//	hold
+		end
+	end
+
+	// --------------------------------------------------------------------
+	//	Convert YJK to RGB (screen_pos_x = 1)
+	// --------------------------------------------------------------------
+	assign w_r_yjk		= { 2'd0, ff_y } + { ff_j[5], ff_j };						//	r (-32...62)
+	assign w_g_yjk		= { 2'd0, ff_y } + { ff_k[5], ff_k };						//	b (-32...62)
+	assign w_b_y		= { 1'b0, ff_y, 2'd0 } + { 3'd0, ff_y };					//	y * 5						(   0...155 )
+	assign w_b_jk		= { ff_j[5], ff_j, 1'b0 } + { ff_k[5], ff_k[5], ff_k };		//	j * 2 + k					( -96... 93 )
+	assign w_b_yjk_pre	= { 1'b0, w_b_y } - { w_b_jk[7], w_b_jk } + 9'd2;			//	(y * 5 - (j * 2 + k) + 2)	( -91...253 )
+	assign w_b_yjk		= w_b_yjk_pre[ 8: 2 ];										//	(y * 5 - (j * 2 + k) + 2)/4	( -22... 63 )
+	assign w_r			= w_r_yjk[6] ? 5'd0:
+	          			  w_r_yjk[5] ? 5'd31: w_r_yjk[4:0];
+	assign w_g			= w_g_yjk[6] ? 5'd0:
+	          			  w_g_yjk[5] ? 5'd31: w_g_yjk[4:0];
+	assign w_b			= w_b_yjk[6] ? 5'd0:
+	          			  w_b_yjk[5] ? 5'd31: w_b_yjk[4:0];
+
+	always @( posedge clk ) begin
+		if( screen_pos_x[3:0] == 4'd1 ) begin
+			ff_yjk_r <= w_r;
+			ff_yjk_g <= w_g;
+			ff_yjk_b <= w_b;
+		end
+	end
+
+	// --------------------------------------------------------------------
 	//	Mode Select ( screen_pos_x = 0 )
 	// --------------------------------------------------------------------
 	assign w_256colors_mode		= (reg_screen_mode == 5'b11100);	// Graphic7 (SCREEN8)
@@ -174,15 +284,22 @@ module vdp_color_palette (
 			ff_display_color_oe <= 1'b0;
 		end
 		else if( w_256colors_mode ) begin
-			if( display_color_sprite_en && (display_color_sprite != 4'd0 || reg_color0_opaque) ) begin
-				ff_display_color <= { 4'd0, display_color_sprite };
+			//	SCREEN8...12 (Simply delay)
+			if( display_color_screen_mode_en ) begin
+				ff_display_color	<= display_color_screen_mode;
+				ff_display_color_oe	<= 1'b0;
+			end
+			else if( reg_yjk_mode ) begin
+				//	YJKモードの場合は、周辺色は palette になる
+				ff_display_color	<= { 4'd0, reg_backdrop_color };
+				ff_display_color_oe	<= 1'b1;
 			end
 			else begin
-				ff_display_color <= display_color_screen_mode;
+				ff_display_color	<= reg_backdrop_color;
+				ff_display_color_oe	<= 1'b0;
 			end
-			ff_display_color_oe <= 1'b0;
 		end
-		else if( screen_pos_x == 4'd0 ) begin
+		else if( screen_pos_x[3:0] == 4'd0 ) begin
 			if( w_t12_mode ) begin
 				//	SCREEN0
 				ff_display_color <= { 4'd0, display_color_screen_mode };
@@ -211,35 +328,41 @@ module vdp_color_palette (
 			end
 			ff_display_color_oe <= 1'b1;
 		end
-		else if( w_high_resolution && screen_pos_x == 4'd8 ) begin
+		else if( w_high_resolution && screen_pos_x[3:0] == 4'd8 ) begin
 			if( w_t12_mode ) begin
-				//	SCREEN0
-				ff_display_color <= { 4'd0, display_color_screen_mode };
+				//	SCREEN0(W80) Background
+				ff_display_color <= { 4'd0, display_color_screen_mode[3:0] };
 			end
 			else if( display_color_sprite_en && (display_color_sprite != 4'd0 || reg_color0_opaque) ) begin
 				//	Sprite
 				if( w_g5_mode ) begin
-					ff_display_color <= { 6'd0, display_color_sprite[3:2] };
+					//	SCREEN6 Sprite
+					ff_display_color <= { 6'd0, display_color_sprite[1:0] };
 				end
 				else begin
+					//	SCREEN7 Sprite
 					ff_display_color <= { 4'd0, display_color_sprite };
 				end
 			end
 			else if( (display_color_screen_mode != 4'd0 || reg_color0_opaque) ) begin
 				//	Background
 				if( w_g5_mode ) begin
-					ff_display_color <= { 4'd0, display_color_screen_mode[3:2] };
+					//	SCREEN6 Background
+					ff_display_color <= { 4'd0, display_color_screen_mode[1:0] };
 				end
 				else begin
+					//	SCREEN7 Background
 					ff_display_color <= { 4'd0, display_color_screen_mode[3:0] };
 				end
 			end
 			else begin
 				//	Background (Transparent)
 				if( w_g5_mode ) begin
-					ff_display_color <= { 4'd0, reg_backdrop_color[3:2] };
+					//	SCREEN6
+					ff_display_color <= { 4'd0, reg_backdrop_color[1:0] };
 				end
 				else begin
+					//	SCREEN7
 					ff_display_color <= { 4'd0, reg_backdrop_color[3:0] };
 				end
 			end
@@ -274,7 +397,7 @@ module vdp_color_palette (
 		if( !reset_n ) begin
 			ff_display_color256 <= 8'd0;
 		end
-		else if( screen_pos_x == 4'd2 && w_256colors_mode ) begin
+		else if( screen_pos_x[3:0] == 4'd2 && w_256colors_mode && !reg_yjk_mode ) begin
 			if( display_color_sprite_en ) begin
 				case( ff_display_color[3:0] )
 				4'd0:		ff_display_color256 <= { 3'd0, 3'd0, 2'd0 };
@@ -309,7 +432,7 @@ module vdp_color_palette (
 	assign w_display_g = w_256colors_mode ? ff_display_color256[7:5]          : w_display_g16;
 
 	always @( posedge clk ) begin
-		ff_rgb_load	<= (screen_pos_x == 4'd3) || (w_high_resolution && screen_pos_x == 4'd11);
+		ff_rgb_load	<= (screen_pos_x[3:0] == 4'd3) || (w_high_resolution && screen_pos_x[3:0] == 4'd11);
 	end
 
 	always @( posedge clk or negedge reset_n ) begin
