@@ -188,6 +188,8 @@ module vdp_command (
 	reg					ff_border_detect_request;
 	reg					ff_border_detect;
 	reg					ff_read_color;
+	wire				w_sx_overflow;
+	wire				w_dx_overflow;
 
 	localparam			c_state_idle				= 6'd0;
 	localparam			c_state_stop				= 6'd1;

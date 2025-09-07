@@ -114,7 +114,7 @@ module vdp_color_palette (
 	reg			[8:0]	ff_display_color_delay1;	//	{ palette_flag(1bit), pixel_byte(8bit) }
 	reg			[8:0]	ff_display_color_delay2;	//	{ palette_flag(1bit), pixel_byte(8bit) }
 	reg			[8:0]	ff_display_color_delay3;	//	{ palette_flag(1bit), pixel_byte(8bit) }
-	reg			[5:0]	ff_y;
+	reg			[4:0]	ff_y;
 	reg			[5:0]	ff_j;
 	reg			[5:0]	ff_k;
 	wire		[6:0]	w_r_yjk;
@@ -123,7 +123,6 @@ module vdp_color_palette (
 	wire		[6:0]	w_b_yjk;
 	wire		[7:0]	w_b_y;
 	wire		[7:0]	w_b_jk;
-	wire		[7:0]	w_b_yjk;
 	wire		[4:0]	w_r;
 	wire		[4:0]	w_g;
 	wire		[4:0]	w_b;
@@ -228,7 +227,7 @@ module vdp_color_palette (
 
 	always @( posedge clk ) begin
 		if( screen_pos_x[3:0] == 4'd0 ) begin
-			ff_y <= ff_display_color_delay3;
+			ff_y <= ff_display_color_delay3[7:3];
 		end
 		else begin
 			//	hold
@@ -236,7 +235,7 @@ module vdp_color_palette (
 	end
 
 	// --------------------------------------------------------------------
-	//	Convert YJK to RGB (screen_pos_x = 1)
+	//	Convert YJK to RGB (screen_pos_x = 1 ※4画素遅延後の 1)
 	// --------------------------------------------------------------------
 	assign w_r_yjk		= { 2'd0, ff_y } + { ff_j[5], ff_j };						//	r (-32...62)
 	assign w_g_yjk		= { 2'd0, ff_y } + { ff_k[5], ff_k };						//	b (-32...62)
@@ -441,29 +440,35 @@ module vdp_color_palette (
 			ff_vdp_g <= 8'd0;
 		end
 		else if( ff_rgb_load ) begin
-			case( w_display_r )
-			3'd0:		ff_vdp_r <= 8'd0;
-			3'd1:		ff_vdp_r <= 8'd37;
-			3'd2:		ff_vdp_r <= 8'd73;
-			3'd3:		ff_vdp_r <= 8'd110;
-			3'd4:		ff_vdp_r <= 8'd146;
-			3'd5:		ff_vdp_r <= 8'd183;
-			3'd6:		ff_vdp_r <= 8'd219;
-			3'd7:		ff_vdp_r <= 8'd255;
-			default:	ff_vdp_r <= 8'd0;
-			endcase
+			if( reg_yjk_mode ) begin
+				ff_vdp_r <= { ff_yjk_r, ff_yjk_r[4:2] };
+				ff_vdp_g <= { ff_yjk_g, ff_yjk_g[4:2] };
+			end
+			else begin
+				case( w_display_r )
+				3'd0:		ff_vdp_r <= 8'd0;
+				3'd1:		ff_vdp_r <= 8'd37;
+				3'd2:		ff_vdp_r <= 8'd73;
+				3'd3:		ff_vdp_r <= 8'd110;
+				3'd4:		ff_vdp_r <= 8'd146;
+				3'd5:		ff_vdp_r <= 8'd183;
+				3'd6:		ff_vdp_r <= 8'd219;
+				3'd7:		ff_vdp_r <= 8'd255;
+				default:	ff_vdp_r <= 8'd0;
+				endcase
 
-			case( w_display_g )
-			3'd0:		ff_vdp_g <= 8'd0;
-			3'd1:		ff_vdp_g <= 8'd37;
-			3'd2:		ff_vdp_g <= 8'd73;
-			3'd3:		ff_vdp_g <= 8'd110;
-			3'd4:		ff_vdp_g <= 8'd146;
-			3'd5:		ff_vdp_g <= 8'd183;
-			3'd6:		ff_vdp_g <= 8'd219;
-			3'd7:		ff_vdp_g <= 8'd255;
-			default:	ff_vdp_g <= 8'd0;
-			endcase
+				case( w_display_g )
+				3'd0:		ff_vdp_g <= 8'd0;
+				3'd1:		ff_vdp_g <= 8'd37;
+				3'd2:		ff_vdp_g <= 8'd73;
+				3'd3:		ff_vdp_g <= 8'd110;
+				3'd4:		ff_vdp_g <= 8'd146;
+				3'd5:		ff_vdp_g <= 8'd183;
+				3'd6:		ff_vdp_g <= 8'd219;
+				3'd7:		ff_vdp_g <= 8'd255;
+				default:	ff_vdp_g <= 8'd0;
+				endcase
+			end
 		end
 	end
 
@@ -472,7 +477,10 @@ module vdp_color_palette (
 			ff_vdp_b <= 8'd0;
 		end
 		else if( ff_rgb_load ) begin
-			if( w_256colors_mode ) begin
+			if( reg_yjk_mode ) begin
+				ff_vdp_b <= { ff_yjk_b, ff_yjk_b[4:2] };
+			end
+			else if( w_256colors_mode ) begin
 				case( ff_display_color256[1:0] )
 				2'd0:		ff_vdp_b <= 8'd0;
 				2'd1:		ff_vdp_b <= 8'd85;
