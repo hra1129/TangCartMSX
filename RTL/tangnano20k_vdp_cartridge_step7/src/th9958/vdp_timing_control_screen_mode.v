@@ -668,6 +668,7 @@ module vdp_timing_control_screen_mode (
 		end
 	end
 
+	//	phase 6 のタイミングが 8dot/state の起点
 	assign display_color		= ff_display_color;
 	assign display_color_en		= ff_display_color_en;
 endmodule
