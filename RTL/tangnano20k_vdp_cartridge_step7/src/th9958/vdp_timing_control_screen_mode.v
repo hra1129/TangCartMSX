@@ -63,6 +63,7 @@ module vdp_timing_control_screen_mode (
 	input		[ 9:0]	screen_pos_y,
 	input		[ 8:0]	pixel_pos_x,
 	input		[ 7:0]	pixel_pos_y,
+	output		[ 1:0]	pixel_phase_x,
 	input				screen_v_active,
 
 	output		[16:0]	vram_address,
@@ -203,6 +204,7 @@ module vdp_timing_control_screen_mode (
 	assign w_pos_x				= { pixel_pos_x[8], pixel_pos_x } - { 7'd0, horizontal_offset_l };
 	assign w_scroll_page		= ( reg_scroll_planes && reg_pattern_name_table_base[15] ) ? w_pos_x[8]: reg_pattern_name_table_base[15];
 	assign w_blink_page			= w_scroll_page & interleaving_page;
+	assign pixel_phase_x		= w_scroll_pos_x[1:0];
 
 	always @( posedge clk or negedge reset_n ) begin
 		if( !reset_n ) begin
@@ -648,20 +650,20 @@ module vdp_timing_control_screen_mode (
 		if( w_sub_phase == 4'd7 ) begin
 			if( w_mode == c_t2 || w_mode == c_g5 || w_mode == c_g6 ) begin
 				ff_display_color <= { 4'd0, ff_pattern0[3:0] };
-				ff_display_color_en	= reg_display_on && (!reg_left_mask || (screen_pos_x[13:8] >= 6'd15));
+				ff_display_color_en	= reg_display_on && (!reg_left_mask || (screen_pos_x[13:4] >= 10'd15));
 			end
 			else begin
 				//	hold
 			end
 		end
 		else if( w_sub_phase == 4'd15 ) begin
-			ff_display_color_en	= reg_display_on && (!reg_left_mask || (screen_pos_x[13:8] >= 6'd15));
 			if( w_mode == c_t2 || w_mode == c_g5 || w_mode == c_g6 ) begin
 				ff_display_color <= { 4'd0, ff_pattern0[7:4] };
 			end
 			else begin
 				ff_display_color <= ff_pattern0;
 			end
+			ff_display_color_en	= reg_display_on && (!reg_left_mask || (screen_pos_x[13:4] >= 10'd15));
 		end
 		else begin
 			//	hold

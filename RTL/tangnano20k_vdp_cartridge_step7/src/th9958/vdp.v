@@ -102,6 +102,7 @@ module vdp (
 	wire		[ 9:0]	w_v_count;
 	wire		[13:0]	w_screen_pos_x;
 	wire		[ 9:0]	w_screen_pos_y;
+	wire		[ 1:0]	w_pixel_phase_x;
 	wire				w_intr_line;
 	wire				w_intr_frame;
 
@@ -290,6 +291,7 @@ module vdp (
 		.v_count									( w_v_count									),
 		.screen_pos_x								( w_screen_pos_x							),
 		.screen_pos_y								( w_screen_pos_y							),
+		.pixel_phase_x								( w_pixel_phase_x							),
 		.intr_line									( w_intr_line								),
 		.intr_frame									( w_intr_frame								),
 		.pre_vram_refresh							( w_pre_vram_refresh						),
@@ -416,6 +418,7 @@ module vdp (
 		.reset_n									( reset_n									),
 		.clk										( clk										),
 		.screen_pos_x								( w_screen_pos_x[5:0]						),
+		.pixel_phase_x								( w_pixel_phase_x							),
 		.palette_valid								( w_palette_valid							),
 		.palette_num								( w_palette_num								),
 		.palette_r									( w_palette_r								),

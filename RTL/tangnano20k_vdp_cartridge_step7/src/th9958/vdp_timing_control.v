@@ -63,6 +63,7 @@ module vdp_timing_control (
 
 	output		[13:0]	screen_pos_x,			//	signed
 	output		[ 9:0]	screen_pos_y,			//	signed
+	output		[ 1:0]	pixel_phase_x,
 
 	output				intr_line,				//	pulse
 	output				intr_frame,				//	pulse
@@ -174,6 +175,7 @@ module vdp_timing_control (
 		.screen_pos_y								( w_screen_pos_y							),
 		.pixel_pos_x								( w_pixel_pos_x								),
 		.pixel_pos_y								( w_pixel_pos_y								),
+		.pixel_phase_x								( pixel_phase_x								),
 		.screen_v_active							( w_screen_v_active							),
 		.vram_address								( screen_mode_vram_address					),
 		.vram_valid									( screen_mode_vram_valid					),

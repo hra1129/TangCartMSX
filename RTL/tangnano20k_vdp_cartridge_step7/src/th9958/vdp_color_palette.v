@@ -60,6 +60,7 @@ module vdp_color_palette (
 	input				clk,					//	42.95454MHz
 
 	input		[5:0]	screen_pos_x,
+	input		[1:0]	pixel_phase_x,
 
 	input				palette_valid,
 	input		[3:0]	palette_num,
@@ -178,7 +179,18 @@ module vdp_color_palette (
 	// --------------------------------------------------------------------
 	always @( posedge clk ) begin
 		if( screen_pos_x[2:0] == 3'd0 ) begin
-			if( reg_yjk_mode && !reg_yae_mode ) begin
+			if( !reg_yjk_mode ) begin
+				//	SCREEN0...8 の場合
+				if( display_color_screen_mode_en ) begin
+					//	映像期間
+					ff_display_color_delay0 <= { 1'b1, display_color_screen_mode };
+				end
+				else begin
+					//	周辺色期間
+					ff_display_color_delay0 <= { 1'b1, reg_backdrop_color };
+				end
+			end
+			else if( !reg_yae_mode ) begin
 				//	SCREEN12 の場合
 				if( display_color_screen_mode_en ) begin
 					//	映像期間
@@ -189,7 +201,7 @@ module vdp_color_palette (
 					ff_display_color_delay0 <= { 1'b1, reg_backdrop_color[3:0], 1'b0, display_color_screen_mode[2:0] };
 				end
 			end
-			else if( reg_yjk_mode && reg_yae_mode ) begin
+			else begin
 				//	SCREEN10/11 の場合
 				if( display_color_screen_mode_en ) begin
 					//	映像期間
@@ -198,17 +210,6 @@ module vdp_color_palette (
 				else begin
 					//	周辺色期間
 					ff_display_color_delay0 <= { 1'b1, reg_backdrop_color[3:0], 1'b0, display_color_screen_mode[2:0] };
-				end
-			end
-			else begin
-				//	SCREEN0...8 の場合
-				if( display_color_screen_mode_en ) begin
-					//	映像期間
-					ff_display_color_delay0 <= { 1'b1, display_color_screen_mode };
-				end
-				else begin
-					//	周辺色期間
-					ff_display_color_delay0 <= { 1'b1, reg_backdrop_color };
 				end
 			end
 		end
@@ -231,8 +232,8 @@ module vdp_color_palette (
 	//	Latch YJK color (screen_pos_x = 0)
 	// --------------------------------------------------------------------
 	always @( posedge clk ) begin
-		//	phase 6 が起点なので 0111_0000 で読み取る
-		if( screen_pos_x[5:0] == 6'b11_0000 ) begin
+		//	phase 6 が起点なので、5 dot 遅延の 11。 11 の下位2bit は 3。4画素周期でラッチ更新。
+		if( pixel_phase_x == 2'd3 && screen_pos_x[3:0] == 4'b0000 ) begin
 			ff_j	<= { ff_display_color_delay1[2:0], ff_display_color_delay2[2:0] };
 			ff_k	<= { ff_display_color_delay3[2:0], ff_display_color_delay4[2:0] };
 		end
@@ -336,7 +337,7 @@ module vdp_color_palette (
 				end
 				ff_display_color_oe <= 1'b1;
 			end
-			else if( (display_color_screen_mode != 4'd0 || reg_color0_opaque) ) begin
+			else if( (w_display_color[3:0] != 4'd0 || reg_color0_opaque) ) begin
 				//	Background
 				ff_display_color <= { 4'd0, w_display_color[3:0] };
 				ff_display_color_oe <= 1'b1;
@@ -355,7 +356,7 @@ module vdp_color_palette (
 		else if( w_high_resolution && screen_pos_x[3:0] == 4'd8 ) begin
 			if( w_t12_mode ) begin
 				//	SCREEN0(W80) Background
-				ff_display_color <= { 4'd0, display_color_screen_mode[3:0] };
+				ff_display_color <= { 4'd0, w_display_color[3:0] };
 			end
 			else if( display_color_sprite_en && (display_color_sprite != 4'd0 || reg_color0_opaque) ) begin
 				//	Sprite
@@ -368,15 +369,15 @@ module vdp_color_palette (
 					ff_display_color <= { 4'd0, display_color_sprite };
 				end
 			end
-			else if( (display_color_screen_mode != 4'd0 || reg_color0_opaque) ) begin
+			else if( (w_display_color[3:0] != 4'd0 || reg_color0_opaque) ) begin
 				//	Background
 				if( w_g5_mode ) begin
 					//	SCREEN6 Background
-					ff_display_color <= { 4'd0, display_color_screen_mode[1:0] };
+					ff_display_color <= { 4'd0, w_display_color[1:0] };
 				end
 				else begin
 					//	SCREEN7 Background
-					ff_display_color <= { 4'd0, display_color_screen_mode[3:0] };
+					ff_display_color <= { 4'd0, w_display_color[3:0] };
 				end
 			end
 			else begin
