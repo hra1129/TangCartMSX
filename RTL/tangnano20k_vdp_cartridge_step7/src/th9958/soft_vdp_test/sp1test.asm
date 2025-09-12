@@ -13,9 +13,15 @@ start:
 			; テスト
 			di
 			call	screen1
-			call	sp1_pattern_test
-			ei
+			call	sp1_pattern_test1
+			call	sp1_pattern_test2
+
 			; 後始末
+			; R#15 = 0x00
+			ld		a, 0x00
+			ld		e, 15
+			call	write_control_register
+			ei
 			call	clear_key_buffer
 			ld		c, _TERM0
 			jp		bdos
@@ -84,6 +90,11 @@ screen1::
 			ld		bc, 256 / 8
 			ld		e, 0xF4
 			call	fill_vram
+			; スプライトアトリビュートを初期化
+			ld		hl, 0x1B00
+			ld		bc, 32 * 4
+			ld		e, 208
+			call	fill_vram
 			ret
 			endscope
 
@@ -108,6 +119,32 @@ cls::
 			endscope
 
 ; =============================================================================
+;	[SCREEN1] wait
+;	input:
+;		none
+;	output:
+;		none
+;	break:
+;		AF
+;	comment:
+;		none
+; =============================================================================
+			scope	wait
+wait::
+			; R#15 = 0x02
+			ld		a, 0x02
+			ld		e, 15
+			call	write_control_register
+			ld		bc, 5000
+	loop:
+			dec		bc
+			ld		a, c
+			or		a, b
+			jr		nz, loop
+			ret
+			endscope
+
+; =============================================================================
 ;	[SCREEN1] スプライトパターン 256種類の定義の確認
 ;	input:
 ;		none
@@ -118,11 +155,11 @@ cls::
 ;	comment:
 ;		none
 ; =============================================================================
-			scope	sp1_pattern_test
-sp1_pattern_test::
+			scope	sp1_pattern_test1
+sp1_pattern_test1::
 			call	cls
 			; Put test name
-			ld		hl, 0x1800
+			ld		hl, 0x18A0
 			ld		de, s_message
 			call	puts
 			; R#1 = 0x41
@@ -153,14 +190,74 @@ sp1_pattern_test::
 			ld		hl, 0x1880
 			ld		de, s_message2
 			call	puts
-			; キー待ち
-			call	wait_push_space_key
+			call	wait
 			pop		af
 			inc		a
 			jp		nz, loop
+			; キー待ち
+			call	wait_push_space_key
 			ret
 	s_message:
 			db		"[T001] 8x8 PATTERN TEST", 0
+	s_message2:
+			db		0, 0
+			endscope
+
+; =============================================================================
+;	[SCREEN1] スプライトパターン 64種類の定義の確認
+;	input:
+;		none
+;	output:
+;		none
+;	break:
+;		AF
+;	comment:
+;		none
+; =============================================================================
+			scope	sp1_pattern_test2
+sp1_pattern_test2::
+			call	cls
+			; Put test name
+			ld		hl, 0x18A0
+			ld		de, s_message
+			call	puts
+			; R#1 = 0x43
+			ld		a, 0x43							; 16x16, 拡大する
+			ld		e, 1
+			call	write_control_register
+			; R#6 = 0x00
+			ld		a, 0x00							; スプライトパターンをフォントと同じにする
+			ld		e, 6
+			call	write_control_register
+			xor		a, a
+	loop:
+			push	af
+			ld		[s_message2], a
+			; put sprite
+			ld		hl, 0x1B00
+			call	set_vram_write_address
+			xor		a, a
+			call	write_vram						; Y
+			xor		a, a
+			call	write_vram						; X
+			pop		af
+			push	af
+			call	write_vram						; pattern
+			ld		a, 11
+			call	write_vram						; color
+			; 対応する文字
+			ld		hl, 0x1880
+			ld		de, s_message2
+			call	puts
+			call	wait
+			pop		af
+			inc		a
+			jp		nz, loop
+			; キー待ち
+			call	wait_push_space_key
+			ret
+	s_message:
+			db		"[T002] 16x16 PATTERN TEST", 0
 	s_message2:
 			db		0, 0
 			endscope
