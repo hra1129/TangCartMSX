@@ -96,8 +96,6 @@ module vdp_timing_control_sprite (
 	localparam			c_mode_g5	= 5'b100_00;	//	Graphic5 (SCREEN6)
 	localparam			c_mode_g6	= 5'b101_00;	//	Graphic6 (SCREEN7)
 	localparam			c_mode_g7	= 5'b111_00;	//	Graphic7 (SCREEN8/10/11/12)
-	reg					ff_screen_h_active;
-	wire				w_screen_active;
 	wire				w_sprite_disable;
 
 	assign w_sprite_disable	= reg_sprite_disable | sprite_off;
@@ -131,20 +129,6 @@ module vdp_timing_control_sprite (
 	// --------------------------------------------------------------------
 	//	Horizontal active
 	// --------------------------------------------------------------------
-	always @( posedge clk or negedge reset_n ) begin
-		if( !reset_n ) begin
-			ff_screen_h_active <= 1'b0;
-		end
-		else if( screen_pos_x[13:4] == 10'd255 && screen_pos_x[3:0] == 4'd15 ) begin
-			ff_screen_h_active <= 1'b0;
-		end
-		else if( screen_pos_x[13:4] == 10'h3FF && screen_pos_x[3:0] == 4'd15 ) begin
-			ff_screen_h_active <= 1'b1;
-		end
-	end
-
-	assign w_screen_active	= screen_v_active & ff_screen_h_active;
-
 	assign vram_address		= w_vp_vram_address | w_ic_vram_address;
 	assign vram_valid		= w_vp_vram_valid   | w_ic_vram_valid;
 	assign w_sprite_mode2	= (
@@ -162,7 +146,7 @@ module vdp_timing_control_sprite (
 		.clk										( clk										),
 		.screen_pos_x								( screen_pos_x								),
 		.pixel_pos_y								( pixel_pos_y								),
-		.screen_active								( w_screen_active							),
+		.screen_active								( screen_v_active							),
 		.horizontal_offset_l						( horizontal_offset_l						),
 		.vram_address								( w_vp_vram_address							),
 		.vram_valid									( w_vp_vram_valid							),
@@ -192,7 +176,7 @@ module vdp_timing_control_sprite (
 		.clk										( clk										),
 		.start_info_collect							( w_start_info_collect						),
 		.screen_pos_x								( screen_pos_x								),
-		.screen_active								( w_screen_active							),
+		.screen_active								( screen_v_active							),
 		.vram_address								( w_ic_vram_address							),
 		.vram_valid									( w_ic_vram_valid							),
 		.vram_rdata									( vram_rdata8								),
@@ -227,7 +211,7 @@ module vdp_timing_control_sprite (
 		.clk										( clk										),
 		.screen_pos_x								( screen_pos_x								),
 		.pixel_pos_y								( pixel_pos_y								),
-		.screen_active								( w_screen_active							),
+		.screen_active								( screen_v_active							),
 		.sprite_mode2								( w_sprite_mode2							),
 		.clear_sprite_collision						( clear_sprite_collision					),
 		.sprite_collision							( sprite_collision							),

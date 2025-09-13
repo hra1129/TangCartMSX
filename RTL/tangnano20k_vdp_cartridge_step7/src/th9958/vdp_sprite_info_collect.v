@@ -107,10 +107,10 @@ module vdp_sprite_info_collect (
 	wire		[3:0]	w_sub_phase;			//	Sub phase #0...#15
 	reg			[16:0]	ff_vram_address;
 	reg					ff_vram_valid;
-	reg					ff_vram_valid_d1;
 	reg					ff_active;
 	reg					ff_active_d1;
 	reg					ff_sprite_mode2;
+	reg					ff_screen_h_active;
 
 	// --------------------------------------------------------------------
 	//	Information RAM
@@ -141,7 +141,7 @@ module vdp_sprite_info_collect (
 			ff_selected_ram[6] <= 32'd0;
 			ff_selected_ram[7] <= 32'd0;
 		end
-		else if( screen_active && reg_display_on ) begin
+		else if( screen_active && ff_screen_h_active && reg_display_on ) begin
 			if( selected_en ) begin
 				//	Update information RAM by select_visible_planes
 				ff_selected_ram[ ff_current_plane ] <= w_selected_d;
@@ -149,6 +149,21 @@ module vdp_sprite_info_collect (
 		end
 		else begin
 			ff_selected_q <= ff_selected_ram[ ff_current_plane ];
+		end
+	end
+
+	always @( posedge clk or negedge reset_n ) begin
+		if( !reset_n ) begin
+			ff_screen_h_active <= 1'b0;
+		end
+		else if( screen_pos_x == 14'h3FFF ) begin
+			ff_screen_h_active <= 1'b1;
+		end
+		else if( start_info_collect ) begin
+			ff_screen_h_active <= 1'b0;
+		end
+		else begin
+			//	hold
 		end
 	end
 
@@ -204,12 +219,16 @@ module vdp_sprite_info_collect (
 			ff_vram_address		<= 17'd0;
 			ff_vram_valid		<= 1'b0;
 		end
-		else if( screen_active ) begin
+		else if( screen_active && ff_screen_h_active ) begin
+			//	映像期間に VRAM から情報収集
 			if( selected_en ) begin
 				ff_current_plane	<= w_next_plane;
 			end
+			ff_vram_address		<= 17'd0;
+			ff_vram_valid		<= 1'b0;
 		end
 		else if( ff_active ) begin
+			//	ブランキング期間中に表示するスプライトの情報を収集
 			case( ff_state )
 			2'd0:
 				begin
@@ -223,7 +242,6 @@ module vdp_sprite_info_collect (
 					ff_vram_valid		<= 1'b1;
 				end
 				else begin
-					ff_vram_address		<= 17'd0;
 					ff_vram_valid		<= 1'b0;
 				end
 			2'd2:
@@ -239,7 +257,7 @@ module vdp_sprite_info_collect (
 			2'd3:
 				if( w_sub_phase == 4'd0 ) begin
 					//	Latch right pattern and request color address
-					ff_vram_address		<= 17'd0;
+					ff_vram_address		<= 17'd0;				//	暫定
 					ff_vram_valid		<= ff_sprite_mode2;
 				end
 				else if( w_sub_phase == 4'd15 ) begin
@@ -258,19 +276,6 @@ module vdp_sprite_info_collect (
 				end
 			endcase
 		end
-		else begin
-			ff_vram_address		<= 17'd0;
-			ff_vram_valid		<= 1'b0;
-		end
-	end
-
-	always @( posedge clk or negedge reset_n ) begin
-		if( !reset_n ) begin
-			ff_vram_valid_d1	<= 1'b0;
-		end
-		else begin
-			ff_vram_valid_d1	<= ff_vram_valid;
-		end
 	end
 
 	always @( posedge clk ) begin
@@ -281,15 +286,15 @@ module vdp_sprite_info_collect (
 	end
 
 	assign vram_address		= ff_vram_address;
-	assign vram_valid		= ff_vram_valid_d1;
+	assign vram_valid		= ff_vram_valid;
 
 	assign makeup_plane		= ff_current_plane_d1[2:0];
 	assign plane_x			= w_selected_x;
-	assign plane_x_en		= (ff_active_d1 && w_sub_phase == 4'd2 && ff_state == 2'd0);
+	assign plane_x_en		= (ff_active_d1 && w_sub_phase == 4'd12 && ff_state == 2'd0);
 	assign pattern_left		= vram_rdata;
-	assign pattern_left_en	= (ff_active_d1 && w_sub_phase == 4'd2 && ff_state == 2'd1);
+	assign pattern_left_en	= (ff_active_d1 && w_sub_phase == 4'd12 && ff_state == 2'd1);
 	assign pattern_right	= reg_sprite_16x16 ? vram_rdata: 8'd0;
-	assign pattern_right_en	= (ff_active_d1 && w_sub_phase == 4'd2 && ff_state == 2'd2);
+	assign pattern_right_en	= (ff_active_d1 && w_sub_phase == 4'd12 && ff_state == 2'd2);
 	assign color			= ff_sprite_mode2 ? vram_rdata: w_selected_color;
-	assign color_en			= (ff_active_d1 && w_sub_phase == 4'd2 && ff_state == 2'd3);
+	assign color_en			= (ff_active_d1 && w_sub_phase == 4'd12 && ff_state == 2'd3);
 endmodule

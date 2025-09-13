@@ -387,11 +387,13 @@ module vdp_sprite_makeup_pixel (
 			ff_pre_pixel_color_en	<= 1'b0;
 			ff_pre_pixel_color		<= 4'd0;
 		end
-		else if( w_sub_phase == 4'd2 ) begin
+		else if( w_sub_phase == 4'd1 ) begin
+			//	First plane
 			ff_pre_pixel_color_en	<= ff_color_en;
 			ff_pre_pixel_color		<= ff_color;
 		end
 		else begin
+			//	2nd, 3rd, 4th plane
 			if( !ff_pre_pixel_color_en ) begin
 				ff_pre_pixel_color_en	<= ff_color_en;
 				ff_pre_pixel_color		<= ff_color;
@@ -415,7 +417,7 @@ module vdp_sprite_makeup_pixel (
 			ff_sprite_collision_x	<= 9'd0;
 			ff_sprite_collision_y	<= 10'd0;
 		end
-		else if( w_sub_phase == 4'd2 ) begin
+		else if( w_sub_phase == 4'd1 ) begin
 			//	hold
 		end
 		else begin
@@ -445,7 +447,7 @@ module vdp_sprite_makeup_pixel (
 			ff_pixel_color_en	<= 1'b0;
 			ff_pixel_color		<= 4'd0;
 		end
-		else if( w_sub_phase == 4'd2 ) begin
+		else if( w_sub_phase == 4'd1 ) begin
 			ff_pixel_color_en	<= ff_pre_pixel_color_en;
 			ff_pixel_color		<= ff_pre_pixel_color;
 		end
