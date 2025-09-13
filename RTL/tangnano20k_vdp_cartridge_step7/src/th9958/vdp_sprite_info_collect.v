@@ -101,14 +101,12 @@ module vdp_sprite_info_collect (
 	wire		[7:0]	w_selected_color;
 	reg			[31:0]	ff_selected_q;
 	reg			[3:0]	ff_current_plane;		//	Plane#0...#7, and endmark(#8)
-	reg			[3:0]	ff_current_plane_d1;	//	Plane#0...#7, and endmark(#8)
 	wire		[3:0]	w_next_plane;
 	reg			[1:0]	ff_state;				//	#0=info read, #1=pattern left read, #2=pattern right read, #3=color read
 	wire		[3:0]	w_sub_phase;			//	Sub phase #0...#15
 	reg			[16:0]	ff_vram_address;
 	reg					ff_vram_valid;
 	reg					ff_active;
-	reg					ff_active_d1;
 	reg					ff_sprite_mode2;
 	reg					ff_screen_h_active;
 
@@ -278,23 +276,16 @@ module vdp_sprite_info_collect (
 		end
 	end
 
-	always @( posedge clk ) begin
-		if( w_sub_phase == 4'd15 ) begin
-			ff_current_plane_d1	<= ff_current_plane;
-			ff_active_d1		<= ff_active;
-		end
-	end
-
 	assign vram_address		= ff_vram_address;
 	assign vram_valid		= ff_vram_valid;
 
-	assign makeup_plane		= ff_current_plane_d1[2:0];
+	assign makeup_plane		= ff_current_plane[2:0];
 	assign plane_x			= w_selected_x;
-	assign plane_x_en		= (ff_active_d1 && w_sub_phase == 4'd12 && ff_state == 2'd0);
+	assign plane_x_en		= (ff_active && w_sub_phase == 4'd12 && ff_state == 2'd0);
 	assign pattern_left		= vram_rdata;
-	assign pattern_left_en	= (ff_active_d1 && w_sub_phase == 4'd12 && ff_state == 2'd1);
+	assign pattern_left_en	= (ff_active && w_sub_phase == 4'd12 && ff_state == 2'd1);
 	assign pattern_right	= reg_sprite_16x16 ? vram_rdata: 8'd0;
-	assign pattern_right_en	= (ff_active_d1 && w_sub_phase == 4'd12 && ff_state == 2'd2);
+	assign pattern_right_en	= (ff_active && w_sub_phase == 4'd12 && ff_state == 2'd2);
 	assign color			= ff_sprite_mode2 ? vram_rdata: w_selected_color;
-	assign color_en			= (ff_active_d1 && w_sub_phase == 4'd12 && ff_state == 2'd3);
+	assign color_en			= (ff_active && w_sub_phase == 4'd12 && ff_state == 2'd3);
 endmodule

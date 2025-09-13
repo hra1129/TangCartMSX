@@ -369,13 +369,30 @@ module tb ();
 			write_io( vdp_io0, (i & 255) );
 		end
 
-		//	VRAM 0x01B00 = ( Y=0, X=0, Pattern=4, Color=12 )
-		write_io( vdp_io1, 8'h00 );
-		write_io( vdp_io1, 8'h5B );
+		//	VRAM 0x01B00 にアトリビュートを書き込む
+		write_io( vdp_io1, 0 );
+		write_io( vdp_io1, 8'h40 + 8'h1B );
+
+		write_io( vdp_io0, 32 * 0 );
+		write_io( vdp_io0, 40 * 0 + 50 );
 		write_io( vdp_io0, 0 );
-		write_io( vdp_io0, 0 );
+		write_io( vdp_io0, 1 );
+
+		write_io( vdp_io0, 32 * 0 );
+		write_io( vdp_io0, 40 * 1 + 50 );
 		write_io( vdp_io0, 4 );
+		write_io( vdp_io0, 2 );
+
+		write_io( vdp_io0, 32 * 0 );
+		write_io( vdp_io0, 40 * 2 + 50 );
+		write_io( vdp_io0, 8 );
+		write_io( vdp_io0, 3 );
+
+		write_io( vdp_io0, 32 * 0 );
+		write_io( vdp_io0, 40 * 3 + 50 );
 		write_io( vdp_io0, 12 );
+		write_io( vdp_io0, 4 );
+
 		write_io( vdp_io0, 208 );
 		write_io( vdp_io0, 208 );
 		write_io( vdp_io0, 208 );
@@ -386,6 +403,10 @@ module tb ();
 		repeat( 32 ) write_io( vdp_io0, 8'hFF );
 		repeat( 32 ) write_io( vdp_io0, 8'hAA );
 		repeat( 32 ) write_io( vdp_io0, 8'h55 );
+		repeat( 32 ) write_io( vdp_io0, 8'hCC );
+		repeat( 32 ) write_io( vdp_io0, 8'h33 );
+		repeat( 32 ) write_io( vdp_io0, 8'h66 );
+		repeat( 32 ) write_io( vdp_io0, 8'h99 );
 
 		repeat(5000000) @( posedge clk14m );
 

@@ -141,7 +141,6 @@ module vdp_sprite_makeup_pixel (
 	reg			[4:0]	ff_pixel_color_d3;
 	reg			[4:0]	ff_pixel_color_d4;
 	reg			[4:0]	ff_pixel_color_d5;
-	reg			[4:0]	ff_pixel_color_d6;
 	reg					ff_sprite_collision;
 	reg			[8:0]	ff_sprite_collision_x;
 	reg			[9:0]	ff_sprite_collision_y;
@@ -256,6 +255,9 @@ module vdp_sprite_makeup_pixel (
 			ff_active			<= reg_display_on;
 			ff_planes			<= selected_count;
 			ff_current_plane	<= 4'd0;
+		end
+		else if( screen_pos_x == 14'h0FFF ) begin
+			ff_active			<= 1'b0;
 		end
 		else if( w_sub_phase == 4'd15 ) begin
 			ff_current_plane	<= 4'd0;
@@ -461,7 +463,6 @@ module vdp_sprite_makeup_pixel (
 			ff_pixel_color_d3 <= 5'd0;
 			ff_pixel_color_d4 <= 5'd0;
 			ff_pixel_color_d5 <= 5'd0;
-			ff_pixel_color_d6 <= 5'd0;
 		end
 		else if( w_sub_phase == 4'd15 ) begin
 			ff_pixel_color_d0 <= { ff_pixel_color_en, ff_pixel_color };
@@ -470,12 +471,11 @@ module vdp_sprite_makeup_pixel (
 			ff_pixel_color_d3 <= ff_pixel_color_d2;
 			ff_pixel_color_d4 <= ff_pixel_color_d3;
 			ff_pixel_color_d5 <= ff_pixel_color_d4;
-			ff_pixel_color_d6 <= ff_pixel_color_d5;
 		end
 	end
 
-	assign display_color_en		= ff_pixel_color_d6[4];
-	assign display_color		= ff_pixel_color_d6[3:0];
+	assign display_color_en		= ff_pixel_color_d5[4];
+	assign display_color		= ff_pixel_color_d5[3:0];
 	assign sprite_collision		= ff_sprite_collision;
 	assign sprite_collision_x   = ff_sprite_collision_x;
 	assign sprite_collision_y   = ff_sprite_collision_y;
