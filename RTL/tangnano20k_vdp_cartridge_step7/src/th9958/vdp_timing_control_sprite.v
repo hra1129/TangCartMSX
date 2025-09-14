@@ -85,7 +85,6 @@ module vdp_timing_control_sprite (
 	input				reg_color0_opaque,
 	input				reg_sprite_magify,
 	input				reg_sprite_16x16,
-	input				reg_212lines_mode,
 	input				reg_sprite_disable,
 	input	[16:7]		reg_sprite_attribute_table_base,
 	input	[16:11]		reg_sprite_pattern_generator_table_base,
@@ -164,7 +163,6 @@ module vdp_timing_control_sprite (
 		.reg_sprite_disable							( w_sprite_disable							),
 		.reg_sprite_magify							( reg_sprite_magify							),
 		.reg_sprite_16x16							( reg_sprite_16x16							),
-		.reg_212lines_mode							( reg_212lines_mode							),
 		.reg_sprite_attribute_table_base			( reg_sprite_attribute_table_base			)
 	);
 

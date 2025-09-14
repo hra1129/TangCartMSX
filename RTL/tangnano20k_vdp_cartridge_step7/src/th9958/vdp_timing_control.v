@@ -227,7 +227,6 @@ module vdp_timing_control (
 		.reg_color0_opaque							( reg_color0_opaque							),
 		.reg_sprite_magify							( reg_sprite_magify							),
 		.reg_sprite_16x16							( reg_sprite_16x16							),
-		.reg_212lines_mode							( reg_212lines_mode							),
 		.reg_sprite_disable							( reg_sprite_disable						),
 		.reg_sprite_attribute_table_base			( reg_sprite_attribute_table_base			),
 		.reg_sprite_pattern_generator_table_base	( reg_sprite_pattern_generator_table_base	),

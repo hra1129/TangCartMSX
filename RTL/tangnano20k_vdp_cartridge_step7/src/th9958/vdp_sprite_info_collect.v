@@ -223,7 +223,6 @@ module vdp_sprite_info_collect (
 			if( selected_en ) begin
 				ff_current_plane	<= w_next_plane;
 			end
-			ff_vram_address		<= 17'd0;
 			ff_vram_valid		<= 1'b0;
 		end
 		else if( ff_active ) begin
@@ -231,7 +230,6 @@ module vdp_sprite_info_collect (
 			case( ff_state )
 			2'd0:
 				begin
-					ff_vram_address		<= 17'd0;
 					ff_vram_valid		<= 1'b0;
 				end
 			2'd1:
@@ -250,17 +248,15 @@ module vdp_sprite_info_collect (
 					ff_vram_valid		<= reg_sprite_16x16;
 				end
 				else begin
-					ff_vram_address		<= 17'd0;
 					ff_vram_valid		<= 1'b0;
 				end
 			2'd3:
 				if( w_sub_phase == 4'd0 ) begin
 					//	Latch right pattern and request color address
-					ff_vram_address		<= { reg_sprite_attribute_table_base[16:9], (reg_sprite_attribute_table_base[8:7] & w_selected_plane_num[4:3]), w_selected_plane_num[2:0], w_selected_y };
+					ff_vram_address		<= { reg_sprite_attribute_table_base[16:10], 1'b0, (reg_sprite_attribute_table_base[8:7] & w_selected_plane_num[4:3]), w_selected_plane_num[2:0], w_selected_y };
 					ff_vram_valid		<= ff_sprite_mode2;
 				end
 				else if( w_sub_phase == 4'd15 ) begin
-					ff_vram_address		<= 17'd0;
 					ff_vram_valid		<= 1'b0;
 					if( w_next_plane == selected_count ) begin
 						ff_active			<= 1'b0;
@@ -270,14 +266,13 @@ module vdp_sprite_info_collect (
 					end
 				end
 				else begin
-					ff_vram_address		<= 17'd0;
 					ff_vram_valid		<= 1'b0;
 				end
 			endcase
 		end
 	end
 
-	assign vram_address		= ff_vram_address;
+	assign vram_address		= ff_vram_valid ? ff_vram_address: 17'd0;
 	assign vram_valid		= ff_vram_valid;
 
 	assign makeup_plane		= ff_current_plane[2:0];

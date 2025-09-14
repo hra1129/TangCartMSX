@@ -399,7 +399,7 @@ module tb ();
 		write_io( vdp_io0, 208 );
 
 		write_io( vdp_io1, 8'h00 );
-		write_io( vdp_io1, 8'h78 );
+		write_io( vdp_io1, 8'h40 + 8'h38 );
 		repeat( 32 ) write_io( vdp_io0, 8'hFF );
 		repeat( 32 ) write_io( vdp_io0, 8'hAA );
 		repeat( 32 ) write_io( vdp_io0, 8'h55 );
