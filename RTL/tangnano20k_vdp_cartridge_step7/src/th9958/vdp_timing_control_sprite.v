@@ -200,7 +200,8 @@ module vdp_timing_control_sprite (
 		.reg_display_on								( reg_display_on							),
 		.reg_sprite_magify							( reg_sprite_magify							),
 		.reg_sprite_16x16							( reg_sprite_16x16							),
-		.reg_sprite_pattern_generator_table_base	( reg_sprite_pattern_generator_table_base	)
+		.reg_sprite_pattern_generator_table_base	( reg_sprite_pattern_generator_table_base	),
+		.reg_sprite_attribute_table_base			( reg_sprite_attribute_table_base			)
 	);
 
 	// --------------------------------------------------------------------

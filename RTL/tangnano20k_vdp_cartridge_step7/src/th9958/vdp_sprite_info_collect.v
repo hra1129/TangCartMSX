@@ -90,7 +90,8 @@ module vdp_sprite_info_collect (
 	input				reg_display_on,
 	input				reg_sprite_magify,
 	input				reg_sprite_16x16,
-	input		[16:11]	reg_sprite_pattern_generator_table_base
+	input		[16:11]	reg_sprite_pattern_generator_table_base,
+	input		[16:7]	reg_sprite_attribute_table_base
 );
 	reg			[31:0]	ff_selected_ram [0:7];
 	wire		[31:0]	w_selected_d;
@@ -255,7 +256,7 @@ module vdp_sprite_info_collect (
 			2'd3:
 				if( w_sub_phase == 4'd0 ) begin
 					//	Latch right pattern and request color address
-					ff_vram_address		<= 17'd0;				//	暫定
+					ff_vram_address		<= { reg_sprite_attribute_table_base[16:9], (reg_sprite_attribute_table_base[8:7] & w_selected_plane_num[4:3]), w_selected_plane_num[2:0], w_selected_y };
 					ff_vram_valid		<= ff_sprite_mode2;
 				end
 				else if( w_sub_phase == 4'd15 ) begin

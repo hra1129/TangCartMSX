@@ -55,6 +55,9 @@ if errorlevel 1 pause ==========================
 zma sp1test.asm  SP1TEST.COM
 if errorlevel 1 pause ==========================
 
+zma sp2test.asm  SP2TEST.COM
+if errorlevel 1 pause ==========================
+
 if exist D:\download\msx\DOS2\MSXDOS2 (
 	if exist D:\download\msx\DOS2\MSXDOS2\SC0TEST.COM (
 		del D:\download\msx\DOS2\MSXDOS2\SC0TEST.COM
@@ -150,6 +153,11 @@ if exist D:\download\msx\DOS2\MSXDOS2 (
 		del D:\download\msx\DOS2\MSXDOS2\SP1TEST.COM
 	)
 	copy SP1TEST.COM  D:\download\msx\DOS2\MSXDOS2\
+
+	if exist D:\download\msx\DOS2\MSXDOS2\SP2TEST.COM (
+		del D:\download\msx\DOS2\MSXDOS2\SP2TEST.COM
+	)
+	copy SP2TEST.COM  D:\download\msx\DOS2\MSXDOS2\
 )
 
 pause
