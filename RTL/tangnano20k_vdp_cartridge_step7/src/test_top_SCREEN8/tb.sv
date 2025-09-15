@@ -359,6 +359,35 @@ module tb ();
 			end
 		end
 
+		//	HMMV
+		$display( "[test002] HMMV" );
+		write_io( vdp_io1, 8'd32 );
+		write_io( vdp_io1, 8'h80 + 8'd17 );
+		//	SX
+		write_io( vdp_io3, 8'd0 );
+		write_io( vdp_io3, 8'd0 );
+		//	SY
+		write_io( vdp_io3, 8'd0 );
+		write_io( vdp_io3, 8'd0 );
+		//	DX
+		write_io( vdp_io3, 8'd0 );
+		write_io( vdp_io3, 8'd0 );
+		//	DY
+		write_io( vdp_io3, 8'd0 );
+		write_io( vdp_io3, 8'd0 );
+		//	NX
+		write_io( vdp_io3, 8'd50 );
+		write_io( vdp_io3, 8'd0 );
+		//	NY
+		write_io( vdp_io3, 8'd40 );
+		write_io( vdp_io3, 8'd0 );
+		//	CLR
+		write_io( vdp_io3, 8'd123 );
+		//	ARG
+		write_io( vdp_io3, 8'd0 );
+		//	CMD
+		write_io( vdp_io3, 8'hC0 );
+
 		repeat(5000000) @( posedge clk14m );
 
 		$display( "[test---] All tests completed" );

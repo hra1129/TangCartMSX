@@ -57,7 +57,7 @@
     "SubInsts" : [
      {
       "InstFile" : "D:/github/HRA_product/TangCartMSX/RTL/tangnano20k_vdp_cartridge_step7/src/th9958/vdp.v",
-      "InstLine" : 205,
+      "InstLine" : 212,
       "InstName" : "u_cpu_interface",
       "ModuleFile" : "D:/github/HRA_product/TangCartMSX/RTL/tangnano20k_vdp_cartridge_step7/src/th9958/vdp_cpu_interface.v",
       "ModuleLine" : 58,
@@ -65,7 +65,7 @@
      },
      {
       "InstFile" : "D:/github/HRA_product/TangCartMSX/RTL/tangnano20k_vdp_cartridge_step7/src/th9958/vdp.v",
-      "InstLine" : 287,
+      "InstLine" : 301,
       "InstName" : "u_timing_control",
       "ModuleFile" : "D:/github/HRA_product/TangCartMSX/RTL/tangnano20k_vdp_cartridge_step7/src/th9958/vdp_timing_control.v",
       "ModuleLine" : 57,
@@ -97,7 +97,7 @@
         "SubInsts" : [
          {
           "InstFile" : "D:/github/HRA_product/TangCartMSX/RTL/tangnano20k_vdp_cartridge_step7/src/th9958/vdp_timing_control_sprite.v",
-          "InstLine" : 143,
+          "InstLine" : 142,
           "InstName" : "u_select_visible_planes",
           "ModuleFile" : "D:/github/HRA_product/TangCartMSX/RTL/tangnano20k_vdp_cartridge_step7/src/th9958/vdp_sprite_select_visible_planes.v",
           "ModuleLine" : 58,
@@ -105,7 +105,7 @@
          },
          {
           "InstFile" : "D:/github/HRA_product/TangCartMSX/RTL/tangnano20k_vdp_cartridge_step7/src/th9958/vdp_timing_control_sprite.v",
-          "InstLine" : 172,
+          "InstLine" : 171,
           "InstName" : "u_info_collect",
           "ModuleFile" : "D:/github/HRA_product/TangCartMSX/RTL/tangnano20k_vdp_cartridge_step7/src/th9958/vdp_sprite_info_collect.v",
           "ModuleLine" : 58,
@@ -113,7 +113,7 @@
          },
          {
           "InstFile" : "D:/github/HRA_product/TangCartMSX/RTL/tangnano20k_vdp_cartridge_step7/src/th9958/vdp_timing_control_sprite.v",
-          "InstLine" : 208,
+          "InstLine" : 206,
           "InstName" : "u_makeup_pixel",
           "ModuleFile" : "D:/github/HRA_product/TangCartMSX/RTL/tangnano20k_vdp_cartridge_step7/src/th9958/vdp_sprite_makeup_pixel.v",
           "ModuleLine" : 58,
@@ -125,7 +125,7 @@
      },
      {
       "InstFile" : "D:/github/HRA_product/TangCartMSX/RTL/tangnano20k_vdp_cartridge_step7/src/th9958/vdp.v",
-      "InstLine" : 346,
+      "InstLine" : 360,
       "InstName" : "u_command",
       "ModuleFile" : "D:/github/HRA_product/TangCartMSX/RTL/tangnano20k_vdp_cartridge_step7/src/th9958/vdp_command.v",
       "ModuleLine" : 57,
@@ -133,7 +133,7 @@
       "SubInsts" : [
        {
         "InstFile" : "D:/github/HRA_product/TangCartMSX/RTL/tangnano20k_vdp_cartridge_step7/src/th9958/vdp_command.v",
-        "InstLine" : 1223,
+        "InstLine" : 1264,
         "InstName" : "u_cache",
         "ModuleFile" : "D:/github/HRA_product/TangCartMSX/RTL/tangnano20k_vdp_cartridge_step7/src/th9958/vdp_command_cache.v",
         "ModuleLine" : 57,
@@ -143,7 +143,7 @@
      },
      {
       "InstFile" : "D:/github/HRA_product/TangCartMSX/RTL/tangnano20k_vdp_cartridge_step7/src/th9958/vdp.v",
-      "InstLine" : 375,
+      "InstLine" : 391,
       "InstName" : "u_vram_interface",
       "ModuleFile" : "D:/github/HRA_product/TangCartMSX/RTL/tangnano20k_vdp_cartridge_step7/src/th9958/vdp_vram_interface.v",
       "ModuleLine" : 58,
@@ -151,7 +151,7 @@
      },
      {
       "InstFile" : "D:/github/HRA_product/TangCartMSX/RTL/tangnano20k_vdp_cartridge_step7/src/th9958/vdp.v",
-      "InstLine" : 417,
+      "InstLine" : 433,
       "InstName" : "u_color_palette",
       "ModuleFile" : "D:/github/HRA_product/TangCartMSX/RTL/tangnano20k_vdp_cartridge_step7/src/th9958/vdp_color_palette.v",
       "ModuleLine" : 58,
@@ -169,7 +169,7 @@
      },
      {
       "InstFile" : "D:/github/HRA_product/TangCartMSX/RTL/tangnano20k_vdp_cartridge_step7/src/th9958/vdp.v",
-      "InstLine" : 444,
+      "InstLine" : 460,
       "InstName" : "u_upscan",
       "ModuleFile" : "D:/github/HRA_product/TangCartMSX/RTL/tangnano20k_vdp_cartridge_step7/src/th9958/vdp_upscan.v",
       "ModuleLine" : 60,
@@ -195,7 +195,7 @@
      },
      {
       "InstFile" : "D:/github/HRA_product/TangCartMSX/RTL/tangnano20k_vdp_cartridge_step7/src/th9958/vdp.v",
-      "InstLine" : 462,
+      "InstLine" : 478,
       "InstName" : "u_video_out",
       "ModuleFile" : "D:/github/HRA_product/TangCartMSX/RTL/tangnano20k_vdp_cartridge_step7/src/th9958/vdp_video_out.v",
       "ModuleLine" : 60,

@@ -60,11 +60,11 @@ module vdp_timing_control_sprite (
 	input				clk,					//	42.95454MHz
 
 	input		[13:0]	screen_pos_x,
-	input		[ 9:0]	screen_pos_y,
+	input		[9:0]	screen_pos_y,
 	input		[7:0]	pixel_pos_y,
 	input				screen_v_active,
 
-	output		[16:0]	vram_address,
+	output		[17:0]	vram_address,
 	output				vram_valid,
 	input		[31:0]	vram_rdata,
 	input		[7:0]	vram_rdata8,
@@ -86,8 +86,8 @@ module vdp_timing_control_sprite (
 	input				reg_sprite_magify,
 	input				reg_sprite_16x16,
 	input				reg_sprite_disable,
-	input	[16:7]		reg_sprite_attribute_table_base,
-	input	[16:11]		reg_sprite_pattern_generator_table_base,
+	input   	[17:7]	reg_sprite_attribute_table_base,
+	input   	[17:11]	reg_sprite_pattern_generator_table_base,
 	input				reg_left_mask
 );
 	localparam			c_mode_g3	= 5'b010_00;	//	Graphic3 (SCREEN4)
@@ -113,16 +113,15 @@ module vdp_timing_control_sprite (
 	wire				w_sprite_mode2;
 	wire		[7:0]	w_plane_x;
 	wire				w_plane_x_en;
-	wire		[7:0]	w_pattern_left;
+	wire		[7:0]	w_pattern;
 	wire				w_pattern_left_en;
-	wire		[7:0]	w_pattern_right;
 	wire				w_pattern_right_en;
 	wire		[7:0]	w_color;
 	wire				w_color_en;
 	wire		[2:0]	w_makeup_plane;
-	wire		[16:0]	w_vp_vram_address;
+	wire		[17:0]	w_vp_vram_address;
 	wire				w_vp_vram_valid;
-	wire		[16:0]	w_ic_vram_address;
+	wire		[17:0]	w_ic_vram_address;
 	wire				w_ic_vram_valid;
 
 	// --------------------------------------------------------------------
@@ -188,9 +187,8 @@ module vdp_timing_control_sprite (
 		.makeup_plane								( w_makeup_plane							),
 		.plane_x									( w_plane_x									),
 		.plane_x_en									( w_plane_x_en								),
-		.pattern_left								( w_pattern_left							),
+		.pattern									( w_pattern									),
 		.pattern_left_en							( w_pattern_left_en							),
-		.pattern_right								( w_pattern_right							),
 		.pattern_right_en							( w_pattern_right_en						),
 		.color										( w_color									),
 		.color_en									( w_color_en								),
@@ -225,9 +223,8 @@ module vdp_timing_control_sprite (
 		.makeup_plane								( w_makeup_plane							),
 		.plane_x									( w_plane_x									),
 		.plane_x_en									( w_plane_x_en								),
-		.pattern_left								( w_pattern_left							),
+		.pattern									( w_pattern									),
 		.pattern_left_en							( w_pattern_left_en							),
-		.pattern_right								( w_pattern_right							),
 		.pattern_right_en							( w_pattern_right_en						),
 		.color										( w_color									),
 		.color_en								    ( w_color_en								),

@@ -63,9 +63,25 @@ screen1::
 			ld		a, 0x00
 			ld		e, 9
 			call	write_control_register
+			; R#18 = 0
+			xor		a, a
+			ld		e, 18
+			call	write_control_register
+			; R#23 = 0
+			xor		a, a
+			ld		e, 23
+			call	write_control_register
 			; R#25 = 0x00
 			ld		a, 0x00
 			ld		e, 25
+			call	write_control_register
+			; R#26 = 0
+			xor		a, a
+			ld		e, 26
+			call	write_control_register
+			; R#27 = 0
+			xor		a, a
+			ld		e, 27
 			call	write_control_register
 			; Pattern Name Table
 			ld		hl, 0x1800

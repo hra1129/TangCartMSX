@@ -59,7 +59,7 @@ module vdp_command_cache (
 	input				clk,
 	input				start,						//	1 clock pulse
 	//	VDP command interface
-	input		[16:0]	cache_vram_address,
+	input		[17:0]	cache_vram_address,
 	input				cache_vram_valid,
 	output				cache_vram_ready,
 	input				cache_vram_write,
@@ -69,7 +69,7 @@ module vdp_command_cache (
 	input				cache_flush_start,
 	output				cache_flush_end,
 	//	VRAM interface
-	output		[16:0]	command_vram_address,
+	output		[17:0]	command_vram_address,
 	output				command_vram_valid,
 	input				command_vram_ready,
 	output				command_vram_write,
@@ -78,25 +78,25 @@ module vdp_command_cache (
 	input		[31:0]	command_vram_rdata,
 	input				command_vram_rdata_en
 );
-	reg		[16:2]	ff_cache0_address;
+	reg		[17:2]	ff_cache0_address;
 	reg		[31:0]	ff_cache0_data;
 	reg				ff_cache0_data_en;
 	reg		[3:0]	ff_cache0_data_mask;
 	reg				ff_cache0_already_read;
 	wire			w_cache0_hit;
-	reg		[16:2]	ff_cache1_address;
+	reg		[17:2]	ff_cache1_address;
 	reg		[31:0]	ff_cache1_data;
 	reg				ff_cache1_data_en;
 	reg		[3:0]	ff_cache1_data_mask;
 	reg				ff_cache1_already_read;
 	wire			w_cache1_hit;
-	reg		[16:2]	ff_cache2_address;
+	reg		[17:2]	ff_cache2_address;
 	reg		[31:0]	ff_cache2_data;
 	reg				ff_cache2_data_en;
 	reg		[3:0]	ff_cache2_data_mask;
 	reg				ff_cache2_already_read;
 	wire			w_cache2_hit;
-	reg		[16:2]	ff_cache3_address;
+	reg		[17:2]	ff_cache3_address;
 	reg		[31:0]	ff_cache3_data;
 	reg				ff_cache3_data_en;
 	reg		[3:0]	ff_cache3_data_mask;
@@ -106,7 +106,7 @@ module vdp_command_cache (
 	reg		[7:0]	ff_cache_vram_rdata;
 	reg				ff_cache_vram_rdata_en;
 	reg				ff_vram_valid;
-	reg		[16:2]	ff_vram_address;
+	reg		[17:2]	ff_vram_address;
 	reg				ff_vram_write;				//	0: read, 1: write
 	reg		[31:0]	ff_vram_wdata;
 	reg		[3:0]	ff_vram_data_mask;
@@ -115,36 +115,36 @@ module vdp_command_cache (
 	reg				ff_busy;
 	reg		[2:0]	ff_flush_state;
 
-	assign w_cache0_hit		= ff_cache0_data_en && (ff_cache0_address == cache_vram_address[16:2]);
-	assign w_cache1_hit		= ff_cache1_data_en && (ff_cache1_address == cache_vram_address[16:2]);
-	assign w_cache2_hit		= ff_cache2_data_en && (ff_cache2_address == cache_vram_address[16:2]);
-	assign w_cache3_hit		= ff_cache3_data_en && (ff_cache3_address == cache_vram_address[16:2]);
+	assign w_cache0_hit		= ff_cache0_data_en && (ff_cache0_address == cache_vram_address[17:2]);
+	assign w_cache1_hit		= ff_cache1_data_en && (ff_cache1_address == cache_vram_address[17:2]);
+	assign w_cache2_hit		= ff_cache2_data_en && (ff_cache2_address == cache_vram_address[17:2]);
+	assign w_cache3_hit		= ff_cache3_data_en && (ff_cache3_address == cache_vram_address[17:2]);
 	assign cache_flush_end	= (ff_flush_state == 3'd1) ? ~ff_vram_valid: 1'b0;
 
 	always @( posedge clk or negedge reset_n ) begin
 		if( !reset_n ) begin
-			ff_cache0_address		<= 15'd0;
+			ff_cache0_address		<= 16'd0;
 			ff_cache0_data			<= 32'd0;
 			ff_cache0_data_en		<= 1'b0;
 			ff_cache0_data_mask		<= 4'b1111;
 			ff_cache0_already_read	<= 1'b0;
-			ff_cache1_address		<= 15'd0;
+			ff_cache1_address		<= 16'd0;
 			ff_cache1_data			<= 32'd0;
 			ff_cache1_data_en		<= 1'b0;
 			ff_cache1_data_mask		<= 4'b1111;
 			ff_cache1_already_read	<= 1'b0;
-			ff_cache2_address		<= 15'd0;
+			ff_cache2_address		<= 16'd0;
 			ff_cache2_data			<= 32'd0;
 			ff_cache2_data_en		<= 1'b0;
 			ff_cache2_data_mask		<= 4'b1111;
 			ff_cache2_already_read	<= 1'b0;
-			ff_cache3_address		<= 15'd0;
+			ff_cache3_address		<= 16'd0;
 			ff_cache3_data			<= 32'd0;
 			ff_cache3_data_en		<= 1'b0;
 			ff_cache3_data_mask		<= 4'b1111;
 			ff_cache3_already_read	<= 1'b0;
 			ff_priority				<= 2'd0;
-			ff_vram_address			<= 15'd0;
+			ff_vram_address			<= 16'd0;
 			ff_vram_valid			<= 1'b0;
 			ff_vram_write			<= 1'b0;
 			ff_vram_wdata			<= 32'd0;
@@ -289,7 +289,7 @@ module vdp_command_cache (
 					end
 					else begin
 						//	Read VRAM
-						ff_vram_address		<= cache_vram_address[16:2];
+						ff_vram_address		<= cache_vram_address[17:2];
 						ff_vram_valid		<= 1'b1;
 						ff_vram_data_mask	<= 4'b1111;
 						ff_priority			<= 2'd0;
@@ -310,7 +310,7 @@ module vdp_command_cache (
 					end
 					else begin
 						//	Read VRAM
-						ff_vram_address		<= cache_vram_address[16:2];
+						ff_vram_address		<= cache_vram_address[17:2];
 						ff_vram_valid		<= 1'b1;
 						ff_vram_data_mask	<= 4'b1111;
 						ff_priority			<= 2'd1;
@@ -331,7 +331,7 @@ module vdp_command_cache (
 					end
 					else begin
 						//	Read VRAM
-						ff_vram_address		<= cache_vram_address[16:2];
+						ff_vram_address		<= cache_vram_address[17:2];
 						ff_vram_valid		<= 1'b1;
 						ff_vram_data_mask	<= 4'b1111;
 						ff_priority			<= 2'd2;
@@ -352,7 +352,7 @@ module vdp_command_cache (
 					end
 					else begin
 						//	Read VRAM
-						ff_vram_address		<= cache_vram_address[16:2];
+						ff_vram_address		<= cache_vram_address[17:2];
 						ff_vram_valid		<= 1'b1;
 						ff_vram_data_mask	<= 4'b1111;
 						ff_priority			<= 2'd3;
@@ -373,11 +373,11 @@ module vdp_command_cache (
 							ff_vram_data_mask			<= ff_cache0_data_mask;
 							ff_cache0_data_mask			<= 4'b1111;
 							ff_busy						<= 1'b1;
-							ff_cache0_address			<= cache_vram_address[16:2];
+							ff_cache0_address			<= cache_vram_address[17:2];
 						end
 						else begin
 							//	Read new data
-							ff_vram_address				<= cache_vram_address[16:2];
+							ff_vram_address				<= cache_vram_address[17:2];
 							ff_vram_valid				<= 1'b1;
 							ff_vram_write				<= 1'b0;
 							ff_vram_data_mask			<= 4'b1111;
@@ -394,11 +394,11 @@ module vdp_command_cache (
 							ff_vram_data_mask			<= ff_cache1_data_mask;
 							ff_cache1_data_mask			<= 4'b1111;
 							ff_busy						<= 1'b1;
-							ff_cache1_address			<= cache_vram_address[16:2];
+							ff_cache1_address			<= cache_vram_address[17:2];
 						end
 						else begin
 							//	Read new data
-							ff_vram_address				<= cache_vram_address[16:2];
+							ff_vram_address				<= cache_vram_address[17:2];
 							ff_vram_valid				<= 1'b1;
 							ff_vram_write				<= 1'b0;
 							ff_vram_data_mask			<= 4'b1111;
@@ -415,11 +415,11 @@ module vdp_command_cache (
 							ff_vram_data_mask			<= ff_cache2_data_mask;
 							ff_cache2_data_mask			<= 4'b1111;
 							ff_busy						<= 1'b1;
-							ff_cache2_address			<= cache_vram_address[16:2];
+							ff_cache2_address			<= cache_vram_address[17:2];
 						end
 						else begin
 							//	Read new data
-							ff_vram_address				<= cache_vram_address[16:2];
+							ff_vram_address				<= cache_vram_address[17:2];
 							ff_vram_valid				<= 1'b1;
 							ff_vram_write				<= 1'b0;
 							ff_vram_data_mask			<= 4'b1111;
@@ -436,11 +436,11 @@ module vdp_command_cache (
 							ff_vram_data_mask			<= ff_cache3_data_mask;
 							ff_cache3_data_mask			<= 4'b1111;
 							ff_busy						<= 1'b1;
-							ff_cache3_address			<= cache_vram_address[16:2];
+							ff_cache3_address			<= cache_vram_address[17:2];
 						end
 						else begin
 							//	Read new data
-							ff_vram_address				<= cache_vram_address[16:2];
+							ff_vram_address				<= cache_vram_address[17:2];
 							ff_vram_valid				<= 1'b1;
 							ff_vram_write				<= 1'b0;
 							ff_vram_data_mask			<= 4'b1111;
@@ -503,7 +503,7 @@ module vdp_command_cache (
 						ff_vram_write		<= 1'b1;
 						ff_vram_wdata		<= ff_cache0_data;
 						ff_vram_data_mask	<= ff_cache0_data_mask;
-						ff_cache0_address	<= cache_vram_address[16:2];
+						ff_cache0_address	<= cache_vram_address[17:2];
 						case( cache_vram_address[1:0] )
 						2'd0:	begin ff_cache0_data_mask <= 4'b1110; ff_cache0_data[ 7: 0] <= cache_vram_wdata; end
 						2'd1:	begin ff_cache0_data_mask <= 4'b1101; ff_cache0_data[15: 8] <= cache_vram_wdata; end
@@ -523,7 +523,7 @@ module vdp_command_cache (
 						ff_vram_write		<= 1'b1;
 						ff_vram_wdata		<= ff_cache1_data;
 						ff_vram_data_mask	<= ff_cache1_data_mask;
-						ff_cache1_address	<= cache_vram_address[16:2];
+						ff_cache1_address	<= cache_vram_address[17:2];
 						case( cache_vram_address[1:0] )
 						2'd0:	begin ff_cache1_data_mask <= 4'b1110; ff_cache1_data[ 7: 0] <= cache_vram_wdata; end
 						2'd1:	begin ff_cache1_data_mask <= 4'b1101; ff_cache1_data[15: 8] <= cache_vram_wdata; end
@@ -543,7 +543,7 @@ module vdp_command_cache (
 						ff_vram_write		<= 1'b1;
 						ff_vram_wdata		<= ff_cache2_data;
 						ff_vram_data_mask	<= ff_cache2_data_mask;
-						ff_cache2_address	<= cache_vram_address[16:2];
+						ff_cache2_address	<= cache_vram_address[17:2];
 						case( cache_vram_address[1:0] )
 						2'd0:	begin ff_cache2_data_mask <= 4'b1110; ff_cache2_data[ 7: 0] <= cache_vram_wdata; end
 						2'd1:	begin ff_cache2_data_mask <= 4'b1101; ff_cache2_data[15: 8] <= cache_vram_wdata; end
@@ -563,7 +563,7 @@ module vdp_command_cache (
 						ff_vram_write		<= 1'b1;
 						ff_vram_wdata		<= ff_cache3_data;
 						ff_vram_data_mask	<= ff_cache3_data_mask;
-						ff_cache3_address	<= cache_vram_address[16:2];
+						ff_cache3_address	<= cache_vram_address[17:2];
 						case( cache_vram_address[1:0] )
 						2'd0:	begin ff_cache3_data_mask <= 4'b1110; ff_cache3_data[ 7: 0] <= cache_vram_wdata; end
 						2'd1:	begin ff_cache3_data_mask <= 4'b1101; ff_cache3_data[15: 8] <= cache_vram_wdata; end
@@ -576,7 +576,7 @@ module vdp_command_cache (
 				end
 				else if( !ff_cache0_data_en ) begin
 					//	Miss hit, and update cache0.
-					ff_cache0_address		<= cache_vram_address[16:2];
+					ff_cache0_address		<= cache_vram_address[17:2];
 					ff_cache0_already_read	<= 1'b0;
 					ff_cache0_data_en		<= 1'b1;
 					case( cache_vram_address[1:0] )
@@ -588,7 +588,7 @@ module vdp_command_cache (
 				end
 				else if( !ff_cache1_data_en ) begin
 					//	Miss hit, and update cache0.
-					ff_cache1_address		<= cache_vram_address[16:2];
+					ff_cache1_address		<= cache_vram_address[17:2];
 					ff_cache1_already_read	<= 1'b0;
 					ff_cache1_data_en		<= 1'b1;
 					case( cache_vram_address[1:0] )
@@ -600,7 +600,7 @@ module vdp_command_cache (
 				end
 				else if( !ff_cache2_data_en ) begin
 					//	Miss hit, and update cache0.
-					ff_cache2_address		<= cache_vram_address[16:2];
+					ff_cache2_address		<= cache_vram_address[17:2];
 					ff_cache2_already_read	<= 1'b0;
 					ff_cache2_data_en		<= 1'b1;
 					case( cache_vram_address[1:0] )
@@ -612,7 +612,7 @@ module vdp_command_cache (
 				end
 				else begin	//	if( ff_cache3_data_en ) begin
 					//	Miss hit, and update cache0.
-					ff_cache3_address		<= cache_vram_address[16:2];
+					ff_cache3_address		<= cache_vram_address[17:2];
 					ff_cache3_already_read	<= 1'b0;
 					ff_cache3_data_en		<= 1'b1;
 					case( cache_vram_address[1:0] )

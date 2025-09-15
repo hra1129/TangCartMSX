@@ -68,7 +68,7 @@ module vdp_cpu_interface (
 	output	[7:0]		bus_rdata,
 	output				bus_rdata_en,
 
-	output	[16:0]		vram_address,
+	output	[17:0]		vram_address,
 	output				vram_write,
 	output				vram_valid,
 	input				vram_ready,
@@ -108,11 +108,11 @@ module vdp_cpu_interface (
 	output				reg_sprite_magify,
 	output				reg_sprite_16x16,
 	output				reg_display_on,
-	output	[16:10]		reg_pattern_name_table_base,
-	output	[16:6]		reg_color_table_base,
-	output	[16:11]		reg_pattern_generator_table_base,
-	output	[16:7]		reg_sprite_attribute_table_base,
-	output	[16:11]		reg_sprite_pattern_generator_table_base,
+	output	[17:10]		reg_pattern_name_table_base,
+	output	[17:6]		reg_color_table_base,
+	output	[17:11]		reg_pattern_generator_table_base,
+	output	[17:7]		reg_sprite_attribute_table_base,
+	output	[17:11]		reg_sprite_pattern_generator_table_base,
 	output	[7:0]		reg_backdrop_color,
 	output				reg_sprite_disable,
 	output				reg_color0_opaque,
@@ -132,6 +132,13 @@ module vdp_cpu_interface (
 	output				reg_command_enable,
 	output	[2:0]		reg_horizontal_offset_l,
 	output	[8:3]		reg_horizontal_offset_h,
+	output				reg_command_high_speed_mode,
+	output				reg_sprite_nonR23_mode,
+	output				reg_interrupt_line_nonR23_mode,
+	output				reg_sprite_color_mode,
+	output				reg_ext_palette_mode,
+	output				reg_ext_command_mode,
+	output				reg_vram256k_mode,
 
 	output				pulse0,
 	output				pulse1,
@@ -163,11 +170,11 @@ module vdp_cpu_interface (
 	reg					ff_sprite_magify;
 	reg					ff_sprite_16x16;
 	reg					ff_display_on;
-	reg		[16:10]		ff_pattern_name_table_base;
-	reg		[16:6]		ff_color_table_base;
-	reg		[16:11]		ff_pattern_generator_table_base;
-	reg		[16:7]		ff_sprite_attribute_table_base;
-	reg		[16:11]		ff_sprite_pattern_generator_table_base;
+	reg		[17:10]		ff_pattern_name_table_base;
+	reg		[17:6]		ff_color_table_base;
+	reg		[17:11]		ff_pattern_generator_table_base;
+	reg		[17:7]		ff_sprite_attribute_table_base;
+	reg		[17:11]		ff_sprite_pattern_generator_table_base;
 	reg		[7:0]		ff_backdrop_color;
 	reg					ff_sprite_disable;
 	reg					ff_vram_type;
@@ -197,13 +204,20 @@ module vdp_cpu_interface (
 	reg					ff_command_enable;
 	reg		[2:0]		ff_horizontal_offset_l;
 	reg		[8:3]		ff_horizontal_offset_h;
+	reg					ff_command_high_speed_mode;
+	reg					ff_sprite_nonR23_mode;
+	reg					ff_interrupt_line_nonR23_mode;
+	reg					ff_sprite_color_mode;
+	reg					ff_ext_palette_mode;
+	reg					ff_ext_command_mode;
+	reg					ff_vram256k_mode;
 
 	reg					ff_2nd_access;
 	reg		[7:0]		ff_1st_byte;
 	reg					ff_register_write;
 	reg		[5:0]		ff_register_num;
-	reg		[16:0]		ff_vram_address;
-	wire	[16:0]		w_next_vram_address;
+	reg		[17:0]		ff_vram_address;
+	wire	[17:0]		w_next_vram_address;
 	reg					ff_vram_address_write;		//	アドレス設定が書き込み用に設定されたかどうか
 	reg					ff_vram_write;				//	実際のアクセスが書き込みアクセスかどうか
 	reg		[7:0]		ff_vram_wdata;
@@ -357,11 +371,11 @@ module vdp_cpu_interface (
 		end
 	end
 
-	assign w_next_vram_address	= ff_vram_address + 17'd1;
+	assign w_next_vram_address	= ff_vram_address + 18'd1;
 
 	always @( posedge clk or negedge reset_n ) begin
 		if( !reset_n ) begin
-			ff_vram_address	<= 17'd0;
+			ff_vram_address	<= 18'd0;
 		end
 		else if( ff_vram_address_inc ) begin		//	1clock pulse
 			if( (ff_screen_mode[4:3] == 2'b00) || !ff_vram_type ) begin
@@ -372,12 +386,12 @@ module vdp_cpu_interface (
 			end
 		end
 		else if( ff_register_write && ff_register_num == 6'd14 ) begin
-			//	R#14 = [N/A][N/A][N/A][N/A][N/A][A16][A15][A14]
+			//	R#14 = [N/A][N/A][N/A][N/A][A17][A16][A15][A14]
 			if( !ff_vram_type ) begin
-				ff_vram_address[16:14]	<= 3'd0;
+				ff_vram_address[17:14]	<= 4'd0;
 			end
 			else begin
-				ff_vram_address[16:14]	<= ff_1st_byte[2:0];
+				ff_vram_address[17:14]	<= ff_1st_byte[3:0];
 			end
 		end
 		else if( w_write && ff_port1 ) begin
@@ -414,11 +428,11 @@ module vdp_cpu_interface (
 			ff_sprite_16x16 <= 1'b0;
 			ff_frame_interrupt_enable <= 1'b0;
 			ff_display_on <= 1'b0;
-			ff_pattern_name_table_base <= 7'd0;
-			ff_color_table_base <= 11'd0;
-			ff_pattern_generator_table_base <= 6'd0;
-			ff_sprite_attribute_table_base <= 10'd0;
-			ff_sprite_pattern_generator_table_base <= 6'd0;
+			ff_pattern_name_table_base <= 8'd0;
+			ff_color_table_base <= 12'd0;
+			ff_pattern_generator_table_base <= 7'd0;
+			ff_sprite_attribute_table_base <= 11'd0;
+			ff_sprite_pattern_generator_table_base <= 7'd0;
 			ff_backdrop_color <= 8'd0;
 			ff_sprite_disable <= 1'b0;
 			ff_vram_type <= 1'b1;
@@ -440,6 +454,13 @@ module vdp_cpu_interface (
 			ff_command_enable <= 1'b0;
 			ff_horizontal_offset_l <= 3'd0;
 			ff_horizontal_offset_h <= 6'd0;
+			ff_command_high_speed_mode <= 1'b0;
+			ff_sprite_nonR23_mode <= 1'b0;
+			ff_interrupt_line_nonR23_mode <= 1'b0;
+			ff_sprite_color_mode <= 1'b0;
+			ff_ext_palette_mode <= 1'b0;
+			ff_ext_command_mode <= 1'b0;
+			ff_vram256k_mode <= 1'b0;
 		end
 		else if( ff_register_write ) begin
 			case( ff_register_num )
@@ -457,25 +478,25 @@ module vdp_cpu_interface (
 					ff_frame_interrupt_enable <= ff_1st_byte[5];
 					ff_display_on <= ff_1st_byte[6];
 				end
-			6'd2:	//	R#2 = [N/A][A16][A15][A14][A13][A12][A11][A10]
+			6'd2:	//	R#2 = [A17][A16][A15][A14][A13][A12][A11][A10]
 				begin
-					ff_pattern_name_table_base <= ff_1st_byte[6:0];
+					ff_pattern_name_table_base <= ff_1st_byte;
 				end
 			6'd3:	//	R#3 = [A13][A12][A11][A10][A9][A8][A7][A6]
 				begin
 					ff_color_table_base[13:6] <= ff_1st_byte;
 				end
-			6'd4:	//	R#4 = [N/A][N/A][A16][A15][A14][A13][A12][A11]
+			6'd4:	//	R#4 = [N/A][A17][A16][A15][A14][A13][A12][A11]
 				begin
-					ff_pattern_generator_table_base <= ff_1st_byte[5:0];
+					ff_pattern_generator_table_base <= ff_1st_byte[6:0];
 				end
 			6'd5:	//	R#5 = [A14][A13][A12][A11][A10][A9][A8][A7]
 				begin
 					ff_sprite_attribute_table_base[14:7] <= ff_1st_byte;
 				end
-			6'd6:	//	R#6 = [N/A][N/A][A16][A15][A14][A13][A12][A11]
+			6'd6:	//	R#6 = [N/A][A17][A16][A15][A14][A13][A12][A11]
 				begin
-					ff_sprite_pattern_generator_table_base <= ff_1st_byte[5:0];
+					ff_sprite_pattern_generator_table_base <= ff_1st_byte[6:0];
 				end
 			6'd7:	//	R#7 = [BD7][BD6][BD5][BD4][BD3][BD2][BD1][BD0]
 				begin
@@ -494,13 +515,13 @@ module vdp_cpu_interface (
 					ff_interlace_mode <= ff_1st_byte[3];
 					ff_212lines_mode <= ff_1st_byte[7];
 				end
-			6'd10:	//	R#10 = [N/A][N/A][N/A][N/A][N/A][A16][A15][A14]
+			6'd10:	//	R#10 = [N/A][N/A][N/A][N/A][A17][A16][A15][A14]
 				begin
-					ff_color_table_base[16:14] <= ff_1st_byte[2:0];
+					ff_color_table_base[17:14] <= ff_1st_byte[3:0];
 				end
-			6'd11:	//	R#11 = [N/A][N/A][N/A][N/A][N/A][N/A][A16][A15]
+			6'd11:	//	R#11 = [N/A][N/A][N/A][N/A][N/A][A17][A16][A15]
 				begin
-					ff_sprite_attribute_table_base[16:15] <= ff_1st_byte[1:0];
+					ff_sprite_attribute_table_base[17:15] <= ff_1st_byte[2:0];
 				end
 			6'd12:	//	R#12 = [T23][T22][T1][T20][BC3][BC2][BC1][BC0]
 				begin
@@ -529,6 +550,16 @@ module vdp_cpu_interface (
 			8'd19:	//	R#19 = [IL7][IL6][IL5][IL4][IL3][IL2][IL1][IL0]
 				begin
 					ff_interrupt_line <= ff_1st_byte;
+				end
+			8'd20:	//	R#20 = [N/A][EVR][ECOM][EPAL][SCOL][ILNS][SVNS][HS]
+				begin
+					ff_command_high_speed_mode <= ff_1st_byte[0];
+					ff_sprite_nonR23_mode <= ff_1st_byte[1];
+					ff_interrupt_line_nonR23_mode <= ff_1st_byte[2];
+					ff_sprite_color_mode <= ff_1st_byte[3];
+					ff_ext_palette_mode <= ff_1st_byte[4];
+					ff_ext_command_mode <= ff_1st_byte[5];
+					ff_vram256k_mode <= ff_1st_byte[6];
 				end
 			8'd23:	//	R#23 = [DO7][DO6][DO5][DO4][DO3][DO2][DO1][DO0]
 				begin
@@ -735,4 +766,11 @@ module vdp_cpu_interface (
 	assign reg_command_enable						= ff_command_enable;
 	assign reg_horizontal_offset_l					= ff_horizontal_offset_l;
 	assign reg_horizontal_offset_h					= ff_horizontal_offset_h;
+	assign reg_command_high_speed_mode				= ff_command_high_speed_mode;
+	assign reg_sprite_nonR23_mode					= ff_sprite_nonR23_mode;
+	assign reg_interrupt_line_nonR23_mode			= ff_interrupt_line_nonR23_mode;
+	assign reg_sprite_color_mode					= ff_sprite_color_mode;
+	assign reg_ext_palette_mode						= ff_ext_palette_mode;
+	assign reg_ext_command_mode						= ff_ext_command_mode;
+	assign reg_vram256k_mode						= ff_vram256k_mode;
 endmodule

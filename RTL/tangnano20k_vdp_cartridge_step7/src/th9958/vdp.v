@@ -71,7 +71,7 @@ module vdp (
 
 	output				int_n,
 
-	output		[16:2]	vram_address,
+	output		[17:2]	vram_address,
 	output				vram_write,
 	output				vram_valid,
 	output		[31:0]	vram_wdata,
@@ -121,28 +121,28 @@ module vdp (
 	wire		[2:0]	w_palette_g;
 	wire		[2:0]	w_palette_b;
 
-	wire		[16:0]	w_cpu_vram_address;
+	wire		[17:0]	w_cpu_vram_address;
 	wire				w_cpu_vram_valid;
 	wire				w_cpu_vram_write;
 	wire		[7:0]	w_cpu_vram_wdata;
 	wire		[7:0]	w_cpu_vram_rdata;
 	wire				w_cpu_vram_rdata_en;
 
-	wire		[16:0]	w_screen_mode_vram_address;
+	wire		[17:0]	w_screen_mode_vram_address;
 	wire				w_screen_mode_vram_valid;
 	wire		[31:0]	w_screen_mode_vram_rdata;
 	wire		[7:0]	w_screen_mode_display_color;
 	wire				w_screen_mode_display_color_en;
 	wire		[3:0]	w_screen_mode;
 
-	wire		[16:0]	w_sprite_vram_address;
+	wire		[17:0]	w_sprite_vram_address;
 	wire				w_sprite_vram_valid;
 	wire		[31:0]	w_sprite_vram_rdata;
 	wire		[7:0]	w_sprite_vram_rdata8;
 	wire		[3:0]	w_sprite_display_color;
 	wire				w_sprite_display_color_en;
 
-	wire		[16:0]	w_command_vram_address;
+	wire		[17:0]	w_command_vram_address;
 	wire				w_command_vram_valid;
 	wire				w_command_vram_ready;
 	wire				w_command_vram_write;
@@ -173,11 +173,11 @@ module vdp (
 	wire				reg_sprite_magify;
 	wire				reg_sprite_16x16;
 	wire				reg_display_on;
-	wire		[16:10]	reg_pattern_name_table_base;
-	wire		[16:6]	reg_color_table_base;
-	wire		[16:11]	reg_pattern_generator_table_base;
-	wire		[16:7]	reg_sprite_attribute_table_base;
-	wire		[16:11]	reg_sprite_pattern_generator_table_base;
+	wire		[17:10]	reg_pattern_name_table_base;
+	wire		[17:6]	reg_color_table_base;
+	wire		[17:11]	reg_pattern_generator_table_base;
+	wire		[17:7]	reg_sprite_attribute_table_base;
+	wire		[17:11]	reg_sprite_pattern_generator_table_base;
 	wire		[7:0]	reg_backdrop_color;
 	wire				reg_sprite_disable;
 	wire				reg_vram_type;
@@ -198,6 +198,13 @@ module vdp (
 	wire				reg_command_enable;
 	wire		[2:0]	reg_horizontal_offset_l;
 	wire		[8:3]	reg_horizontal_offset_h;
+	wire				reg_command_high_speed_mode;
+	wire				reg_sprite_nonR23_mode;
+	wire				reg_interrupt_line_nonR23_mode;
+	wire				reg_sprite_color_mode;
+	wire				reg_ext_palette_mode;
+	wire				reg_ext_command_mode;
+	wire				reg_vram256k_mode;
 
 	// --------------------------------------------------------------------
 	//	CPU Interface
@@ -271,6 +278,13 @@ module vdp (
 		.reg_command_enable							( reg_command_enable						),
 		.reg_horizontal_offset_l					( reg_horizontal_offset_l					),
 		.reg_horizontal_offset_h					( reg_horizontal_offset_h					),
+		.reg_command_high_speed_mode				( reg_command_high_speed_mode				),
+		.reg_sprite_nonR23_mode						( reg_sprite_nonR23_mode					),
+		.reg_interrupt_line_nonR23_mode				( reg_interrupt_line_nonR23_mode			),
+		.reg_sprite_color_mode						( reg_sprite_color_mode						),
+		.reg_ext_palette_mode						( reg_ext_palette_mode						),
+		.reg_ext_command_mode						( reg_ext_command_mode						),
+		.reg_vram256k_mode							( reg_vram256k_mode							),
 		.pulse0										( pulse0									),
 		.pulse1										( pulse1									),
 		.pulse2										( pulse2									),
@@ -366,7 +380,9 @@ module vdp (
 		.status_border_position						( w_status_border_position					),
 		.screen_mode								( w_screen_mode								),
 		.vram_interleave							( w_vram_interleave							),
-		.reg_command_enable							( reg_command_enable						)
+		.reg_command_enable							( reg_command_enable						),
+		.reg_command_high_speed_mode				( reg_command_high_speed_mode				),
+		.reg_vram256k_mode							( reg_vram256k_mode							)
 	);
 
 	// --------------------------------------------------------------------

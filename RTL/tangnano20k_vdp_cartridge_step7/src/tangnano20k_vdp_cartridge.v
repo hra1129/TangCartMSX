@@ -196,7 +196,7 @@ module tangnano20k_vdp_cartridge (
 		.bus_rdata			( w_bus_vdp_rdata		),
 		.bus_rdata_en		( w_bus_vdp_rdata_en	),
 		.int_n				( int_n					),
-		.vram_address		( w_sdram_address[16:2]	),
+		.vram_address		( w_sdram_address[17:2]	),
 		.vram_write			( w_sdram_write			),
 		.vram_valid			( w_sdram_valid			),
 		.vram_wdata			( w_sdram_wdata			),
@@ -220,7 +220,7 @@ module tangnano20k_vdp_cartridge (
 		.pulse7				( w_pulse7				)
 	);
 
-	assign w_sdram_address[22:17]	= 6'd0;
+	assign w_sdram_address[22:18]	= 5'd0;
 
 	// --------------------------------------------------------------------
 	//	HDMI

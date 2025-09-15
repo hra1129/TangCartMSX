@@ -58,7 +58,7 @@ module vdp_command (
 	input				reset_n,
 	input				clk,
 	//	VRAM interface
-	output		[16:0]	command_vram_address,
+	output		[17:0]	command_vram_address,
 	output				command_vram_valid,
 	input				command_vram_ready,
 	output				command_vram_write,
@@ -80,7 +80,9 @@ module vdp_command (
 	//	Screen mode
 	input		[3:0]	screen_mode,
 	input				vram_interleave,
-	input				reg_command_enable
+	input				reg_command_enable,
+	input				reg_command_high_speed_mode,
+	input				reg_vram256k_mode
 );
 	localparam	c_hmmc		= 4'b1111;
 	localparam	c_ymmm		= 4'b1110;
@@ -139,16 +141,16 @@ module vdp_command (
 	reg			[1:0]	ff_xsel;
 	reg			[8:0]	reg_sx;
 	reg			[8:0]	reg_dx;
-	reg			[8:0]	reg_nx;
+	reg			[10:0]	reg_nx;
 	reg			[9:0]	ff_sx;
-	reg			[9:0]	ff_sy;
+	reg			[10:0]	ff_sy;
 	reg			[8:0]	ff_dx;
-	reg			[9:0]	ff_dy;
+	reg			[10:0]	ff_dy;
 	reg			[8:0]	ff_nx;
-	reg			[9:0]	ff_ny;
+	reg			[10:0]	ff_ny;
 	wire		[8:0]	w_nx;
-	wire		[9:0]	w_ny;
-	reg			[9:0]	ff_nyb;
+	wire		[10:0]	w_ny;
+	reg			[10:0]	ff_nyb;
 	reg			[7:0]	ff_color;
 	reg					ff_transfer_ready;
 	reg					ff_maj;
@@ -162,7 +164,7 @@ module vdp_command (
 	reg			[3:0]	ff_command;
 	reg					ff_start;
 
-	reg			[16:0]	ff_cache_vram_address;
+	reg			[17:0]	ff_cache_vram_address;
 	reg					ff_cache_vram_valid;
 	wire				w_cache_vram_ready;
 	reg					ff_cache_vram_write;
@@ -174,16 +176,16 @@ module vdp_command (
 	wire				w_effective_mode;
 	wire		[1:0]	w_bpp;					//	c_bpp_Xbit
 	wire				w_512pixel;
-	wire		[16:0]	w_address_s_pre;
-	wire		[16:0]	w_address_d_pre;
-	wire		[16:0]	w_address_s;
-	wire		[16:0]	w_address_d;
-	wire		[10:0]	w_next_nyb;
+	wire		[17:0]	w_address_s_pre;
+	wire		[17:0]	w_address_d_pre;
+	wire		[17:0]	w_address_s;
+	wire		[17:0]	w_address_d;
+	wire		[11:0]	w_next_nyb;
 	wire		[9:0]	w_next;
 	wire		[9:0]	w_next_sx;
-	wire		[10:0]	w_next_sy;
+	wire		[11:0]	w_next_sy;
 	wire		[9:0]	w_next_dx;
-	wire		[10:0]	w_next_dy;
+	wire		[11:0]	w_next_dy;
 	wire				w_line_shift;
 	reg					ff_border_detect_request;
 	reg					ff_border_detect;
@@ -246,18 +248,18 @@ module vdp_command (
 	// --------------------------------------------------------------------
 	//	Address
 	// --------------------------------------------------------------------
-	assign w_address_s_pre		= (screen_mode == c_g4) ? { ff_sy[9:0], ff_sx[7:1] }:		// SCREEN5, 128byte/line, 2pixel/byte
-	                  			  (screen_mode == c_g5) ? { ff_sy[9:0], ff_sx[8:2] }:		// SCREEN6, 128byte/line, 4pixel/byte
-	                  			  (screen_mode == c_g6) ? { ff_sy[8:0], ff_sx[8:1] }:		// SCREEN7, 256byte/line, 2pixel/byte
-	                  			                          { ff_sy[8:0], ff_sx[7:0] };		// SCREEN8, 256byte/line, 1pixel/byte
+	assign w_address_s_pre		= (screen_mode == c_g4) ? { ff_sy[10:0], ff_sx[7:1] }:		// SCREEN5, 128byte/line, 2pixel/byte, 256line * 8page
+	                  			  (screen_mode == c_g5) ? { ff_sy[10:0], ff_sx[8:2] }:		// SCREEN6, 128byte/line, 4pixel/byte, 256line * 8page
+	                  			  (screen_mode == c_g6) ? { ff_sy[ 9:0], ff_sx[8:1] }:		// SCREEN7, 256byte/line, 2pixel/byte, 256line * 4page
+	                  			                          { ff_sy[ 9:0], ff_sx[7:0] };		// SCREEN8, 256byte/line, 1pixel/byte, 256line * 4page
 
-	assign w_address_d_pre		= (screen_mode == c_g4) ? { ff_dy[9:0], ff_dx[7:1] }:		// SCREEN5, 128byte/line, 2pixel/byte
-	                  			  (screen_mode == c_g5) ? { ff_dy[9:0], ff_dx[8:2] }:		// SCREEN6, 128byte/line, 4pixel/byte
-	                  			  (screen_mode == c_g6) ? { ff_dy[8:0], ff_dx[8:1] }:		// SCREEN7, 256byte/line, 2pixel/byte
-	                  			                          { ff_dy[8:0], ff_dx[7:0] };		// SCREEN8, 256byte/line, 1pixel/byte
+	assign w_address_d_pre		= (screen_mode == c_g4) ? { ff_dy[10:0], ff_dx[7:1] }:		// SCREEN5, 128byte/line, 2pixel/byte, 256line * 8page
+	                  			  (screen_mode == c_g5) ? { ff_dy[10:0], ff_dx[8:2] }:		// SCREEN6, 128byte/line, 4pixel/byte, 256line * 8page
+	                  			  (screen_mode == c_g6) ? { ff_dy[ 9:0], ff_dx[8:1] }:		// SCREEN7, 256byte/line, 2pixel/byte, 256line * 4page
+	                  			                          { ff_dy[ 9:0], ff_dx[7:0] };		// SCREEN8, 256byte/line, 1pixel/byte, 256line * 4page
 
-	assign w_address_s			= vram_interleave ? { w_address_s_pre[0], w_address_s_pre[16:1] }: w_address_s_pre;
-	assign w_address_d			= vram_interleave ? { w_address_d_pre[0], w_address_d_pre[16:1] }: w_address_d_pre;
+	assign w_address_s			= vram_interleave ? { w_address_s_pre[17], w_address_s_pre[0], w_address_s_pre[16:1] }: w_address_s_pre;
+	assign w_address_d			= vram_interleave ? { w_address_d_pre[17], w_address_d_pre[0], w_address_d_pre[16:1] }: w_address_d_pre;
 
 	// --------------------------------------------------------------------
 	//	Source position registers
@@ -320,7 +322,12 @@ module vdp_command (
 				ff_sy[7:0]	<= register_data;
 			end
 			else if( register_num == 6'd35 ) begin
-				ff_sy[9:8]	<= register_data[1:0];
+				if( reg_vram256k_mode ) begin
+					ff_sy[10:8]	<= { 1'b0, register_data[1:0] };
+				end
+				else begin
+					ff_sy[10:8]	<= register_data[2:0];
+				end
 			end
 		end
 		else if( !ff_command_execute || ff_cache_vram_valid ) begin
@@ -328,13 +335,18 @@ module vdp_command (
 		end
 		else if( ff_count_valid ) begin
 			if( ff_nx == 9'd0 || w_sx_overflow || w_dx_overflow ) begin
-				ff_sy <= w_next_sy[9:0];
+				if( reg_vram256k_mode ) begin
+					ff_sy <= w_next_sy[10:0];
+				end
+				else begin
+					ff_sy <= { 1'b0, w_next_sy[9:0] };
+				end
 			end
 		end
 	end
 
 	assign w_next_sx	= ff_dix ? (         ff_sx   - w_next ): (         ff_sx   + w_next );
-	assign w_next_sy	= ff_diy ? ( { 1'b0, ff_sy } - 11'd1  ): ( { 1'b0, ff_sy } + 11'd1  );
+	assign w_next_sy	= ff_diy ? ( { 1'b0, ff_sy } - 12'd1  ): ( { 1'b0, ff_sy } + 12'd1  );
 
 	// --------------------------------------------------------------------
 	//	Destination position registers
@@ -387,18 +399,23 @@ module vdp_command (
 		end
 	end
 
-	assign w_line_shift	= w_next_nyb[10] || (w_next_nyb[9:0] == 10'd0);
+	assign w_line_shift	= w_next_nyb[11] || (w_next_nyb[10:0] == 10'd0);
 
 	always @( posedge clk or negedge reset_n ) begin
 		if( !reset_n ) begin
-			ff_dy	<= 10'd0;
+			ff_dy	<= 11'd0;
 		end
 		else if( register_write ) begin
 			if( register_num == 6'd38 ) begin
 				ff_dy[7:0]	<= register_data;
 			end
 			else if( register_num == 6'd39 ) begin
-				ff_dy[9:8]	<= register_data[1:0];
+				if( reg_vram256k_mode ) begin
+					ff_dy[10:8]	<= register_data[2:0];
+				end
+				else begin
+					ff_dy[10:8]	<= { 1'b0, register_data[1:0] };
+				end
 			end
 		end
 		else if( !ff_command_execute || ff_cache_vram_valid ) begin
@@ -409,24 +426,39 @@ module vdp_command (
 				if( ff_maj == 1'b0 ) begin
 					//	Long side is X-axis
 					if( w_line_shift ) begin
-						ff_dy <= w_next_dy[9:0];
+						if( reg_vram256k_mode ) begin
+							ff_dy <= w_next_dy[10:0];
+						end
+						else begin
+							ff_dy <= { 1'b0, w_next_dy[9:0] };
+						end
 					end
 				end
 				else begin
 					//	Long side is Y-axis
-					ff_dy <= w_next_dy[9:0];
+					if( reg_vram256k_mode ) begin
+						ff_dy <= w_next_dy[10:0];
+					end
+					else begin
+						ff_dy <= { 1'b0, w_next_dy[9:0] };
+					end
 				end
 			end
 			else begin
 				if( ff_nx == 9'd0 || w_sx_overflow || w_dx_overflow ) begin
-					ff_dy <= w_next_dy[9:0];
+					if( reg_vram256k_mode ) begin
+						ff_dy <= w_next_dy[10:0];
+					end
+					else begin
+						ff_dy <= { 1'b0, w_next_dy[9:0] };
+					end
 				end
 			end
 		end
 	end
 
 	assign w_next_dx		= ff_dix ? ( { 1'b0, ff_dx } - w_next ): ( { 1'b0, ff_dx } + w_next );
-	assign w_next_dy		= ff_diy ? ( { 1'b0, ff_dy } - 11'd1  ): ( { 1'b0, ff_dy } + 11'd1  );
+	assign w_next_dy		= ff_diy ? ( { 1'b0, ff_dy } - 12'd1  ): ( { 1'b0, ff_dy } + 12'd1  );
 	assign w_sx_active		= (ff_command == c_lmmm || ff_command == c_hmmm || ff_command == c_ymmm || ff_command == c_lmcm || ff_command == c_srch);
 	assign w_dx_active		= (ff_command == c_lmmm || ff_command == c_hmmm || ff_command == c_ymmm || ff_command == c_lmmc || ff_command == c_hmmc || ff_command == c_lmmv || ff_command == c_hmmv);
 	assign w_sx_overflow	= w_sx_active && (w_next_sx[9] || (!w_512pixel && w_next_sx[8]));
@@ -437,14 +469,14 @@ module vdp_command (
 	// --------------------------------------------------------------------
 	always @( posedge clk or negedge reset_n ) begin
 		if( !reset_n ) begin
-			reg_nx	<= 9'd0;
+			reg_nx	<= 11'd0;
 		end
 		else if( register_write ) begin
 			if( register_num == 6'd40 ) begin
-				reg_nx[7:0]	<= register_data;
+				reg_nx[7:0]		<= register_data;
 			end
 			else if( register_num == 6'd41 ) begin
-				reg_nx[8]	<= register_data[0];
+				reg_nx[10:8]	<= register_data[2:0];
 			end
 		end
 	end
@@ -463,7 +495,7 @@ module vdp_command (
 				endcase
 			end
 			else if( ff_command == c_line ) begin
-				ff_nx <= reg_nx;
+				ff_nx <= reg_nx[8:0];
 			end
 			else if( ff_command[3:2] == 2'b11 ) begin
 				case( w_bpp )
@@ -508,7 +540,7 @@ module vdp_command (
 
 	always @( posedge clk or negedge reset_n ) begin
 		if( !reset_n ) begin
-			ff_ny	<= 10'd0;
+			ff_ny	<= 11'd0;
 		end
 		else if( register_write ) begin
 			if( register_num == 6'd42 ) begin
@@ -533,35 +565,37 @@ module vdp_command (
 			//	hold
 		end
 		else if( ff_count_valid ) begin
-			if( (ff_nx == 9'd0 || w_sx_overflow || w_dx_overflow) && ff_ny != 10'd0 ) begin
+			if( (ff_nx == 9'd0 || w_sx_overflow || w_dx_overflow) && ff_ny != 11'd0 ) begin
 				ff_ny <= w_ny;
 			end
 		end
 	end
 
+	//	LINEコマンドの分子を示すカウンタ
 	always @( posedge clk or negedge reset_n ) begin
 		if( !reset_n ) begin
-			ff_nyb	<= 10'd0;
+			ff_nyb	<= 12'd0;
 		end
 		else if( ff_start ) begin
-			ff_nyb	<= { 2'd0, reg_nx[8:1] };
+			//	線分を構成する水平又は垂直の直線の最初と最後を均等サイズにするために分母の半分の値を事前に足しておく
+			ff_nyb	<= { 1'd0, reg_nx[10:1] };
 		end
 		else if( !ff_command_execute || ff_cache_vram_valid ) begin
 			//	hold
 		end
 		else if( ff_count_valid ) begin
 			if( w_line_shift ) begin
-				ff_nyb	<= w_next_nyb[9:0] + { 1'b0, reg_nx };
+				ff_nyb	<= w_next_nyb[10:0] + { 1'b0, reg_nx };
 			end
 			else begin
-				ff_nyb	<= w_next_nyb[9:0];
+				ff_nyb	<= w_next_nyb[10:0];
 			end
 		end
 	end
 
 	assign w_nx			= reg_nx - 9'd1;
-	assign w_ny			= ff_ny - 10'd1;
-	assign w_next_nyb	= { 1'b0, ff_nyb } - { 2'd0, ff_ny[8:0] };
+	assign w_ny			= ff_ny - 11'd1;
+	assign w_next_nyb	= { 1'b0, ff_nyb } - { 2'd0, ff_ny[9:0] };
 
 	always @( posedge clk or negedge reset_n ) begin
 		if( !reset_n ) begin
@@ -885,7 +919,7 @@ module vdp_command (
 			end
 			c_state_line_next: begin
 				ff_count_valid			<= 1'b0;
-				if( ff_nx == 9'd0 || w_next_dx[9] || (!w_512pixel && w_next_dx[8]) || (ff_diy == 1'b1 && ff_dy == 10'd0 && w_next_dy[9] == 1'b1) ) begin
+				if( ff_nx == 9'd0 || w_dx_overflow || (ff_diy == 1'b1 && ff_dy == 11'd0 && w_next_dy[11] == 1'b1) ) begin
 					ff_state				<= c_state_pre_finish;
 				end
 				else begin
@@ -913,7 +947,7 @@ module vdp_command (
 			end
 			c_state_lmmv_next: begin
 				ff_count_valid			<= 1'b0;
-				if( (ff_nx == 9'd0 || w_sx_overflow || w_dx_overflow) && ff_ny == 10'd0 ) begin
+				if( (ff_nx == 9'd0 || w_sx_overflow || w_dx_overflow) && ff_ny == 11'd0 ) begin
 					ff_state				<= c_state_pre_finish;
 				end
 				else begin
@@ -953,7 +987,7 @@ module vdp_command (
 			end
 			c_state_lmmm_next: begin
 				ff_count_valid			<= 1'b0;
-				if( (ff_nx == 9'd0 || w_sx_overflow || w_dx_overflow) && ff_ny == 10'd0 ) begin
+				if( (ff_nx == 9'd0 || w_sx_overflow || w_dx_overflow) && ff_ny == 11'd0 ) begin
 					ff_state				<= c_state_pre_finish;
 				end
 				else begin
@@ -963,13 +997,18 @@ module vdp_command (
 
 			//	LMCM command --------------------------------------------------
 			c_state_lmcm: begin
-				//	Read the location of (DX, DY)
-				ff_cache_vram_address	<= w_address_d;
-				ff_cache_vram_valid		<= 1'b1;
-				ff_cache_vram_write		<= 1'b0;
-				ff_state				<= c_state_wait_rdata_en;
-				ff_next_state			<= c_state_lmcm_make;
-				ff_xsel					<= ff_dx[1:0];
+				if( (ff_nx == 9'd0 || w_sx_overflow || w_dx_overflow) && ff_ny == 11'd0 ) begin
+					ff_state				<= c_state_pre_finish;
+				end
+				else begin
+					//	Read the location of (DX, DY)
+					ff_cache_vram_address	<= w_address_d;
+					ff_cache_vram_valid		<= 1'b1;
+					ff_cache_vram_write		<= 1'b0;
+					ff_state				<= c_state_wait_rdata_en;
+					ff_next_state			<= c_state_lmcm_make;
+					ff_xsel					<= ff_dx[1:0];
+				end
 			end
 			c_state_lmcm_make: begin
 				ff_count_valid			<= 1'b1;
@@ -977,11 +1016,13 @@ module vdp_command (
 			end
 			c_state_lmcm_next: begin
 				ff_count_valid			<= 1'b0;
-				if( (ff_nx == 9'd0 || w_sx_overflow || w_dx_overflow) && ff_ny == 10'd0 ) begin
-					ff_state				<= c_state_pre_finish;
-				end
-				else if( ff_read_color ) begin
-					ff_state				<= c_state_lmcm;
+				if( ff_read_color ) begin
+					if( (ff_nx == 9'd0 || w_sx_overflow || w_dx_overflow) && ff_ny == 11'd0 ) begin
+						ff_state				<= c_state_pre_finish;
+					end
+					else begin
+						ff_state				<= c_state_lmcm;
+					end
 				end
 				else begin
 					//	hold
@@ -1011,7 +1052,7 @@ module vdp_command (
 			end
 			c_state_lmmc_next: begin
 				ff_count_valid			<= 1'b0;
-				if( (ff_nx == 9'd0 || w_sx_overflow || w_dx_overflow) && ff_ny == 10'd0 ) begin
+				if( (ff_nx == 9'd0 || w_sx_overflow || w_dx_overflow) && ff_ny == 11'd0 ) begin
 					ff_state				<= c_state_pre_finish;
 				end
 				else if( !ff_transfer_ready ) begin
@@ -1034,7 +1075,7 @@ module vdp_command (
 			end
 			c_state_hmmv_next: begin
 				ff_count_valid			<= 1'b0;
-				if( (ff_nx == 9'd0 || w_sx_overflow || w_dx_overflow) && ff_ny == 10'd0 ) begin
+				if( (ff_nx == 9'd0 || w_sx_overflow || w_dx_overflow) && ff_ny == 11'd0 ) begin
 					ff_state				<= c_state_pre_finish;
 				end
 				else begin
@@ -1062,7 +1103,7 @@ module vdp_command (
 			end
 			c_state_hmmm_next: begin
 				ff_count_valid			<= 1'b0;
-				if( (ff_nx == 9'd0 || w_sx_overflow || w_dx_overflow) && ff_ny == 10'd0 ) begin
+				if( (ff_nx == 9'd0 || w_sx_overflow || w_dx_overflow) && ff_ny == 11'd0 ) begin
 					ff_state				<= c_state_pre_finish;
 				end
 				else begin
@@ -1090,7 +1131,7 @@ module vdp_command (
 			end
 			c_state_ymmm_next: begin
 				ff_count_valid			<= 1'b0;
-				if( (ff_nx == 9'd0 || w_sx_overflow || w_dx_overflow) && ff_ny == 10'd0 ) begin
+				if( (ff_nx == 9'd0 || w_sx_overflow || w_dx_overflow) && ff_ny == 11'd0 ) begin
 					ff_state				<= c_state_pre_finish;
 				end
 				else begin
@@ -1110,7 +1151,7 @@ module vdp_command (
 			end
 			c_state_hmmc_next: begin
 				ff_count_valid			<= 1'b0;
-				if( (ff_nx == 9'd0 || w_sx_overflow || w_dx_overflow) && ff_ny == 10'd0 ) begin
+				if( (ff_nx == 9'd0 || w_sx_overflow || w_dx_overflow) && ff_ny == 11'd0 ) begin
 					ff_state				<= c_state_pre_finish;
 				end
 				else if( !ff_transfer_ready ) begin

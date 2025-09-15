@@ -74,9 +74,8 @@ module vdp_sprite_makeup_pixel (
 	input		[2:0]	makeup_plane,
 	input		[7:0]	plane_x,
 	input				plane_x_en,
-	input		[7:0]	pattern_left,
+	input		[7:0]	pattern,
 	input				pattern_left_en,
-	input		[7:0]	pattern_right,
 	input				pattern_right_en,
 	input		[7:0]	color,
 	input				color_en,
@@ -91,7 +90,7 @@ module vdp_sprite_makeup_pixel (
 	output		[9:0]	sprite_collision_y
 );
 	reg					ff_active;
-	reg			[3:0]	ff_planes;
+	reg			[3:0]	ff_visible_planes;
 	reg			[3:0]	ff_current_plane;
 	reg			[15:0]	ff_pattern0;
 	reg			[15:0]	ff_pattern1;
@@ -101,8 +100,7 @@ module vdp_sprite_makeup_pixel (
 	reg			[15:0]	ff_pattern5;
 	reg			[15:0]	ff_pattern6;
 	reg			[15:0]	ff_pattern7;
-	wire		[7:0]	w_pattern_left;
-	wire		[7:0]	w_pattern_right;
+	wire		[7:0]	w_read_pattern;
 	wire		[15:0]	w_pattern;
 	reg			[7:0]	ff_color0;
 	reg			[7:0]	ff_color1;
@@ -144,12 +142,12 @@ module vdp_sprite_makeup_pixel (
 	reg					ff_sprite_collision;
 	reg			[8:0]	ff_sprite_collision_x;
 	reg			[9:0]	ff_sprite_collision_y;
+	reg					ff_last_cc_base_pixel;
 
 	// --------------------------------------------------------------------
 	//	Latch information for visible sprite planes
 	// --------------------------------------------------------------------
-	assign w_pattern_left	= { pattern_left[0] , pattern_left[1] , pattern_left[2] , pattern_left[3] , pattern_left[4] , pattern_left[5] , pattern_left[6] , pattern_left[7]  };
-	assign w_pattern_right	= { pattern_right[0], pattern_right[1], pattern_right[2], pattern_right[3], pattern_right[4], pattern_right[5], pattern_right[6], pattern_right[7] };
+	assign w_read_pattern	= { pattern[0] , pattern[1] , pattern[2] , pattern[3] , pattern[4] , pattern[5] , pattern[6] , pattern[7]  };
 
 	always @( posedge clk or negedge reset_n ) begin
 		if( !reset_n ) begin
@@ -164,28 +162,28 @@ module vdp_sprite_makeup_pixel (
 		end
 		else if( pattern_left_en ) begin
 			case( makeup_plane )
-			3'd0:		ff_pattern0[ 7: 0]	<= w_pattern_left;
-			3'd1:		ff_pattern1[ 7: 0]	<= w_pattern_left;
-			3'd2:		ff_pattern2[ 7: 0]	<= w_pattern_left;
-			3'd3:		ff_pattern3[ 7: 0]	<= w_pattern_left;
-			3'd4:		ff_pattern4[ 7: 0]	<= w_pattern_left;
-			3'd5:		ff_pattern5[ 7: 0]	<= w_pattern_left;
-			3'd6:		ff_pattern6[ 7: 0]	<= w_pattern_left;
-			3'd7:		ff_pattern7[ 7: 0]	<= w_pattern_left;
-			default:	ff_pattern0[ 7: 0]	<= w_pattern_left;
+			3'd0:		ff_pattern0[ 7: 0]	<= w_read_pattern;
+			3'd1:		ff_pattern1[ 7: 0]	<= w_read_pattern;
+			3'd2:		ff_pattern2[ 7: 0]	<= w_read_pattern;
+			3'd3:		ff_pattern3[ 7: 0]	<= w_read_pattern;
+			3'd4:		ff_pattern4[ 7: 0]	<= w_read_pattern;
+			3'd5:		ff_pattern5[ 7: 0]	<= w_read_pattern;
+			3'd6:		ff_pattern6[ 7: 0]	<= w_read_pattern;
+			3'd7:		ff_pattern7[ 7: 0]	<= w_read_pattern;
+			default:	ff_pattern0[ 7: 0]	<= w_read_pattern;
 			endcase
 		end
 		else if( pattern_right_en ) begin
 			case( makeup_plane )
-			3'd0:		ff_pattern0[15: 8]	<= w_pattern_right;
-			3'd1:		ff_pattern1[15: 8]	<= w_pattern_right;
-			3'd2:		ff_pattern2[15: 8]	<= w_pattern_right;
-			3'd3:		ff_pattern3[15: 8]	<= w_pattern_right;
-			3'd4:		ff_pattern4[15: 8]	<= w_pattern_right;
-			3'd5:		ff_pattern5[15: 8]	<= w_pattern_right;
-			3'd6:		ff_pattern6[15: 8]	<= w_pattern_right;
-			3'd7:		ff_pattern7[15: 8]	<= w_pattern_right;
-			default:	ff_pattern0[15: 8]	<= w_pattern_right;
+			3'd0:		ff_pattern0[15: 8]	<= w_read_pattern;
+			3'd1:		ff_pattern1[15: 8]	<= w_read_pattern;
+			3'd2:		ff_pattern2[15: 8]	<= w_read_pattern;
+			3'd3:		ff_pattern3[15: 8]	<= w_read_pattern;
+			3'd4:		ff_pattern4[15: 8]	<= w_read_pattern;
+			3'd5:		ff_pattern5[15: 8]	<= w_read_pattern;
+			3'd6:		ff_pattern6[15: 8]	<= w_read_pattern;
+			3'd7:		ff_pattern7[15: 8]	<= w_read_pattern;
+			default:	ff_pattern0[15: 8]	<= w_read_pattern;
 			endcase
 		end
 	end
@@ -248,12 +246,12 @@ module vdp_sprite_makeup_pixel (
 	always @( posedge clk or negedge reset_n ) begin
 		if( !reset_n ) begin
 			ff_active			<= 1'b0;
-			ff_planes			<= 4'd0;
+			ff_visible_planes	<= 4'd0;
 			ff_current_plane	<= 4'd0;
 		end
 		else if( screen_pos_x == 14'h3FFF ) begin
 			ff_active			<= reg_display_on;
-			ff_planes			<= selected_count;
+			ff_visible_planes	<= selected_count;
 			ff_current_plane	<= 4'd0;
 		end
 		else if( screen_pos_x == 14'h0FFF ) begin
@@ -268,7 +266,7 @@ module vdp_sprite_makeup_pixel (
 	end
 
 	assign w_sub_phase	= screen_pos_x[3:0];
-	assign w_active		= ( ff_current_plane != ff_planes ) ? ff_active: 1'b0;
+	assign w_active		= ( ff_current_plane != ff_visible_planes ) ? ff_active: 1'b0;
 
 	// --------------------------------------------------------------------
 	//	[delay 0] Select the current sprite plane
@@ -371,9 +369,13 @@ module vdp_sprite_makeup_pixel (
 			ff_color_en		<= 1'b0;
 			ff_color		<= 4'd0;
 		end
-		else begin
+		else if( !w_sub_phase[3] && (sprite_mode2 || !w_sub_phase[2]) ) begin
 			ff_color_en		<= w_sprite_en & w_pattern[ w_bit_sel ] & w_active & screen_active;
 			ff_color		<= w_color[3:0];
+		end
+		else begin
+			ff_color_en		<= 1'b0;
+			ff_color		<= 4'd0;
 		end
 	end
 
@@ -395,7 +397,7 @@ module vdp_sprite_makeup_pixel (
 			ff_pre_pixel_color		<= ff_color;
 		end
 		else begin
-			//	2nd, 3rd, 4th plane
+			//	2nd...8th plane
 			if( !ff_pre_pixel_color_en ) begin
 				ff_pre_pixel_color_en	<= ff_color_en;
 				ff_pre_pixel_color		<= ff_color;
@@ -423,7 +425,7 @@ module vdp_sprite_makeup_pixel (
 			//	hold
 		end
 		else begin
-			if( !ff_pre_pixel_color_en ) begin
+			if( !ff_pre_pixel_color_en || w_color[5] || (ff_last_cc_base_pixel && w_color[6]) ) begin
 				//	hold
 			end
 			else if( !ff_sprite_collision ) begin
@@ -433,6 +435,27 @@ module vdp_sprite_makeup_pixel (
 					ff_sprite_collision_x	<= screen_pos_x[11:4] + 9'd12;
 					ff_sprite_collision_y	<= { 2'd0, pixel_pos_y } + 10'd8;
 				end
+			end
+		end
+	end
+
+	always @( posedge clk or negedge reset_n ) begin
+		if( !reset_n ) begin
+			ff_last_cc_base_pixel <= 1'b0;
+		end
+		else if( w_sub_phase == 4'd1 ) begin
+			//	Plane#0
+			if( !w_color[6] ) begin
+				//	CC=0 なら重ね合わせの基準プレーン
+				ff_last_cc_base_pixel <= 1'b1;
+			end
+			else begin
+				ff_last_cc_base_pixel <= 1'b0;
+			end
+		end
+		else if( ff_pre_pixel_color_en ) begin
+			if( !w_color[6] ) begin
+				ff_last_cc_base_pixel <= 1'b0;
 			end
 		end
 	end

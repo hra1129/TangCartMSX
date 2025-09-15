@@ -66,7 +66,7 @@ module vdp_timing_control_screen_mode (
 	output		[ 1:0]	pixel_phase_x,
 	input				screen_v_active,
 
-	output		[16:0]	vram_address,
+	output		[17:0]	vram_address,
 	output				vram_valid,
 	input		[31:0]	vram_rdata,
 	output				vram_interleave,
@@ -81,9 +81,9 @@ module vdp_timing_control_screen_mode (
 
 	input		[4:0]	reg_screen_mode,
 	input				reg_display_on,
-	input		[16:10]	reg_pattern_name_table_base,
-	input		[16:6]	reg_color_table_base,
-	input		[16:11]	reg_pattern_generator_table_base,
+	input		[17:10]	reg_pattern_name_table_base,
+	input		[17:6]	reg_color_table_base,
+	input		[17:11]	reg_pattern_generator_table_base,
 	input		[7:0]	reg_text_back_color,
 	input		[7:0]	reg_backdrop_color,
 	input				reg_scroll_planes,
@@ -125,11 +125,11 @@ module vdp_timing_control_screen_mode (
 	reg			[5:0]	ff_pos_x;					//	Text width40 column position
 	//	Pattern name table address
 	wire		[10:0]	w_pattern_name_t12_pre;
-	wire		[16:0]	w_pattern_name_t1;
-	wire		[16:0]	w_pattern_name_t2;
-	wire		[16:0]	w_pattern_name_g123m;
-	wire		[16:0]	w_pattern_name_g45;
-	wire		[16:0]	w_pattern_name_g67;
+	wire		[17:0]	w_pattern_name_t1;
+	wire		[17:0]	w_pattern_name_t2;
+	wire		[17:0]	w_pattern_name_g123m;
+	wire		[17:0]	w_pattern_name_g45;
+	wire		[17:0]	w_pattern_name_g67;
 	reg			[7:0]	ff_next_vram0;
 	reg			[7:0]	ff_next_vram1;
 	reg			[7:0]	ff_next_vram2;
@@ -139,19 +139,19 @@ module vdp_timing_control_screen_mode (
 	reg			[7:0]	ff_next_vram6;
 	reg			[7:0]	ff_next_vram7;
 	//	Pattern generator table address
-	wire		[16:0]	w_pattern_generator_g1;
-	wire		[16:0]	w_pattern_generator_g23;
-    wire        [16:0]  w_pattern_generator_t12;
-    wire        [16:0]  w_pattern_generator_t2_2;
+	wire		[17:0]	w_pattern_generator_g1;
+	wire		[17:0]	w_pattern_generator_g23;
+    wire        [17:0]  w_pattern_generator_t12;
+    wire        [17:0]  w_pattern_generator_t2_2;
 	//	Color table address
-	wire		[16:0]	w_color_g1;
-	wire		[16:0]	w_color_g23;
-	wire		[16:0]	w_color_gm;
-	wire		[16:0]	w_color_t2;
+	wire		[17:0]	w_color_g1;
+	wire		[17:0]	w_color_g23;
+	wire		[17:0]	w_color_gm;
+	wire		[17:0]	w_color_t2;
 	wire		[1:0]	w_blink_pattern;
 	wire		[1:0]	w_blink;
 	//	VRAM address
-	reg			[16:0]	ff_vram_address;
+	reg			[17:0]	ff_vram_address;
 	reg					ff_vram_valid;
 	//	Display color
 	reg			[7:0]	ff_display_color;
@@ -274,17 +274,17 @@ module vdp_timing_control_screen_mode (
 	//	Pattern name table address
 	// --------------------------------------------------------------------
 	assign w_pattern_name_g123m			= { reg_pattern_name_table_base, pixel_pos_y[7:3], w_pos_x[7:3] };
-	assign w_pattern_name_g45			= { reg_pattern_name_table_base[16], w_blink_page, (reg_pattern_name_table_base[14:10] & pixel_pos_y[7:3]), pixel_pos_y[2:0], w_pos_x[7:3], 2'd0 };
-	assign w_pattern_name_g67			= {                                  w_blink_page, (reg_pattern_name_table_base[14:10] & pixel_pos_y[7:3]), pixel_pos_y[2:0], w_pos_x[7:3], 3'd0 };
+	assign w_pattern_name_g45			= { reg_pattern_name_table_base[17:16], w_blink_page, (reg_pattern_name_table_base[14:10] & pixel_pos_y[7:3]), pixel_pos_y[2:0], w_pos_x[7:3], 2'd0 };
+	assign w_pattern_name_g67			= { reg_pattern_name_table_base[16]   , w_blink_page, (reg_pattern_name_table_base[14:10] & pixel_pos_y[7:3]), pixel_pos_y[2:0], w_pos_x[7:3], 3'd0 };
 	assign w_pattern_name_t12_pre		= { 1'b0, screen_pos_y[7:3], 5'd0 } + { 3'd0, screen_pos_y[7:3], 3'd0 } + { 5'd0, ff_pos_x };
 	assign w_pattern_name_t1			= { reg_pattern_name_table_base, w_pattern_name_t12_pre[9:0] };
-	assign w_pattern_name_t2			= { reg_pattern_name_table_base[16:12], (reg_pattern_name_table_base[11:10] & w_pattern_name_t12_pre[10:9]), w_pattern_name_t12_pre[8:0], 1'b0 };
+	assign w_pattern_name_t2			= { reg_pattern_name_table_base[17:12], (reg_pattern_name_table_base[11:10] & w_pattern_name_t12_pre[10:9]), w_pattern_name_t12_pre[8:0], 1'b0 };
 
 	// --------------------------------------------------------------------
 	//	Pattern generator table address
 	// --------------------------------------------------------------------
 	assign w_pattern_generator_g1		= { reg_pattern_generator_table_base, ff_next_vram0, pixel_pos_y[2:0] };
-	assign w_pattern_generator_g23		= { reg_pattern_generator_table_base[16:13], (pixel_pos_y[7:6] & reg_pattern_generator_table_base[12:11]), ff_next_vram0, pixel_pos_y[2:0] };
+	assign w_pattern_generator_g23		= { reg_pattern_generator_table_base[17:13], (pixel_pos_y[7:6] & reg_pattern_generator_table_base[12:11]), ff_next_vram0, pixel_pos_y[2:0] };
 	assign w_pattern_generator_t12		= { reg_pattern_generator_table_base, ff_next_vram0, pixel_pos_y[2:0] };
 	assign w_pattern_generator_t2_2		= { reg_pattern_generator_table_base, ff_next_vram4, pixel_pos_y[2:0] };
 
@@ -292,9 +292,9 @@ module vdp_timing_control_screen_mode (
 	//	Color table address
 	// --------------------------------------------------------------------
 	assign w_color_g1					= { reg_color_table_base, 1'b0, ff_next_vram0[7:3] };
-	assign w_color_g23					= { reg_color_table_base[16:13], (pixel_pos_y[7:6] & reg_color_table_base[12:11]), (ff_next_vram0[7:3] & reg_color_table_base[10:6]), ff_next_vram0[2:0], pixel_pos_y[2:0] };
+	assign w_color_g23					= { reg_color_table_base[17:13], (pixel_pos_y[7:6] & reg_color_table_base[12:11]), (ff_next_vram0[7:3] & reg_color_table_base[10:6]), ff_next_vram0[2:0], pixel_pos_y[2:0] };
 	assign w_color_gm					= { reg_pattern_generator_table_base, ff_next_vram0, pixel_pos_y[4:2] };
-	assign w_color_t2					= { reg_color_table_base[16:9], (reg_color_table_base[8:6] & w_pattern_name_t12_pre[10:8]), w_pattern_name_t12_pre[7:3] };
+	assign w_color_t2					= { reg_color_table_base[17:9], (reg_color_table_base[8:6] & w_pattern_name_t12_pre[10:8]), w_pattern_name_t12_pre[7:3] };
 
 	// --------------------------------------------------------------------
 	//	VRAM read access request
@@ -337,7 +337,7 @@ module vdp_timing_control_screen_mode (
 
 	always @( posedge clk or negedge reset_n ) begin
 		if( !reset_n ) begin
-			ff_vram_address <= 17'd0;
+			ff_vram_address <= 18'd0;
 		end
 		else begin
 			//	SUB_PHASE:0 is VRAM read access timing.
@@ -357,7 +357,7 @@ module vdp_timing_control_screen_mode (
 					c_t2:
 						ff_vram_address <= w_pattern_name_t2;			//	PCG#
 					default:
-						ff_vram_address <= 17'd0;
+						ff_vram_address <= 18'd0;
 					endcase
 				3'd1:
 					case( w_mode )
@@ -371,7 +371,7 @@ module vdp_timing_control_screen_mode (
 						//	PCGのドットパターンを読む
 						ff_vram_address <= w_pattern_generator_g23;
 					default:
-						ff_vram_address <= 17'd0;
+						ff_vram_address <= 18'd0;
 					endcase
 				3'd2:
 					if( w_mode == c_t2 ) begin
@@ -380,10 +380,10 @@ module vdp_timing_control_screen_mode (
 					end
 					else if( w_mode == c_g6 || w_mode == c_g7 ) begin
 						//	Bitmap Pixels
-						ff_vram_address <= { w_pattern_name_g67[16:1], 1'b1 };
+						ff_vram_address <= { w_pattern_name_g67[17:1], 1'b1 };
 					end
 					else begin
-						ff_vram_address <= 17'd0;
+						ff_vram_address <= 18'd0;
 					end
 				3'd3:
 					case( w_mode )
@@ -400,10 +400,10 @@ module vdp_timing_control_screen_mode (
 						//	色情報を読む
 						ff_vram_address <= w_color_gm;
 					default:
-						ff_vram_address <= 17'd0;
+						ff_vram_address <= 18'd0;
 					endcase
 				default:
-					ff_vram_address <= 17'd0;
+					ff_vram_address <= 18'd0;
 				endcase
 			end
 		end
