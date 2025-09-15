@@ -315,7 +315,7 @@ module vdp_command (
 
 	always @( posedge clk or negedge reset_n ) begin
 		if( !reset_n ) begin
-			ff_sy	<= 10'd0;
+			ff_sy	<= 11'd0;
 		end
 		else if( register_write ) begin
 			if( register_num == 6'd34 ) begin
@@ -547,7 +547,12 @@ module vdp_command (
 				ff_ny[7:0]	<= register_data;
 			end
 			else if( register_num == 6'd43 ) begin
-				ff_ny[9:8]	<= register_data[1:0];
+				if( reg_vram256k_mode ) begin
+					ff_ny[10:8]	<= register_data[2:0];
+				end
+				else begin
+					ff_ny[10:8]	<= { 1'b0, register_data[1:0] };
+				end
 			end
 		end
 		else if( ff_start ) begin
@@ -643,7 +648,7 @@ module vdp_command (
 			//	lmcm が開始されたので、転送禁止 (S#7→CPU)
 			ff_transfer_ready		<= 1'b0;
 		end
-		else if( ff_command == c_lmcm && ff_count_valid ) begin
+		else if( ff_command == c_lmcm && ff_state == c_state_lmcm_make ) begin
 			//	lmcm が VRAM を読みだしたので、転送許可 (S#7→CPU)
 			ff_transfer_ready		<= 1'b1;
 		end
@@ -997,6 +1002,7 @@ module vdp_command (
 
 			//	LMCM command --------------------------------------------------
 			c_state_lmcm: begin
+				ff_count_valid			<= 1'b0;
 				if( (ff_nx == 9'd0 || w_sx_overflow || w_dx_overflow) && ff_ny == 11'd0 ) begin
 					ff_state				<= c_state_pre_finish;
 				end
@@ -1011,16 +1017,15 @@ module vdp_command (
 				end
 			end
 			c_state_lmcm_make: begin
-				ff_count_valid			<= 1'b1;
 				ff_state				<= c_state_lmcm_next;
 			end
 			c_state_lmcm_next: begin
-				ff_count_valid			<= 1'b0;
 				if( ff_read_color ) begin
 					if( (ff_nx == 9'd0 || w_sx_overflow || w_dx_overflow) && ff_ny == 11'd0 ) begin
 						ff_state				<= c_state_pre_finish;
 					end
 					else begin
+						ff_count_valid			<= 1'b1;
 						ff_state				<= c_state_lmcm;
 					end
 				end

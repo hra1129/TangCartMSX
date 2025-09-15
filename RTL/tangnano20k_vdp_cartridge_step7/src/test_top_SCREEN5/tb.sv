@@ -1177,13 +1177,13 @@ module tb ();
 		$display( "[test007] VDP Command LMMV (Box fill)" );
 		write_io( vdp_io1, 8'd36 );
 		write_io( vdp_io1, 8'h80 + 8'd17 );
-		write_io( vdp_io3, 8'd10 );				//	R#36 DXl
+		write_io( vdp_io3, 8'd100 );				//	R#36 DXl
 		write_io( vdp_io3, 8'd0 );				//	R#37 DXh
 		write_io( vdp_io3, 8'd20 );				//	R#38 DYl
 		write_io( vdp_io3, 8'd0 );				//	R#39 DYh
-		write_io( vdp_io3, 8'd120 );			//	R#40 NXl
+		write_io( vdp_io3, 8'd99 );				//	R#40 NXl
 		write_io( vdp_io3, 8'd0 );				//	R#41 NXh
-		write_io( vdp_io3, 8'd53 );				//	R#42 NYl
+		write_io( vdp_io3, 8'd50 );				//	R#42 NYl
 		write_io( vdp_io3, 8'd0 );				//	R#43 NYh
 		write_io( vdp_io3, 8'd15 );				//	R#44 COLOR
 		write_io( vdp_io3, 8'd0 );				//	R#45 ARG
