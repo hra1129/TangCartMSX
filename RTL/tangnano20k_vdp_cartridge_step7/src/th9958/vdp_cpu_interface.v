@@ -77,10 +77,10 @@ module vdp_cpu_interface (
 	input				vram_rdata_en,
 
 	output				palette_valid,
-	output		[3:0]	palette_num,
-	output		[2:0]	palette_r,
-	output		[2:0]	palette_g,
-	output		[2:0]	palette_b,
+	output		[7:0]	palette_num,
+	output		[4:0]	palette_r,
+	output		[4:0]	palette_g,
+	output		[4:0]	palette_b,
 
 	output				int_n,
 	input				intr_line,					//	pulse
@@ -186,12 +186,12 @@ module vdp_cpu_interface (
 	reg		[7:0]		ff_text_back_color;
 	reg		[7:0]		ff_blink_period;
 	reg		[3:0]		ff_status_register_pointer;
-	reg		[3:0]		ff_color_palette_address;
-	reg					ff_color_palette_g_phase;
+	reg		[7:0]		ff_color_palette_address;
+	reg		[1:0]		ff_color_palette_phase;
 	reg					ff_color_palette_valid;
-	reg		[2:0]		ff_palette_r;
-	reg		[2:0]		ff_palette_g;
-	reg		[2:0]		ff_palette_b;
+	reg		[4:0]		ff_palette_r;
+	reg		[4:0]		ff_palette_g;
+	reg		[4:0]		ff_palette_b;
 	reg		[5:0]		ff_register_pointer;
 	reg					ff_not_increment;
 	reg		[7:0]		ff_display_adjust;
@@ -594,33 +594,64 @@ module vdp_cpu_interface (
 	// --------------------------------------------------------------------
 	always @( posedge clk or negedge reset_n ) begin
 		if( !reset_n ) begin
-			ff_color_palette_address	<= 4'd0;
+			ff_color_palette_address	<= 8'd0;
 			ff_color_palette_valid		<= 1'b0;
-			ff_color_palette_g_phase	<= 1'b0;
+			ff_color_palette_phase		<= 2'b0;
 		end
 		else if( ff_register_write ) begin
 			if( ff_register_num == 6'd16 ) begin
-				//	R#16 = [N/A][N/A][N/A][N/A][C3][C2][C1][C0]
-				ff_color_palette_address	<= ff_1st_byte[3:0];
-				ff_color_palette_g_phase	<= 1'b0;
+				//	R#16 = [C7][C6][C5][C4][C3][C2][C1][C0]
+				if( ff_ext_palette_mode ) begin
+					ff_color_palette_address	<= ff_1st_byte;
+				end
+				else begin
+					ff_color_palette_address	<= { 4'd0, ff_1st_byte[3:0] };
+				end
+				ff_color_palette_phase		<= 2'b0;
 			end
 		end
 		else if( w_write && ff_port2 ) begin
-			if( ff_color_palette_g_phase == 1'b0 ) begin
-				//	P#2 = [0][R][R][R][0][B][B][B]
-				ff_palette_r				<= ff_bus_wdata[6:4];
-				ff_palette_b				<= ff_bus_wdata[2:0];
-				ff_color_palette_g_phase	<= 1'b1;
+			if( ff_ext_palette_mode ) begin
+				if( ff_color_palette_phase == 2'b0 ) begin
+					//	P#2 = [R][R][R][R][R][N/A][N/A][N/A]
+					ff_palette_r				<= ff_bus_wdata[7:4];
+					ff_color_palette_phase		<= 2'b1;
+				end
+				if( ff_color_palette_phase == 2'b1 ) begin
+					//	P#2 = [G][G][G][G][G][N/A][N/A][N/A]
+					ff_palette_g				<= ff_bus_wdata[7:4];
+					ff_color_palette_phase		<= 2'b2;
+				end
+				else begin
+					//	P#2 = [B][B][B][B][B][N/A][N/A][N/A]
+					ff_palette_b				<= ff_bus_wdata[7:4];
+					ff_color_palette_phase		<= 2'b0;
+					ff_color_palette_valid		<= 1'b1;
+				end
 			end
 			else begin
-				//	P#2 = [0][0][0][0][0][G][G][G]
-				ff_palette_g				<= ff_bus_wdata[2:0];
-				ff_color_palette_valid		<= 1'b1;
-				ff_color_palette_g_phase	<= 1'b0;
+				if( ff_color_palette_phase == 2'b0 ) begin
+					//	P#2 = [0][R][R][R][0][B][B][B]
+					ff_palette_r				<= { ff_bus_wdata[6:4], 2'd0 };
+					ff_palette_b				<= { ff_bus_wdata[2:0], 2'd0 };
+					ff_color_palette_phase		<= 2'b1;
+				end
+				else begin
+					//	P#2 = [0][0][0][0][0][G][G][G]
+					ff_palette_g				<= { ff_bus_wdata[2:0], 2'd0 };
+					ff_color_palette_valid		<= 1'b1;
+					ff_color_palette_phase		<= 2'b0;
+				end
 			end
 		end
 		else if( ff_color_palette_valid ) begin
-			ff_color_palette_address	<= ff_color_palette_address + 4'd1;
+			if( ff_ext_palette_mode ) begin
+				ff_color_palette_address		<= ff_color_palette_address + 8'd1;
+			end
+			else begin
+				ff_color_palette_address[3:0]	<= ff_color_palette_address[3:0] + 4'd1;
+				ff_color_palette_address[7:4]	<= 4'd0;
+			end
 			ff_color_palette_valid		<= 1'b0;
 		end
 	end

@@ -63,10 +63,10 @@ module vdp_color_palette (
 	input		[1:0]	pixel_phase_x,
 
 	input				palette_valid,
-	input		[3:0]	palette_num,
-	input		[2:0]	palette_r,
-	input		[2:0]	palette_g,
-	input		[2:0]	palette_b,
+	input		[7:0]	palette_num,
+	input		[4:0]	palette_r,
+	input		[4:0]	palette_g,
+	input		[4:0]	palette_b,
 
 	input		[7:0]	display_color_screen_mode,
 	input				display_color_screen_mode_en,
@@ -81,7 +81,8 @@ module vdp_color_palette (
 	input				reg_yjk_mode,
 	input				reg_yae_mode,
 	input				reg_color0_opaque,
-	input		[7:0]	reg_backdrop_color
+	input		[7:0]	reg_backdrop_color,
+	input				reg_ext_palette_mode
 );
 	wire				w_256colors_mode;
 	wire				w_4colors_mode;
@@ -94,22 +95,22 @@ module vdp_color_palette (
 	reg					ff_display_color_oe;
 	wire		[2:0]	w_display_r;
 	wire		[2:0]	w_display_g;
-	wire		[2:0]	w_display_r16;
-	wire		[2:0]	w_display_g16;
-	wire		[2:0]	w_display_b16;
+	wire		[4:0]	w_display_r16;
+	wire		[4:0]	w_display_g16;
+	wire		[4:0]	w_display_b16;
 	reg					ff_rgb_load;
 	reg			[7:0]	ff_vdp_r;
 	reg			[7:0]	ff_vdp_g;
 	reg			[7:0]	ff_vdp_b;
 	wire				w_palette_valid;
-	wire		[3:0]	w_palette_num;
-	wire		[2:0]	w_palette_r;
-	wire		[2:0]	w_palette_g;
-	wire		[2:0]	w_palette_b;
+	wire		[7:0]	w_palette_num;
+	wire		[4:0]	w_palette_r;
+	wire		[4:0]	w_palette_g;
+	wire		[4:0]	w_palette_b;
 	reg			[4:0]	ff_palette_num;
-	reg			[2:0]	ff_palette_r;
-	reg			[2:0]	ff_palette_g;
-	reg			[2:0]	ff_palette_b;
+	reg			[4:0]	ff_palette_r;
+	reg			[4:0]	ff_palette_g;
+	reg			[4:0]	ff_palette_b;
 	wire				w_high_resolution;
 	reg			[8:0]	ff_display_color_delay0;	//	{ palette_flag(1bit), pixel_byte(8bit) }
 	reg			[8:0]	ff_display_color_delay1;	//	{ palette_flag(1bit), pixel_byte(8bit) }
@@ -141,35 +142,35 @@ module vdp_color_palette (
 	always @( posedge clk or negedge reset_n ) begin
 		if( !reset_n ) begin
 			ff_palette_num	= 5'd0;
-			ff_palette_r	= 3'd0;
-			ff_palette_g	= 3'd0;
-			ff_palette_b	= 3'd0;
+			ff_palette_r	= 5'd0;
+			ff_palette_g	= 5'd0;
+			ff_palette_b	= 5'd0;
 		end
 		else if( ff_palette_num[4] == 1'b0 ) begin
 			case( ff_palette_num[3:0] )
-			4'd0:	begin ff_palette_r = 3'd0; ff_palette_b = 3'd0; ff_palette_g = 3'd0; end	//	color#1
-			4'd1:	begin ff_palette_r = 3'd1; ff_palette_b = 3'd1; ff_palette_g = 3'd6; end	//	color#2
-			4'd2:	begin ff_palette_r = 3'd3; ff_palette_b = 3'd3; ff_palette_g = 3'd7; end	//	color#3
-			4'd3:	begin ff_palette_r = 3'd1; ff_palette_b = 3'd7; ff_palette_g = 3'd1; end	//	color#4
-			4'd4:	begin ff_palette_r = 3'd2; ff_palette_b = 3'd7; ff_palette_g = 3'd3; end	//	color#5
-			4'd5:	begin ff_palette_r = 3'd5; ff_palette_b = 3'd1; ff_palette_g = 3'd1; end	//	color#6
-			4'd6:	begin ff_palette_r = 3'd2; ff_palette_b = 3'd7; ff_palette_g = 3'd6; end	//	color#7
-			4'd7:	begin ff_palette_r = 3'd7; ff_palette_b = 3'd1; ff_palette_g = 3'd1; end	//	color#8
-			4'd8:	begin ff_palette_r = 3'd7; ff_palette_b = 3'd3; ff_palette_g = 3'd3; end	//	color#9
-			4'd9:	begin ff_palette_r = 3'd6; ff_palette_b = 3'd1; ff_palette_g = 3'd6; end	//	color#10
-			4'd10:	begin ff_palette_r = 3'd6; ff_palette_b = 3'd3; ff_palette_g = 3'd6; end	//	color#11
-			4'd11:	begin ff_palette_r = 3'd1; ff_palette_b = 3'd1; ff_palette_g = 3'd4; end	//	color#12
-			4'd12:	begin ff_palette_r = 3'd6; ff_palette_b = 3'd5; ff_palette_g = 3'd2; end	//	color#13
-			4'd13:	begin ff_palette_r = 3'd5; ff_palette_b = 3'd5; ff_palette_g = 3'd5; end	//	color#14
-			4'd14:	begin ff_palette_r = 3'd7; ff_palette_b = 3'd7; ff_palette_g = 3'd7; end	//	color#15
-			4'd15:	begin ff_palette_r = 3'd0; ff_palette_b = 3'd0; ff_palette_g = 3'd0; end	//	initialize
+			4'd0:	begin ff_palette_r = { 3'd0, 2'd0 }; ff_palette_b = { 3'd0, 2'd0 }; ff_palette_g = { 3'd0, 2'd0 }; end	//	color#1
+			4'd1:	begin ff_palette_r = { 3'd1, 2'd0 }; ff_palette_b = { 3'd1, 2'd0 }; ff_palette_g = { 3'd6, 2'd0 }; end	//	color#2
+			4'd2:	begin ff_palette_r = { 3'd3, 2'd0 }; ff_palette_b = { 3'd3, 2'd0 }; ff_palette_g = { 3'd7, 2'd0 }; end	//	color#3
+			4'd3:	begin ff_palette_r = { 3'd1, 2'd0 }; ff_palette_b = { 3'd7, 2'd0 }; ff_palette_g = { 3'd1, 2'd0 }; end	//	color#4
+			4'd4:	begin ff_palette_r = { 3'd2, 2'd0 }; ff_palette_b = { 3'd7, 2'd0 }; ff_palette_g = { 3'd3, 2'd0 }; end	//	color#5
+			4'd5:	begin ff_palette_r = { 3'd5, 2'd0 }; ff_palette_b = { 3'd1, 2'd0 }; ff_palette_g = { 3'd1, 2'd0 }; end	//	color#6
+			4'd6:	begin ff_palette_r = { 3'd2, 2'd0 }; ff_palette_b = { 3'd7, 2'd0 }; ff_palette_g = { 3'd6, 2'd0 }; end	//	color#7
+			4'd7:	begin ff_palette_r = { 3'd7, 2'd0 }; ff_palette_b = { 3'd1, 2'd0 }; ff_palette_g = { 3'd1, 2'd0 }; end	//	color#8
+			4'd8:	begin ff_palette_r = { 3'd7, 2'd0 }; ff_palette_b = { 3'd3, 2'd0 }; ff_palette_g = { 3'd3, 2'd0 }; end	//	color#9
+			4'd9:	begin ff_palette_r = { 3'd6, 2'd0 }; ff_palette_b = { 3'd1, 2'd0 }; ff_palette_g = { 3'd6, 2'd0 }; end	//	color#10
+			4'd10:	begin ff_palette_r = { 3'd6, 2'd0 }; ff_palette_b = { 3'd3, 2'd0 }; ff_palette_g = { 3'd6, 2'd0 }; end	//	color#11
+			4'd11:	begin ff_palette_r = { 3'd1, 2'd0 }; ff_palette_b = { 3'd1, 2'd0 }; ff_palette_g = { 3'd4, 2'd0 }; end	//	color#12
+			4'd12:	begin ff_palette_r = { 3'd6, 2'd0 }; ff_palette_b = { 3'd5, 2'd0 }; ff_palette_g = { 3'd2, 2'd0 }; end	//	color#13
+			4'd13:	begin ff_palette_r = { 3'd5, 2'd0 }; ff_palette_b = { 3'd5, 2'd0 }; ff_palette_g = { 3'd5, 2'd0 }; end	//	color#14
+			4'd14:	begin ff_palette_r = { 3'd7, 2'd0 }; ff_palette_b = { 3'd7, 2'd0 }; ff_palette_g = { 3'd7, 2'd0 }; end	//	color#15
+			4'd15:	begin ff_palette_r = { 3'd0, 2'd0 }; ff_palette_b = { 3'd0, 2'd0 }; ff_palette_g = { 3'd0, 2'd0 }; end	//	initialize
 			endcase
 			ff_palette_num <= ff_palette_num + 5'd1;
 		end
 	end
 
 	assign w_palette_valid	= ff_palette_num[4] ? palette_valid : 1'b1;
-	assign w_palette_num	= ff_palette_num[4] ? palette_num : ff_palette_num[3:0];
+	assign w_palette_num	= ff_palette_num[4] ? palette_num : { 2'd0, ff_palette_num[3:0] };
 	assign w_palette_r		= ff_palette_num[4] ? palette_r : ff_palette_r;
 	assign w_palette_g		= ff_palette_num[4] ? palette_g : ff_palette_g;
 	assign w_palette_b		= ff_palette_num[4] ? palette_b : ff_palette_b;
@@ -408,7 +409,7 @@ module vdp_color_palette (
 		.palette_r				( w_palette_r			),
 		.palette_g				( w_palette_g			),
 		.palette_b				( w_palette_b			),
-		.display_color			( ff_display_color[3:0]	),
+		.display_color			( ff_display_color		),
 		.display_color_oe		( ff_display_color_oe	),
 		.display_r				( w_display_r16			),
 		.display_g				( w_display_g16			),

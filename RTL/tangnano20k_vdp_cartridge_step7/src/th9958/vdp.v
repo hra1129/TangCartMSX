@@ -116,10 +116,10 @@ module vdp (
 	wire				w_pre_vram_refresh;
 
 	wire				w_palette_valid;
-	wire		[3:0]	w_palette_num;
-	wire		[2:0]	w_palette_r;
-	wire		[2:0]	w_palette_g;
-	wire		[2:0]	w_palette_b;
+	wire		[7:0]	w_palette_num;
+	wire		[4:0]	w_palette_r;
+	wire		[4:0]	w_palette_g;
+	wire		[4:0]	w_palette_b;
 
 	wire		[17:0]	w_cpu_vram_address;
 	wire				w_cpu_vram_valid;
@@ -451,7 +451,8 @@ module vdp (
 		.reg_yjk_mode								( reg_yjk_mode								),
 		.reg_yae_mode								( reg_yae_mode								),
 		.reg_color0_opaque							( reg_color0_opaque							),
-		.reg_backdrop_color							( reg_backdrop_color						)
+		.reg_backdrop_color							( reg_backdrop_color						),
+		.reg_ext_palette_mode						( reg_ext_palette_mode						)
 	);
 
 	// --------------------------------------------------------------------

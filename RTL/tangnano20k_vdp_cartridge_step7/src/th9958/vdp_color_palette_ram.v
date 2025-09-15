@@ -56,26 +56,26 @@
 //-----------------------------------------------------------------------------
 
 module vdp_color_palette_ram (
-	input				clk,					//	42.95454MHz
+	input				clk,					//	85.90908MHz
 
 	input				palette_valid,
-	input		[3:0]	palette_num,
-	input		[2:0]	palette_r,
-	input		[2:0]	palette_g,
-	input		[2:0]	palette_b,
+	input		[7:0]	palette_num,
+	input		[4:0]	palette_r,
+	input		[4:0]	palette_g,
+	input		[4:0]	palette_b,
 
-	input		[3:0]	display_color,
+	input		[7:0]	display_color,
 	input				display_color_oe,
-	output		[2:0]	display_r,
-	output		[2:0]	display_g,
-	output		[2:0]	display_b
+	output		[4:0]	display_r,
+	output		[4:0]	display_g,
+	output		[4:0]	display_b
 );
-	reg			[2:0]	ram_r [0:15];
-	reg			[2:0]	ram_g [0:15];
-	reg			[2:0]	ram_b [0:15];
-	reg			[2:0]	ff_display_r;
-	reg			[2:0]	ff_display_g;
-	reg			[2:0]	ff_display_b;
+	reg			[4:0]	ram_r [0:255];
+	reg			[4:0]	ram_g [0:255];
+	reg			[4:0]	ram_b [0:255];
+	reg			[4:0]	ff_display_r;
+	reg			[4:0]	ff_display_g;
+	reg			[4:0]	ff_display_b;
 
 	always @( posedge clk ) begin
 		if( palette_valid ) begin
