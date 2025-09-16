@@ -596,7 +596,7 @@ module vdp_cpu_interface (
 		if( !reset_n ) begin
 			ff_color_palette_address	<= 8'd0;
 			ff_color_palette_valid		<= 1'b0;
-			ff_color_palette_phase		<= 2'b0;
+			ff_color_palette_phase		<= 2'd0;
 		end
 		else if( ff_register_write ) begin
 			if( ff_register_num == 6'd16 ) begin
@@ -607,40 +607,43 @@ module vdp_cpu_interface (
 				else begin
 					ff_color_palette_address	<= { 4'd0, ff_1st_byte[3:0] };
 				end
-				ff_color_palette_phase		<= 2'b0;
+				ff_color_palette_phase		<= 2'd0;
 			end
 		end
 		else if( w_write && ff_port2 ) begin
 			if( ff_ext_palette_mode ) begin
-				if( ff_color_palette_phase == 2'b0 ) begin
+				if( ff_color_palette_phase == 2'd0 ) begin
 					//	P#2 = [R][R][R][R][R][N/A][N/A][N/A]
-					ff_palette_r				<= ff_bus_wdata[7:4];
-					ff_color_palette_phase		<= 2'b1;
+					ff_palette_r				<= ff_bus_wdata[7:3];
+					ff_color_palette_phase		<= 2'd1;
+					ff_color_palette_valid		<= 1'b0;
 				end
-				if( ff_color_palette_phase == 2'b1 ) begin
+				else if( ff_color_palette_phase == 2'd1 ) begin
 					//	P#2 = [G][G][G][G][G][N/A][N/A][N/A]
-					ff_palette_g				<= ff_bus_wdata[7:4];
-					ff_color_palette_phase		<= 2'b2;
+					ff_palette_g				<= ff_bus_wdata[7:3];
+					ff_color_palette_phase		<= 2'd2;
+					ff_color_palette_valid		<= 1'b0;
 				end
 				else begin
 					//	P#2 = [B][B][B][B][B][N/A][N/A][N/A]
-					ff_palette_b				<= ff_bus_wdata[7:4];
-					ff_color_palette_phase		<= 2'b0;
+					ff_palette_b				<= ff_bus_wdata[7:3];
+					ff_color_palette_phase		<= 2'd0;
 					ff_color_palette_valid		<= 1'b1;
 				end
 			end
 			else begin
-				if( ff_color_palette_phase == 2'b0 ) begin
+				if( ff_color_palette_phase == 2'd0 ) begin
 					//	P#2 = [0][R][R][R][0][B][B][B]
 					ff_palette_r				<= { ff_bus_wdata[6:4], 2'd0 };
 					ff_palette_b				<= { ff_bus_wdata[2:0], 2'd0 };
-					ff_color_palette_phase		<= 2'b1;
+					ff_color_palette_phase		<= 2'd1;
+					ff_color_palette_valid		<= 1'b0;
 				end
 				else begin
 					//	P#2 = [0][0][0][0][0][G][G][G]
 					ff_palette_g				<= { ff_bus_wdata[2:0], 2'd0 };
+					ff_color_palette_phase		<= 2'd0;
 					ff_color_palette_valid		<= 1'b1;
-					ff_color_palette_phase		<= 2'b0;
 				end
 			end
 		end

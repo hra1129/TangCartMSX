@@ -93,8 +93,8 @@ module vdp_color_palette (
 	reg			[7:0]	ff_display_color256;
 	reg			[7:0]	ff_display_color;
 	reg					ff_display_color_oe;
-	wire		[2:0]	w_display_r;
-	wire		[2:0]	w_display_g;
+	wire		[4:0]	w_display_r;
+	wire		[4:0]	w_display_g;
 	wire		[4:0]	w_display_r16;
 	wire		[4:0]	w_display_g16;
 	wire		[4:0]	w_display_b16;
@@ -307,7 +307,12 @@ module vdp_color_palette (
 		else if( screen_pos_x[3:0] == 4'd0 ) begin
 			if( w_256colors_mode ) begin
 				//	SCREEN8...12 (Simply delay)
-				if( w_display_color[8] ) begin
+				if( reg_ext_palette_mode ) begin
+					//	映像期間の場合、256palette モードならそのまま渡しつつ、palette になる。
+					ff_display_color	<= w_display_color[8] ? w_display_color[7:0] : reg_backdrop_color;
+					ff_display_color_oe	<= 1'b1;
+				end
+				else if( w_display_color[8] ) begin
 					//	映像期間の場合、YJKか RGBかに関わらず、そのまま。
 					ff_display_color	<= w_display_color[7:0];
 					ff_display_color_oe	<= 1'b0;
@@ -423,7 +428,7 @@ module vdp_color_palette (
 		if( !reset_n ) begin
 			ff_display_color256 <= 8'd0;
 		end
-		else if( screen_pos_x[3:0] == 4'd1 && w_256colors_mode && !reg_yjk_mode ) begin
+		else if( screen_pos_x[3:0] == 4'd1 && w_256colors_mode && !reg_yjk_mode && !reg_ext_palette_mode ) begin
 			if( display_color_sprite_en ) begin
 				case( ff_display_color[3:0] )
 				4'd0:		ff_display_color256 <= { 3'd0, 3'd0, 2'd0 };
@@ -454,8 +459,8 @@ module vdp_color_palette (
 	// --------------------------------------------------------------------
 	//	RGB Color Conversion ( screen_pos_x = 4 )
 	// --------------------------------------------------------------------
-	assign w_display_r = w_256colors_mode ? ff_display_color256[4:2]          : w_display_r16;
-	assign w_display_g = w_256colors_mode ? ff_display_color256[7:5]          : w_display_g16;
+	assign w_display_g = (!reg_ext_palette_mode && w_256colors_mode) ? { ff_display_color256[7:5], 2'd0 } : w_display_g16;
+	assign w_display_r = (!reg_ext_palette_mode && w_256colors_mode) ? { ff_display_color256[4:2], 2'd0 } : w_display_r16;
 
 	always @( posedge clk ) begin
 		ff_rgb_load	<= (screen_pos_x[3:0] == 4'd3) || (w_high_resolution && screen_pos_x[3:0] == 4'd11);
@@ -467,12 +472,16 @@ module vdp_color_palette (
 			ff_vdp_g <= 8'd0;
 		end
 		else if( ff_rgb_load ) begin
-			if( reg_yjk_mode && (!reg_yae_mode || !ff_yjk_rgb_en) ) begin
+			if( reg_ext_palette_mode ) begin
+				ff_vdp_r <= { w_display_r16, w_display_r16[4:2] };
+				ff_vdp_g <= { w_display_g16, w_display_g16[4:2] };
+			end
+			else if( reg_yjk_mode && (!reg_yae_mode || !ff_yjk_rgb_en) ) begin
 				ff_vdp_r <= { ff_yjk_r, ff_yjk_r[4:2] };
 				ff_vdp_g <= { ff_yjk_g, ff_yjk_g[4:2] };
 			end
 			else begin
-				case( w_display_r )
+				case( w_display_r[4:2] )
 				3'd0:		ff_vdp_r <= 8'd0;
 				3'd1:		ff_vdp_r <= 8'd37;
 				3'd2:		ff_vdp_r <= 8'd73;
@@ -484,7 +493,7 @@ module vdp_color_palette (
 				default:	ff_vdp_r <= 8'd0;
 				endcase
 
-				case( w_display_g )
+				case( w_display_g[4:2] )
 				3'd0:		ff_vdp_g <= 8'd0;
 				3'd1:		ff_vdp_g <= 8'd37;
 				3'd2:		ff_vdp_g <= 8'd73;
@@ -504,7 +513,10 @@ module vdp_color_palette (
 			ff_vdp_b <= 8'd0;
 		end
 		else if( ff_rgb_load ) begin
-			if( reg_yjk_mode && (!reg_yae_mode || !ff_yjk_rgb_en) ) begin
+			if( reg_ext_palette_mode ) begin
+				ff_vdp_b <= { w_display_b16, w_display_b16[4:2] };
+			end
+			else if( reg_yjk_mode && (!reg_yae_mode || !ff_yjk_rgb_en) ) begin
 				ff_vdp_b <= { ff_yjk_b, ff_yjk_b[4:2] };
 			end
 			else if( w_256colors_mode ) begin
@@ -517,7 +529,7 @@ module vdp_color_palette (
 				endcase
 			end
 			else begin
-				case( w_display_b16 )
+				case( w_display_b16[4:2] )
 				3'd0:		ff_vdp_b <= 8'd0;
 				3'd1:		ff_vdp_b <= 8'd37;
 				3'd2:		ff_vdp_b <= 8'd73;

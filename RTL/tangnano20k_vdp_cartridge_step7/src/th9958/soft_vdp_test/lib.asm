@@ -154,6 +154,9 @@ vdp_io_select::
 			dw		p_vdp_port14
 			dw		p_vdp_port15
 			dw		p_vdp_port16
+			dw		p_vdp_port17
+			dw		p_vdp_port18
+			dw		p_vdp_port19
 			dw		0				; end mark
 io_vdp_port0::
 			db		0x98
@@ -278,6 +281,32 @@ p_vdp_port6	:= $ + 1
 			out		[ vdp_port2 ], a
 			ld		a, e
 p_vdp_port7	:= $ + 1
+			out		[ vdp_port2 ], a
+			ret
+			endscope
+
+; =============================================================================
+;	ÉpÉåÉbÉgÇÃèëÇ´çûÇ›
+;	input:
+;		A .... R
+;		E .... G
+;		D .... B
+;	output:
+;		none
+;	break:
+;		AF
+;	comment:
+;		none
+; =============================================================================
+			scope	write_palette555
+write_palette555::
+p_vdp_port17	:= $ + 1
+			out		[ vdp_port2 ], a
+			ld		a, e
+p_vdp_port18	:= $ + 1
+			out		[ vdp_port2 ], a
+			ld		a, d
+p_vdp_port19	:= $ + 1
 			out		[ vdp_port2 ], a
 			ret
 			endscope

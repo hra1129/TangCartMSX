@@ -146,11 +146,11 @@ module vdp_command (
 	reg			[10:0]	ff_sy;
 	reg			[8:0]	ff_dx;
 	reg			[10:0]	ff_dy;
-	reg			[8:0]	ff_nx;
+	reg			[10:0]	ff_nx;
 	reg			[10:0]	ff_ny;
-	wire		[8:0]	w_nx;
+	wire		[10:0]	w_nx;
 	wire		[10:0]	w_ny;
-	reg			[10:0]	ff_nyb;
+	reg			[11:0]	ff_nyb;
 	reg			[7:0]	ff_color;
 	reg					ff_transfer_ready;
 	reg					ff_maj;
@@ -180,7 +180,7 @@ module vdp_command (
 	wire		[17:0]	w_address_d_pre;
 	wire		[17:0]	w_address_s;
 	wire		[17:0]	w_address_d;
-	wire		[11:0]	w_next_nyb;
+	wire		[12:0]	w_next_nyb;
 	wire		[9:0]	w_next;
 	wire		[9:0]	w_next_sx;
 	wire		[11:0]	w_next_sy;
@@ -299,7 +299,7 @@ module vdp_command (
 			if( ff_command == c_srch ) begin
 				ff_sx <= w_next_sx;
 			end
-			else if( ff_nx == 9'd0 || w_sx_overflow || w_dx_overflow ) begin
+			else if( ff_nx == 11'd0 || w_sx_overflow || w_dx_overflow ) begin
 				if( ff_command == c_ymmm ) begin
 					ff_sx <= { 1'b0, reg_dx };
 				end
@@ -334,7 +334,7 @@ module vdp_command (
 			//	hold
 		end
 		else if( ff_count_valid ) begin
-			if( ff_nx == 9'd0 || w_sx_overflow || w_dx_overflow ) begin
+			if( ff_nx == 11'd0 || w_sx_overflow || w_dx_overflow ) begin
 				if( reg_vram256k_mode ) begin
 					ff_sy <= w_next_sy[10:0];
 				end
@@ -389,7 +389,7 @@ module vdp_command (
 				end
 			end
 			else begin
-				if( ff_nx == 9'd0 || w_sx_overflow || w_dx_overflow ) begin
+				if( ff_nx == 11'd0 || w_sx_overflow || w_dx_overflow ) begin
 					ff_dx <= reg_dx;
 				end
 				else begin
@@ -399,7 +399,7 @@ module vdp_command (
 		end
 	end
 
-	assign w_line_shift	= w_next_nyb[11] || (w_next_nyb[10:0] == 10'd0);
+	assign w_line_shift	= w_next_nyb[12] || (w_next_nyb[11:0] == 12'd0);
 
 	always @( posedge clk or negedge reset_n ) begin
 		if( !reset_n ) begin
@@ -445,7 +445,7 @@ module vdp_command (
 				end
 			end
 			else begin
-				if( ff_nx == 9'd0 || w_sx_overflow || w_dx_overflow ) begin
+				if( ff_nx == 11'd0 || w_sx_overflow || w_dx_overflow ) begin
 					if( reg_vram256k_mode ) begin
 						ff_dy <= w_next_dy[10:0];
 					end
@@ -483,25 +483,25 @@ module vdp_command (
 
 	always @( posedge clk or negedge reset_n ) begin
 		if( !reset_n ) begin
-			ff_nx <= 9'd0;
+			ff_nx <= 11'd0;
 		end
 		else if( ff_start ) begin
 			if( ff_command == c_ymmm ) begin
 				case( w_bpp )
-				c_bpp_8bit:		ff_nx <= 9'd255;
-				c_bpp_4bit:		ff_nx <= 9'd510;
-				c_bpp_2bit:		ff_nx <= 9'd508;
-				default:		ff_nx <= 9'd255;
+				c_bpp_8bit:		ff_nx <= 11'd255;
+				c_bpp_4bit:		ff_nx <= 11'd510;
+				c_bpp_2bit:		ff_nx <= 11'd508;
+				default:		ff_nx <= 11'd255;
 				endcase
 			end
 			else if( ff_command == c_line ) begin
-				ff_nx <= reg_nx[8:0];
+				ff_nx <= reg_nx;
 			end
 			else if( ff_command[3:2] == 2'b11 ) begin
 				case( w_bpp )
 				c_bpp_8bit:		ff_nx <= w_nx;
-				c_bpp_4bit:		ff_nx <= { w_nx[8:1], 1'b0 };
-				c_bpp_2bit:		ff_nx <= { w_nx[8:2], 2'd0 };
+				c_bpp_4bit:		ff_nx <= { w_nx[10:1], 1'b0 };
+				c_bpp_2bit:		ff_nx <= { w_nx[10:2], 2'd0 };
 				default:		ff_nx <= w_nx;
 				endcase
 			end
@@ -514,17 +514,17 @@ module vdp_command (
 		end
 		else if( ff_count_valid ) begin
 			if( ff_command == c_line ) begin
-				ff_nx <= ff_nx - 9'd1;
+				ff_nx <= ff_nx - 11'd1;
 			end
-			else if( ff_nx == 9'd0 || w_sx_overflow || w_dx_overflow ) begin
+			else if( ff_nx == 11'd0 || w_sx_overflow || w_dx_overflow ) begin
 				if( ff_command == c_ymmm ) begin
-					ff_nx <= 9'd510;
+					ff_nx <= 11'd510;
 				end
 				else if( ff_command[3:2] == 2'b11 ) begin
 					case( w_bpp )
 					c_bpp_8bit:		ff_nx <= w_nx;
-					c_bpp_4bit:		ff_nx <= { w_nx[8:1], 1'b0 };
-					c_bpp_2bit:		ff_nx <= { w_nx[8:2], 2'd0 };
+					c_bpp_4bit:		ff_nx <= { w_nx[10:1], 1'b0 };
+					c_bpp_2bit:		ff_nx <= { w_nx[10:2], 2'd0 };
 					default:		ff_nx <= w_nx;
 					endcase
 				end
@@ -533,7 +533,7 @@ module vdp_command (
 				end
 			end
 			else begin
-				ff_nx <= ff_nx - w_next[8:0];
+				ff_nx <= ff_nx - { 1'b0, w_next[9:0] };
 			end
 		end
 	end
@@ -570,7 +570,7 @@ module vdp_command (
 			//	hold
 		end
 		else if( ff_count_valid ) begin
-			if( (ff_nx == 9'd0 || w_sx_overflow || w_dx_overflow) && ff_ny != 11'd0 ) begin
+			if( (ff_nx == 11'd0 || w_sx_overflow || w_dx_overflow) && ff_ny != 11'd0 ) begin
 				ff_ny <= w_ny;
 			end
 		end
@@ -590,10 +590,10 @@ module vdp_command (
 		end
 		else if( ff_count_valid ) begin
 			if( w_line_shift ) begin
-				ff_nyb	<= w_next_nyb[10:0] + { 1'b0, reg_nx };
+				ff_nyb	<= w_next_nyb[11:0] + { 1'b0, reg_nx };
 			end
 			else begin
-				ff_nyb	<= w_next_nyb[10:0];
+				ff_nyb	<= w_next_nyb[11:0];
 			end
 		end
 	end
@@ -924,7 +924,7 @@ module vdp_command (
 			end
 			c_state_line_next: begin
 				ff_count_valid			<= 1'b0;
-				if( ff_nx == 9'd0 || w_dx_overflow || (ff_diy == 1'b1 && ff_dy == 11'd0 && w_next_dy[11] == 1'b1) ) begin
+				if( ff_nx == 11'd0 || w_dx_overflow || (ff_diy == 1'b1 && ff_dy == 11'd0 && w_next_dy[11] == 1'b1) ) begin
 					ff_state				<= c_state_pre_finish;
 				end
 				else begin
@@ -952,7 +952,7 @@ module vdp_command (
 			end
 			c_state_lmmv_next: begin
 				ff_count_valid			<= 1'b0;
-				if( (ff_nx == 9'd0 || w_sx_overflow || w_dx_overflow) && ff_ny == 11'd0 ) begin
+				if( (ff_nx == 11'd0 || w_sx_overflow || w_dx_overflow) && ff_ny == 11'd0 ) begin
 					ff_state				<= c_state_pre_finish;
 				end
 				else begin
@@ -992,7 +992,7 @@ module vdp_command (
 			end
 			c_state_lmmm_next: begin
 				ff_count_valid			<= 1'b0;
-				if( (ff_nx == 9'd0 || w_sx_overflow || w_dx_overflow) && ff_ny == 11'd0 ) begin
+				if( (ff_nx == 11'd0 || w_sx_overflow || w_dx_overflow) && ff_ny == 11'd0 ) begin
 					ff_state				<= c_state_pre_finish;
 				end
 				else begin
@@ -1003,7 +1003,7 @@ module vdp_command (
 			//	LMCM command --------------------------------------------------
 			c_state_lmcm: begin
 				ff_count_valid			<= 1'b0;
-				if( (ff_nx == 9'd0 || w_sx_overflow || w_dx_overflow) && ff_ny == 11'd0 ) begin
+				if( (ff_nx == 11'd0 || w_sx_overflow || w_dx_overflow) && ff_ny == 11'd0 ) begin
 					ff_state				<= c_state_pre_finish;
 				end
 				else begin
@@ -1021,7 +1021,7 @@ module vdp_command (
 			end
 			c_state_lmcm_next: begin
 				if( ff_read_color ) begin
-					if( (ff_nx == 9'd0 || w_sx_overflow || w_dx_overflow) && ff_ny == 11'd0 ) begin
+					if( (ff_nx == 11'd0 || w_sx_overflow || w_dx_overflow) && ff_ny == 11'd0 ) begin
 						ff_state				<= c_state_pre_finish;
 					end
 					else begin
@@ -1057,7 +1057,7 @@ module vdp_command (
 			end
 			c_state_lmmc_next: begin
 				ff_count_valid			<= 1'b0;
-				if( (ff_nx == 9'd0 || w_sx_overflow || w_dx_overflow) && ff_ny == 11'd0 ) begin
+				if( (ff_nx == 11'd0 || w_sx_overflow || w_dx_overflow) && ff_ny == 11'd0 ) begin
 					ff_state				<= c_state_pre_finish;
 				end
 				else if( !ff_transfer_ready ) begin
@@ -1080,7 +1080,7 @@ module vdp_command (
 			end
 			c_state_hmmv_next: begin
 				ff_count_valid			<= 1'b0;
-				if( (ff_nx == 9'd0 || w_sx_overflow || w_dx_overflow) && ff_ny == 11'd0 ) begin
+				if( (ff_nx == 11'd0 || w_sx_overflow || w_dx_overflow) && ff_ny == 11'd0 ) begin
 					ff_state				<= c_state_pre_finish;
 				end
 				else begin
@@ -1108,7 +1108,7 @@ module vdp_command (
 			end
 			c_state_hmmm_next: begin
 				ff_count_valid			<= 1'b0;
-				if( (ff_nx == 9'd0 || w_sx_overflow || w_dx_overflow) && ff_ny == 11'd0 ) begin
+				if( (ff_nx == 11'd0 || w_sx_overflow || w_dx_overflow) && ff_ny == 11'd0 ) begin
 					ff_state				<= c_state_pre_finish;
 				end
 				else begin
@@ -1136,7 +1136,7 @@ module vdp_command (
 			end
 			c_state_ymmm_next: begin
 				ff_count_valid			<= 1'b0;
-				if( (ff_nx == 9'd0 || w_sx_overflow || w_dx_overflow) && ff_ny == 11'd0 ) begin
+				if( (ff_nx == 11'd0 || w_sx_overflow || w_dx_overflow) && ff_ny == 11'd0 ) begin
 					ff_state				<= c_state_pre_finish;
 				end
 				else begin
@@ -1156,7 +1156,7 @@ module vdp_command (
 			end
 			c_state_hmmc_next: begin
 				ff_count_valid			<= 1'b0;
-				if( (ff_nx == 9'd0 || w_sx_overflow || w_dx_overflow) && ff_ny == 11'd0 ) begin
+				if( (ff_nx == 11'd0 || w_sx_overflow || w_dx_overflow) && ff_ny == 11'd0 ) begin
 					ff_state				<= c_state_pre_finish;
 				end
 				else if( !ff_transfer_ready ) begin
