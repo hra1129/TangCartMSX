@@ -98,6 +98,19 @@ module vdp_command (
 	localparam	c_point		= 4'b0100;
 	localparam	c_stop		= 4'b0000;
 
+	localparam	c_wait_hmmc	= 6'd40;
+	localparam	c_wait_ymmm	= 6'd40;
+	localparam	c_wait_hmmm	= 6'd40;
+	localparam	c_wait_hmmv	= 6'd40;
+	localparam	c_wait_lmmc	= 6'd40;
+	localparam	c_wait_lmcm	= 6'd40;
+	localparam	c_wait_lmmm	= 6'd40;
+	localparam	c_wait_lmmv	= 6'd40;
+	localparam	c_wait_line	= 6'd40;
+	localparam	c_wait_srch	= 6'd40;
+	localparam	c_wait_pset	= 6'd40;
+	localparam	c_wait_point= 6'd40;
+
 	localparam	c_imp		= 4'b0000;
 	localparam	c_and		= 4'b0001;
 	localparam	c_or		= 4'b0010;
@@ -227,13 +240,16 @@ module vdp_command (
 	localparam			c_state_lmmc_next			= 6'd31;
 	localparam			c_state_lmcm_make			= 6'd32;
 	localparam			c_state_lmcm_next			= 6'd33;
-	localparam			c_state_wait_rdata_en		= 6'd61;
+	localparam			c_state_wait_rdata_en		= 6'd60;
+	localparam			c_state_wait_counter		= 6'd61;
 	localparam			c_state_pre_finish			= 6'd62;
 	localparam			c_state_finish				= 6'd63;
 
 	reg			[5:0]	ff_state;
 	reg			[5:0]	ff_next_state;
 	reg					ff_count_valid;
+	reg			[5:0]	ff_wait_counter;
+	reg			[5:0]	ff_wait_count;
 
 	// --------------------------------------------------------------------
 	//	Mode select
@@ -821,6 +837,7 @@ module vdp_command (
 					ff_cache_vram_write		<= 1'b0;
 					ff_state				<= c_state_wait_rdata_en;
 					ff_next_state			<= c_state_pre_finish;
+					ff_wait_count			<= c_wait_point;
 					ff_xsel					<= ff_sx[1:0];
 				end
 			end
@@ -838,6 +855,7 @@ module vdp_command (
 					ff_cache_vram_write		<= 1'b0;
 					ff_state				<= c_state_wait_rdata_en;
 					ff_next_state			<= c_state_pset_make;
+					ff_wait_count			<= c_wait_pset;
 					ff_xsel					<= ff_dx[1:0];
 				end
 			end
@@ -873,6 +891,7 @@ module vdp_command (
 					ff_cache_vram_write			<= 1'b0;
 					ff_state					<= c_state_wait_rdata_en;
 					ff_next_state				<= c_state_srch_compare;
+					ff_wait_count				<= c_wait_srch;
 					ff_xsel						<= ff_sx[1:0];
 				end
 			end
@@ -910,6 +929,7 @@ module vdp_command (
 					ff_cache_vram_write		<= 1'b0;
 					ff_state				<= c_state_wait_rdata_en;
 					ff_next_state			<= c_state_line_make;
+					ff_wait_count			<= c_wait_line;
 					ff_xsel					<= ff_dx[1:0];
 				end
 			end
@@ -939,6 +959,7 @@ module vdp_command (
 				ff_cache_vram_write		<= 1'b0;
 				ff_state				<= c_state_wait_rdata_en;
 				ff_next_state			<= c_state_lmmv_make;
+				ff_wait_count			<= c_wait_lmmv;
 				ff_xsel					<= ff_dx[1:0];
 			end
 			c_state_lmmv_make: begin
@@ -968,6 +989,7 @@ module vdp_command (
 				ff_cache_vram_write		<= 1'b0;
 				ff_state				<= c_state_wait_rdata_en;
 				ff_next_state			<= c_state_lmmm_wait_source;
+				ff_wait_count			<= c_wait_lmmm;
 				ff_xsel					<= ff_sx[1:0];
 			end
 			c_state_lmmm_wait_source: begin
@@ -979,6 +1001,7 @@ module vdp_command (
 				ff_cache_vram_write		<= 1'b0;
 				ff_state				<= c_state_wait_rdata_en;
 				ff_next_state			<= c_state_lmmm_make;
+				ff_wait_count			<= c_wait_lmmm;
 				ff_xsel					<= ff_dx[1:0];
 			end
 			c_state_lmmm_make: begin
@@ -1013,6 +1036,7 @@ module vdp_command (
 					ff_cache_vram_write		<= 1'b0;
 					ff_state				<= c_state_wait_rdata_en;
 					ff_next_state			<= c_state_lmcm_make;
+					ff_wait_count			<= c_wait_lmcm;
 					ff_xsel					<= ff_dx[1:0];
 				end
 			end
@@ -1044,6 +1068,7 @@ module vdp_command (
 				ff_cache_vram_write		<= 1'b0;
 				ff_state				<= c_state_wait_rdata_en;
 				ff_next_state			<= c_state_lmmc_make;
+				ff_wait_count			<= c_wait_lmmc;
 				ff_xsel					<= ff_dx[1:0];
 			end
 			c_state_lmmc_make: begin
@@ -1096,6 +1121,7 @@ module vdp_command (
 				ff_cache_vram_write		<= 1'b0;
 				ff_state				<= c_state_wait_rdata_en;
 				ff_next_state			<= c_state_hmmm_make;
+				ff_wait_count			<= c_wait_hmmm;
 			end
 			c_state_hmmm_make: begin
 				//	Write the location of (DX, DY)
@@ -1124,6 +1150,7 @@ module vdp_command (
 				ff_cache_vram_write		<= 1'b0;
 				ff_state				<= c_state_wait_rdata_en;
 				ff_next_state			<= c_state_ymmm_make;
+				ff_wait_count			<= c_wait_ymmm;
 			end
 			c_state_ymmm_make: begin
 				//	Write the location of (DX, DY)
@@ -1171,11 +1198,28 @@ module vdp_command (
 			c_state_wait_rdata_en: begin
 				//	Wait until the results of the lead request arrive.
 				if( w_cache_vram_rdata_en ) begin
-					//	Activate cache flush and wait for it to complete.
+					if( reg_command_high_speed_mode ) begin
+						//	Activate cache flush and wait for it to complete.
+						ff_state				<= ff_next_state;
+						ff_cache_flush_start	<= (ff_next_state == c_state_finish);
+					end
+					else begin
+						//	Go to c_state_compatible_wait for compatible speed mode.
+						ff_state				<= c_state_compatible_wait;
+						ff_wait_counter			<= ff_wait_count;
+					end
+				end
+			end
+
+			//	Wait counter --------------------------------------------------
+			c_state_wait_counter: begin
+				ff_wait_counter <= ff_wait_counter - 6'd1;
+				if( ff_wait_counter == 6'd0 ) begin
 					ff_state				<= ff_next_state;
 					ff_cache_flush_start	<= (ff_next_state == c_state_finish);
 				end
 			end
+
 			//	Do Finish process ---------------------------------------------
 			c_state_pre_finish: begin
 				ff_count_valid			<= 1'b0;
