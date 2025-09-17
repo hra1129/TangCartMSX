@@ -613,20 +613,20 @@ module vdp_cpu_interface (
 		else if( w_write && ff_port2 ) begin
 			if( ff_ext_palette_mode ) begin
 				if( ff_color_palette_phase == 2'd0 ) begin
-					//	P#2 = [R][R][R][R][R][N/A][N/A][N/A]
-					ff_palette_r				<= ff_bus_wdata[7:3];
+					//	P#2 = [N/A][N/A][N/A][R][R][R][R][R]
+					ff_palette_r				<= ff_bus_wdata[4:0];
 					ff_color_palette_phase		<= 2'd1;
 					ff_color_palette_valid		<= 1'b0;
 				end
 				else if( ff_color_palette_phase == 2'd1 ) begin
-					//	P#2 = [G][G][G][G][G][N/A][N/A][N/A]
-					ff_palette_g				<= ff_bus_wdata[7:3];
+					//	P#2 = [N/A][N/A][N/A][G][G][G][G][G]
+					ff_palette_g				<= ff_bus_wdata[4:0];
 					ff_color_palette_phase		<= 2'd2;
 					ff_color_palette_valid		<= 1'b0;
 				end
 				else begin
-					//	P#2 = [B][B][B][B][B][N/A][N/A][N/A]
-					ff_palette_b				<= ff_bus_wdata[7:3];
+					//	P#2 = [N/A][N/A][N/A][B][B][B][B][B]
+					ff_palette_b				<= ff_bus_wdata[4:0];
 					ff_color_palette_phase		<= 2'd0;
 					ff_color_palette_valid		<= 1'b1;
 				end

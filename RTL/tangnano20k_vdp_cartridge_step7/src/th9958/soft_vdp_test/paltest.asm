@@ -14,6 +14,12 @@ start:
 			di
 			call	screen8
 			call	s8_change_palette
+			call	s8_palette_anime
+
+			; R#20 = 0x00
+			ld		a, 0x00
+			ld		e, 20
+			call	write_control_register
 			ei
 			; å„énññ
 			call	clear_key_buffer
@@ -21,6 +27,22 @@ start:
 			jp		bdos
 
 include		"lib.asm"
+
+; =============================================================================
+			scope	wait
+wait::
+			push	bc
+			push	af
+			ld		bc, 5000
+	loop:
+			dec		bc
+			ld		a, c
+			or		a, b
+			jr		nz, loop
+			pop		af
+			pop		bc
+			ret
+			endscope
 
 ; =============================================================================
 ;	SCREEN8
@@ -143,9 +165,6 @@ s8_change_palette::
 			ld		a, b
 			dec		a
 			xor		a, 31
-			add		a, a
-			add		a, a
-			add		a, a
 			ld		e, a
 			ld		d, a
 			call	write_palette555		; Palette (R,G,B) = (A,E,D)
@@ -156,9 +175,6 @@ s8_change_palette::
 			ld		a, b
 			dec		a
 			xor		a, 31
-			add		a, a
-			add		a, a
-			add		a, a
 			ld		e, a
 			ld		d, 0
 			call	write_palette555		; Palette (R,G,B) = (A,E,D)
@@ -169,9 +185,6 @@ s8_change_palette::
 			ld		a, b
 			dec		a
 			xor		a, 31
-			add		a, a
-			add		a, a
-			add		a, a
 			ld		e, 0
 			ld		d, a
 			call	write_palette555		; Palette (R,G,B) = (A,E,D)
@@ -182,9 +195,6 @@ s8_change_palette::
 			ld		a, b
 			dec		a
 			xor		a, 31
-			add		a, a
-			add		a, a
-			add		a, a
 			ld		e, 0
 			ld		d, 0
 			call	write_palette555		; Palette (R,G,B) = (A,E,D)
@@ -195,9 +205,6 @@ s8_change_palette::
 			ld		a, b
 			dec		a
 			xor		a, 31
-			add		a, a
-			add		a, a
-			add		a, a
 			ld		e, a
 			ld		d, a
 			xor		a, a
@@ -209,9 +216,6 @@ s8_change_palette::
 			ld		a, b
 			dec		a
 			xor		a, 31
-			add		a, a
-			add		a, a
-			add		a, a
 			ld		e, 0
 			ld		d, a
 			xor		a, a
@@ -223,9 +227,6 @@ s8_change_palette::
 			ld		a, b
 			dec		a
 			xor		a, 31
-			add		a, a
-			add		a, a
-			add		a, a
 			ld		e, a
 			ld		d, 0
 			xor		a, a
@@ -237,14 +238,47 @@ s8_change_palette::
 			ld		a, b
 			dec		a
 			xor		a, 31
-			add		a, a
-			add		a, a
-			add		a, a
 			ld		e, a
 			ld		d, 0
 			rr		a
 			call	write_palette555		; Palette (R,G,B) = (A,E,D)
 			djnz	loop8
+			call	wait_push_space_key
+			ret
+			endscope
+
+; =============================================================================
+;	[SCREEN8] Palette animation
+;	input:
+;		none
+;	output:
+;		none
+;	break:
+;		AF
+;	comment:
+;		none
+; =============================================================================
+			scope	s8_palette_anime
+s8_palette_anime::
+			ld		h, 0						; First palette# is 0.
+	loop:
+			ld		l, 0						; animation number
+	anime_loop:
+			; R#16 = Palette#
+			ld		a, h
+			ld		e, 16
+			call	write_control_register
+			; animation
+			ld		a, l
+			ld		d, a
+			ld		e, a
+			call	write_palette555		; Palette (R,G,B) = (A,E,D)
+			call	wait
+			inc		l
+			bit		5, l
+			jr		z, anime_loop
+			inc		h
+			jr		nz, loop
 			call	wait_push_space_key
 			ret
 			endscope
