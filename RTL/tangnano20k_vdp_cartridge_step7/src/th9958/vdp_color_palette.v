@@ -107,7 +107,7 @@ module vdp_color_palette (
 	wire		[4:0]	w_palette_r;
 	wire		[4:0]	w_palette_g;
 	wire		[4:0]	w_palette_b;
-	reg			[4:0]	ff_palette_num;
+	reg			[8:0]	ff_palette_num;
 	reg			[4:0]	ff_palette_r;
 	reg			[4:0]	ff_palette_g;
 	reg			[4:0]	ff_palette_b;
@@ -141,12 +141,12 @@ module vdp_color_palette (
 	// --------------------------------------------------------------------
 	always @( posedge clk or negedge reset_n ) begin
 		if( !reset_n ) begin
-			ff_palette_num	= 5'd0;
+			ff_palette_num	= 9'd0;
 			ff_palette_r	= 5'd0;
 			ff_palette_g	= 5'd0;
 			ff_palette_b	= 5'd0;
 		end
-		else if( ff_palette_num[4] == 1'b0 ) begin
+		else if( ff_palette_num[8] == 1'b0 ) begin
 			case( ff_palette_num[3:0] )
 			4'd0:	begin ff_palette_r = { 3'd0, 2'd0 }; ff_palette_b = { 3'd0, 2'd0 }; ff_palette_g = { 3'd0, 2'd0 }; end	//	color#1
 			4'd1:	begin ff_palette_r = { 3'd1, 2'd0 }; ff_palette_b = { 3'd1, 2'd0 }; ff_palette_g = { 3'd6, 2'd0 }; end	//	color#2
@@ -165,15 +165,15 @@ module vdp_color_palette (
 			4'd14:	begin ff_palette_r = { 3'd7, 2'd0 }; ff_palette_b = { 3'd7, 2'd0 }; ff_palette_g = { 3'd7, 2'd0 }; end	//	color#15
 			4'd15:	begin ff_palette_r = { 3'd0, 2'd0 }; ff_palette_b = { 3'd0, 2'd0 }; ff_palette_g = { 3'd0, 2'd0 }; end	//	initialize
 			endcase
-			ff_palette_num <= ff_palette_num + 5'd1;
+			ff_palette_num <= ff_palette_num + 9'd1;
 		end
 	end
 
-	assign w_palette_valid	= ff_palette_num[4] ? palette_valid : 1'b1;
-	assign w_palette_num	= ff_palette_num[4] ? palette_num : { 2'd0, ff_palette_num[3:0] };
-	assign w_palette_r		= ff_palette_num[4] ? palette_r : ff_palette_r;
-	assign w_palette_g		= ff_palette_num[4] ? palette_g : ff_palette_g;
-	assign w_palette_b		= ff_palette_num[4] ? palette_b : ff_palette_b;
+	assign w_palette_valid	= ff_palette_num[8] ? palette_valid : 1'b1;
+	assign w_palette_num	= ff_palette_num[8] ? palette_num : ff_palette_num[7:0];
+	assign w_palette_r		= ff_palette_num[8] ? palette_r : ff_palette_r;
+	assign w_palette_g		= ff_palette_num[8] ? palette_g : ff_palette_g;
+	assign w_palette_b		= ff_palette_num[8] ? palette_b : ff_palette_b;
 
 	// --------------------------------------------------------------------
 	//	Pixel delay (screen_pos_x = 0)

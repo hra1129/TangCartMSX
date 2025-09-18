@@ -1205,7 +1205,7 @@ module vdp_command (
 					end
 					else begin
 						//	Go to c_state_compatible_wait for compatible speed mode.
-						ff_state				<= c_state_compatible_wait;
+						ff_state				<= c_state_wait_counter;
 						ff_wait_counter			<= ff_wait_count;
 					end
 				end
