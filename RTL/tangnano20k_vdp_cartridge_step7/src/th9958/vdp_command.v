@@ -248,7 +248,7 @@ module vdp_command (
 	reg			[5:0]	ff_state;
 	reg			[5:0]	ff_next_state;
 	reg					ff_count_valid;
-	reg			[5:0]	ff_wait_counter;
+	reg			[7:0]	ff_wait_counter;
 	reg			[5:0]	ff_wait_count;
 
 	// --------------------------------------------------------------------
@@ -865,7 +865,14 @@ module vdp_command (
 				ff_cache_vram_valid		<= 1'b1;
 				ff_cache_vram_write		<= 1'b1;
 				ff_cache_vram_wdata		<= w_destination;
-				ff_state				<= c_state_pre_finish;
+				if( reg_command_high_speed_mode ) begin
+					ff_state				<= c_state_pre_finish;
+				end
+				else begin
+					ff_wait_counter			<= { c_wait_pset, 2'b11 };
+					ff_next_state			<= c_state_pre_finish;
+					ff_state				<= c_state_wait_counter;
+				end
 			end
 
 			//	SRCH command --------------------------------------------------
@@ -939,8 +946,15 @@ module vdp_command (
 				ff_cache_vram_valid		<= 1'b1;
 				ff_cache_vram_write		<= 1'b1;
 				ff_cache_vram_wdata		<= w_destination;
-				ff_state				<= c_state_line_next;
 				ff_count_valid			<= 1'b1;
+				if( reg_command_high_speed_mode ) begin
+					ff_state				<= c_state_line_next;
+				end
+				else begin
+					ff_wait_counter			<= { c_wait_line, 2'b11 };
+					ff_next_state			<= c_state_line_next;
+					ff_state				<= c_state_wait_counter;
+				end
 			end
 			c_state_line_next: begin
 				ff_count_valid			<= 1'b0;
@@ -968,8 +982,15 @@ module vdp_command (
 				ff_cache_vram_valid		<= 1'b1;
 				ff_cache_vram_write		<= 1'b1;
 				ff_cache_vram_wdata		<= w_destination;
-				ff_state				<= c_state_lmmv_next;
 				ff_count_valid			<= 1'b1;
+				if( reg_command_high_speed_mode ) begin
+					ff_state				<= c_state_lmmv_next;
+				end
+				else begin
+					ff_wait_counter			<= { c_wait_lmmv, 2'b11 };
+					ff_next_state			<= c_state_lmmv_next;
+					ff_state				<= c_state_wait_counter;
+				end
 			end
 			c_state_lmmv_next: begin
 				ff_count_valid			<= 1'b0;
@@ -1012,6 +1033,14 @@ module vdp_command (
 				ff_cache_vram_wdata		<= w_destination;
 				ff_state				<= c_state_lmmm_next;
 				ff_count_valid			<= 1'b1;
+				if( reg_command_high_speed_mode ) begin
+					ff_state				<= c_state_lmmm_next;
+				end
+				else begin
+					ff_wait_counter			<= { c_wait_lmmm, 2'b11 };
+					ff_next_state			<= c_state_lmmm_next;
+					ff_state				<= c_state_wait_counter;
+				end
 			end
 			c_state_lmmm_next: begin
 				ff_count_valid			<= 1'b0;
@@ -1077,8 +1106,15 @@ module vdp_command (
 				ff_cache_vram_valid		<= 1'b1;
 				ff_cache_vram_write		<= 1'b1;
 				ff_cache_vram_wdata		<= w_destination;
-				ff_state				<= c_state_lmmc_next;
 				ff_count_valid			<= 1'b1;
+				if( reg_command_high_speed_mode ) begin
+					ff_state				<= c_state_lmmc_next;
+				end
+				else begin
+					ff_wait_counter			<= { c_wait_lmmc, 2'b11 };
+					ff_next_state			<= c_state_lmmc_next;
+					ff_state				<= c_state_wait_counter;
+				end
 			end
 			c_state_lmmc_next: begin
 				ff_count_valid			<= 1'b0;
@@ -1100,7 +1136,14 @@ module vdp_command (
 				ff_cache_vram_valid		<= 1'b1;
 				ff_cache_vram_write		<= 1'b1;
 				ff_cache_vram_wdata		<= ff_color;
-				ff_state				<= c_state_hmmv_next;
+				if( reg_command_high_speed_mode ) begin
+					ff_state				<= c_state_hmmv_next;
+				end
+				else begin
+					ff_wait_counter			<= { c_wait_hmmv, 2'b11 };
+					ff_next_state			<= c_state_hmmv_next;
+					ff_state				<= c_state_wait_counter;
+				end
 				ff_count_valid			<= 1'b1;
 			end
 			c_state_hmmv_next: begin
@@ -1129,8 +1172,15 @@ module vdp_command (
 				ff_cache_vram_valid		<= 1'b1;
 				ff_cache_vram_write		<= 1'b1;
 				ff_cache_vram_wdata		<= ff_read_byte;
-				ff_state				<= c_state_hmmm_next;
 				ff_count_valid			<= 1'b1;
+				if( reg_command_high_speed_mode ) begin
+					ff_state				<= c_state_hmmm_next;
+				end
+				else begin
+					ff_wait_counter			<= { c_wait_hmmm, 2'b11 };
+					ff_next_state			<= c_state_hmmm_next;
+					ff_state				<= c_state_wait_counter;
+				end
 			end
 			c_state_hmmm_next: begin
 				ff_count_valid			<= 1'b0;
@@ -1158,8 +1208,15 @@ module vdp_command (
 				ff_cache_vram_valid		<= 1'b1;
 				ff_cache_vram_write		<= 1'b1;
 				ff_cache_vram_wdata		<= ff_read_byte;
-				ff_state				<= c_state_ymmm_next;
 				ff_count_valid			<= 1'b1;
+				if( reg_command_high_speed_mode ) begin
+					ff_state				<= c_state_ymmm_next;
+				end
+				else begin
+					ff_wait_counter			<= { c_wait_ymmm, 2'b11 };
+					ff_next_state			<= c_state_ymmm_next;
+					ff_state				<= c_state_wait_counter;
+				end
 			end
 			c_state_ymmm_next: begin
 				ff_count_valid			<= 1'b0;
@@ -1178,8 +1235,15 @@ module vdp_command (
 				ff_cache_vram_valid		<= 1'b1;
 				ff_cache_vram_write		<= 1'b1;
 				ff_cache_vram_wdata		<= ff_color;
-				ff_state				<= c_state_hmmc_next;
 				ff_count_valid			<= 1'b1;
+				if( reg_command_high_speed_mode ) begin
+					ff_state				<= c_state_hmmc_next;
+				end
+				else begin
+					ff_wait_counter			<= { c_wait_ymmm, 2'b11 };
+					ff_next_state			<= c_state_hmmc_next;
+					ff_state				<= c_state_wait_counter;
+				end
 			end
 			c_state_hmmc_next: begin
 				ff_count_valid			<= 1'b0;
@@ -1206,15 +1270,17 @@ module vdp_command (
 					else begin
 						//	Go to c_state_compatible_wait for compatible speed mode.
 						ff_state				<= c_state_wait_counter;
-						ff_wait_counter			<= ff_wait_count;
+						ff_wait_counter			<= { ff_wait_count, 2'b11 };
 					end
 				end
 			end
 
 			//	Wait counter --------------------------------------------------
 			c_state_wait_counter: begin
-				ff_wait_counter <= ff_wait_counter - 6'd1;
-				if( ff_wait_counter == 6'd0 ) begin
+				ff_cache_vram_valid		<= 1'b0;
+				ff_count_valid			<= 1'b0;
+				ff_wait_counter			<= ff_wait_counter - 8'd1;
+				if( ff_wait_counter == 8'd0 ) begin
 					ff_state				<= ff_next_state;
 					ff_cache_flush_start	<= (ff_next_state == c_state_finish);
 				end
