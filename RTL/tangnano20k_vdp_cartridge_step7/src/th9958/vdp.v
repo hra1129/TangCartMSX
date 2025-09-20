@@ -382,6 +382,7 @@ module vdp (
 		.vram_interleave							( w_vram_interleave							),
 		.reg_command_enable							( reg_command_enable						),
 		.reg_command_high_speed_mode				( reg_command_high_speed_mode				),
+		.reg_ext_command_mode						( reg_ext_command_mode						),
 		.reg_vram256k_mode							( reg_vram256k_mode							)
 	);
 

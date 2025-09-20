@@ -380,7 +380,7 @@ module tb ();
 		write_io( vdp_io1, 8'd2 );
 		write_io( vdp_io1, 8'h80 + 8'd15 );
 
-		time_out	= 10000;
+		time_out	= 1000000;
 		forever begin
 			read_io( vdp_io1, rdata );
 			if( rdata[0] == 1'b0 ) begin
@@ -399,279 +399,556 @@ module tb ();
 	endtask
 
 	// --------------------------------------------------------------------
+	task wait_transfer_ready();
+		logic [7:0] rdata;
+		integer		time_out;
+
+		time_out	= 10000;
+		forever begin
+			read_io( vdp_io1, rdata );
+			if( rdata[7] == 1'b1 ) begin
+				break;
+			end
+			@( posedge clk14m );
+			time_out = time_out - 1;
+			if( time_out == 0 ) begin
+				$error( "Time out in wait_transfer_ready" );
+				$finish;
+			end
+		end
+	endtask
+
+	// --------------------------------------------------------------------
 	task usagi_transfer;
+		write_io( vdp_io1, 8'h02 );
+		write_io( vdp_io1, 8'h80 + 8'd15 );
 		write_io( vdp_io1, 8'h80 + 8'd44 );
 		write_io( vdp_io1, 8'h80 + 8'd17 );
 
+		wait_transfer_ready();
 		write_io( vdp_io3, 8'h00 );
+		wait_transfer_ready();
 		write_io( vdp_io3, 8'h01 );
+		wait_transfer_ready();
 		write_io( vdp_io3, 8'h01 );
+		wait_transfer_ready();
 		write_io( vdp_io3, 8'h01 );
+		wait_transfer_ready();
 		write_io( vdp_io3, 8'h01 );
+		wait_transfer_ready();
 		write_io( vdp_io3, 8'h01 );
+		wait_transfer_ready();
 		write_io( vdp_io3, 8'h01 );
+		wait_transfer_ready();
 		write_io( vdp_io3, 8'h01 );
+		wait_transfer_ready();
 		write_io( vdp_io3, 8'h00 );
+		wait_transfer_ready();
 		write_io( vdp_io3, 8'h00 );
+		wait_transfer_ready();
 		write_io( vdp_io3, 8'h00 );
+		wait_transfer_ready();
 		write_io( vdp_io3, 8'h00 );
+		wait_transfer_ready();
 		write_io( vdp_io3, 8'h00 );
+		wait_transfer_ready();
 		write_io( vdp_io3, 8'h00 );
+		wait_transfer_ready();
 		write_io( vdp_io3, 8'h00 );
+		wait_transfer_ready();
 	
 		write_io( vdp_io3, 8'h00 );
+		wait_transfer_ready();
 		write_io( vdp_io3, 8'h01 );
+		wait_transfer_ready();
 		write_io( vdp_io3, 8'h0F );
+		wait_transfer_ready();
 		write_io( vdp_io3, 8'h0F );
+		wait_transfer_ready();
 		write_io( vdp_io3, 8'h0F );
+		wait_transfer_ready();
 		write_io( vdp_io3, 8'h0F );
+		wait_transfer_ready();
 		write_io( vdp_io3, 8'h0F );
+		wait_transfer_ready();
 		write_io( vdp_io3, 8'h0F );
+		wait_transfer_ready();
 		write_io( vdp_io3, 8'h0F );
+		wait_transfer_ready();
 		write_io( vdp_io3, 8'h01 );
+		wait_transfer_ready();
 		write_io( vdp_io3, 8'h01 );
+		wait_transfer_ready();
 		write_io( vdp_io3, 8'h00 );
+		wait_transfer_ready();
 		write_io( vdp_io3, 8'h00 );
+		wait_transfer_ready();
 		write_io( vdp_io3, 8'h00 );
+		wait_transfer_ready();
 		write_io( vdp_io3, 8'h00 );
+		wait_transfer_ready();
 		write_io( vdp_io3, 8'h00 );
+		wait_transfer_ready();
 	
 		write_io( vdp_io3, 8'h00 );
+		wait_transfer_ready();
 		write_io( vdp_io3, 8'h01 );
+		wait_transfer_ready();
 		write_io( vdp_io3, 8'h01 );
+		wait_transfer_ready();
 		write_io( vdp_io3, 8'h01 );
+		wait_transfer_ready();
 		write_io( vdp_io3, 8'h01 );
+		wait_transfer_ready();
 		write_io( vdp_io3, 8'h01 );
+		wait_transfer_ready();
 		write_io( vdp_io3, 8'h01 );
+		wait_transfer_ready();
 		write_io( vdp_io3, 8'h0F );
+		wait_transfer_ready();
 		write_io( vdp_io3, 8'h0F );
+		wait_transfer_ready();
 		write_io( vdp_io3, 8'h0F );
+		wait_transfer_ready();
 		write_io( vdp_io3, 8'h0F );
+		wait_transfer_ready();
 		write_io( vdp_io3, 8'h01 );
+		wait_transfer_ready();
 		write_io( vdp_io3, 8'h00 );
+		wait_transfer_ready();
 		write_io( vdp_io3, 8'h00 );
+		wait_transfer_ready();
 		write_io( vdp_io3, 8'h00 );
+		wait_transfer_ready();
 		write_io( vdp_io3, 8'h00 );
+		wait_transfer_ready();
 	
 		write_io( vdp_io3, 8'h01 );
+		wait_transfer_ready();
 		write_io( vdp_io3, 8'h0F );
+		wait_transfer_ready();
 		write_io( vdp_io3, 8'h0F );
+		wait_transfer_ready();
 		write_io( vdp_io3, 8'h0F );
+		wait_transfer_ready();
 		write_io( vdp_io3, 8'h0F );
+		wait_transfer_ready();
 		write_io( vdp_io3, 8'h0F );
+		wait_transfer_ready();
 		write_io( vdp_io3, 8'h0F );
+		wait_transfer_ready();
 		write_io( vdp_io3, 8'h0F );
+		wait_transfer_ready();
 		write_io( vdp_io3, 8'h0F );
+		wait_transfer_ready();
 		write_io( vdp_io3, 8'h0F );
+		wait_transfer_ready();
 		write_io( vdp_io3, 8'h0F );
+		wait_transfer_ready();
 		write_io( vdp_io3, 8'h0F );
+		wait_transfer_ready();
 		write_io( vdp_io3, 8'h01 );
+		wait_transfer_ready();
 		write_io( vdp_io3, 8'h00 );
+		wait_transfer_ready();
 		write_io( vdp_io3, 8'h00 );
+		wait_transfer_ready();
 		write_io( vdp_io3, 8'h00 );
+		wait_transfer_ready();
 	
 		write_io( vdp_io3, 8'h00 );
+		wait_transfer_ready();
 		write_io( vdp_io3, 8'h01 );
+		wait_transfer_ready();
 		write_io( vdp_io3, 8'h01 );
+		wait_transfer_ready();
 		write_io( vdp_io3, 8'h01 );
+		wait_transfer_ready();
 		write_io( vdp_io3, 8'h01 );
+		wait_transfer_ready();
 		write_io( vdp_io3, 8'h0F );
+		wait_transfer_ready();
 		write_io( vdp_io3, 8'h0F );
+		wait_transfer_ready();
 		write_io( vdp_io3, 8'h0F );
+		wait_transfer_ready();
 		write_io( vdp_io3, 8'h0F );
+		wait_transfer_ready();
 		write_io( vdp_io3, 8'h0F );
+		wait_transfer_ready();
 		write_io( vdp_io3, 8'h01 );
+		wait_transfer_ready();
 		write_io( vdp_io3, 8'h0F );
+		wait_transfer_ready();
 		write_io( vdp_io3, 8'h01 );
+		wait_transfer_ready();
 		write_io( vdp_io3, 8'h00 );
+		wait_transfer_ready();
 		write_io( vdp_io3, 8'h00 );
+		wait_transfer_ready();
 		write_io( vdp_io3, 8'h00 );
+		wait_transfer_ready();
 	
 		write_io( vdp_io3, 8'h00 );
+		wait_transfer_ready();
 		write_io( vdp_io3, 8'h00 );
+		wait_transfer_ready();
 		write_io( vdp_io3, 8'h00 );
+		wait_transfer_ready();
 		write_io( vdp_io3, 8'h01 );
+		wait_transfer_ready();
 		write_io( vdp_io3, 8'h0F );
+		wait_transfer_ready();
 		write_io( vdp_io3, 8'h0F );
+		wait_transfer_ready();
 		write_io( vdp_io3, 8'h0F );
+		wait_transfer_ready();
 		write_io( vdp_io3, 8'h0F );
+		wait_transfer_ready();
 		write_io( vdp_io3, 8'h0F );
+		wait_transfer_ready();
 		write_io( vdp_io3, 8'h0F );
+		wait_transfer_ready();
 		write_io( vdp_io3, 8'h01 );
+		wait_transfer_ready();
 		write_io( vdp_io3, 8'h0F );
+		wait_transfer_ready();
 		write_io( vdp_io3, 8'h0F );
+		wait_transfer_ready();
 		write_io( vdp_io3, 8'h01 );
+		wait_transfer_ready();
 		write_io( vdp_io3, 8'h00 );
+		wait_transfer_ready();
 		write_io( vdp_io3, 8'h00 );
+		wait_transfer_ready();
 	
 		write_io( vdp_io3, 8'h00 );
+		wait_transfer_ready();
 		write_io( vdp_io3, 8'h00 );
+		wait_transfer_ready();
 		write_io( vdp_io3, 8'h01 );
+		wait_transfer_ready();
 		write_io( vdp_io3, 8'h0F );
+		wait_transfer_ready();
 		write_io( vdp_io3, 8'h0F );
+		wait_transfer_ready();
 		write_io( vdp_io3, 8'h0F );
+		wait_transfer_ready();
 		write_io( vdp_io3, 8'h0F );
+		wait_transfer_ready();
 		write_io( vdp_io3, 8'h0F );
+		wait_transfer_ready();
 		write_io( vdp_io3, 8'h0D );
+		wait_transfer_ready();
 		write_io( vdp_io3, 8'h0D );
+		wait_transfer_ready();
 		write_io( vdp_io3, 8'h0D );
+		wait_transfer_ready();
 		write_io( vdp_io3, 8'h0F );
+		wait_transfer_ready();
 		write_io( vdp_io3, 8'h0F );
+		wait_transfer_ready();
 		write_io( vdp_io3, 8'h01 );
+		wait_transfer_ready();
 		write_io( vdp_io3, 8'h00 );
+		wait_transfer_ready();
 		write_io( vdp_io3, 8'h00 );
+		wait_transfer_ready();
 
 		write_io( vdp_io3, 8'h00 );
+		wait_transfer_ready();
 		write_io( vdp_io3, 8'h00 );
+		wait_transfer_ready();
 		write_io( vdp_io3, 8'h01 );
+		wait_transfer_ready();
 		write_io( vdp_io3, 8'h0F );
+		wait_transfer_ready();
 		write_io( vdp_io3, 8'h0F );
+		wait_transfer_ready();
 		write_io( vdp_io3, 8'h0F );
+		wait_transfer_ready();
 		write_io( vdp_io3, 8'h0F );
+		wait_transfer_ready();
 		write_io( vdp_io3, 8'h0F );
+		wait_transfer_ready();
 		write_io( vdp_io3, 8'h0F );
+		wait_transfer_ready();
 		write_io( vdp_io3, 8'h0F );
+		wait_transfer_ready();
 		write_io( vdp_io3, 8'h0F );
+		wait_transfer_ready();
 		write_io( vdp_io3, 8'h0F );
+		wait_transfer_ready();
 		write_io( vdp_io3, 8'h0F );
+		wait_transfer_ready();
 		write_io( vdp_io3, 8'h01 );
+		wait_transfer_ready();
 		write_io( vdp_io3, 8'h00 );
+		wait_transfer_ready();
 		write_io( vdp_io3, 8'h00 );
+		wait_transfer_ready();
 
 		write_io( vdp_io3, 8'h00 );
+		wait_transfer_ready();
 		write_io( vdp_io3, 8'h01 );
+		wait_transfer_ready();
 		write_io( vdp_io3, 8'h01 );
+		wait_transfer_ready();
 		write_io( vdp_io3, 8'h0F );
+		wait_transfer_ready();
 		write_io( vdp_io3, 8'h0F );
+		wait_transfer_ready();
 		write_io( vdp_io3, 8'h01 );
+		wait_transfer_ready();
 		write_io( vdp_io3, 8'h0F );
+		wait_transfer_ready();
 		write_io( vdp_io3, 8'h0F );
+		wait_transfer_ready();
 		write_io( vdp_io3, 8'h0F );
+		wait_transfer_ready();
 		write_io( vdp_io3, 8'h0F );
+		wait_transfer_ready();
 		write_io( vdp_io3, 8'h0F );
+		wait_transfer_ready();
 		write_io( vdp_io3, 8'h0F );
+		wait_transfer_ready();
 		write_io( vdp_io3, 8'h0F );
+		wait_transfer_ready();
 		write_io( vdp_io3, 8'h01 );
+		wait_transfer_ready();
 		write_io( vdp_io3, 8'h00 );
+		wait_transfer_ready();
 		write_io( vdp_io3, 8'h00 );
+		wait_transfer_ready();
 	
 		write_io( vdp_io3, 8'h01 );
+		wait_transfer_ready();
 		write_io( vdp_io3, 8'h0F );
+		wait_transfer_ready();
 		write_io( vdp_io3, 8'h0F );
+		wait_transfer_ready();
 		write_io( vdp_io3, 8'h0F );
+		wait_transfer_ready();
 		write_io( vdp_io3, 8'h01 );
+		wait_transfer_ready();
 		write_io( vdp_io3, 8'h0F );
+		wait_transfer_ready();
 		write_io( vdp_io3, 8'h0F );
+		wait_transfer_ready();
 		write_io( vdp_io3, 8'h0F );
+		wait_transfer_ready();
 		write_io( vdp_io3, 8'h0F );
+		wait_transfer_ready();
 		write_io( vdp_io3, 8'h0F );
+		wait_transfer_ready();
 		write_io( vdp_io3, 8'h0F );
+		wait_transfer_ready();
 		write_io( vdp_io3, 8'h0F );
+		wait_transfer_ready();
 		write_io( vdp_io3, 8'h0F );
+		wait_transfer_ready();
 		write_io( vdp_io3, 8'h01 );
+		wait_transfer_ready();
 		write_io( vdp_io3, 8'h00 );
+		wait_transfer_ready();
 		write_io( vdp_io3, 8'h00 );
+		wait_transfer_ready();
 	
 		write_io( vdp_io3, 8'h01 );
+		wait_transfer_ready();
 		write_io( vdp_io3, 8'h0F );
+		wait_transfer_ready();
 		write_io( vdp_io3, 8'h0F );
+		wait_transfer_ready();
 		write_io( vdp_io3, 8'h0F );
+		wait_transfer_ready();
 		write_io( vdp_io3, 8'h01 );
+		wait_transfer_ready();
 		write_io( vdp_io3, 8'h0F );
+		wait_transfer_ready();
 		write_io( vdp_io3, 8'h0F );
+		wait_transfer_ready();
 		write_io( vdp_io3, 8'h01 );
+		wait_transfer_ready();
 		write_io( vdp_io3, 8'h0F );
+		wait_transfer_ready();
 		write_io( vdp_io3, 8'h0F );
+		wait_transfer_ready();
 		write_io( vdp_io3, 8'h0F );
+		wait_transfer_ready();
 		write_io( vdp_io3, 8'h0F );
+		wait_transfer_ready();
 		write_io( vdp_io3, 8'h0F );
+		wait_transfer_ready();
 		write_io( vdp_io3, 8'h01 );
+		wait_transfer_ready();
 		write_io( vdp_io3, 8'h00 );
+		wait_transfer_ready();
 		write_io( vdp_io3, 8'h00 );
+		wait_transfer_ready();
 
 		write_io( vdp_io3, 8'h00 );
+		wait_transfer_ready();
 		write_io( vdp_io3, 8'h01 );
+		wait_transfer_ready();
 		write_io( vdp_io3, 8'h0F );
+		wait_transfer_ready();
 		write_io( vdp_io3, 8'h0F );
+		wait_transfer_ready();
 		write_io( vdp_io3, 8'h0F );
+		wait_transfer_ready();
 		write_io( vdp_io3, 8'h01 );
+		wait_transfer_ready();
 		write_io( vdp_io3, 8'h01 );
+		wait_transfer_ready();
 		write_io( vdp_io3, 8'h0F );
+		wait_transfer_ready();
 		write_io( vdp_io3, 8'h0F );
+		wait_transfer_ready();
 		write_io( vdp_io3, 8'h0F );
+		wait_transfer_ready();
 		write_io( vdp_io3, 8'h0F );
+		wait_transfer_ready();
 		write_io( vdp_io3, 8'h0F );
+		wait_transfer_ready();
 		write_io( vdp_io3, 8'h01 );
+		wait_transfer_ready();
 		write_io( vdp_io3, 8'h01 );
+		wait_transfer_ready();
 		write_io( vdp_io3, 8'h01 );
+		wait_transfer_ready();
 		write_io( vdp_io3, 8'h00 );
+		wait_transfer_ready();
 
 		write_io( vdp_io3, 8'h01 );
+		wait_transfer_ready();
 		write_io( vdp_io3, 8'h0F );
+		wait_transfer_ready();
 		write_io( vdp_io3, 8'h01 );
+		wait_transfer_ready();
 		write_io( vdp_io3, 8'h0F );
+		wait_transfer_ready();
 		write_io( vdp_io3, 8'h0F );
+		wait_transfer_ready();
 		write_io( vdp_io3, 8'h0F );
+		wait_transfer_ready();
 		write_io( vdp_io3, 8'h0F );
+		wait_transfer_ready();
 		write_io( vdp_io3, 8'h0F );
+		wait_transfer_ready();
 		write_io( vdp_io3, 8'h0F );
+		wait_transfer_ready();
 		write_io( vdp_io3, 8'h0F );
+		wait_transfer_ready();
 		write_io( vdp_io3, 8'h0F );
+		wait_transfer_ready();
 		write_io( vdp_io3, 8'h01 );
+		wait_transfer_ready();
 		write_io( vdp_io3, 8'h01 );
+		wait_transfer_ready();
 		write_io( vdp_io3, 8'h0F );
+		wait_transfer_ready();
 		write_io( vdp_io3, 8'h0F );
+		wait_transfer_ready();
 		write_io( vdp_io3, 8'h01 );
+		wait_transfer_ready();
 
 		write_io( vdp_io3, 8'h01 );
+		wait_transfer_ready();
 		write_io( vdp_io3, 8'h0F );
+		wait_transfer_ready();
 		write_io( vdp_io3, 8'h0F );
+		wait_transfer_ready();
 		write_io( vdp_io3, 8'h01 );
+		wait_transfer_ready();
 		write_io( vdp_io3, 8'h01 );
+		wait_transfer_ready();
 		write_io( vdp_io3, 8'h0F );
+		wait_transfer_ready();
 		write_io( vdp_io3, 8'h0F );
+		wait_transfer_ready();
 		write_io( vdp_io3, 8'h0F );
+		wait_transfer_ready();
 		write_io( vdp_io3, 8'h0F );
+		wait_transfer_ready();
 		write_io( vdp_io3, 8'h01 );
+		wait_transfer_ready();
 		write_io( vdp_io3, 8'h01 );
+		wait_transfer_ready();
 		write_io( vdp_io3, 8'h0F );
+		wait_transfer_ready();
 		write_io( vdp_io3, 8'h0F );
+		wait_transfer_ready();
 		write_io( vdp_io3, 8'h0F );
+		wait_transfer_ready();
 		write_io( vdp_io3, 8'h01 );
+		wait_transfer_ready();
 		write_io( vdp_io3, 8'h00 );
+		wait_transfer_ready();
 
 		write_io( vdp_io3, 8'h00 );
+		wait_transfer_ready();
 		write_io( vdp_io3, 8'h01 );
+		wait_transfer_ready();
 		write_io( vdp_io3, 8'h0F );
+		wait_transfer_ready();
 		write_io( vdp_io3, 8'h0F );
+		wait_transfer_ready();
 		write_io( vdp_io3, 8'h0F );
+		wait_transfer_ready();
 		write_io( vdp_io3, 8'h01 );
+		wait_transfer_ready();
 		write_io( vdp_io3, 8'h01 );
+		wait_transfer_ready();
 		write_io( vdp_io3, 8'h01 );
+		wait_transfer_ready();
 		write_io( vdp_io3, 8'h01 );
+		wait_transfer_ready();
 		write_io( vdp_io3, 8'h0F );
+		wait_transfer_ready();
 		write_io( vdp_io3, 8'h0F );
+		wait_transfer_ready();
 		write_io( vdp_io3, 8'h0F );
+		wait_transfer_ready();
 		write_io( vdp_io3, 8'h01 );
+		wait_transfer_ready();
 		write_io( vdp_io3, 8'h01 );
+		wait_transfer_ready();
 		write_io( vdp_io3, 8'h00 );
+		wait_transfer_ready();
 		write_io( vdp_io3, 8'h00 );
+		wait_transfer_ready();
 
 		write_io( vdp_io3, 8'h00 );
+		wait_transfer_ready();
 		write_io( vdp_io3, 8'h00 );
+		wait_transfer_ready();
 		write_io( vdp_io3, 8'h01 );
+		wait_transfer_ready();
 		write_io( vdp_io3, 8'h01 );
+		wait_transfer_ready();
 		write_io( vdp_io3, 8'h01 );
+		wait_transfer_ready();
 		write_io( vdp_io3, 8'h00 );
+		wait_transfer_ready();
 		write_io( vdp_io3, 8'h00 );
+		wait_transfer_ready();
 		write_io( vdp_io3, 8'h00 );
+		wait_transfer_ready();
 		write_io( vdp_io3, 8'h00 );
+		wait_transfer_ready();
 		write_io( vdp_io3, 8'h01 );
+		wait_transfer_ready();
 		write_io( vdp_io3, 8'h01 );
+		wait_transfer_ready();
 		write_io( vdp_io3, 8'h01 );
+		wait_transfer_ready();
 		write_io( vdp_io3, 8'h00 );
+		wait_transfer_ready();
 		write_io( vdp_io3, 8'h00 );
+		wait_transfer_ready();
 		write_io( vdp_io3, 8'h00 );
+		wait_transfer_ready();
 		write_io( vdp_io3, 8'h00 );
 	endtask
 
@@ -760,10 +1037,10 @@ module tb ();
 		write_io( vdp_io1, 8'h00 );
 		write_io( vdp_io1, 8'h40 );
 
-//		for( i = 0; i < 32768; i = i + 1 ) begin
-//			write_io( vdp_io0, (i & 255) );
-//			repeat( $urandom(40) ) @( posedge clk14m );
-//		end
+		for( i = 0; i < (128 * 32) /* 32768 */; i = i + 1 ) begin
+			write_io( vdp_io0, (i & 255) );
+			repeat( $urandom(40) ) @( posedge clk14m );
+		end
 
 		$display( "[test002] Read VRAM" );
 		write_io( vdp_io1, 8'h00 );
@@ -777,6 +1054,21 @@ module tb ();
 //		end
 
 		repeat(500) @( posedge clk14m );
+
+		$display( "[test003] VDP Command LINE" );
+		write_io( vdp_io1, 8'd36 );
+		write_io( vdp_io1, 8'h80 + 8'd17 );
+		write_io( vdp_io3, 8'd100 );			//	R#36 DXl
+		write_io( vdp_io3, 8'd0 );				//	R#37 DXh
+		write_io( vdp_io3, 8'd100 );			//	R#38 DYl
+		write_io( vdp_io3, 8'd0 );				//	R#39 DYh
+		write_io( vdp_io3, 8'd0 );				//	R#40 NXl
+		write_io( vdp_io3, 8'd0 );				//	R#41 NXh
+		write_io( vdp_io3, 8'd0 );				//	R#42 NYl
+		write_io( vdp_io3, 8'd0 );				//	R#43 NYh
+		write_io( vdp_io3, 8'd6 );				//	R#44 COLOR
+		write_io( vdp_io3, 8'd0 );				//	R#45 ---
+		write_io( vdp_io3, 8'h70 );				//	R#46 LINE, IMP
 
 		//	VDP Command LMCM
 		$display( "[test003] VDP Command LMCM" );
@@ -1239,6 +1531,29 @@ module tb ();
 		write_io( vdp_io3, 8'd51 );				//	R#36 DXl
 		write_io( vdp_io3, 8'd0 );				//	R#37 DXh
 		write_io( vdp_io3, 8'd153 );			//	R#38 DYl
+		write_io( vdp_io3, 8'd0 );				//	R#39 DYh
+		write_io( vdp_io3, 8'd80 );				//	R#40 NXl
+		write_io( vdp_io3, 8'd0 );				//	R#41 NXh
+		write_io( vdp_io3, 8'd16 );				//	R#42 NYl
+		write_io( vdp_io3, 8'd0 );				//	R#43 NYh
+		write_io( vdp_io3, 8'd0 );				//	R#44 COLOR
+		write_io( vdp_io3, 8'd0 );				//	R#45 ARG
+		write_io( vdp_io3, 8'h90 );				//	R#46 LMMM
+
+		wait_vdp_command();
+		repeat( 100 ) @( posedge clk14m );
+
+		//	VDP Command LMMM
+		$display( "[test009] VDP Command LMMM (Block copy)" );
+		write_io( vdp_io1, 8'd32 );
+		write_io( vdp_io1, 8'h80 + 8'd17 );
+		write_io( vdp_io3, 8'd1 );				//	R#32 SXl
+		write_io( vdp_io3, 8'd0 );				//	R#33 SXh
+		write_io( vdp_io3, 8'd0 );				//	R#34 SYl
+		write_io( vdp_io3, 8'd0 );				//	R#35 SYh
+		write_io( vdp_io3, 8'd0 );				//	R#36 DXl
+		write_io( vdp_io3, 8'd0 );				//	R#37 DXh
+		write_io( vdp_io3, 8'd0 );				//	R#38 DYl
 		write_io( vdp_io3, 8'd0 );				//	R#39 DYh
 		write_io( vdp_io3, 8'd80 );				//	R#40 NXl
 		write_io( vdp_io3, 8'd0 );				//	R#41 NXh
