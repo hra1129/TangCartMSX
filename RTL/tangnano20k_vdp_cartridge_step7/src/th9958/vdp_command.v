@@ -80,6 +80,7 @@ module vdp_command (
 	//	Screen mode
 	input		[3:0]	screen_mode,
 	input				vram_interleave,
+	input		[7:0]	reg_text_back_color,
 	input				reg_command_enable,
 	input				reg_command_high_speed_mode,
 	input				reg_ext_command_mode,
@@ -212,6 +213,8 @@ module vdp_command (
 	reg					ff_read_color;
 	wire				w_sx_overflow;
 	wire				w_dx_overflow;
+	reg			[2:0]	ff_bit_count;
+	reg			[7:0]	ff_fore_color;
 
 	localparam			c_state_idle				= 6'd0;
 	localparam			c_state_stop				= 6'd1;
@@ -252,6 +255,9 @@ module vdp_command (
 	localparam			c_state_lrmm_wait_source	= 6'd37;
 	localparam			c_state_lrmm_make			= 6'd38;
 	localparam			c_state_lrmm_next			= 6'd39;
+	localparam			c_state_lfmc_read			= 6'd40;
+	localparam			c_state_lfmc_make			= 6'd41;
+	localparam			c_state_lfmc_next			= 6'd42;
 	localparam			c_state_wait_rdata_en		= 6'd60;
 	localparam			c_state_wait_counter		= 6'd61;
 	localparam			c_state_pre_finish			= 6'd62;
@@ -311,14 +317,12 @@ module vdp_command (
 			ff_sx <= 18'd0;
 		end
 		else if( ff_start ) begin
-			case( ff_command )
-			c_ymmm:
+			if( ff_command == c_ymmm ) begin
 				ff_sx	<= { 1'b0, reg_dx, 8'd0 };
-			c_hmmc, c_lmmc, c_hmmv, c_lmmv:
-				ff_sx	<= { 10'd128, 8'd0 };
-			default:
+			end
+			else begin
 				ff_sx	<= { 1'b0, reg_sx, 8'd0 };
-			endcase
+			end
 		end
 		else if( !ff_command_execute || ff_cache_vram_valid ) begin
 			//	hold
@@ -520,7 +524,7 @@ module vdp_command (
 	assign w_next_dx		= ff_dix ? ( { 1'b0, ff_dx } - w_next ): ( { 1'b0, ff_dx } + w_next );
 	assign w_next_dy		= ff_diy ? ( { 1'b0, ff_dy } - 12'd1  ): ( { 1'b0, ff_dy } + 12'd1  );
 	assign w_sx_active		= (ff_command == c_lmmm || ff_command == c_hmmm || ff_command == c_ymmm || ff_command == c_lmcm || ff_command == c_srch);
-	assign w_dx_active		= (ff_command == c_lmmm || ff_command == c_hmmm || ff_command == c_ymmm || ff_command == c_lmmc || ff_command == c_hmmc || ff_command == c_lmmv || ff_command == c_hmmv || ff_command == c_lrmm);
+	assign w_dx_active		= (ff_command == c_lmmm || ff_command == c_hmmm || ff_command == c_ymmm || ff_command == c_lmmc || ff_command == c_hmmc || ff_command == c_lmmv || ff_command == c_hmmv || ff_command == c_lrmm || ff_command == c_lfmc);
 	assign w_sx_overflow	= w_sx_active && (w_next_sx[9] || (!w_512pixel && w_next_sx[8]));
 	assign w_dx_overflow	= w_dx_active && (w_next_dx[9] || (!w_512pixel && w_next_dx[8]));
 
@@ -692,21 +696,26 @@ module vdp_command (
 	always @( posedge clk or negedge reset_n ) begin
 		if( !reset_n ) begin
 			ff_transfer_ready		<= 1'b0;
+			ff_fore_color			<= 8'd0;
 		end
 		else if( register_write && (register_num == 6'd44) ) begin
-			//	lmmc, hmmc が VRAM へ書き終えるまで、転送禁止 (CPU→R#44)
+			//	lmmc, hmmc, lfmc が VRAM へ書き終えるまで、転送禁止 (CPU→R#44)
 			ff_transfer_ready		<= 1'b0;
 		end
-		else if( (ff_command == c_lmmc && ff_state == c_state_lmmc_next) || 
-		         (ff_command == c_hmmc && ff_state == c_state_hmmc_next) ) begin
-			//	lmmc, hmmc が VRAM へ書き終えたので、転送許可 (CPU→R#44)
+		else if( ff_state == c_state_lmmc_next || ff_state == c_state_hmmc_next || (ff_state == c_state_lfmc_next && ff_bit_count == 3'd0) ) begin
+			//	lmmc, hmmc, lfmc が VRAM へ書き終えたので、転送許可 (CPU→R#44)
 			ff_transfer_ready		<= 1'b1;
 		end
 		else if( ff_command == c_lmcm && ff_start ) begin
 			//	lmcm が開始されたので、転送禁止 (S#7→CPU)
 			ff_transfer_ready		<= 1'b0;
 		end
-		else if( ff_command == c_lmcm && ff_state == c_state_lmcm_make ) begin
+		else if( ff_command == c_lfmc && ff_start ) begin
+			//	lfmc が開始されたので、転送許可
+			ff_transfer_ready		<= 1'b1;
+			ff_fore_color			<= ff_color;
+		end
+		else if( ff_state == c_state_lmcm_make ) begin
 			//	lmcm が VRAM を読みだしたので、転送許可 (S#7→CPU)
 			ff_transfer_ready		<= 1'b1;
 		end
@@ -1167,16 +1176,21 @@ module vdp_command (
 
 			//	LMMC command --------------------------------------------------
 			c_state_lmmc: begin
-				//	Copy source pixel value
-				ff_source				<= ff_color;
-				//	Read the location of (DX, DY)
-				ff_cache_vram_address	<= w_address_d;
-				ff_cache_vram_valid		<= 1'b1;
-				ff_cache_vram_write		<= 1'b0;
-				ff_state				<= c_state_wait_rdata_en;
-				ff_next_state			<= c_state_lmmc_make;
-				ff_wait_count			<= c_wait_lmmc;
-				ff_xsel					<= ff_dx[1:0];
+				if( ff_transfer_ready ) begin
+					//	書き込まれる（ff_transfer_ready = 0）まで待機
+				end
+				else begin
+					//	Copy source pixel value
+					ff_source				<= ff_color;
+					//	Read the location of (DX, DY)
+					ff_cache_vram_address	<= w_address_d;
+					ff_cache_vram_valid		<= 1'b1;
+					ff_cache_vram_write		<= 1'b0;
+					ff_state				<= c_state_wait_rdata_en;
+					ff_next_state			<= c_state_lmmc_make;
+					ff_wait_count			<= c_wait_lmmc;
+					ff_xsel					<= ff_dx[1:0];
+				end
 			end
 			c_state_lmmc_make: begin
 				//	Write the location of (DX, DY)
@@ -1196,14 +1210,11 @@ module vdp_command (
 			end
 			c_state_lmmc_next: begin
 				ff_count_valid			<= 1'b0;
-				if( (ff_nx == 11'd0 || w_sx_overflow || w_dx_overflow) && ff_ny == 11'd0 ) begin
+				if( (ff_nx == 11'd0 || w_dx_overflow) && ff_ny == 11'd0 ) begin
 					ff_state				<= c_state_pre_finish;
 				end
-				else if( !ff_transfer_ready ) begin
-					ff_state				<= c_state_lmmc;
-				end
 				else begin
-					//	hold
+					ff_state				<= c_state_lmmc;
 				end
 			end
 
@@ -1308,31 +1319,33 @@ module vdp_command (
 
 			//	HMMC command --------------------------------------------------
 			c_state_hmmc: begin
-				//	Write the location of (DX, DY)
-				ff_cache_vram_address	<= w_address_d;
-				ff_cache_vram_valid		<= 1'b1;
-				ff_cache_vram_write		<= 1'b1;
-				ff_cache_vram_wdata		<= ff_color;
-				ff_count_valid			<= 1'b1;
-				if( reg_command_high_speed_mode ) begin
-					ff_state				<= c_state_hmmc_next;
+				if( ff_transfer_ready ) begin
+					//	書き込まれる（ff_transfer_ready = 0）まで待機
 				end
 				else begin
-					ff_wait_counter			<= { c_wait_ymmm, 2'b11 };
-					ff_next_state			<= c_state_hmmc_next;
-					ff_state				<= c_state_wait_counter;
+					//	Write the location of (DX, DY)
+					ff_cache_vram_address	<= w_address_d;
+					ff_cache_vram_valid		<= 1'b1;
+					ff_cache_vram_write		<= 1'b1;
+					ff_cache_vram_wdata		<= ff_color;
+					ff_count_valid			<= 1'b1;
+					if( reg_command_high_speed_mode ) begin
+						ff_state				<= c_state_hmmc_next;
+					end
+					else begin
+						ff_wait_counter			<= { c_wait_ymmm, 2'b11 };
+						ff_next_state			<= c_state_hmmc_next;
+						ff_state				<= c_state_wait_counter;
+					end
 				end
 			end
 			c_state_hmmc_next: begin
 				ff_count_valid			<= 1'b0;
-				if( (ff_nx == 11'd0 || w_sx_overflow || w_dx_overflow) && ff_ny == 11'd0 ) begin
+				if( (ff_nx == 11'd0 || w_dx_overflow) && ff_ny == 11'd0 ) begin
 					ff_state				<= c_state_pre_finish;
 				end
-				else if( !ff_transfer_ready ) begin
-					ff_state				<= c_state_hmmc;
-				end
 				else begin
-					//	hold
+					ff_state				<= c_state_hmmc;
 				end
 			end
 
@@ -1373,6 +1386,52 @@ module vdp_command (
 				end
 				else begin
 					ff_state				<= c_state_lrmm;
+				end
+			end
+
+			//	LFMC command --------------------------------------------------
+			c_state_lfmc: begin
+				if( ff_transfer_ready ) begin
+					//	書き込まれる（ff_transfer_ready = 0）まで待機
+				end
+				else begin
+					ff_bit_count			<= 3'd7;
+					ff_state				<= c_state_lfmc_read;
+				end
+			end
+			c_state_lfmc_read: begin
+				//	Copy source pixel value
+				ff_source				<= ff_color[ ff_bit_count ] ? ff_fore_color : reg_text_back_color;
+				//	Read the location of (DX, DY)
+				ff_cache_vram_address	<= w_address_d;
+				ff_cache_vram_valid		<= 1'b1;
+				ff_cache_vram_write		<= 1'b0;
+				ff_state				<= c_state_wait_rdata_en;
+				ff_next_state			<= c_state_lfmc_make;
+				ff_xsel					<= ff_dx[1:0];
+			end
+			c_state_lfmc_make: begin
+				//	Write the location of (DX, DY)
+				ff_cache_vram_address	<= w_address_d;
+				ff_cache_vram_valid		<= 1'b1;
+				ff_cache_vram_write		<= 1'b1;
+				ff_cache_vram_wdata		<= w_destination;
+				ff_count_valid			<= 1'b1;
+				ff_state				<= c_state_lfmc_next;
+			end
+			c_state_lfmc_next: begin
+				ff_count_valid			<= 1'b0;
+				ff_bit_count			<= ff_bit_count - 3'd1;
+				if( (ff_nx == 11'd0 || w_sx_overflow || w_dx_overflow) ) begin
+					if( ff_ny == 11'd0 ) begin
+						ff_state				<= c_state_pre_finish;
+					end
+					else begin
+						ff_state				<= c_state_lfmc;
+					end
+				end
+				else begin
+					ff_state				<= c_state_lfmc_read;
 				end
 			end
 

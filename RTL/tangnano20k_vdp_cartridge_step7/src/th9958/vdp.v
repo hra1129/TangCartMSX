@@ -380,6 +380,7 @@ module vdp (
 		.status_border_position						( w_status_border_position					),
 		.screen_mode								( w_screen_mode								),
 		.vram_interleave							( w_vram_interleave							),
+		.reg_text_back_color						( reg_text_back_color						),
 		.reg_command_enable							( reg_command_enable						),
 		.reg_command_high_speed_mode				( reg_command_high_speed_mode				),
 		.reg_ext_command_mode						( reg_ext_command_mode						),
