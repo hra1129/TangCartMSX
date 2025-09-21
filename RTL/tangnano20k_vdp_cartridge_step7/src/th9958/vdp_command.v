@@ -169,6 +169,10 @@ module vdp_command (
 	reg			[10:0]	ff_ny;
 	reg			[15:0]	reg_vx;
 	reg			[15:0]	reg_vy;
+	reg			[8:0]	reg_wsx;
+	reg			[10:0]	reg_wsy;
+	reg			[8:0]	reg_wex;
+	reg			[10:0]	reg_wey;
 	wire		[10:0]	w_nx;
 	wire		[10:0]	w_ny;
 	reg			[11:0]	ff_nyb;
@@ -799,6 +803,65 @@ module vdp_command (
 	end
 
 	// --------------------------------------------------------------------
+	//	Input window registers
+	// --------------------------------------------------------------------
+	always @( posedge clk or negedge reset_n ) begin
+		if( !reset_n ) begin
+			reg_wsx	<= 9'd0;
+		end
+		else if( register_write ) begin
+			if( register_num == 6'd51 ) begin
+				reg_wsx[7:0]	<= register_data;
+			end
+			else if( register_num == 6'd52 ) begin
+				reg_wsx[8]		<= register_data[0];
+			end
+		end
+	end
+
+	always @( posedge clk or negedge reset_n ) begin
+		if( !reset_n ) begin
+			reg_wsy	<= 11'd0;
+		end
+		else if( register_write ) begin
+			if( register_num == 6'd53 ) begin
+				reg_wsy[7:0]	<= register_data;
+			end
+			else if( register_num == 6'd54 ) begin
+				reg_wsy[10:8]	<= register_data[2:0];
+			end
+		end
+	end
+
+	always @( posedge clk or negedge reset_n ) begin
+		if( !reset_n ) begin
+			reg_wex	<= 9'h1FF;
+		end
+		else if( register_write ) begin
+			if( register_num == 6'd55 ) begin
+				reg_wex[7:0]	<= register_data;
+			end
+			else if( register_num == 6'd56 ) begin
+				reg_wex[8]		<= register_data[0];
+			end
+		end
+	end
+
+	always @( posedge clk or negedge reset_n ) begin
+		if( !reset_n ) begin
+			reg_wey	<= 11'h7FF;
+		end
+		else if( register_write ) begin
+			if( register_num == 6'd57 ) begin
+				reg_wey[7:0]	<= register_data;
+			end
+			else if( register_num == 6'd58 ) begin
+				reg_wey[10:8]	<= register_data[2:0];
+			end
+		end
+	end
+
+	// --------------------------------------------------------------------
 	//	State machine
 	// --------------------------------------------------------------------
 	always @( posedge clk or negedge reset_n ) begin
@@ -1361,7 +1424,13 @@ module vdp_command (
 			end
 			c_state_lrmm_wait_source: begin
 				//	Copy source pixel value
-				ff_source				<= ff_read_pixel;
+				if( ff_sx[17:8] < { 1'b0, reg_wsx } || ff_sy[18:8] < reg_wsy || ff_sx[17:8] > { 1'b0, reg_wex } || ff_sy[18:8] > reg_wey ) begin
+					//	Replace color in outside of window
+					ff_source				<= ff_color;
+				end
+				else begin
+					ff_source				<= ff_read_pixel;
+				end
 				//	Read the location of (DX, DY)
 				ff_cache_vram_address	<= w_address_d;
 				ff_cache_vram_valid		<= 1'b1;
