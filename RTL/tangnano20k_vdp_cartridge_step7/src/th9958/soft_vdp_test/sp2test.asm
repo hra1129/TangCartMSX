@@ -172,7 +172,7 @@ cls::
 			; スプライトアトリビュートを初期化
 			ld		hl, 0x1E00
 			ld		bc, 32 * 4
-			ld		e, 208
+			ld		e, 216
 			call	fill_vram
 			ret
 			endscope

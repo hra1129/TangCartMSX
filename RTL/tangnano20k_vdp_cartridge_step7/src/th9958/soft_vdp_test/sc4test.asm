@@ -60,7 +60,7 @@ screen4::
 			ld		hl, 0x2000
 			call	set_color_table
 			; Sprite Attribute Table
-			ld		hl, 0x1B00
+			ld		hl, 0x1E00
 			call	set_sprite_attribute_table
 			; Sprite Pattern Generator Table
 			ld		hl, 0x3800
