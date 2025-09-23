@@ -285,7 +285,7 @@ module vdp_sprite_info_collect (
 		end
 	end
 
-	assign vram_address		= ff_vram_valid ? ff_vram_address: 17'd0;
+	assign vram_address		= ff_vram_valid ? ff_vram_address: 18'd0;
 	assign vram_valid		= ff_vram_valid;
 
 	assign makeup_plane		= ff_current_plane[2:0];

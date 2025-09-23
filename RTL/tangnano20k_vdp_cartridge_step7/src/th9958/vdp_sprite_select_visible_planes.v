@@ -89,6 +89,7 @@ module vdp_sprite_select_visible_planes (
 	wire		[9:0]	w_screen_pos_x;
 	wire		[2:0]	w_phase;
 	wire		[3:0]	w_sub_phase;
+	reg					ff_screen_h_active;
 	reg			[4:0]	ff_current_plane_num;		//	Plane#0...#31
 	reg					ff_vram_valid;
 	reg			[3:0]	ff_selected_count;
@@ -118,6 +119,18 @@ module vdp_sprite_select_visible_planes (
 	assign w_selected_full			= ff_selected_count[3] | (ff_selected_count[2] && !sprite_mode2) | ff_select_finish;
 	assign w_finish_line			= sprite_mode2 ? 8'd216: 8'd208;
 
+	always @( posedge clk or negedge reset_n ) begin
+		if( !reset_n ) begin
+			ff_screen_h_active <= 1'b0;
+		end
+		else if( screen_pos_x == 14'h3FFF ) begin
+			ff_screen_h_active <= 1'b1;
+		end
+		else if( screen_pos_x[13:4] == 10'd263 && screen_pos_x[3:0] == 4'd15 ) begin
+			ff_screen_h_active <= 1'b0;
+		end
+	end
+
 	// --------------------------------------------------------------------
 	//	Read VRAM request for sprite attribute table
 	// --------------------------------------------------------------------
@@ -126,7 +139,7 @@ module vdp_sprite_select_visible_planes (
 			ff_current_plane_num	<= 5'd0;
 			ff_vram_valid			<= 1'b0;
 		end
-		else if( !screen_active || !reg_display_on || w_screen_pos_x[9]  ) begin
+		else if( !screen_active || !ff_screen_h_active || !reg_display_on || w_screen_pos_x[9]  ) begin
 			//	hold
 		end
 		else if( w_phase == 3'd6 && w_sub_phase == 4'd0 ) begin
@@ -156,7 +169,7 @@ module vdp_sprite_select_visible_planes (
 			ff_pattern	<= 8'd0;
 			ff_color	<= 8'd0;
 		end
-		else if( !screen_active || !reg_display_on ) begin
+		else if( !screen_active || !ff_screen_h_active || !reg_display_on ) begin
 			//	hold
 		end
 		else if( w_phase == 3'd6 && w_sub_phase == 4'd12 ) begin
@@ -185,7 +198,7 @@ module vdp_sprite_select_visible_planes (
 			ff_selected_en		<= 1'b0;
 			ff_select_finish	<= 1'b0;
 		end
-		else if( !screen_active || !reg_display_on ) begin
+		else if( !screen_active || !ff_screen_h_active || !reg_display_on ) begin
 			//	hold
 		end
 		else if( w_phase == 3'd7 ) begin
