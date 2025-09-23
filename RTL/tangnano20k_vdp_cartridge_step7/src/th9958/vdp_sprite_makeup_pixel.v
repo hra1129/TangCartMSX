@@ -61,7 +61,7 @@ module vdp_sprite_makeup_pixel (
 
 	input		[13:0]	screen_pos_x,
 	input		[7:0]	pixel_pos_y,
-	input				screen_active,
+	input				screen_v_active,
 
 	input				sprite_mode2,
 	input				reg_display_on,
@@ -370,7 +370,7 @@ module vdp_sprite_makeup_pixel (
 			ff_color		<= 4'd0;
 		end
 		else if( !w_sub_phase[3] && (sprite_mode2 || !w_sub_phase[2]) ) begin
-			ff_color_en		<= w_sprite_en & w_pattern[ w_bit_sel ] & w_active & screen_active;
+			ff_color_en		<= w_sprite_en & w_pattern[ w_bit_sel ] & w_active & screen_v_active;
 			ff_color		<= w_color[3:0];
 		end
 		else begin

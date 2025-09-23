@@ -17,6 +17,7 @@ start:
 			call	sp2_pattern_test2
 			call	sp2_32plane
 			call	sp2_screen_out
+			call	sp2_screen_out2
 
 			; 後始末
 			; R#15 = 0x00
@@ -494,7 +495,7 @@ sp2_32plane::
 			endscope
 
 ; =============================================================================
-;	[SCREEN4] 左右のはみ出し
+;	[SCREEN4] 左右のはみ出し確認
 ;	input:
 ;		none
 ;	output:
@@ -566,7 +567,62 @@ sp2_screen_out::
 			ret
 
 	s_message:
-			db		"[T004] OVERSPILL BEYOND THE SCREEN", 0
+			db		"[T004] OVERSPILL BEYOND THE SCREEN (LEFT/RIGHT)", 0
 	attribute:	;   Y  X  Pattern Color + EC
 			db		0, 0,      64, 0
+			endscope
+
+; =============================================================================
+;	[SCREEN4] 上下のはみ出し確認
+;	input:
+;		none
+;	output:
+;		none
+;	break:
+;		AF
+;	comment:
+;		none
+; =============================================================================
+			scope	sp2_screen_out2
+sp2_screen_out2::
+			call	cls
+			; Put test name
+			ld		hl, 0x18A0
+			ld		de, s_message
+			call	puts
+			; R#1 = 0x43
+			ld		a, 0x43							; 16x16, 拡大する
+			ld		e, 1
+			call	write_control_register
+
+			ld		l, 0
+			ld		a, 15
+			call	set_sprite_color
+
+			ld		a, 15
+			ld		[attribute + 3], a
+			xor		a, -32
+			ld		[attribute + 0], a
+
+	loop:
+			ld		hl, attribute
+			ld		de, 0x1E00
+			ld		bc, 4
+			call	block_copy
+
+			call	wait
+			ld		a, [attribute + 0]
+			inc		a
+			ld		[attribute + 0], a
+
+			cp		a, 212
+			jr		nz, loop
+
+			call	wait_push_space_key
+			ret
+
+	s_message:
+			db		"[T005] OVERSPILL BEYOND THE SCREEN (UPPER/BOTTON)", 0
+	attribute:	;     Y   X  Pattern Color + EC
+			db		-32, 60,      64, 0
 			endscope

@@ -61,7 +61,8 @@ module vdp_sprite_info_collect (
 	input				start_info_collect,
 
 	input		[13:0]	screen_pos_x,
-	input				screen_active,
+	input				screen_v_active,
+	input				screen_h_active,
 
 	output		[17:0]	vram_address,
 	output				vram_valid,
@@ -108,7 +109,6 @@ module vdp_sprite_info_collect (
 	reg					ff_vram_valid;
 	reg					ff_active;
 	reg					ff_sprite_mode2;
-	reg					ff_screen_h_active;
 
 	// --------------------------------------------------------------------
 	//	Information RAM
@@ -139,7 +139,7 @@ module vdp_sprite_info_collect (
 			ff_selected_ram[6] <= 32'd0;
 			ff_selected_ram[7] <= 32'd0;
 		end
-		else if( screen_active && ff_screen_h_active && reg_display_on ) begin
+		else if( screen_v_active && screen_h_active && reg_display_on ) begin
 			if( selected_en ) begin
 				//	Update information RAM by select_visible_planes
 				ff_selected_ram[ ff_current_plane ] <= w_selected_d;
@@ -147,21 +147,6 @@ module vdp_sprite_info_collect (
 		end
 		else begin
 			ff_selected_q <= ff_selected_ram[ ff_current_plane ];
-		end
-	end
-
-	always @( posedge clk or negedge reset_n ) begin
-		if( !reset_n ) begin
-			ff_screen_h_active <= 1'b0;
-		end
-		else if( screen_pos_x == 14'h3FFF ) begin
-			ff_screen_h_active <= 1'b1;
-		end
-		else if( start_info_collect ) begin
-			ff_screen_h_active <= 1'b0;
-		end
-		else begin
-			//	hold
 		end
 	end
 
@@ -217,7 +202,7 @@ module vdp_sprite_info_collect (
 			ff_vram_address		<= 17'd0;
 			ff_vram_valid		<= 1'b0;
 		end
-		else if( screen_active && ff_screen_h_active ) begin
+		else if( screen_v_active && screen_h_active ) begin
 			//	映像期間に VRAM から情報収集
 			if( selected_en ) begin
 				ff_current_plane	<= w_next_plane;
