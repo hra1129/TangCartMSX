@@ -15,7 +15,8 @@ start:
 			call	screen5
 			call	s5_load_image
 			call	s5_copy
-			call	s5_draw_font
+;			call	s5_draw_font
+			call	s5_draw_vram_font
 
 			call	wait_push_space_key
 			ei
@@ -405,4 +406,190 @@ s5_draw_font::
 	message1:
 			db		"This is MSX Computer.", 10
 			db		"V9968 VDP included.", 0
+			endscope
+
+; =============================================================================
+			scope	s5_draw_vram_font
+s5_draw_vram_font::
+			ld		hl, vram_font
+			ld		de, 0x80 * 100			; ( 0, 100 ) の見えるところにフォントデータを置いてみる
+			ld		bc, 10 * 14
+			call	block_copy
+			; R#12 = 0x0C
+			ld		a, 0x0C
+			ld		e, 12
+			call	write_control_register
+
+			call	wait_command
+			ld		hl, data
+			ld		a, 32
+			ld		b, 15
+			call	run_command
+			ret
+
+	data:
+			dw		0x80 * 100	; SX フォントデータのアドレス下位
+			dw		0			; SY フォントデータのアドレス上位
+			dw		0			; DX 転送先位置
+			dw		50			; DY 転送先位置
+			dw		14			; NX 14文字
+			dw		10			; NY 1文字のライン数
+			db		11			; CLR
+			db		0b0000000	; ARG [-][-][-][-][DIY][DIX][-][-]
+			db		0x10		; CMD (LFMM)
+
+	vram_font:
+			db		0b11111110
+			db		0b00010000
+			db		0b00010000
+			db		0b00010000
+			db		0b00010000
+			db		0b00010000
+			db		0b00010000
+			db		0b00010000
+			db		0b00111000
+			db		0b00000000
+
+			db		0b10000000
+			db		0b10000000
+			db		0b10000000
+			db		0b10000000
+			db		0b11111100
+			db		0b10000010
+			db		0b10000010
+			db		0b10000010
+			db		0b10000010
+			db		0b00000000
+
+			db		0b00000000
+			db		0b00010000
+			db		0b00010000
+			db		0b00000000
+			db		0b00110000
+			db		0b00010000
+			db		0b00010000
+			db		0b00010000
+			db		0b00111000
+			db		0b00000000
+
+			db		0b00000000
+			db		0b00000000
+			db		0b00000000
+			db		0b00000000
+			db		0b01111100
+			db		0b10000000
+			db		0b01111100
+			db		0b00000010
+			db		0b01111100
+			db		0b00000000
+
+			db		0b00000000
+			db		0b00000000
+			db		0b00000000
+			db		0b00000000
+			db		0b00000000
+			db		0b00000000
+			db		0b00000000
+			db		0b00000000
+			db		0b00000000
+			db		0b00000000
+
+			db		0b00000000
+			db		0b00010000
+			db		0b00010000
+			db		0b00000000
+			db		0b00110000
+			db		0b00010000
+			db		0b00010000
+			db		0b00010000
+			db		0b00111000
+			db		0b00000000
+
+			db		0b00000000
+			db		0b00000000
+			db		0b00000000
+			db		0b00000000
+			db		0b01111100
+			db		0b10000000
+			db		0b01111100
+			db		0b00000010
+			db		0b01111100
+			db		0b00000000
+
+			db		0b00000000
+			db		0b00000000
+			db		0b00000000
+			db		0b00000000
+			db		0b00000000
+			db		0b00000000
+			db		0b00000000
+			db		0b00000000
+			db		0b00000000
+			db		0b00000000
+
+			db		0b00000000
+			db		0b00000000
+			db		0b00000000
+			db		0b01111000
+			db		0b00000100
+			db		0b01111100
+			db		0b10000100
+			db		0b10000100
+			db		0b01111010
+			db		0b00000000
+
+			db		0b00000000
+			db		0b00000000
+			db		0b00000000
+			db		0b00000000
+			db		0b00000000
+			db		0b00000000
+			db		0b00000000
+			db		0b00000000
+			db		0b00000000
+			db		0b00000000
+
+			db		0b11111111
+			db		0b11001111
+			db		0b11000111
+			db		0b11000111
+			db		0b10000010
+			db		0b10000010
+			db		0b10010000
+			db		0b10011000
+			db		0b10011000
+			db		0b11111111
+
+			db		0b11111111
+			db		0b10011100
+			db		0b00011000
+			db		0b00011000
+			db		0b00001000
+			db		0b00001100
+			db		0b01001111
+			db		0b11000000
+			db		0b11000000
+			db		0b11111111
+
+			db		0b11111111
+			db		0b00000001
+			db		0b00000000
+			db		0b11111100
+			db		0b00001110
+			db		0b00000110
+			db		0b11100100
+			db		0b00000000
+			db		0b00000001
+			db		0b11111111
+
+			db		0b11111111
+			db		0b11110001
+			db		0b11100011
+			db		0b01000111
+			db		0b00001111
+			db		0b00001111
+			db		0b01000111
+			db		0b11100011
+			db		0b11110001
+			db		0b11111111
 			endscope

@@ -336,6 +336,9 @@ module vdp_command (
 		else if( register_write && register_num == 6'd34 ) begin
 			ff_font_address[17:16]	<= register_data[1:0];
 		end
+		else if( ff_cache_vram_valid ) begin
+			//	hold
+		end
 		else if( ff_count_valid && ff_bit_count == 3'd0 ) begin
 			ff_font_address	<= ff_font_address + 18'd1;
 		end
@@ -455,12 +458,18 @@ module vdp_command (
 		if( !reset_n ) begin
 			reg_dx	<= 9'd0;
 		end
-		else if( register_write ) begin
-			if( register_num == 6'd36 ) begin
-				reg_dx[7:0]	<= register_data;
+		else if( register_write && register_num == 6'd36 ) begin
+			reg_dx[7:0]	<= register_data;
+		end
+		else if( register_write && register_num == 6'd37 ) begin
+			reg_dx[8]	<= register_data[0];
+		end
+		else if( ff_command == c_lfmm ) begin
+			if( ff_count_valid && ff_bit_count == 3'd0 && ff_ny == 11'd0 ) begin
+				reg_dx	<= w_next_dx[8:0];
 			end
-			else if( register_num == 6'd37 ) begin
-				reg_dx[8]	<= register_data[0];
+			else begin
+				//	hold
 			end
 		end
 	end
@@ -486,6 +495,14 @@ module vdp_command (
 					if( w_line_shift ) begin
 						ff_dx <= w_next_dx[8:0];
 					end
+				end
+			end
+			else if( ff_command == c_lfmm ) begin
+				if( (ff_bit_count == 3'd0 && ff_ny != 11'd0) || w_dx_overflow ) begin
+					ff_dx <= reg_dx;
+				end
+				else begin
+					ff_dx <= w_next_dx[8:0];
 				end
 			end
 			else begin
@@ -543,16 +560,16 @@ module vdp_command (
 				end
 			end
 			else if( ff_command == c_lfmm ) begin
-				if( ff_bit_count == 3'd0 ) begin
+				if( ff_bit_count == 3'd0 || w_dx_overflow ) begin
 					if( ff_ny == 11'd0 ) begin
-                        ff_dy <= ff_sy2[18:8];
-                    end
-                    else begin
-                        ff_dy <= w_next_dy[10:0];
-                    end
+						ff_dy <= ff_sy2[18:8];
+					end
+					else begin
+						ff_dy <= w_next_dy[10:0];
+					end
 				end
 				else begin
-					ff_dy <= w_next_dy[10:0];
+					//	hold
 				end
 			end
 			else begin
@@ -636,10 +653,8 @@ module vdp_command (
 				end
 			end
 			else if( ff_command == c_lfmm ) begin
-				if( ff_bit_count == 3'd0 ) begin
-					if( ff_ny != 11'd0 ) begin
-						ff_nx <= w_nx;
-					end
+				if( ff_ny == 11'd0 ) begin
+					ff_nx <= w_nx;
 				end
 			end
 			else if( ff_nx == 11'd0 || w_sx_overflow || w_dx_overflow ) begin
@@ -789,6 +804,9 @@ module vdp_command (
 		else if( ff_command == c_lfmc && ff_start ) begin
 			//	lfmc が開始されたので、転送許可
 			ff_transfer_ready		<= 1'b1;
+			ff_fore_color			<= ff_color;
+		end
+		else if( ff_command == c_lfmm && ff_start ) begin
 			ff_fore_color			<= ff_color;
 		end
 		else if( ff_state == c_state_lmcm_make ) begin

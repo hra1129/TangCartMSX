@@ -472,6 +472,166 @@ module tb ();
 			repeat( $urandom(40) ) @( posedge clk14m );
 		end
 
+		//	font data on VRAM 0x03200
+		write_io( vdp_io1, 8'h00 );
+		write_io( vdp_io1, 8'h8E );
+		write_io( vdp_io1, 8'h00 );
+		write_io( vdp_io1, 8'h40 + 8'h32 );
+
+		write_io( vdp_io0, 8'b11111110 );
+		write_io( vdp_io0, 8'b00010000 );
+		write_io( vdp_io0, 8'b00010000 );
+		write_io( vdp_io0, 8'b00010000 );
+		write_io( vdp_io0, 8'b00010000 );
+		write_io( vdp_io0, 8'b00010000 );
+		write_io( vdp_io0, 8'b00010000 );
+		write_io( vdp_io0, 8'b00010000 );
+		write_io( vdp_io0, 8'b00111000 );
+		write_io( vdp_io0, 8'b00000000 );
+
+		write_io( vdp_io0, 8'b10000000 );
+		write_io( vdp_io0, 8'b10000000 );
+		write_io( vdp_io0, 8'b10000000 );
+		write_io( vdp_io0, 8'b10000000 );
+		write_io( vdp_io0, 8'b11111100 );
+		write_io( vdp_io0, 8'b10000010 );
+		write_io( vdp_io0, 8'b10000010 );
+		write_io( vdp_io0, 8'b10000010 );
+		write_io( vdp_io0, 8'b10000010 );
+		write_io( vdp_io0, 8'b00000000 );
+
+		write_io( vdp_io0, 8'b00000000 );
+		write_io( vdp_io0, 8'b00010000 );
+		write_io( vdp_io0, 8'b00010000 );
+		write_io( vdp_io0, 8'b00000000 );
+		write_io( vdp_io0, 8'b00110000 );
+		write_io( vdp_io0, 8'b00010000 );
+		write_io( vdp_io0, 8'b00010000 );
+		write_io( vdp_io0, 8'b00010000 );
+		write_io( vdp_io0, 8'b00111000 );
+		write_io( vdp_io0, 8'b00000000 );
+
+		write_io( vdp_io0, 8'b00000000 );
+		write_io( vdp_io0, 8'b00000000 );
+		write_io( vdp_io0, 8'b00000000 );
+		write_io( vdp_io0, 8'b00000000 );
+		write_io( vdp_io0, 8'b01111100 );
+		write_io( vdp_io0, 8'b10000000 );
+		write_io( vdp_io0, 8'b01111100 );
+		write_io( vdp_io0, 8'b00000010 );
+		write_io( vdp_io0, 8'b01111100 );
+		write_io( vdp_io0, 8'b00000000 );
+
+		write_io( vdp_io0, 8'b00000000 );
+		write_io( vdp_io0, 8'b00000000 );
+		write_io( vdp_io0, 8'b00000000 );
+		write_io( vdp_io0, 8'b00000000 );
+		write_io( vdp_io0, 8'b00000000 );
+		write_io( vdp_io0, 8'b00000000 );
+		write_io( vdp_io0, 8'b00000000 );
+		write_io( vdp_io0, 8'b00000000 );
+		write_io( vdp_io0, 8'b00000000 );
+		write_io( vdp_io0, 8'b00000000 );
+
+		write_io( vdp_io0, 8'b00000000 );
+		write_io( vdp_io0, 8'b00010000 );
+		write_io( vdp_io0, 8'b00010000 );
+		write_io( vdp_io0, 8'b00000000 );
+		write_io( vdp_io0, 8'b00110000 );
+		write_io( vdp_io0, 8'b00010000 );
+		write_io( vdp_io0, 8'b00010000 );
+		write_io( vdp_io0, 8'b00010000 );
+		write_io( vdp_io0, 8'b00111000 );
+		write_io( vdp_io0, 8'b00000000 );
+
+		write_io( vdp_io0, 8'b00000000 );
+		write_io( vdp_io0, 8'b00000000 );
+		write_io( vdp_io0, 8'b00000000 );
+		write_io( vdp_io0, 8'b00000000 );
+		write_io( vdp_io0, 8'b01111100 );
+		write_io( vdp_io0, 8'b10000000 );
+		write_io( vdp_io0, 8'b01111100 );
+		write_io( vdp_io0, 8'b00000010 );
+		write_io( vdp_io0, 8'b01111100 );
+		write_io( vdp_io0, 8'b00000000 );
+
+		write_io( vdp_io0, 8'b00000000 );
+		write_io( vdp_io0, 8'b00000000 );
+		write_io( vdp_io0, 8'b00000000 );
+		write_io( vdp_io0, 8'b00000000 );
+		write_io( vdp_io0, 8'b00000000 );
+		write_io( vdp_io0, 8'b00000000 );
+		write_io( vdp_io0, 8'b00000000 );
+		write_io( vdp_io0, 8'b00000000 );
+		write_io( vdp_io0, 8'b00000000 );
+		write_io( vdp_io0, 8'b00000000 );
+
+		write_io( vdp_io0, 8'b00000000 );
+		write_io( vdp_io0, 8'b00000000 );
+		write_io( vdp_io0, 8'b00000000 );
+		write_io( vdp_io0, 8'b01111000 );
+		write_io( vdp_io0, 8'b00000100 );
+		write_io( vdp_io0, 8'b01111100 );
+		write_io( vdp_io0, 8'b10000100 );
+		write_io( vdp_io0, 8'b10000100 );
+		write_io( vdp_io0, 8'b01111010 );
+		write_io( vdp_io0, 8'b00000000 );
+
+		write_io( vdp_io0, 8'b00000000 );
+		write_io( vdp_io0, 8'b00000000 );
+		write_io( vdp_io0, 8'b00000000 );
+		write_io( vdp_io0, 8'b00000000 );
+		write_io( vdp_io0, 8'b00000000 );
+		write_io( vdp_io0, 8'b00000000 );
+		write_io( vdp_io0, 8'b00000000 );
+		write_io( vdp_io0, 8'b00000000 );
+		write_io( vdp_io0, 8'b00000000 );
+		write_io( vdp_io0, 8'b00000000 );
+
+		write_io( vdp_io0, 8'b11111111 );
+		write_io( vdp_io0, 8'b11001111 );
+		write_io( vdp_io0, 8'b11000111 );
+		write_io( vdp_io0, 8'b11000111 );
+		write_io( vdp_io0, 8'b10000010 );
+		write_io( vdp_io0, 8'b10000010 );
+		write_io( vdp_io0, 8'b10010000 );
+		write_io( vdp_io0, 8'b10011000 );
+		write_io( vdp_io0, 8'b10011000 );
+		write_io( vdp_io0, 8'b11111111 );
+
+		write_io( vdp_io0, 8'b11111111 );
+		write_io( vdp_io0, 8'b10011100 );
+		write_io( vdp_io0, 8'b00011000 );
+		write_io( vdp_io0, 8'b00011000 );
+		write_io( vdp_io0, 8'b00001000 );
+		write_io( vdp_io0, 8'b00001100 );
+		write_io( vdp_io0, 8'b01001111 );
+		write_io( vdp_io0, 8'b11000000 );
+		write_io( vdp_io0, 8'b11000000 );
+		write_io( vdp_io0, 8'b11111111 );
+
+		write_io( vdp_io0, 8'b11111111 );
+		write_io( vdp_io0, 8'b00000001 );
+		write_io( vdp_io0, 8'b00000000 );
+		write_io( vdp_io0, 8'b11111100 );
+		write_io( vdp_io0, 8'b00001110 );
+		write_io( vdp_io0, 8'b00000110 );
+		write_io( vdp_io0, 8'b11100100 );
+		write_io( vdp_io0, 8'b00000000 );
+		write_io( vdp_io0, 8'b00000001 );
+		write_io( vdp_io0, 8'b11111111 );
+
+		write_io( vdp_io0, 8'b11111111 );
+		write_io( vdp_io0, 8'b11110001 );
+		write_io( vdp_io0, 8'b11100011 );
+		write_io( vdp_io0, 8'b01000111 );
+		write_io( vdp_io0, 8'b00001111 );
+		write_io( vdp_io0, 8'b00001111 );
+		write_io( vdp_io0, 8'b01000111 );
+		write_io( vdp_io0, 8'b11100011 );
+		write_io( vdp_io0, 8'b11110001 );
+		write_io( vdp_io0, 8'b11111111 );
+
 		repeat(500) @( posedge clk14m );
 
 		$display( "[test003] VDP Command LFMC" );
@@ -513,6 +673,37 @@ module tb ();
 		write_io( vdp_io3, 8'h5A );
 		wait_transfer_ready();
 		write_io( vdp_io3, 8'hFF );
+		repeat( 500 ) @( posedge clk14m );
+
+		$display( "[test004] VDP Command LFMM" );
+		write_io( vdp_io1, 8'h02 );
+		write_io( vdp_io1, 8'h80 + 8'd15 );
+		write_io( vdp_io1, 8'h0C );
+		write_io( vdp_io1, 8'h80 + 8'd12 );
+		write_io( vdp_io1, 8'd32 );
+		write_io( vdp_io1, 8'h80 + 8'd17 );
+		write_io( vdp_io3, 8'h00 );				//	R#32 SXl
+		write_io( vdp_io3, 8'h32 );				//	R#33 SXh
+		write_io( vdp_io3, 8'h00 );				//	R#34 SYl
+		write_io( vdp_io3, 8'd0 );				//	R#35 SYh
+		write_io( vdp_io3, 8'd0 );				//	R#36 DXl
+		write_io( vdp_io3, 8'd0 );				//	R#37 DXh
+		write_io( vdp_io3, 8'd50 );				//	R#38 DYl
+		write_io( vdp_io3, 8'd0 );				//	R#39 DYh
+		write_io( vdp_io3, 8'd14 );				//	R#40 NXl
+		write_io( vdp_io3, 8'd0 );				//	R#41 NXh
+		write_io( vdp_io3, 8'd10 );				//	R#42 NYl
+		write_io( vdp_io3, 8'd0 );				//	R#43 NYh
+		write_io( vdp_io3, 8'd11 );				//	R#44 COLOR
+		write_io( vdp_io3, 8'd0 );				//	R#45 ---
+		write_io( vdp_io3, 8'h10 );				//	R#46 LFMM, IMP
+
+		forever begin
+			read_io( vdp_io1, rdata );
+			if( rdata[0] == 1'b0 ) begin
+				break;
+			end
+		end
 
 		$display( "[test---] All tests completed" );
 		repeat( 1000 ) @( posedge clk14m );
