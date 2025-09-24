@@ -99,8 +99,8 @@ module vdp_sprite_select_visible_planes (
 	reg			[7:0]	ff_x;
 	reg			[7:0]	ff_pattern;
 	reg			[7:0]	ff_color;
-	wire		[8:0]	w_offset_y;
-	wire		[8:3]	w_invisible;
+	wire		[7:0]	w_offset_y;
+	wire		[7:3]	w_invisible;
 	wire				w_selected_full;
 	wire		[7:0]	w_finish_line;
 	wire		[17:0]	w_sprite_mode1_attribute;
@@ -171,9 +171,9 @@ module vdp_sprite_select_visible_planes (
 	// --------------------------------------------------------------------
 	//	Check visible plane
 	// --------------------------------------------------------------------
-	assign w_offset_y	= { 1'b0, pixel_pos_y } - { 1'b0, ff_y };
-	assign w_invisible	= (!reg_sprite_16x16 && !reg_sprite_magify) ?   w_offset_y[8:3]        : 
-	                  	  (!reg_sprite_16x16 || !reg_sprite_magify) ? { w_offset_y[8:4], 1'd0 }: { w_offset_y[8:5], 2'd0 };
+	assign w_offset_y	= pixel_pos_y - ff_y;
+	assign w_invisible	= (!reg_sprite_16x16 && !reg_sprite_magify) ?   w_offset_y[7:3]        : 
+	                  	  (!reg_sprite_16x16 || !reg_sprite_magify) ? { w_offset_y[7:4], 1'd0 }: { w_offset_y[7:5], 2'd0 };
 
 	always @( posedge clk or negedge reset_n ) begin
 		if( !reset_n ) begin
@@ -195,7 +195,7 @@ module vdp_sprite_select_visible_planes (
 					ff_select_finish	<= 1'b1;
 					ff_selected_en		<= 1'b0;
 				end
-				else if( w_invisible == 6'd0 && !w_selected_full ) begin
+				else if( w_invisible == 5'd0 && !w_selected_full ) begin
 					ff_selected_en		<= 1'b1;
 				end
 			end
