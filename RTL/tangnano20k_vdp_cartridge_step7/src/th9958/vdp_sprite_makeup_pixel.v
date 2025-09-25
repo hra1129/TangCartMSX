@@ -72,6 +72,7 @@ module vdp_sprite_makeup_pixel (
 	input		[3:0]	selected_count,
 	//	from info_collect
 	input		[2:0]	makeup_plane,
+	input		[4:0]	plane_num,
 	input		[7:0]	plane_x,
 	input				plane_x_en,
 	input		[7:0]	pattern,
@@ -119,11 +120,22 @@ module vdp_sprite_makeup_pixel (
 	reg			[7:0]	ff_x5;
 	reg			[7:0]	ff_x6;
 	reg			[7:0]	ff_x7;
+	reg			[4:0]	ff_plane_num0;
+	reg			[4:0]	ff_plane_num1;
+	reg			[4:0]	ff_plane_num2;
+	reg			[4:0]	ff_plane_num3;
+	reg			[4:0]	ff_plane_num4;
+	reg			[4:0]	ff_plane_num5;
+	reg			[4:0]	ff_plane_num6;
+	reg			[4:0]	ff_plane_num7;
+    wire        [4:0]   w_plane_num;
 	wire		[7:0]	w_x;
 	wire		[3:0]	w_sub_phase;
 	wire				w_active;
 	reg					ff_pre_pixel_color_en;
 	reg			[3:0]	ff_pre_pixel_color;
+	reg					ff_pre_pixel_color_fix;
+	reg					ff_pre_pixel_color_cc0;
 	reg					ff_pixel_color_en;
 	reg			[3:0]	ff_pixel_color;
 	wire		[ 9:0]	w_offset_x;
@@ -132,6 +144,8 @@ module vdp_sprite_makeup_pixel (
 	wire		[4:0]	w_ec_shift;
 	wire		[3:0]	w_bit_sel;
 	reg			[3:0]	ff_color;
+	reg			[4:0]	ff_color_plane_num;
+	reg					ff_color_cc;
 	reg					ff_color_en;
 	reg			[4:0]	ff_pixel_color_d0;
 	reg			[4:0]	ff_pixel_color_d1;
@@ -240,6 +254,32 @@ module vdp_sprite_makeup_pixel (
 		end
 	end
 
+	always @( posedge clk or negedge reset_n ) begin
+		if( !reset_n ) begin
+			ff_plane_num0 <= 5'd0;
+			ff_plane_num1 <= 5'd0;
+			ff_plane_num2 <= 5'd0;
+			ff_plane_num3 <= 5'd0;
+			ff_plane_num4 <= 5'd0;
+			ff_plane_num5 <= 5'd0;
+			ff_plane_num6 <= 5'd0;
+			ff_plane_num7 <= 5'd0;
+		end
+		else if( plane_x_en ) begin
+			case( makeup_plane )
+			3'd0:		ff_plane_num0	<= plane_num;
+			3'd1:		ff_plane_num1	<= plane_num;
+			3'd2:		ff_plane_num2	<= plane_num;
+			3'd3:		ff_plane_num3	<= plane_num;
+			3'd4:		ff_plane_num4	<= plane_num;
+			3'd5:		ff_plane_num5	<= plane_num;
+			3'd6:		ff_plane_num6	<= plane_num;
+			3'd7:		ff_plane_num7	<= plane_num;
+			default:	ff_plane_num0	<= plane_num;
+			endcase
+		end
+	end
+
 	// --------------------------------------------------------------------
 	//	Control signals
 	// --------------------------------------------------------------------
@@ -319,6 +359,30 @@ module vdp_sprite_makeup_pixel (
 		endcase
 	endfunction
 
+	function [4:0] func_5bit_selector(
+		input	[2:0]	current_plane,
+		input	[4:0]	num0,
+		input	[4:0]	num1,
+		input	[4:0]	num2,
+		input	[4:0]	num3,
+		input	[4:0]	num4,
+		input	[4:0]	num5,
+		input	[4:0]	num6,
+		input	[4:0]	num7
+	);
+		case( current_plane )
+		3'd0:		func_5bit_selector = num0;
+		3'd1:		func_5bit_selector = num1;
+		3'd2:		func_5bit_selector = num2;
+		3'd3:		func_5bit_selector = num3;
+		3'd4:		func_5bit_selector = num4;
+		3'd5:		func_5bit_selector = num5;
+		3'd6:		func_5bit_selector = num6;
+		3'd7:		func_5bit_selector = num7;
+		default:	func_5bit_selector = num0;
+		endcase
+	endfunction
+
 	assign w_pattern	= func_word_selector( 
 			ff_current_plane[2:0],
 			ff_pattern0,
@@ -355,6 +419,18 @@ module vdp_sprite_makeup_pixel (
 			ff_x7
 	);
 
+	assign w_plane_num	= func_5bit_selector(
+			ff_current_plane[2:0],
+			ff_plane_num0,
+			ff_plane_num1,
+			ff_plane_num2,
+			ff_plane_num3,
+			ff_plane_num4,
+			ff_plane_num5,
+			ff_plane_num6,
+			ff_plane_num7
+	);
+
 	assign w_offset_x	= screen_pos_x[12:4] - { 2'd0, w_x };
 	assign w_overflow	= ( !reg_sprite_16x16 && !reg_sprite_magify ) ?   w_offset_x[9:3]:			// 8x8 normal
 	                 	  (  reg_sprite_16x16 &&  reg_sprite_magify ) ? { w_offset_x[9:5], 2'd0 }:	// 16x16 magnify
@@ -366,16 +442,22 @@ module vdp_sprite_makeup_pixel (
 
 	always @( posedge clk or negedge reset_n ) begin
 		if( !reset_n ) begin
-			ff_color_en		<= 1'b0;
-			ff_color		<= 4'd0;
+			ff_color_en			<= 1'b0;
+			ff_color			<= 4'd0;
+			ff_color_plane_num	<= 5'd31;
+			ff_color_cc	<= 1'b0;
 		end
 		else if( !w_sub_phase[3] && (sprite_mode2 || !w_sub_phase[2]) ) begin
-			ff_color_en		<= w_sprite_en & w_pattern[ w_bit_sel ] & w_active & screen_v_active;
-			ff_color		<= w_color[3:0];
+			ff_color_en			<= w_sprite_en & w_pattern[ w_bit_sel ] & w_active & screen_v_active;
+			ff_color			<= w_color[3:0];
+			ff_color_plane_num	<= w_plane_num;
+			ff_color_cc	<= w_color[6];
 		end
 		else begin
-			ff_color_en		<= 1'b0;
-			ff_color		<= 4'd0;
+			ff_color_en			<= 1'b0;
+			ff_color			<= 4'd0;
+			ff_color_plane_num	<= 5'd31;
+			ff_color_cc	<= 1'b0;
 		end
 	end
 
@@ -386,24 +468,53 @@ module vdp_sprite_makeup_pixel (
 		if( !reset_n ) begin
 			ff_pre_pixel_color_en	<= 1'b0;
 			ff_pre_pixel_color		<= 4'd0;
+			ff_pre_pixel_color_fix	<= 1'b0;
+			ff_pre_pixel_color_cc0	<= 1'b0;
 		end
 		else if( screen_pos_x == 14'h3FFF ) begin
 			ff_pre_pixel_color_en	<= 1'b0;
 			ff_pre_pixel_color		<= 4'd0;
+			ff_pre_pixel_color_fix	<= 1'b0;
+			ff_pre_pixel_color_cc0	<= 1'b0;
 		end
 		else if( w_sub_phase == 4'd1 ) begin
 			//	First plane
 			ff_pre_pixel_color_en	<= ff_color_en;
 			ff_pre_pixel_color		<= ff_color;
+			ff_pre_pixel_color_fix	<= 1'b0;
+			ff_pre_pixel_color_cc0	<= 1'b0;
 		end
 		else begin
 			//	2nd...8th plane
-			if( !ff_pre_pixel_color_en ) begin
-				ff_pre_pixel_color_en	<= ff_color_en;
-				ff_pre_pixel_color		<= ff_color;
+			if( ff_pre_pixel_color_fix ) begin
+				//	hold
+			end
+			else if( !ff_pre_pixel_color_en ) begin
+				//	If the sprite has not yet been drawn, draw it.
+				if( !sprite_mode2 ) begin
+					//	スプライトモード1 の場合
+					ff_pre_pixel_color_en	<= ff_color_en;
+					ff_pre_pixel_color_fix	<= ff_color_en;
+					ff_pre_pixel_color		<= ff_color;
+					ff_pre_pixel_color_cc0	<= 1'b1;
+				end
+				else begin
+					if( ff_pre_pixel_color_cc0 || ~ff_color_cc ) begin
+						//	CC=0 のスプライトが１枚でも存在している、または CC=0 のスプライトそのものである場合。
+						ff_pre_pixel_color_en	<= ff_color_en;
+						ff_pre_pixel_color		<= ff_color_en ? ff_color: 4'd0;
+					end
+					ff_pre_pixel_color_cc0	<= ff_pre_pixel_color_cc0 | ~ff_color_cc;
+				end
+			end
+			else if( sprite_mode2 && ff_color_en && ff_color_cc ) begin
+				//	If the drawing sprite has CC=1 and has already been drawn, take OR
+				ff_pre_pixel_color_en	<= ff_pre_pixel_color_cc0;
+				ff_pre_pixel_color		<= ff_pre_pixel_color | ff_color;
 			end
 			else begin
 				//	The dots of the sprite with the highest priority are already plotted.
+				ff_pre_pixel_color_fix	<= 1'b1;
 			end
 		end
 	end

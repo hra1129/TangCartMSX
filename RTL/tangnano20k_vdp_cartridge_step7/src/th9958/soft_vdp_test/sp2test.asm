@@ -18,6 +18,9 @@ start:
 			call	sp2_32plane
 			call	sp2_screen_out
 			call	sp2_screen_out2
+			call	sp2_line_color
+			call	sp2_or_mix
+			call	sp2_or_mix2
 
 			; å„énññ
 			; R#15 = 0x00
@@ -625,4 +628,381 @@ sp2_screen_out2::
 			db		"[T005] OVERSPILL BEYOND THE SCREEN (UPPER/BOTTON)", 0
 	attribute:	;     Y   X  Pattern Color + EC
 			db		-32, 60,      64, 0
+			endscope
+
+; =============================================================================
+;	[SCREEN4] ÉâÉCÉìíPà ÇÃêFÇ√ÇØ
+;	input:
+;		none
+;	output:
+;		none
+;	break:
+;		AF
+;	comment:
+;		none
+; =============================================================================
+			scope	sp2_line_color
+sp2_line_color::
+			call	cls
+			; Put test name
+			ld		hl, 0x18A0
+			ld		de, s_message
+			call	puts
+			; R#1 = 0x43
+			ld		a, 0x43							; 16x16, ägëÂÇ∑ÇÈ
+			ld		e, 1
+			call	write_control_register
+
+			ld		a, 15
+			ld		[attribute + 3], a
+			xor		a, -32
+			ld		[attribute + 0], a
+
+			ld		hl, color_data
+			ld		de, 0x1C00
+			ld		bc, 16
+			call	block_copy
+	loop1:
+			ld		hl, attribute
+			ld		de, 0x1E00
+			ld		bc, 4
+			call	block_copy
+
+			call	wait
+			ld		a, [attribute + 0]
+			inc		a
+			ld		[attribute + 0], a
+
+			cp		a, 212
+			jr		nz, loop1
+
+			ld		hl, color_data2
+			ld		de, 0x1C00
+			ld		bc, 16
+			call	block_copy
+	loop2:
+			ld		hl, attribute
+			ld		de, 0x1E00
+			ld		bc, 4
+			call	block_copy
+
+			call	wait
+			ld		a, [attribute + 0]
+			inc		a
+			ld		[attribute + 0], a
+
+			cp		a, 212
+			jr		nz, loop2
+
+			call	wait_push_space_key
+			ret
+
+	s_message:
+			db		"[T006] LINE COLOR", 0
+	attribute:	;     Y   X  Pattern Color + EC
+			db		-32, 80,      64, 0
+	color_data:
+			db		0x01
+			db		0x02
+			db		0x03
+			db		0x05
+			db		0x06
+			db		0x07
+			db		0x08
+			db		0x09
+			db		0x0A
+			db		0x0B
+			db		0x0C
+			db		0x0D
+			db		0x0E
+			db		0x0F
+			db		0x01
+			db		0x02
+	color_data2:
+			db		0x81
+			db		0x82
+			db		0x83
+			db		0x85
+			db		0x86
+			db		0x87
+			db		0x88
+			db		0x89
+			db		0x0A
+			db		0x0B
+			db		0x0C
+			db		0x0D
+			db		0x0E
+			db		0x0F
+			db		0x01
+			db		0x02
+			endscope
+
+; =============================================================================
+;	[SCREEN4] OR mix
+;	input:
+;		none
+;	output:
+;		none
+;	break:
+;		AF
+;	comment:
+;		none
+; =============================================================================
+			scope	sp2_or_mix
+sp2_or_mix::
+			call	cls
+			; Put test name
+			ld		hl, 0x18A0
+			ld		de, s_message
+			call	puts
+			; R#1 = 0x43
+			ld		a, 0x43							; 16x16, ägëÂÇ∑ÇÈ
+			ld		e, 1
+			call	write_control_register
+
+			ld		hl, attribute
+			ld		de, 0x1E00
+			ld		bc, 12
+			call	block_copy
+
+			ld		hl, color_data
+			ld		de, 0x1C00
+			ld		bc, 48
+			call	block_copy
+	loop1:
+			ld		hl, attribute
+			ld		de, 0x1E00
+			ld		bc, 4
+			call	block_copy
+
+			call	wait
+			ld		a, [attribute + 1]
+			inc		a
+			ld		[attribute + 1], a
+
+			cp		a, 210
+			jr		nz, loop1
+
+	loop2:
+			ld		hl, attribute + 4
+			ld		de, 0x1E04
+			ld		bc, 4
+			call	block_copy
+
+			call	wait
+			ld		a, [attribute + 4]
+			inc		a
+			ld		[attribute + 4], a
+
+			cp		a, 50
+			jr		nz, loop2
+
+	loop3:
+			ld		hl, attribute + 4
+			ld		de, 0x1E04
+			ld		bc, 4
+			call	block_copy
+
+			call	wait
+			ld		a, [attribute + 4]
+			dec		a
+			ld		[attribute + 4], a
+
+			jr		nz, loop3
+
+			call	wait_push_space_key
+			ret
+
+	s_message:
+			db		"[T006] LINE COLOR", 0
+	attribute:	;     Y   X  Pattern Color + EC
+			db		10, 80,      64, 0
+			db		10, 128,     64, 0
+			db		10, 168,     64, 0
+	color_data:
+			db		0x01
+			db		0x01
+			db		0x01
+			db		0x01
+			db		0x01
+			db		0x01
+			db		0x01
+			db		0x01
+			db		0x02
+			db		0x02
+			db		0x02
+			db		0x02
+			db		0x02
+			db		0x02
+			db		0x02
+			db		0x02
+
+			db		0x4C
+			db		0x4C
+			db		0x4C
+			db		0x4C
+			db		0x4C
+			db		0x4C
+			db		0x4C
+			db		0x4C
+			db		0x45
+			db		0x45
+			db		0x45
+			db		0x45
+			db		0x45
+			db		0x45
+			db		0x45
+			db		0x45
+
+			db		0x48
+			db		0x48
+			db		0x48
+			db		0x48
+			db		0x48
+			db		0x48
+			db		0x48
+			db		0x48
+			db		0x41
+			db		0x41
+			db		0x41
+			db		0x41
+			db		0x41
+			db		0x41
+			db		0x41
+			db		0x41
+			endscope
+
+; =============================================================================
+;	[SCREEN4] OR mix
+;	input:
+;		none
+;	output:
+;		none
+;	break:
+;		AF
+;	comment:
+;		none
+; =============================================================================
+			scope	sp2_or_mix2
+sp2_or_mix2::
+			call	cls
+			; Put test name
+			ld		hl, 0x18A0
+			ld		de, s_message
+			call	puts
+			; R#1 = 0x43
+			ld		a, 0x43							; 16x16, ägëÂÇ∑ÇÈ
+			ld		e, 1
+			call	write_control_register
+
+			ld		hl, attribute
+			ld		de, 0x1E00
+			ld		bc, 12
+			call	block_copy
+
+			ld		hl, color_data
+			ld		de, 0x1C00
+			ld		bc, 48
+			call	block_copy
+	loop1:
+			ld		hl, attribute
+			ld		de, 0x1E00
+			ld		bc, 4
+			call	block_copy
+
+			call	wait
+			ld		a, [attribute + 1]
+			inc		a
+			ld		[attribute + 1], a
+
+			cp		a, 210
+			jr		nz, loop1
+
+	loop2:
+			ld		hl, attribute + 4
+			ld		de, 0x1E04
+			ld		bc, 4
+			call	block_copy
+
+			call	wait
+			ld		a, [attribute + 4]
+			inc		a
+			ld		[attribute + 4], a
+
+			cp		a, 50
+			jr		nz, loop2
+
+	loop3:
+			ld		hl, attribute + 4
+			ld		de, 0x1E04
+			ld		bc, 4
+			call	block_copy
+
+			call	wait
+			ld		a, [attribute + 4]
+			dec		a
+			ld		[attribute + 4], a
+
+			jr		nz, loop3
+
+			call	wait_push_space_key
+			ret
+
+	s_message:
+			db		"[T006] LINE COLOR", 0
+	attribute:	;     Y   X  Pattern Color + EC
+			db		10, 80,      64, 0
+			db		10, 128,     64, 0
+			db		10, 168,     64, 0
+	color_data:
+			db		0x01
+			db		0x01
+			db		0x01
+			db		0x01
+			db		0x01
+			db		0x01
+			db		0x01
+			db		0x01
+			db		0x02
+			db		0x02
+			db		0x02
+			db		0x02
+			db		0x02
+			db		0x02
+			db		0x02
+			db		0x02
+
+			db		0x0C
+			db		0x0C
+			db		0x0C
+			db		0x0C
+			db		0x0C
+			db		0x0C
+			db		0x0C
+			db		0x0C
+			db		0x05
+			db		0x05
+			db		0x05
+			db		0x05
+			db		0x05
+			db		0x05
+			db		0x05
+			db		0x05
+
+			db		0x48
+			db		0x48
+			db		0x48
+			db		0x48
+			db		0x48
+			db		0x48
+			db		0x48
+			db		0x48
+			db		0x41
+			db		0x41
+			db		0x41
+			db		0x41
+			db		0x41
+			db		0x41
+			db		0x41
+			db		0x41
 			endscope

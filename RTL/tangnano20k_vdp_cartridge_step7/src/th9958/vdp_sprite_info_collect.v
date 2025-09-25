@@ -78,6 +78,7 @@ module vdp_sprite_info_collect (
 	input		[3:0]	selected_count,
 	//	to makeup_pixel
 	output		[2:0]	makeup_plane,
+	output		[4:0]	plane_num,
 	output		[7:0]	plane_x,
 	output				plane_x_en,
 	output		[7:0]	pattern,
@@ -274,6 +275,7 @@ module vdp_sprite_info_collect (
 	assign vram_valid		= ff_vram_valid;
 
 	assign makeup_plane		= ff_current_plane[2:0];
+	assign plane_num		= w_selected_plane_num;
 	assign plane_x			= w_selected_x;
 	assign plane_x_en		= (ff_active && w_sub_phase == 4'd12 && ff_state == 2'd0);
 	assign pattern			= (ff_state == 2'd2 && !reg_sprite_16x16) ? 8'd0: vram_rdata;

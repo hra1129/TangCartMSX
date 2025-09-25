@@ -57,6 +57,7 @@ if errorlevel 1 pause ==========================
 
 zma sp2test.asm  SP2TEST.COM
 if errorlevel 1 pause ==========================
+move zma.log sp2test.log
 
 zma paltest.asm  PALTEST.COM
 if errorlevel 1 pause ==========================
