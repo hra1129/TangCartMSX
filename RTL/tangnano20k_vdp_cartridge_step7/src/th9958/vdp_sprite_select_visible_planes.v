@@ -60,6 +60,7 @@ module vdp_sprite_select_visible_planes (
 	input				clk,					//	42.95454MHz
 
 	input		[13:0]	screen_pos_x,
+	input		[7:0]	screen_pos_y,
 	input		[7:0]	pixel_pos_y,
 	input				screen_v_active,
 	input				screen_h_active,
@@ -84,12 +85,14 @@ module vdp_sprite_select_visible_planes (
 	input				reg_sprite_disable,
 	input				reg_sprite_magify,
 	input				reg_sprite_16x16,
-	input		[17:7]	reg_sprite_attribute_table_base
+	input		[17:7]	reg_sprite_attribute_table_base,
+	input				reg_sprite_nonR23_mode
 );
 	//	Phase
 	wire		[9:0]	w_screen_pos_x;
 	wire		[2:0]	w_phase;
 	wire		[3:0]	w_sub_phase;
+	wire		[7:0]	w_pixel_pos_y;
 	reg			[4:0]	ff_current_plane_num;		//	Plane#0...#31
 	reg					ff_vram_valid;
 	reg			[3:0]	ff_selected_count;
@@ -171,9 +174,10 @@ module vdp_sprite_select_visible_planes (
 	// --------------------------------------------------------------------
 	//	Check visible plane
 	// --------------------------------------------------------------------
-	assign w_offset_y	= pixel_pos_y - ff_y;
-	assign w_invisible	= (!reg_sprite_16x16 && !reg_sprite_magify) ?   w_offset_y[7:3]        : 
-	                  	  (!reg_sprite_16x16 || !reg_sprite_magify) ? { w_offset_y[7:4], 1'd0 }: { w_offset_y[7:5], 2'd0 };
+	assign w_pixel_pos_y	= reg_sprite_nonR23_mode ? screen_pos_y: pixel_pos_y;
+	assign w_offset_y		= w_pixel_pos_y - ff_y;
+	assign w_invisible		= (!reg_sprite_16x16 && !reg_sprite_magify) ?   w_offset_y[7:3]        : 
+	                  		  (!reg_sprite_16x16 || !reg_sprite_magify) ? { w_offset_y[7:4], 1'd0 }: { w_offset_y[7:5], 2'd0 };
 
 	always @( posedge clk or negedge reset_n ) begin
 		if( !reset_n ) begin

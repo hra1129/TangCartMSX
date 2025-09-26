@@ -88,7 +88,8 @@ module vdp_timing_control_sprite (
 	input				reg_sprite_disable,
 	input   	[17:7]	reg_sprite_attribute_table_base,
 	input   	[17:11]	reg_sprite_pattern_generator_table_base,
-	input				reg_left_mask
+	input				reg_left_mask,
+	input				reg_sprite_nonR23_mode
 );
 	localparam			c_mode_g3	= 5'b010_00;	//	Graphic3 (SCREEN4)
 	localparam			c_mode_g4	= 5'b011_00;	//	Graphic4 (SCREEN5)
@@ -178,6 +179,7 @@ module vdp_timing_control_sprite (
 		.reset_n									( reset_n									),
 		.clk										( clk										),
 		.screen_pos_x								( screen_pos_x								),
+		.screen_pos_y								( screen_pos_y[7:0]							),
 		.pixel_pos_y								( pixel_pos_y								),
 		.screen_v_active							( ff_screen_v_active						),
 		.screen_h_active							( ff_screen_h_active						),
@@ -198,7 +200,8 @@ module vdp_timing_control_sprite (
 		.reg_sprite_disable							( w_sprite_disable							),
 		.reg_sprite_magify							( reg_sprite_magify							),
 		.reg_sprite_16x16							( reg_sprite_16x16							),
-		.reg_sprite_attribute_table_base			( reg_sprite_attribute_table_base			)
+		.reg_sprite_attribute_table_base			( reg_sprite_attribute_table_base			),
+		.reg_sprite_nonR23_mode						( reg_sprite_nonR23_mode					)
 	);
 
 	// --------------------------------------------------------------------

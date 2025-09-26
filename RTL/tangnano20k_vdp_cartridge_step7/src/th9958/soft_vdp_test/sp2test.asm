@@ -21,6 +21,8 @@ start:
 			call	sp2_line_color
 			call	sp2_or_mix
 			call	sp2_or_mix2
+			call	sp2_8sprite
+			call	sp2_nonR23
 
 			; 後始末
 			; R#15 = 0x00
@@ -70,6 +72,10 @@ screen4::
 			; R#18 = 0
 			xor		a, a
 			ld		e, 18
+			call	write_control_register
+			; R#20 = 0
+			xor		a, a
+			ld		e, 20
 			call	write_control_register
 			; R#23 = 0
 			xor		a, a
@@ -814,7 +820,7 @@ sp2_or_mix::
 			ret
 
 	s_message:
-			db		"[T006] LINE COLOR", 0
+			db		"[T007] CC bit 1st", 0
 	attribute:	;     Y   X  Pattern Color + EC
 			db		10, 80,      64, 0
 			db		10, 128,     64, 0
@@ -949,7 +955,7 @@ sp2_or_mix2::
 			ret
 
 	s_message:
-			db		"[T006] LINE COLOR", 0
+			db		"[T008] CC bit 2nd", 0
 	attribute:	;     Y   X  Pattern Color + EC
 			db		10, 80,      64, 0
 			db		10, 128,     64, 0
@@ -1005,4 +1011,252 @@ sp2_or_mix2::
 			db		0x41
 			db		0x41
 			db		0x41
+			endscope
+
+; =============================================================================
+;	[SCREEN4] 8 sprite test
+;	input:
+;		none
+;	output:
+;		none
+;	break:
+;		AF
+;	comment:
+;		none
+; =============================================================================
+			scope	sp2_8sprite
+sp2_8sprite::
+			call	cls
+			; Put test name
+			ld		hl, 0x18A0
+			ld		de, s_message
+			call	puts
+			; R#1 = 0x43
+			ld		a, 0x42							; 16x16, 拡大しない
+			ld		e, 1
+			call	write_control_register
+
+			ld		hl, attribute
+			ld		de, 0x1E00
+			ld		bc, 4 * 9
+			call	block_copy
+
+			ld		hl, 0x1C00
+			ld		bc, 16 * 9
+			ld		e, 0x0F
+			call	fill_vram
+	loop1:
+			ld		hl, attribute
+			ld		de, 0x1E00
+			ld		bc, 4
+			call	block_copy
+
+			call	wait
+			ld		a, [attribute + 0]
+			inc		a
+			ld		[attribute + 0], a
+
+			cp		a, 30
+			jr		nz, loop1
+
+	loop2:
+			ld		hl, attribute
+			ld		de, 0x1E00
+			ld		bc, 4
+			call	block_copy
+
+			call	wait
+			ld		a, [attribute + 0]
+			inc		a
+			ld		[attribute + 0], a
+
+			cp		a, 5
+			jr		nz, loop2
+
+			call	wait_push_space_key
+			ret
+
+	s_message:
+			db		"[T009] 8 SPRITES", 0
+	attribute:	;     Y   X  Pattern Color + EC
+			db		10,  10,     64, 0
+			db		10,  30,     64, 0
+			db		10,  50,     64, 0
+			db		10,  70,     64, 0
+			db		10,  90,     64, 0
+			db		10, 110,     64, 0
+			db		10, 130,     64, 0
+			db		10, 150,     64, 0
+			db		10, 170,     64, 0
+			db		10, 190,     64, 0
+			endscope
+
+; =============================================================================
+;	[SCREEN4] スプライトプレーン 32枚表示の確認
+;	input:
+;		none
+;	output:
+;		none
+;	break:
+;		AF
+;	comment:
+;		none
+; =============================================================================
+			scope	sp2_nonR23
+sp2_nonR23::
+			call	cls
+			; R#20 = 0
+			ld		a, 2						; SVNS Sprite Vertical position Non-following Scroll
+			ld		e, 20
+			call	write_control_register
+			; Put test name
+			ld		hl, 0x18A0
+			ld		de, s_message
+			call	puts
+			; 32枚のスプライトプレーンを表示する
+			ld		hl, attribute
+			ld		de, 0x1E00
+			ld		bc, 4 * 32
+			call	block_copy
+			; 32枚のスプライトプレーンに色を付ける
+			ld		b, 32
+			ld		l, 0
+			ld		de, color_data
+	color_loop:
+			ld		a, [de]
+			call	set_sprite_color
+			inc		de
+			inc		l
+			djnz	color_loop
+			; R#6 = 0x00
+			ld		a, 0x00							; スプライトパターンをフォントと同じにする
+			ld		e, 6
+			call	write_control_register
+
+			; R#1 = 0x40
+			ld		a, 0x40							; 8x8, 拡大しない
+			ld		e, 1
+			call	write_control_register
+			call	palette0_blink
+
+			; R#1 = 0x41
+			ld		a, 0x41							; 8x8, 拡大する
+			ld		e, 1
+			call	write_control_register
+			call	palette0_blink
+
+			; R#1 = 0x42
+			ld		a, 0x42							; 16x16, 拡大しない
+			ld		e, 1
+			call	write_control_register
+			call	palette0_blink
+
+			; R#1 = 0x43
+			ld		a, 0x43							; 16x16, 拡大する
+			ld		e, 1
+			call	write_control_register
+			call	palette0_blink
+
+			; R#23 = 0
+			xor		a, a
+			ld		e, 23
+			call	write_control_register
+			; R#20 = 0
+			ld		a, 0
+			ld		e, 20
+			call	write_control_register
+			ret
+
+	palette0_blink:
+			ld		b, 50
+	blink_loop:
+			push	bc
+			; R#23 = B
+			ld		a, 50
+			sub		a, b							; 垂直スクロール
+			ld		e, 23
+			call	write_control_register
+			; R#8 = 0x20
+			ld		a, 0x20							; パレット0は不透明
+			ld		e, 8
+			call	write_control_register
+			call	wait
+			; R#8 = 0x00
+			ld		a, 0x00							; パレット0は透明
+			ld		e, 8
+			call	write_control_register
+			call	wait
+			pop		bc
+			djnz	blink_loop
+			; キー待ち
+			call	wait_push_space_key
+			ret
+	s_message:
+			db		"[T010] SVNS bit", 0
+	attribute:		;     Y      X        Pattern Color + EC
+			db		 32 * 0,40 * 0 + 50,   0 + 32, 10
+			db		 32 * 0,40 * 1 + 50,   4 + 32, 10
+			db		 32 * 0,40 * 2 + 50,   8 + 32, 10
+			db		 32 * 0,40 * 3 + 50,  12 + 32, 10
+			db		 32 * 1,40 * 0 + 50,  16 + 32, 10
+			db		 32 * 1,40 * 1 + 50,  20 + 32, 10
+			db		 32 * 1,40 * 2 + 50,  24 + 32, 10
+			db		 32 * 1,40 * 3 + 50,  28 + 32, 10
+			db		 32 * 2,40 * 0 + 50,  32 + 32, 10
+			db		 32 * 2,40 * 1 + 50,  36 + 32, 10
+			db		 32 * 2,40 * 2 + 50,  40 + 32, 10
+			db		 32 * 2,40 * 3 + 50,  44 + 32, 10
+			db		 32 * 3,40 * 0 + 50,  48 + 32, 10
+			db		 32 * 3,40 * 1 + 50,  52 + 32, 10
+			db		 32 * 3,40 * 2 + 50,  56 + 32, 10
+			db		 32 * 3,40 * 3 + 50,  60 + 32, 10
+			db		 32 * 4,40 * 0 + 50,  64 + 32, 10
+			db		 32 * 4,40 * 1 + 50,  68 + 32, 10
+			db		 32 * 4,40 * 2 + 50,  72 + 32, 10
+			db		 32 * 4,40 * 3 + 50,  76 + 32, 10
+			db		 32 * 5,40 * 0 + 50,  80 + 32, 10
+			db		 32 * 5,40 * 1 + 50,  84 + 32, 10
+			db		 32 * 5,40 * 2 + 50,  88 + 32, 10
+			db		 32 * 5,40 * 3 + 50,  92 + 32, 10
+			db		 32 * 6,40 * 0 + 50,  96 + 32, 10
+			db		 32 * 6,40 * 1 + 50, 100 + 32, 10
+			db		 32 * 6,40 * 2 + 50, 104 + 32, 10
+			db		 32 * 6,40 * 3 + 50, 108 + 32, 10
+			db		 32 * 7,40 * 0 + 50, 112 + 32, 10
+			db		 32 * 7,40 * 1 + 50, 116 + 32, 10
+			db		 32 * 7,40 * 2 + 50, 120 + 32, 10
+			db		 32 * 7,40 * 3 + 50, 124 + 32, 10
+	color_data:
+			db		  0
+			db		  1
+			db		  2
+			db		  3
+			db		  4
+			db		  5
+			db		  6
+			db		  7
+			db		  8
+			db		  9
+			db		 10
+			db		 11
+			db		 12
+			db		 13
+			db		 14
+			db		 15
+			db		  0 + 0x80
+			db		  1 + 0x80
+			db		  2 + 0x80
+			db		  3 + 0x80
+			db		  4 + 0x80
+			db		  5 + 0x80
+			db		  6 + 0x80
+			db		  7 + 0x80
+			db		  8 + 0x80
+			db		  9 + 0x80
+			db		 10 + 0x80
+			db		 11 + 0x80
+			db		 12 + 0x80
+			db		 13 + 0x80
+			db		 14 + 0x80
+			db		 15 + 0x80
 			endscope

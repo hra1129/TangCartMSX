@@ -135,6 +135,7 @@ module vdp_sprite_makeup_pixel (
 	wire		[3:0]	w_bit_sel;
 	reg			[3:0]	ff_color;
 	reg					ff_color_cc;
+	reg					ff_color_ic;
 	reg					ff_color_en;
 	reg			[4:0]	ff_pixel_color_d0;
 	reg			[4:0]	ff_pixel_color_d1;
@@ -145,7 +146,6 @@ module vdp_sprite_makeup_pixel (
 	reg					ff_sprite_collision;
 	reg			[8:0]	ff_sprite_collision_x;
 	reg			[9:0]	ff_sprite_collision_y;
-	reg					ff_last_cc_base_pixel;
 
 	// --------------------------------------------------------------------
 	//	Latch information for visible sprite planes
@@ -395,17 +395,20 @@ module vdp_sprite_makeup_pixel (
 		if( !reset_n ) begin
 			ff_color_en			<= 1'b0;
 			ff_color			<= 4'd0;
-			ff_color_cc			<= 1'b1;
+			ff_color_cc			<= 1'b0;
+			ff_color_ic			<= 1'b0;
 		end
 		else if( !w_sub_phase[3] && (sprite_mode2 || !w_sub_phase[2]) ) begin
 			ff_color_en			<= w_sprite_en & w_pattern[ w_bit_sel ] & w_active & screen_v_active;
 			ff_color			<= w_color[3:0];
 			ff_color_cc			<= w_color[6];
+			ff_color_ic			<= w_color[5];
 		end
 		else begin
 			ff_color_en			<= 1'b0;
 			ff_color			<= 4'd0;
-			ff_color_cc			<= 1'b1;
+			ff_color_cc			<= 1'b0;
+			ff_color_ic			<= 1'b0;
 		end
 	end
 
@@ -506,7 +509,7 @@ module vdp_sprite_makeup_pixel (
 			//	hold
 		end
 		else begin
-			if( !ff_pre_pixel_color_en || w_color[5] || (ff_last_cc_base_pixel && w_color[6]) ) begin
+			if( !ff_pre_pixel_color_en || !ff_color_en || ff_color_ic || ff_color_cc ) begin
 				//	hold
 			end
 			else if( !ff_sprite_collision ) begin
@@ -516,27 +519,6 @@ module vdp_sprite_makeup_pixel (
 					ff_sprite_collision_x	<= screen_pos_x[11:4] + 9'd12;
 					ff_sprite_collision_y	<= { 2'd0, pixel_pos_y } + 10'd8;
 				end
-			end
-		end
-	end
-
-	always @( posedge clk or negedge reset_n ) begin
-		if( !reset_n ) begin
-			ff_last_cc_base_pixel <= 1'b0;
-		end
-		else if( w_sub_phase == 4'd1 ) begin
-			//	Plane#0
-			if( !w_color[6] ) begin
-				//	CC=0 なら重ね合わせの基準プレーン
-				ff_last_cc_base_pixel <= 1'b1;
-			end
-			else begin
-				ff_last_cc_base_pixel <= 1'b0;
-			end
-		end
-		else if( ff_pre_pixel_color_en ) begin
-			if( !w_color[6] ) begin
-				ff_last_cc_base_pixel <= 1'b0;
 			end
 		end
 	end

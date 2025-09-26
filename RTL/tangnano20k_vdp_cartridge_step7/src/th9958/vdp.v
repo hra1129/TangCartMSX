@@ -351,7 +351,8 @@ module vdp (
 		.reg_text_back_color						( reg_text_back_color						),
 		.reg_backdrop_color							( reg_backdrop_color						),
 		.reg_left_mask								( reg_left_mask								),
-		.reg_scroll_planes							( reg_scroll_planes							)
+		.reg_scroll_planes							( reg_scroll_planes							),
+		.reg_sprite_nonR23_mode						( reg_sprite_nonR23_mode					)
 	);
 
 	// --------------------------------------------------------------------
