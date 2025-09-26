@@ -113,7 +113,6 @@ module vdp_timing_control_sprite (
 	wire		[3:0]	w_selected_count;
 	wire				w_start_info_collect;
 	wire				w_sprite_mode2;
-	wire		[4:0]	w_plane_num;
 	wire		[7:0]	w_plane_x;
 	wire				w_plane_x_en;
 	wire		[7:0]	w_pattern;
@@ -223,7 +222,6 @@ module vdp_timing_control_sprite (
 		.selected_color								( w_selected_color							),
 		.selected_count								( w_selected_count							),
 		.makeup_plane								( w_makeup_plane							),
-		.plane_num									( w_plane_num								),
 		.plane_x									( w_plane_x									),
 		.plane_x_en									( w_plane_x_en								),
 		.pattern									( w_pattern									),
@@ -260,7 +258,6 @@ module vdp_timing_control_sprite (
 		.reg_sprite_16x16							( reg_sprite_16x16							),
 		.selected_count								( w_selected_count							),
 		.makeup_plane								( w_makeup_plane							),
-		.plane_num									( w_plane_num								),
 		.plane_x									( w_plane_x									),
 		.plane_x_en									( w_plane_x_en								),
 		.pattern									( w_pattern									),
