@@ -73,7 +73,7 @@ module vdp_sprite_makeup_pixel (
 	input		[3:0]	selected_count,
 	//	from info_collect
 	input		[3:0]	makeup_plane,
-	input		[7:0]	plane_x,
+	input		[9:0]	plane_x,
 	input				plane_x_en,
 	input		[31:0]	pattern,
 	input				pattern_left_en,
@@ -101,6 +101,14 @@ module vdp_sprite_makeup_pixel (
 	reg			[63:0]	ff_pattern5;
 	reg			[63:0]	ff_pattern6;
 	reg			[63:0]	ff_pattern7;
+	reg			[63:0]	ff_pattern8;
+	reg			[63:0]	ff_pattern9;
+	reg			[63:0]	ff_pattern10;
+	reg			[63:0]	ff_pattern11;
+	reg			[63:0]	ff_pattern12;
+	reg			[63:0]	ff_pattern13;
+	reg			[63:0]	ff_pattern14;
+	reg			[63:0]	ff_pattern15;
 	wire		[7:0]	w_read_pattern;
 	wire		[63:0]	w_pattern;
 	reg			[7:0]	ff_color0;
@@ -112,15 +120,23 @@ module vdp_sprite_makeup_pixel (
 	reg			[7:0]	ff_color6;
 	reg			[7:0]	ff_color7;
 	wire		[7:0]	w_color;
-	reg			[7:0]	ff_x0;
-	reg			[7:0]	ff_x1;
-	reg			[7:0]	ff_x2;
-	reg			[7:0]	ff_x3;
-	reg			[7:0]	ff_x4;
-	reg			[7:0]	ff_x5;
-	reg			[7:0]	ff_x6;
-	reg			[7:0]	ff_x7;
-	wire		[7:0]	w_x;
+	reg			[9:0]	ff_x0;
+	reg			[9:0]	ff_x1;
+	reg			[9:0]	ff_x2;
+	reg			[9:0]	ff_x3;
+	reg			[9:0]	ff_x4;
+	reg			[9:0]	ff_x5;
+	reg			[9:0]	ff_x6;
+	reg			[9:0]	ff_x7;
+	reg			[9:0]	ff_x8;
+	reg			[9:0]	ff_x9;
+	reg			[9:0]	ff_x10;
+	reg			[9:0]	ff_x11;
+	reg			[9:0]	ff_x12;
+	reg			[9:0]	ff_x13;
+	reg			[9:0]	ff_x14;
+	reg			[9:0]	ff_x15;
+	wire		[9:0]	w_x;
 	wire		[3:0]	w_sub_phase;
 	wire				w_active;
 	reg					ff_pre_pixel_color_en;
@@ -163,6 +179,14 @@ module vdp_sprite_makeup_pixel (
 			ff_pattern5 <= 64'd0;
 			ff_pattern6 <= 64'd0;
 			ff_pattern7 <= 64'd0;
+			ff_pattern8 <= 64'd0;
+			ff_pattern9 <= 64'd0;
+			ff_pattern10 <= 64'd0;
+			ff_pattern11 <= 64'd0;
+			ff_pattern12 <= 64'd0;
+			ff_pattern13 <= 64'd0;
+			ff_pattern14 <= 64'd0;
+			ff_pattern15 <= 64'd0;
 		end
 		else if( reg_sprite_mode3 ) begin
 			if( pattern_left_en ) begin
@@ -175,6 +199,14 @@ module vdp_sprite_makeup_pixel (
 				4'd5:		ff_pattern5[31: 0]	<= pattern;
 				4'd6:		ff_pattern6[31: 0]	<= pattern;
 				4'd7:		ff_pattern7[31: 0]	<= pattern;
+				4'd8:		ff_pattern8[31: 0]	<= pattern;
+				4'd9:		ff_pattern9[31: 0]	<= pattern;
+				4'd10:		ff_pattern10[31: 0]	<= pattern;
+				4'd11:		ff_pattern11[31: 0]	<= pattern;
+				4'd12:		ff_pattern12[31: 0]	<= pattern;
+				4'd13:		ff_pattern13[31: 0]	<= pattern;
+				4'd14:		ff_pattern14[31: 0]	<= pattern;
+				4'd15:		ff_pattern15[31: 0]	<= pattern;
 				default:	ff_pattern0[31: 0]	<= pattern;
 				endcase
 			end
@@ -188,6 +220,14 @@ module vdp_sprite_makeup_pixel (
 				4'd5:		ff_pattern5[63:32]	<= pattern;
 				4'd6:		ff_pattern6[63:32]	<= pattern;
 				4'd7:		ff_pattern7[63:32]	<= pattern;
+				4'd8:		ff_pattern8[63:32]	<= pattern;
+				4'd9:		ff_pattern9[63:32]	<= pattern;
+				4'd10:		ff_pattern10[63:32]	<= pattern;
+				4'd11:		ff_pattern11[63:32]	<= pattern;
+				4'd12:		ff_pattern12[63:32]	<= pattern;
+				4'd13:		ff_pattern13[63:32]	<= pattern;
+				4'd14:		ff_pattern14[63:32]	<= pattern;
+				4'd15:		ff_pattern15[63:32]	<= pattern;
 				default:	ff_pattern0[63:32]	<= pattern;
 				endcase
 			end
@@ -250,14 +290,22 @@ module vdp_sprite_makeup_pixel (
 
 	always @( posedge clk or negedge reset_n ) begin
 		if( !reset_n ) begin
-			ff_x0 <= 8'd0;
-			ff_x1 <= 8'd0;
-			ff_x2 <= 8'd0;
-			ff_x3 <= 8'd0;
-			ff_x4 <= 8'd0;
-			ff_x5 <= 8'd0;
-			ff_x6 <= 8'd0;
-			ff_x7 <= 8'd0;
+			ff_x0 <= 10'd0;
+			ff_x1 <= 10'd0;
+			ff_x2 <= 10'd0;
+			ff_x3 <= 10'd0;
+			ff_x4 <= 10'd0;
+			ff_x5 <= 10'd0;
+			ff_x6 <= 10'd0;
+			ff_x7 <= 10'd0;
+			ff_x8 <= 10'd0;
+			ff_x9 <= 10'd0;
+			ff_x10 <= 10'd0;
+			ff_x11 <= 10'd0;
+			ff_x12 <= 10'd0;
+			ff_x13 <= 10'd0;
+			ff_x14 <= 10'd0;
+			ff_x15 <= 10'd0;
 		end
 		else if( plane_x_en ) begin
 			case( makeup_plane )
@@ -269,6 +317,14 @@ module vdp_sprite_makeup_pixel (
 			4'd5:		ff_x5	<= plane_x;
 			4'd6:		ff_x6	<= plane_x;
 			4'd7:		ff_x7	<= plane_x;
+			4'd8:		ff_x8	<= plane_x;
+			4'd9:		ff_x9	<= plane_x;
+			4'd10:		ff_x10	<= plane_x;
+			4'd11:		ff_x11	<= plane_x;
+			4'd12:		ff_x12	<= plane_x;
+			4'd13:		ff_x13	<= plane_x;
+			4'd14:		ff_x14	<= plane_x;
+			4'd15:		ff_x15	<= plane_x;
 			default:	ff_x0	<= plane_x;
 			endcase
 		end
@@ -306,7 +362,7 @@ module vdp_sprite_makeup_pixel (
 	//	[delay 0] Select the current sprite plane
 	// --------------------------------------------------------------------
 	function [63:0] func_word_selector(
-		input	[2:0]	current_plane,
+		input	[3:0]	current_plane,
 		input	[63:0]	word0,
 		input	[63:0]	word1,
 		input	[63:0]	word2,
@@ -314,17 +370,33 @@ module vdp_sprite_makeup_pixel (
 		input	[63:0]	word4,
 		input	[63:0]	word5,
 		input	[63:0]	word6,
-		input	[63:0]	word7
+		input	[63:0]	word7,
+		input	[63:0]	word8,
+		input	[63:0]	word9,
+		input	[63:0]	word10,
+		input	[63:0]	word11,
+		input	[63:0]	word12,
+		input	[63:0]	word13,
+		input	[63:0]	word14,
+		input	[63:0]	word15
 	);
 		case( current_plane )
-		3'd0:		func_word_selector = word0;
-		3'd1:		func_word_selector = word1;
-		3'd2:		func_word_selector = word2;
-		3'd3:		func_word_selector = word3;
-		3'd4:		func_word_selector = word4;
-		3'd5:		func_word_selector = word5;
-		3'd6:		func_word_selector = word6;
-		3'd7:		func_word_selector = word7;
+		4'd0:		func_word_selector = word0;
+		4'd1:		func_word_selector = word1;
+		4'd2:		func_word_selector = word2;
+		4'd3:		func_word_selector = word3;
+		4'd4:		func_word_selector = word4;
+		4'd5:		func_word_selector = word5;
+		4'd6:		func_word_selector = word6;
+		4'd7:		func_word_selector = word7;
+		4'd8:		func_word_selector = word8;
+		4'd9:		func_word_selector = word9;
+		4'd10:		func_word_selector = word10;
+		4'd11:		func_word_selector = word11;
+		4'd12:		func_word_selector = word12;
+		4'd13:		func_word_selector = word13;
+		4'd14:		func_word_selector = word14;
+		4'd15:		func_word_selector = word15;
 		default:	func_word_selector = word0;
 		endcase
 	endfunction
@@ -353,32 +425,48 @@ module vdp_sprite_makeup_pixel (
 		endcase
 	endfunction
 
-	function [4:0] func_5bit_selector(
-		input	[2:0]	current_plane,
-		input	[4:0]	num0,
-		input	[4:0]	num1,
-		input	[4:0]	num2,
-		input	[4:0]	num3,
-		input	[4:0]	num4,
-		input	[4:0]	num5,
-		input	[4:0]	num6,
-		input	[4:0]	num7
+	function [9:0] func_10bit_selector(
+		input	[3:0]	current_plane,
+		input	[9:0]	num0,
+		input	[9:0]	num1,
+		input	[9:0]	num2,
+		input	[9:0]	num3,
+		input	[9:0]	num4,
+		input	[9:0]	num5,
+		input	[9:0]	num6,
+		input	[9:0]	num7,
+		input	[9:0]	num8,
+		input	[9:0]	num9,
+		input	[9:0]	num10,
+		input	[9:0]	num11,
+		input	[9:0]	num12,
+		input	[9:0]	num13,
+		input	[9:0]	num14,
+		input	[9:0]	num15
 	);
 		case( current_plane )
-		3'd0:		func_5bit_selector = num0;
-		3'd1:		func_5bit_selector = num1;
-		3'd2:		func_5bit_selector = num2;
-		3'd3:		func_5bit_selector = num3;
-		3'd4:		func_5bit_selector = num4;
-		3'd5:		func_5bit_selector = num5;
-		3'd6:		func_5bit_selector = num6;
-		3'd7:		func_5bit_selector = num7;
-		default:	func_5bit_selector = num0;
+		4'd0:		func_10bit_selector = num0;
+		4'd1:		func_10bit_selector = num1;
+		4'd2:		func_10bit_selector = num2;
+		4'd3:		func_10bit_selector = num3;
+		4'd4:		func_10bit_selector = num4;
+		4'd5:		func_10bit_selector = num5;
+		4'd6:		func_10bit_selector = num6;
+		4'd7:		func_10bit_selector = num7;
+		4'd8:		func_10bit_selector = num8;
+		4'd9:		func_10bit_selector = num9;
+		4'd10:		func_10bit_selector = num10;
+		4'd11:		func_10bit_selector = num11;
+		4'd12:		func_10bit_selector = num12;
+		4'd13:		func_10bit_selector = num13;
+		4'd14:		func_10bit_selector = num14;
+		4'd15:		func_10bit_selector = num15;
+		default:	func_10bit_selector = num0;
 		endcase
 	endfunction
 
 	assign w_pattern	= func_word_selector( 
-			ff_current_plane[2:0],
+			ff_current_plane,
 			ff_pattern0,
 			ff_pattern1,
 			ff_pattern2,
@@ -386,7 +474,15 @@ module vdp_sprite_makeup_pixel (
 			ff_pattern4,
 			ff_pattern5,
 			ff_pattern6,
-			ff_pattern7
+			ff_pattern7,
+			ff_pattern8,
+			ff_pattern9,
+			ff_pattern10,
+			ff_pattern11,
+			ff_pattern12,
+			ff_pattern13,
+			ff_pattern14,
+			ff_pattern15
 	);
 
 	assign w_color		= func_byte_selector(
@@ -401,8 +497,8 @@ module vdp_sprite_makeup_pixel (
 			ff_color7
 	);
 
-	assign w_x			= func_byte_selector(
-			ff_current_plane[2:0],
+	assign w_x			= func_10bit_selector(
+			ff_current_plane,
 			ff_x0,
 			ff_x1,
 			ff_x2,
@@ -410,7 +506,15 @@ module vdp_sprite_makeup_pixel (
 			ff_x4,
 			ff_x5,
 			ff_x6,
-			ff_x7
+			ff_x7,
+			ff_x8,
+			ff_x9,
+			ff_x10,
+			ff_x11,
+			ff_x12,
+			ff_x13,
+			ff_x14,
+			ff_x15
 	);
 
 	assign w_offset_x	= screen_pos_x[12:4] - { 2'd0, w_x };
