@@ -89,7 +89,8 @@ module vdp_timing_control_sprite (
 	input   	[17:7]	reg_sprite_attribute_table_base,
 	input   	[17:11]	reg_sprite_pattern_generator_table_base,
 	input				reg_left_mask,
-	input				reg_sprite_nonR23_mode
+	input				reg_sprite_nonR23_mode,
+	input				reg_sprite_mode3
 );
 	localparam			c_mode_g3	= 5'b010_00;	//	Graphic3 (SCREEN4)
 	localparam			c_mode_g4	= 5'b011_00;	//	Graphic4 (SCREEN5)
@@ -106,22 +107,22 @@ module vdp_timing_control_sprite (
 	//	Wire declarations
 	// --------------------------------------------------------------------
 	wire				w_selected_en;
-	wire		[4:0]	w_selected_plane_num;
+	wire		[5:0]	w_selected_plane_num;
 	wire		[3:0]	w_selected_y;
 	wire		[7:0]	w_selected_x;
 	wire		[7:0]	w_selected_pattern;
 	wire		[7:0]	w_selected_color;
-	wire		[3:0]	w_selected_count;
+	wire		[4:0]	w_selected_count;
 	wire				w_start_info_collect;
 	wire				w_sprite_mode2;
 	wire		[7:0]	w_plane_x;
 	wire				w_plane_x_en;
-	wire		[7:0]	w_pattern;
+	wire		[31:0]	w_pattern;
 	wire				w_pattern_left_en;
 	wire				w_pattern_right_en;
 	wire		[7:0]	w_color;
 	wire				w_color_en;
-	wire		[2:0]	w_makeup_plane;
+	wire		[3:0]	w_makeup_plane;
 	wire		[17:0]	w_vp_vram_address;
 	wire				w_vp_vram_valid;
 	wire		[17:0]	w_ic_vram_address;
@@ -201,7 +202,8 @@ module vdp_timing_control_sprite (
 		.reg_sprite_magify							( reg_sprite_magify							),
 		.reg_sprite_16x16							( reg_sprite_16x16							),
 		.reg_sprite_attribute_table_base			( reg_sprite_attribute_table_base			),
-		.reg_sprite_nonR23_mode						( reg_sprite_nonR23_mode					)
+		.reg_sprite_nonR23_mode						( reg_sprite_nonR23_mode					),
+		.reg_sprite_mode3							( reg_sprite_mode3							)
 	);
 
 	// --------------------------------------------------------------------
@@ -216,7 +218,8 @@ module vdp_timing_control_sprite (
 		.screen_h_active							( ff_screen_h_active						),
 		.vram_address								( w_ic_vram_address							),
 		.vram_valid									( w_ic_vram_valid							),
-		.vram_rdata									( vram_rdata8								),
+		.vram_rdata8								( vram_rdata8								),
+		.vram_rdata									( vram_rdata								),
 		.selected_en								( w_selected_en								),
 		.selected_plane_num							( w_selected_plane_num						),
 		.selected_y									( w_selected_y								),
@@ -237,7 +240,8 @@ module vdp_timing_control_sprite (
 		.reg_sprite_magify							( reg_sprite_magify							),
 		.reg_sprite_16x16							( reg_sprite_16x16							),
 		.reg_sprite_pattern_generator_table_base	( reg_sprite_pattern_generator_table_base	),
-		.reg_sprite_attribute_table_base			( reg_sprite_attribute_table_base			)
+		.reg_sprite_attribute_table_base			( reg_sprite_attribute_table_base			),
+		.reg_sprite_mode3							( reg_sprite_mode3							)
 	);
 
 	// --------------------------------------------------------------------
@@ -259,6 +263,7 @@ module vdp_timing_control_sprite (
 		.reg_color0_opaque							( reg_color0_opaque							),
 		.reg_sprite_magify							( reg_sprite_magify							),
 		.reg_sprite_16x16							( reg_sprite_16x16							),
+		.reg_sprite_mode3							( reg_sprite_mode3							),
 		.selected_count								( w_selected_count							),
 		.makeup_plane								( w_makeup_plane							),
 		.plane_x									( w_plane_x									),

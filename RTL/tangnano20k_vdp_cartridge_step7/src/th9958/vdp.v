@@ -201,7 +201,7 @@ module vdp (
 	wire				reg_command_high_speed_mode;
 	wire				reg_sprite_nonR23_mode;
 	wire				reg_interrupt_line_nonR23_mode;
-	wire				reg_sprite_color_mode;
+	wire				reg_sprite_mode3;
 	wire				reg_ext_palette_mode;
 	wire				reg_ext_command_mode;
 	wire				reg_vram256k_mode;
@@ -281,7 +281,7 @@ module vdp (
 		.reg_command_high_speed_mode				( reg_command_high_speed_mode				),
 		.reg_sprite_nonR23_mode						( reg_sprite_nonR23_mode					),
 		.reg_interrupt_line_nonR23_mode				( reg_interrupt_line_nonR23_mode			),
-		.reg_sprite_color_mode						( reg_sprite_color_mode						),
+		.reg_sprite_mode3							( reg_sprite_mode3							),
 		.reg_ext_palette_mode						( reg_ext_palette_mode						),
 		.reg_ext_command_mode						( reg_ext_command_mode						),
 		.reg_vram256k_mode							( reg_vram256k_mode							),
@@ -352,7 +352,8 @@ module vdp (
 		.reg_backdrop_color							( reg_backdrop_color						),
 		.reg_left_mask								( reg_left_mask								),
 		.reg_scroll_planes							( reg_scroll_planes							),
-		.reg_sprite_nonR23_mode						( reg_sprite_nonR23_mode					)
+		.reg_sprite_nonR23_mode						( reg_sprite_nonR23_mode					),
+		.reg_sprite_mode3							( reg_sprite_mode3							)
 	);
 
 	// --------------------------------------------------------------------

@@ -66,21 +66,22 @@ module vdp_sprite_info_collect (
 
 	output		[17:0]	vram_address,
 	output				vram_valid,
-	input		[7:0]	vram_rdata,
+	input		[7:0]	vram_rdata8,
+	input		[31:0]	vram_rdata,
 	//	from select_visible_planes
 	input				selected_en,
-	input		[4:0]	selected_plane_num,
+	input		[5:0]	selected_plane_num,
 	input		[3:0]	selected_y,
 	input		[7:0]	selected_x,
 	input		[7:0]	selected_pattern,
 	input		[7:0]	selected_color,
 
-	input		[3:0]	selected_count,
+	input		[4:0]	selected_count,
 	//	to makeup_pixel
-	output		[2:0]	makeup_plane,
+	output		[3:0]	makeup_plane,
 	output		[7:0]	plane_x,
 	output				plane_x_en,
-	output		[7:0]	pattern,
+	output		[31:0]	pattern,
 	output				pattern_left_en,
 	output				pattern_right_en,
 	output		[7:0]	color,
@@ -91,9 +92,10 @@ module vdp_sprite_info_collect (
 	input				reg_sprite_magify,
 	input				reg_sprite_16x16,
 	input		[17:11]	reg_sprite_pattern_generator_table_base,
-	input		[17:7]	reg_sprite_attribute_table_base
+	input		[17:7]	reg_sprite_attribute_table_base,
+	input				reg_sprite_mode3
 );
-	reg			[31:0]	ff_selected_ram [0:7];
+	reg			[31:0]	ff_selected_ram [0:15];
 	wire		[31:0]	w_selected_d;
 	wire		[4:0]	w_selected_plane_num;
 	wire		[3:0]	w_selected_y;
@@ -101,8 +103,8 @@ module vdp_sprite_info_collect (
 	wire		[7:0]	w_selected_pattern;
 	wire		[7:0]	w_selected_color;
 	reg			[31:0]	ff_selected_q;
-	reg			[3:0]	ff_current_plane;		//	Plane#0...#7, and endmark(#8)
-	wire		[3:0]	w_next_plane;
+	reg			[4:0]	ff_current_plane;		//	Plane#0...#15, and endmark(#16)
+	wire		[4:0]	w_next_plane;
 	reg			[1:0]	ff_state;				//	#0=info read, #1=pattern left read, #2=pattern right read, #3=color read
 	wire		[3:0]	w_sub_phase;			//	Sub phase #0...#15
 	reg			[17:0]	ff_vram_address;
@@ -114,9 +116,8 @@ module vdp_sprite_info_collect (
 	//	Information RAM
 	// --------------------------------------------------------------------
 	assign w_selected_d	= { selected_color[7],						//	EC bit
-	                   		1'b0,									//	CC bit (ここに来るのは Sprite mode1 なので使わない)
-	                   		1'b0,									//	IC bit (ここに来るのは Sprite mode1 なので使わない)
-	                   		selected_plane_num,						//	Plane#0...#31
+	                   		1'b0,									//	dummy
+	                   		selected_plane_num,						//	Plane#0...#63
 	                   		selected_color[3:0],					//	Color
 	                   		selected_pattern,
 	                   		selected_x,
@@ -138,6 +139,14 @@ module vdp_sprite_info_collect (
 			ff_selected_ram[5] <= 32'd0;
 			ff_selected_ram[6] <= 32'd0;
 			ff_selected_ram[7] <= 32'd0;
+			ff_selected_ram[8] <= 32'd0;
+			ff_selected_ram[9] <= 32'd0;
+			ff_selected_ram[10] <= 32'd0;
+			ff_selected_ram[11] <= 32'd0;
+			ff_selected_ram[12] <= 32'd0;
+			ff_selected_ram[13] <= 32'd0;
+			ff_selected_ram[14] <= 32'd0;
+			ff_selected_ram[15] <= 32'd0;
 		end
 		else if( screen_v_active && screen_h_active && reg_display_on ) begin
 			if( selected_en ) begin
@@ -182,23 +191,23 @@ module vdp_sprite_info_collect (
 		end
 	end
 
-	assign w_next_plane	= ff_current_plane + 4'd1;
+	assign w_next_plane	= ff_current_plane + 5'd1;
 
 	always @( posedge clk or negedge reset_n ) begin
 		if( !reset_n ) begin
-			ff_current_plane	<= 4'd8;
+			ff_current_plane	<= 5'd8;
 			ff_vram_address		<= 17'd0;
 			ff_vram_valid		<= 1'b0;
 			ff_active			<= 1'b0;
 		end
 		else if( start_info_collect && selected_count != 4'd0 ) begin
-			ff_current_plane	<= 4'd0;
+			ff_current_plane	<= 5'd0;
 			ff_vram_address		<= 17'd0;
 			ff_vram_valid		<= 1'b0;
 			ff_active			<= reg_display_on;
 		end
 		else if( screen_pos_x == 14'h3FFF ) begin
-			ff_current_plane	<= 4'd0;
+			ff_current_plane	<= 5'd0;
 			ff_vram_address		<= 17'd0;
 			ff_vram_valid		<= 1'b0;
 		end
@@ -273,12 +282,13 @@ module vdp_sprite_info_collect (
 	assign vram_address		= ff_vram_valid ? ff_vram_address: 18'd0;
 	assign vram_valid		= ff_vram_valid;
 
-	assign makeup_plane		= ff_current_plane[2:0];
+	assign makeup_plane		= ff_current_plane[3:0];
 	assign plane_x			= w_selected_x;
 	assign plane_x_en		= (ff_active && w_sub_phase == 4'd12 && ff_state == 2'd0);
-	assign pattern			= (ff_state == 2'd2 && !reg_sprite_16x16) ? 8'd0: vram_rdata;
+	assign pattern			= (reg_sprite_mode3) ? vram_rdata:
+	              			  (ff_state == 2'd2 && !reg_sprite_16x16) ? 32'd0: { 24'd0, vram_rdata8 };
 	assign pattern_left_en	= (ff_active && w_sub_phase == 4'd12 && ff_state == 2'd1);
 	assign pattern_right_en	= (ff_active && w_sub_phase == 4'd12 && ff_state == 2'd2);
-	assign color			= ff_sprite_mode2 ? vram_rdata: w_selected_color;
+	assign color			= ff_sprite_mode2 ? vram_rdata8: w_selected_color;
 	assign color_en			= (ff_active && w_sub_phase == 4'd12 && ff_state == 2'd3);
 endmodule

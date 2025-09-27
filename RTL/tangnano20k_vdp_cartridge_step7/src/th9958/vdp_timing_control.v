@@ -115,7 +115,8 @@ module vdp_timing_control (
 	input		[7:0]	reg_backdrop_color,
 	input				reg_left_mask,
 	input				reg_scroll_planes,
-	input				reg_sprite_nonR23_mode
+	input				reg_sprite_nonR23_mode,
+	input				reg_sprite_mode3
 );
 	wire		[13:0]	w_screen_pos_x;			//	signed   (Coordinates not affected by scroll register)
 	wire		[ 9:0]	w_screen_pos_y;			//	signed   (Coordinates not affected by scroll register)
@@ -232,6 +233,7 @@ module vdp_timing_control (
 		.reg_sprite_attribute_table_base			( reg_sprite_attribute_table_base			),
 		.reg_sprite_pattern_generator_table_base	( reg_sprite_pattern_generator_table_base	),
 		.reg_left_mask								( reg_left_mask								),
-		.reg_sprite_nonR23_mode						( reg_sprite_nonR23_mode					)
+		.reg_sprite_nonR23_mode						( reg_sprite_nonR23_mode					),
+		.reg_sprite_mode3							( reg_sprite_mode3							)
 	);
 endmodule

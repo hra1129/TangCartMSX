@@ -135,7 +135,7 @@ module vdp_cpu_interface (
 	output				reg_command_high_speed_mode,
 	output				reg_sprite_nonR23_mode,
 	output				reg_interrupt_line_nonR23_mode,
-	output				reg_sprite_color_mode,
+	output				reg_sprite_mode3,
 	output				reg_ext_palette_mode,
 	output				reg_ext_command_mode,
 	output				reg_vram256k_mode,
@@ -207,7 +207,7 @@ module vdp_cpu_interface (
 	reg					ff_command_high_speed_mode;
 	reg					ff_sprite_nonR23_mode;
 	reg					ff_interrupt_line_nonR23_mode;
-	reg					ff_sprite_color_mode;
+	reg					ff_sprite_mode3;
 	reg					ff_ext_palette_mode;
 	reg					ff_ext_command_mode;
 	reg					ff_vram256k_mode;
@@ -457,7 +457,7 @@ module vdp_cpu_interface (
 			ff_command_high_speed_mode <= 1'b0;
 			ff_sprite_nonR23_mode <= 1'b0;
 			ff_interrupt_line_nonR23_mode <= 1'b0;
-			ff_sprite_color_mode <= 1'b0;
+			ff_sprite_mode3 <= 1'b0;
 			ff_ext_palette_mode <= 1'b0;
 			ff_ext_command_mode <= 1'b0;
 			ff_vram256k_mode <= 1'b0;
@@ -556,7 +556,7 @@ module vdp_cpu_interface (
 					ff_command_high_speed_mode <= ff_1st_byte[0];
 					ff_sprite_nonR23_mode <= ff_1st_byte[1];
 					ff_interrupt_line_nonR23_mode <= ff_1st_byte[2];
-					ff_sprite_color_mode <= ff_1st_byte[3];
+					ff_sprite_mode3 <= ff_1st_byte[3];
 					ff_ext_palette_mode <= ff_1st_byte[4];
 					ff_ext_command_mode <= ff_1st_byte[5];
 					ff_vram256k_mode <= ff_1st_byte[6];
@@ -803,7 +803,7 @@ module vdp_cpu_interface (
 	assign reg_command_high_speed_mode				= ff_command_high_speed_mode;
 	assign reg_sprite_nonR23_mode					= ff_sprite_nonR23_mode;
 	assign reg_interrupt_line_nonR23_mode			= ff_interrupt_line_nonR23_mode;
-	assign reg_sprite_color_mode					= ff_sprite_color_mode;
+	assign reg_sprite_mode3							= ff_sprite_mode3;
 	assign reg_ext_palette_mode						= ff_ext_palette_mode;
 	assign reg_ext_command_mode						= ff_ext_command_mode;
 	assign reg_vram256k_mode						= ff_vram256k_mode;

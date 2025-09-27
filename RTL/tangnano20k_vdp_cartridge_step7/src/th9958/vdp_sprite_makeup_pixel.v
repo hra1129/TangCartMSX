@@ -68,13 +68,14 @@ module vdp_sprite_makeup_pixel (
 	input				reg_color0_opaque,
 	input				reg_sprite_magify,
 	input				reg_sprite_16x16,
+	input				reg_sprite_mode3,
 	//	from select_visible_planes
 	input		[3:0]	selected_count,
 	//	from info_collect
-	input		[2:0]	makeup_plane,
+	input		[3:0]	makeup_plane,
 	input		[7:0]	plane_x,
 	input				plane_x_en,
-	input		[7:0]	pattern,
+	input		[31:0]	pattern,
 	input				pattern_left_en,
 	input				pattern_right_en,
 	input		[7:0]	color,
@@ -92,16 +93,16 @@ module vdp_sprite_makeup_pixel (
 	reg					ff_active;
 	reg			[3:0]	ff_visible_planes;
 	reg			[3:0]	ff_current_plane;
-	reg			[15:0]	ff_pattern0;
-	reg			[15:0]	ff_pattern1;
-	reg			[15:0]	ff_pattern2;
-	reg			[15:0]	ff_pattern3;
-	reg			[15:0]	ff_pattern4;
-	reg			[15:0]	ff_pattern5;
-	reg			[15:0]	ff_pattern6;
-	reg			[15:0]	ff_pattern7;
+	reg			[63:0]	ff_pattern0;
+	reg			[63:0]	ff_pattern1;
+	reg			[63:0]	ff_pattern2;
+	reg			[63:0]	ff_pattern3;
+	reg			[63:0]	ff_pattern4;
+	reg			[63:0]	ff_pattern5;
+	reg			[63:0]	ff_pattern6;
+	reg			[63:0]	ff_pattern7;
 	wire		[7:0]	w_read_pattern;
-	wire		[15:0]	w_pattern;
+	wire		[63:0]	w_pattern;
 	reg			[7:0]	ff_color0;
 	reg			[7:0]	ff_color1;
 	reg			[7:0]	ff_color2;
@@ -154,40 +155,70 @@ module vdp_sprite_makeup_pixel (
 
 	always @( posedge clk or negedge reset_n ) begin
 		if( !reset_n ) begin
-			ff_pattern0 <= 16'd0;
-			ff_pattern1 <= 16'd0;
-			ff_pattern2 <= 16'd0;
-			ff_pattern3 <= 16'd0;
-			ff_pattern4 <= 16'd0;
-			ff_pattern5 <= 16'd0;
-			ff_pattern6 <= 16'd0;
-			ff_pattern7 <= 16'd0;
+			ff_pattern0 <= 64'd0;
+			ff_pattern1 <= 64'd0;
+			ff_pattern2 <= 64'd0;
+			ff_pattern3 <= 64'd0;
+			ff_pattern4 <= 64'd0;
+			ff_pattern5 <= 64'd0;
+			ff_pattern6 <= 64'd0;
+			ff_pattern7 <= 64'd0;
 		end
-		else if( pattern_left_en ) begin
-			case( makeup_plane )
-			3'd0:		ff_pattern0[ 7: 0]	<= w_read_pattern;
-			3'd1:		ff_pattern1[ 7: 0]	<= w_read_pattern;
-			3'd2:		ff_pattern2[ 7: 0]	<= w_read_pattern;
-			3'd3:		ff_pattern3[ 7: 0]	<= w_read_pattern;
-			3'd4:		ff_pattern4[ 7: 0]	<= w_read_pattern;
-			3'd5:		ff_pattern5[ 7: 0]	<= w_read_pattern;
-			3'd6:		ff_pattern6[ 7: 0]	<= w_read_pattern;
-			3'd7:		ff_pattern7[ 7: 0]	<= w_read_pattern;
-			default:	ff_pattern0[ 7: 0]	<= w_read_pattern;
-			endcase
+		else if( reg_sprite_mode3 ) begin
+			if( pattern_left_en ) begin
+				case( makeup_plane )
+				4'd0:		ff_pattern0[31: 0]	<= pattern;
+				4'd1:		ff_pattern1[31: 0]	<= pattern;
+				4'd2:		ff_pattern2[31: 0]	<= pattern;
+				4'd3:		ff_pattern3[31: 0]	<= pattern;
+				4'd4:		ff_pattern4[31: 0]	<= pattern;
+				4'd5:		ff_pattern5[31: 0]	<= pattern;
+				4'd6:		ff_pattern6[31: 0]	<= pattern;
+				4'd7:		ff_pattern7[31: 0]	<= pattern;
+				default:	ff_pattern0[31: 0]	<= pattern;
+				endcase
+			end
+			else if( pattern_right_en ) begin
+				case( makeup_plane )
+				4'd0:		ff_pattern0[63:32]	<= pattern;
+				4'd1:		ff_pattern1[63:32]	<= pattern;
+				4'd2:		ff_pattern2[63:32]	<= pattern;
+				4'd3:		ff_pattern3[63:32]	<= pattern;
+				4'd4:		ff_pattern4[63:32]	<= pattern;
+				4'd5:		ff_pattern5[63:32]	<= pattern;
+				4'd6:		ff_pattern6[63:32]	<= pattern;
+				4'd7:		ff_pattern7[63:32]	<= pattern;
+				default:	ff_pattern0[63:32]	<= pattern;
+				endcase
+			end
 		end
-		else if( pattern_right_en ) begin
-			case( makeup_plane )
-			3'd0:		ff_pattern0[15: 8]	<= w_read_pattern;
-			3'd1:		ff_pattern1[15: 8]	<= w_read_pattern;
-			3'd2:		ff_pattern2[15: 8]	<= w_read_pattern;
-			3'd3:		ff_pattern3[15: 8]	<= w_read_pattern;
-			3'd4:		ff_pattern4[15: 8]	<= w_read_pattern;
-			3'd5:		ff_pattern5[15: 8]	<= w_read_pattern;
-			3'd6:		ff_pattern6[15: 8]	<= w_read_pattern;
-			3'd7:		ff_pattern7[15: 8]	<= w_read_pattern;
-			default:	ff_pattern0[15: 8]	<= w_read_pattern;
-			endcase
+		else begin
+			if( pattern_left_en ) begin
+				case( makeup_plane )
+				4'd0:		ff_pattern0[ 7: 0]	<= w_read_pattern;
+				4'd1:		ff_pattern1[ 7: 0]	<= w_read_pattern;
+				4'd2:		ff_pattern2[ 7: 0]	<= w_read_pattern;
+				4'd3:		ff_pattern3[ 7: 0]	<= w_read_pattern;
+				4'd4:		ff_pattern4[ 7: 0]	<= w_read_pattern;
+				4'd5:		ff_pattern5[ 7: 0]	<= w_read_pattern;
+				4'd6:		ff_pattern6[ 7: 0]	<= w_read_pattern;
+				4'd7:		ff_pattern7[ 7: 0]	<= w_read_pattern;
+				default:	ff_pattern0[ 7: 0]	<= w_read_pattern;
+				endcase
+			end
+			else if( pattern_right_en ) begin
+				case( makeup_plane )
+				4'd0:		ff_pattern0[15: 8]	<= w_read_pattern;
+				4'd1:		ff_pattern1[15: 8]	<= w_read_pattern;
+				4'd2:		ff_pattern2[15: 8]	<= w_read_pattern;
+				4'd3:		ff_pattern3[15: 8]	<= w_read_pattern;
+				4'd4:		ff_pattern4[15: 8]	<= w_read_pattern;
+				4'd5:		ff_pattern5[15: 8]	<= w_read_pattern;
+				4'd6:		ff_pattern6[15: 8]	<= w_read_pattern;
+				4'd7:		ff_pattern7[15: 8]	<= w_read_pattern;
+				default:	ff_pattern0[15: 8]	<= w_read_pattern;
+				endcase
+			end
 		end
 	end
 
@@ -204,14 +235,14 @@ module vdp_sprite_makeup_pixel (
 		end
 		else if( color_en ) begin
 			case( makeup_plane )
-			3'd0:		ff_color0	<= color;
-			3'd1:		ff_color1	<= color;
-			3'd2:		ff_color2	<= color;
-			3'd3:		ff_color3	<= color;
-			3'd4:		ff_color4	<= color;
-			3'd5:		ff_color5	<= color;
-			3'd6:		ff_color6	<= color;
-			3'd7:		ff_color7	<= color;
+			4'd0:		ff_color0	<= color;
+			4'd1:		ff_color1	<= color;
+			4'd2:		ff_color2	<= color;
+			4'd3:		ff_color3	<= color;
+			4'd4:		ff_color4	<= color;
+			4'd5:		ff_color5	<= color;
+			4'd6:		ff_color6	<= color;
+			4'd7:		ff_color7	<= color;
 			default:	ff_color0	<= color;
 			endcase
 		end
@@ -230,14 +261,14 @@ module vdp_sprite_makeup_pixel (
 		end
 		else if( plane_x_en ) begin
 			case( makeup_plane )
-			3'd0:		ff_x0	<= plane_x;
-			3'd1:		ff_x1	<= plane_x;
-			3'd2:		ff_x2	<= plane_x;
-			3'd3:		ff_x3	<= plane_x;
-			3'd4:		ff_x4	<= plane_x;
-			3'd5:		ff_x5	<= plane_x;
-			3'd6:		ff_x6	<= plane_x;
-			3'd7:		ff_x7	<= plane_x;
+			4'd0:		ff_x0	<= plane_x;
+			4'd1:		ff_x1	<= plane_x;
+			4'd2:		ff_x2	<= plane_x;
+			4'd3:		ff_x3	<= plane_x;
+			4'd4:		ff_x4	<= plane_x;
+			4'd5:		ff_x5	<= plane_x;
+			4'd6:		ff_x6	<= plane_x;
+			4'd7:		ff_x7	<= plane_x;
 			default:	ff_x0	<= plane_x;
 			endcase
 		end
@@ -274,16 +305,16 @@ module vdp_sprite_makeup_pixel (
 	// --------------------------------------------------------------------
 	//	[delay 0] Select the current sprite plane
 	// --------------------------------------------------------------------
-	function [15:0] func_word_selector(
+	function [63:0] func_word_selector(
 		input	[2:0]	current_plane,
-		input	[15:0]	word0,
-		input	[15:0]	word1,
-		input	[15:0]	word2,
-		input	[15:0]	word3,
-		input	[15:0]	word4,
-		input	[15:0]	word5,
-		input	[15:0]	word6,
-		input	[15:0]	word7
+		input	[63:0]	word0,
+		input	[63:0]	word1,
+		input	[63:0]	word2,
+		input	[63:0]	word3,
+		input	[63:0]	word4,
+		input	[63:0]	word5,
+		input	[63:0]	word6,
+		input	[63:0]	word7
 	);
 		case( current_plane )
 		3'd0:		func_word_selector = word0;
