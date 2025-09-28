@@ -373,25 +373,45 @@ module tb ();
 		write_io( vdp_io1, 0 );
 		write_io( vdp_io1, 8'h40 + 8'h1B );
 
-		write_io( vdp_io0, 32 * 0 );
+		write_io( vdp_io0, 36 * 0 );
 		write_io( vdp_io0, 40 * 0 + 50 );
 		write_io( vdp_io0, 0 );
 		write_io( vdp_io0, 1 );
 
-		write_io( vdp_io0, 32 * 0 );
+		write_io( vdp_io0, 36 * 0 );
 		write_io( vdp_io0, 40 * 1 + 50 );
 		write_io( vdp_io0, 4 );
 		write_io( vdp_io0, 2 );
 
-		write_io( vdp_io0, 32 * 0 );
+		write_io( vdp_io0, 36 * 0 );
 		write_io( vdp_io0, 40 * 2 + 50 );
 		write_io( vdp_io0, 8 );
 		write_io( vdp_io0, 3 );
 
-		write_io( vdp_io0, 32 * 0 );
+		write_io( vdp_io0, 36 * 0 );
 		write_io( vdp_io0, 40 * 3 + 50 );
 		write_io( vdp_io0, 12 );
 		write_io( vdp_io0, 4 );
+
+		write_io( vdp_io0, 36 * 1 );
+		write_io( vdp_io0, 40 * 0 + 50 );
+		write_io( vdp_io0, 16 );
+		write_io( vdp_io0, 5 );
+
+		write_io( vdp_io0, 36 * 1 );
+		write_io( vdp_io0, 40 * 1 + 50 );
+		write_io( vdp_io0, 20 );
+		write_io( vdp_io0, 6 );
+
+		write_io( vdp_io0, 36 * 1 );
+		write_io( vdp_io0, 40 * 2 + 50 );
+		write_io( vdp_io0, 24 );
+		write_io( vdp_io0, 7 );
+
+		write_io( vdp_io0, 36 * 1 );
+		write_io( vdp_io0, 40 * 3 + 50 );
+		write_io( vdp_io0, 28 );
+		write_io( vdp_io0, 8 );
 
 		write_io( vdp_io0, 208 );
 		write_io( vdp_io0, 208 );
@@ -400,13 +420,20 @@ module tb ();
 
 		write_io( vdp_io1, 8'h00 );
 		write_io( vdp_io1, 8'h40 + 8'h38 );
-		repeat( 32 ) write_io( vdp_io0, 8'hFF );
-		repeat( 32 ) write_io( vdp_io0, 8'hAA );
-		repeat( 32 ) write_io( vdp_io0, 8'h55 );
-		repeat( 32 ) write_io( vdp_io0, 8'hCC );
-		repeat( 32 ) write_io( vdp_io0, 8'h33 );
-		repeat( 32 ) write_io( vdp_io0, 8'h66 );
-		repeat( 32 ) write_io( vdp_io0, 8'h99 );
+		repeat( 32 ) write_io( vdp_io0, 8'hFE );
+		repeat( 32 ) write_io( vdp_io0, 8'hA9 );
+		repeat( 32 ) write_io( vdp_io0, 8'h54 );
+		repeat( 32 ) write_io( vdp_io0, 8'hCB );
+		repeat( 32 ) write_io( vdp_io0, 8'h32 );
+		repeat( 32 ) write_io( vdp_io0, 8'h65 );
+		repeat( 32 ) write_io( vdp_io0, 8'h98 );
+		repeat( 32 ) write_io( vdp_io0, 8'hFC );
+		repeat( 32 ) write_io( vdp_io0, 8'hA8 );
+		repeat( 32 ) write_io( vdp_io0, 8'h53 );
+		repeat( 32 ) write_io( vdp_io0, 8'hCA );
+		repeat( 32 ) write_io( vdp_io0, 8'h31 );
+		repeat( 32 ) write_io( vdp_io0, 8'h64 );
+		repeat( 32 ) write_io( vdp_io0, 8'h97 );
 
 		repeat(5000000) @( posedge clk14m );
 

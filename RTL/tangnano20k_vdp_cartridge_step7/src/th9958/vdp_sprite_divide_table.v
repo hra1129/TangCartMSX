@@ -61,8 +61,7 @@ module vdp_sprite_divide_table (
 	input		[7:0]	x,
 	input		[7:0]	reg_mgx,
 	input		[1:0]	bit_shift,
-	output		[6:0]	sample_x,				//	3clk delay
-	output				overflow				//	3clk delay
+	output		[6:0]	sample_x				//	3clk delay
 );
 	wire		[2:0]	w_exp;
 	reg					ff_mgx0;				//	1clk delay
@@ -80,6 +79,7 @@ module vdp_sprite_divide_table (
 	wire		[12:0]	w_sample_x;
 	reg			[6:0]	ff_sample_x;			//	3clk delay
 	reg					ff_overflow;			//	3clk delay
+	reg			[1:0]	ff_bit_shift3;			//	3clk delay
 
 	function [2:0] func_exp(
 		input	[7:0]	reg_mgx
@@ -272,9 +272,15 @@ module vdp_sprite_divide_table (
 
 	always @( posedge clk ) begin
 		ff_sample_x		<= w_sample_x[6:0];
-		ff_overflow		<= (w_sample_x[12:7] != 6'd0);
+		ff_bit_shift3	<= ff_bit_shift2;
+		ff_overflow		<= (w_sample_x[12:7] != 6'd0) || 
+						   (ff_bit_shift2 == 2'd0 && w_sample_x[12:4] != 9'd0) ||
+						   (ff_bit_shift2 == 2'd1 && w_sample_x[12:5] != 8'd0) ||
+						   (ff_bit_shift2 == 2'd2 && w_sample_x[12:6] != 7'd0);
 	end
 
-	assign sample_x		= ff_sample_x;
-	assign overflow		= ff_overflow;
+	assign sample_x		= ff_overflow ? (
+							(ff_bit_shift3 == 2'd0) ? 7'd15 :
+							(ff_bit_shift3 == 2'd1) ? 7'd31 : 
+							(ff_bit_shift3 == 2'd2) ? 7'd63 : 7'd127 ) : ff_sample_x;
 endmodule

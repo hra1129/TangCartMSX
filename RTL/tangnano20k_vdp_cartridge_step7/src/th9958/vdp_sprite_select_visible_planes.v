@@ -72,19 +72,13 @@ module vdp_sprite_select_visible_planes (
 
 	output				selected_en,
 	output		[5:0]	selected_plane_num,
-	output		[6:0]	selected_y,
+	output		[9:0]	selected_y,
 	output		[7:0]	selected_x,
 	output		[7:0]	selected_pattern,
 	output		[7:0]	selected_color,
 
 	output		[4:0]	selected_count,
 	output				start_info_collect,
-
-	output		[7:0]	y,
-	output		[7:0]	mgy,
-	output		[1:0]	bit_shift,
-	input		[6:0]	sample_y,
-	input				overflow,
 
 	input				sprite_mode2,
 	input				reg_display_on,
@@ -248,17 +242,12 @@ module vdp_sprite_select_visible_planes (
 		end
 	end
 
-	//	for sprite mode3
-	assign y					= w_offset_y[7:0];
-	assign mgy					= ff_x_mgy;				//	MGY
-	assign bit_shift			= ff_bit_shift;
-
 	assign selected_en			= ff_selected_en;
 	assign selected_plane_num	= ff_current_plane_num;
-	assign selected_y			= reg_sprite_mode3 ? sample_y: ( reg_sprite_magify ? { 3'd0, w_offset_y[4:1] }: { 3'd0, w_offset_y[3:0] } );
+	assign selected_y			= reg_sprite_mode3 ? w_offset_y: ( reg_sprite_magify ? { 3'd0, w_offset_y[4:1] }: { 3'd0, w_offset_y[3:0] } );
 	assign selected_x			= ff_x_mgy;				//	mode1 and mode2 only
 	assign selected_pattern		= ff_pattern;			//	mode1 and mode2 only
 	assign selected_color		= ff_color;
 	assign selected_count		= ff_selected_count;
-	assign start_info_collect	= (screen_v_active && screen_pos_x[13:4] == 10'd263 && w_sub_phase == 4'd15);
+	assign start_info_collect	= (screen_v_active && screen_pos_x[13:4] == 10'd263 && w_sub_phase == 4'd12);
 endmodule

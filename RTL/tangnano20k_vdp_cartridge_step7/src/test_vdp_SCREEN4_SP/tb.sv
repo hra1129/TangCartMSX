@@ -374,11 +374,11 @@ module tb ();
 		write_io( vdp_io1, 8'h80 + 8'd14 );
 		write_io( vdp_io1, 0 );
 		write_io( vdp_io1, 8'h40 + 8'h1E );
-		for( y = 0; y < 8; y++ ) begin
+		for( y = 0; y < 4; y++ ) begin
 			for( x = 0; x < 4; x++ ) begin
-				write_io( vdp_io0, y * 32 );
+				write_io( vdp_io0, y * 36 );
 				write_io( vdp_io0, 40 * x + 50 );
-				write_io( vdp_io0, 32 );
+				write_io( vdp_io0, y * 4 );
 				write_io( vdp_io0, 0 );
 			end
 		end
@@ -412,7 +412,41 @@ module tb ();
 		write_io( vdp_io1, 8'h80 + 8'd14 );
 		write_io( vdp_io1, 8'h00 );
 		write_io( vdp_io1, 8'h40 + 8'h1C );
-		repeat( 16 * 32 ) write_io( vdp_io0, 8'h0F );
+		repeat( 16 ) write_io( vdp_io0, 8'h01 );
+		repeat( 16 ) write_io( vdp_io0, 8'h02 );
+		repeat( 16 ) write_io( vdp_io0, 8'h03 );
+		repeat( 16 ) write_io( vdp_io0, 8'h04 );
+		repeat( 16 ) write_io( vdp_io0, 8'h05 );
+		repeat( 16 ) write_io( vdp_io0, 8'h06 );
+		repeat( 16 ) write_io( vdp_io0, 8'h07 );
+		repeat( 16 ) write_io( vdp_io0, 8'h08 );
+
+		repeat( 16 ) write_io( vdp_io0, 8'h09 );
+		repeat( 16 ) write_io( vdp_io0, 8'h0A );
+		repeat( 16 ) write_io( vdp_io0, 8'h0B );
+		repeat( 16 ) write_io( vdp_io0, 8'h0C );
+		repeat( 16 ) write_io( vdp_io0, 8'h0D );
+		repeat( 16 ) write_io( vdp_io0, 8'h0E );
+		repeat( 16 ) write_io( vdp_io0, 8'h0F );
+		repeat( 16 ) write_io( vdp_io0, 8'h01 );
+
+		repeat( 16 ) write_io( vdp_io0, 8'h02 );
+		repeat( 16 ) write_io( vdp_io0, 8'h03 );
+		repeat( 16 ) write_io( vdp_io0, 8'h04 );
+		repeat( 16 ) write_io( vdp_io0, 8'h05 );
+		repeat( 16 ) write_io( vdp_io0, 8'h06 );
+		repeat( 16 ) write_io( vdp_io0, 8'h07 );
+		repeat( 16 ) write_io( vdp_io0, 8'h08 );
+		repeat( 16 ) write_io( vdp_io0, 8'h09 );
+
+		repeat( 16 ) write_io( vdp_io0, 8'h0A );
+		repeat( 16 ) write_io( vdp_io0, 8'h0B );
+		repeat( 16 ) write_io( vdp_io0, 8'h0C );
+		repeat( 16 ) write_io( vdp_io0, 8'h0D );
+		repeat( 16 ) write_io( vdp_io0, 8'h0E );
+		repeat( 16 ) write_io( vdp_io0, 8'h0F );
+		repeat( 16 ) write_io( vdp_io0, 8'h01 );
+		repeat( 16 ) write_io( vdp_io0, 8'h02 );
 
 		repeat(5000000) @( posedge clk14m );
 

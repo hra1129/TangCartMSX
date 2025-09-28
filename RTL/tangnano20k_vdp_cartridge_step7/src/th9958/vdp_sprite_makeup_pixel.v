@@ -74,12 +74,15 @@ module vdp_sprite_makeup_pixel (
 	//	from info_collect
 	input		[3:0]	makeup_plane,
 	input		[9:0]	plane_x,
-	input				plane_x_en,
+	input		[7:0]	color,
+	input				color_plane_x_en,
 	input		[31:0]	pattern,
 	input				pattern_left_en,
 	input				pattern_right_en,
-	input		[7:0]	color,
-	input				color_en,
+	//	to/from divider
+	output		[7:0]	x,
+	output		[7:0]	mgx,
+	input		[6:0]	sample_x,
 	//	to color_palette
 	output		[3:0]	display_color,
 	output				display_color_en,
@@ -119,6 +122,14 @@ module vdp_sprite_makeup_pixel (
 	reg			[7:0]	ff_color5;
 	reg			[7:0]	ff_color6;
 	reg			[7:0]	ff_color7;
+	reg			[7:0]	ff_color8;
+	reg			[7:0]	ff_color9;
+	reg			[7:0]	ff_color10;
+	reg			[7:0]	ff_color11;
+	reg			[7:0]	ff_color12;
+	reg			[7:0]	ff_color13;
+	reg			[7:0]	ff_color14;
+	reg			[7:0]	ff_color15;
 	wire		[7:0]	w_color;
 	reg			[9:0]	ff_x0;
 	reg			[9:0]	ff_x1;
@@ -191,44 +202,44 @@ module vdp_sprite_makeup_pixel (
 		else if( reg_sprite_mode3 ) begin
 			if( pattern_left_en ) begin
 				case( makeup_plane )
-				4'd0:		ff_pattern0[31: 0]	<= pattern;
-				4'd1:		ff_pattern1[31: 0]	<= pattern;
-				4'd2:		ff_pattern2[31: 0]	<= pattern;
-				4'd3:		ff_pattern3[31: 0]	<= pattern;
-				4'd4:		ff_pattern4[31: 0]	<= pattern;
-				4'd5:		ff_pattern5[31: 0]	<= pattern;
-				4'd6:		ff_pattern6[31: 0]	<= pattern;
-				4'd7:		ff_pattern7[31: 0]	<= pattern;
-				4'd8:		ff_pattern8[31: 0]	<= pattern;
-				4'd9:		ff_pattern9[31: 0]	<= pattern;
+				4'd0:		ff_pattern0[ 31: 0]	<= pattern;
+				4'd1:		ff_pattern1[ 31: 0]	<= pattern;
+				4'd2:		ff_pattern2[ 31: 0]	<= pattern;
+				4'd3:		ff_pattern3[ 31: 0]	<= pattern;
+				4'd4:		ff_pattern4[ 31: 0]	<= pattern;
+				4'd5:		ff_pattern5[ 31: 0]	<= pattern;
+				4'd6:		ff_pattern6[ 31: 0]	<= pattern;
+				4'd7:		ff_pattern7[ 31: 0]	<= pattern;
+				4'd8:		ff_pattern8[ 31: 0]	<= pattern;
+				4'd9:		ff_pattern9[ 31: 0]	<= pattern;
 				4'd10:		ff_pattern10[31: 0]	<= pattern;
 				4'd11:		ff_pattern11[31: 0]	<= pattern;
 				4'd12:		ff_pattern12[31: 0]	<= pattern;
 				4'd13:		ff_pattern13[31: 0]	<= pattern;
 				4'd14:		ff_pattern14[31: 0]	<= pattern;
 				4'd15:		ff_pattern15[31: 0]	<= pattern;
-				default:	ff_pattern0[31: 0]	<= pattern;
+				default:	ff_pattern0[ 31: 0]	<= pattern;
 				endcase
 			end
 			else if( pattern_right_en ) begin
 				case( makeup_plane )
-				4'd0:		ff_pattern0[63:32]	<= pattern;
-				4'd1:		ff_pattern1[63:32]	<= pattern;
-				4'd2:		ff_pattern2[63:32]	<= pattern;
-				4'd3:		ff_pattern3[63:32]	<= pattern;
-				4'd4:		ff_pattern4[63:32]	<= pattern;
-				4'd5:		ff_pattern5[63:32]	<= pattern;
-				4'd6:		ff_pattern6[63:32]	<= pattern;
-				4'd7:		ff_pattern7[63:32]	<= pattern;
-				4'd8:		ff_pattern8[63:32]	<= pattern;
-				4'd9:		ff_pattern9[63:32]	<= pattern;
+				4'd0:		ff_pattern0[ 63:32]	<= pattern;
+				4'd1:		ff_pattern1[ 63:32]	<= pattern;
+				4'd2:		ff_pattern2[ 63:32]	<= pattern;
+				4'd3:		ff_pattern3[ 63:32]	<= pattern;
+				4'd4:		ff_pattern4[ 63:32]	<= pattern;
+				4'd5:		ff_pattern5[ 63:32]	<= pattern;
+				4'd6:		ff_pattern6[ 63:32]	<= pattern;
+				4'd7:		ff_pattern7[ 63:32]	<= pattern;
+				4'd8:		ff_pattern8[ 63:32]	<= pattern;
+				4'd9:		ff_pattern9[ 63:32]	<= pattern;
 				4'd10:		ff_pattern10[63:32]	<= pattern;
 				4'd11:		ff_pattern11[63:32]	<= pattern;
 				4'd12:		ff_pattern12[63:32]	<= pattern;
 				4'd13:		ff_pattern13[63:32]	<= pattern;
 				4'd14:		ff_pattern14[63:32]	<= pattern;
 				4'd15:		ff_pattern15[63:32]	<= pattern;
-				default:	ff_pattern0[63:32]	<= pattern;
+				default:	ff_pattern0[ 63:32]	<= pattern;
 				endcase
 			end
 		end
@@ -264,16 +275,24 @@ module vdp_sprite_makeup_pixel (
 
 	always @( posedge clk or negedge reset_n ) begin
 		if( !reset_n ) begin
-			ff_color0 <= 8'd0;
-			ff_color1 <= 8'd0;
-			ff_color2 <= 8'd0;
-			ff_color3 <= 8'd0;
-			ff_color4 <= 8'd0;
-			ff_color5 <= 8'd0;
-			ff_color6 <= 8'd0;
-			ff_color7 <= 8'd0;
+			ff_color0  <= 8'd0;
+			ff_color1  <= 8'd0;
+			ff_color2  <= 8'd0;
+			ff_color3  <= 8'd0;
+			ff_color4  <= 8'd0;
+			ff_color5  <= 8'd0;
+			ff_color6  <= 8'd0;
+			ff_color7  <= 8'd0;
+			ff_color8  <= 8'd0;
+			ff_color9  <= 8'd0;
+			ff_color10 <= 8'd0;
+			ff_color11 <= 8'd0;
+			ff_color12 <= 8'd0;
+			ff_color13 <= 8'd0;
+			ff_color14 <= 8'd0;
+			ff_color15 <= 8'd0;
 		end
-		else if( color_en ) begin
+		else if( color_plane_x_en ) begin
 			case( makeup_plane )
 			4'd0:		ff_color0	<= color;
 			4'd1:		ff_color1	<= color;
@@ -283,6 +302,14 @@ module vdp_sprite_makeup_pixel (
 			4'd5:		ff_color5	<= color;
 			4'd6:		ff_color6	<= color;
 			4'd7:		ff_color7	<= color;
+			4'd8:		ff_color8	<= color;
+			4'd9:		ff_color9	<= color;
+			4'd10:		ff_color10	<= color;
+			4'd11:		ff_color11	<= color;
+			4'd12:		ff_color12	<= color;
+			4'd13:		ff_color13	<= color;
+			4'd14:		ff_color14	<= color;
+			4'd15:		ff_color15	<= color;
 			default:	ff_color0	<= color;
 			endcase
 		end
@@ -307,7 +334,7 @@ module vdp_sprite_makeup_pixel (
 			ff_x14 <= 10'd0;
 			ff_x15 <= 10'd0;
 		end
-		else if( plane_x_en ) begin
+		else if( color_plane_x_en ) begin
 			case( makeup_plane )
 			4'd0:		ff_x0	<= plane_x;
 			4'd1:		ff_x1	<= plane_x;
@@ -402,7 +429,7 @@ module vdp_sprite_makeup_pixel (
 	endfunction
 
 	function [7:0] func_byte_selector(
-		input	[2:0]	current_plane,
+		input	[3:0]	current_plane,
 		input	[7:0]	byte0,
 		input	[7:0]	byte1,
 		input	[7:0]	byte2,
@@ -410,17 +437,33 @@ module vdp_sprite_makeup_pixel (
 		input	[7:0]	byte4,
 		input	[7:0]	byte5,
 		input	[7:0]	byte6,
-		input	[7:0]	byte7
+		input	[7:0]	byte7,
+		input	[7:0]	byte8,
+		input	[7:0]	byte9,
+		input	[7:0]	byte10,
+		input	[7:0]	byte11,
+		input	[7:0]	byte12,
+		input	[7:0]	byte13,
+		input	[7:0]	byte14,
+		input	[7:0]	byte15
 	);
 		case( current_plane )
-		3'd0:		func_byte_selector = byte0;
-		3'd1:		func_byte_selector = byte1;
-		3'd2:		func_byte_selector = byte2;
-		3'd3:		func_byte_selector = byte3;
-		3'd4:		func_byte_selector = byte4;
-		3'd5:		func_byte_selector = byte5;
-		3'd6:		func_byte_selector = byte6;
-		3'd7:		func_byte_selector = byte7;
+		4'd0:		func_byte_selector = byte0;
+		4'd1:		func_byte_selector = byte1;
+		4'd2:		func_byte_selector = byte2;
+		4'd3:		func_byte_selector = byte3;
+		4'd4:		func_byte_selector = byte4;
+		4'd5:		func_byte_selector = byte5;
+		4'd6:		func_byte_selector = byte6;
+		4'd7:		func_byte_selector = byte7;
+		4'd8:		func_byte_selector = byte8;
+		4'd9:		func_byte_selector = byte9;
+		4'd10:		func_byte_selector = byte10;
+		4'd11:		func_byte_selector = byte11;
+		4'd12:		func_byte_selector = byte12;
+		4'd13:		func_byte_selector = byte13;
+		4'd14:		func_byte_selector = byte14;
+		4'd15:		func_byte_selector = byte15;
 		default:	func_byte_selector = byte0;
 		endcase
 	endfunction
@@ -486,7 +529,7 @@ module vdp_sprite_makeup_pixel (
 	);
 
 	assign w_color		= func_byte_selector(
-			ff_current_plane[2:0],
+			ff_current_plane,
 			ff_color0,
 			ff_color1,
 			ff_color2,
@@ -494,7 +537,15 @@ module vdp_sprite_makeup_pixel (
 			ff_color4,
 			ff_color5,
 			ff_color6,
-			ff_color7
+			ff_color7,
+			ff_color8,
+			ff_color9,
+			ff_color10,
+			ff_color11,
+			ff_color12,
+			ff_color13,
+			ff_color14,
+			ff_color15
 	);
 
 	assign w_x			= func_10bit_selector(
@@ -694,6 +745,9 @@ module vdp_sprite_makeup_pixel (
 			ff_pixel_color_d5 <= ff_pixel_color_d4;
 		end
 	end
+
+	assign x					= 10'd0;
+	assign mgx					= 8'd0;
 
 	assign display_color_en		= ff_pixel_color_d5[4];
 	assign display_color		= ff_pixel_color_d5[3:0];

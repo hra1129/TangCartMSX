@@ -62,7 +62,6 @@ module tb ();
 	reg			[7:0]	reg_mgx;
 	reg			[1:0]	bit_shift;
 	wire		[6:0]	sample_x;				//	3clk delay
-	wire				overflow;				//	3clk delay
 
 	// --------------------------------------------------------------------
 	//	Loop variables
@@ -78,8 +77,7 @@ module tb ();
 		.x				( x				),
 		.reg_mgx		( reg_mgx		),
 		.bit_shift		( bit_shift		),
-		.sample_x		( sample_x		),
-		.overflow		( overflow		)
+		.sample_x		( sample_x		)
 	);
 
 	// --------------------------------------------------------------------

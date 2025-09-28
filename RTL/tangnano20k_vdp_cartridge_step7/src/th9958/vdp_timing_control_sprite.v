@@ -108,7 +108,7 @@ module vdp_timing_control_sprite (
 	// --------------------------------------------------------------------
 	wire				w_selected_en;
 	wire		[5:0]	w_selected_plane_num;
-	wire		[6:0]	w_selected_y;
+	wire		[9:0]	w_selected_y;
 	wire		[7:0]	w_selected_x;
 	wire		[7:0]	w_selected_pattern;
 	wire		[7:0]	w_selected_color;
@@ -116,12 +116,11 @@ module vdp_timing_control_sprite (
 	wire				w_start_info_collect;
 	wire				w_sprite_mode2;
 	wire		[9:0]	w_plane_x;
-	wire				w_plane_x_en;
+	wire		[7:0]	w_color;
+	wire				w_color_plane_x_en;
 	wire		[31:0]	w_pattern;
 	wire				w_pattern_left_en;
 	wire				w_pattern_right_en;
-	wire		[7:0]	w_color;
-	wire				w_color_en;
 	wire		[3:0]	w_makeup_plane;
 	wire		[17:0]	w_vp_vram_address;
 	wire				w_vp_vram_valid;
@@ -135,7 +134,6 @@ module vdp_timing_control_sprite (
 	wire		[7:0]	w_divider_mgx;
 	wire		[1:0]	w_bit_shift;
 	wire		[6:0]	w_sample_x;
-	wire				w_overflow;
 
 	// --------------------------------------------------------------------
 	//	Horizontal active
@@ -176,7 +174,7 @@ module vdp_timing_control_sprite (
 			if( screen_pos_x[13:4] == 10'h3FF ) begin
 				ff_screen_h_active <= 1'b1;
 			end
-			else if( screen_pos_x[13:4] == 10'd263 ) begin
+			else if( screen_pos_x[13:4] == 10'd255 ) begin
 				ff_screen_h_active <= 1'b0;
 			end
 		end
@@ -205,11 +203,6 @@ module vdp_timing_control_sprite (
 		.selected_color								( w_selected_color							),
 		.selected_count								( w_selected_count							),
 		.start_info_collect							( w_start_info_collect						),
-		.y											( w_y										),
-		.mgy										( w_mgy										),
-		.bit_shift									( w_bit_shift								),
-		.sample_y									( w_sample_x								),
-		.overflow									( w_overflow								),
 		.sprite_mode2								( w_sprite_mode2							),
 		.reg_display_on								( reg_display_on							),
 		.reg_sprite_disable							( w_sprite_disable							),
@@ -241,18 +234,17 @@ module vdp_timing_control_sprite (
 		.selected_pattern							( w_selected_pattern						),
 		.selected_color								( w_selected_color							),
 		.selected_count								( w_selected_count							),
-		.x											( w_x										),
-		.mgx										( w_mgx										),
-		.sample_x									( w_sample_x								),
-		.overflow									( w_overflow								),
+		.y											( w_y										),
+		.mgy										( w_mgy										),
+		.bit_shift									( w_bit_shift								),
+		.sample_y									( w_sample_x								),
 		.makeup_plane								( w_makeup_plane							),
 		.plane_x									( w_plane_x									),
-		.plane_x_en									( w_plane_x_en								),
+		.color										( w_color									),
+		.color_plane_x_en							( w_color_plane_x_en						),
 		.pattern									( w_pattern									),
 		.pattern_left_en							( w_pattern_left_en							),
 		.pattern_right_en							( w_pattern_right_en						),
-		.color										( w_color									),
-		.color_en									( w_color_en								),
 		.sprite_mode2								( w_sprite_mode2							),
 		.reg_display_on								( reg_display_on							),
 		.reg_sprite_magify							( reg_sprite_magify							),
@@ -285,12 +277,14 @@ module vdp_timing_control_sprite (
 		.selected_count								( w_selected_count							),
 		.makeup_plane								( w_makeup_plane							),
 		.plane_x									( w_plane_x									),
-		.plane_x_en									( w_plane_x_en								),
+		.color										( w_color									),
+		.color_plane_x_en						    ( w_color_plane_x_en						),
 		.pattern									( w_pattern									),
 		.pattern_left_en							( w_pattern_left_en							),
 		.pattern_right_en							( w_pattern_right_en						),
-		.color										( w_color									),
-		.color_en								    ( w_color_en								),
+		.x											( w_x										),
+		.mgx										( w_mgx										),
+		.sample_x									( w_sample_x								),
 		.display_color								( display_color								),
 		.display_color_en							( display_color_en							)
 	);
@@ -306,8 +300,7 @@ module vdp_timing_control_sprite (
 		.x											( w_divider_x								),
 		.reg_mgx									( w_divider_mgx								),
 		.bit_shift									( w_bit_shift								),
-		.sample_x									( w_sample_x								),
-		.overflow									( w_overflow								)
+		.sample_x									( w_sample_x								)
 	);
 
 endmodule
