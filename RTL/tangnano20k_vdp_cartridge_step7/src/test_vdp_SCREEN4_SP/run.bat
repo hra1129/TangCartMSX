@@ -13,6 +13,7 @@ vlog ..\th9958\vdp_video_out.v
 vlog ..\th9958\vdp_sprite_info_collect.v
 vlog ..\th9958\vdp_sprite_makeup_pixel.v
 vlog ..\th9958\vdp_sprite_select_visible_planes.v
+vlog ..\th9958\vdp_sprite_divide_table.v
 vlog ..\th9958\vdp_timing_control_ssg.v
 vlog ..\th9958\vdp_timing_control_screen_mode.v
 vlog ..\th9958\vdp_timing_control_sprite.v

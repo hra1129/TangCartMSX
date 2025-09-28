@@ -108,14 +108,14 @@ module vdp_timing_control_sprite (
 	// --------------------------------------------------------------------
 	wire				w_selected_en;
 	wire		[5:0]	w_selected_plane_num;
-	wire		[3:0]	w_selected_y;
+	wire		[6:0]	w_selected_y;
 	wire		[7:0]	w_selected_x;
 	wire		[7:0]	w_selected_pattern;
 	wire		[7:0]	w_selected_color;
 	wire		[4:0]	w_selected_count;
 	wire				w_start_info_collect;
 	wire				w_sprite_mode2;
-	wire		[7:0]	w_plane_x;
+	wire		[9:0]	w_plane_x;
 	wire				w_plane_x_en;
 	wire		[31:0]	w_pattern;
 	wire				w_pattern_left_en;
@@ -127,6 +127,15 @@ module vdp_timing_control_sprite (
 	wire				w_vp_vram_valid;
 	wire		[17:0]	w_ic_vram_address;
 	wire				w_ic_vram_valid;
+	wire		[7:0]	w_x;
+	wire		[7:0]	w_mgx;
+	wire		[7:0]	w_y;
+	wire		[7:0]	w_mgy;
+	wire		[7:0]	w_divider_x;
+	wire		[7:0]	w_divider_mgx;
+	wire		[1:0]	w_bit_shift;
+	wire		[6:0]	w_sample_x;
+	wire				w_overflow;
 
 	// --------------------------------------------------------------------
 	//	Horizontal active
@@ -196,6 +205,11 @@ module vdp_timing_control_sprite (
 		.selected_color								( w_selected_color							),
 		.selected_count								( w_selected_count							),
 		.start_info_collect							( w_start_info_collect						),
+		.y											( w_y										),
+		.mgy										( w_mgy										),
+		.bit_shift									( w_bit_shift								),
+		.sample_y									( w_sample_x								),
+		.overflow									( w_overflow								),
 		.sprite_mode2								( w_sprite_mode2							),
 		.reg_display_on								( reg_display_on							),
 		.reg_sprite_disable							( w_sprite_disable							),
@@ -227,6 +241,10 @@ module vdp_timing_control_sprite (
 		.selected_pattern							( w_selected_pattern						),
 		.selected_color								( w_selected_color							),
 		.selected_count								( w_selected_count							),
+		.x											( w_x										),
+		.mgx										( w_mgx										),
+		.sample_x									( w_sample_x								),
+		.overflow									( w_overflow								),
 		.makeup_plane								( w_makeup_plane							),
 		.plane_x									( w_plane_x									),
 		.plane_x_en									( w_plane_x_en								),
@@ -275,6 +293,21 @@ module vdp_timing_control_sprite (
 		.color_en								    ( w_color_en								),
 		.display_color								( display_color								),
 		.display_color_en							( display_color_en							)
+	);
+
+	// --------------------------------------------------------------------
+	//	Divider
+	// --------------------------------------------------------------------
+	assign w_divider_x		= w_x | w_y;
+	assign w_divider_mgx	= w_mgx | w_mgy;
+	vdp_sprite_divide_table u_divide_table (
+		.reset_n									( reset_n									),
+		.clk										( clk										),
+		.x											( w_divider_x								),
+		.reg_mgx									( w_divider_mgx								),
+		.bit_shift									( w_bit_shift								),
+		.sample_x									( w_sample_x								),
+		.overflow									( w_overflow								)
 	);
 
 endmodule

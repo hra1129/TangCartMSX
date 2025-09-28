@@ -20,6 +20,7 @@
         <File path="src/th9958/vdp_command.v" type="file.verilog" enable="1"/>
         <File path="src/th9958/vdp_command_cache.v" type="file.verilog" enable="1"/>
         <File path="src/th9958/vdp_cpu_interface.v" type="file.verilog" enable="1"/>
+        <File path="src/th9958/vdp_sprite_divide_table.v" type="file.verilog" enable="1"/>
         <File path="src/th9958/vdp_sprite_info_collect.v" type="file.verilog" enable="1"/>
         <File path="src/th9958/vdp_sprite_makeup_pixel.v" type="file.verilog" enable="1"/>
         <File path="src/th9958/vdp_sprite_select_visible_planes.v" type="file.verilog" enable="1"/>

@@ -97,7 +97,7 @@
         "SubInsts" : [
          {
           "InstFile" : "D:/github/HRA_product/TangCartMSX/RTL/tangnano20k_vdp_cartridge_step7/src/th9958/vdp_timing_control_sprite.v",
-          "InstLine" : 179,
+          "InstLine" : 188,
           "InstName" : "u_select_visible_planes",
           "ModuleFile" : "D:/github/HRA_product/TangCartMSX/RTL/tangnano20k_vdp_cartridge_step7/src/th9958/vdp_sprite_select_visible_planes.v",
           "ModuleLine" : 58,
@@ -105,7 +105,7 @@
          },
          {
           "InstFile" : "D:/github/HRA_product/TangCartMSX/RTL/tangnano20k_vdp_cartridge_step7/src/th9958/vdp_timing_control_sprite.v",
-          "InstLine" : 212,
+          "InstLine" : 226,
           "InstName" : "u_info_collect",
           "ModuleFile" : "D:/github/HRA_product/TangCartMSX/RTL/tangnano20k_vdp_cartridge_step7/src/th9958/vdp_sprite_info_collect.v",
           "ModuleLine" : 58,
@@ -113,11 +113,19 @@
          },
          {
           "InstFile" : "D:/github/HRA_product/TangCartMSX/RTL/tangnano20k_vdp_cartridge_step7/src/th9958/vdp_timing_control_sprite.v",
-          "InstLine" : 250,
+          "InstLine" : 268,
           "InstName" : "u_makeup_pixel",
           "ModuleFile" : "D:/github/HRA_product/TangCartMSX/RTL/tangnano20k_vdp_cartridge_step7/src/th9958/vdp_sprite_makeup_pixel.v",
           "ModuleLine" : 58,
           "ModuleName" : "vdp_sprite_makeup_pixel"
+         },
+         {
+          "InstFile" : "D:/github/HRA_product/TangCartMSX/RTL/tangnano20k_vdp_cartridge_step7/src/th9958/vdp_timing_control_sprite.v",
+          "InstLine" : 303,
+          "InstName" : "u_divide_table",
+          "ModuleFile" : "D:/github/HRA_product/TangCartMSX/RTL/tangnano20k_vdp_cartridge_step7/src/th9958/vdp_sprite_divide_table.v",
+          "ModuleLine" : 58,
+          "ModuleName" : "vdp_sprite_divide_table"
          }
         ]
        }

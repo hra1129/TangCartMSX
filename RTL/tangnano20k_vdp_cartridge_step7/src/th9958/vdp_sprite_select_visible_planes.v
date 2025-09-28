@@ -72,13 +72,19 @@ module vdp_sprite_select_visible_planes (
 
 	output				selected_en,
 	output		[5:0]	selected_plane_num,
-	output		[3:0]	selected_y,
+	output		[6:0]	selected_y,
 	output		[7:0]	selected_x,
 	output		[7:0]	selected_pattern,
 	output		[7:0]	selected_color,
 
 	output		[4:0]	selected_count,
 	output				start_info_collect,
+
+	output		[7:0]	y,
+	output		[7:0]	mgy,
+	output		[1:0]	bit_shift,
+	input		[6:0]	sample_y,
+	input				overflow,
 
 	input				sprite_mode2,
 	input				reg_display_on,
@@ -99,12 +105,15 @@ module vdp_sprite_select_visible_planes (
 	reg			[4:0]	ff_selected_count;
 	reg					ff_select_finish;
 	reg					ff_selected_en;
-	reg			[7:0]	ff_y;
-	reg			[7:0]	ff_x;
+	reg			[9:0]	ff_y;
+	reg			[1:0]	ff_bit_shift;
+	reg			[7:0]	ff_x_mgy;
 	reg			[7:0]	ff_pattern;
 	reg			[7:0]	ff_color;
-	wire		[7:0]	w_offset_y;
-	wire		[7:3]	w_invisible;
+	wire		[9:0]	w_offset_y;
+	wire		[7:3]	w_invisible12;
+	wire				w_invisible3;
+	wire				w_invisible;
 	wire				w_selected_full;
 	wire		[7:0]	w_finish_line;
 	wire		[17:0]	w_sprite_mode1_attribute;
@@ -124,7 +133,10 @@ module vdp_sprite_select_visible_planes (
 	assign vram_address				= ff_vram_valid ? 
 										(reg_sprite_mode3 ? w_sprite_mode3_attribute :
 										(    sprite_mode2 ? w_sprite_mode2_attribute : w_sprite_mode1_attribute)) :18'd0;
-	assign w_selected_full			= ff_selected_count[4] | (ff_selected_count[3] && !reg_sprite_mode3) | (ff_selected_count[2] && !sprite_mode2 && !reg_sprite_mode3) | ff_select_finish;
+	assign w_selected_full			= ff_select_finish | (
+										reg_sprite_mode3 ? ff_selected_count[4]:
+										    sprite_mode2 ? (ff_selected_count[4] | ff_selected_count[3]): 
+										                   (ff_selected_count[4] | ff_selected_count[3] | ff_selected_count[2]) );
 	assign w_finish_line			= (reg_sprite_mode3 || sprite_mode2) ? 8'd216: 8'd208;
 
 	// --------------------------------------------------------------------
@@ -138,7 +150,7 @@ module vdp_sprite_select_visible_planes (
 		else if( !screen_v_active || !screen_h_active || !reg_display_on || w_screen_pos_x[9]  ) begin
 			//	hold
 		end
-		else if( w_phase == 3'd6 && w_sub_phase == 4'd0 ) begin
+		else if( w_phase == 3'd4 && w_sub_phase == 4'd0 ) begin
 			if( screen_pos_x[13:7] == 7'd0 ) begin
 				ff_current_plane_num	<= 6'd0;
 				ff_vram_valid			<= 1'b1;
@@ -148,7 +160,7 @@ module vdp_sprite_select_visible_planes (
 				ff_vram_valid			<= ~w_selected_full;
 			end
 		end
-		else if( w_phase == 3'd7 && w_sub_phase == 4'd0 ) begin
+		else if( w_phase == 3'd5 && w_sub_phase == 4'd0 ) begin
 			if( reg_sprite_mode3 ) begin
 				ff_current_plane_num	<= ff_current_plane_num + 5'd1;
 				ff_vram_valid			<= ~w_selected_full;
@@ -169,19 +181,29 @@ module vdp_sprite_select_visible_planes (
 	// --------------------------------------------------------------------
 	always @( posedge clk or negedge reset_n ) begin
 		if( !reset_n ) begin
-			ff_y		<= 8'd0;
-			ff_x		<= 8'd0;
-			ff_pattern	<= 8'd0;
-			ff_color	<= 8'd0;
+			ff_y			<= 10'd0;
+			ff_x_mgy		<= 8'd0;
+			ff_bit_shift	<= 2'd0;
+			ff_pattern		<= 8'd0;
+			ff_color		<= 8'd0;
 		end
 		else if( !screen_v_active || !screen_h_active || !reg_display_on ) begin
 			//	hold
 		end
-		else if( (w_phase == 3'd6 || (w_phase == 3'd7 && reg_sprite_mode3)) && w_sub_phase == 4'd12 ) begin
-			ff_y		<= vram_rdata[ 7: 0];
-			ff_x		<= vram_rdata[15: 8];
-			ff_pattern	<= reg_sprite_16x16 ? { vram_rdata[23:18], 2'd0 } : vram_rdata[23:16];
-			ff_color	<= vram_rdata[31:24];
+		else if( (w_phase == 3'd4 || (w_phase == 3'd5 && reg_sprite_mode3)) && w_sub_phase == 4'd15 ) begin
+			if( reg_sprite_mode3 ) begin
+				ff_y			<= vram_rdata[ 9: 0];
+				ff_bit_shift	<= vram_rdata[15:14];
+				ff_x_mgy		<= vram_rdata[23:16];				//	MGY
+				ff_color		<= vram_rdata[31:24];
+			end
+			else begin
+				ff_y			<= { 2'd0, vram_rdata[ 7: 0] };
+				ff_x_mgy		<= vram_rdata[15: 8];				//	X
+				ff_bit_shift	<= 2'd0;
+				ff_pattern		<= reg_sprite_16x16 ? { vram_rdata[23:18], 2'd0 } : vram_rdata[23:16];
+				ff_color		<= vram_rdata[31:24];
+			end
 		end
 	end
 
@@ -189,9 +211,11 @@ module vdp_sprite_select_visible_planes (
 	//	Check visible plane
 	// --------------------------------------------------------------------
 	assign w_pixel_pos_y	= reg_sprite_nonR23_mode ? screen_pos_y: pixel_pos_y;
-	assign w_offset_y		= w_pixel_pos_y - ff_y;
-	assign w_invisible		= (!reg_sprite_16x16 && !reg_sprite_magify) ?   w_offset_y[7:3]        : 
+	assign w_offset_y		= { 2'd0, w_pixel_pos_y } - ff_y;
+	assign w_invisible12	= (!reg_sprite_16x16 && !reg_sprite_magify) ?   w_offset_y[7:3]        : 
 	                  		  (!reg_sprite_16x16 || !reg_sprite_magify) ? { w_offset_y[7:4], 1'd0 }: { w_offset_y[7:5], 2'd0 };
+	assign w_invisible3		= (ff_x_mgy == 8'd0) ? (w_offset_y[9:8] != 2'd0): ( { 2'd0, ff_x_mgy } <= w_offset_y );
+	assign w_invisible		= reg_sprite_mode3 ? w_invisible3: (w_invisible12 != 5'd0);
 
 	always @( posedge clk or negedge reset_n ) begin
 		if( !reset_n ) begin
@@ -207,28 +231,33 @@ module vdp_sprite_select_visible_planes (
 		else if( !screen_v_active || !screen_h_active || !reg_display_on ) begin
 			//	hold
 		end
-		else if( w_phase == 3'd6 || (w_phase == 3'd7 && reg_sprite_mode3) ) begin
-			if( w_sub_phase == 4'd15 ) begin
+		else if( w_phase == 3'd5 || (w_phase == 3'd6 && reg_sprite_mode3) ) begin
+			if( w_sub_phase == 4'd3 ) begin
 				if( ff_y == w_finish_line ) begin
 					ff_select_finish	<= 1'b1;
 					ff_selected_en		<= 1'b0;
 				end
-				else if( w_invisible == 5'd0 && !w_selected_full ) begin
+				else if( !w_invisible && !w_selected_full ) begin
 					ff_selected_en		<= 1'b1;
 				end
 			end
-		end
-		else if( ff_selected_en ) begin
-			ff_selected_count	<= ff_selected_count + 5'd1;
-			ff_selected_en		<= 1'b0;
+			else if( ff_selected_en ) begin
+				ff_selected_count	<= ff_selected_count + 5'd1;
+				ff_selected_en		<= 1'b0;
+			end
 		end
 	end
 
+	//	for sprite mode3
+	assign y					= w_offset_y[7:0];
+	assign mgy					= ff_x_mgy;				//	MGY
+	assign bit_shift			= ff_bit_shift;
+
 	assign selected_en			= ff_selected_en;
 	assign selected_plane_num	= ff_current_plane_num;
-	assign selected_y			= reg_sprite_magify ? w_offset_y[4:1]: w_offset_y[3:0];
-	assign selected_x			= ff_x;
-	assign selected_pattern		= ff_pattern;
+	assign selected_y			= reg_sprite_mode3 ? sample_y: ( reg_sprite_magify ? { 3'd0, w_offset_y[4:1] }: { 3'd0, w_offset_y[3:0] } );
+	assign selected_x			= ff_x_mgy;				//	mode1 and mode2 only
+	assign selected_pattern		= ff_pattern;			//	mode1 and mode2 only
 	assign selected_color		= ff_color;
 	assign selected_count		= ff_selected_count;
 	assign start_info_collect	= (screen_v_active && screen_pos_x[13:4] == 10'd263 && w_sub_phase == 4'd15);

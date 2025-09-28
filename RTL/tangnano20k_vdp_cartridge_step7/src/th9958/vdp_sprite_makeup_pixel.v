@@ -70,7 +70,7 @@ module vdp_sprite_makeup_pixel (
 	input				reg_sprite_16x16,
 	input				reg_sprite_mode3,
 	//	from select_visible_planes
-	input		[3:0]	selected_count,
+	input		[4:0]	selected_count,
 	//	from info_collect
 	input		[3:0]	makeup_plane,
 	input		[9:0]	plane_x,
@@ -91,8 +91,8 @@ module vdp_sprite_makeup_pixel (
 	output		[9:0]	sprite_collision_y
 );
 	reg					ff_active;
-	reg			[3:0]	ff_visible_planes;
-	reg			[3:0]	ff_current_plane;
+	reg			[4:0]	ff_visible_planes;
+	reg			[4:0]	ff_current_plane;
 	reg			[63:0]	ff_pattern0;
 	reg			[63:0]	ff_pattern1;
 	reg			[63:0]	ff_pattern2;
@@ -336,19 +336,19 @@ module vdp_sprite_makeup_pixel (
 	always @( posedge clk or negedge reset_n ) begin
 		if( !reset_n ) begin
 			ff_active			<= 1'b0;
-			ff_visible_planes	<= 4'd0;
-			ff_current_plane	<= 4'd0;
+			ff_visible_planes	<= 5'd0;
+			ff_current_plane	<= 5'd0;
 		end
 		else if( screen_pos_x == 14'h3FFF ) begin
 			ff_active			<= reg_display_on;
 			ff_visible_planes	<= selected_count;
-			ff_current_plane	<= 4'd0;
+			ff_current_plane	<= 5'd0;
 		end
 		else if( screen_pos_x == 14'h0FFF ) begin
 			ff_active			<= 1'b0;
 		end
 		else if( w_sub_phase == 4'd15 ) begin
-			ff_current_plane	<= 4'd0;
+			ff_current_plane	<= 5'd0;
 		end
 		else if( w_active ) begin
 			ff_current_plane	<= ff_current_plane + 4'd1;
@@ -517,7 +517,7 @@ module vdp_sprite_makeup_pixel (
 			ff_x15
 	);
 
-	assign w_offset_x	= screen_pos_x[12:4] - { 2'd0, w_x };
+	assign w_offset_x	= screen_pos_x[13:4] - w_x;
 	assign w_overflow	= ( !reg_sprite_16x16 && !reg_sprite_magify ) ?   w_offset_x[9:3]:			// 8x8 normal
 	                 	  (  reg_sprite_16x16 &&  reg_sprite_magify ) ? { w_offset_x[9:5], 2'd0 }:	// 16x16 magnify
 	                 	                                                { w_offset_x[9:4], 1'd0 };	// 8x8 magnify or 16x16 normal
