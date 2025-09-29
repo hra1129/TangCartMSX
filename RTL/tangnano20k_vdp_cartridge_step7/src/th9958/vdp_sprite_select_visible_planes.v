@@ -72,7 +72,7 @@ module vdp_sprite_select_visible_planes (
 
 	output				selected_en,
 	output		[5:0]	selected_plane_num,
-	output		[9:0]	selected_y,
+	output		[7:0]	selected_y,
 	output		[7:0]	selected_x,
 	output		[7:0]	selected_pattern,
 	output		[7:0]	selected_color,
@@ -244,7 +244,7 @@ module vdp_sprite_select_visible_planes (
 
 	assign selected_en			= ff_selected_en;
 	assign selected_plane_num	= ff_current_plane_num;
-	assign selected_y			= reg_sprite_mode3 ? w_offset_y: ( reg_sprite_magify ? { 3'd0, w_offset_y[4:1] }: { 3'd0, w_offset_y[3:0] } );
+	assign selected_y			= reg_sprite_mode3 ? w_offset_y[7:0]: ( reg_sprite_magify ? { 3'd0, w_offset_y[4:1] }: { 3'd0, w_offset_y[3:0] } );
 	assign selected_x			= ff_x_mgy;				//	mode1 and mode2 only
 	assign selected_pattern		= ff_pattern;			//	mode1 and mode2 only
 	assign selected_color		= ff_color;

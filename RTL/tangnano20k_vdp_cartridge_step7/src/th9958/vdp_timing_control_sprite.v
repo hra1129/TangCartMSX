@@ -70,6 +70,7 @@ module vdp_timing_control_sprite (
 	input		[7:0]	vram_rdata8,
 
 	output		[3:0]	display_color,
+	output		[1:0]	display_color_transparent,
 	output				display_color_en,
 
 	input		[2:0]	horizontal_offset_l,
@@ -108,7 +109,7 @@ module vdp_timing_control_sprite (
 	// --------------------------------------------------------------------
 	wire				w_selected_en;
 	wire		[5:0]	w_selected_plane_num;
-	wire		[9:0]	w_selected_y;
+	wire		[7:0]	w_selected_y;
 	wire		[7:0]	w_selected_x;
 	wire		[7:0]	w_selected_pattern;
 	wire		[7:0]	w_selected_color;
@@ -286,6 +287,7 @@ module vdp_timing_control_sprite (
 		.mgx										( w_mgx										),
 		.sample_x									( w_sample_x								),
 		.display_color								( display_color								),
+		.display_color_transparent					( display_color_transparent					),
 		.display_color_en							( display_color_en							)
 	);
 

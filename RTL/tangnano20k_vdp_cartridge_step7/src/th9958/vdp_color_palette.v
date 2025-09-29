@@ -70,7 +70,8 @@ module vdp_color_palette (
 
 	input		[7:0]	display_color_screen_mode,
 	input				display_color_screen_mode_en,
-	input		[3:0]	display_color_sprite,
+	input		[7:0]	display_color_sprite,
+	input		[1:0]	display_color_sprite_transparent,
 	input				display_color_sprite_en,
 
 	output		[7:0]	vdp_r,

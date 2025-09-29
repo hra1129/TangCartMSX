@@ -81,7 +81,8 @@ module vdp_timing_control (
 	output				sprite_vram_valid,
 	input		[31:0]	sprite_vram_rdata,
 	input		[7:0]	sprite_vram_rdata8,
-	output		[3:0]	sprite_display_color,
+	output		[7:0]	sprite_display_color,
+	output		[1:0]	sprite_display_color_transparent,
 	output				sprite_display_color_en,
 
 	input				clear_sprite_collision,
@@ -216,6 +217,7 @@ module vdp_timing_control (
 		.vram_rdata									( sprite_vram_rdata							),
 		.vram_rdata8								( sprite_vram_rdata8						),
 		.display_color								( sprite_display_color						),
+		.display_color_transparent					( sprite_display_color_transparent			),
 		.display_color_en							( sprite_display_color_en					),
 		.horizontal_offset_l						( w_horizontal_offset_l						),
 		.clear_sprite_collision						( clear_sprite_collision					),

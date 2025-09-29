@@ -84,7 +84,8 @@ module vdp_sprite_makeup_pixel (
 	output		[7:0]	mgx,
 	input		[6:0]	sample_x,
 	//	to color_palette
-	output		[3:0]	display_color,
+	output		[7:0]	display_color,
+	output		[1:0]	display_color_transparent,
 	output				display_color_en,
 	//	to cpu_interface
 	input				clear_sprite_collision,
@@ -151,11 +152,13 @@ module vdp_sprite_makeup_pixel (
 	wire		[3:0]	w_sub_phase;
 	wire				w_active;
 	reg					ff_pre_pixel_color_en;
-	reg			[3:0]	ff_pre_pixel_color;
+	reg			[1:0]	ff_pre_pixel_color_transparent;
+	reg			[7:0]	ff_pre_pixel_color;
 	reg					ff_pre_pixel_color_fix;
 	reg					ff_pre_pixel_cc0_found;
 	reg					ff_pixel_color_en;
-	reg			[3:0]	ff_pixel_color;
+	reg			[1:0]	ff_pixel_color_transparent;
+	reg			[7:0]	ff_pixel_color;
 	wire		[ 9:0]	w_offset_x;
 	wire		[ 9:3]	w_overflow;
 	wire				w_sprite_en;
@@ -165,12 +168,12 @@ module vdp_sprite_makeup_pixel (
 	reg					ff_color_cc;
 	reg					ff_color_ic;
 	reg					ff_color_en;
-	reg			[4:0]	ff_pixel_color_d0;
-	reg			[4:0]	ff_pixel_color_d1;
-	reg			[4:0]	ff_pixel_color_d2;
-	reg			[4:0]	ff_pixel_color_d3;
-	reg			[4:0]	ff_pixel_color_d4;
-	reg			[4:0]	ff_pixel_color_d5;
+	reg			[10:0]	ff_pixel_color_d0;
+	reg			[10:0]	ff_pixel_color_d1;
+	reg			[10:0]	ff_pixel_color_d2;
+	reg			[10:0]	ff_pixel_color_d3;
+	reg			[10:0]	ff_pixel_color_d4;
+	reg			[10:0]	ff_pixel_color_d5;
 	reg					ff_sprite_collision;
 	reg			[8:0]	ff_sprite_collision_x;
 	reg			[9:0]	ff_sprite_collision_y;
@@ -603,10 +606,11 @@ module vdp_sprite_makeup_pixel (
 	// --------------------------------------------------------------------
 	always @( posedge clk or negedge reset_n ) begin
 		if( !reset_n ) begin
-			ff_pre_pixel_color_en	<= 1'b0;
-			ff_pre_pixel_color		<= 4'd0;
-			ff_pre_pixel_color_fix	<= 1'b0;
-			ff_pre_pixel_cc0_found	<= 1'b0;
+			ff_pre_pixel_color_en			<= 1'b0;
+			ff_pre_pixel_color_transparent	<= 2'd0;
+			ff_pre_pixel_color				<= 4'd0;
+			ff_pre_pixel_color_fix			<= 1'b0;
+			ff_pre_pixel_cc0_found			<= 1'b0;
 		end
 		else if( w_sub_phase == 4'd1 ) begin
 			if( !ff_color_cc ) begin
@@ -616,7 +620,7 @@ module vdp_sprite_makeup_pixel (
 				if( ff_color_en && (ff_color != 4'd0 || reg_color0_opaque) ) begin
 					//	着目プレーンが CC=0 で、かつドットが存在する場合に描画
 					ff_pre_pixel_color_en	<= 1'b1;
-					ff_pre_pixel_color		<= ff_color;
+					ff_pre_pixel_color		<= { 4'd0, ff_color };
 				end
 				else begin
 					ff_pre_pixel_color_en	<= 1'b0;
@@ -714,30 +718,33 @@ module vdp_sprite_makeup_pixel (
 	// --------------------------------------------------------------------
 	always @( posedge clk or negedge reset_n ) begin
 		if( !reset_n ) begin
-			ff_pixel_color_en	<= 1'b0;
-			ff_pixel_color		<= 4'd0;
+			ff_pixel_color_en			<= 1'b0;
+			ff_pixel_color_transparent	<= 2'd0;
+			ff_pixel_color				<= 8'd0;
 		end
 		else if( screen_pos_x == 14'h3FFF ) begin
-			ff_pixel_color_en	<= 1'b0;
-			ff_pixel_color		<= 4'd0;
+			ff_pixel_color_en			<= 1'b0;
+			ff_pixel_color_transparent	<= 2'd0;
+			ff_pixel_color				<= 8'd0;
 		end
 		else if( w_sub_phase == 4'd1 ) begin
-			ff_pixel_color_en	<= ff_pre_pixel_color_en;
-			ff_pixel_color		<= ff_pre_pixel_color;
+			ff_pixel_color_en			<= ff_pre_pixel_color_en;
+			ff_pixel_color_transparent	<= ff_pre_pixel_color_transparent;
+			ff_pixel_color				<= ff_pre_pixel_color;
 		end
 	end
 
 	always @( posedge clk or negedge reset_n ) begin
 		if( !reset_n ) begin
-			ff_pixel_color_d0 <= 5'd0;
-			ff_pixel_color_d1 <= 5'd0;
-			ff_pixel_color_d2 <= 5'd0;
-			ff_pixel_color_d3 <= 5'd0;
-			ff_pixel_color_d4 <= 5'd0;
-			ff_pixel_color_d5 <= 5'd0;
+			ff_pixel_color_d0 <= 11'd0;
+			ff_pixel_color_d1 <= 11'd0;
+			ff_pixel_color_d2 <= 11'd0;
+			ff_pixel_color_d3 <= 11'd0;
+			ff_pixel_color_d4 <= 11'd0;
+			ff_pixel_color_d5 <= 11'd0;
 		end
 		else if( w_sub_phase == 4'd15 ) begin
-			ff_pixel_color_d0 <= { ff_pixel_color_en, ff_pixel_color };
+			ff_pixel_color_d0 <= { ff_pixel_color_en, ff_pixel_color_transparent, ff_pixel_color };
 			ff_pixel_color_d1 <= ff_pixel_color_d0;
 			ff_pixel_color_d2 <= ff_pixel_color_d1;
 			ff_pixel_color_d3 <= ff_pixel_color_d2;
@@ -746,12 +753,13 @@ module vdp_sprite_makeup_pixel (
 		end
 	end
 
-	assign x					= 10'd0;
-	assign mgx					= 8'd0;
+	assign x							= 10'd0;
+	assign mgx							= 8'd0;
 
-	assign display_color_en		= ff_pixel_color_d5[4];
-	assign display_color		= ff_pixel_color_d5[3:0];
-	assign sprite_collision		= ff_sprite_collision;
-	assign sprite_collision_x   = ff_sprite_collision_x;
-	assign sprite_collision_y   = ff_sprite_collision_y;
+	assign display_color_en				= ff_pixel_color_d5[10];
+	assign display_color_transparent	= ff_pixel_color_d5[9:8];
+	assign display_color				= ff_pixel_color_d5[7:0];
+	assign sprite_collision				= ff_sprite_collision;
+	assign sprite_collision_x			= ff_sprite_collision_x;
+	assign sprite_collision_y			= ff_sprite_collision_y;
 endmodule
