@@ -109,10 +109,7 @@ module vdp_timing_control_sprite (
 	// --------------------------------------------------------------------
 	wire				w_selected_en;
 	wire		[5:0]	w_selected_plane_num;
-	wire		[7:0]	w_selected_y;
-	wire		[7:0]	w_selected_x;
-	wire		[7:0]	w_selected_pattern;
-	wire		[7:0]	w_selected_color;
+	wire		[31:0]	w_selected_attribute;
 	wire		[4:0]	w_selected_count;
 	wire				w_start_info_collect;
 	wire				w_sprite_mode2;
@@ -198,10 +195,7 @@ module vdp_timing_control_sprite (
 		.vram_rdata									( vram_rdata								),
 		.selected_en								( w_selected_en								),
 		.selected_plane_num							( w_selected_plane_num						),
-		.selected_y									( w_selected_y								),
-		.selected_x									( w_selected_x								),
-		.selected_pattern							( w_selected_pattern						),
-		.selected_color								( w_selected_color							),
+		.selected_attribute							( w_selected_attribute						),
 		.selected_count								( w_selected_count							),
 		.start_info_collect							( w_start_info_collect						),
 		.sprite_mode2								( w_sprite_mode2							),
@@ -230,10 +224,7 @@ module vdp_timing_control_sprite (
 		.vram_rdata									( vram_rdata								),
 		.selected_en								( w_selected_en								),
 		.selected_plane_num							( w_selected_plane_num						),
-		.selected_y									( w_selected_y								),
-		.selected_x									( w_selected_x								),
-		.selected_pattern							( w_selected_pattern						),
-		.selected_color								( w_selected_color							),
+		.selected_attribute							( w_selected_attribute						),
 		.selected_count								( w_selected_count							),
 		.y											( w_y										),
 		.mgy										( w_mgy										),

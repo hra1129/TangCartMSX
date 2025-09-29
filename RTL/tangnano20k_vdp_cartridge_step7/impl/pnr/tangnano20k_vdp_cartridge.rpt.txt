@@ -12,27 +12,27 @@
   <Part Number>: GW2AR-LV18QN88C8/I7
   <Device>: GW2AR-18
   <Device Version>: C
-  <Created Time>:Mon Sep 29 22:52:11 2025
+  <Created Time>:Tue Sep 30 07:12:03 2025
 
 
 2. PnR Details
 
   Running placement:
-    Placement Phase 0: CPU time = 0h 0m 1s, Elapsed time = 0h 0m 1s
-    Placement Phase 1: CPU time = 0h 0m 0.471s, Elapsed time = 0h 0m 0.471s
-    Placement Phase 2: CPU time = 0h 0m 4s, Elapsed time = 0h 0m 4s
-    Placement Phase 3: CPU time = 0h 0m 5s, Elapsed time = 0h 0m 5s
-    Total Placement: CPU time = 0h 0m 11s, Elapsed time = 0h 0m 11s
+    Placement Phase 0: CPU time = 0h 0m 2s, Elapsed time = 0h 0m 2s
+    Placement Phase 1: CPU time = 0h 0m 0.586s, Elapsed time = 0h 0m 0.586s
+    Placement Phase 2: CPU time = 0h 0m 5s, Elapsed time = 0h 0m 5s
+    Placement Phase 3: CPU time = 0h 0m 7s, Elapsed time = 0h 0m 7s
+    Total Placement: CPU time = 0h 0m 15s, Elapsed time = 0h 0m 15s
  Running routing:
-    Routing Phase 0: CPU time = 0h 0m 0.004s, Elapsed time = 0h 0m 0.004s
-    Routing Phase 1: CPU time = 0h 0m 0.503s, Elapsed time = 0h 0m 0.504s
-    Routing Phase 2: CPU time = 0h 0m 17s, Elapsed time = 0h 0m 17s
+    Routing Phase 0: CPU time = 0h 0m 0.007s, Elapsed time = 0h 0m 0.007s
+    Routing Phase 1: CPU time = 0h 0m 0.716s, Elapsed time = 0h 0m 0.716s
+    Routing Phase 2: CPU time = 0h 0m 12s, Elapsed time = 0h 0m 12s
     Routing Phase 3: CPU time = 0h 0m 0s, Elapsed time = 0h 0m 0s
-    Total Routing: CPU time = 0h 0m 17s, Elapsed time = 0h 0m 17s
+    Total Routing: CPU time = 0h 0m 13s, Elapsed time = 0h 0m 13s
  Generate output files:
-    CPU time = 0h 0m 4s, Elapsed time = 0h 0m 4s
+    CPU time = 0h 0m 5s, Elapsed time = 0h 0m 5s
 
- Total Time and Memory Usage: CPU time = 0h 0m 33s, Elapsed time = 0h 0m 33s, Peak memory usage = 526MB
+ Total Time and Memory Usage: CPU time = 0h 0m 33s, Elapsed time = 0h 0m 33s, Peak memory usage = 522MB
 
 
 3. Resource Usage Summary
@@ -40,15 +40,15 @@
   --------------------------------------------------------------------------------
   Resources                   | Usage                               | Utilization
   --------------------------------------------------------------------------------
-  Logic                       | 5646/20736                          |  28%
-    --LUT,ALU,ROM16           | 5544(4935 LUT, 609 ALU, 0 ROM16)    | -
-    --SSRAM(RAM16)            | 17                                  | -
-  Register                    | 2814/15915                          |  18%
+  Logic                       | 5839/20736                          |  29%
+    --LUT,ALU,ROM16           | 5731(5105 LUT, 626 ALU, 0 ROM16)    | -
+    --SSRAM(RAM16)            | 18                                  | -
+  Register                    | 2909/15915                          |  19%
     --Logic Register as Latch | 0/15552                             |  0%
-    --Logic Register as FF    | 2744/15552                          |  18%
+    --Logic Register as FF    | 2839/15552                          |  19%
     --I/O Register as Latch   | 0/363                               |  0%
     --I/O Register as FF      | 70/363                              |  20%
-  CLS                         | 4088/10368                          |  40%
+  CLS                         | 4256/10368                          |  42%
   I/O Port                    | 39/66                               |  60%
   I/O Buf                     | 31                                  | -
     --Input Buf               | 13                                  | -
@@ -56,12 +56,14 @@
     --Inout Buf               | 8                                   | -
   IOLOGIC                     | 8/121                               | 7%
     --OSER10                  | 4
-  BSRAM                       | 9/46                                | 20%
+  BSRAM                       | 10/46                               | 22%
     --SP                      | 4
     --SDPB                    | 5
-  DSP                         | 2.5/24                              | 11%
+    --pROMX9                  | 1
+  DSP                         | 3/24                                | 13%
     --PADD9                   | 3
     --MULT9X9                 | 7
+    --MULT18X18               | 1
   ================================================================================
 
 
