@@ -108,7 +108,7 @@ module vdp_sprite_info_collect (
 	wire		[7:0]	w_selected_color;
 	reg			[37:0]	ff_selected_q;
 	reg			[4:0]	ff_current_plane;		//	Plane#0...#15, and endmark(#16)
-	reg			[4:0]	ff_previous_plane;
+	reg			[3:0]	ff_previous_plane;
 	wire		[4:0]	w_next_plane;
 	reg			[1:0]	ff_state;				//	#0=info read, #1=pattern left read, #2=pattern right read, #3=color read
 	wire		[3:0]	w_sub_phase;			//	Sub phase #0...#15

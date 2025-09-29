@@ -83,7 +83,8 @@ module vdp_color_palette (
 	input				reg_yae_mode,
 	input				reg_color0_opaque,
 	input		[7:0]	reg_backdrop_color,
-	input				reg_ext_palette_mode
+	input				reg_ext_palette_mode,
+	input				reg_sprite_mode3
 );
 	wire				w_256colors_mode;
 	wire				w_4colors_mode;
@@ -99,6 +100,12 @@ module vdp_color_palette (
 	wire		[4:0]	w_display_r16;
 	wire		[4:0]	w_display_g16;
 	wire		[4:0]	w_display_b16;
+	reg			[4:0]	ff_display_r16;
+	reg			[4:0]	ff_display_g16;
+	reg			[4:0]	ff_display_b16;
+	wire		[6:0]	w_display_sprite_mix_r16;
+	wire		[6:0]	w_display_sprite_mix_g16;
+	wire		[6:0]	w_display_sprite_mix_b16;
 	reg					ff_rgb_load;
 	reg			[7:0]	ff_vdp_r;
 	reg			[7:0]	ff_vdp_g;
@@ -136,6 +143,9 @@ module vdp_color_palette (
 	reg			[4:0]	ff_yjk_b;
 	reg					ff_yjk_rgb_en;
     wire        [8:0]   w_display_color;
+	reg			[7:0]	ff_display_color_sprite;
+	reg			[1:0]	ff_display_color_sprite_transparent;
+	reg					ff_display_color_sprite_en;
 
 	// --------------------------------------------------------------------
 	//	Palette initializer
@@ -224,6 +234,17 @@ module vdp_color_palette (
 			ff_display_color_delay2 <= ff_display_color_delay1;
 			ff_display_color_delay3 <= ff_display_color_delay2;
 			ff_display_color_delay4 <= ff_display_color_delay3;
+		end
+		else begin
+			//	hold
+		end
+	end
+
+	always @( posedge clk ) begin
+		if( screen_pos_x[3:0] == 4'd0 ) begin
+			ff_display_color_sprite					<= display_color_sprite;
+			ff_display_color_sprite_transparent		<= display_color_sprite_transparent;
+			ff_display_color_sprite_en				<= display_color_sprite_en;
 		end
 		else begin
 			//	hold
@@ -334,16 +355,6 @@ module vdp_color_palette (
 				ff_display_color <= { 4'd0, w_display_color[3:0] };
 				ff_display_color_oe <= 1'b1;
 			end
-			else if( display_color_sprite_en && (display_color_sprite != 4'd0 || reg_color0_opaque) ) begin
-				//	Sprite
-				if( w_g5_mode ) begin
-					ff_display_color <= { 6'd0, display_color_sprite[3:2] };
-				end
-				else begin
-					ff_display_color <= { 4'd0, display_color_sprite };
-				end
-				ff_display_color_oe <= 1'b1;
-			end
 			else if( (w_display_color[3:0] != 4'd0 || reg_color0_opaque) ) begin
 				//	Background
 				ff_display_color <= { 4'd0, w_display_color[3:0] };
@@ -360,21 +371,20 @@ module vdp_color_palette (
 				ff_display_color_oe <= 1'b1;
 			end
 		end
+		else if( screen_pos_x[3:0] == 4'd1 ) begin
+			//	Sprite
+			if( w_g5_mode ) begin
+				ff_display_color <= { ff_display_color_sprite[7:4], 2'd0, ff_display_color_sprite[3:2] };
+			end
+			else begin
+				ff_display_color <= ff_display_color_sprite;
+			end
+			ff_display_color_oe <= 1'b1;
+		end
 		else if( w_high_resolution && screen_pos_x[3:0] == 4'd8 ) begin
 			if( w_t12_mode ) begin
 				//	SCREEN0(W80) Background
 				ff_display_color <= { 4'd0, w_display_color[3:0] };
-			end
-			else if( display_color_sprite_en && (display_color_sprite != 4'd0 || reg_color0_opaque) ) begin
-				//	Sprite
-				if( w_g5_mode ) begin
-					//	SCREEN6 Sprite
-					ff_display_color <= { 6'd0, display_color_sprite[1:0] };
-				end
-				else begin
-					//	SCREEN7 Sprite
-					ff_display_color <= { 4'd0, display_color_sprite };
-				end
 			end
 			else if( (w_display_color[3:0] != 4'd0 || reg_color0_opaque) ) begin
 				//	Background
@@ -400,6 +410,16 @@ module vdp_color_palette (
 			end
 			ff_display_color_oe <= 1'b1;
 		end
+		else if( w_high_resolution && screen_pos_x[3:0] == 4'd9 ) begin
+			//	Sprite
+			if( w_g5_mode ) begin
+				ff_display_color <= { ff_display_color_sprite[7:4], 2'd0, ff_display_color_sprite[1:0] };
+			end
+			else begin
+				ff_display_color <= ff_display_color_sprite;
+			end
+			ff_display_color_oe <= 1'b1;
+		end
 		else begin
 			ff_display_color_oe <= 1'b0;
 		end
@@ -422,6 +442,67 @@ module vdp_color_palette (
 		.display_b				( w_display_b16			)
 	);
 
+	function [6:0] func_sprite_mix(
+		input	[4:0]	ff_display_background,
+		input	[4:0]	w_display_sprite,
+		input	[1:0]	w_display_sprite_transparent
+	);
+		if(      w_display_sprite_transparent == 2'd0 ) begin
+			//	Transparent ratio 0%
+			func_sprite_mix = { w_display_sprite, 2'd0 };
+		end
+		else if( w_display_sprite_transparent == 2'd1 ) begin
+			//	Transparent ratio 25%
+			func_sprite_mix = { 1'd0, w_display_sprite, 1'd0 } + { 2'd0, w_display_sprite } + { 2'd0, ff_display_background };
+		end
+		else if( w_display_sprite_transparent == 2'd2 ) begin
+			//	Transparent ratio 50%
+			func_sprite_mix = { 1'd0, w_display_sprite, 1'd0 } + { 1'd0, ff_display_background, 1'd0 };
+		end
+		else begin
+			//	Transparent ratio 75%
+			func_sprite_mix = { 2'd0, w_display_sprite } + { 1'd0, ff_display_background, 1'd0 } + { 2'd0, ff_display_background };
+		end
+
+	endfunction
+
+	assign w_display_sprite_mix_r16	= func_sprite_mix( ff_display_r16, w_display_r16, ff_display_color_sprite_transparent );
+	assign w_display_sprite_mix_g16	= func_sprite_mix( ff_display_g16, w_display_g16, ff_display_color_sprite_transparent );
+	assign w_display_sprite_mix_b16	= func_sprite_mix( ff_display_b16, w_display_b16, ff_display_color_sprite_transparent );
+
+	always @( posedge clk ) begin
+		if( screen_pos_x[3:0] == 4'd2 || (w_high_resolution && screen_pos_x[3:0] == 4'd10) ) begin
+			ff_display_r16	<= w_display_r16;
+			ff_display_g16	<= w_display_g16;
+			ff_display_b16	<= w_display_b16;
+		end
+		else if( screen_pos_x[3:0] == 4'd3 || (w_high_resolution && screen_pos_x[3:0] == 4'd11) ) begin
+			if( reg_sprite_mode3 ) begin
+				//	Sprite mode3
+				if( ff_display_color_sprite_en ) begin
+					ff_display_r16	<= w_display_sprite_mix_r16[6:2];
+					ff_display_g16	<= w_display_sprite_mix_g16[6:2];
+					ff_display_b16	<= w_display_sprite_mix_b16[6:2];
+				end
+				else begin
+					//	hold background color
+				end
+			end
+			else begin
+				//	Sprite mode1 and 2
+				if( ff_display_color_sprite_en ) begin
+					//	overwrite sprite color
+					ff_display_r16	<= w_display_r16;
+					ff_display_g16	<= w_display_g16;
+					ff_display_b16	<= w_display_b16;
+				end
+				else begin
+					//	hold background color
+				end
+			end
+		end
+	end
+
 	// --------------------------------------------------------------------
 	//	RGB table for 256 colors mode ( screen_pos_x = 1 )
 	// --------------------------------------------------------------------
@@ -431,7 +512,7 @@ module vdp_color_palette (
 		end
 		else if( screen_pos_x[3:0] == 4'd1 && w_256colors_mode && !reg_yjk_mode && !reg_ext_palette_mode ) begin
 			if( display_color_sprite_en ) begin
-				case( ff_display_color[3:0] )
+				case( ff_display_color_sprite[3:0] )
 				4'd0:		ff_display_color256 <= { 3'd0, 3'd0, 2'd0 };
 				4'd1:		ff_display_color256 <= { 3'd0, 3'd0, 2'd1 };
 				4'd2:		ff_display_color256 <= { 3'd0, 3'd3, 2'd0 };
@@ -460,8 +541,8 @@ module vdp_color_palette (
 	// --------------------------------------------------------------------
 	//	RGB Color Conversion ( screen_pos_x = 4 )
 	// --------------------------------------------------------------------
-	assign w_display_g = (!reg_ext_palette_mode && w_256colors_mode) ? { ff_display_color256[7:5], 2'd0 } : w_display_g16;
-	assign w_display_r = (!reg_ext_palette_mode && w_256colors_mode) ? { ff_display_color256[4:2], 2'd0 } : w_display_r16;
+	assign w_display_g = (!reg_ext_palette_mode && w_256colors_mode) ? { ff_display_color256[7:5], 2'd0 } : ff_display_g16;
+	assign w_display_r = (!reg_ext_palette_mode && w_256colors_mode) ? { ff_display_color256[4:2], 2'd0 } : ff_display_r16;
 
 	always @( posedge clk ) begin
 		ff_rgb_load	<= (screen_pos_x[3:0] == 4'd3) || (w_high_resolution && screen_pos_x[3:0] == 4'd11);
@@ -473,9 +554,9 @@ module vdp_color_palette (
 			ff_vdp_g <= 8'd0;
 		end
 		else if( ff_rgb_load ) begin
-			if( reg_ext_palette_mode ) begin
-				ff_vdp_r <= { w_display_r16, w_display_r16[4:2] };
-				ff_vdp_g <= { w_display_g16, w_display_g16[4:2] };
+			if( reg_ext_palette_mode || reg_sprite_mode3 ) begin
+				ff_vdp_r <= { ff_display_r16, ff_display_r16[4:2] };
+				ff_vdp_g <= { ff_display_g16, ff_display_g16[4:2] };
 			end
 			else if( reg_yjk_mode && (!reg_yae_mode || !ff_yjk_rgb_en) ) begin
 				ff_vdp_r <= { ff_yjk_r, ff_yjk_r[4:2] };
@@ -514,8 +595,8 @@ module vdp_color_palette (
 			ff_vdp_b <= 8'd0;
 		end
 		else if( ff_rgb_load ) begin
-			if( reg_ext_palette_mode ) begin
-				ff_vdp_b <= { w_display_b16, w_display_b16[4:2] };
+			if( reg_ext_palette_mode || reg_sprite_mode3 ) begin
+				ff_vdp_b <= { ff_display_b16, ff_display_b16[4:2] };
 			end
 			else if( reg_yjk_mode && (!reg_yae_mode || !ff_yjk_rgb_en) ) begin
 				ff_vdp_b <= { ff_yjk_b, ff_yjk_b[4:2] };
@@ -530,7 +611,7 @@ module vdp_color_palette (
 				endcase
 			end
 			else begin
-				case( w_display_b16[4:2] )
+				case( ff_display_b16[4:2] )
 				3'd0:		ff_vdp_b <= 8'd0;
 				3'd1:		ff_vdp_b <= 8'd37;
 				3'd2:		ff_vdp_b <= 8'd73;

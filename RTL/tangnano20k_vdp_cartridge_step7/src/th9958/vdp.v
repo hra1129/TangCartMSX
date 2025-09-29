@@ -459,7 +459,8 @@ module vdp (
 		.reg_yae_mode								( reg_yae_mode								),
 		.reg_color0_opaque							( reg_color0_opaque							),
 		.reg_backdrop_color							( reg_backdrop_color						),
-		.reg_ext_palette_mode						( reg_ext_palette_mode						)
+		.reg_ext_palette_mode						( reg_ext_palette_mode						),
+		.reg_sprite_mode3							( reg_sprite_mode3							)
 	);
 
 	// --------------------------------------------------------------------

@@ -69,7 +69,7 @@ module vdp_timing_control_sprite (
 	input		[31:0]	vram_rdata,
 	input		[7:0]	vram_rdata8,
 
-	output		[3:0]	display_color,
+	output		[7:0]	display_color,
 	output		[1:0]	display_color_transparent,
 	output				display_color_en,
 
