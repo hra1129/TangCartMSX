@@ -128,6 +128,8 @@ module vdp_timing_control_sprite (
 	wire		[7:0]	w_mgx;
 	wire		[7:0]	w_y;
 	wire		[7:0]	w_mgy;
+	wire		[7:0]	w_info_mgx;
+	wire		[1:0]	w_transparent;
 	wire		[7:0]	w_divider_x;
 	wire		[7:0]	w_divider_mgx;
 	wire		[1:0]	w_bit_shift;
@@ -233,6 +235,8 @@ module vdp_timing_control_sprite (
 		.makeup_plane								( w_makeup_plane							),
 		.plane_x									( w_plane_x									),
 		.color										( w_color									),
+		.mgx										( w_info_mgx								),
+		.transparent								( w_transparent								),
 		.color_plane_x_en							( w_color_plane_x_en						),
 		.pattern									( w_pattern									),
 		.pattern_left_en							( w_pattern_left_en							),
@@ -270,6 +274,8 @@ module vdp_timing_control_sprite (
 		.makeup_plane								( w_makeup_plane							),
 		.plane_x									( w_plane_x									),
 		.color										( w_color									),
+		.info_mgx									( w_info_mgx								),
+		.transparent								( w_transparent								),
 		.color_plane_x_en						    ( w_color_plane_x_en						),
 		.pattern									( w_pattern									),
 		.pattern_left_en							( w_pattern_left_en							),

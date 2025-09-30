@@ -83,6 +83,8 @@ module vdp_sprite_info_collect (
 	output		[3:0]	makeup_plane,
 	output		[7:0]	color,
 	output		[9:0]	plane_x,
+	output		[7:0]	mgx,
+	output		[1:0]	transparent,
 	output				color_plane_x_en,
 	output		[31:0]	pattern,
 	output				pattern_left_en,
@@ -352,6 +354,7 @@ module vdp_sprite_info_collect (
 	assign makeup_plane		= ff_active_delay ? ff_previous_plane :  ff_current_plane[3:0];
 	assign color			= ff_sprite_mode2 ? vram_rdata8: w_selected_m12_color;
 	assign plane_x			= reg_sprite_mode3 ? w_selected_m3_x: { 2'd0, w_selected_m12_x };
+	assign mgx				= w_selected_m3_mgx;
 	assign color_plane_x_en	= (ff_active_delay && w_sub_phase == 4'd15 && ff_state == 2'd1);
 	assign pattern			= reg_sprite_mode3 ? vram_rdata:
 	              			  (ff_state == 2'd0 && !reg_sprite_16x16) ? 32'd0: { 24'd0, vram_rdata8 };

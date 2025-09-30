@@ -110,6 +110,7 @@ module vdp_sprite_divide_table (
 		ff_exp1			<= w_exp;
 		ff_bit_shift1	<= bit_shift;
 		ff_x			<= x;
+
 		case( w_divide_sel )
 		7'd0:		ff_divide_coeff = 9'd256;
 		7'd1:		ff_divide_coeff = 9'd252;
