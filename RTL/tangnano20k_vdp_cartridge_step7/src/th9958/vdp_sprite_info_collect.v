@@ -355,6 +355,7 @@ module vdp_sprite_info_collect (
 	assign color			= ff_sprite_mode2 ? vram_rdata8: w_selected_m12_color;
 	assign plane_x			= reg_sprite_mode3 ? w_selected_m3_x: { 2'd0, w_selected_m12_x };
 	assign mgx				= w_selected_m3_mgx;
+	assign transparent		= w_selected_m3_transparent;
 	assign color_plane_x_en	= (ff_active_delay && w_sub_phase == 4'd15 && ff_state == 2'd1);
 	assign pattern			= reg_sprite_mode3 ? vram_rdata:
 	              			  (ff_state == 2'd0 && !reg_sprite_16x16) ? 32'd0: { 24'd0, vram_rdata8 };

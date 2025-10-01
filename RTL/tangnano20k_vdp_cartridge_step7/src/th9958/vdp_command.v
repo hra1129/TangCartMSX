@@ -185,7 +185,6 @@ module vdp_command (
 	reg					ff_diy;
 	reg					ff_mxs;
 	reg					ff_mxd;
-	reg					ff_pm;
 	reg			[3:0]	ff_logical_opration;
 	reg			[3:0]	ff_command;
 	reg					ff_start;
@@ -830,7 +829,6 @@ module vdp_command (
 			ff_diy	<= 1'b0;
 			ff_mxs	<= 1'b0;
 			ff_mxd	<= 1'b0;
-			ff_pm	<= 1'b0;
 		end
 		else if( register_write ) begin
 			if( register_num == 6'd45 ) begin
@@ -840,7 +838,6 @@ module vdp_command (
 				ff_diy	<= register_data[3];
 				ff_mxs	<= register_data[4];
 				ff_mxd	<= register_data[5];
-				ff_pm	<= register_data[7];
 			end
 		end
 	end

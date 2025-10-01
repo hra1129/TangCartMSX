@@ -68,6 +68,9 @@ if errorlevel 1 pause ==========================
 zma sc5font.asm  SC5FONT.COM
 if errorlevel 1 pause ==========================
 
+zma sp3test.asm  SP3TEST.COM
+if errorlevel 1 pause ==========================
+
 if exist D:\download\msx\DOS2\MSXDOS2 (
 	if exist D:\download\msx\DOS2\MSXDOS2\SC0TEST.COM (
 		del D:\download\msx\DOS2\MSXDOS2\SC0TEST.COM
@@ -183,6 +186,11 @@ if exist D:\download\msx\DOS2\MSXDOS2 (
 		del D:\download\msx\DOS2\MSXDOS2\SC5FONT.COM
 	)
 	copy SC5FONT.COM  D:\download\msx\DOS2\MSXDOS2\
+
+	if exist D:\download\msx\DOS2\MSXDOS2\SP3TEST.COM (
+		del D:\download\msx\DOS2\MSXDOS2\SP3TEST.COM
+	)
+	copy SP3TEST.COM  D:\download\msx\DOS2\MSXDOS2\
 )
 
 pause

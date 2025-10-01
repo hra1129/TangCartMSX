@@ -87,7 +87,8 @@ module vdp_timing_control_screen_mode (
 	input		[7:0]	reg_text_back_color,
 	input		[7:0]	reg_backdrop_color,
 	input				reg_scroll_planes,
-	input				reg_left_mask
+	input				reg_left_mask,
+	input				reg_sprite_mode3
 );
 	//	Screen mode
 	localparam			c_mode_g1	= 5'b000_00;	//	Graphic1 (SCREEN1)
@@ -194,7 +195,7 @@ module vdp_timing_control_screen_mode (
 	assign w_mode				= func_screen_mode_decoder( reg_screen_mode );
 	assign screen_mode			= w_mode;
 	assign sprite_off			= (w_mode == c_t1 || w_mode == c_t2);
-	assign vram_interleave		= (reg_screen_mode == c_mode_g6 || reg_screen_mode == c_mode_g7);
+	assign vram_interleave		= reg_sprite_mode3 ? 1'b0 : (reg_screen_mode == c_g6 || reg_screen_mode == c_g7);
 
 	// --------------------------------------------------------------------
 	//	Screen Position for active area
@@ -308,11 +309,11 @@ module vdp_timing_control_screen_mode (
 		c_mode_t2:
 			func_valid_decoder = 8'b00001111;
 		c_mode_g1, c_mode_g2, c_mode_g3, c_mode_gm:
-			func_valid_decoder = 8'b00001011;
+			func_valid_decoder = 8'b00001011;			//	※bit2, bit4 は 0 でなければならない, Sprite用
 		c_mode_g4, c_mode_g5:
-			func_valid_decoder = 8'b00000001;
+			func_valid_decoder = 8'b00000001;			//	※bit2, bit4 は 0 でなければならない, Sprite用
 		c_mode_g6, c_mode_g7:
-			func_valid_decoder = 8'b00000101;
+			func_valid_decoder = 8'b00000011;			//	※bit2, bit4 は 0 でなければならない, Sprite用
 		default:
 			func_valid_decoder = 8'b00000000;
 		endcase
@@ -370,6 +371,9 @@ module vdp_timing_control_screen_mode (
 					c_g2, c_g3:
 						//	PCGのドットパターンを読む
 						ff_vram_address <= w_pattern_generator_g23;
+					c_g6, c_g7:
+						//	Bitmap Pixels
+						ff_vram_address <= { w_pattern_name_g67[17:1], 1'b1 };
 					default:
 						ff_vram_address <= 18'd0;
 					endcase
@@ -377,10 +381,6 @@ module vdp_timing_control_screen_mode (
 					if( w_mode == c_t2 ) begin
 						//	PCGのドットパターンを読む(2つ目)
 						ff_vram_address <= w_pattern_generator_t2_2;
-					end
-					else if( w_mode == c_g6 || w_mode == c_g7 ) begin
-						//	Bitmap Pixels
-						ff_vram_address <= { w_pattern_name_g67[17:1], 1'b1 };
 					end
 					else begin
 						ff_vram_address <= 18'd0;
@@ -485,6 +485,13 @@ module vdp_timing_control_screen_mode (
 						2'd2:	ff_next_vram1 <= vram_rdata[23:16];
 						2'd3:	ff_next_vram1 <= vram_rdata[31:24];
 						endcase
+					c_g6, c_g7: begin
+						//	SCREEN7, 8 では、この1回の読み出しで 後半4ドット分の画素値を一気に読める
+						ff_next_vram1 <= vram_rdata[ 7: 0];
+						ff_next_vram3 <= vram_rdata[15: 8];
+						ff_next_vram5 <= vram_rdata[23:16];
+						ff_next_vram7 <= vram_rdata[31:24];
+					end
 					default:
 						begin
 							//	none
@@ -500,13 +507,6 @@ module vdp_timing_control_screen_mode (
 						2'd2:	ff_next_vram5 <= vram_rdata[23:16];
 						2'd3:	ff_next_vram5 <= vram_rdata[31:24];
 						endcase
-					end
-					c_g6, c_g7: begin
-						//	SCREEN7, 8 では、この1回の読み出しで 後半4ドット分の画素値を一気に読める
-						ff_next_vram1 <= vram_rdata[ 7: 0];
-						ff_next_vram3 <= vram_rdata[15: 8];
-						ff_next_vram5 <= vram_rdata[23:16];
-						ff_next_vram7 <= vram_rdata[31:24];
 					end
 					default: begin
 						//	none

@@ -115,7 +115,7 @@ module vdp_sprite_makeup_pixel (
 	reg			[63:0]	ff_pattern13;
 	reg			[63:0]	ff_pattern14;
 	reg			[63:0]	ff_pattern15;
-	wire		[7:0]	w_read_pattern;
+	wire		[7:0]	w_read_pattern12;
 	wire		[63:0]	w_pattern;
 	reg			[7:0]	ff_color0;
 	reg			[7:0]	ff_color1;
@@ -194,11 +194,16 @@ module vdp_sprite_makeup_pixel (
 	reg			[1:0]	ff_pixel_color_transparent;
 	reg			[7:0]	ff_pixel_color;
 	wire		[ 9:0]	w_offset_x;
-	wire		[ 9:3]	w_overflow;
+	wire		[ 9:3]	w_overflow12;
+	wire				w_sprite_en12;
+	wire				w_sprite_en3;
 	wire				w_sprite_en;
 	wire		[4:0]	w_ec_shift;
-	wire		[3:0]	w_bit_sel;
+	wire		[3:0]	w_bit_sel12;
+	wire		[3:0]	w_bit_sel3;
+	wire		[1:0]	w_transparent;
 	reg			[3:0]	ff_color;
+	reg			[3:0]	ff_palette_set;
 	reg					ff_color_cc;
 	reg					ff_color_ic;
 	reg					ff_color_en;
@@ -211,11 +216,28 @@ module vdp_sprite_makeup_pixel (
 	reg					ff_sprite_collision;
 	reg			[8:0]	ff_sprite_collision_x;
 	reg			[9:0]	ff_sprite_collision_y;
+	reg					ff_sprite_en1;
+	reg					ff_sprite_en2;
+	reg					ff_sprite_en3;
+	reg			[5:0]	ff_color_1;
+	reg			[5:0]	ff_color_2;
+	reg			[5:0]	ff_color_3;
+	reg			[3:0]	ff_bit_sel12_1;
+	reg			[3:0]	ff_bit_sel12_2;
+	reg			[3:0]	ff_bit_sel12_3;
+	reg					ff_active1;
+	reg					ff_active2;
+	reg					ff_active3;
+	reg			[4:0]	ff_current_plane1;
+	reg			[4:0]	ff_current_plane2;
+	reg			[4:0]	ff_current_plane3;
+	wire		[7:0]	w_mgx;
+	wire		[3:0]	w_pattern_m3;
 
 	// --------------------------------------------------------------------
 	//	Latch information for visible sprite planes
 	// --------------------------------------------------------------------
-	assign w_read_pattern	= { pattern[0] , pattern[1] , pattern[2] , pattern[3] , pattern[4] , pattern[5] , pattern[6] , pattern[7]  };
+	assign w_read_pattern12	= { pattern[0] , pattern[1] , pattern[2] , pattern[3] , pattern[4] , pattern[5] , pattern[6] , pattern[7]  };
 
 	always @( posedge clk or negedge reset_n ) begin
 		if( !reset_n ) begin
@@ -283,28 +305,28 @@ module vdp_sprite_makeup_pixel (
 		else begin
 			if( pattern_left_en ) begin
 				case( makeup_plane )
-				4'd0:		ff_pattern0[ 7: 0]	<= w_read_pattern;
-				4'd1:		ff_pattern1[ 7: 0]	<= w_read_pattern;
-				4'd2:		ff_pattern2[ 7: 0]	<= w_read_pattern;
-				4'd3:		ff_pattern3[ 7: 0]	<= w_read_pattern;
-				4'd4:		ff_pattern4[ 7: 0]	<= w_read_pattern;
-				4'd5:		ff_pattern5[ 7: 0]	<= w_read_pattern;
-				4'd6:		ff_pattern6[ 7: 0]	<= w_read_pattern;
-				4'd7:		ff_pattern7[ 7: 0]	<= w_read_pattern;
-				default:	ff_pattern0[ 7: 0]	<= w_read_pattern;
+				4'd0:		ff_pattern0[ 7: 0]	<= w_read_pattern12;
+				4'd1:		ff_pattern1[ 7: 0]	<= w_read_pattern12;
+				4'd2:		ff_pattern2[ 7: 0]	<= w_read_pattern12;
+				4'd3:		ff_pattern3[ 7: 0]	<= w_read_pattern12;
+				4'd4:		ff_pattern4[ 7: 0]	<= w_read_pattern12;
+				4'd5:		ff_pattern5[ 7: 0]	<= w_read_pattern12;
+				4'd6:		ff_pattern6[ 7: 0]	<= w_read_pattern12;
+				4'd7:		ff_pattern7[ 7: 0]	<= w_read_pattern12;
+				default:	ff_pattern0[ 7: 0]	<= w_read_pattern12;
 				endcase
 			end
 			else if( pattern_right_en ) begin
 				case( makeup_plane )
-				4'd0:		ff_pattern0[15: 8]	<= w_read_pattern;
-				4'd1:		ff_pattern1[15: 8]	<= w_read_pattern;
-				4'd2:		ff_pattern2[15: 8]	<= w_read_pattern;
-				4'd3:		ff_pattern3[15: 8]	<= w_read_pattern;
-				4'd4:		ff_pattern4[15: 8]	<= w_read_pattern;
-				4'd5:		ff_pattern5[15: 8]	<= w_read_pattern;
-				4'd6:		ff_pattern6[15: 8]	<= w_read_pattern;
-				4'd7:		ff_pattern7[15: 8]	<= w_read_pattern;
-				default:	ff_pattern0[15: 8]	<= w_read_pattern;
+				4'd0:		ff_pattern0[15: 8]	<= w_read_pattern12;
+				4'd1:		ff_pattern1[15: 8]	<= w_read_pattern12;
+				4'd2:		ff_pattern2[15: 8]	<= w_read_pattern12;
+				4'd3:		ff_pattern3[15: 8]	<= w_read_pattern12;
+				4'd4:		ff_pattern4[15: 8]	<= w_read_pattern12;
+				4'd5:		ff_pattern5[15: 8]	<= w_read_pattern12;
+				4'd6:		ff_pattern6[15: 8]	<= w_read_pattern12;
+				4'd7:		ff_pattern7[15: 8]	<= w_read_pattern12;
+				default:	ff_pattern0[15: 8]	<= w_read_pattern12;
 				endcase
 			end
 		end
@@ -457,7 +479,7 @@ module vdp_sprite_makeup_pixel (
 		end
 		else if( color_plane_x_en ) begin
 			case( makeup_plane )
-			4'd0:		ff_transparent		<= transparent;
+			4'd0:		ff_transparent0		<= transparent;
 			4'd1:		ff_transparent1		<= transparent;
 			4'd2:		ff_transparent2		<= transparent;
 			4'd3:		ff_transparent3		<= transparent;
@@ -669,26 +691,9 @@ module vdp_sprite_makeup_pixel (
 		endcase
 	endfunction
 
-	assign w_pattern	= func_word_selector( 
-			ff_current_plane,
-			ff_pattern0,
-			ff_pattern1,
-			ff_pattern2,
-			ff_pattern3,
-			ff_pattern4,
-			ff_pattern5,
-			ff_pattern6,
-			ff_pattern7,
-			ff_pattern8,
-			ff_pattern9,
-			ff_pattern10,
-			ff_pattern11,
-			ff_pattern12,
-			ff_pattern13,
-			ff_pattern14,
-			ff_pattern15
-	);
-
+	// --------------------------------------------------------------------
+	//	w_sub_phase: 0
+	// --------------------------------------------------------------------
 	assign w_color		= func_byte_selector(
 			ff_current_plane,
 			ff_color0,
@@ -749,8 +754,91 @@ module vdp_sprite_makeup_pixel (
 			ff_mgx15
 	);
 
+	// --------------------------------------------------------------------
+	//	w_sub_phase: 0
+	// --------------------------------------------------------------------
+	assign w_offset_x		= screen_pos_x[13:4] - w_x;
+	assign x				= w_color[4] ? ~w_offset_x[7:0]: w_offset_x[7:0];
+	assign mgx				= w_mgx;
+	assign w_overflow12		= ( !reg_sprite_16x16 && !reg_sprite_magify ) ?   w_offset_x[9:3]:			// 8x8 normal
+	                 		  (  reg_sprite_16x16 &&  reg_sprite_magify ) ? { w_offset_x[9:5], 2'd0 }:	// 16x16 magnify
+	                 		                                                { w_offset_x[9:4], 1'd0 };	// 8x8 magnify or 16x16 normal
+	assign w_ec_shift		= { 5 { w_color[7] } };
+	assign w_sprite_en12	= ( w_overflow12 == { w_ec_shift, 2'd0 } );
+	assign w_sprite_en3		= ( w_offset_x[9:8] == 2'd0 && w_offset_x[7:0] < w_mgx );
+	assign w_sprite_en		= reg_sprite_mode3 ? w_sprite_en3: w_sprite_en12;
+	assign w_bit_sel12		= reg_sprite_magify ? w_offset_x[4:1]: w_offset_x[3:0];
+
+	// --------------------------------------------------------------------
+	//	w_sub_phase: 3
+	// --------------------------------------------------------------------
+	always @( posedge clk or negedge reset_n ) begin
+		if( !reset_n ) begin
+			ff_sprite_en1	<= 1'b0;
+			ff_sprite_en2	<= 1'b0;
+			ff_sprite_en3	<= 1'b0;
+
+			ff_active1			<= 1'b0;
+			ff_active2			<= 1'b0;
+			ff_active3			<= 1'b0;
+
+			ff_bit_sel12_1		<= 4'b0;
+			ff_bit_sel12_2		<= 4'b0;
+			ff_bit_sel12_3		<= 4'b0;
+
+			ff_color_1			<= 6'd0;
+			ff_color_2			<= 6'd0;
+			ff_color_3			<= 6'd0;
+
+			ff_current_plane1	<= 5'd0;
+			ff_current_plane2	<= 5'd0;
+			ff_current_plane3	<= 5'd0;
+		end
+		else begin
+			ff_sprite_en1		<= w_sprite_en;
+			ff_sprite_en2		<= ff_sprite_en1;
+			ff_sprite_en3		<= ff_sprite_en2;
+
+			ff_active1			<= w_active;
+			ff_active2			<= ff_active1;
+			ff_active3			<= ff_active2;
+
+			ff_bit_sel12_1		<= w_bit_sel12;
+			ff_bit_sel12_2		<= ff_bit_sel12_1;
+			ff_bit_sel12_3		<= ff_bit_sel12_2;
+
+			ff_color_1			<= { w_color[6], w_color[5], w_color[3:0] };
+			ff_color_2			<= ff_color_1;
+			ff_color_3			<= ff_color_2;
+
+			ff_current_plane1	<= ff_current_plane;
+			ff_current_plane2	<= ff_current_plane1;
+			ff_current_plane3	<= ff_current_plane2;
+		end
+	end
+
+	assign w_pattern	= func_word_selector( 
+			ff_current_plane3,
+			ff_pattern0,
+			ff_pattern1,
+			ff_pattern2,
+			ff_pattern3,
+			ff_pattern4,
+			ff_pattern5,
+			ff_pattern6,
+			ff_pattern7,
+			ff_pattern8,
+			ff_pattern9,
+			ff_pattern10,
+			ff_pattern11,
+			ff_pattern12,
+			ff_pattern13,
+			ff_pattern14,
+			ff_pattern15
+	);
+
 	assign w_transparent	= func_2bit_selector(
-			ff_current_plane,
+			ff_current_plane3,
 			ff_transparent0,
 			ff_transparent1,
 			ff_transparent2,
@@ -769,14 +857,31 @@ module vdp_sprite_makeup_pixel (
 			ff_transparent15
 	);
 
-	assign w_offset_x	= screen_pos_x[13:4] - w_x;
-	assign w_overflow	= ( !reg_sprite_16x16 && !reg_sprite_magify ) ?   w_offset_x[9:3]:			// 8x8 normal
-	                 	  (  reg_sprite_16x16 &&  reg_sprite_magify ) ? { w_offset_x[9:5], 2'd0 }:	// 16x16 magnify
-	                 	                                                { w_offset_x[9:4], 1'd0 };	// 8x8 magnify or 16x16 normal
+	function [3:0] func_nibble_sel(
+		input	[3:0]	sample_x,
+		input	[63:0]	pattern
+	);
+		case( sample_x )
+		4'd0:		func_nibble_sel = pattern[ 7: 4];
+		4'd1:		func_nibble_sel = pattern[ 3: 0];
+		4'd2:		func_nibble_sel = pattern[15:12];
+		4'd3:		func_nibble_sel = pattern[11: 8];
+		4'd4:		func_nibble_sel = pattern[23:20];
+		4'd5:		func_nibble_sel = pattern[19:16];
+		4'd6:		func_nibble_sel = pattern[31:28];
+		4'd7:		func_nibble_sel = pattern[27:24];
+		4'd8:		func_nibble_sel = pattern[39:36];
+		4'd9:		func_nibble_sel = pattern[35:32];
+		4'd10:		func_nibble_sel = pattern[47:44];
+		4'd11:		func_nibble_sel = pattern[43:40];
+		4'd12:		func_nibble_sel = pattern[55:52];
+		4'd13:		func_nibble_sel = pattern[51:48];
+		4'd14:		func_nibble_sel = pattern[63:60];
+		default:	func_nibble_sel = pattern[59:56];
+		endcase
+	endfunction
 
-	assign w_ec_shift	= { 5 { w_color[7] } };
-	assign w_sprite_en	= ( w_overflow == { w_ec_shift, 2'd0 } );
-	assign w_bit_sel	= reg_sprite_magify ? w_offset_x[4:1]: w_offset_x[3:0];
+	assign w_pattern_m3		= func_nibble_sel( sample_x[3:0], w_pattern );
 
 	always @( posedge clk or negedge reset_n ) begin
 		if( !reset_n ) begin
@@ -785,33 +890,56 @@ module vdp_sprite_makeup_pixel (
 			ff_color_cc			<= 1'b0;
 			ff_color_ic			<= 1'b0;
 		end
-		else if( !w_sub_phase[3] && (sprite_mode2 || !w_sub_phase[2]) ) begin
-			ff_color_en			<= w_sprite_en & w_pattern[ w_bit_sel ] & w_active & screen_v_active;
-			ff_color			<= w_color[3:0];
-			ff_color_cc			<= w_color[6];
-			ff_color_ic			<= w_color[5];
+		else if( reg_sprite_mode3 ) begin
+			if( w_pattern_m3 != 4'd0 ) begin
+				ff_color_en			<= ff_sprite_en3 & ff_active3 & screen_v_active;
+				ff_color			<= w_pattern_m3;
+				ff_palette_set		<= ff_color_3[3:0];
+			end
+			else begin
+				ff_color_en			<= 1'b0;
+				ff_color			<= 4'd0;
+				ff_palette_set		<= 4'd0;
+			end
 		end
 		else begin
-			ff_color_en			<= 1'b0;
-			ff_color			<= 4'd0;
-			ff_color_cc			<= 1'b0;
-			ff_color_ic			<= 1'b0;
+			ff_color_en			<= ff_sprite_en3 & ff_active3 & screen_v_active & w_pattern[ ff_bit_sel12_3 ];
+			ff_color			<= ff_color_3[3:0];
+			ff_color_cc			<= ff_color_3[5];
+			ff_color_ic			<= ff_color_3[4];
 		end
 	end
 
 	// --------------------------------------------------------------------
-	//	[delay 1...8] Mix 8 planes
+	//	[delay 3...15,0,1,2] Mix 16 planes
 	// --------------------------------------------------------------------
 	always @( posedge clk or negedge reset_n ) begin
 		if( !reset_n ) begin
 			ff_pre_pixel_color_en			<= 1'b0;
 			ff_pre_pixel_color_transparent	<= 2'd0;
-			ff_pre_pixel_color				<= 4'd0;
+			ff_pre_pixel_color				<= 8'd0;
 			ff_pre_pixel_color_fix			<= 1'b0;
 			ff_pre_pixel_cc0_found			<= 1'b0;
 		end
-		else if( w_sub_phase == 4'd1 ) begin
-			if( !ff_color_cc ) begin
+		else if( w_sub_phase == 4'd3 ) begin
+			if( reg_sprite_mode3 ) begin
+				if( ff_color_en ) begin
+					//	最初のスプライトは表示（ドットがある）位置だった
+					ff_pre_pixel_color_en			<= 1'b1;
+					ff_pre_pixel_color				<= { ff_palette_set, ff_color };
+					ff_pre_pixel_color_transparent	<= w_transparent;
+					ff_pre_pixel_color_fix			<= 1'b1;
+					
+				end
+				else begin
+					//	最初のスプライトは非表示（ドットがない）位置だった
+					ff_pre_pixel_color_en			<= 1'b0;
+					ff_pre_pixel_color				<= 8'd0;
+					ff_pre_pixel_color_transparent	<= 2'd0;
+					ff_pre_pixel_color_fix			<= 1'b0;
+				end
+			end
+			else if( !ff_color_cc ) begin
 				//	着目プレーンが CC=0 の場合、ドットの有無にかかわらず CC=0 プレーンが出現したフラグを立てる
 				ff_pre_pixel_cc0_found	<= 1'b1;
 				ff_pre_pixel_color_fix	<= 1'b0;
@@ -822,7 +950,7 @@ module vdp_sprite_makeup_pixel (
 				end
 				else begin
 					ff_pre_pixel_color_en	<= 1'b0;
-					ff_pre_pixel_color		<= 4'd0;
+					ff_pre_pixel_color		<= 8'd0;
 				end
 			end
 			else begin
@@ -837,6 +965,23 @@ module vdp_sprite_makeup_pixel (
 			//	1st...8th plane
 			if( ff_pre_pixel_color_fix ) begin
 				//	hold
+			end
+			else if( reg_sprite_mode3 ) begin
+				if( ff_color_en ) begin
+					//	最初のスプライトは表示（ドットがある）位置だった
+					ff_pre_pixel_color_en			<= 1'b1;
+					ff_pre_pixel_color				<= { ff_palette_set, ff_color };
+					ff_pre_pixel_color_transparent	<= w_transparent;
+					ff_pre_pixel_color_fix			<= 1'b1;
+					
+				end
+				else begin
+					//	最初のスプライトは非表示（ドットがない）位置だった
+					ff_pre_pixel_color_en			<= 1'b0;
+					ff_pre_pixel_color				<= 8'd0;
+					ff_pre_pixel_color_transparent	<= 2'd0;
+					ff_pre_pixel_color_fix			<= 1'b0;
+				end
 			end
 			else if( !ff_pre_pixel_cc0_found ) begin
 				//	このドットに対して、CC=0 のプレーンが一度も現れていない場合
@@ -902,7 +1047,7 @@ module vdp_sprite_makeup_pixel (
 			end
 			else if( !ff_sprite_collision ) begin
 				//	The dots of the sprite with the highest priority are already plotted.
-				if( ff_pre_pixel_color != 4'd0 || reg_color0_opaque ) begin
+				if( ff_pre_pixel_color[3:0] != 4'd0 || (!reg_sprite_mode3 && reg_color0_opaque) ) begin
 					ff_sprite_collision		<= 1'b1;
 					ff_sprite_collision_x	<= screen_pos_x[11:4] + 9'd12;
 					ff_sprite_collision_y	<= { 2'd0, pixel_pos_y } + 10'd8;
@@ -950,9 +1095,6 @@ module vdp_sprite_makeup_pixel (
 			ff_pixel_color_d5 <= ff_pixel_color_d4;
 		end
 	end
-
-	assign x							= w_color[4] ? ~w_offset_x[7:0]: w_offset_x[7:0];
-	assign mgx							= 8'd0;
 
 	assign display_color_en				= ff_pixel_color_d5[10];
 	assign display_color_transparent	= ff_pixel_color_d5[9:8];
