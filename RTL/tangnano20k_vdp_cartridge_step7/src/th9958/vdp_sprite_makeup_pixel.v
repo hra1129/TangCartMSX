@@ -76,7 +76,6 @@ module vdp_sprite_makeup_pixel (
 	input		[9:0]	plane_x,
 	input		[7:0]	color,
 	input		[7:0]	info_mgx,
-	input		[1:0]	transparent,
 	input				color_plane_x_en,
 	input		[31:0]	pattern,
 	input				pattern_left_en,
@@ -117,6 +116,7 @@ module vdp_sprite_makeup_pixel (
 	reg			[63:0]	ff_pattern15;
 	wire		[7:0]	w_read_pattern12;
 	wire		[63:0]	w_pattern;
+	wire		[3:0]	w_sample_x;
 	reg			[7:0]	ff_color0;
 	reg			[7:0]	ff_color1;
 	reg			[7:0]	ff_color2;
@@ -200,7 +200,6 @@ module vdp_sprite_makeup_pixel (
 	wire				w_sprite_en;
 	wire		[4:0]	w_ec_shift;
 	wire		[3:0]	w_bit_sel12;
-	wire		[3:0]	w_bit_sel3;
 	wire		[1:0]	w_transparent;
 	reg			[3:0]	ff_color;
 	reg			[3:0]	ff_palette_set;
@@ -479,23 +478,23 @@ module vdp_sprite_makeup_pixel (
 		end
 		else if( color_plane_x_en ) begin
 			case( makeup_plane )
-			4'd0:		ff_transparent0		<= transparent;
-			4'd1:		ff_transparent1		<= transparent;
-			4'd2:		ff_transparent2		<= transparent;
-			4'd3:		ff_transparent3		<= transparent;
-			4'd4:		ff_transparent4		<= transparent;
-			4'd5:		ff_transparent5		<= transparent;
-			4'd6:		ff_transparent6		<= transparent;
-			4'd7:		ff_transparent7		<= transparent;
-			4'd8:		ff_transparent8		<= transparent;
-			4'd9:		ff_transparent9		<= transparent;
-			4'd10:		ff_transparent10	<= transparent;
-			4'd11:		ff_transparent11	<= transparent;
-			4'd12:		ff_transparent12	<= transparent;
-			4'd13:		ff_transparent13	<= transparent;
-			4'd14:		ff_transparent14	<= transparent;
-			4'd15:		ff_transparent15	<= transparent;
-			default:	ff_transparent0		<= transparent;
+			4'd0:		ff_transparent0		<= color[7:6];
+			4'd1:		ff_transparent1		<= color[7:6];
+			4'd2:		ff_transparent2		<= color[7:6];
+			4'd3:		ff_transparent3		<= color[7:6];
+			4'd4:		ff_transparent4		<= color[7:6];
+			4'd5:		ff_transparent5		<= color[7:6];
+			4'd6:		ff_transparent6		<= color[7:6];
+			4'd7:		ff_transparent7		<= color[7:6];
+			4'd8:		ff_transparent8		<= color[7:6];
+			4'd9:		ff_transparent9		<= color[7:6];
+			4'd10:		ff_transparent10	<= color[7:6];
+			4'd11:		ff_transparent11	<= color[7:6];
+			4'd12:		ff_transparent12	<= color[7:6];
+			4'd13:		ff_transparent13	<= color[7:6];
+			4'd14:		ff_transparent14	<= color[7:6];
+			4'd15:		ff_transparent15	<= color[7:6];
+			default:	ff_transparent0		<= color[7:6];
 			endcase
 		end
 	end
@@ -758,8 +757,8 @@ module vdp_sprite_makeup_pixel (
 	//	w_sub_phase: 0
 	// --------------------------------------------------------------------
 	assign w_offset_x		= screen_pos_x[13:4] - w_x;
-	assign x				= w_color[4] ? ~w_offset_x[7:0]: w_offset_x[7:0];
-	assign mgx				= w_mgx;
+	assign x				= ff_active ? w_offset_x[7:0] : 8'd0;
+	assign mgx				= ff_active ? w_mgx : 8'd0;
 	assign w_overflow12		= ( !reg_sprite_16x16 && !reg_sprite_magify ) ?   w_offset_x[9:3]:			// 8x8 normal
 	                 		  (  reg_sprite_16x16 &&  reg_sprite_magify ) ? { w_offset_x[9:5], 2'd0 }:	// 16x16 magnify
 	                 		                                                { w_offset_x[9:4], 1'd0 };	// 8x8 magnify or 16x16 normal
@@ -881,7 +880,8 @@ module vdp_sprite_makeup_pixel (
 		endcase
 	endfunction
 
-	assign w_pattern_m3		= func_nibble_sel( sample_x[3:0], w_pattern );
+	assign w_sample_x		= ff_color_3[4] ? ~sample_x[3:0]: sample_x[3:0];
+	assign w_pattern_m3		= func_nibble_sel( w_sample_x, w_pattern );
 
 	always @( posedge clk or negedge reset_n ) begin
 		if( !reset_n ) begin

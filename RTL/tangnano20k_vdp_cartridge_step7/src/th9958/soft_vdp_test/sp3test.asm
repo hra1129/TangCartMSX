@@ -146,7 +146,6 @@ s5_load_image::
 			pop		bc
 			dec		c
 			jr		nz, y_loop1
-			call	wait_push_space_key
 
 			ld		hl, small_image2		; 転送元
 			ld		a, 1
@@ -245,6 +244,9 @@ cls::
 			ld		bc, 64 * 8
 			ld		e, 216
 			call	fill_vram
+
+			; VDPコマンド完了待ち
+			call	wait_command
 			ret
 	data:
 			dw		0			; DX
@@ -291,7 +293,6 @@ wait::
 ; =============================================================================
 			scope	sp3_move_test
 sp3_move_test::
-			call	cls
 			; ループ
 	loop:
 			; 右へ移動
@@ -305,7 +306,7 @@ sp3_move_test::
 			; put sprite
 			ld		hl, attribute
 			ld		de, 0x7600
-			ld		bc, 4
+			ld		bc, 8
 			call	block_copy
 			call	wait
 			jp		loop
