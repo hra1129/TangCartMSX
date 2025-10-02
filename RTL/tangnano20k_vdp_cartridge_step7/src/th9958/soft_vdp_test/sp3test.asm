@@ -15,6 +15,9 @@ start:
 			call	screen5
 			call	s5_load_image
 			call	sp3_move_test
+			call	sp3_move_test2
+			call	sp3_move_test3
+			call	sp3_move_test4
 
 			; 後始末
 			; R#15 = 0x00
@@ -296,9 +299,12 @@ sp3_move_test::
 			; ループ
 	loop:
 			; 右へ移動
-			ld		hl, [attribute_x]
+			ld		hl, [attribute0_x]
 			inc		hl
-			ld		[attribute_x], hl
+			ld		[attribute0_x], hl
+			ld		[attribute1_x], hl
+			ld		[attribute2_x], hl
+			ld		[attribute3_x], hl
 			ld		de, 256
 			or		a, a
 			sbc		hl, de
@@ -306,7 +312,7 @@ sp3_move_test::
 			; put sprite
 			ld		hl, attribute
 			ld		de, 0x7600
-			ld		bc, 8
+			ld		bc, 8 * 4
 			call	block_copy
 			call	wait
 			jp		loop
@@ -315,16 +321,428 @@ sp3_move_test::
 			call	wait_push_space_key
 			ret
 	attribute:
-	attribute_y:
+	attribute0_y:
 			dw		0					; Y
-	attribute_mgy:
+	attribute0_mgy:
 			db		16					; MGY
-	attribute_color:
+	attribute0_color:
 			db		0					; Transparent(2), ReverseY(1), ReverseX(1), Palette Set(4)
-	attribute_x:
+	attribute0_x:
 			dw		-16					; X
-	attribute_mgx:
+	attribute0_mgx:
 			db		16					; MGX
-	attribute_pattern:
+	attribute0_pattern:
+			db		0					; PatternY(4), PatternX(4)
+
+	attribute1_y:
+			dw		20					; Y
+	attribute1_mgy:
+			db		16					; MGY
+	attribute1_color:
+			db		0x40				; Transparent(2), ReverseY(1), ReverseX(1), Palette Set(4)
+	attribute1_x:
+			dw		-16					; X
+	attribute1_mgx:
+			db		16					; MGX
+	attribute1_pattern:
+			db		0					; PatternY(4), PatternX(4)
+
+	attribute2_y:
+			dw		40					; Y
+	attribute2_mgy:
+			db		16					; MGY
+	attribute2_color:
+			db		0x80				; Transparent(2), ReverseY(1), ReverseX(1), Palette Set(4)
+	attribute2_x:
+			dw		-16					; X
+	attribute2_mgx:
+			db		16					; MGX
+	attribute2_pattern:
+			db		0					; PatternY(4), PatternX(4)
+
+	attribute3_y:
+			dw		60					; Y
+	attribute3_mgy:
+			db		16					; MGY
+	attribute3_color:
+			db		0xC0				; Transparent(2), ReverseY(1), ReverseX(1), Palette Set(4)
+	attribute3_x:
+			dw		-16					; X
+	attribute3_mgx:
+			db		16					; MGX
+	attribute3_pattern:
+			db		0					; PatternY(4), PatternX(4)
+			endscope
+
+; =============================================================================
+;	[SCREEN5] 表示テスト
+;	input:
+;		none
+;	output:
+;		none
+;	break:
+;		AF
+;	comment:
+;		none
+; =============================================================================
+			scope	sp3_move_test2
+sp3_move_test2::
+			; ループ
+	loop:
+			; 右へ移動
+			ld		hl, [attribute0_x]
+			inc		hl
+			ld		[attribute0_x], hl
+			ld		[attribute1_x], hl
+			ld		[attribute2_x], hl
+			ld		[attribute3_x], hl
+			ld		de, 256
+			or		a, a
+			sbc		hl, de
+			jr		z, exit_loop
+			; put sprite
+			ld		hl, attribute
+			ld		de, 0x7600
+			ld		bc, 8 * 4
+			call	block_copy
+			call	wait
+			jp		loop
+	exit_loop:
+			; キー待ち
+			call	wait_push_space_key
+			ret
+	attribute:
+	attribute0_y:
+			dw		0					; Y
+	attribute0_mgy:
+			db		16					; MGY
+	attribute0_color:
+			db		0					; Transparent(2), ReverseY(1), ReverseX(1), Palette Set(4)
+	attribute0_x:
+			dw		-16					; X
+	attribute0_mgx:
+			db		16					; MGX
+	attribute0_pattern:
+			db		0					; PatternY(4), PatternX(4)
+
+	attribute1_y:
+			dw		20					; Y
+	attribute1_mgy:
+			db		16					; MGY
+	attribute1_color:
+			db		0x10				; Transparent(2), ReverseY(1), ReverseX(1), Palette Set(4)
+	attribute1_x:
+			dw		-16					; X
+	attribute1_mgx:
+			db		16					; MGX
+	attribute1_pattern:
+			db		0					; PatternY(4), PatternX(4)
+
+	attribute2_y:
+			dw		40					; Y
+	attribute2_mgy:
+			db		16					; MGY
+	attribute2_color:
+			db		0x20				; Transparent(2), ReverseY(1), ReverseX(1), Palette Set(4)
+	attribute2_x:
+			dw		-16					; X
+	attribute2_mgx:
+			db		16					; MGX
+	attribute2_pattern:
+			db		0					; PatternY(4), PatternX(4)
+
+	attribute3_y:
+			dw		60					; Y
+	attribute3_mgy:
+			db		16					; MGY
+	attribute3_color:
+			db		0x30				; Transparent(2), ReverseY(1), ReverseX(1), Palette Set(4)
+	attribute3_x:
+			dw		-16					; X
+	attribute3_mgx:
+			db		16					; MGX
+	attribute3_pattern:
+			db		0					; PatternY(4), PatternX(4)
+			endscope
+
+; =============================================================================
+;	[SCREEN5] 表示テスト
+;	input:
+;		none
+;	output:
+;		none
+;	break:
+;		AF
+;	comment:
+;		none
+; =============================================================================
+			scope	sp3_move_test3
+sp3_move_test3::
+			; ループ
+	loop:
+			; 右へ移動
+			ld		hl, [attribute0_mgx]
+			inc		hl
+			ld		a, l
+			ld		[attribute0_mgx], a
+			ld		[attribute0_mgy], a
+			ld		de, 256
+			or		a, a
+			sbc		hl, de
+			jr		z, exit_loop
+			; put sprite
+			ld		hl, attribute
+			ld		de, 0x7600
+			ld		bc, 8 * 1
+			call	block_copy
+			call	wait
+			jp		loop
+	exit_loop:
+			; キー待ち
+			call	wait_push_space_key
+			ret
+	attribute:
+	attribute0_y:
+			dw		0					; Y
+	attribute0_mgy:
+			db		1					; MGY
+	attribute0_color:
+			db		0					; Transparent(2), ReverseY(1), ReverseX(1), Palette Set(4)
+	attribute0_x:
+			dw		0					; X
+	attribute0_mgx:
+			db		1					; MGX
+	attribute0_pattern:
+			db		0					; PatternY(4), PatternX(4)
+			endscope
+
+; =============================================================================
+;	[SCREEN5] 表示テスト
+;	input:
+;		none
+;	output:
+;		none
+;	break:
+;		AF
+;	comment:
+;		none
+; =============================================================================
+			scope	sp3_move_test4
+sp3_move_test4::
+			; put sprite
+			ld		hl, attribute
+			ld		de, 0x7600
+			ld		bc, 8 * 16
+			call	block_copy
+			; キー待ち
+			call	wait_push_space_key
+			ret
+	attribute:
+	attribute0_y:
+			dw		0					; Y
+	attribute0_mgy:
+			db		16					; MGY
+	attribute0_color:
+			db		0					; Transparent(2), ReverseY(1), ReverseX(1), Palette Set(4)
+	attribute0_x:
+			dw		16 * 0				; X
+	attribute0_mgx:
+			db		16					; MGX
+	attribute0_pattern:
+			db		0					; PatternY(4), PatternX(4)
+
+	attribute1_y:
+			dw		0					; Y
+	attribute1_mgy:
+			db		17					; MGY
+	attribute1_color:
+			db		0					; Transparent(2), ReverseY(1), ReverseX(1), Palette Set(4)
+	attribute1_x:
+			dw		16 * 1				; X
+	attribute1_mgx:
+			db		16					; MGX
+	attribute1_pattern:
+			db		0					; PatternY(4), PatternX(4)
+
+	attribute2_y:
+			dw		0					; Y
+	attribute2_mgy:
+			db		18					; MGY
+	attribute2_color:
+			db		0					; Transparent(2), ReverseY(1), ReverseX(1), Palette Set(4)
+	attribute2_x:
+			dw		16 * 2				; X
+	attribute2_mgx:
+			db		16					; MGX
+	attribute2_pattern:
+			db		0					; PatternY(4), PatternX(4)
+
+	attribute3_y:
+			dw		0					; Y
+	attribute3_mgy:
+			db		19					; MGY
+	attribute3_color:
+			db		0					; Transparent(2), ReverseY(1), ReverseX(1), Palette Set(4)
+	attribute3_x:
+			dw		16 * 3				; X
+	attribute3_mgx:
+			db		16					; MGX
+	attribute3_pattern:
+			db		0					; PatternY(4), PatternX(4)
+
+	attribute4_y:
+			dw		0					; Y
+	attribute4_mgy:
+			db		20					; MGY
+	attribute4_color:
+			db		0					; Transparent(2), ReverseY(1), ReverseX(1), Palette Set(4)
+	attribute4_x:
+			dw		16 * 4				; X
+	attribute4_mgx:
+			db		16					; MGX
+	attribute4_pattern:
+			db		0					; PatternY(4), PatternX(4)
+
+	attribute5_y:
+			dw		0					; Y
+	attribute5_mgy:
+			db		21					; MGY
+	attribute5_color:
+			db		0					; Transparent(2), ReverseY(1), ReverseX(1), Palette Set(4)
+	attribute5_x:
+			dw		16 * 5				; X
+	attribute5_mgx:
+			db		16					; MGX
+	attribute5_pattern:
+			db		0					; PatternY(4), PatternX(4)
+
+	attribute6_y:
+			dw		0					; Y
+	attribute6_mgy:
+			db		22					; MGY
+	attribute6_color:
+			db		0					; Transparent(2), ReverseY(1), ReverseX(1), Palette Set(4)
+	attribute6_x:
+			dw		16 * 6				; X
+	attribute6_mgx:
+			db		16					; MGX
+	attribute6_pattern:
+			db		0					; PatternY(4), PatternX(4)
+
+	attribute7_y:
+			dw		0					; Y
+	attribute7_mgy:
+			db		23					; MGY
+	attribute7_color:
+			db		0					; Transparent(2), ReverseY(1), ReverseX(1), Palette Set(4)
+	attribute7_x:
+			dw		16 * 7				; X
+	attribute7_mgx:
+			db		16					; MGX
+	attribute7_pattern:
+			db		0					; PatternY(4), PatternX(4)
+
+	attribute8_y:
+			dw		0					; Y
+	attribute8_mgy:
+			db		24					; MGY
+	attribute8_color:
+			db		0					; Transparent(2), ReverseY(1), ReverseX(1), Palette Set(4)
+	attribute8_x:
+			dw		16 * 8				; X
+	attribute8_mgx:
+			db		16					; MGX
+	attribute8_pattern:
+			db		0					; PatternY(4), PatternX(4)
+
+	attribute9_y:
+			dw		0					; Y
+	attribute9_mgy:
+			db		25					; MGY
+	attribute9_color:
+			db		0					; Transparent(2), ReverseY(1), ReverseX(1), Palette Set(4)
+	attribute9_x:
+			dw		16 * 9				; X
+	attribute9_mgx:
+			db		16					; MGX
+	attribute9_pattern:
+			db		0					; PatternY(4), PatternX(4)
+
+	attribute10_y:
+			dw		0					; Y
+	attribute10_mgy:
+			db		26					; MGY
+	attribute10_color:
+			db		0					; Transparent(2), ReverseY(1), ReverseX(1), Palette Set(4)
+	attribute10_x:
+			dw		16 * 10				; X
+	attribute10_mgx:
+			db		16					; MGX
+	attribute10_pattern:
+			db		0					; PatternY(4), PatternX(4)
+
+	attribute11_y:
+			dw		0					; Y
+	attribute11_mgy:
+			db		27					; MGY
+	attribute11_color:
+			db		0					; Transparent(2), ReverseY(1), ReverseX(1), Palette Set(4)
+	attribute11_x:
+			dw		16 * 11				; X
+	attribute11_mgx:
+			db		16					; MGX
+	attribute11_pattern:
+			db		0					; PatternY(4), PatternX(4)
+
+	attribute12_y:
+			dw		0					; Y
+	attribute12_mgy:
+			db		28					; MGY
+	attribute12_color:
+			db		0					; Transparent(2), ReverseY(1), ReverseX(1), Palette Set(4)
+	attribute12_x:
+			dw		16 * 12				; X
+	attribute12_mgx:
+			db		16					; MGX
+	attribute12_pattern:
+			db		0					; PatternY(4), PatternX(4)
+
+	attribute13_y:
+			dw		0					; Y
+	attribute13_mgy:
+			db		29					; MGY
+	attribute13_color:
+			db		0					; Transparent(2), ReverseY(1), ReverseX(1), Palette Set(4)
+	attribute13_x:
+			dw		16 * 13				; X
+	attribute13_mgx:
+			db		16					; MGX
+	attribute13_pattern:
+			db		0					; PatternY(4), PatternX(4)
+
+	attribute14_y:
+			dw		0					; Y
+	attribute14_mgy:
+			db		30					; MGY
+	attribute14_color:
+			db		0					; Transparent(2), ReverseY(1), ReverseX(1), Palette Set(4)
+	attribute14_x:
+			dw		16 * 14				; X
+	attribute14_mgx:
+			db		16					; MGX
+	attribute14_pattern:
+			db		0					; PatternY(4), PatternX(4)
+
+	attribute15_y:
+			dw		0					; Y
+	attribute15_mgy:
+			db		31					; MGY
+	attribute15_color:
+			db		0					; Transparent(2), ReverseY(1), ReverseX(1), Palette Set(4)
+	attribute15_x:
+			dw		16 * 15				; X
+	attribute15_mgx:
+			db		16					; MGX
+	attribute15_pattern:
 			db		0					; PatternY(4), PatternX(4)
 			endscope

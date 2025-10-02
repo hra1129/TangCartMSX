@@ -166,22 +166,6 @@ module vdp_sprite_makeup_pixel (
 	reg			[7:0]	ff_mgx13;
 	reg			[7:0]	ff_mgx14;
 	reg			[7:0]	ff_mgx15;
-	reg			[1:0]	ff_transparent0;
-	reg			[1:0]	ff_transparent1;
-	reg			[1:0]	ff_transparent2;
-	reg			[1:0]	ff_transparent3;
-	reg			[1:0]	ff_transparent4;
-	reg			[1:0]	ff_transparent5;
-	reg			[1:0]	ff_transparent6;
-	reg			[1:0]	ff_transparent7;
-	reg			[1:0]	ff_transparent8;
-	reg			[1:0]	ff_transparent9;
-	reg			[1:0]	ff_transparent10;
-	reg			[1:0]	ff_transparent11;
-	reg			[1:0]	ff_transparent12;
-	reg			[1:0]	ff_transparent13;
-	reg			[1:0]	ff_transparent14;
-	reg			[1:0]	ff_transparent15;
 	wire		[9:0]	w_x;
 	wire		[3:0]	w_sub_phase;
 	wire				w_active;
@@ -200,9 +184,9 @@ module vdp_sprite_makeup_pixel (
 	wire				w_sprite_en;
 	wire		[4:0]	w_ec_shift;
 	wire		[3:0]	w_bit_sel12;
-	wire		[1:0]	w_transparent;
 	reg			[3:0]	ff_color;
 	reg			[3:0]	ff_palette_set;
+	reg			[1:0]	ff_transparent;
 	reg					ff_color_cc;
 	reg					ff_color_ic;
 	reg					ff_color_en;
@@ -218,9 +202,9 @@ module vdp_sprite_makeup_pixel (
 	reg					ff_sprite_en1;
 	reg					ff_sprite_en2;
 	reg					ff_sprite_en3;
-	reg			[5:0]	ff_color_1;
-	reg			[5:0]	ff_color_2;
-	reg			[5:0]	ff_color_3;
+	reg			[7:0]	ff_color_1;
+	reg			[7:0]	ff_color_2;
+	reg			[7:0]	ff_color_3;
 	reg			[3:0]	ff_bit_sel12_1;
 	reg			[3:0]	ff_bit_sel12_2;
 	reg			[3:0]	ff_bit_sel12_3;
@@ -453,48 +437,6 @@ module vdp_sprite_makeup_pixel (
 			4'd14:		ff_mgx14	<= info_mgx;
 			4'd15:		ff_mgx15	<= info_mgx;
 			default:	ff_mgx0		<= info_mgx;
-			endcase
-		end
-	end
-
-	always @( posedge clk or negedge reset_n ) begin
-		if( !reset_n ) begin
-			ff_transparent0		<= 2'd0;
-			ff_transparent1		<= 2'd0;
-			ff_transparent2		<= 2'd0;
-			ff_transparent3		<= 2'd0;
-			ff_transparent4		<= 2'd0;
-			ff_transparent5		<= 2'd0;
-			ff_transparent6		<= 2'd0;
-			ff_transparent7		<= 2'd0;
-			ff_transparent8		<= 2'd0;
-			ff_transparent9		<= 2'd0;
-			ff_transparent10	<= 2'd0;
-			ff_transparent11	<= 2'd0;
-			ff_transparent12	<= 2'd0;
-			ff_transparent13	<= 2'd0;
-			ff_transparent14	<= 2'd0;
-			ff_transparent15	<= 2'd0;
-		end
-		else if( color_plane_x_en ) begin
-			case( makeup_plane )
-			4'd0:		ff_transparent0		<= color[7:6];
-			4'd1:		ff_transparent1		<= color[7:6];
-			4'd2:		ff_transparent2		<= color[7:6];
-			4'd3:		ff_transparent3		<= color[7:6];
-			4'd4:		ff_transparent4		<= color[7:6];
-			4'd5:		ff_transparent5		<= color[7:6];
-			4'd6:		ff_transparent6		<= color[7:6];
-			4'd7:		ff_transparent7		<= color[7:6];
-			4'd8:		ff_transparent8		<= color[7:6];
-			4'd9:		ff_transparent9		<= color[7:6];
-			4'd10:		ff_transparent10	<= color[7:6];
-			4'd11:		ff_transparent11	<= color[7:6];
-			4'd12:		ff_transparent12	<= color[7:6];
-			4'd13:		ff_transparent13	<= color[7:6];
-			4'd14:		ff_transparent14	<= color[7:6];
-			4'd15:		ff_transparent15	<= color[7:6];
-			default:	ff_transparent0		<= color[7:6];
 			endcase
 		end
 	end
@@ -764,7 +706,7 @@ module vdp_sprite_makeup_pixel (
 	                 		                                                { w_offset_x[9:4], 1'd0 };	// 8x8 magnify or 16x16 normal
 	assign w_ec_shift		= { 5 { w_color[7] } };
 	assign w_sprite_en12	= ( w_overflow12 == { w_ec_shift, 2'd0 } );
-	assign w_sprite_en3		= ( w_offset_x[9:8] == 2'd0 && w_offset_x[7:0] < w_mgx );
+	assign w_sprite_en3		= ( w_offset_x[9:8] == 2'd0 && w_offset_x[7:0] < w_mgx ) ? w_active: 1'b0;
 	assign w_sprite_en		= reg_sprite_mode3 ? w_sprite_en3: w_sprite_en12;
 	assign w_bit_sel12		= reg_sprite_magify ? w_offset_x[4:1]: w_offset_x[3:0];
 
@@ -785,9 +727,9 @@ module vdp_sprite_makeup_pixel (
 			ff_bit_sel12_2		<= 4'b0;
 			ff_bit_sel12_3		<= 4'b0;
 
-			ff_color_1			<= 6'd0;
-			ff_color_2			<= 6'd0;
-			ff_color_3			<= 6'd0;
+			ff_color_1			<= 8'd0;
+			ff_color_2			<= 8'd0;
+			ff_color_3			<= 8'd0;
 
 			ff_current_plane1	<= 5'd0;
 			ff_current_plane2	<= 5'd0;
@@ -806,7 +748,7 @@ module vdp_sprite_makeup_pixel (
 			ff_bit_sel12_2		<= ff_bit_sel12_1;
 			ff_bit_sel12_3		<= ff_bit_sel12_2;
 
-			ff_color_1			<= { w_color[6], w_color[5], w_color[3:0] };
+			ff_color_1			<= w_color;
 			ff_color_2			<= ff_color_1;
 			ff_color_3			<= ff_color_2;
 
@@ -834,26 +776,6 @@ module vdp_sprite_makeup_pixel (
 			ff_pattern13,
 			ff_pattern14,
 			ff_pattern15
-	);
-
-	assign w_transparent	= func_2bit_selector(
-			ff_current_plane3,
-			ff_transparent0,
-			ff_transparent1,
-			ff_transparent2,
-			ff_transparent3,
-			ff_transparent4,
-			ff_transparent5,
-			ff_transparent6,
-			ff_transparent7,
-			ff_transparent8,
-			ff_transparent9,
-			ff_transparent10,
-			ff_transparent11,
-			ff_transparent12,
-			ff_transparent13,
-			ff_transparent14,
-			ff_transparent15
 	);
 
 	function [3:0] func_nibble_sel(
@@ -889,24 +811,28 @@ module vdp_sprite_makeup_pixel (
 			ff_color			<= 4'd0;
 			ff_color_cc			<= 1'b0;
 			ff_color_ic			<= 1'b0;
+			ff_palette_set		<= 4'd0;
+			ff_transparent		<= 2'd0;
 		end
 		else if( reg_sprite_mode3 ) begin
 			if( w_pattern_m3 != 4'd0 ) begin
 				ff_color_en			<= ff_sprite_en3 & ff_active3 & screen_v_active;
 				ff_color			<= w_pattern_m3;
 				ff_palette_set		<= ff_color_3[3:0];
+				ff_transparent		<= ff_color_3[7:6];
 			end
 			else begin
 				ff_color_en			<= 1'b0;
 				ff_color			<= 4'd0;
 				ff_palette_set		<= 4'd0;
+				ff_transparent		<= 2'd0;
 			end
 		end
 		else begin
 			ff_color_en			<= ff_sprite_en3 & ff_active3 & screen_v_active & w_pattern[ ff_bit_sel12_3 ];
 			ff_color			<= ff_color_3[3:0];
-			ff_color_cc			<= ff_color_3[5];
-			ff_color_ic			<= ff_color_3[4];
+			ff_color_cc			<= ff_color_3[6];
+			ff_color_ic			<= ff_color_3[5];
 		end
 	end
 
@@ -927,7 +853,7 @@ module vdp_sprite_makeup_pixel (
 					//	最初のスプライトは表示（ドットがある）位置だった
 					ff_pre_pixel_color_en			<= 1'b1;
 					ff_pre_pixel_color				<= { ff_palette_set, ff_color };
-					ff_pre_pixel_color_transparent	<= w_transparent;
+					ff_pre_pixel_color_transparent	<= ff_transparent;
 					ff_pre_pixel_color_fix			<= 1'b1;
 					
 				end
@@ -971,7 +897,7 @@ module vdp_sprite_makeup_pixel (
 					//	最初のスプライトは表示（ドットがある）位置だった
 					ff_pre_pixel_color_en			<= 1'b1;
 					ff_pre_pixel_color				<= { ff_palette_set, ff_color };
-					ff_pre_pixel_color_transparent	<= w_transparent;
+					ff_pre_pixel_color_transparent	<= ff_transparent;
 					ff_pre_pixel_color_fix			<= 1'b1;
 					
 				end
