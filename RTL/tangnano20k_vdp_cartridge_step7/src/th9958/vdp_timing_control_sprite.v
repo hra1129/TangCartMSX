@@ -91,7 +91,8 @@ module vdp_timing_control_sprite (
 	input   	[17:11]	reg_sprite_pattern_generator_table_base,
 	input				reg_left_mask,
 	input				reg_sprite_nonR23_mode,
-	input				reg_sprite_mode3
+	input				reg_sprite_mode3,
+	input				reg_sprite16_mode
 );
 	localparam			c_mode_g3	= 5'b010_00;	//	Graphic3 (SCREEN4)
 	localparam			c_mode_g4	= 5'b011_00;	//	Graphic4 (SCREEN5)
@@ -207,7 +208,8 @@ module vdp_timing_control_sprite (
 		.reg_sprite_16x16							( reg_sprite_16x16							),
 		.reg_sprite_attribute_table_base			( reg_sprite_attribute_table_base			),
 		.reg_sprite_nonR23_mode						( reg_sprite_nonR23_mode					),
-		.reg_sprite_mode3							( reg_sprite_mode3							)
+		.reg_sprite_mode3							( reg_sprite_mode3							),
+		.reg_sprite16_mode							( reg_sprite16_mode							)
 	);
 
 	// --------------------------------------------------------------------

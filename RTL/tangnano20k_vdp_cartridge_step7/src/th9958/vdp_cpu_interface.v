@@ -139,6 +139,7 @@ module vdp_cpu_interface (
 	output				reg_ext_palette_mode,
 	output				reg_ext_command_mode,
 	output				reg_vram256k_mode,
+	output				reg_sprite16_mode,
 
 	output				pulse0,
 	output				pulse1,
@@ -211,6 +212,7 @@ module vdp_cpu_interface (
 	reg					ff_ext_palette_mode;
 	reg					ff_ext_command_mode;
 	reg					ff_vram256k_mode;
+	reg					ff_sprite16_mode;
 
 	reg					ff_2nd_access;
 	reg		[7:0]		ff_1st_byte;
@@ -461,6 +463,7 @@ module vdp_cpu_interface (
 			ff_ext_palette_mode <= 1'b0;
 			ff_ext_command_mode <= 1'b0;
 			ff_vram256k_mode <= 1'b0;
+			ff_sprite16_mode <= 1'b0;
 		end
 		else if( ff_register_write ) begin
 			case( ff_register_num )
@@ -551,7 +554,7 @@ module vdp_cpu_interface (
 				begin
 					ff_interrupt_line <= ff_1st_byte;
 				end
-			8'd20:	//	R#20 = [N/A][EVR][ECOM][EPAL][SCOL][ILNS][SVNS][HS]
+			8'd20:	//	R#20 = [S16][EVR][ECOM][EPAL][SCOL][ILNS][SVNS][HS]
 				begin
 					ff_command_high_speed_mode <= ff_1st_byte[0];
 					ff_sprite_nonR23_mode <= ff_1st_byte[1];
@@ -560,6 +563,7 @@ module vdp_cpu_interface (
 					ff_ext_palette_mode <= ff_1st_byte[4];
 					ff_ext_command_mode <= ff_1st_byte[5];
 					ff_vram256k_mode <= ff_1st_byte[6];
+					ff_sprite16_mode <= ff_1st_byte[7];
 				end
 			8'd23:	//	R#23 = [DO7][DO6][DO5][DO4][DO3][DO2][DO1][DO0]
 				begin
@@ -807,4 +811,5 @@ module vdp_cpu_interface (
 	assign reg_ext_palette_mode						= ff_ext_palette_mode;
 	assign reg_ext_command_mode						= ff_ext_command_mode;
 	assign reg_vram256k_mode						= ff_vram256k_mode;
+	assign reg_sprite16_mode						= ff_sprite16_mode;
 endmodule

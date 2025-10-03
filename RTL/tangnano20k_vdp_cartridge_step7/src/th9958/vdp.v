@@ -206,6 +206,7 @@ module vdp (
 	wire				reg_ext_palette_mode;
 	wire				reg_ext_command_mode;
 	wire				reg_vram256k_mode;
+	wire				reg_sprite16_mode;
 
 	// --------------------------------------------------------------------
 	//	CPU Interface
@@ -286,6 +287,7 @@ module vdp (
 		.reg_ext_palette_mode						( reg_ext_palette_mode						),
 		.reg_ext_command_mode						( reg_ext_command_mode						),
 		.reg_vram256k_mode							( reg_vram256k_mode							),
+		.reg_sprite16_mode							( reg_sprite16_mode							),
 		.pulse0										( pulse0									),
 		.pulse1										( pulse1									),
 		.pulse2										( pulse2									),
@@ -355,7 +357,8 @@ module vdp (
 		.reg_left_mask								( reg_left_mask								),
 		.reg_scroll_planes							( reg_scroll_planes							),
 		.reg_sprite_nonR23_mode						( reg_sprite_nonR23_mode					),
-		.reg_sprite_mode3							( reg_sprite_mode3							)
+		.reg_sprite_mode3							( reg_sprite_mode3							),
+		.reg_sprite16_mode							( reg_sprite16_mode							)
 	);
 
 	// --------------------------------------------------------------------

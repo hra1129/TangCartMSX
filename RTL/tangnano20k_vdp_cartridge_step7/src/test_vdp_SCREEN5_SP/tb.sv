@@ -1050,14 +1050,23 @@ module tb ();
 		write_io( vdp_io1, 8'h40 + 8'h36 );
 
 		for( i = 0; i < 16; i++ ) begin
-			write_io( vdp_io0, 8'd02 );		//	Yl=2
-			write_io( vdp_io0, 8'd00 );		//	Yh, SZ=0
-			write_io( vdp_io0, 8'd16 );		//	MGY=16
-			write_io( vdp_io0, 8'd00 );		//	TP=0, RVY=0, RVX=0, PS=0
-			write_io( vdp_io0, i * 16 );	//	Xl=i*16
-			write_io( vdp_io0, 8'd00 );		//	Xh
-			write_io( vdp_io0, 8'd16 );		//	MGX=16
-			write_io( vdp_io0, 8'd00 );		//	Pattern (0,0)
+//			write_io( vdp_io0, 8'd02 );		//	Yl=2
+//			write_io( vdp_io0, 8'd00 );		//	Yh, SZ=0
+//			write_io( vdp_io0, 8'd16 );		//	MGY=16
+//			write_io( vdp_io0, 8'd00 );		//	TP=0, RVY=0, RVX=0, PS=0
+//			write_io( vdp_io0, i * 16 );	//	Xl=i*16
+//			write_io( vdp_io0, 8'd00 );		//	Xh
+//			write_io( vdp_io0, 8'd16 );		//	MGX=16
+//			write_io( vdp_io0, 8'd00 );		//	Pattern (0,0)
+
+			write_io( vdp_io0, 8'd216 );	//	Yl=2
+			write_io( vdp_io0, 8'd216 );	//	Yh, SZ=0
+			write_io( vdp_io0, 8'd216 );	//	MGY=16
+			write_io( vdp_io0, 8'd216 );	//	TP=0, RVY=0, RVX=0, PS=0
+			write_io( vdp_io0, 8'd216 );	//	Xl=i*16
+			write_io( vdp_io0, 8'd216 );	//	Xh
+			write_io( vdp_io0, 8'd216 );	//	MGX=16
+			write_io( vdp_io0, 8'd216 );	//	Pattern (0,0)
 		end
 
 		write_io( vdp_io0, 8'd216 );	//	Yl=216
@@ -1082,7 +1091,7 @@ module tb ();
 		wait_vdp_command();
 
 		$display( "Runing..." );
-		for( count = 0; count < 20; count++ ) begin
+		for( count = 0; count < 30; count++ ) begin
 			repeat(100000) begin
 				@( posedge clk14m );
 			end

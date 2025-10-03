@@ -84,7 +84,8 @@ module vdp_sprite_select_visible_planes (
 	input				reg_sprite_16x16,
 	input		[17:7]	reg_sprite_attribute_table_base,
 	input				reg_sprite_nonR23_mode,
-	input				reg_sprite_mode3
+	input				reg_sprite_mode3,
+	input				reg_sprite16_mode
 );
 	//	Phase
 	wire		[9:0]	w_screen_pos_x;
@@ -124,9 +125,9 @@ module vdp_sprite_select_visible_planes (
 										(reg_sprite_mode3 ? w_sprite_mode3_attribute :
 										(    sprite_mode2 ? w_sprite_mode2_attribute : w_sprite_mode1_attribute)) :18'd0;
 	assign w_selected_full			= ff_select_finish | (
-										reg_sprite_mode3 ? ff_selected_count[4]:
-										    sprite_mode2 ? (ff_selected_count[4] | ff_selected_count[3]): 
-										                   (ff_selected_count[4] | ff_selected_count[3] | ff_selected_count[2]) );
+										(reg_sprite_mode3 || reg_sprite16_mode) ? ff_selected_count[4]:
+										     sprite_mode2                       ? (ff_selected_count[4] | ff_selected_count[3]): 
+										                                          (ff_selected_count[4] | ff_selected_count[3] | ff_selected_count[2]) );
 	assign w_finish_line			= (reg_sprite_mode3 || sprite_mode2) ? 10'd216: 10'd208;
 
 	// --------------------------------------------------------------------
@@ -151,13 +152,8 @@ module vdp_sprite_select_visible_planes (
 			end
 		end
 		else if( w_phase == 3'd4 && w_sub_phase == 4'd0 ) begin
-			if( reg_sprite_mode3 ) begin
-				ff_current_plane_num	<= ff_current_plane_num + 5'd1;
-				ff_vram_valid			<= ~w_selected_full;
-			end
-			else begin
-				ff_vram_valid		<= 1'b0;
-			end
+			ff_current_plane_num	<= ff_current_plane_num + 5'd1;
+			ff_vram_valid			<= ~w_selected_full;
 		end
 		else begin
 			ff_vram_valid		<= 1'b0;
@@ -231,5 +227,5 @@ module vdp_sprite_select_visible_planes (
 	assign selected_attribute[7:0]	= reg_sprite_mode3 ? w_offset_y[7:0]: ( reg_sprite_magify ? { 3'd0, w_offset_y[4:1] }: { 3'd0, w_offset_y[3:0] } );
 	assign selected_attribute[31:8]	= ff_attribute[31:8];
 	assign selected_count			= ff_selected_count;
-	assign start_info_collect		= (screen_v_active && screen_pos_x[13:4] == 10'd259 && w_sub_phase == 4'd12);
+	assign start_info_collect		= (screen_v_active && screen_pos_x[13:4] == 10'd259 && w_sub_phase == 4'd14);
 endmodule

@@ -339,8 +339,8 @@ module tb ();
 		//	VDP R#0 = 0x00
 		write_io( vdp_io1, 8'h00 );
 		write_io( vdp_io1, 8'h80 );
-		//	VDP R#1 = 0x43 Sprite 16x16, magnify
-		write_io( vdp_io1, 8'h43 );
+		//	VDP R#1 = 0x43 Sprite 8x8, magnify
+		write_io( vdp_io1, 8'h41 );
 		write_io( vdp_io1, 8'h81 );
 		//	VDP R#2 = 0xC0 Pattern name table = 0x1800
 		write_io( vdp_io1, 8'h06 );

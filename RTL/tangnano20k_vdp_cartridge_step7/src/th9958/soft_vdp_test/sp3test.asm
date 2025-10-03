@@ -13,11 +13,11 @@ start:
 			; テスト
 			di
 			call	screen5
-			call	s5_load_image
 			call	sp3_move_test
 			call	sp3_move_test2
 			call	sp3_move_test3
 			call	sp3_move_test4
+			call	sp3_move_test5
 
 			; 後始末
 			; R#15 = 0x00
@@ -240,6 +240,8 @@ cls::
 			ld		b, 11
 			call	run_command
 
+			; VDPコマンド完了待ち
+			call	wait_command
 			; スプライトアトリビュートを初期化
 			xor		a, a
 			ld		[vram_bit16], a
@@ -248,8 +250,7 @@ cls::
 			ld		e, 216
 			call	fill_vram
 
-			; VDPコマンド完了待ち
-			call	wait_command
+			call	s5_load_image
 			ret
 	data:
 			dw		0			; DX
@@ -536,6 +537,7 @@ sp3_move_test4::
 			call	block_copy
 			; キー待ち
 			call	wait_push_space_key
+			call	cls
 			ret
 	attribute:
 	attribute0_y:
@@ -744,5 +746,81 @@ sp3_move_test4::
 	attribute15_mgx:
 			db		16					; MGX
 	attribute15_pattern:
+			db		0					; PatternY(4), PatternX(4)
+			endscope
+
+; =============================================================================
+;	[SCREEN5] 表示テスト
+;	input:
+;		none
+;	output:
+;		none
+;	break:
+;		AF
+;	comment:
+;		none
+; =============================================================================
+			scope	sp3_move_test5
+sp3_move_test5::
+			; put sprite
+			ld		hl, attribute
+			ld		de, [address]
+			ld		bc, 8 * 16
+			call	block_copy
+			; キー待ち
+			call	wait_push_space_key
+			; アドレス移動
+			ld		hl, [address]
+			ld		de, 8
+			add		hl, de
+			ld		[address], hl
+			; X移動
+			ld		a, [attribute0_x]
+			add		a, 16
+			ld		[attribute0_x], a
+			jr		nz, skip_y
+			; Y移動
+			ld		a, [attribute0_y]
+			add		a, 16
+			ld		[attribute0_y], a
+			cp		a, 64
+			jr		nc, exit_loop
+	skip_y:
+			jp		sp3_move_test5
+	exit_loop:
+			; 1つずつ消していく
+			ld		a, 216
+			ld		[attribute0_y], a
+	loop2:
+			; アドレス移動
+			ld		hl, [address]
+			ld		de, -8
+			add		hl, de
+			ld		[address], hl
+			; put sprite
+			ex		de, hl
+			ld		hl, attribute
+			ld		bc, 8 * 16
+			call	block_copy
+			; キー待ち
+			call	wait_push_space_key
+			ld		a, [address + 1]
+			cp		a, 0x76
+			jr		nc, loop2
+			ret
+	address:
+			dw		0x7600
+	attribute:
+	attribute0_y:
+			dw		0					; Y
+	attribute0_mgy:
+			db		16					; MGY
+	attribute0_color:
+			db		0					; Transparent(2), ReverseY(1), ReverseX(1), Palette Set(4)
+	attribute0_x:
+			dw		0					; X
+	attribute0_mgx:
+			db		16					; MGX
+	attribute0_pattern:
 			db		0					; PatternY(4), PatternX(4)
 			endscope

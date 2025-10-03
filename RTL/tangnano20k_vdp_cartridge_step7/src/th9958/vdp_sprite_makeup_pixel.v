@@ -296,6 +296,14 @@ module vdp_sprite_makeup_pixel (
 				4'd5:		ff_pattern5[ 7: 0]	<= w_read_pattern12;
 				4'd6:		ff_pattern6[ 7: 0]	<= w_read_pattern12;
 				4'd7:		ff_pattern7[ 7: 0]	<= w_read_pattern12;
+				4'd8:		ff_pattern8[ 7: 0]	<= w_read_pattern12;
+				4'd9:		ff_pattern9[ 7: 0]	<= w_read_pattern12;
+				4'd10:		ff_pattern10[ 7: 0]	<= w_read_pattern12;
+				4'd11:		ff_pattern11[ 7: 0]	<= w_read_pattern12;
+				4'd12:		ff_pattern12[ 7: 0]	<= w_read_pattern12;
+				4'd13:		ff_pattern13[ 7: 0]	<= w_read_pattern12;
+				4'd14:		ff_pattern14[ 7: 0]	<= w_read_pattern12;
+				4'd15:		ff_pattern15[ 7: 0]	<= w_read_pattern12;
 				default:	ff_pattern0[ 7: 0]	<= w_read_pattern12;
 				endcase
 			end
@@ -309,6 +317,14 @@ module vdp_sprite_makeup_pixel (
 				4'd5:		ff_pattern5[15: 8]	<= w_read_pattern12;
 				4'd6:		ff_pattern6[15: 8]	<= w_read_pattern12;
 				4'd7:		ff_pattern7[15: 8]	<= w_read_pattern12;
+				4'd8:		ff_pattern8[15: 8]	<= w_read_pattern12;
+				4'd9:		ff_pattern9[15: 8]	<= w_read_pattern12;
+				4'd10:		ff_pattern10[15: 8]	<= w_read_pattern12;
+				4'd11:		ff_pattern11[15: 8]	<= w_read_pattern12;
+				4'd12:		ff_pattern12[15: 8]	<= w_read_pattern12;
+				4'd13:		ff_pattern13[15: 8]	<= w_read_pattern12;
+				4'd14:		ff_pattern14[15: 8]	<= w_read_pattern12;
+				4'd15:		ff_pattern15[15: 8]	<= w_read_pattern12;
 				default:	ff_pattern0[15: 8]	<= w_read_pattern12;
 				endcase
 			end
@@ -815,6 +831,7 @@ module vdp_sprite_makeup_pixel (
 			ff_transparent		<= 2'd0;
 		end
 		else if( reg_sprite_mode3 ) begin
+			//	Sprite mode3
 			if( w_pattern_m3 != 4'd0 ) begin
 				ff_color_en			<= ff_sprite_en3 & ff_active3 & screen_v_active;
 				ff_color			<= w_pattern_m3;
@@ -829,10 +846,13 @@ module vdp_sprite_makeup_pixel (
 			end
 		end
 		else begin
+			//	Sprite mode1 or mode2
 			ff_color_en			<= ff_sprite_en3 & ff_active3 & screen_v_active & w_pattern[ ff_bit_sel12_3 ];
 			ff_color			<= ff_color_3[3:0];
 			ff_color_cc			<= ff_color_3[6];
 			ff_color_ic			<= ff_color_3[5];
+			ff_palette_set		<= 4'd0;
+			ff_transparent		<= 2'd0;
 		end
 	end
 
