@@ -996,7 +996,7 @@ module vdp_sprite_makeup_pixel (
 			ff_pixel_color_transparent	<= 2'd0;
 			ff_pixel_color				<= 8'd0;
 		end
-		else if( w_sub_phase == 4'd1 ) begin
+		else if( w_sub_phase == 4'd3 ) begin
 			ff_pixel_color_en			<= ff_pre_pixel_color_en;
 			ff_pixel_color_transparent	<= ff_pre_pixel_color_transparent;
 			ff_pixel_color				<= ff_pre_pixel_color;

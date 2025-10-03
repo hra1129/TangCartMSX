@@ -1,33 +1,33 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<Module name="tangnano20k_vdp_cartridge" Register="3" Lut="1" T_Register="3890(3)" T_Alu="620(0)" T_Lut="5762(1)" T_PADD9="3(0)" T_MULT9X9="7(0)" T_MULT18X18="1(0)" T_Bsram="10(0)" T_Ssram="21(0)">
+<Module name="tangnano20k_vdp_cartridge" Register="3" Lut="1" T_Register="3890(3)" T_Alu="621(0)" T_Lut="5786(1)" T_PADD9="3(0)" T_MULT9X9="7(0)" T_MULT18X18="1(0)" T_Bsram="10(0)" T_Ssram="21(0)">
  <SubModule name="u_pll"/>
  <SubModule name="u_pll2"/>
  <SubModule name="u_clkdiv"/>
  <SubModule name="u_msx_slot" Register="39" Lut="18" T_Register="39(39)" T_Lut="18(18)"/>
- <SubModule name="u_v9958" T_Register="3540(0)" T_Alu="551(0)" T_Lut="5295(0)" T_PADD9="3(0)" T_MULT9X9="7(0)" T_MULT18X18="1(0)" T_Bsram="10(0)" T_Ssram="21(0)">
-  <SubModule name="u_cpu_interface" Register="246" Lut="221" T_Register="246(246)" T_Lut="221(221)"/>
-  <SubModule name="u_timing_control" T_Register="2016(0)" T_Alu="108(0)" T_Lut="2242(0)" T_MULT18X18="1(0)" T_Bsram="1(0)" T_Ssram="15(0)">
-   <SubModule name="u_ssg" Register="95" Alu="32" Lut="109" T_Register="95(95)" T_Alu="32(32)" T_Lut="109(109)"/>
-   <SubModule name="u_screen_mode" Register="166" Alu="32" Lut="687" T_Register="166(166)" T_Alu="32(32)" T_Lut="687(687)"/>
-   <SubModule name="u_sprite" Register="2" Lut="13" T_Register="1755(2)" T_Alu="44(0)" T_Lut="1446(13)" T_MULT18X18="1(0)" T_Bsram="1(0)" T_Ssram="15(0)">
-    <SubModule name="u_select_visible_planes" Register="46" Alu="16" Lut="64" T_Register="46(46)" T_Alu="16(16)" T_Lut="64(64)"/>
-    <SubModule name="u_info_collect" Register="114" Alu="13" Lut="222" Ssram="10" T_Register="114(114)" T_Alu="13(13)" T_Lut="222(222)" T_Ssram="10(10)"/>
-    <SubModule name="u_makeup_pixel" Register="1551" Alu="15" Lut="1037" Ssram="5" T_Register="1551(1551)" T_Alu="15(15)" T_Lut="1037(1037)" T_Ssram="5(5)"/>
-    <SubModule name="u_divide_table" Register="42" Lut="110" MULT18X18="1" Bsram="1" T_Register="42(42)" T_Lut="110(110)" T_MULT18X18="1(1)" T_Bsram="1(1)"/>
+ <SubModule name="u_v9958" T_Register="3540(0)" T_Alu="552(0)" T_Lut="5314(0)" T_PADD9="3(0)" T_MULT9X9="7(0)" T_MULT18X18="1(0)" T_Bsram="10(0)" T_Ssram="21(0)">
+  <SubModule name="u_cpu_interface" Register="246" Lut="222" T_Register="246(246)" T_Lut="222(222)"/>
+  <SubModule name="u_timing_control" T_Register="2016(0)" T_Alu="109(0)" T_Lut="2254(0)" T_MULT18X18="1(0)" T_Bsram="1(0)" T_Ssram="15(0)">
+   <SubModule name="u_ssg" Register="95" Alu="32" Lut="111" T_Register="95(95)" T_Alu="32(32)" T_Lut="111(111)"/>
+   <SubModule name="u_screen_mode" Register="166" Alu="32" Lut="707" T_Register="166(166)" T_Alu="32(32)" T_Lut="707(707)"/>
+   <SubModule name="u_sprite" Register="2" Lut="13" T_Register="1755(2)" T_Alu="45(0)" T_Lut="1436(13)" T_MULT18X18="1(0)" T_Bsram="1(0)" T_Ssram="15(0)">
+    <SubModule name="u_select_visible_planes" Register="46" Alu="17" Lut="63" T_Register="46(46)" T_Alu="17(17)" T_Lut="63(63)"/>
+    <SubModule name="u_info_collect" Register="114" Alu="13" Lut="221" Ssram="10" T_Register="114(114)" T_Alu="13(13)" T_Lut="221(221)" T_Ssram="10(10)"/>
+    <SubModule name="u_makeup_pixel" Register="1551" Alu="15" Lut="1028" Ssram="5" T_Register="1551(1551)" T_Alu="15(15)" T_Lut="1028(1028)" T_Ssram="5(5)"/>
+    <SubModule name="u_divide_table" Register="42" Lut="111" MULT18X18="1" Bsram="1" T_Register="42(42)" T_Lut="111(111)" T_MULT18X18="1(1)" T_Bsram="1(1)"/>
    </SubModule>
   </SubModule>
-  <SubModule name="u_command" Register="369" Alu="198" Lut="1074" T_Register="654(369)" T_Alu="262(198)" T_Lut="2129(1074)">
-   <SubModule name="u_cache" Register="285" Alu="64" Lut="1055" T_Register="285(285)" T_Alu="64(64)" T_Lut="1055(1055)"/>
+  <SubModule name="u_command" Register="369" Alu="198" Lut="1082" T_Register="654(369)" T_Alu="262(198)" T_Lut="2136(1082)">
+   <SubModule name="u_cache" Register="285" Alu="64" Lut="1054" T_Register="285(285)" T_Alu="64(64)" T_Lut="1054(1054)"/>
   </SubModule>
   <SubModule name="u_vram_interface" Register="180" Lut="191" T_Register="180(180)" T_Lut="191(191)"/>
-  <SubModule name="u_color_palette" Register="165" Alu="124" Lut="243" T_Register="165(165)" T_Alu="124(124)" T_Lut="243(243)" T_Bsram="1(0)">
+  <SubModule name="u_color_palette" Register="165" Alu="124" Lut="241" T_Register="165(165)" T_Alu="124(124)" T_Lut="241(241)" T_Bsram="1(0)">
    <SubModule name="u_color_palette_ram" Bsram="1" T_Bsram="1(1)"/>
   </SubModule>
   <SubModule name="u_upscan" Alu="10" Lut="56" T_Register="2(0)" T_Alu="10(10)" T_Lut="58(56)" T_Bsram="4(0)">
    <SubModule name="u_even_line_buffer" Register="1" Lut="1" Bsram="2" T_Register="1(1)" T_Lut="1(1)" T_Bsram="2(2)"/>
    <SubModule name="u_odd_line_buffer" Register="1" Lut="1" Bsram="2" T_Register="1(1)" T_Lut="1(1)" T_Bsram="2(2)"/>
   </SubModule>
-  <SubModule name="u_video_out" Register="60" Alu="17" Lut="77" MULT9X9="4" Ssram="6" T_Register="277(60)" T_Alu="47(17)" T_Lut="211(77)" T_PADD9="3(0)" T_MULT9X9="7(4)" T_Bsram="4(0)" T_Ssram="6(6)">
+  <SubModule name="u_video_out" Register="60" Alu="17" Lut="78" MULT9X9="4" Ssram="6" T_Register="277(60)" T_Alu="47(17)" T_Lut="212(78)" T_PADD9="3(0)" T_MULT9X9="7(4)" T_Bsram="4(0)" T_Ssram="6(6)">
    <SubModule name="u_double_buffer" Register="71" Lut="45" T_Register="193(71)" T_Lut="107(45)" T_Bsram="4(0)">
     <SubModule name="u_buf_even" Register="73" Lut="31" Bsram="2" T_Register="73(73)" T_Lut="31(31)" T_Bsram="2(2)"/>
     <SubModule name="u_buf_odd" Register="49" Lut="31" Bsram="2" T_Register="49(49)" T_Lut="31(31)" T_Bsram="2(2)"/>
@@ -38,7 +38,7 @@
   </SubModule>
  </SubModule>
  <SubModule name="u_dvi" Register="73" Alu="69" Lut="229" T_Register="73(73)" T_Alu="69(69)" T_Lut="229(229)"/>
- <SubModule name="u_sdram" Register="160" Lut="92" T_Register="160(160)" T_Lut="92(92)"/>
- <SubModule name="u_led" Register="43" Lut="71" T_Register="43(43)" T_Lut="71(71)"/>
- <SubModule name="u_debugger" Register="32" Lut="56" T_Register="32(32)" T_Lut="56(56)"/>
+ <SubModule name="u_sdram" Register="160" Lut="96" T_Register="160(160)" T_Lut="96(96)"/>
+ <SubModule name="u_led" Register="43" Lut="73" T_Register="43(43)" T_Lut="73(73)"/>
+ <SubModule name="u_debugger" Register="32" Lut="55" T_Register="32(32)" T_Lut="55(55)"/>
 </Module>

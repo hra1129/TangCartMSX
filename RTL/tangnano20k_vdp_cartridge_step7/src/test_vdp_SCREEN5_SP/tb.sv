@@ -1049,23 +1049,16 @@ module tb ();
 		write_io( vdp_io1, 8'd00 );
 		write_io( vdp_io1, 8'h40 + 8'h36 );
 
-		write_io( vdp_io0, 8'd02 );		//	Yl=2
-		write_io( vdp_io0, 8'd00 );		//	Yh, SZ=0
-		write_io( vdp_io0, 8'd16 );		//	MGY=16
-		write_io( vdp_io0, 8'd00 );		//	TP=0, RVY=0, RVX=0, PS=0
-		write_io( vdp_io0, 8'd02 );		//	Xl=2
-		write_io( vdp_io0, 8'd00 );		//	Xh
-		write_io( vdp_io0, 8'd16 );		//	MGX=16
-		write_io( vdp_io0, 8'd00 );		//	Pattern (0,0)
-
-		write_io( vdp_io0, 8'd22 );		//	Yl=22
-		write_io( vdp_io0, 8'd00 );		//	Yh, SZ=0
-		write_io( vdp_io0, 8'd16 );		//	MGY=16
-		write_io( vdp_io0, 8'h40 );		//	TP=0, RVY=0, RVX=1, PS=0
-		write_io( vdp_io0, 8'd02 );		//	Xl=2
-		write_io( vdp_io0, 8'd00 );		//	Xh
-		write_io( vdp_io0, 8'd16 );		//	MGX=16
-		write_io( vdp_io0, 8'd00 );		//	Pattern (0,0)
+		for( i = 0; i < 16; i++ ) begin
+			write_io( vdp_io0, 8'd02 );		//	Yl=2
+			write_io( vdp_io0, 8'd00 );		//	Yh, SZ=0
+			write_io( vdp_io0, 8'd16 );		//	MGY=16
+			write_io( vdp_io0, 8'd00 );		//	TP=0, RVY=0, RVX=0, PS=0
+			write_io( vdp_io0, i * 16 );	//	Xl=i*16
+			write_io( vdp_io0, 8'd00 );		//	Xh
+			write_io( vdp_io0, 8'd16 );		//	MGX=16
+			write_io( vdp_io0, 8'd00 );		//	Pattern (0,0)
+		end
 
 		write_io( vdp_io0, 8'd216 );	//	Yl=216
 		write_io( vdp_io0, 8'd00 );		//	Yh, SZ=0
