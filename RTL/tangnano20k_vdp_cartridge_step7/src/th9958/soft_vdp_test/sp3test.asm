@@ -467,7 +467,7 @@ sp3_move_test2::
 			endscope
 
 ; =============================================================================
-;	[SCREEN5] 表示テスト
+;	[SCREEN5] 拡大表示テスト
 ;	input:
 ;		none
 ;	output:
@@ -765,7 +765,7 @@ sp3_move_test5::
 			; put sprite
 			ld		hl, attribute
 			ld		de, [address]
-			ld		bc, 8 * 16
+			ld		bc, 8 * 1
 			call	block_copy
 			; キー待ち
 			call	wait_push_space_key
@@ -800,7 +800,7 @@ sp3_move_test5::
 			; put sprite
 			ex		de, hl
 			ld		hl, attribute
-			ld		bc, 8 * 16
+			ld		bc, 8 * 1
 			call	block_copy
 			; キー待ち
 			call	wait_push_space_key

@@ -868,7 +868,9 @@ module vdp_sprite_makeup_pixel (
 			ff_pre_pixel_cc0_found			<= 1'b0;
 		end
 		else if( w_sub_phase == 4'd3 ) begin
+			//	最初のスプライトプレーン。w_sub_phase = 3 → 1番目。4 → 2番目。 ... 2 → 16番目。
 			if( reg_sprite_mode3 ) begin
+				//	Sprite mode3 の場合
 				if( ff_color_en ) begin
 					//	最初のスプライトは表示（ドットがある）位置だった
 					ff_pre_pixel_color_en			<= 1'b1;
@@ -885,6 +887,7 @@ module vdp_sprite_makeup_pixel (
 					ff_pre_pixel_color_fix			<= 1'b0;
 				end
 			end
+			//	Sprite mode1, mode2 の場合
 			else if( !ff_color_cc ) begin
 				//	着目プレーンが CC=0 の場合、ドットの有無にかかわらず CC=0 プレーンが出現したフラグを立てる
 				ff_pre_pixel_cc0_found	<= 1'b1;
@@ -908,11 +911,12 @@ module vdp_sprite_makeup_pixel (
 			end
 		end
 		else begin
-			//	1st...8th plane
+			//	２番目以降スプライトプレーン。w_sub_phase = 3 → 1番目。4 → 2番目。 ... 2 → 16番目。
 			if( ff_pre_pixel_color_fix ) begin
 				//	hold
 			end
 			else if( reg_sprite_mode3 ) begin
+				//	Sprite mode3 の場合
 				if( ff_color_en ) begin
 					//	最初のスプライトは表示（ドットがある）位置だった
 					ff_pre_pixel_color_en			<= 1'b1;

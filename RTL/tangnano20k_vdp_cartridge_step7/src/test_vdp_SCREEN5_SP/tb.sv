@@ -1049,16 +1049,18 @@ module tb ();
 		write_io( vdp_io1, 8'd00 );
 		write_io( vdp_io1, 8'h40 + 8'h36 );
 
-		for( i = 0; i < 16; i++ ) begin
-//			write_io( vdp_io0, 8'd02 );		//	Yl=2
-//			write_io( vdp_io0, 8'd00 );		//	Yh, SZ=0
-//			write_io( vdp_io0, 8'd16 );		//	MGY=16
-//			write_io( vdp_io0, 8'd00 );		//	TP=0, RVY=0, RVX=0, PS=0
-//			write_io( vdp_io0, i * 16 );	//	Xl=i*16
-//			write_io( vdp_io0, 8'd00 );		//	Xh
-//			write_io( vdp_io0, 8'd16 );		//	MGX=16
-//			write_io( vdp_io0, 8'd00 );		//	Pattern (0,0)
+		for( i = 0; i < 4; i++ ) begin
+			write_io( vdp_io0, i * 20 );	//	Yl=i*20
+			write_io( vdp_io0, 8'd00 );		//	Yh, SZ=0
+			write_io( vdp_io0, 8'd16 );		//	MGY=16
+			write_io( vdp_io0, 8'd00 );		//	TP=0, RVY=0, RVX=0, PS=0
+			write_io( vdp_io0, 8'd00 );		//	Xl=0
+			write_io( vdp_io0, 8'd00 );		//	Xh
+			write_io( vdp_io0, 8'd16 );		//	MGX=16
+			write_io( vdp_io0, 8'd00 );		//	Pattern (0,0)
+		end
 
+		for( i = 4; i < 64; i++ ) begin
 			write_io( vdp_io0, 8'd216 );	//	Yl=2
 			write_io( vdp_io0, 8'd216 );	//	Yh, SZ=0
 			write_io( vdp_io0, 8'd216 );	//	MGY=16
@@ -1091,7 +1093,30 @@ module tb ();
 		wait_vdp_command();
 
 		$display( "Runing..." );
-		for( count = 0; count < 30; count++ ) begin
+		for( count = 0; count < 15; count++ ) begin
+			repeat(100000) begin
+				@( posedge clk14m );
+			end
+			$display( "[%t] * <%d>", $realtime, count );
+		end
+
+		$display( "Set sprite attribute" );
+		write_io( vdp_io1, 8'h01 );
+		write_io( vdp_io1, 8'h80 + 8'd14 );
+		write_io( vdp_io1, 8'd00 );
+		write_io( vdp_io1, 8'h40 + 8'h36 );
+
+		write_io( vdp_io0, 8'd00 );		//	Yl=0
+		write_io( vdp_io0, 8'd00 );		//	Yh, SZ=0
+		write_io( vdp_io0, 8'd100 );	//	MGY=100
+		write_io( vdp_io0, 8'd00 );		//	TP=0, RVY=0, RVX=0, PS=0
+		write_io( vdp_io0, 8'd00 );		//	Xl=0
+		write_io( vdp_io0, 8'd00 );		//	Xh
+		write_io( vdp_io0, 8'd90 );		//	MGX=90
+		write_io( vdp_io0, 8'd00 );		//	Pattern (0,0)
+
+		$display( "Runing..." );
+		for( count = 0; count < 15; count++ ) begin
 			repeat(100000) begin
 				@( posedge clk14m );
 			end
