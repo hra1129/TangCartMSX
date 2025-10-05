@@ -1,6 +1,6 @@
 ; =============================================================================
 ;	V9968 software test program
-;	Sprite mode2 test on VRAM Normal access mode
+;	Sprite mode2 test on VRAM Interleave mode
 ; -----------------------------------------------------------------------------
 ;	Programmed by t.hara (HRA!)
 ; =============================================================================
@@ -13,7 +13,7 @@ start:
 			call	copy_rom_font
 			; テスト
 			di
-			call	screen4
+			call	screen8
 			call	sp2_pattern_test1
 			call	sp2_pattern_test2
 			call	sp2_32plane
@@ -38,7 +38,7 @@ start:
 include "lib.asm"
 
 ; =============================================================================
-;	SCREEN4
+;	SCREEN8
 ;	input:
 ;		none
 ;	output:
@@ -48,86 +48,97 @@ include "lib.asm"
 ;	comment:
 ;		none
 ; =============================================================================
-			scope	screen4
-screen4::
-			; R#0 = 0x04
-			ld		a, 4
+			scope	screen8
+screen8::
+			; R#0 = 0x0E
+			ld		a, 0x0E
 			ld		e, 0
 			call	write_control_register
 			; R#1 = 0x40
 			ld		a, 0x40
 			ld		e, 1
 			call	write_control_register
+			; R#2 = 0x1F
+			ld		a, 0x1F
+			ld		e, 2
+			call	write_control_register
 			; R#7 = 0x07
 			ld		a, 0x07					; 周辺色 7
 			ld		e, 7
 			call	write_control_register
-			; R#8 = 0x00
-			ld		a, 0x00					; スプライト表示
+			; R#8 = 0x08
+			ld		a, 0x08					; スプライト表示
 			ld		e, 8
 			call	write_control_register
 			; R#9 = 0x00
-			ld		a, 0x00
+			ld		a, 0x00					; 192line
 			ld		e, 9
 			call	write_control_register
-			; R#18 = 0
-			xor		a, a
-			ld		e, 18
+			; Pattern Name Table R#2 = 0b00p11111 : p = page
+			ld		a, 0b00011111
+			ld		e, 2
 			call	write_control_register
-			; R#20 = 0
-			xor		a, a
-			ld		e, 20
-			call	write_control_register
-			; R#23 = 0
-			xor		a, a
-			ld		e, 23
-			call	write_control_register
-			; R#25 = 0x00
-			ld		a, 0x00
-			ld		e, 25
-			call	write_control_register
-			; R#26 = 0
-			xor		a, a
-			ld		e, 26
-			call	write_control_register
-			; R#27 = 0
-			xor		a, a
-			ld		e, 27
-			call	write_control_register
-			; Pattern Name Table
-			ld		hl, 0x1800
-			call	set_pattern_name_table
-			; Color Table
-			ld		hl, 0x2000
-			call	set_color_table
 			; Sprite Attribute Table
-			ld		hl, 0x1F80						; 0x1E00 だが、A8, A7 を 1 にする必要がある
+			ld		hl, 0xFA00
 			call	set_sprite_attribute_table
 			; Sprite Pattern Generator Table
-			ld		hl, 0x3800
+			ld		hl, 0xF000
 			call	set_sprite_pattern_generator_table
-			; Pattern Generator Table
-			ld		hl, 0x0000
-			call	set_pattern_generator_table
+			ld		hl, font_data
+			ld		de, 0xF000
+			ld		bc, 0x800
+			call	block_copy
 			; Pattern Name Table をクリア
-			call	cls
-			; Font をセット
 			ld		hl, 0x0000
-			call	set_font
-			ld		hl, 0x0800
-			call	set_font
-			ld		hl, 0x1000
-			call	set_font
-			; Fontの色をセット
-			ld		hl, 0x2000
-			ld		bc, 256 * 8 * 3
-			ld		e, 0xF4
-			call	fill_vram
+			call	set_vram_write_address
+
+			xor		a, a
+			ld		b, 4
+	loop_blue_block_width:
+			push	bc						; -- 4ループカウンタ保存
+			push	af
+
+			ld		b, 8
+	loop_green_block_width:
+			push	bc						; -- 8ループカウンタ保存
+
+			ld		b, 6
+	loop_red_line:
+			push	bc						; -- 6ループカウンタ保存
+			push	af
+
+			ld		b, 8					; 水平に8ブロック並ぶ
+	loop_red_increment:
+			push	bc						; -- 8ループカウンタ保存
+
+			ld		b, 32					; 1ブロック（同じ色の塊）は水平 32画素
+	loop_red_block_width:
+			call	write_vram
+			djnz	loop_red_block_width
+
+			pop		bc						; -- 8ループカウンタ復帰
+			add		a, 0x04
+			djnz	loop_red_increment
+
+			pop		af
+			pop		bc						; -- 6ループカウンタ復帰
+			djnz	loop_red_line
+
+			pop		bc						; -- 8ループカウンタ復帰
+			add		a, 0x20
+			djnz	loop_green_block_width
+
+			pop		af
+			pop		bc						; -- 4ループカウンタ復帰
+			inc		a
+			djnz	loop_blue_block_width
+
+			call	wait_push_space_key
 			ret
 			endscope
 
 ; =============================================================================
-;	[SCREEN4] set sprite color
+;	[SCREEN8] set sprite color
 ;	input:
 ;		L ... sprite plane number
 ;		A ... color
@@ -144,13 +155,13 @@ set_sprite_color::
 			push	de
 			push	bc
 			push	af
-			; HL = L * 16 + 0x1C00
+			; HL = L * 16 + 0xF800
 			ld		h, 0
 			add		hl, hl
 			add		hl, hl
 			add		hl, hl
 			add		hl, hl
-			ld		de, 0x1C00
+			ld		de, 0xF800
 			add		hl, de
 			ld		e, a
 			ld		bc, 16
@@ -163,7 +174,7 @@ set_sprite_color::
 			endscope
 
 ; =============================================================================
-;	[SCREEN4] cls
+;	[SCREEN8] cls
 ;	input:
 ;		none
 ;	output:
@@ -175,13 +186,10 @@ set_sprite_color::
 ; =============================================================================
 			scope	cls
 cls::
-			; ネームテーブルのクリア
-			ld		hl, 0x1800
-			ld		bc, 32 * 32
-			ld		e, ' '
-			call	fill_vram
 			; スプライトアトリビュートを初期化
-			ld		hl, 0x1E00
+			xor		a, a
+			ld		[vram_bit16], a
+			ld		hl, 0xFA00
 			ld		bc, 32 * 4
 			ld		e, 216
 			call	fill_vram
@@ -189,7 +197,7 @@ cls::
 			endscope
 
 ; =============================================================================
-;	[SCREEN4] wait
+;	[SCREEN8] wait
 ;	input:
 ;		none
 ;	output:
@@ -215,7 +223,7 @@ wait::
 			endscope
 
 ; =============================================================================
-;	[SCREEN4] スプライトパターン 256種類の定義の確認
+;	[SCREEN8] スプライトパターン 256種類の定義の確認
 ;	input:
 ;		none
 ;	output:
@@ -228,10 +236,6 @@ wait::
 			scope	sp2_pattern_test1
 sp2_pattern_test1::
 			call	cls
-			; Put test name
-			ld		hl, 0x18A0
-			ld		de, s_message
-			call	puts
 			; R#1 = 0x41
 			ld		a, 0x41							; 8x8, 拡大する
 			ld		e, 1
@@ -244,9 +248,8 @@ sp2_pattern_test1::
 			xor		a, a
 	loop:
 			push	af
-			ld		[s_message2], a
 			; put sprite
-			ld		hl, 0x1E00
+			ld		hl, 0xFA00
 			call	set_vram_write_address
 			xor		a, a
 			call	write_vram						; Y
@@ -257,10 +260,6 @@ sp2_pattern_test1::
 			call	write_vram						; pattern
 			ld		a, 11
 			call	write_vram						; color
-			; 対応する文字
-			ld		hl, 0x1880
-			ld		de, s_message2
-			call	puts
 			call	wait
 			pop		af
 			inc		a
@@ -268,14 +267,10 @@ sp2_pattern_test1::
 			; キー待ち
 			call	wait_push_space_key
 			ret
-	s_message:
-			db		"[T001] 8x8 PATTERN TEST", 0
-	s_message2:
-			db		0, 0
 			endscope
 
 ; =============================================================================
-;	[SCREEN4] スプライトパターン 64種類の定義の確認
+;	[SCREEN8] スプライトパターン 64種類の定義の確認
 ;	input:
 ;		none
 ;	output:
@@ -288,10 +283,6 @@ sp2_pattern_test1::
 			scope	sp2_pattern_test2
 sp2_pattern_test2::
 			call	cls
-			; Put test name
-			ld		hl, 0x18A0
-			ld		de, s_message
-			call	puts
 			; R#1 = 0x43
 			ld		a, 0x43							; 16x16, 拡大する
 			ld		e, 1
@@ -304,9 +295,8 @@ sp2_pattern_test2::
 			xor		a, a
 	loop:
 			push	af
-			ld		[s_message2], a
 			; put sprite
-			ld		hl, 0x1E00
+			ld		hl, 0xFA00
 			call	set_vram_write_address
 			xor		a, a
 			call	write_vram						; Y
@@ -317,10 +307,6 @@ sp2_pattern_test2::
 			call	write_vram						; pattern
 			ld		a, 11
 			call	write_vram						; color
-			; 対応する文字
-			ld		hl, 0x1880
-			ld		de, s_message2
-			call	puts
 			call	wait
 			pop		af
 			inc		a
@@ -328,14 +314,10 @@ sp2_pattern_test2::
 			; キー待ち
 			call	wait_push_space_key
 			ret
-	s_message:
-			db		"[T002] 16x16 PATTERN TEST", 0
-	s_message2:
-			db		0, 0
 			endscope
 
 ; =============================================================================
-;	[SCREEN4] スプライトプレーン 32枚表示の確認
+;	[SCREEN8] スプライトプレーン 32枚表示の確認
 ;	input:
 ;		none
 ;	output:
@@ -348,13 +330,9 @@ sp2_pattern_test2::
 			scope	sp2_32plane
 sp2_32plane::
 			call	cls
-			; Put test name
-			ld		hl, 0x18A0
-			ld		de, s_message
-			call	puts
 			; 32枚のスプライトプレーンを表示する
 			ld		hl, attribute
-			ld		de, 0x1E00
+			ld		de, 0xFA00
 			ld		bc, 4 * 32
 			call	block_copy
 			; 32枚のスプライトプレーンに色を付ける
@@ -407,13 +385,13 @@ sp2_32plane::
 			sub		a, b							; 垂直スクロール
 			ld		e, 23
 			call	write_control_register
-			; R#8 = 0x20
-			ld		a, 0x20							; パレット0は不透明
+			; R#8 = 0x28
+			ld		a, 0x28							; パレット0は不透明
 			ld		e, 8
 			call	write_control_register
 			call	wait
-			; R#8 = 0x00
-			ld		a, 0x00							; パレット0は透明
+			; R#8 = 0x08
+			ld		a, 0x08							; パレット0は透明
 			ld		e, 8
 			call	write_control_register
 			call	wait
@@ -422,8 +400,6 @@ sp2_32plane::
 			; キー待ち
 			call	wait_push_space_key
 			ret
-	s_message:
-			db		"[T003] TEST FOR DISPLAYING 32 PLANES", 0
 	attribute:		;     Y      X        Pattern Color + EC
 			db		 32 * 0,40 * 0 + 50,   0 + 32, 10
 			db		 32 * 0,40 * 1 + 50,   4 + 32, 10
@@ -493,7 +469,7 @@ sp2_32plane::
 			endscope
 
 ; =============================================================================
-;	[SCREEN4] 左右のはみ出し確認
+;	[SCREEN8] 左右のはみ出し確認
 ;	input:
 ;		none
 ;	output:
@@ -506,10 +482,6 @@ sp2_32plane::
 			scope	sp2_screen_out
 sp2_screen_out::
 			call	cls
-			; Put test name
-			ld		hl, 0x18A0
-			ld		de, s_message
-			call	puts
 			; R#1 = 0x43
 			ld		a, 0x43							; 16x16, 拡大する
 			ld		e, 1
@@ -524,7 +496,7 @@ sp2_screen_out::
 			push	bc
 
 			ld		hl, attribute
-			ld		de, 0x1E00
+			ld		de, 0xFA00
 			ld		bc, 4
 			call	block_copy
 
@@ -549,7 +521,7 @@ sp2_screen_out::
 			push	bc
 
 			ld		hl, attribute
-			ld		de, 0x1E00
+			ld		de, 0xFA00
 			ld		bc, 4
 			call	block_copy
 
@@ -564,14 +536,12 @@ sp2_screen_out::
 			call	wait_push_space_key
 			ret
 
-	s_message:
-			db		"[T004] OVERSPILL BEYOND THE SCREEN (LEFT/RIGHT)", 0
 	attribute:	;   Y  X  Pattern Color + EC
 			db		0, 0,      64, 0
 			endscope
 
 ; =============================================================================
-;	[SCREEN4] 上下のはみ出し確認
+;	[SCREEN8] 上下のはみ出し確認
 ;	input:
 ;		none
 ;	output:
@@ -584,10 +554,6 @@ sp2_screen_out::
 			scope	sp2_screen_out2
 sp2_screen_out2::
 			call	cls
-			; Put test name
-			ld		hl, 0x18A0
-			ld		de, s_message
-			call	puts
 			; R#1 = 0x43
 			ld		a, 0x43							; 16x16, 拡大する
 			ld		e, 1
@@ -604,7 +570,7 @@ sp2_screen_out2::
 
 	loop:
 			ld		hl, attribute
-			ld		de, 0x1E00
+			ld		de, 0xFA00
 			ld		bc, 4
 			call	block_copy
 
@@ -619,14 +585,12 @@ sp2_screen_out2::
 			call	wait_push_space_key
 			ret
 
-	s_message:
-			db		"[T005] OVERSPILL BEYOND THE SCREEN (UPPER/BOTTON)", 0
 	attribute:	;     Y   X  Pattern Color + EC
 			db		-32, 60,      64, 0
 			endscope
 
 ; =============================================================================
-;	[SCREEN4] ライン単位の色づけ
+;	[SCREEN8] ライン単位の色づけ
 ;	input:
 ;		none
 ;	output:
@@ -639,10 +603,6 @@ sp2_screen_out2::
 			scope	sp2_line_color
 sp2_line_color::
 			call	cls
-			; Put test name
-			ld		hl, 0x18A0
-			ld		de, s_message
-			call	puts
 			; R#1 = 0x43
 			ld		a, 0x43							; 16x16, 拡大する
 			ld		e, 1
@@ -654,12 +614,12 @@ sp2_line_color::
 			ld		[attribute + 0], a
 
 			ld		hl, color_data
-			ld		de, 0x1C00
+			ld		de, 0xF800
 			ld		bc, 16
 			call	block_copy
 	loop1:
 			ld		hl, attribute
-			ld		de, 0x1E00
+			ld		de, 0xFA00
 			ld		bc, 4
 			call	block_copy
 
@@ -672,12 +632,12 @@ sp2_line_color::
 			jr		nz, loop1
 
 			ld		hl, color_data2
-			ld		de, 0x1C00
+			ld		de, 0xF800
 			ld		bc, 16
 			call	block_copy
 	loop2:
 			ld		hl, attribute
-			ld		de, 0x1E00
+			ld		de, 0xFA00
 			ld		bc, 4
 			call	block_copy
 
@@ -692,8 +652,6 @@ sp2_line_color::
 			call	wait_push_space_key
 			ret
 
-	s_message:
-			db		"[T006] LINE COLOR", 0
 	attribute:	;     Y   X  Pattern Color + EC
 			db		-32, 80,      64, 0
 	color_data:
@@ -733,7 +691,7 @@ sp2_line_color::
 			endscope
 
 ; =============================================================================
-;	[SCREEN4] OR mix
+;	[SCREEN8] OR mix
 ;	input:
 ;		none
 ;	output:
@@ -746,27 +704,23 @@ sp2_line_color::
 			scope	sp2_or_mix
 sp2_or_mix::
 			call	cls
-			; Put test name
-			ld		hl, 0x18A0
-			ld		de, s_message
-			call	puts
 			; R#1 = 0x43
 			ld		a, 0x43							; 16x16, 拡大する
 			ld		e, 1
 			call	write_control_register
 
 			ld		hl, attribute
-			ld		de, 0x1E00
+			ld		de, 0xFA00
 			ld		bc, 12
 			call	block_copy
 
 			ld		hl, color_data
-			ld		de, 0x1C00
+			ld		de, 0xF800
 			ld		bc, 48
 			call	block_copy
 	loop1:
 			ld		hl, attribute
-			ld		de, 0x1E00
+			ld		de, 0xFA00
 			ld		bc, 4
 			call	block_copy
 
@@ -780,7 +734,7 @@ sp2_or_mix::
 
 	loop2:
 			ld		hl, attribute + 4
-			ld		de, 0x1E04
+			ld		de, 0xFA04
 			ld		bc, 4
 			call	block_copy
 
@@ -794,7 +748,7 @@ sp2_or_mix::
 
 	loop3:
 			ld		hl, attribute + 4
-			ld		de, 0x1E04
+			ld		de, 0xFA04
 			ld		bc, 4
 			call	block_copy
 
@@ -808,8 +762,6 @@ sp2_or_mix::
 			call	wait_push_space_key
 			ret
 
-	s_message:
-			db		"[T007] CC bit 1st", 0
 	attribute:	;     Y   X  Pattern Color + EC
 			db		10, 80,      64, 0
 			db		10, 128,     64, 0
@@ -868,7 +820,7 @@ sp2_or_mix::
 			endscope
 
 ; =============================================================================
-;	[SCREEN4] OR mix
+;	[SCREEN8] OR mix
 ;	input:
 ;		none
 ;	output:
@@ -881,27 +833,23 @@ sp2_or_mix::
 			scope	sp2_or_mix2
 sp2_or_mix2::
 			call	cls
-			; Put test name
-			ld		hl, 0x18A0
-			ld		de, s_message
-			call	puts
 			; R#1 = 0x43
 			ld		a, 0x43							; 16x16, 拡大する
 			ld		e, 1
 			call	write_control_register
 
 			ld		hl, attribute
-			ld		de, 0x1E00
+			ld		de, 0xFA00
 			ld		bc, 12
 			call	block_copy
 
 			ld		hl, color_data
-			ld		de, 0x1C00
+			ld		de, 0xF800
 			ld		bc, 48
 			call	block_copy
 	loop1:
 			ld		hl, attribute
-			ld		de, 0x1E00
+			ld		de, 0xFA00
 			ld		bc, 4
 			call	block_copy
 
@@ -915,7 +863,7 @@ sp2_or_mix2::
 
 	loop2:
 			ld		hl, attribute + 4
-			ld		de, 0x1E04
+			ld		de, 0xFA04
 			ld		bc, 4
 			call	block_copy
 
@@ -929,7 +877,7 @@ sp2_or_mix2::
 
 	loop3:
 			ld		hl, attribute + 4
-			ld		de, 0x1E04
+			ld		de, 0xFA04
 			ld		bc, 4
 			call	block_copy
 
@@ -943,8 +891,6 @@ sp2_or_mix2::
 			call	wait_push_space_key
 			ret
 
-	s_message:
-			db		"[T008] CC bit 2nd", 0
 	attribute:	;     Y   X  Pattern Color + EC
 			db		10, 80,      64, 0
 			db		10, 128,     64, 0
@@ -1003,7 +949,7 @@ sp2_or_mix2::
 			endscope
 
 ; =============================================================================
-;	[SCREEN4] 8 sprite test
+;	[SCREEN8] 8 sprite test
 ;	input:
 ;		none
 ;	output:
@@ -1016,27 +962,23 @@ sp2_or_mix2::
 			scope	sp2_8sprite
 sp2_8sprite::
 			call	cls
-			; Put test name
-			ld		hl, 0x18A0
-			ld		de, s_message
-			call	puts
 			; R#1 = 0x43
 			ld		a, 0x42							; 16x16, 拡大しない
 			ld		e, 1
 			call	write_control_register
 
 			ld		hl, attribute
-			ld		de, 0x1E00
+			ld		de, 0xFA00
 			ld		bc, 4 * 9
 			call	block_copy
 
-			ld		hl, 0x1C00
+			ld		hl, 0xF800
 			ld		bc, 16 * 9
 			ld		e, 0x0F
 			call	fill_vram
 	loop1:
 			ld		hl, attribute
-			ld		de, 0x1E00
+			ld		de, 0xFA00
 			ld		bc, 4
 			call	block_copy
 
@@ -1050,7 +992,7 @@ sp2_8sprite::
 
 	loop2:
 			ld		hl, attribute
-			ld		de, 0x1E00
+			ld		de, 0xFA00
 			ld		bc, 4
 			call	block_copy
 
@@ -1065,8 +1007,6 @@ sp2_8sprite::
 			call	wait_push_space_key
 			ret
 
-	s_message:
-			db		"[T009] 8 SPRITES", 0
 	attribute:	;     Y   X  Pattern Color + EC
 			db		10,  10,     64, 0
 			db		10,  30,     64, 0
@@ -1081,7 +1021,7 @@ sp2_8sprite::
 			endscope
 
 ; =============================================================================
-;	[SCREEN4] スプライトプレーン 32枚表示の確認
+;	[SCREEN8] スプライトプレーン 32枚表示の確認
 ;	input:
 ;		none
 ;	output:
@@ -1098,13 +1038,9 @@ sp2_nonR23::
 			ld		a, 2						; SVNS Sprite Vertical position Non-following Scroll
 			ld		e, 20
 			call	write_control_register
-			; Put test name
-			ld		hl, 0x18A0
-			ld		de, s_message
-			call	puts
 			; 32枚のスプライトプレーンを表示する
 			ld		hl, attribute
-			ld		de, 0x1E00
+			ld		de, 0xFA00
 			ld		bc, 4 * 32
 			call	block_copy
 			; 32枚のスプライトプレーンに色を付ける
@@ -1161,13 +1097,13 @@ sp2_nonR23::
 			sub		a, b							; 垂直スクロール
 			ld		e, 23
 			call	write_control_register
-			; R#8 = 0x20
-			ld		a, 0x20							; パレット0は不透明
+			; R#8 = 0x28
+			ld		a, 0x28							; パレット0は不透明
 			ld		e, 8
 			call	write_control_register
 			call	wait
-			; R#8 = 0x00
-			ld		a, 0x00							; パレット0は透明
+			; R#8 = 0x08
+			ld		a, 0x08							; パレット0は透明
 			ld		e, 8
 			call	write_control_register
 			call	wait
@@ -1176,8 +1112,6 @@ sp2_nonR23::
 			; キー待ち
 			call	wait_push_space_key
 			ret
-	s_message:
-			db		"[T010] SVNS bit", 0
 	attribute:		;     Y      X        Pattern Color + EC
 			db		 32 * 0,40 * 0 + 50,   0 + 32, 10
 			db		 32 * 0,40 * 1 + 50,   4 + 32, 10
