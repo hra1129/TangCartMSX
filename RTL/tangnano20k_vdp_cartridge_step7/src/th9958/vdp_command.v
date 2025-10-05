@@ -157,13 +157,13 @@ module vdp_command (
 	wire		[7:0]	w_lop_pixel;
 
 	reg			[1:0]	ff_xsel;
-	reg			[8:0]	reg_sx;
+	reg			[11:0]	reg_sx;
 	reg			[8:0]	reg_dx;
 	reg			[10:0]	reg_nx;
-	reg			[17:0]	ff_sx;
-	reg			[18:0]	ff_sy;
-	reg			[17:0]	ff_sx2;
-	reg			[18:0]	ff_sy2;
+	reg			[19:0]	ff_sx;
+	reg			[20:0]	ff_sy;
+	reg			[19:0]	ff_sx2;
+	reg			[20:0]	ff_sy2;
 	reg			[8:0]	ff_dx;
 	reg			[10:0]	ff_dy;
 	reg			[10:0]	ff_nx;
@@ -207,8 +207,8 @@ module vdp_command (
 	wire		[17:0]	w_address_d;
 	wire		[12:0]	w_next_nyb;
 	wire		[9:0]	w_next;
-	wire		[9:0]	w_next_sx;
-	wire		[11:0]	w_next_sy;
+	wire		[11:0]	w_next_sx;
+	wire		[13:0]	w_next_sy;
 	wire		[9:0]	w_next_dx;
 	wire		[11:0]	w_next_dy;
 	wire				w_line_shift;
@@ -310,14 +310,14 @@ module vdp_command (
 	// --------------------------------------------------------------------
 	always @( posedge clk or negedge reset_n ) begin
 		if( !reset_n ) begin
-			reg_sx	<= 9'd0;
+			reg_sx	<= 12'd0;
 		end
 		else if( register_write ) begin
 			if( register_num == 6'd32 ) begin
-				reg_sx[7:0]	<= register_data;
+				reg_sx[7:0]		<= register_data;
 			end
 			else if( register_num == 6'd33 ) begin
-				reg_sx[8]	<= register_data[0];
+				reg_sx[11:8]	<= register_data[3:0];
 			end
 		end
 	end
@@ -345,14 +345,14 @@ module vdp_command (
 
 	always @( posedge clk or negedge reset_n ) begin
 		if( !reset_n ) begin
-			ff_sx <= 18'd0;
+			ff_sx <= 20'd0;
 		end
 		else if( ff_start ) begin
 			if( ff_command == c_ymmm ) begin
-				ff_sx	<= { 1'b0, reg_dx, 8'd0 };
+				ff_sx	<= { 3'd0, reg_dx, 8'd0 };
 			end
 			else begin
-				ff_sx	<= { 1'b0, reg_sx, 8'd0 };
+				ff_sx	<= { reg_sx, 8'd0 };
 			end
 		end
 		else if( !ff_command_execute || ff_cache_vram_valid ) begin
@@ -364,18 +364,18 @@ module vdp_command (
 			end
 			else if( ff_command == c_lrmm ) begin
 				if( ff_nx == 11'd0 ) begin
-					ff_sx <= ff_sx2 - { reg_vy[15], reg_vy[15], reg_vy };
+					ff_sx <= ff_sx2 - { { 4 {reg_vy[15]} }, reg_vy };
 				end
 				else begin
-					ff_sx <= ff_sx + { reg_vx[15], reg_vx[15], reg_vx };
+					ff_sx <= ff_sx + { { 4 {reg_vx[15]} }, reg_vx };
 				end
 			end
 			else if( ff_nx == 11'd0 || w_sx_overflow || w_dx_overflow ) begin
 				if( ff_command == c_ymmm ) begin
-					ff_sx <= { 1'b0, reg_dx, 8'd0 };
+					ff_sx <= { 3'd0, reg_dx, 8'd0 };
 				end
 				else begin
-					ff_sx <= { 1'b0, reg_sx, 8'd0 };
+					ff_sx <= { reg_sx, 8'd0 };
 				end
 			end
 			else begin
@@ -386,18 +386,13 @@ module vdp_command (
 
 	always @( posedge clk or negedge reset_n ) begin
 		if( !reset_n ) begin
-			ff_sy	<= 19'd0;
+			ff_sy	<= 21'd0;
 		end
 		else if( register_write && register_num == 6'd34 ) begin
 			ff_sy[15:0]	<= { register_data, 8'd0 };
 		end
 		else if( register_write && register_num == 6'd35 ) begin
-			if( reg_vram256k_mode ) begin
-				ff_sy[18:16]	<= { 1'b0, register_data[1:0] };
-			end
-			else begin
-				ff_sy[18:16]	<= register_data[2:0];
-			end
+			ff_sy[20:16]	<= register_data[4:0];
 		end
 		else if( !ff_command_execute || ff_cache_vram_valid ) begin
 			//	hold
@@ -405,10 +400,10 @@ module vdp_command (
 		else if( ff_count_valid ) begin
 			if( ff_command == c_lrmm ) begin
 				if( ff_nx == 11'd0 ) begin
-					ff_sy <= ff_sy2 + { reg_vx[15], reg_vx[15], reg_vx[15], reg_vx };
+					ff_sy <= ff_sy2 + { { 5 {reg_vx[15]} }, reg_vx };
 				end
 				else begin
-					ff_sy <= ff_sy + { reg_vy[15], reg_vy[15], reg_vy[15], reg_vy };
+					ff_sy <= ff_sy  + { { 5 {reg_vy[15]} }, reg_vy };
 				end
 			end
 			else if( ff_nx == 11'd0 || w_sx_overflow || w_dx_overflow ) begin
@@ -424,13 +419,13 @@ module vdp_command (
 
 	always @( posedge clk or negedge reset_n ) begin
 		if( !reset_n ) begin
-			ff_sx2 <= 18'd0;
-			ff_sy2 <= 19'd0;
+			ff_sx2 <= 20'd0;
+			ff_sy2 <= 21'd0;
 		end
 		else if( ff_start ) begin
-			ff_sx2	<= { 1'b0, reg_sx, 8'd0 };
+			ff_sx2	<= { reg_sx, 8'd0 };
 			if( ff_command == c_lfmm ) begin
-				ff_sy2	<= { ff_dy, 8'd0 };
+				ff_sy2	<= { 2'd0, ff_dy, 8'd0 };
 			end
 			else begin
 				ff_sy2	<= ff_sy;
@@ -441,14 +436,14 @@ module vdp_command (
 		end
 		else if( ff_count_valid ) begin
 			if( ff_nx == 11'd0 ) begin
-				ff_sx2 <= ff_sx2 - {             reg_vy[15], reg_vy[15], reg_vy };
-				ff_sy2 <= ff_sy2 + { reg_vx[15], reg_vx[15], reg_vx[15], reg_vx };
+				ff_sx2 <= ff_sx2 - { { 4 {reg_vy[15]} }, reg_vy };
+				ff_sy2 <= ff_sy2 + { { 5 {reg_vx[15]} }, reg_vx };
 			end
 		end
 	end
 
-	assign w_next_sx	= ff_dix ? ( ff_sx[17:8] - w_next ): ( ff_sx[17:8] + w_next );
-	assign w_next_sy	= ff_diy ? ( ff_sy[18:8] - 12'd1  ): ( ff_sy[18:8] + 12'd1  );
+	assign w_next_sx	= ff_dix ? ( ff_sx[19:8] - w_next ): ( ff_sx[19:8] + w_next );
+	assign w_next_sy	= ff_diy ? ( ff_sy[20:8] - 12'd1  ): ( ff_sy[20:8] + 12'd1  );
 
 	// --------------------------------------------------------------------
 	//	Destination position registers

@@ -1107,8 +1107,8 @@ module tb ();
 		write_io( vdp_io1, 8'h40 + 8'h36 );
 
 		write_io( vdp_io0, 8'd00 );		//	Yl=0
-		write_io( vdp_io0, 8'd00 );		//	Yh, SZ=0
-		write_io( vdp_io0, 8'd100 );	//	MGY=100
+		write_io( vdp_io0, 8'hC0 );		//	Yh, SZ=3
+		write_io( vdp_io0, 8'd128 );	//	MGY=128
 		write_io( vdp_io0, 8'd00 );		//	TP=0, RVY=0, RVX=0, PS=0
 		write_io( vdp_io0, 8'd00 );		//	Xl=0
 		write_io( vdp_io0, 8'd00 );		//	Xh

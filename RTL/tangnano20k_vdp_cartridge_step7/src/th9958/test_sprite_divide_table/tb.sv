@@ -249,6 +249,18 @@ module tb ();
 		end
 		repeat( 10 ) @( posedge clk );
 
+		$display( "[test017] BIT_SHIFT=3, MGX=64...256" );
+		bit_shift	= 3;
+		for( i = 64; i < 256; i++ ) begin
+			for( j = 0; j < 256; j+=3 ) begin
+				x		<= j;
+				reg_mgx	<= i & 255;
+				@( posedge clk );
+			end
+			repeat( 10 ) @( posedge clk );
+		end
+		repeat( 10 ) @( posedge clk );
+
 		$display( "[test---] Finished" );
 		repeat( 10 ) @( posedge clk );
 		$finish;

@@ -287,7 +287,7 @@ s5_rotate::
 			dw		0			; VY
 	data:
 			dw		0			; SX
-			dw		256			; SY
+			dw		128 + 256	; SY
 			dw		0			; DX
 			dw		0			; DY
 			dw		256			; NX (dummy)

@@ -75,8 +75,8 @@ module vdp_sprite_divide_table (
 	reg			[2:0]	ff_exp2;				//	2clk delay
 	reg			[12:0]	ff_mul;					//	2clk delay
 	reg			[1:0]	ff_bit_shift2;			//	2clk delay
-	wire		[12:0]	w_shift;
-	wire		[12:0]	w_sample_x;
+	wire		[15:0]	w_shift;
+	wire		[15:0]	w_sample_x;
 	reg			[6:0]	ff_sample_x;			//	3clk delay
 	reg					ff_overflow;			//	3clk delay
 	reg			[1:0]	ff_bit_shift3;			//	3clk delay
@@ -245,7 +245,7 @@ module vdp_sprite_divide_table (
 
 	//	w_coeff = ff_divide_coeff + 256
 	assign w_coeff	= { ff_divide_coeff[8], ~ff_divide_coeff[8], ff_divide_coeff[7:0] };
-	assign w_mul	= w_coeff * ff_x;
+	assign w_mul	= w_coeff * ff_x;	//	w_coeff: 10bit (256...512), ff_x: 8bit (0...255)
 
 	always @( posedge clk ) begin
 		if( ff_mgx0 ) begin
@@ -259,25 +259,25 @@ module vdp_sprite_divide_table (
 		ff_bit_shift2	<= ff_bit_shift1;
 	end
 
-	assign w_shift		= (ff_bit_shift2 == 2'd0) ?   ff_mul[12:0]:
-						  (ff_bit_shift2 == 2'd1) ? { ff_mul[11:0], 1'b0 }:
-						  (ff_bit_shift2 == 2'd2) ? { ff_mul[10:0], 2'd0 }: { 3'd0, ff_mul[9:0], 3'd0 };
+	assign w_shift		= (ff_bit_shift2 == 2'd0) ? { 3'd0, ff_mul[12:0] }:
+						  (ff_bit_shift2 == 2'd1) ? { 2'd0, ff_mul[11:0], 1'b0 }:
+						  (ff_bit_shift2 == 2'd2) ? { 1'b0, ff_mul[12:0], 2'd0 }: { ff_mul[12:0], 3'd0 };
 
-	assign w_sample_x	= (ff_exp2 == 3'd0) ?         w_shift[12:0]  :
-						  (ff_exp2 == 3'd1) ? { 1'd0, w_shift[12:1] }:
-						  (ff_exp2 == 3'd2) ? { 2'd0, w_shift[12:2] }:
-						  (ff_exp2 == 3'd3) ? { 3'd0, w_shift[12:3] }:
-						  (ff_exp2 == 3'd4) ? { 4'd0, w_shift[12:4] }:
-						  (ff_exp2 == 3'd5) ? { 5'd0, w_shift[12:5] }:
-						  (ff_exp2 == 3'd6) ? { 6'd0, w_shift[12:6] }: { 7'd0, w_shift[12:7] };
+	assign w_sample_x	= (ff_exp2 == 3'd0) ?         w_shift[15:0]  :
+						  (ff_exp2 == 3'd1) ? { 1'd0, w_shift[15:1] }:
+						  (ff_exp2 == 3'd2) ? { 2'd0, w_shift[15:2] }:
+						  (ff_exp2 == 3'd3) ? { 3'd0, w_shift[15:3] }:
+						  (ff_exp2 == 3'd4) ? { 4'd0, w_shift[15:4] }:
+						  (ff_exp2 == 3'd5) ? { 5'd0, w_shift[15:5] }:
+						  (ff_exp2 == 3'd6) ? { 6'd0, w_shift[15:6] }: { 7'd0, w_shift[15:7] };
 
 	always @( posedge clk ) begin
 		ff_sample_x		<= w_sample_x[6:0];
 		ff_bit_shift3	<= ff_bit_shift2;
-		ff_overflow		<= (w_sample_x[12:7] != 6'd0) || 
-						   (ff_bit_shift2 == 2'd0 && w_sample_x[12:4] != 9'd0) ||
-						   (ff_bit_shift2 == 2'd1 && w_sample_x[12:5] != 8'd0) ||
-						   (ff_bit_shift2 == 2'd2 && w_sample_x[12:6] != 7'd0);
+		ff_overflow		<= (w_sample_x[15:7] != 9'd0) || 
+						   (ff_bit_shift2 == 2'd0 && w_sample_x[6:4] != 3'd0) ||
+						   (ff_bit_shift2 == 2'd1 && w_sample_x[6:5] != 2'd0) ||
+						   (ff_bit_shift2 == 2'd2 && w_sample_x[6]   != 1'b0);
 	end
 
 	assign sample_x		= ff_overflow ? (
