@@ -2,512 +2,512 @@
 	dw	0
 	dw	104
 	dw	295
-	dw	0	; 1[deg]
+	dw	1	; 1[deg]
 	dw	0
 	dw	103
 	dw	294
-	dw	1	; 2[deg]
+	dw	3	; 2[deg]
 	dw	0
 	dw	102
 	dw	294
-	dw	2	; 3[deg]
+	dw	5	; 3[deg]
 	dw	0
 	dw	101
 	dw	293
-	dw	3	; 4[deg]
-	dw	0
-	dw	101
-	dw	293
-	dw	4	; 5[deg]
+	dw	7	; 4[deg]
 	dw	1
+	dw	101
+	dw	293
+	dw	9	; 5[deg]
+	dw	2
 	dw	100
 	dw	292
-	dw	5	; 6[deg]
-	dw	1
-	dw	99
-	dw	291
-	dw	6	; 7[deg]
-	dw	2
-	dw	99
-	dw	291
-	dw	7	; 8[deg]
+	dw	11	; 6[deg]
 	dw	3
+	dw	99
+	dw	291
+	dw	13	; 7[deg]
+	dw	4
+	dw	99
+	dw	291
+	dw	14	; 8[deg]
+	dw	6
 	dw	98
 	dw	290
-	dw	8	; 9[deg]
-	dw	3
+	dw	16	; 9[deg]
+	dw	7
 	dw	98
 	dw	289
-	dw	8	; 10[deg]
-	dw	4
+	dw	17	; 10[deg]
+	dw	9
 	dw	98
 	dw	288
-	dw	9	; 11[deg]
-	dw	5
-	dw	98
-	dw	287
-	dw	9	; 12[deg]
-	dw	6
-	dw	97
-	dw	286
-	dw	10	; 13[deg]
-	dw	7
-	dw	97
-	dw	285
-	dw	10	; 14[deg]
-	dw	8
-	dw	97
-	dw	284
-	dw	11	; 15[deg]
-	dw	10
-	dw	98
-	dw	283
-	dw	11	; 16[deg]
+	dw	18	; 11[deg]
 	dw	11
 	dw	98
+	dw	287
+	dw	19	; 12[deg]
+	dw	13
+	dw	97
+	dw	286
+	dw	20	; 13[deg]
+	dw	15
+	dw	97
+	dw	285
+	dw	21	; 14[deg]
+	dw	17
+	dw	97
+	dw	284
+	dw	22	; 15[deg]
+	dw	20
+	dw	98
+	dw	283
+	dw	22	; 16[deg]
+	dw	22
+	dw	98
 	dw	282
-	dw	11	; 17[deg]
-	dw	12
+	dw	22	; 17[deg]
+	dw	25
 	dw	98
 	dw	281
-	dw	11	; 18[deg]
-	dw	13
+	dw	22	; 18[deg]
+	dw	27
 	dw	98
 	dw	280
-	dw	11	; 19[deg]
-	dw	15
+	dw	22	; 19[deg]
+	dw	30
 	dw	99
 	dw	279
-	dw	11	; 20[deg]
-	dw	16
+	dw	22	; 20[deg]
+	dw	33
 	dw	100
 	dw	278
-	dw	10	; 21[deg]
-	dw	18
+	dw	21	; 21[deg]
+	dw	36
 	dw	100
 	dw	277
-	dw	10	; 22[deg]
-	dw	19
+	dw	20	; 22[deg]
+	dw	38
 	dw	101
 	dw	276
-	dw	9	; 23[deg]
-	dw	20
+	dw	19	; 23[deg]
+	dw	41
 	dw	102
 	dw	275
-	dw	9	; 24[deg]
-	dw	22
+	dw	18	; 24[deg]
+	dw	44
 	dw	103
 	dw	274
-	dw	8	; 25[deg]
-	dw	23
+	dw	16	; 25[deg]
+	dw	47
 	dw	104
 	dw	273
-	dw	7	; 26[deg]
-	dw	24
+	dw	15	; 26[deg]
+	dw	49
 	dw	105
 	dw	272
-	dw	6	; 27[deg]
-	dw	26
+	dw	13	; 27[deg]
+	dw	52
 	dw	106
 	dw	271
-	dw	5	; 28[deg]
-	dw	27
+	dw	10	; 28[deg]
+	dw	54
 	dw	107
 	dw	271
-	dw	4	; 29[deg]
-	dw	28
+	dw	8	; 29[deg]
+	dw	57
 	dw	109
 	dw	270
-	dw	2	; 30[deg]
-	dw	29
+	dw	5	; 30[deg]
+	dw	59
 	dw	110
 	dw	269
-	dw	1	; 31[deg]
-	dw	30
+	dw	3	; 31[deg]
+	dw	61
 	dw	112
 	dw	269
 	dw	0	; 32[deg]
-	dw	32
+	dw	64
 	dw	113
 	dw	269
-	dw	-1	; 33[deg]
-	dw	32
+	dw	-3	; 33[deg]
+	dw	65
 	dw	115
 	dw	268
-	dw	-3	; 34[deg]
-	dw	33
+	dw	-6	; 34[deg]
+	dw	67
 	dw	117
 	dw	268
-	dw	-5	; 35[deg]
-	dw	34
+	dw	-10	; 35[deg]
+	dw	69
 	dw	118
 	dw	268
-	dw	-7	; 36[deg]
-	dw	35
+	dw	-14	; 36[deg]
+	dw	70
 	dw	120
 	dw	268
-	dw	-8	; 37[deg]
-	dw	35
+	dw	-17	; 37[deg]
+	dw	71
 	dw	122
 	dw	268
-	dw	-11	; 38[deg]
-	dw	36
+	dw	-22	; 38[deg]
+	dw	72
 	dw	124
 	dw	268
-	dw	-13	; 39[deg]
-	dw	36
+	dw	-26	; 39[deg]
+	dw	73
 	dw	125
 	dw	269
-	dw	-15	; 40[deg]
-	dw	36
+	dw	-30	; 40[deg]
+	dw	73
 	dw	127
 	dw	269
-	dw	-17	; 41[deg]
-	dw	37
+	dw	-35	; 41[deg]
+	dw	74
 	dw	129
 	dw	270
-	dw	-19	; 42[deg]
-	dw	37
+	dw	-39	; 42[deg]
+	dw	74
 	dw	131
 	dw	270
-	dw	-22	; 43[deg]
-	dw	36
+	dw	-44	; 43[deg]
+	dw	73
 	dw	133
 	dw	271
-	dw	-24	; 44[deg]
-	dw	36
+	dw	-48	; 44[deg]
+	dw	73
 	dw	135
 	dw	272
-	dw	-26	; 45[deg]
-	dw	36
+	dw	-53	; 45[deg]
+	dw	72
 	dw	136
 	dw	273
-	dw	-29	; 46[deg]
-	dw	35
+	dw	-58	; 46[deg]
+	dw	71
 	dw	138
 	dw	275
-	dw	-31	; 47[deg]
-	dw	34
+	dw	-63	; 47[deg]
+	dw	69
 	dw	140
 	dw	276
-	dw	-33	; 48[deg]
-	dw	33
+	dw	-67	; 48[deg]
+	dw	67
 	dw	141
 	dw	277
-	dw	-36	; 49[deg]
-	dw	32
+	dw	-72	; 49[deg]
+	dw	65
 	dw	143
 	dw	279
-	dw	-38	; 50[deg]
-	dw	31
+	dw	-77	; 50[deg]
+	dw	63
 	dw	145
 	dw	281
-	dw	-40	; 51[deg]
-	dw	30
+	dw	-81	; 51[deg]
+	dw	60
 	dw	146
 	dw	282
-	dw	-43	; 52[deg]
-	dw	28
+	dw	-86	; 52[deg]
+	dw	57
 	dw	147
 	dw	284
-	dw	-45	; 53[deg]
-	dw	27
+	dw	-90	; 53[deg]
+	dw	54
 	dw	149
 	dw	286
-	dw	-47	; 54[deg]
-	dw	25
+	dw	-95	; 54[deg]
+	dw	50
 	dw	150
 	dw	288
-	dw	-49	; 55[deg]
-	dw	23
+	dw	-99	; 55[deg]
+	dw	47
 	dw	151
 	dw	291
-	dw	-51	; 56[deg]
-	dw	21
+	dw	-103	; 56[deg]
+	dw	42
 	dw	152
 	dw	293
-	dw	-53	; 57[deg]
-	dw	19
+	dw	-107	; 57[deg]
+	dw	38
 	dw	153
 	dw	295
-	dw	-55	; 58[deg]
-	dw	16
+	dw	-111	; 58[deg]
+	dw	33
 	dw	154
 	dw	298
-	dw	-57	; 59[deg]
-	dw	14
+	dw	-114	; 59[deg]
+	dw	28
 	dw	154
 	dw	300
-	dw	-58	; 60[deg]
-	dw	11
+	dw	-117	; 60[deg]
+	dw	23
 	dw	155
 	dw	303
-	dw	-60	; 61[deg]
-	dw	8
+	dw	-120	; 61[deg]
+	dw	17
 	dw	155
 	dw	306
-	dw	-61	; 62[deg]
-	dw	6
+	dw	-123	; 62[deg]
+	dw	12
 	dw	155
 	dw	308
-	dw	-62	; 63[deg]
-	dw	3
+	dw	-125	; 63[deg]
+	dw	6
 	dw	156
 	dw	311
-	dw	-64	; 64[deg]
+	dw	-128	; 64[deg]
 	dw	0
 	dw	156
 	dw	314
-	dw	-64	; 65[deg]
-	dw	-3
-	dw	155
-	dw	317
-	dw	-65	; 66[deg]
+	dw	-129	; 65[deg]
 	dw	-6
 	dw	155
+	dw	317
+	dw	-131	; 66[deg]
+	dw	-12
+	dw	155
 	dw	320
-	dw	-66	; 67[deg]
-	dw	-9
+	dw	-132	; 67[deg]
+	dw	-19
 	dw	154
 	dw	323
-	dw	-66	; 68[deg]
-	dw	-13
+	dw	-133	; 68[deg]
+	dw	-26
 	dw	154
 	dw	326
-	dw	-66	; 69[deg]
-	dw	-16
+	dw	-133	; 69[deg]
+	dw	-33
 	dw	153
 	dw	329
-	dw	-66	; 70[deg]
-	dw	-20
+	dw	-133	; 70[deg]
+	dw	-40
 	dw	152
 	dw	331
-	dw	-66	; 71[deg]
-	dw	-23
+	dw	-133	; 71[deg]
+	dw	-47
 	dw	151
 	dw	334
-	dw	-66	; 72[deg]
-	dw	-27
+	dw	-133	; 72[deg]
+	dw	-55
 	dw	149
 	dw	337
-	dw	-65	; 73[deg]
-	dw	-31
+	dw	-131	; 73[deg]
+	dw	-62
 	dw	148
 	dw	340
-	dw	-65	; 74[deg]
-	dw	-34
+	dw	-130	; 74[deg]
+	dw	-69
 	dw	146
 	dw	343
-	dw	-64	; 75[deg]
-	dw	-38
+	dw	-128	; 75[deg]
+	dw	-77
 	dw	144
 	dw	345
-	dw	-63	; 76[deg]
-	dw	-42
+	dw	-126	; 76[deg]
+	dw	-84
 	dw	142
 	dw	348
-	dw	-61	; 77[deg]
-	dw	-45
+	dw	-123	; 77[deg]
+	dw	-91
 	dw	140
 	dw	351
-	dw	-60	; 78[deg]
-	dw	-49
+	dw	-120	; 78[deg]
+	dw	-98
 	dw	137
 	dw	353
-	dw	-58	; 79[deg]
-	dw	-53
+	dw	-117	; 79[deg]
+	dw	-106
 	dw	135
 	dw	355
-	dw	-56	; 80[deg]
-	dw	-56
+	dw	-113	; 80[deg]
+	dw	-113
 	dw	132
 	dw	358
-	dw	-54	; 81[deg]
-	dw	-60
+	dw	-108	; 81[deg]
+	dw	-120
 	dw	129
 	dw	360
-	dw	-52	; 82[deg]
-	dw	-63
+	dw	-104	; 82[deg]
+	dw	-126
 	dw	126
 	dw	362
-	dw	-49	; 83[deg]
-	dw	-66
+	dw	-98	; 83[deg]
+	dw	-133
 	dw	123
 	dw	364
-	dw	-46	; 84[deg]
-	dw	-69
+	dw	-93	; 84[deg]
+	dw	-139
 	dw	120
 	dw	365
-	dw	-43	; 85[deg]
-	dw	-72
+	dw	-87	; 85[deg]
+	dw	-145
 	dw	117
 	dw	367
-	dw	-40	; 86[deg]
-	dw	-75
+	dw	-81	; 86[deg]
+	dw	-151
 	dw	113
 	dw	368
-	dw	-37	; 87[deg]
-	dw	-78
+	dw	-74	; 87[deg]
+	dw	-157
 	dw	110
 	dw	370
-	dw	-33	; 88[deg]
-	dw	-81
+	dw	-67	; 88[deg]
+	dw	-162
 	dw	106
 	dw	371
-	dw	-29	; 89[deg]
-	dw	-83
+	dw	-59	; 89[deg]
+	dw	-167
 	dw	102
 	dw	372
-	dw	-26	; 90[deg]
-	dw	-86
+	dw	-52	; 90[deg]
+	dw	-172
 	dw	98
 	dw	372
-	dw	-22	; 91[deg]
-	dw	-88
+	dw	-44	; 91[deg]
+	dw	-176
 	dw	95
 	dw	373
-	dw	-17	; 92[deg]
-	dw	-90
+	dw	-35	; 92[deg]
+	dw	-180
 	dw	91
 	dw	373
-	dw	-13	; 93[deg]
-	dw	-91
+	dw	-27	; 93[deg]
+	dw	-183
 	dw	87
 	dw	373
-	dw	-9	; 94[deg]
-	dw	-93
+	dw	-18	; 94[deg]
+	dw	-187
 	dw	82
 	dw	373
-	dw	-4	; 95[deg]
-	dw	-94
+	dw	-9	; 95[deg]
+	dw	-189
 	dw	78
 	dw	373
 	dw	0	; 96[deg]
-	dw	-96
+	dw	-192
 	dw	74
 	dw	373
-	dw	4	; 97[deg]
-	dw	-96
+	dw	9	; 97[deg]
+	dw	-193
 	dw	70
 	dw	372
-	dw	9	; 98[deg]
-	dw	-97
+	dw	19	; 98[deg]
+	dw	-195
 	dw	66
 	dw	371
-	dw	14	; 99[deg]
-	dw	-97
+	dw	29	; 99[deg]
+	dw	-195
 	dw	62
 	dw	370
-	dw	19	; 100[deg]
-	dw	-98
+	dw	39	; 100[deg]
+	dw	-196
 	dw	58
 	dw	368
-	dw	24	; 101[deg]
-	dw	-97
+	dw	49	; 101[deg]
+	dw	-195
 	dw	54
 	dw	367
-	dw	29	; 102[deg]
-	dw	-97
+	dw	59	; 102[deg]
+	dw	-195
 	dw	50
 	dw	365
-	dw	34	; 103[deg]
-	dw	-96
+	dw	69	; 103[deg]
+	dw	-193
 	dw	46
 	dw	363
-	dw	39	; 104[deg]
-	dw	-96
+	dw	79	; 104[deg]
+	dw	-192
 	dw	42
 	dw	360
-	dw	44	; 105[deg]
-	dw	-94
+	dw	89	; 105[deg]
+	dw	-189
 	dw	38
 	dw	358
-	dw	49	; 106[deg]
-	dw	-93
+	dw	99	; 106[deg]
+	dw	-186
 	dw	34
 	dw	355
-	dw	55	; 107[deg]
-	dw	-91
+	dw	110	; 107[deg]
+	dw	-183
 	dw	31
 	dw	352
-	dw	60	; 108[deg]
-	dw	-89
+	dw	120	; 108[deg]
+	dw	-179
 	dw	27
 	dw	349
-	dw	64	; 109[deg]
-	dw	-87
+	dw	129	; 109[deg]
+	dw	-175
 	dw	24
 	dw	346
-	dw	69	; 110[deg]
-	dw	-85
+	dw	139	; 110[deg]
+	dw	-170
 	dw	21
 	dw	342
-	dw	74	; 111[deg]
-	dw	-82
+	dw	149	; 111[deg]
+	dw	-164
 	dw	18
 	dw	339
-	dw	79	; 112[deg]
-	dw	-79
+	dw	158	; 112[deg]
+	dw	-158
 	dw	15
 	dw	335
-	dw	83	; 113[deg]
-	dw	-75
+	dw	167	; 113[deg]
+	dw	-151
 	dw	12
 	dw	331
-	dw	88	; 114[deg]
-	dw	-72
+	dw	176	; 114[deg]
+	dw	-144
 	dw	10
 	dw	326
-	dw	92	; 115[deg]
-	dw	-68
+	dw	184	; 115[deg]
+	dw	-137
 	dw	8
 	dw	322
-	dw	96	; 116[deg]
-	dw	-64
+	dw	192	; 116[deg]
+	dw	-128
 	dw	5
 	dw	317
-	dw	100	; 117[deg]
-	dw	-60
+	dw	200	; 117[deg]
+	dw	-120
 	dw	4
 	dw	313
-	dw	104	; 118[deg]
-	dw	-55
+	dw	208	; 118[deg]
+	dw	-111
 	dw	2
 	dw	308
-	dw	107	; 119[deg]
-	dw	-50
+	dw	215	; 119[deg]
+	dw	-101
 	dw	1
 	dw	303
-	dw	110	; 120[deg]
-	dw	-45
+	dw	221	; 120[deg]
+	dw	-91
 	dw	0
 	dw	298
-	dw	113	; 121[deg]
-	dw	-40
+	dw	227	; 121[deg]
+	dw	-81
 	dw	0
 	dw	293
-	dw	116	; 122[deg]
-	dw	-35
+	dw	233	; 122[deg]
+	dw	-70
 	dw	-1
 	dw	288
-	dw	119	; 123[deg]
-	dw	-29
+	dw	238	; 123[deg]
+	dw	-59
 	dw	-2
 	dw	282
-	dw	121	; 124[deg]
-	dw	-24
+	dw	243	; 124[deg]
+	dw	-48
 	dw	-2
 	dw	277
-	dw	123	; 125[deg]
-	dw	-18
+	dw	247	; 125[deg]
+	dw	-36
 	dw	-2
 	dw	272
-	dw	125	; 126[deg]
-	dw	-12
+	dw	250	; 126[deg]
+	dw	-24
 	dw	-1
 	dw	266
-	dw	126	; 127[deg]
-	dw	-6
+	dw	253	; 127[deg]
+	dw	-12
 	dw	0
 	dw	261
 	dw	256	; 0[deg]

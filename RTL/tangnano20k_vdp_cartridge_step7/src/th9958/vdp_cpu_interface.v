@@ -85,6 +85,7 @@ module vdp_cpu_interface (
 	output				int_n,
 	input				intr_line,					//	pulse
 	input				intr_frame,					//	pulse
+	input				intr_command_end,			//	pulse
 
 	output				clear_sprite_collision,		//	pulse
 	input				sprite_collision,
@@ -168,6 +169,7 @@ module vdp_cpu_interface (
 	reg		[4:0]		ff_screen_mode;
 	reg					ff_line_interrupt_enable;
 	reg					ff_frame_interrupt_enable;
+	reg					ff_command_end_interrupt;
 	reg					ff_sprite_magify;
 	reg					ff_sprite_16x16;
 	reg					ff_display_on;
@@ -213,6 +215,7 @@ module vdp_cpu_interface (
 	reg					ff_ext_command_mode;
 	reg					ff_vram256k_mode;
 	reg					ff_sprite16_mode;
+	reg					ff_command_end_interrupt_enable;
 
 	reg					ff_2nd_access;
 	reg		[7:0]		ff_1st_byte;
@@ -565,6 +568,10 @@ module vdp_cpu_interface (
 					ff_vram256k_mode <= ff_1st_byte[6];
 					ff_sprite16_mode <= ff_1st_byte[7];
 				end
+			8'd21:	//	R#21 = [CEIE][N/A][N/A][N/A][N/A][N/A][N/A][N/A]
+				begin
+					ff_command_end_interrupt_enable <= ff_1st_byte[7];
+				end
 			8'd23:	//	R#23 = [DO7][DO6][DO5][DO4][DO3][DO2][DO1][DO0]
 				begin
 					ff_vertical_offset <= ff_1st_byte;
@@ -679,6 +686,7 @@ module vdp_cpu_interface (
 		4'd7:		ff_status_register <= status_color;
 		4'd8:		ff_status_register <= status_border_position[7:0];
 		4'd9:		ff_status_register <= { 7'b1111111, status_border_position[8] };
+		4'd10:		ff_status_register <= { 7'b0000000, ff_command_end_interrupt };
 		default:	ff_status_register <= 8'b11111111;
 		endcase
 	end
@@ -721,8 +729,9 @@ module vdp_cpu_interface (
 	// --------------------------------------------------------------------
 	always @( posedge clk or negedge reset_n ) begin
 		if( !reset_n ) begin
-			ff_frame_interrupt	<= 1'b0;
-			ff_line_interrupt	<= 1'b0;
+			ff_frame_interrupt			<= 1'b0;
+			ff_line_interrupt			<= 1'b0;
+			ff_command_end_interrupt	<= 1'b0;
 		end
 		else if( w_read && ff_port1 ) begin
 			if( ff_status_register_pointer == 4'd0 ) begin
@@ -732,6 +741,10 @@ module vdp_cpu_interface (
 			else if( ff_status_register_pointer == 4'd1 ) begin
 				//	Clear line interrupt flag
 				ff_line_interrupt <= 1'b0;
+			end
+			else if( ff_status_register_pointer == 4'd10 ) begin
+				//	Clear line interrupt flag
+				ff_command_end_interrupt <= 1'b0;
 			end
 		end
 		else begin
@@ -750,10 +763,18 @@ module vdp_cpu_interface (
 				//	Happend line interrupt
 				ff_line_interrupt <= 1'b1;
 			end
+
+			if( ff_command_end_interrupt_enable == 1'b0 ) begin
+				ff_command_end_interrupt <= 1'b0;
+			end
+			else if( intr_command_end ) begin
+				//	Happend line interrupt
+				ff_command_end_interrupt <= 1'b1;
+			end
 		end
 	end
 
-	assign int_n = ~(ff_line_interrupt | ff_frame_interrupt);
+	assign int_n = ~(ff_line_interrupt | ff_frame_interrupt | ff_command_end_interrupt);
 
 	// --------------------------------------------------------------------
 	//	Output assignment

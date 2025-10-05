@@ -84,7 +84,8 @@ module vdp_command (
 	input				reg_command_enable,
 	input				reg_command_high_speed_mode,
 	input				reg_ext_command_mode,
-	input				reg_vram256k_mode
+	input				reg_vram256k_mode,
+	output				intr_command_end
 );
 	localparam	c_hmmc		= 4'b1111;
 	localparam	c_ymmm		= 4'b1110;
@@ -278,6 +279,7 @@ module vdp_command (
 	reg					ff_count_valid;
 	reg			[7:0]	ff_wait_counter;
 	reg			[5:0]	ff_wait_count;
+	reg					ff_command_end;
 
 	// --------------------------------------------------------------------
 	//	Mode select
@@ -304,6 +306,23 @@ module vdp_command (
 
 	assign w_address_s			= vram_interleave ? { w_address_s_pre[17], w_address_s_pre[0], w_address_s_pre[16:1] }: w_address_s_pre;
 	assign w_address_d			= vram_interleave ? { w_address_d_pre[17], w_address_d_pre[0], w_address_d_pre[16:1] }: w_address_d_pre;
+
+	// --------------------------------------------------------------------
+	//	Command complete interrupt
+	// --------------------------------------------------------------------
+	always @( posedge clk or negedge reset_n ) begin
+		if( !reset_n ) begin
+			ff_command_end <= 1'b0;
+		end
+		else if( ff_state == c_state_finish ) begin
+			ff_command_end <= w_cache_flush_end;
+		end
+		else begin
+			ff_command_end <= 1'b0;
+		end
+	end
+
+	assign intr_command_end		= ff_command_end;
 
 	// --------------------------------------------------------------------
 	//	Source position registers

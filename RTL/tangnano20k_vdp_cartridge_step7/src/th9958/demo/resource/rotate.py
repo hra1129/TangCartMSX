@@ -24,8 +24,8 @@ def extract_msx_logo():
 				sx = ox - vx * ox * (theta/128) + vy * oy * (theta/128)
 				sy = oy - vy * ox * (theta/128) - vx * oy * (theta/128)
 				# 整数化
-				vx = int( vx * theta )
-				vy = int( vy * theta )
+				vx = int( vx * theta * 2 )
+				vy = int( vy * theta * 2 )
 				sx = int( sx )
 				sy = int( sy + 256 )
 				f.writelines( [ f"\tdw\t{vx}\t; {theta}[deg]\n", f"\tdw\t{vy}\n", f"\tdw\t{sx}\n", f"\tdw\t{sy}\n" ] )

@@ -105,6 +105,7 @@ module vdp (
 	wire		[ 1:0]	w_pixel_phase_x;
 	wire				w_intr_line;
 	wire				w_intr_frame;
+	wire				w_intr_command_end;
 
 	wire		[7:0]	w_upscan_r;
 	wire		[7:0]	w_upscan_g;
@@ -232,6 +233,7 @@ module vdp (
 		.int_n										( int_n										),
 		.intr_line									( w_intr_line								),
 		.intr_frame									( w_intr_frame								),
+		.intr_command_end							( w_intr_command_end						),
 		.palette_valid								( w_palette_valid							),
 		.palette_num								( w_palette_num								),
 		.palette_r									( w_palette_r								),
@@ -391,7 +393,8 @@ module vdp (
 		.reg_command_enable							( reg_command_enable						),
 		.reg_command_high_speed_mode				( reg_command_high_speed_mode				),
 		.reg_ext_command_mode						( reg_ext_command_mode						),
-		.reg_vram256k_mode							( reg_vram256k_mode							)
+		.reg_vram256k_mode							( reg_vram256k_mode							),
+		.intr_command_end							( w_intr_command_end						)
 	);
 
 	// --------------------------------------------------------------------
