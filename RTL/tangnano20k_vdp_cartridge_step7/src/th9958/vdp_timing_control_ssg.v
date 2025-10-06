@@ -82,6 +82,7 @@ module vdp_timing_control_ssg (
 	input		[8:3]	reg_horizontal_offset_h,
 	input				reg_interleaving_mode,
 	input		[7:0]	reg_blink_period,
+	input				reg_interrupt_line_nonR23_mode,
 	output		[2:0]	horizontal_offset_l,
 	output		[8:3]	horizontal_offset_h,
 	output				interleaving_page,
@@ -111,6 +112,7 @@ module vdp_timing_control_ssg (
 	reg			[ 9:0]	ff_screen_pos_y;
 	reg			[ 8:0]	ff_pixel_pos_x;
 	reg			[ 7:0]	ff_pixel_pos_y;
+	wire		[ 7:0]	w_intr_line_y;
 	reg					ff_h_active;
 	reg					ff_v_active;
 	wire				w_intr_line_timing;
@@ -274,6 +276,8 @@ module vdp_timing_control_ssg (
 	assign w_pixel_pos_x		= w_screen_pos_x[12:4] + { ff_horizontal_offset_h, 3'd0 };
 	assign w_pixel_pos_y		= w_screen_pos_y[ 7:0] + reg_vertical_offset;
 
+	assign w_intr_line_y		= reg_interrupt_line_nonR23_mode ? w_screen_pos_y[7:0]: w_pixel_pos_y;
+
 	// --------------------------------------------------------------------
 	//	blink counter
 	// --------------------------------------------------------------------
@@ -352,7 +356,7 @@ module vdp_timing_control_ssg (
 	assign screen_pos_y			= ff_screen_pos_y;
 	assign pixel_pos_x			= ff_pixel_pos_x[8:0];
 	assign pixel_pos_y			= ff_pixel_pos_y;
-	assign intr_line			= (w_screen_pos_y == { 2'd0, reg_interrupt_line } ) ? w_intr_line_timing: 1'b0;
+	assign intr_line			= (w_intr_line_y == { 2'd0, reg_interrupt_line } ) ? w_intr_line_timing: 1'b0;
 	assign intr_frame			= w_intr_frame_timing & w_intr_line_timing;
 	assign screen_v_active		= ff_v_active;
 	assign dot_phase			= ff_half_count[0];

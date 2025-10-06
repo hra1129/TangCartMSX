@@ -359,6 +359,7 @@ module vdp (
 		.reg_left_mask								( reg_left_mask								),
 		.reg_scroll_planes							( reg_scroll_planes							),
 		.reg_sprite_nonR23_mode						( reg_sprite_nonR23_mode					),
+		.reg_interrupt_line_nonR23_mode				( reg_interrupt_line_nonR23_mode			),
 		.reg_sprite_mode3							( reg_sprite_mode3							),
 		.reg_sprite16_mode							( reg_sprite16_mode							)
 	);

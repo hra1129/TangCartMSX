@@ -117,6 +117,7 @@ module vdp_timing_control (
 	input				reg_left_mask,
 	input				reg_scroll_planes,
 	input				reg_sprite_nonR23_mode,
+	input				reg_interrupt_line_nonR23_mode,
 	input				reg_sprite_mode3,
 	input				reg_sprite16_mode
 );
@@ -163,6 +164,7 @@ module vdp_timing_control (
 		.reg_horizontal_offset_h					( reg_horizontal_offset_h					),
 		.reg_interleaving_mode						( reg_interleaving_mode						),
 		.reg_blink_period							( reg_blink_period							),
+		.reg_interrupt_line_nonR23_mode				( reg_interrupt_line_nonR23_mode			),
 		.horizontal_offset_l						( w_horizontal_offset_l						),
 		.horizontal_offset_h						( w_horizontal_offset_h						),
 		.interleaving_page							( w_interleaving_page						),
