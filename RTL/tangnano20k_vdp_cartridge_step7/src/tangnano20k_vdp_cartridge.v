@@ -113,9 +113,9 @@ module tangnano20k_vdp_cartridge (
 	wire	[7:0]	w_red;
 	wire	[7:0]	w_green;
 	wire	[7:0]	w_blue;
+	wire			w_int_n;
 
 	assign slot_wait		= w_sdram_init_busy;
-	assign slot_intr		= 1'b0;
 	assign oe_n				= 1'b0;
 
 	always @( posedge clk85m ) begin
@@ -162,10 +162,10 @@ module tangnano20k_vdp_cartridge (
 		.p_slot_rd_n		( slot_rd_n					),
 		.p_slot_address		( slot_a					),
 		.p_slot_data		( slot_d					),
-		.p_slot_int			( slot_int					),
+		.p_slot_int			( slot_intr					),
 		.p_slot_data_dir	( slot_data_dir				),
 		.busdir				( busdir					),
-		.int_n				( 1'b1						),
+		.int_n				( w_int_n					),
 		.bus_address		( w_bus_address				),
 		.bus_ioreq			( w_bus_ioreq				),
 		.bus_write			( w_bus_write				),
@@ -195,7 +195,7 @@ module tangnano20k_vdp_cartridge (
 		.bus_wdata			( w_bus_wdata			),
 		.bus_rdata			( w_bus_vdp_rdata		),
 		.bus_rdata_en		( w_bus_vdp_rdata_en	),
-		.int_n				( int_n					),
+		.int_n				( w_int_n				),
 		.vram_address		( w_sdram_address[17:2]	),
 		.vram_write			( w_sdram_write			),
 		.vram_valid			( w_sdram_valid			),

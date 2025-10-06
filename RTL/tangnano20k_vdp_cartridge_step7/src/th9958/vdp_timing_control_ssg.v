@@ -352,7 +352,7 @@ module vdp_timing_control_ssg (
 	assign screen_pos_y			= ff_screen_pos_y;
 	assign pixel_pos_x			= ff_pixel_pos_x[8:0];
 	assign pixel_pos_y			= ff_pixel_pos_y;
-	assign intr_line			= (w_screen_pos_y == { 2'd0, reg_interrupt_line } ) ? 1'b1: 1'b0;
+	assign intr_line			= (w_screen_pos_y == { 2'd0, reg_interrupt_line } ) ? w_intr_line_timing: 1'b0;
 	assign intr_frame			= w_intr_frame_timing & w_intr_line_timing;
 	assign screen_v_active		= ff_v_active;
 	assign dot_phase			= ff_half_count[0];

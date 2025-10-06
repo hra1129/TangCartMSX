@@ -75,6 +75,10 @@ zma sp2test2.asm  SP2TEST2.COM
 if errorlevel 1 pause ==========================
 move zma.log sp2test2.log
 
+zma sc1intr.asm  SC1INTR.COM
+if errorlevel 1 pause ==========================
+move zma.log sc1intr.log
+
 if exist D:\download\msx\DOS2\MSXDOS2 (
 	if exist D:\download\msx\DOS2\MSXDOS2\SC0TEST.COM (
 		del D:\download\msx\DOS2\MSXDOS2\SC0TEST.COM
@@ -200,6 +204,11 @@ if exist D:\download\msx\DOS2\MSXDOS2 (
 		del D:\download\msx\DOS2\MSXDOS2\SP2TEST2.COM
 	)
 	copy SP2TEST2.COM  D:\download\msx\DOS2\MSXDOS2\
+
+	if exist D:\download\msx\DOS2\MSXDOS2\SC1INTR.COM (
+		del D:\download\msx\DOS2\MSXDOS2\SC1INTR.COM
+	)
+	copy SC1INTR.COM  D:\download\msx\DOS2\MSXDOS2\
 )
 
 pause
