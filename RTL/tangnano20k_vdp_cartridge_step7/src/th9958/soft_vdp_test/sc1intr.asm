@@ -53,6 +53,10 @@ screen1::
 			ld		a, 0x02					; スプライト非表示
 			ld		e, 8
 			call	write_control_register
+			; R#20 = 0x00
+			ld		a, 0x00					; V9958 Compatible mode
+			ld		e, 20
+			call	write_control_register
 			; Pattern Name Table
 			ld		hl, 0x1800
 			call	set_pattern_name_table
@@ -145,6 +149,15 @@ sc1_interrupt::
 			ei
 			call	wait_push_space_key
 			di
+			; 走査線割込垂直スクロール影響除去ON (R#20)
+			ld		a, 0x04
+			out		[c], a
+			ld		a, 0x80 + 20
+			out		[c], a
+			; ボタン押し待ち
+			ei
+			call	wait_push_space_key
+			di
 			; 割り込みフックを停止
 			ld		a, 0xC9			; RET
 			ld		[h_keyi + 0], a
@@ -157,6 +170,26 @@ sc1_interrupt::
 			ld		a, 0x40
 			out		[c], a
 			ld		a, 0x81
+			out		[c], a
+			; スクロールを戻す
+			xor		a, a
+			out		[c], a
+			ld		a, 0x80 + 20
+			out		[c], a
+
+			xor		a, a
+			out		[c], a
+			ld		a, 0x80 + 23
+			out		[c], a
+
+			xor		a, a
+			out		[c], a
+			ld		a, 0x80 + 26
+			out		[c], a
+
+			xor		a, a
+			out		[c], a
+			ld		a, 0x80 + 27
 			out		[c], a
 			ret
 
@@ -184,7 +217,7 @@ sc1_interrupt::
 			ret		z
 			; 垂直同期割込
 	frame_interrupt:
-			; スクロール位置を動かす
+			; 水平スクロール位置を動かす
 			ld		a, [scroll1]
 			inc		a
 			ld		[scroll1], a
@@ -201,10 +234,29 @@ sc1_interrupt::
 			out		[c], b
 			ld		a, 0x80 + 27
 			out		[c], a
+			; 垂直スクロール位置を動かす
+			ld		a, [scroll0]
+			ld		b, a
+			ld		a, [scroll0_dir]
+			add		a, b
+			ld		[scroll0], a
+			out		[c], a
+			ld		a, 0x80 + 23
+			out		[c], a
+			ld		a, [scroll0]
+			cp		a, 32
+			jr		z, change_dir
+			cp		a, -32
+			jr		z, change_dir
+			ret
+	change_dir:
+			ld		a, [scroll0_dir]
+			neg
+			ld		[scroll0_dir], a
 			ret
 			; 走査線割込
 	line_interrupt:
-			; スクロール位置を動かす
+			; 水平スクロール位置を動かす
 			ld		a, [scroll2]
 			dec		a
 			ld		[scroll2], a
@@ -229,6 +281,10 @@ sc1_interrupt::
 			ret
 	my_vdp_port1:
 			db		0
+	scroll0:
+			db		0
+	scroll0_dir:
+			db		1
 	scroll1:
 			db		0
 	scroll2:
