@@ -174,6 +174,7 @@ module vdp_timing_control_screen_mode (
 	reg			[4:0]	ff_y;
 	reg			[5:0]	ff_j;
 	reg			[5:0]	ff_k;
+	reg					ff_vram_interleave;
 
 	// --------------------------------------------------------------------
 	//	Screen mode decoder
@@ -196,10 +197,19 @@ module vdp_timing_control_screen_mode (
 		endcase
 	endfunction
 
+	always @( posedge clk or negedge reset_n ) begin
+		if( !reset_n ) begin
+			ff_vram_interleave <= 1'b0;
+		end
+		else begin
+			ff_vram_interleave <= reg_sprite_mode3 ? 1'b0 : (reg_screen_mode == c_mode_g6 || reg_screen_mode == c_mode_g7);
+		end
+	end
+
 	assign w_mode				= func_screen_mode_decoder( reg_screen_mode );
 	assign screen_mode			= w_mode;
 	assign sprite_off			= (w_mode == c_t1 || w_mode == c_t2);
-	assign vram_interleave		= reg_sprite_mode3 ? 1'b0 : (reg_screen_mode == c_g6 || reg_screen_mode == c_g7);
+	assign vram_interleave		= ff_vram_interleave;
 
 	// --------------------------------------------------------------------
 	//	Screen Position for active area
@@ -475,11 +485,17 @@ module vdp_timing_control_screen_mode (
 						end
 					c_g6, c_g7:
 						//	SCREEN7, 8 では、この1回の読み出しで 前半4ドット分の画素値を一気に読める
-						begin
+						if( ff_vram_interleave ) begin
 							ff_next_vram0 <= vram_rdata[ 7: 0];
 							ff_next_vram2 <= vram_rdata[15: 8];
 							ff_next_vram4 <= vram_rdata[23:16];
 							ff_next_vram6 <= vram_rdata[31:24];
+						end
+						else begin
+							ff_next_vram0 <= vram_rdata[ 7: 0];
+							ff_next_vram1 <= vram_rdata[15: 8];
+							ff_next_vram2 <= vram_rdata[23:16];
+							ff_next_vram3 <= vram_rdata[31:24];
 						end
 					endcase
 				3'd1:
@@ -494,10 +510,18 @@ module vdp_timing_control_screen_mode (
 						endcase
 					c_g6, c_g7: begin
 						//	SCREEN7, 8 では、この1回の読み出しで 後半4ドット分の画素値を一気に読める
-						ff_next_vram1 <= vram_rdata[ 7: 0];
-						ff_next_vram3 <= vram_rdata[15: 8];
-						ff_next_vram5 <= vram_rdata[23:16];
-						ff_next_vram7 <= vram_rdata[31:24];
+						if( ff_vram_interleave ) begin
+							ff_next_vram1 <= vram_rdata[ 7: 0];
+							ff_next_vram3 <= vram_rdata[15: 8];
+							ff_next_vram5 <= vram_rdata[23:16];
+							ff_next_vram7 <= vram_rdata[31:24];
+						end
+						else begin
+							ff_next_vram4 <= vram_rdata[ 7: 0];
+							ff_next_vram5 <= vram_rdata[15: 8];
+							ff_next_vram6 <= vram_rdata[23:16];
+							ff_next_vram7 <= vram_rdata[31:24];
+						end
 					end
 					default:
 						begin

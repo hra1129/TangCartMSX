@@ -186,6 +186,7 @@ module vdp_command (
 	reg					ff_diy;
 	reg					ff_mxs;
 	reg					ff_mxd;
+	reg					ff_fg4;
 	reg			[3:0]	ff_logical_opration;
 	reg			[3:0]	ff_command;
 	reg					ff_start;
@@ -284,7 +285,7 @@ module vdp_command (
 	// --------------------------------------------------------------------
 	//	Mode select
 	// --------------------------------------------------------------------
-	assign w_effective_mode		= reg_command_enable || (screen_mode == c_g4 || screen_mode == c_g5 || screen_mode == c_g6 || screen_mode == c_g7);
+	assign w_effective_mode		= reg_command_enable || ff_fg4 || (screen_mode == c_g4 || screen_mode == c_g5 || screen_mode == c_g6 || screen_mode == c_g7);
 	assign w_bpp				= (screen_mode == c_g7) ? c_bpp_8bit:
 	            				  (screen_mode == c_g6) ? c_bpp_2bit: c_bpp_4bit;
 	assign w_next				= (screen_mode == c_g7 || ff_command[3:2] != 2'b11) ? 10'd1:
@@ -294,15 +295,15 @@ module vdp_command (
 	// --------------------------------------------------------------------
 	//	Address
 	// --------------------------------------------------------------------
-	assign w_address_s_pre		= (screen_mode == c_g4) ? { ff_sy[18:8], ff_sx[15: 9] }:	// SCREEN5, 128byte/line, 2pixel/byte, 256line * 8page
-	                  			  (screen_mode == c_g5) ? { ff_sy[18:8], ff_sx[16:10] }:	// SCREEN6, 128byte/line, 4pixel/byte, 256line * 8page
-	                  			  (screen_mode == c_g6) ? { ff_sy[17:8], ff_sx[16: 9] }:	// SCREEN7, 256byte/line, 2pixel/byte, 256line * 4page
-	                  			                          { ff_sy[17:8], ff_sx[15: 8] };	// SCREEN8, 256byte/line, 1pixel/byte, 256line * 4page
+	assign w_address_s_pre		= (screen_mode == c_g4 || ff_fg4) ? { ff_sy[18:8], ff_sx[15: 9] }:	// SCREEN5, 128byte/line, 2pixel/byte, 256line * 8page
+	                  			  (screen_mode == c_g5          ) ? { ff_sy[18:8], ff_sx[16:10] }:	// SCREEN6, 128byte/line, 4pixel/byte, 256line * 8page
+	                  			  (screen_mode == c_g6          ) ? { ff_sy[17:8], ff_sx[16: 9] }:	// SCREEN7, 256byte/line, 2pixel/byte, 256line * 4page
+	                  			                                    { ff_sy[17:8], ff_sx[15: 8] };	// SCREEN8, 256byte/line, 1pixel/byte, 256line * 4page
 
-	assign w_address_d_pre		= (screen_mode == c_g4) ? { ff_dy[10:0], ff_dx[ 7: 1] }:	// SCREEN5, 128byte/line, 2pixel/byte, 256line * 8page
-	                  			  (screen_mode == c_g5) ? { ff_dy[10:0], ff_dx[ 8: 2] }:	// SCREEN6, 128byte/line, 4pixel/byte, 256line * 8page
-	                  			  (screen_mode == c_g6) ? { ff_dy[ 9:0], ff_dx[ 8: 1] }:	// SCREEN7, 256byte/line, 2pixel/byte, 256line * 4page
-	                  			                          { ff_dy[ 9:0], ff_dx[ 7: 0] };	// SCREEN8, 256byte/line, 1pixel/byte, 256line * 4page
+	assign w_address_d_pre		= (screen_mode == c_g4 || ff_fg4) ? { ff_dy[10:0], ff_dx[ 7: 1] }:	// SCREEN5, 128byte/line, 2pixel/byte, 256line * 8page
+	                  			  (screen_mode == c_g5          ) ? { ff_dy[10:0], ff_dx[ 8: 2] }:	// SCREEN6, 128byte/line, 4pixel/byte, 256line * 8page
+	                  			  (screen_mode == c_g6          ) ? { ff_dy[ 9:0], ff_dx[ 8: 1] }:	// SCREEN7, 256byte/line, 2pixel/byte, 256line * 4page
+	                  			                                    { ff_dy[ 9:0], ff_dx[ 7: 0] };	// SCREEN8, 256byte/line, 1pixel/byte, 256line * 4page
 
 	assign w_address_s			= vram_interleave ? { w_address_s_pre[17], w_address_s_pre[0], w_address_s_pre[16:1] }: w_address_s_pre;
 	assign w_address_d			= vram_interleave ? { w_address_d_pre[17], w_address_d_pre[0], w_address_d_pre[16:1] }: w_address_d_pre;
@@ -843,6 +844,7 @@ module vdp_command (
 			ff_diy	<= 1'b0;
 			ff_mxs	<= 1'b0;
 			ff_mxd	<= 1'b0;
+			ff_fg4	<= 1'b0;
 		end
 		else if( register_write ) begin
 			if( register_num == 6'd45 ) begin
@@ -852,6 +854,7 @@ module vdp_command (
 				ff_diy	<= register_data[3];
 				ff_mxs	<= register_data[4];
 				ff_mxd	<= register_data[5];
+				ff_fg4	<= register_data[7] & reg_ext_command_mode;
 			end
 		end
 	end

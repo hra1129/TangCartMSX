@@ -152,6 +152,7 @@ module vdp_cpu_interface (
 	output				pulse6,
 	output				pulse7
 );
+	localparam	[4:0]	c_vdp_id			= 5'b00011;
 	reg					ff_bus_ioreq;
 	reg					ff_bus_write;
 	reg					ff_bus_valid;
@@ -684,7 +685,7 @@ module vdp_cpu_interface (
 	always @( posedge clk ) begin
 		case( ff_status_register_pointer )
 		4'd0:		ff_status_register <= { ff_frame_interrupt, sprite_collision, 1'b0, 5'b00000 };
-		4'd1:		ff_status_register <= { 2'd0, 5'b00010, ff_line_interrupt };
+		4'd1:		ff_status_register <= { 2'd0, c_vdp_id, ff_line_interrupt };
 		4'd2:		ff_status_register <= { status_transfer_ready, 1'b0, 1'b0, status_border_detect, 2'b11, 1'b0, status_command_execute };
 		4'd3:		ff_status_register <= sprite_collision_x[7:0];
 		4'd4:		ff_status_register <= { 7'b1111111, sprite_collision_x[8] };
