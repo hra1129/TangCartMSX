@@ -137,6 +137,7 @@ vdp_io_select::
 			dw		io_vdp_port1
 			dw		io_vdp_port2
 			dw		io_vdp_port3
+			dw		io_vdp_port4
 			dw		p_vdp_port0
 			dw		p_vdp_port1
 			dw		p_vdp_port2
@@ -166,6 +167,8 @@ io_vdp_port2::
 			db		0x9A
 io_vdp_port3::
 			db		0x9B
+io_vdp_port4::
+			db		0x9C
 			endscope
 
 ; =============================================================================
