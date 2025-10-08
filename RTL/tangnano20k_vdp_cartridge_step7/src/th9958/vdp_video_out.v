@@ -63,6 +63,7 @@ module vdp_video_out (
 	input		[11:0]	h_count,
 	input		[ 9:0]	v_count,
 	input				has_scanline,
+	input				field,
 	// input pixel
 	input		[7:0]	vdp_r,
 	input		[7:0]	vdp_g,
@@ -75,9 +76,14 @@ module vdp_video_out (
 	output		[7:0]	display_g,
 	output		[7:0]	display_b,
 	// parameters
+	input				reg_interlace_mode,
+	input				reg_flat_interlace_mode,
 	input		[7:0]	reg_denominator,			//	800 / 4
-	input		[7:0]	reg_normalize				//	8192 / reg_denominator
+	input		[7:0]	reg_normalize,				//	8192 / reg_denominator
+	input				reg_50hz_mode
 );
+	localparam		c_v_count_max_60	= 10'd523;
+	localparam		c_v_count_max_50	= 10'd625;
 	localparam		active_area_start	= 12'd747;
 	localparam		active_area_end		= active_area_start + 12'd1600;
 	localparam		clocks_per_line		= 12'd2736;
@@ -85,10 +91,12 @@ module vdp_video_out (
 	localparam		h_en_end			= h_en_start + 12'd1600;
 	localparam		hs_start			= clocks_per_line - 1;
 	localparam		hs_end				= 12'd567;
-	localparam		v_en_start			= 10'd40;
+	localparam		v_en_start			= 10'd14;
 	localparam		v_en_end			= v_en_start + 10'd480;
-	localparam		vs_start			= 10'd13;
-	localparam		vs_end				= 10'd19;
+	localparam		vs_start_60hz		= c_v_count_max_60 - 10'd13;
+	localparam		vs_end_60hz			= c_v_count_max_60 - 10'd6;
+	localparam		vs_start_50hz		= c_v_count_max_50 - 10'd13;
+	localparam		vs_end_50hz			= c_v_count_max_50 - 10'd6;
 	localparam		c_numerator			= 576 / 4;
 
 	wire			w_enable;
@@ -197,11 +205,21 @@ module vdp_video_out (
 			ff_vs <= 1'b1;
 		end
 		else if( h_count == (clocks_per_line - 1) ) begin
-			if( v_count == vs_end ) begin
-				ff_vs <= 1'b1;
+			if( reg_50hz_mode == 1'b0 ) begin
+				if( v_count == vs_end_60hz ) begin
+					ff_vs <= 1'b1;
+				end
+				else if( v_count == vs_start_60hz ) begin
+					ff_vs <= 1'b0;
+				end
 			end
-			else if( v_count == vs_start ) begin
-				ff_vs <= 1'b0;
+			else begin
+				if( v_count == vs_end_50hz ) begin
+					ff_vs <= 1'b1;
+				end
+				else if( v_count == vs_start_50hz ) begin
+					ff_vs <= 1'b0;
+				end
 			end
 		end
 	end
@@ -278,7 +296,7 @@ module vdp_video_out (
 	);
 
 	assign w_x_position_w	= h_count[11:2];
-	assign w_is_write_odd	= v_count[0];
+	assign w_is_write_odd	= v_count[0] ^ ((reg_interlace_mode | reg_flat_interlace_mode) & field);
 
 	// --------------------------------------------------------------------
 	//	Filter coefficient

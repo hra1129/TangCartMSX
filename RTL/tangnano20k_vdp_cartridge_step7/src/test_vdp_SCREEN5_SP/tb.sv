@@ -1013,6 +1013,9 @@ module tb ();
 		//	VDP R#20 = 0x19
 		write_io( vdp_io1, 8'h19 );
 		write_io( vdp_io1, 8'h80 + 8'd20 );
+		//	VDP R#21 = 0x00
+		write_io( vdp_io1, 8'h00 );
+		write_io( vdp_io1, 8'h80 + 8'd21 );
 		//	VDP R#23 = 0x00
 		write_io( vdp_io1, 8'h00 );
 		write_io( vdp_io1, 8'h80 + 8'd23 );

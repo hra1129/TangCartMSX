@@ -59,7 +59,7 @@ module vdp_cpu_interface (
 	input				reset_n,
 	input				clk,					//	42.95454MHz
 
-	input	[1:0]		bus_address,
+	input	[2:0]		bus_address,
 	input				bus_ioreq,
 	input				bus_write,
 	input				bus_valid,
@@ -141,6 +141,7 @@ module vdp_cpu_interface (
 	output				reg_ext_command_mode,
 	output				reg_vram256k_mode,
 	output				reg_sprite16_mode,
+	output				reg_flat_interlace_mode,
 
 	output				pulse0,
 	output				pulse1,
@@ -162,6 +163,7 @@ module vdp_cpu_interface (
 	reg					ff_port1;
 	reg					ff_port2;
 	reg					ff_port3;
+	reg					ff_port4;
 	wire				w_write;
 	wire				w_read;
 	reg		[7:0]		ff_bus_rdata;
@@ -216,6 +218,7 @@ module vdp_cpu_interface (
 	reg					ff_vram256k_mode;
 	reg					ff_sprite16_mode;
 	reg					ff_command_end_interrupt_enable;
+	reg					ff_flat_interlace_mode;
 
 	reg					ff_2nd_access;
 	reg		[7:0]		ff_1st_byte;
@@ -236,10 +239,10 @@ module vdp_cpu_interface (
 	assign pulse0		= 1'b0;										// red
 	assign pulse1		= ff_vram_valid;							// green
 	assign pulse2		= ff_vram_address_inc;						// blue
-	assign pulse3		= (bus_valid && bus_address == 2'b00);		// yellow
-	assign pulse4		= (bus_valid && bus_address == 2'b01);		// cyan
-	assign pulse5		= (bus_valid && bus_address == 2'b10);		// purple
-	assign pulse6		= (bus_valid && bus_address == 2'b11);		// pink
+	assign pulse3		= (bus_valid && bus_address == 3'b000);		// yellow
+	assign pulse4		= (bus_valid && bus_address == 3'b001);		// cyan
+	assign pulse5		= (bus_valid && bus_address == 3'b010);		// purple
+	assign pulse6		= (bus_valid && bus_address == 3'b011);		// pink
 	assign pulse7		= 1'b0;
 
 	// --------------------------------------------------------------------
@@ -254,6 +257,7 @@ module vdp_cpu_interface (
 			ff_port1		<= 1'b0;
 			ff_port2		<= 1'b0;
 			ff_port3		<= 1'b0;
+			ff_port4		<= 1'b0;
 			ff_bus_valid	<= 1'b0;
 			ff_bus_ready	<= 1'b1;
 		end
@@ -261,10 +265,11 @@ module vdp_cpu_interface (
 			ff_bus_ioreq	<= bus_ioreq;
 			ff_bus_write	<= bus_write;
 			ff_bus_wdata	<= bus_wdata;
-			ff_port0		<= (!bus_address[1] && !bus_address[0]);
-			ff_port1		<= (!bus_address[1] &&  bus_address[0]);
-			ff_port2		<= ( bus_address[1] && !bus_address[0]);
-			ff_port3		<= ( bus_address[1] &&  bus_address[0]);
+			ff_port0		<= (!bus_address[2] && !bus_address[1] && !bus_address[0]);
+			ff_port1		<= (!bus_address[2] && !bus_address[1] &&  bus_address[0]);
+			ff_port2		<= (!bus_address[2] &&  bus_address[1] && !bus_address[0]);
+			ff_port3		<= (!bus_address[2] &&  bus_address[1] &&  bus_address[0]);
+			ff_port4		<= ( bus_address[2] && !bus_address[1] && !bus_address[0]);
 			ff_bus_valid	<= 1'b1;
 			ff_bus_ready	<= 1'b0;
 		end
@@ -467,6 +472,7 @@ module vdp_cpu_interface (
 			ff_ext_command_mode <= 1'b0;
 			ff_vram256k_mode <= 1'b0;
 			ff_sprite16_mode <= 1'b0;
+			ff_flat_interlace_mode <= 1'b0;
 		end
 		else if( ff_register_write ) begin
 			case( ff_register_num )
@@ -570,6 +576,7 @@ module vdp_cpu_interface (
 				end
 			8'd21:	//	R#21 = [CEIE][N/A][N/A][N/A][N/A][N/A][N/A][N/A]
 				begin
+					ff_flat_interlace_mode <= ff_1st_byte[6];
 					ff_command_end_interrupt_enable <= ff_1st_byte[7];
 				end
 			8'd23:	//	R#23 = [DO7][DO6][DO5][DO4][DO3][DO2][DO1][DO0]
@@ -686,7 +693,6 @@ module vdp_cpu_interface (
 		4'd7:		ff_status_register <= status_color;
 		4'd8:		ff_status_register <= status_border_position[7:0];
 		4'd9:		ff_status_register <= { 7'b1111111, status_border_position[8] };
-		4'd10:		ff_status_register <= { 7'b0000000, ff_command_end_interrupt };
 		default:	ff_status_register <= 8'b11111111;
 		endcase
 	end
@@ -706,6 +712,10 @@ module vdp_cpu_interface (
 			end
 			else if( ff_port1 ) begin
 				ff_bus_rdata	<= ff_status_register;
+				ff_bus_rdata_en	<= 1'b1;
+			end
+			else if( ff_port4 ) begin
+				ff_bus_rdata	<= { 5'd0, ff_command_end_interrupt, ff_line_interrupt, ff_frame_interrupt };
 				ff_bus_rdata_en	<= 1'b1;
 			end
 			else begin
@@ -743,6 +753,20 @@ module vdp_cpu_interface (
 				ff_line_interrupt <= 1'b0;
 			end
 			else if( ff_status_register_pointer == 4'd10 ) begin
+				//	Clear line interrupt flag
+				ff_command_end_interrupt <= 1'b0;
+			end
+		end
+		else if( w_write && ff_port4 ) begin
+			if( ff_bus_wdata[0] == 1'b1 ) begin
+				//	Clear frame interrupt flag
+				ff_frame_interrupt <= 1'b0;
+			end
+			if( ff_bus_wdata[1] == 1'b1 ) begin
+				//	Clear line interrupt flag
+				ff_line_interrupt <= 1'b0;
+			end
+			if( ff_bus_wdata[2] == 1'b1 ) begin
 				//	Clear line interrupt flag
 				ff_command_end_interrupt <= 1'b0;
 			end
@@ -833,4 +857,5 @@ module vdp_cpu_interface (
 	assign reg_ext_command_mode						= ff_ext_command_mode;
 	assign reg_vram256k_mode						= ff_vram256k_mode;
 	assign reg_sprite16_mode						= ff_sprite16_mode;
+	assign reg_flat_interlace_mode					= ff_flat_interlace_mode;
 endmodule

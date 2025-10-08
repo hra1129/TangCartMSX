@@ -86,21 +86,21 @@ module vdp_timing_control_ssg (
 	output		[2:0]	horizontal_offset_l,
 	output		[8:3]	horizontal_offset_h,
 	output				interleaving_page,
-	output				blink
+	output				blink,
+	output				field
 );
 	localparam			c_left_pos			= 14'd640;		//	16の倍数
-	localparam			c_top_pos192		= 10'd48;		//	画面上の垂直位置(192 lines mode)。小さくすると上へ、大きくすると下へ寄る。
-	localparam			c_top_pos212		= 10'd38;		//	画面上の垂直位置(212 lines mode)。小さくすると上へ、大きくすると下へ寄る。
+	localparam			c_top_pos192		= 10'd35;		//	画面上の垂直位置(192 lines mode)。小さくすると上へ、大きくすると下へ寄る。
+	localparam			c_top_pos212		= 10'd25;		//	画面上の垂直位置(212 lines mode)。小さくすると上へ、大きくすると下へ寄る。
 	localparam			c_h_count_max		= 12'd2735;
-	localparam			c_v_count_max_60p	= 10'd523;
-	localparam			c_v_count_max_60i	= 10'd524;
-	localparam			c_v_count_max_50p	= 10'd625;
-	localparam			c_v_count_max_50i	= 10'd624;
+	localparam			c_v_count_max_60	= 10'd523;
+	localparam			c_v_count_max_50	= 10'd625;
 	localparam			c_intr_line_timing	= 12'd200;
 	localparam			c_intr_frame_timing	= 10'd212;
 	reg			[11:0]	ff_h_count;
 	reg			[12:0]	ff_half_count;
 	reg			[ 9:0]	ff_v_count;
+	reg					ff_line_interrupt_mask;
 	wire				w_h_count_end;
 	wire				w_v_count_end;
 	wire		[9:0]	w_v_count_end_line;
@@ -205,10 +205,8 @@ module vdp_timing_control_ssg (
 		end
 	end
 
-	assign w_v_count_end	= ( !reg_50hz_mode &&  reg_interlace_mode && ff_v_count == c_v_count_max_60i ) ||
-							  ( !reg_50hz_mode && !reg_interlace_mode && ff_v_count == c_v_count_max_60p ) ||
-							  (  reg_50hz_mode &&  reg_interlace_mode && ff_v_count == c_v_count_max_50i ) ||
-							  (                                          ff_v_count == c_v_count_max_50p );
+	assign w_v_count_end	= ( !reg_50hz_mode && ff_v_count == c_v_count_max_60 ) ||
+							  (  reg_50hz_mode && ff_v_count == c_v_count_max_50 );
 
 	// --------------------------------------------------------------------
 	//	Field selector
@@ -276,7 +274,24 @@ module vdp_timing_control_ssg (
 	assign w_pixel_pos_x		= w_screen_pos_x[12:4] + { ff_horizontal_offset_h, 3'd0 };
 	assign w_pixel_pos_y		= w_screen_pos_y[ 7:0] + reg_vertical_offset;
 
+	// --------------------------------------------------------------------
+	//	line interrupt
+	// --------------------------------------------------------------------
 	assign w_intr_line_y		= reg_interrupt_line_nonR23_mode ? w_screen_pos_y[7:0]: w_pixel_pos_y;
+
+	always @( posedge clk or negedge reset_n ) begin
+		if( !reset_n ) begin
+			ff_line_interrupt_mask <= 1'b0;
+		end
+		else if( ff_v_count[0] && w_h_count_end ) begin
+			if( w_screen_pos_y == 10'h3FF ) begin
+				ff_line_interrupt_mask <= 1'b1;
+			end
+			else if( w_screen_pos_y == 10'd234 ) begin
+				ff_line_interrupt_mask <= 1'b0;
+			end
+		end
+	end
 
 	// --------------------------------------------------------------------
 	//	blink counter
@@ -356,10 +371,11 @@ module vdp_timing_control_ssg (
 	assign screen_pos_y			= ff_screen_pos_y;
 	assign pixel_pos_x			= ff_pixel_pos_x[8:0];
 	assign pixel_pos_y			= ff_pixel_pos_y;
-	assign intr_line			= (w_intr_line_y == { 2'd0, reg_interrupt_line } ) ? w_intr_line_timing: 1'b0;
+	assign intr_line			= ( (w_intr_line_y == { 2'd0, reg_interrupt_line }) && ff_line_interrupt_mask ) ? w_intr_line_timing: 1'b0;
 	assign intr_frame			= w_intr_frame_timing & w_intr_line_timing;
 	assign screen_v_active		= ff_v_active;
 	assign dot_phase			= ff_half_count[0];
 	assign interleaving_page	= reg_interleaving_mode ? (ff_interleaving_page & ff_field): 1'b1;
 	assign blink				= ~ff_interleaving_page;
+	assign field				= ff_field;
 endmodule

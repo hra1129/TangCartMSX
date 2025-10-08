@@ -76,6 +76,7 @@ module vdp_timing_control_screen_mode (
 	output				sprite_off,
 	input				interleaving_page,
 	input				blink,
+	input				field,
 	output		[3:0]	screen_mode,
 	input		[2:0]	horizontal_offset_l,
 
@@ -88,7 +89,8 @@ module vdp_timing_control_screen_mode (
 	input		[7:0]	reg_backdrop_color,
 	input				reg_scroll_planes,
 	input				reg_left_mask,
-	input				reg_sprite_mode3
+	input				reg_sprite_mode3,
+	input				reg_flat_interlace_mode
 );
 	//	Screen mode
 	localparam			c_mode_g1	= 5'b000_00;	//	Graphic1 (SCREEN1)
@@ -131,6 +133,8 @@ module vdp_timing_control_screen_mode (
 	wire		[17:0]	w_pattern_name_g123m;
 	wire		[17:0]	w_pattern_name_g45;
 	wire		[17:0]	w_pattern_name_g67;
+	wire		[17:0]	w_pattern_name_g45_fil;
+	wire		[17:0]	w_pattern_name_g67_fil;
 	reg			[7:0]	ff_next_vram0;
 	reg			[7:0]	ff_next_vram1;
 	reg			[7:0]	ff_next_vram2;
@@ -281,6 +285,9 @@ module vdp_timing_control_screen_mode (
 	assign w_pattern_name_t1			= { reg_pattern_name_table_base, w_pattern_name_t12_pre[9:0] };
 	assign w_pattern_name_t2			= { reg_pattern_name_table_base[17:12], (reg_pattern_name_table_base[11:10] & w_pattern_name_t12_pre[10:9]), w_pattern_name_t12_pre[8:0], 1'b0 };
 
+	assign w_pattern_name_g45_fil		= { reg_pattern_name_table_base[17:16], (reg_pattern_name_table_base[15:10] & pixel_pos_y[7:2]), pixel_pos_y[1:0], field, w_pos_x[7:3], 2'd0 };
+	assign w_pattern_name_g67_fil		= { reg_pattern_name_table_base[16]   , (reg_pattern_name_table_base[15:10] & pixel_pos_y[7:2]), pixel_pos_y[1:0], field, w_pos_x[7:3], 3'd0 };
+
 	// --------------------------------------------------------------------
 	//	Pattern generator table address
 	// --------------------------------------------------------------------
@@ -350,9 +357,9 @@ module vdp_timing_control_screen_mode (
 					c_g1, c_g2, c_g3, c_gm:
 						ff_vram_address <= w_pattern_name_g123m;		//	PCG#
 					c_g4, c_g5:
-						ff_vram_address <= w_pattern_name_g45;			//	Bitmap pixels
+						ff_vram_address <= reg_flat_interlace_mode ? w_pattern_name_g45_fil: w_pattern_name_g45;			//	Bitmap pixels
 					c_g6, c_g7:
-						ff_vram_address <= w_pattern_name_g67;			//	Bitmap pixels
+						ff_vram_address <= reg_flat_interlace_mode ? w_pattern_name_g67_fil: w_pattern_name_g67;			//	Bitmap pixels
 					c_t1:
 						ff_vram_address <= w_pattern_name_t1;			//	PCG#
 					c_t2:
@@ -373,7 +380,7 @@ module vdp_timing_control_screen_mode (
 						ff_vram_address <= w_pattern_generator_g23;
 					c_g6, c_g7:
 						//	Bitmap Pixels
-						ff_vram_address <= { w_pattern_name_g67[17:1], 1'b1 };
+						ff_vram_address <= reg_flat_interlace_mode ? { w_pattern_name_g67_fil[17:1], 1'b1 } : { w_pattern_name_g67[17:1], 1'b1 };
 					default:
 						ff_vram_address <= 18'd0;
 					endcase

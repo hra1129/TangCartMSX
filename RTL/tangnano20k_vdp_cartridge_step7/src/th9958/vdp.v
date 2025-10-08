@@ -60,7 +60,7 @@ module vdp (
 	input				clk,					//	85.90908MHz
 
 	input				initial_busy,
-	input		[1:0]	bus_address,
+	input		[2:0]	bus_address,
 	input				bus_ioreq,
 	input				bus_write,
 	input				bus_valid,
@@ -170,6 +170,7 @@ module vdp (
 	wire				w_status_transfer_ready;
 	wire		[7:0]	w_status_color;
 	wire		[8:0]	w_status_border_position;
+	wire				w_field;
 
 	wire		[4:0]	reg_screen_mode;
 	wire				reg_sprite_magify;
@@ -208,6 +209,7 @@ module vdp (
 	wire				reg_ext_command_mode;
 	wire				reg_vram256k_mode;
 	wire				reg_sprite16_mode;
+	wire				reg_flat_interlace_mode;
 
 	// --------------------------------------------------------------------
 	//	CPU Interface
@@ -290,6 +292,7 @@ module vdp (
 		.reg_ext_command_mode						( reg_ext_command_mode						),
 		.reg_vram256k_mode							( reg_vram256k_mode							),
 		.reg_sprite16_mode							( reg_sprite16_mode							),
+		.reg_flat_interlace_mode					( reg_flat_interlace_mode					),
 		.pulse0										( pulse0									),
 		.pulse1										( pulse1									),
 		.pulse2										( pulse2									),
@@ -315,6 +318,7 @@ module vdp (
 		.intr_frame									( w_intr_frame								),
 		.pre_vram_refresh							( w_pre_vram_refresh						),
 		.vram_interleave							( w_vram_interleave							),
+		.field										( w_field									),
 		.screen_mode_vram_address					( w_screen_mode_vram_address				),
 		.screen_mode_vram_valid						( w_screen_mode_vram_valid					),
 		.screen_mode_vram_rdata						( w_screen_mode_vram_rdata					),
@@ -361,7 +365,8 @@ module vdp (
 		.reg_sprite_nonR23_mode						( reg_sprite_nonR23_mode					),
 		.reg_interrupt_line_nonR23_mode				( reg_interrupt_line_nonR23_mode			),
 		.reg_sprite_mode3							( reg_sprite_mode3							),
-		.reg_sprite16_mode							( reg_sprite16_mode							)
+		.reg_sprite16_mode							( reg_sprite16_mode							),
+		.reg_flat_interlace_mode					( reg_flat_interlace_mode					)
 	);
 
 	// --------------------------------------------------------------------
@@ -497,6 +502,7 @@ module vdp (
 		.h_count									( w_h_count									),
 		.v_count									( w_v_count									),
 		.has_scanline								( 1'b1										),
+		.field										( w_field									),
 		.vdp_r										( w_upscan_r								),
 		.vdp_g										( w_upscan_g								),
 		.vdp_b										( w_upscan_b								),
@@ -506,7 +512,10 @@ module vdp (
 		.display_r									( display_r									),
 		.display_g									( display_g									),
 		.display_b									( display_b									),
+		.reg_interlace_mode							( reg_interlace_mode						),
+		.reg_flat_interlace_mode					( reg_flat_interlace_mode					),
 		.reg_denominator							( 8'd200									),
-		.reg_normalize								( 8'd41										)
+		.reg_normalize								( 8'd41										),
+		.reg_50hz_mode								( reg_50hz_mode								)
 	);
 endmodule

@@ -68,6 +68,7 @@ module tb ();
 
 	wire				intr_line;				//	pulse
 	wire				intr_frame;				//	pulse
+	wire				pre_vram_refresh;
 
 	reg					reg_50hz_mode;
 	reg					reg_212lines_mode;
@@ -77,8 +78,13 @@ module tb ();
 	reg			[7:0]	reg_vertical_offset;
 	reg			[2:0]	reg_horizontal_offset_l;
 	reg			[8:3]	reg_horizontal_offset_h;
+	reg					reg_interleaving_mode;
+	reg			[7:0]	reg_blink_period;
+	reg					reg_interrupt_line_nonR23_mode;
 	wire		[2:0]	horizontal_offset_l;
 	wire		[8:3]	horizontal_offset_h;
+	wire				interleaving_page;
+	wire				blink;
 
 	// --------------------------------------------------------------------
 	//	DUT
@@ -107,6 +113,9 @@ module tb ();
 		reg_vertical_offset = 0;
 		reg_horizontal_offset_l = 0;
 		reg_horizontal_offset_h = 0;
+		reg_interleaving_mode = 0;
+		reg_blink_period = 0;
+		reg_interrupt_line_nonR23_mode = 0;
 
 		@( posedge clk );
 		@( posedge clk );

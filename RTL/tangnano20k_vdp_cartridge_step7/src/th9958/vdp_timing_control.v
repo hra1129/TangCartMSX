@@ -69,6 +69,7 @@ module vdp_timing_control (
 	output				intr_frame,				//	pulse
 	output				pre_vram_refresh,
 	output				vram_interleave,
+	output				field,
 
 	output		[17:0]	screen_mode_vram_address,
 	output				screen_mode_vram_valid,
@@ -119,7 +120,8 @@ module vdp_timing_control (
 	input				reg_sprite_nonR23_mode,
 	input				reg_interrupt_line_nonR23_mode,
 	input				reg_sprite_mode3,
-	input				reg_sprite16_mode
+	input				reg_sprite16_mode,
+	input				reg_flat_interlace_mode
 );
 	wire		[13:0]	w_screen_pos_x;			//	signed   (Coordinates not affected by scroll register)
 	wire		[ 9:0]	w_screen_pos_y;			//	signed   (Coordinates not affected by scroll register)
@@ -131,12 +133,14 @@ module vdp_timing_control (
 	wire				w_sprite_off;
 	wire				w_interleaving_page;
 	wire				w_blink;
+	wire				w_field;
 
 	// --------------------------------------------------------------------
 	//	Output assignment
 	// --------------------------------------------------------------------
 	assign screen_pos_x		= w_screen_pos_x;
 	assign screen_pos_y		= w_screen_pos_y;
+	assign field			= w_field;
 
 	// --------------------------------------------------------------------
 	//	Synchronous Signal Generator
@@ -168,7 +172,8 @@ module vdp_timing_control (
 		.horizontal_offset_l						( w_horizontal_offset_l						),
 		.horizontal_offset_h						( w_horizontal_offset_h						),
 		.interleaving_page							( w_interleaving_page						),
-		.blink										( w_blink									)
+		.blink										( w_blink									),
+		.field										( w_field									)
 	);
 
 	// --------------------------------------------------------------------
@@ -192,6 +197,7 @@ module vdp_timing_control (
 		.sprite_off									( w_sprite_off								),
 		.interleaving_page							( w_interleaving_page						),
 		.blink										( w_blink									),
+		.field										( w_field									),
 		.screen_mode								( screen_mode								),
 		.horizontal_offset_l						( w_horizontal_offset_l						),
 		.reg_screen_mode							( reg_screen_mode							),
@@ -203,7 +209,8 @@ module vdp_timing_control (
 		.reg_backdrop_color							( reg_backdrop_color						),
 		.reg_scroll_planes							( reg_scroll_planes							),
 		.reg_left_mask								( reg_left_mask								),
-		.reg_sprite_mode3							( reg_sprite_mode3							)
+		.reg_sprite_mode3							( reg_sprite_mode3							),
+		.reg_flat_interlace_mode					( reg_flat_interlace_mode					)
 	);
 
 	// --------------------------------------------------------------------

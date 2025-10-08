@@ -16,6 +16,7 @@ start:
 			di
 			call	screen1
 			call	sc1_interrupt
+			call	sc1_line_interrupt
 			ei
 			; 後始末
 			call	clear_key_buffer
@@ -288,6 +289,179 @@ sc1_interrupt::
 	scroll1:
 			db		0
 	scroll2:
+			db		0
+	h_keyi_new_end:
+			org		h_keyi_new_org + (h_keyi_new_end - h_keyi_new)
+			endscope
+
+; =============================================================================
+;	SCREEN1 line interrupt test
+;	input:
+;		none
+;	output:
+;		none
+;	break:
+;		AF
+;	comment:
+;		none
+; =============================================================================
+			scope	sc1_line_interrupt
+sc1_line_interrupt::
+			di
+			; 本体側の VDP が割り込みを発生させないように禁止にする
+			ld		c, 0x99
+			; 垂直同期割込を禁止する(R#1)
+			ld		a, 0x40
+			out		[c], a
+			ld		a, 0x81
+			out		[c], a
+			; 走査線割り込みを禁止する(R#0)
+			ld		a, 0x00
+			out		[c], a
+			ld		a, 0x80
+			out		[c], a
+			; 割り込み処理ルーチンを 4000h へ転送する (H_KEYI を呼ぶときに page0 は MAIN-ROM に切り替わっている)
+			ld		hl, h_keyi_new_org
+			ld		de, h_keyi_new
+			ld		bc, h_keyi_new_end - h_keyi_new
+			ldir
+			; 割り込みフックを設定
+			ld		a, 0xC3			; JP
+			ld		hl, h_keyi_new
+			ld		[h_keyi + 0], a
+			ld		[h_keyi + 1], hl
+			; 走査線番号を初期化
+			xor		a, a
+			ld		[interrupt_line], a
+	loop:
+			di
+			; 走査線割り込みのライン番号を指定する
+			ld		a, [io_vdp_port1]
+			ld		[my_vdp_port1], a
+			ld		c, a
+			ld		a, [interrupt_line]
+			out		[c], a
+			ld		a, 0x80 + 19
+			out		[c], a
+			; 走査線割り込みを許可する(R#0)
+			ld		a, 0x10
+			out		[c], a
+			ld		a, 0x80
+			out		[c], a
+			; フラグをクリア
+			xor		a, a
+			ld		[interrupt_flag], a
+			; フラグが立つか、タイムアウトするまで待つ
+			ld		de, 10000
+			ei
+	wait_loop:
+			ld		a, [interrupt_flag]
+			or		a, a
+			jr		nz, skip					; フラグが立っていたら待ちループを抜ける
+			dec		de
+			ld		a, e
+			or		a, d
+			jr		nz, wait_loop				; DE = A = 0 なら skip へ
+	skip:
+			; タイムアウトすると A = 0, フラグが立つと A = 1 になっている
+			di
+			ld		hl, [line_data_ptr]
+			ld		[hl], a
+			inc		hl
+			ld		[line_data_ptr], hl
+			; 次のラインへ
+			ld		a, [interrupt_line]
+			inc		a
+			ld		[interrupt_line], a
+			jr		z, exit_loop
+			; 走査線割り込みを禁止する(R#0)
+			ld		a, 0x00
+			out		[c], a
+			ld		a, 0x80
+			out		[c], a
+			jp		loop
+	exit_loop:
+			; スクロールを戻す
+			xor		a, a
+			out		[c], a
+			ld		a, 0x80 + 20
+			out		[c], a
+
+			xor		a, a
+			out		[c], a
+			ld		a, 0x80 + 23
+			out		[c], a
+
+			xor		a, a
+			out		[c], a
+			ld		a, 0x80 + 26
+			out		[c], a
+
+			xor		a, a
+			out		[c], a
+			ld		a, 0x80 + 27
+			out		[c], a
+
+			; VRAM に書き出す
+			ld		a, 0
+			out		[c], a
+			ld		a, 0x40 + 0x18
+			out		[c], a
+			ld		b, 0
+			ld		hl, line_data
+			dec		c
+	dump_loop:
+			ld		a, [hl]
+			inc		hl
+			add		a, 132
+			out		[c], a
+			djnz	dump_loop
+
+			; 割り込みフックを戻す
+			ld		a, 0xC9
+			ld		[h_keyi], a
+
+			call	wait_push_space_key
+
+			ret
+
+	line_data_ptr:
+			dw		line_data
+	interrupt_line:
+			db		0
+	line_data:
+			ds		256			; 256bytes
+	h_keyi_new_org:
+			org		0x4000
+	h_keyi_new:
+			; 走査線割り込みかどうかをチェック
+			; S#2
+			ld		a, [my_vdp_port1]
+			ld		c, a
+			ld		a, 1
+			out		[c], a
+			ld		a, 0x8F
+			out		[c], a
+			in		a, [c]
+			and		a, 1
+			jp		nz, line_interrupt
+			; R#15 = 0 に戻す
+			out		[c], a
+			ld		a, 0x8F
+			out		[c], a
+			; S#0 を読む
+			in		a, [c]
+			and		a, 0x80
+			ret
+			; 走査線割込
+	line_interrupt:
+			; 割り込み発生フラグを立てる
+			ld		a, 1
+			ld		[interrupt_flag], a
+			ret
+	my_vdp_port1:
+			db		0
+	interrupt_flag:
 			db		0
 	h_keyi_new_end:
 			org		h_keyi_new_org + (h_keyi_new_end - h_keyi_new)
