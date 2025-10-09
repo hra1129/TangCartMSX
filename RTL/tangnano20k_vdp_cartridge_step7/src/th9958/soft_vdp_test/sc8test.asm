@@ -66,8 +66,14 @@ screen8::
 			ld		hl, 0xFA00
 			call	set_sprite_attribute_table
 			; Sprite Pattern Generator Table
-			ld		hl, 0xF000
-			call	set_sprite_pattern_generator_table
+			; -- R#5 = 0x00
+			ld		a, 0x00
+			ld		e, 5
+			call	write_control_register
+			; -- R#11 = 0x2
+			ld		a, 0x02
+			ld		e, 11
+			call	write_control_register
 			; Pattern Name Table ‚ğƒNƒŠƒA
 			ld		hl, 0x0000
 			call	set_vram_write_address

@@ -390,7 +390,12 @@ module vdp_timing_control_screen_mode (
 						ff_vram_address <= w_pattern_generator_g23;
 					c_g6, c_g7:
 						//	Bitmap Pixels
-						ff_vram_address <= reg_flat_interlace_mode ? { w_pattern_name_g67_fil[17:1], 1'b1 } : { w_pattern_name_g67[17:1], 1'b1 };
+						if( ff_vram_interleave ) begin
+							ff_vram_address <= reg_flat_interlace_mode ? { w_pattern_name_g67_fil[17:3], 3'd1 } : { w_pattern_name_g67[17:3], 3'd1 };
+						end
+						else begin
+							ff_vram_address <= reg_flat_interlace_mode ? { w_pattern_name_g67_fil[17:3], 3'd4 } : { w_pattern_name_g67[17:3], 3'd4 };
+						end
 					default:
 						ff_vram_address <= 18'd0;
 					endcase

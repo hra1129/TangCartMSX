@@ -70,6 +70,11 @@ if errorlevel 1 pause ==========================
 
 zma sp3test.asm  SP3TEST.COM
 if errorlevel 1 pause ==========================
+move zma.log sp3test.log
+
+zma sp3test2.asm  SP3TEST2.COM
+if errorlevel 1 pause ==========================
+move zma.log sp3test2.log
 
 zma sp2test2.asm  SP2TEST2.COM
 if errorlevel 1 pause ==========================
@@ -218,6 +223,11 @@ if exist D:\download\msx\DOS2\MSXDOS2 (
 		del D:\download\msx\DOS2\MSXDOS2\SC1INTR2.COM
 	)
 	copy SC1INTR2.COM  D:\download\msx\DOS2\MSXDOS2\
+
+	if exist D:\download\msx\DOS2\MSXDOS2\SP3TEST2.COM (
+		del D:\download\msx\DOS2\MSXDOS2\SP3TEST2.COM
+	)
+	copy SP3TEST2.COM  D:\download\msx\DOS2\MSXDOS2\
 )
 
 pause

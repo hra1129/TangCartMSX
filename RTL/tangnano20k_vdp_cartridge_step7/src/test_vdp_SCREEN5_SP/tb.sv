@@ -1060,8 +1060,8 @@ module tb ();
 			write_io( vdp_io0, 8'd00 );		//	Yh, SZ=0
 			write_io( vdp_io0, 8'd16 );		//	MGY=16
 			write_io( vdp_io0, 8'd00 );		//	TP=0, RVY=0, RVX=0, PS=0
-			write_io( vdp_io0, 8'd00 );		//	Xl=0
-			write_io( vdp_io0, 8'd00 );		//	Xh
+			write_io( vdp_io0, 8'hFE );		//	Xl=-2
+			write_io( vdp_io0, 8'h03 );		//	Xh
 			write_io( vdp_io0, 8'd16 );		//	MGX=16
 			write_io( vdp_io0, 8'd00 );		//	Pattern (0,0)
 		end
@@ -1116,9 +1116,9 @@ module tb ();
 		write_io( vdp_io0, 8'hC0 );		//	Yh, SZ=3
 		write_io( vdp_io0, 8'd128 );	//	MGY=128
 		write_io( vdp_io0, 8'd00 );		//	TP=0, RVY=0, RVX=0, PS=0
-		write_io( vdp_io0, 8'd00 );		//	Xl=0
-		write_io( vdp_io0, 8'd00 );		//	Xh
-		write_io( vdp_io0, 8'd90 );		//	MGX=90
+		write_io( vdp_io0, 8'hFE );		//	Xl=-2
+		write_io( vdp_io0, 8'h03 );		//	Xh
+		write_io( vdp_io0, 8'd16 );		//	MGX=16
 		write_io( vdp_io0, 8'd00 );		//	Pattern (0,0)
 
 		$display( "Runing..." );
