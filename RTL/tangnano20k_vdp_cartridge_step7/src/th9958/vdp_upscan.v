@@ -63,8 +63,11 @@ module vdp_upscan (
 	input		[ 9:0]	screen_pos_y,				//	signed
 	input		[11:0]	h_count,
 	input		[ 9:0]	v_count,
+	input				field,
 	// register
 	input		[ 3:0]	reg_display_adjust,
+	input				reg_interleaving_mode,
+	input				reg_flat_interlace_mode,
 	// input pixel
 	input		[7:0]	vdp_r,
 	input		[7:0]	vdp_g,
@@ -91,8 +94,8 @@ module vdp_upscan (
 	// --------------------------------------------------------------------
 	//	Line buffer
 	// --------------------------------------------------------------------
-	assign w_write_pos		= { screen_pos_x[13:3] } + c_left_pos - { 6'd0, ~reg_display_adjust[3], reg_display_adjust[2:0], 1'd0 };
-	assign w_read_pos		= h_count[11:2];
+	assign w_write_pos			= { screen_pos_x[13:3] } + c_left_pos - { 6'd0, ~reg_display_adjust[3], reg_display_adjust[2:0], 1'd0 };
+	assign w_read_pos			= h_count[11:2];
 
 	vdp_upscan_line_buffer u_even_line_buffer (
 		.clk			( clk				),
@@ -104,7 +107,7 @@ module vdp_upscan (
 	);
 
 	assign w_even_address	= v_count[1] ? w_read_pos : w_write_pos[9:0];
-	assign w_even_re		= ( (v_count[1] == 1'b1) && (h_count[0]   == 1'b0) );
+	assign w_even_re		= ( (v_count[1] == 1'b1) && (h_count[0] == 1'b0) );
 	assign w_even_we		= ( (v_count[1] == 1'b0) && (w_write_pos[10] == 1'b0) && (h_count[2:0] == 3'd7) );
 	assign w_even_d			= { vdp_r, vdp_g, vdp_b };
 
@@ -118,7 +121,7 @@ module vdp_upscan (
 	);
 
 	assign w_odd_address	= v_count[1] ? w_write_pos[9:0] : w_read_pos;
-	assign w_odd_re			= ( (v_count[1] == 1'b0) && (h_count[0]   == 1'b0) );
+	assign w_odd_re			= ( (v_count[1] == 1'b0) && (h_count[0] == 1'b0) );
 	assign w_odd_we			= ( (v_count[1] == 1'b1) && (w_write_pos[10] == 1'b0) && (h_count[2:0] == 3'd7) );
 	assign w_odd_d			= { vdp_r, vdp_g, vdp_b };
 

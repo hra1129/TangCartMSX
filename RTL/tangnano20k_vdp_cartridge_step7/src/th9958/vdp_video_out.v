@@ -140,6 +140,9 @@ module vdp_video_out (
 	reg				ff_v_en;
 	reg				ff_hs;
 	reg				ff_vs;
+	wire			w_interlace;
+
+	assign w_interlace	= reg_interlace_mode | reg_flat_interlace_mode;
 
 	// --------------------------------------------------------------------
 	//	Active period
@@ -296,7 +299,7 @@ module vdp_video_out (
 	);
 
 	assign w_x_position_w	= h_count[11:2];
-	assign w_is_write_odd	= v_count[0] ^ ((reg_interlace_mode | reg_flat_interlace_mode) & field);
+	assign w_is_write_odd	= v_count[0];
 
 	// --------------------------------------------------------------------
 	//	Filter coefficient
@@ -346,8 +349,9 @@ module vdp_video_out (
 	//	Scanline
 	// --------------------------------------------------------------------
 	assign w_scanline_gain	= { 2'd0, w_bilinear_r } + { 2'd0, w_bilinear_g } + { 2'd0, w_bilinear_b };
-	assign w_gain			= (has_scanline == 1'b0 ) ? 8'd128:
-							  (~v_count[0]          ) ? 8'd128: { 1'b0, w_scanline_gain[9:3] };
+	assign w_gain			= (has_scanline == 1'b0  ) ? 8'd128:
+							  (w_interlace           ) ? ( (v_count[0] == ~field) ? 8'd128: 8'd0 ):
+							  (v_count[0]   == 1'b0  ) ? 8'd128: { 1'b0, w_scanline_gain[9:3] };
 
 	assign w_display_r	= ff_bilinear_r * ff_gain;
 	assign w_display_g	= ff_bilinear_g * ff_gain;

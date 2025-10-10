@@ -81,6 +81,7 @@ module vdp_timing_control_ssg (
 	input		[2:0]	reg_horizontal_offset_l,
 	input		[8:3]	reg_horizontal_offset_h,
 	input				reg_interleaving_mode,
+	input				reg_flat_interlace_mode,
 	input		[7:0]	reg_blink_period,
 	input				reg_interrupt_line_nonR23_mode,
 	output		[2:0]	horizontal_offset_l,
@@ -127,6 +128,9 @@ module vdp_timing_control_ssg (
 	reg					ff_field;
 	wire		[3:0]	w_next_blink_counter;
 	reg			[9:0]	ff_top_line;
+	wire				w_half_line_shift;
+
+	assign w_half_line_shift	= field & (reg_interlace_mode | reg_flat_interlace_mode);
 
 	// --------------------------------------------------------------------
 	//	Latch horizontal scroll register
@@ -164,7 +168,7 @@ module vdp_timing_control_ssg (
 		if( !reset_n ) begin
 			ff_half_count <= 13'd0;
 		end
-		else if( ff_v_count[0] && w_h_count_end ) begin
+		else if( (ff_v_count[0] == 1'b1) && w_h_count_end ) begin
 			ff_half_count <= 13'd0;
 		end
 		else begin

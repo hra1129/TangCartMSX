@@ -167,6 +167,7 @@ module vdp_timing_control (
 		.reg_horizontal_offset_l					( reg_horizontal_offset_l					),
 		.reg_horizontal_offset_h					( reg_horizontal_offset_h					),
 		.reg_interleaving_mode						( reg_interleaving_mode						),
+		.reg_flat_interlace_mode					( reg_flat_interlace_mode					),
 		.reg_blink_period							( reg_blink_period							),
 		.reg_interrupt_line_nonR23_mode				( reg_interrupt_line_nonR23_mode			),
 		.horizontal_offset_l						( w_horizontal_offset_l						),

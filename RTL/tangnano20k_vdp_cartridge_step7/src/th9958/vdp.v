@@ -485,12 +485,15 @@ module vdp (
 		.h_count									( w_h_count									),
 		.v_count									( w_v_count									),
 		.reg_display_adjust							( reg_display_adjust[3:0]					),
+		.reg_interleaving_mode						( reg_interleaving_mode						),
+		.reg_flat_interlace_mode					( reg_flat_interlace_mode					),
 		.vdp_r										( w_vdp_r									),
 		.vdp_g										( w_vdp_g									),
 		.vdp_b										( w_vdp_b									),
 		.upscan_r									( w_upscan_r								),
 		.upscan_g									( w_upscan_g								),
-		.upscan_b									( w_upscan_b								)
+		.upscan_b									( w_upscan_b								),
+		.field										( w_field									)
 	);
 
 	// --------------------------------------------------------------------
