@@ -330,6 +330,9 @@ sp3_move_test::
 			; ‰E‚ÖˆÚ“®
 			ld		hl, [attribute0_x]
 			inc		hl
+			ld		a, h
+			and		a, 0x03
+			ld		h, a
 			ld		[attribute0_x], hl
 			ld		[attribute1_x], hl
 			ld		[attribute2_x], hl
@@ -421,6 +424,9 @@ sp3_move_test2::
 			; ‰E‚ÖˆÚ“®
 			ld		hl, [attribute0_x]
 			inc		hl
+			ld		a, h
+			and		a, 0x03
+			ld		h, a
 			ld		[attribute0_x], hl
 			ld		[attribute1_x], hl
 			ld		[attribute2_x], hl

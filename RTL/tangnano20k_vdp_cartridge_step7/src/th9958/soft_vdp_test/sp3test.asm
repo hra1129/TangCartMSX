@@ -302,6 +302,9 @@ sp3_move_test::
 			; ‰E‚ÖˆÚ“®
 			ld		hl, [attribute0_x]
 			inc		hl
+			ld		a, h
+			and		a, 0x03
+			ld		h, a
 			ld		[attribute0_x], hl
 			ld		[attribute1_x], hl
 			ld		[attribute2_x], hl
@@ -329,7 +332,7 @@ sp3_move_test::
 	attribute0_color:
 			db		0					; Transparent(2), ReverseY(1), ReverseX(1), Palette Set(4)
 	attribute0_x:
-			dw		-16					; X
+			dw		-16 & 0x3FF			; X
 	attribute0_mgx:
 			db		16					; MGX
 	attribute0_pattern:
@@ -342,7 +345,7 @@ sp3_move_test::
 	attribute1_color:
 			db		0x40				; Transparent(2), ReverseY(1), ReverseX(1), Palette Set(4)
 	attribute1_x:
-			dw		-16					; X
+			dw		-16 & 0x3FF			; X
 	attribute1_mgx:
 			db		16					; MGX
 	attribute1_pattern:
@@ -355,7 +358,7 @@ sp3_move_test::
 	attribute2_color:
 			db		0x80				; Transparent(2), ReverseY(1), ReverseX(1), Palette Set(4)
 	attribute2_x:
-			dw		-16					; X
+			dw		-16 & 0x3FF			; X
 	attribute2_mgx:
 			db		16					; MGX
 	attribute2_pattern:
@@ -368,7 +371,7 @@ sp3_move_test::
 	attribute3_color:
 			db		0xC0				; Transparent(2), ReverseY(1), ReverseX(1), Palette Set(4)
 	attribute3_x:
-			dw		-16					; X
+			dw		-16 & 0x3FF			; X
 	attribute3_mgx:
 			db		16					; MGX
 	attribute3_pattern:
@@ -393,6 +396,9 @@ sp3_move_test2::
 			; ‰E‚ÖˆÚ“®
 			ld		hl, [attribute0_x]
 			inc		hl
+			ld		a, h
+			and		a, 0x03
+			ld		h, a
 			ld		[attribute0_x], hl
 			ld		[attribute1_x], hl
 			ld		[attribute2_x], hl
@@ -420,7 +426,7 @@ sp3_move_test2::
 	attribute0_color:
 			db		0					; Transparent(2), ReverseY(1), ReverseX(1), Palette Set(4)
 	attribute0_x:
-			dw		-16					; X
+			dw		-16 & 0x3FF			; X
 	attribute0_mgx:
 			db		16					; MGX
 	attribute0_pattern:
@@ -433,7 +439,7 @@ sp3_move_test2::
 	attribute1_color:
 			db		0x10				; Transparent(2), ReverseY(1), ReverseX(1), Palette Set(4)
 	attribute1_x:
-			dw		-16					; X
+			dw		-16 & 0x3FF			; X
 	attribute1_mgx:
 			db		16					; MGX
 	attribute1_pattern:
@@ -446,7 +452,7 @@ sp3_move_test2::
 	attribute2_color:
 			db		0x20				; Transparent(2), ReverseY(1), ReverseX(1), Palette Set(4)
 	attribute2_x:
-			dw		-16					; X
+			dw		-16 & 0x3FF			; X
 	attribute2_mgx:
 			db		16					; MGX
 	attribute2_pattern:
@@ -459,7 +465,7 @@ sp3_move_test2::
 	attribute3_color:
 			db		0x30				; Transparent(2), ReverseY(1), ReverseX(1), Palette Set(4)
 	attribute3_x:
-			dw		-16					; X
+			dw		-16 & 0x3FF			; X
 	attribute3_mgx:
 			db		16					; MGX
 	attribute3_pattern:

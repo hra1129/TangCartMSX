@@ -311,6 +311,94 @@ module tb ();
 	endtask: write_io_ex
 
 	// --------------------------------------------------------------------
+	task wait_vdp_command;
+		logic [7:0] rdata;
+		integer		time_out;
+
+		write_io( vdp_io1, 8'd2 );
+		write_io( vdp_io1, 8'h80 + 8'd15 );
+
+		time_out	= 1000000;
+		forever begin
+			read_io( vdp_io1, rdata );
+			if( rdata[0] == 1'b0 ) begin
+				break;
+			end
+			@( posedge clk14m );
+			time_out = time_out - 1;
+			if( time_out == 0 ) begin
+				$error( "Time out in wait_vdp_command" );
+				$finish;
+			end
+		end
+
+		write_io( vdp_io1, 8'd0 );
+		write_io( vdp_io1, 8'h80 + 8'd15 );
+	endtask
+
+	// --------------------------------------------------------------------
+	task read_io(
+		input	[15:0]	address,
+		output	[7:0]	rdata
+	);
+		fork
+			//	CPU clock
+			begin
+				//	T1
+				s_state		= "T1";
+				slot_clk	= 1'b1;
+				#(cpu_clk_base/2) slot_clk	= 1'b0;
+				//	T2
+				s_state		= "T2";
+				#(cpu_clk_base/2) slot_clk	= 1'b1;
+				#(cpu_clk_base/2) slot_clk	= 1'b0;
+				//	TW
+				s_state		= "TW";
+				#(cpu_clk_base/2) slot_clk	= 1'b1;
+				#(cpu_clk_base/2) slot_clk	= 1'b0;
+				//	T3
+				s_state		= "T3";
+				#(cpu_clk_base/2) slot_clk	= 1'b1;
+				#(cpu_clk_base/2) slot_clk	= 1'b0;
+				//	T4
+				s_state		= "T4";
+				#(cpu_clk_base/2) slot_clk	= 1'b1;
+				#(cpu_clk_base/2) slot_clk	= 1'b0;
+				//	T5
+				s_state		= "T5";
+				#(cpu_clk_base/2) slot_clk	= 1'b1;
+				#(cpu_clk_base/2) slot_clk	= 1'b0;
+			end
+			//	Address
+			begin
+				#170ns slot_a = address;
+			end
+			//	/IORQ
+			begin
+				slot_iorq_n = 1'b1;
+				//	T1
+				@( negedge slot_clk );
+				@( posedge slot_clk );
+				#135ns slot_iorq_n = 1'b0;
+				@( negedge slot_clk );
+				@( negedge slot_clk );
+				@( negedge slot_clk );
+				#145ns slot_iorq_n = 1'b1;
+			end
+			//	/RD
+			begin
+				slot_rd_n = 1'b1;
+				//	T1
+				@( negedge slot_iorq_n );
+				#10ns slot_rd_n = 1'b0;
+				@( posedge slot_iorq_n );
+				rdata = slot_d;
+				slot_rd_n = 1'b1;
+			end
+		join
+	endtask
+
+	// --------------------------------------------------------------------
 	//	Test bench
 	// --------------------------------------------------------------------
 	initial begin
@@ -342,36 +430,37 @@ module tb ();
 		//	VDP R#1 = 0x40
 		write_io( vdp_io1, 8'h40 );
 		write_io( vdp_io1, 8'h81 );
+		//	VDP R#7 = 0x07
+		write_io( vdp_io1, 8'h07 );
+		write_io( vdp_io1, 8'h87 );
+		//	VDP R#8 = 0x08
+		write_io( vdp_io1, 8'h08 );
+		write_io( vdp_io1, 8'h88 );
+		//	VDP R#9 = 0x00
+		write_io( vdp_io1, 8'h00 );
+		write_io( vdp_io1, 8'h89 );
 		//	VDP R#20 = 0xFF
 		write_io( vdp_io1, 8'hFF );
 		write_io( vdp_io1, 8'h80 + 8'd20 );
-
-		$display( "[test001] Write VRAM" );
-		//	VRAM 0x00000 ... 0x07FFF = 0x00
+		//	VDP R#21 = 0x00
 		write_io( vdp_io1, 8'h00 );
-		write_io( vdp_io1, 8'h40 );
+		write_io( vdp_io1, 8'h80 + 8'd21 );
+		//	VDP R#02 = 0x1F
+		write_io( vdp_io1, 8'h1F );
+		write_io( vdp_io1, 8'h82 );
+		//	VDP R#05 = (0xFA00 >> 7) | 0x03
+		write_io( vdp_io1, (8'hFA00 >> 7) | 8'h03 );
+		write_io( vdp_io1, 8'h85 );
+		//	VDP R#11 = 0
+		write_io( vdp_io1, 8'h00 );
+		write_io( vdp_io1, 8'h80 + 8'd11 );
+		//	VDP R#6 = 0x20						; 0x10000
+		write_io( vdp_io1, 8'h20 );
+		write_io( vdp_io1, 8'h86 );
 
-		for( blue = 0; blue < 4; blue = blue + 1 ) begin
-			for( green = 0; green < 8; green = green + 1 ) begin
-				for( lines = 0; lines < 6; lines = lines + 1 ) begin
-					for( red = 0; red < 8; red = red + 1 ) begin
-						pixel = (green << 5) | (red << 2) | blue;
-						repeat( 32 ) write_io( vdp_io0, pixel );
-					end
-				end
-			end
-		end
-
-		//	HMMV
-		$display( "[test002] HMMV" );
+		$display( "[test001] Clear VRAM" );
 		write_io( vdp_io1, 8'd32 );
 		write_io( vdp_io1, 8'h80 + 8'd17 );
-		//	SX
-		write_io( vdp_io3, 8'd0 );
-		write_io( vdp_io3, 8'd0 );
-		//	SY
-		write_io( vdp_io3, 8'd0 );
-		write_io( vdp_io3, 8'd0 );
 		//	DX
 		write_io( vdp_io3, 8'd0 );
 		write_io( vdp_io3, 8'd0 );
@@ -379,17 +468,39 @@ module tb ();
 		write_io( vdp_io3, 8'd0 );
 		write_io( vdp_io3, 8'd0 );
 		//	NX
-		write_io( vdp_io3, 8'd50 );
 		write_io( vdp_io3, 8'd0 );
+		write_io( vdp_io3, 8'd1 );
 		//	NY
-		write_io( vdp_io3, 8'd40 );
 		write_io( vdp_io3, 8'd0 );
+		write_io( vdp_io3, 8'd4 );
 		//	CLR
-		write_io( vdp_io3, 8'd123 );
+		write_io( vdp_io3, 8'h44 );
 		//	ARG
 		write_io( vdp_io3, 8'd0 );
 		//	CMD
 		write_io( vdp_io3, 8'hC0 );
+		$display( "[test001] Wait complete VDP command." );
+		wait_vdp_command();
+
+		//	Clear Sprite Attribute (0x10000~)
+		write_io( vdp_io1, 8'h04 );
+		write_io( vdp_io1, 8'h8E );
+		write_io( vdp_io1, 8'h00 );
+		write_io( vdp_io1, 8'h40 );
+		repeat( 64 * 8 ) write_io( vdp_io0, 8'd216 );
+
+		//	Write Sprite Attribute (0x10000~)
+		write_io( vdp_io1, 8'h04 );
+		write_io( vdp_io1, 8'h8E );
+		write_io( vdp_io1, 8'h00 );
+		write_io( vdp_io1, 8'h40 );
+
+		write_io( vdp_io0, 8'd00 );			// Yl
+		write_io( vdp_io0, 8'd00 );			// Yh
+		write_io( vdp_io0, 8'd16 );			// MGY
+		write_io( vdp_io0, 8'h00 );			// PaletteSet
+		write_io( vdp_io0, 8'hEF );			// Xl
+		write_io( vdp_io0, 8'h07 );			// Xh
 
 		repeat(5000000) @( posedge clk14m );
 

@@ -352,7 +352,7 @@ module vdp_sprite_info_collect (
 
 	assign makeup_plane		= ff_current_plane[3:0];
 	assign color			= (reg_sprite_mode3 || !sprite_mode2) ? w_selected_color: vram_rdata8;
-	assign plane_x			= ff_active ? (reg_sprite_mode3 ? w_selected_m3_x: { 2'd0, w_selected_m12_x }) : 8'd0;
+	assign plane_x			= ff_active ? (reg_sprite_mode3 ? w_selected_m3_x: { 2'd0, w_selected_m12_x }) : 10'd0;
 	assign mgx				= ff_active ? w_selected_m3_mgx : 8'd0;
 	assign color_plane_x_en	= (ff_active && w_sub_phase == 4'd15 && ff_state == 2'd1);
 	assign pattern			= reg_sprite_mode3 ? vram_rdata:
