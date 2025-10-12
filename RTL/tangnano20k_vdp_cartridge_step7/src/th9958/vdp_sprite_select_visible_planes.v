@@ -77,6 +77,10 @@ module vdp_sprite_select_visible_planes (
 	output		[4:0]	selected_count,
 	output				start_info_collect,
 
+	output				sprite_overmap,
+	output		[4:0]	sprite_overmap_id,
+	input				clear_sprite_collision,
+
 	input				sprite_mode2,
 	input				reg_display_on,
 	input				reg_sprite_disable,
@@ -94,7 +98,7 @@ module vdp_sprite_select_visible_planes (
 	wire		[7:0]	w_pixel_pos_y;
 	reg			[5:0]	ff_current_plane_num;		//	Plane#0...#63
 	reg					ff_vram_valid;
-	reg			[4:0]	ff_selected_count;
+	reg			[4:0]	ff_selected_count;			//	表示するスプライトのカウント 0～16
 	reg					ff_select_finish;
 	reg					ff_selected_en;
 	reg			[31:0]	ff_attribute;
@@ -110,6 +114,8 @@ module vdp_sprite_select_visible_planes (
 	wire		[17:0]	w_sprite_mode1_attribute;
 	wire		[17:0]	w_sprite_mode2_attribute;
 	wire		[17:0]	w_sprite_mode3_attribute;
+	reg					ff_sprite_overmap;
+	reg			[4:0]	ff_sprite_overmap_id;
 
 	// --------------------------------------------------------------------
 	//	Phase
@@ -222,10 +228,40 @@ module vdp_sprite_select_visible_planes (
 		end
 	end
 
+	always @( posedge clk or negedge reset_n ) begin
+		if( !reset_n ) begin
+			ff_sprite_overmap		<= 1'b0;
+			ff_sprite_overmap_id	<= 5'd0;
+		end
+		else if( ff_sprite_overmap ) begin
+			if( clear_sprite_collision ) begin
+				//	Clear overmap flag when Read S#0
+				ff_sprite_overmap	<= 1'b0;
+			end
+			else begin
+				//	hold
+			end
+		end
+		else if( !screen_v_active || !screen_h_active || !reg_display_on ) begin
+			//	hold
+		end
+		else if( w_phase == 3'd3 || w_phase == 3'd5 ) begin
+			if( w_sub_phase == 4'd3 ) begin
+				if( !w_invisible && w_selected_full ) begin
+					ff_sprite_overmap		<= 1'b1;
+				end
+				ff_sprite_overmap_id	<= ff_current_plane_num[4:0];
+			end
+		end
+	end
+
 	assign selected_en				= ff_selected_en;
 	assign selected_plane_num		= ff_current_plane_num;
 	assign selected_attribute[7:0]	= reg_sprite_mode3 ? w_offset_y[7:0]: ( reg_sprite_magify ? { 3'd0, w_offset_y[4:1] }: { 3'd0, w_offset_y[3:0] } );
 	assign selected_attribute[31:8]	= ff_attribute[31:8];
 	assign selected_count			= ff_selected_count;
 	assign start_info_collect		= (screen_v_active && screen_pos_x[13:4] == 10'd259 && w_sub_phase == 4'd14);
+
+	assign sprite_overmap			= ff_sprite_overmap;
+	assign sprite_overmap_id		= ff_sprite_overmap_id;
 endmodule

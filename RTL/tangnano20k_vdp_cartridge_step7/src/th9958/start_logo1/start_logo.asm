@@ -7,14 +7,13 @@
 
 				org			0x0100
 
-vdp_port0		:=			0x98
-vdp_port1		:=			0x99
-vdp_port2		:=			0x9A
-vdp_port3		:=			0x9B
+bdos			:=			0x0005
+vdp_port0		:=			0x88
+vdp_port1		:=			0x89
+vdp_port2		:=			0x8A
+vdp_port3		:=			0x8B
 rtc_address		:=			0xB4
 rtc_data		:=			0xB5
-
-work_area		:=			0xF975				; PLAY文のワークエリア 384byte
 
 ; -----------------------------------------------------------------------------
 ; Initialize VDP
@@ -25,17 +24,20 @@ init_vdp::
 				call		write_vdp_regs
 
 vdp_init_data::
-				db			0x80 |  1, 0x23				; R#1  = モードレジスタ SCREEN6, 画面非表示
+;				db			0x80 |  1, 0x23				; R#1  = モードレジスタ SCREEN6, 画面非表示
+				db			0x80 |  1, 0x43				; R#1  = モードレジスタ SCREEN6, 画面表示, 割り込み禁止
 				db			0x80 |  0, 0x08				; R#0  = モードレジスタ SCREEN6
-				db			0x80 |  8, 0x28				; R#8  = モードレジスタ palette0は不透明
-				db			0x80 |  9, 0x00				; R#9  : モードレジスタ
-				db			0x80 |  2, 0x1F | (1 << 5)	; R#2  : パターンネームテーブル (表示ページ 1)
+;				db			0x80 |  2, 0x1F | (1 << 5)	; R#2  : パターンネームテーブル (表示ページ 1)
+				db			0x80 |  2, 0x1F | (0 << 5)	; R#2  : パターンネームテーブル (表示ページ 0)
 				db			0x80 |  5, 0x7780 >> 7		; R#5  : スプライトアトリビュートテーブルの下位
-				db			0x80 | 11, 0x00				; R#11 : スプライトアトリビュートテーブルの上位
 				db			0x80 |  6, 0x7800 >> 11		; R#6  : スプライトパターンジェネレータテーブルのアドレス
-				db			0x80 |  7, 0x55				; R#7  : 背景色 
+				db			0x80 |  7, 0x05				; R#7  : 背景色 
+				db			0x80 |  8, 0x2A				; R#8  = モードレジスタ palette0は不透明, スプライト非表示
+				db			0x80 |  9, 0x00				; R#9  : モードレジスタ
+				db			0x80 | 11, 0x00				; R#11 : スプライトアトリビュートテーブルの上位
 				db			0x80 | 15, 2				; R#15 : ステータスレジスタ 2
 				db			0x80 | 16, 0				; R#16 : パレットレジスタ 0
+				db			0x80 | 20, 0x01				; R#20 : VDP Command 高速モード
 				db			0x80 | 25, 3				; R#25 : モードレジスタ
 				db			0x80 | 26, 0x20				; R#26 : 水平スクロールレジスタ
 				db			0x80 | 27, 0x01				; R#27 : 水平スクロールレジスタ
@@ -51,11 +53,11 @@ vdp_init_data::
 				db			0x80 | 45, 0				; R#45 : ARG = 0
 				db			0x80 | 46, 0b11000000		; R#46 : CMR = HMMV
 				db			0x00
+
 wait_vdp_command:
 				in			a, [vdp_port1]
 				rrca
 				jr			c, wait_vdp_command
-
 				endscope
 
 
@@ -118,9 +120,7 @@ init_palette::
 				call		set_write_vram_address
 
 				pop			hl
-				;ld			hl, sprite_attrib
 				ld			bc, (sprite_attrib_size << 8) | vdp_port0
-				;otir
 				endscope
 
 ; -----------------------------------------------------------------------------
@@ -131,7 +131,7 @@ decompress_logo_image::
 				call		otir_and_write_vdp_regs
 
 				db			0x80 | 25, 3		; MSK = 1, SP2 = 1
-				db			0x80 |  2, 0x3F		; set page 1
+;				db			0x80 |  2, 0x3F		; set page 1
 _run_lmcm_command:								; dummy execution
 				db			0x80 | 46, 0xA0
 _run_lmmc_command:
@@ -226,161 +226,11 @@ wait_tansfer_ready::
 				jr			c, loop
 _lmmc_end:
 				pop			de								; dump return address
-				endscope
 
-; -----------------------------------------------------------------------------
-; アニメーション処理
-; -----------------------------------------------------------------------------
-				scope		animation_process
-animation_process::
-				call		_fill_work_area
-				dw			0x00FF, 0x0120
-
-_wait_vsync1:
-				in			a, [vdp_port1]
-				and			a, 0x40
-				jr			z, _wait_vsync1
-_wait_vsync2:
-				in			a, [vdp_port1]
-				and			a, 0x40
-				jr			nz, _wait_vsync2
-
-				call		write_vdp_regs
-
-				db			0x80 | 15, 0		; R#15 = 0 (S#0)
-				db			0x80 |  1, 0x63		; R#1  = 63h : 画面表示ON
-				db			0x00
-
-				ld			bc, (21 << 8) | vdp_port3
-_main_loop:
-				push		bc
-
-
-; -----------------------------------------------------------------------------
-; 水平スクロールレジスタを更新する
-; -----------------------------------------------------------------------------
-set_scroll:
-				ld			b, 80
-				ld			hl, work_area + 2
-_line_loop:
-				ld			d, [hl]		; R#26の値
-				inc			hl
-				ld			e, [hl]		; R#27の値
-				inc			hl
-				inc			hl
-				inc			hl
-
-				ld			a, 26
-				out			[vdp_port1], a
-				ld			a, 0x80 | 17
-				out			[vdp_port1], a			; R#17 = 26
-
-				in			a, [vdp_port1]
-_wait_clash_sprite:
-				in			a, [vdp_port1]			; S#0
-				and			a, 0x20
-				jp			z, _wait_clash_sprite
-
-				out			[c], d					; R#26
-				out			[c], e					; R#27
-				djnz		_line_loop
-
-				ld			a, 26
-				out			[vdp_port1], a
-				ld			a, 0x80 | 17
-				out			[vdp_port1], a			; R#17 = 26
-
-				out			[c], b					; R#26 = 0
-				out			[c], b					; R#27 = 0
-
-_update_scroll_position:
-				ld			ix, work_area
-				ld			iy, animation_data
-				ld			d, b				; D = B = 0
-				ld			b, 40
-_update_scroll_loop:
-				; 値が減っていくライン
-				ld			l, [ix + 0]
-				ld			h, [ix + 1]
-				ld			e, [iy + 0]
-				;or			a, a				; Cy = 0
-				sbc			hl, de
-				jr			nc, _not_borrow1
-				ld			l, d
-				ld			h, d
-_not_borrow1:
-				call		calc_reg_value
-
-				; 値が増えていくライン
-				ld			l, [ix + 0]
-				ld			h, [ix + 1]
-				ld			e, [iy + 0]
-				add			hl, de
-				ld			a, h
-				cp			a, 2
-				jr			c, _not_carry1
-				ld			hl, 512
-_not_carry1:
-				call		calc_reg_value
-				djnz		_update_scroll_loop
-
-				pop			bc
-				djnz		_main_loop
-
-				call		write_vdp_regs
-
-				db			0x80 | 25, 0		; R#25 = 0
-				db			0x80 |  2, 0x1F		; R#2  = 1Fh : 表示ページ0
-				db			0x00
-
-				call		_fill_work_area
-				dw			0, 0
+				; ★
 				ei
-				ret
-
-_fill_work_area:
-				pop			hl
-				ld			de, work_area
-				push		de
-				ld			bc, 4
-				ldir
-				ex			[sp], hl
-				ld			bc, (80 - 1) * 4
-				ldir
-				ret
-
-				endscope
-
-; -----------------------------------------------------------------------------
-; 水平スクロールレジスタに設定する値に変換する
-; -----------------------------------------------------------------------------
-				scope		calc_reg_value
-calc_reg_value::
-				ld			[ix + 0], l
-				ld			[ix + 1], h
-				; R#26 の値
-				dec			hl								; HL = [???????][S8][S7][S6][S5][S4][S3][S2][S1][S0]
-				ld			a, l							; A  = [S7][S6][S5][S4][S3][S2][S1][S0]
-				rrc			h								; Cy = [S8]
-				rra											; A  = [S8][S7][S6][S5][S4][S3][S2][S1]
-				rra											; A  = [? ][S8][S7][S6][S5][S4][S3][S2]
-				rra											; A  = [? ][? ][S8][S7][S6][S5][S4][S3]
-				inc			a
-				and			a, 0x3F							; A  = [0 ][0 ][S8][S7][S6][S5][S4][S3]
-				ld			[ix + 2], a
-
-				; R#27 の値
-				ld			a, 7
-				sub			a, l							; A  = 7 - [?????][S2][S1][S0]
-				and			a, 0x07
-				ld			[ix + 3], a
-
-				inc			ix
-				inc			ix
-				inc			ix
-				inc			ix
-				inc			iy
-				ret
+				ld			c, 0
+				call		5
 				endscope
 
 ; -----------------------------------------------------------------------------
@@ -475,52 +325,6 @@ set_write_vram_address::
 				ret
 				endscope
 
-
-; -----------------------------------------------------------------------------
-; アニメーションデータ
-; -----------------------------------------------------------------------------
-animation_data::
-				db			0x13, 0x0D
-				db			0x15, 0x12
-				db			0x14, 0x0E
-				db			0x10, 0x17
-				db			0x13, 0x11
-				db			0x15, 0x11
-				db			0x0E, 0x0D
-				db			0x11, 0x15
-				db			0x0C, 0x11
-				db			0x13, 0x11
-				db			0x15, 0x15
-				db			0x12, 0x0C
-				db			0x0F, 0x10
-				db			0x0E, 0x0E
-				db			0x15, 0x0D
-				db			0x0F, 0x11
-				db			0x11, 0x11
-				db			0x17, 0x14
-				db			0x0D, 0x0D
-				db			0x0C, 0x0C
-				db			0x0D, 0x10
-				db			0x15, 0x12
-				db			0x17, 0x10
-				db			0x0E, 0x17
-				db			0x11, 0x0C
-				db			0x12, 0x13
-				db			0x17, 0x0E
-				db			0x16, 0x14
-				db			0x14, 0x0E
-				db			0x14, 0x15
-				db			0x0E, 0x0E
-				db			0x13, 0x0F
-				db			0x11, 0x13
-				db			0x13, 0x0F
-				db			0x17, 0x15
-				db			0x0D, 0x15
-				db			0x0F, 0x17
-				db			0x0C, 0x0D
-				db			0x16, 0x0C
-				db			0x11, 0x0E
-
 ; -----------------------------------------------------------------------------
 ; 色設定データ
 ;	[palette#0 RB], [palette#0 G], [palette#1 RB], [palette#1 G]
@@ -573,3 +377,7 @@ logo_draw_command_size := logo_draw_command_end - logo_draw_command
 ; -----------------------------------------------------------------------------
 logo_data::
 				binary_link "logo_data/logo.bin"
+
+				if (color_data1 & 0xFF00) != (color_data2 & 0xFF00)
+					error "color_data1 と color_data2 の上位 8bit は一致している必要があります"
+				endif

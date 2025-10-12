@@ -287,7 +287,7 @@ module vdp_command (
 	// --------------------------------------------------------------------
 	assign w_effective_mode		= reg_command_enable || ff_fg4 || (screen_mode == c_g4 || screen_mode == c_g5 || screen_mode == c_g6 || screen_mode == c_g7);
 	assign w_bpp				= (screen_mode == c_g7) ? c_bpp_8bit:
-	            				  (screen_mode == c_g6) ? c_bpp_2bit: c_bpp_4bit;
+	            				  (screen_mode == c_g5) ? c_bpp_2bit: c_bpp_4bit;
 	assign w_next				= (screen_mode == c_g7 || ff_command[3:2] != 2'b11) ? 10'd1:
 	             				  (screen_mode == c_g5) ? 10'd4: 10'd2;
 	assign w_512pixel			= (screen_mode == c_g5 || screen_mode == c_g6);
@@ -1037,6 +1037,7 @@ module vdp_command (
 			ff_count_valid				<= 1'b0;
 			ff_border_detect_request	<= 1'b0;
 			ff_wait_count				<= 6'd0;
+			ff_xsel						<= 2'd0;
 		end
 		else if( ff_start ) begin
 			ff_source					<= ff_color;
@@ -1045,6 +1046,7 @@ module vdp_command (
 			ff_cache_flush_start		<= 1'b0;
 			ff_cache_vram_valid			<= 1'b0;
 			ff_wait_count				<= 6'd0;
+			ff_xsel						<= 2'd0;
 			case( ff_command )
 			c_stop:		ff_state <= c_state_stop;
 			c_point:	ff_state <= c_state_point;

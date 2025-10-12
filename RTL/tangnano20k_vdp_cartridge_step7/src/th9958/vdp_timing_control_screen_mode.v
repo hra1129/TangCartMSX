@@ -586,9 +586,7 @@ module vdp_timing_control_screen_mode (
 	// --------------------------------------------------------------------
 	//	Display color generate
 	// --------------------------------------------------------------------
-	assign w_backdrop_color	= (w_mode == c_g7) ? reg_backdrop_color:
-	                       	  (w_mode == c_t2) ? { reg_backdrop_color[3:0], reg_backdrop_color[3:0] }:
-	                       	  (w_mode == c_g5) ? { 6'd0, reg_backdrop_color[1:0] }: { 4'd0, reg_backdrop_color[3:0] };
+	assign w_backdrop_color	= (w_mode == c_g7) ? reg_backdrop_color: { reg_backdrop_color[3:0], reg_backdrop_color[3:0] };
 
 	always @( posedge clk or negedge reset_n ) begin
 		if( !reset_n ) begin
@@ -635,8 +633,8 @@ module vdp_timing_control_screen_mode (
 						ff_pattern3 <= { ff_next_vram5[7] ? { ff_next_vram3[ 7: 4] }: { ff_next_vram3[ 3: 0] }, ff_next_vram5[6] ? { ff_next_vram3[ 7: 4] }: { ff_next_vram3[ 3: 0] } };
 						ff_pattern4 <= { ff_next_vram5[5] ? { ff_next_vram3[ 7: 4] }: { ff_next_vram3[ 3: 0] }, ff_next_vram5[4] ? { ff_next_vram3[ 7: 4] }: { ff_next_vram3[ 3: 0] } };
 						ff_pattern5 <= { ff_next_vram5[3] ? { ff_next_vram3[ 7: 4] }: { ff_next_vram3[ 3: 0] }, ff_next_vram5[2] ? { ff_next_vram3[ 7: 4] }: { ff_next_vram3[ 3: 0] } };
-						ff_pattern6 <= { w_backdrop_color[ 3: 0], w_backdrop_color[ 3: 0] };
-						ff_pattern7 <= { w_backdrop_color[ 3: 0], w_backdrop_color[ 3: 0] };
+						ff_pattern6 <= w_backdrop_color;
+						ff_pattern7 <= w_backdrop_color;
 					end
 				c_gm:
 					begin
@@ -684,8 +682,12 @@ module vdp_timing_control_screen_mode (
 	// --------------------------------------------------------------------
 	always @( posedge clk ) begin
 		if( w_sub_phase == 4'd7 ) begin
-			if( w_mode == c_t2 || w_mode == c_g5 || w_mode == c_g6 ) begin
+			if( w_mode == c_t2 || w_mode == c_g6 ) begin
 				ff_display_color <= { 4'd0, ff_pattern0[3:0] };
+				ff_display_color_en	= reg_display_on && (!reg_left_mask || (screen_pos_x[13:4] >= 10'd15));
+			end
+			else if( w_mode == c_g5 ) begin
+				ff_display_color <= { 4'd0, ff_pattern0[1:0] };
 				ff_display_color_en	= reg_display_on && (!reg_left_mask || (screen_pos_x[13:4] >= 10'd15));
 			end
 			else begin
@@ -693,8 +695,11 @@ module vdp_timing_control_screen_mode (
 			end
 		end
 		else if( w_sub_phase == 4'd15 ) begin
-			if( w_mode == c_t2 || w_mode == c_g5 || w_mode == c_g6 ) begin
+			if( w_mode == c_t2 || w_mode == c_g6 ) begin
 				ff_display_color <= { 4'd0, ff_pattern0[7:4] };
+			end
+			else if( w_mode == c_g5 ) begin
+				ff_display_color <= { 4'd0, ff_pattern0[3:2] };
 			end
 			else begin
 				ff_display_color <= ff_pattern0;

@@ -92,6 +92,8 @@ module vdp_cpu_interface (
 	output				clear_sprite_collision_xy,	//	pulse
 	input		[8:0]	sprite_collision_x,
 	input		[9:0]	sprite_collision_y,
+	input				sprite_overmap,
+	input		[4:0]	sprite_overmap_id,
 	output				clear_border_detect,		//	pulse
 	output				read_color,					//	pulse
 
@@ -684,7 +686,7 @@ module vdp_cpu_interface (
 
 	always @( posedge clk ) begin
 		case( ff_status_register_pointer )
-		4'd0:		ff_status_register <= { ff_frame_interrupt, sprite_collision, 1'b0, 5'b00000 };
+		4'd0:		ff_status_register <= { ff_frame_interrupt, sprite_overmap, sprite_collision, sprite_overmap_id };
 		4'd1:		ff_status_register <= { 2'd0, c_vdp_id, ff_line_interrupt };
 		4'd2:		ff_status_register <= { status_transfer_ready, 1'b0, 1'b0, status_border_detect, 2'b11, 1'b0, status_command_execute };
 		4'd3:		ff_status_register <= sprite_collision_x[7:0];

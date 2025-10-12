@@ -80,6 +80,8 @@ module vdp_timing_control_sprite (
 	output		[8:0]	sprite_collision_x,
 	output		[9:0]	sprite_collision_y,
 	input				sprite_off,
+	output				sprite_overmap,
+	output		[4:0]	sprite_overmap_id,
 
 	input		[4:0]	reg_screen_mode,
 	input				reg_display_on,
@@ -201,6 +203,9 @@ module vdp_timing_control_sprite (
 		.selected_attribute							( w_selected_attribute						),
 		.selected_count								( w_selected_count							),
 		.start_info_collect							( w_start_info_collect						),
+		.sprite_overmap								( sprite_overmap							),
+		.sprite_overmap_id							( sprite_overmap_id							),
+		.clear_sprite_collision						( clear_sprite_collision					),
 		.sprite_mode2								( w_sprite_mode2							),
 		.reg_display_on								( reg_display_on							),
 		.reg_sprite_disable							( w_sprite_disable							),
