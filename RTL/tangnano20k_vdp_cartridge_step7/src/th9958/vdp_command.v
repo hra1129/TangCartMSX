@@ -186,6 +186,7 @@ module vdp_command (
 	reg					ff_diy;
 	reg					ff_mxs;
 	reg					ff_mxd;
+	reg					ff_xhr;
 	reg					ff_fg4;
 	reg			[3:0]	ff_logical_opration;
 	reg			[3:0]	ff_command;
@@ -420,7 +421,7 @@ module vdp_command (
 		else if( ff_count_valid ) begin
 			if( ff_command == c_lrmm ) begin
 				if( ff_nx == 11'd0 ) begin
-					ff_sy <= ff_sy2 + { { 5 {reg_vx[15]} }, reg_vx };
+					ff_sy <= ff_sy2 + ( ff_xhr ? { { 4 {reg_vx[15]} }, reg_vx, 1'b0 } : { { 5 {reg_vx[15]} }, reg_vx } );
 				end
 				else begin
 					ff_sy <= ff_sy  + { { 5 {reg_vy[15]} }, reg_vy };
@@ -456,7 +457,7 @@ module vdp_command (
 		end
 		else if( ff_count_valid ) begin
 			if( ff_nx == 11'd0 ) begin
-				ff_sx2 <= ff_sx2 - { { 4 {reg_vy[15]} }, reg_vy };
+				ff_sx2 <= ff_sx2 - ( ff_xhr ? { { 3 {reg_vy[15]} }, reg_vy, 1'b0 } : { { 4 {reg_vy[15]} }, reg_vy } );
 				ff_sy2 <= ff_sy2 + { { 5 {reg_vx[15]} }, reg_vx };
 			end
 		end
@@ -844,6 +845,7 @@ module vdp_command (
 			ff_diy	<= 1'b0;
 			ff_mxs	<= 1'b0;
 			ff_mxd	<= 1'b0;
+			ff_xhr	<= 1'b0;
 			ff_fg4	<= 1'b0;
 		end
 		else if( register_write ) begin
@@ -854,6 +856,7 @@ module vdp_command (
 				ff_diy	<= register_data[3];
 				ff_mxs	<= register_data[4];
 				ff_mxd	<= register_data[5];
+				ff_xhr	<= register_data[6] & reg_ext_command_mode;
 				ff_fg4	<= register_data[7] & reg_ext_command_mode;
 			end
 		end
