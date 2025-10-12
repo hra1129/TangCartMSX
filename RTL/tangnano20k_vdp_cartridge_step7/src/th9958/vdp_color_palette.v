@@ -86,6 +86,17 @@ module vdp_color_palette (
 	input				reg_ext_palette_mode,
 	input				reg_sprite_mode3
 );
+	localparam			c_mode_g1	= 5'b000_00;	//	Graphic1 (SCREEN1)
+	localparam			c_mode_g2	= 5'b001_00;	//	Graphic2 (SCREEN2)
+	localparam			c_mode_g3	= 5'b010_00;	//	Graphic3 (SCREEN4)
+	localparam			c_mode_g4	= 5'b011_00;	//	Graphic4 (SCREEN5)
+	localparam			c_mode_g5	= 5'b100_00;	//	Graphic5 (SCREEN6)
+	localparam			c_mode_g6	= 5'b101_00;	//	Graphic6 (SCREEN7)
+	localparam			c_mode_g7	= 5'b111_00;	//	Graphic7 (SCREEN8/10/11/12)
+	localparam			c_mode_t1	= 5'b00x_01;	//	Text1    (SCREEN0:WIDTH40)
+	localparam			c_mode_t2	= 5'b010_01;	//	Text2    (SCREEN0:WIDTH80)
+	localparam			c_mode_gm	= 5'b00x_10;	//	Mosaic   (SCREEN3)
+
 	wire				w_256colors_mode;
 	wire				w_4colors_mode;
 	wire				w_t12_mode;
@@ -197,6 +208,15 @@ module vdp_color_palette (
 					//	映像期間
 					ff_display_color_delay0 <= { 1'b1, display_color_screen_mode };
 				end
+				else if( reg_screen_mode == c_mode_g5 ) begin
+					//	周辺色期間
+					if( screen_pos_x[3] == 1'b0 ) begin
+						ff_display_color_delay0 <= { 1'b1, 6'd0, reg_backdrop_color[3:2] };
+					end
+					else begin
+						ff_display_color_delay0 <= { 1'b1, 6'd0, reg_backdrop_color[1:0] };
+					end
+				end
 				else begin
 					//	周辺色期間
 					ff_display_color_delay0 <= { 1'b1, reg_backdrop_color };
@@ -208,6 +228,15 @@ module vdp_color_palette (
 					//	映像期間
 					ff_display_color_delay0 <= { 1'b0, display_color_screen_mode };
 				end
+				else if( reg_screen_mode == c_mode_g5 ) begin
+					//	周辺色期間
+					if( screen_pos_x[3] == 1'b0 ) begin
+						ff_display_color_delay0 <= { 1'b1, 6'd0, reg_backdrop_color[3:2] };
+					end
+					else begin
+						ff_display_color_delay0 <= { 1'b1, 6'd0, reg_backdrop_color[1:0] };
+					end
+				end
 				else begin
 					//	周辺色期間
 					ff_display_color_delay0 <= { 1'b1, reg_backdrop_color[3:0], 1'b0, display_color_screen_mode[2:0] };
@@ -218,6 +247,15 @@ module vdp_color_palette (
 				if( display_color_screen_mode_en ) begin
 					//	映像期間
 					ff_display_color_delay0 <= { display_color_screen_mode[3], display_color_screen_mode[7:4], 1'b0, display_color_screen_mode[2:0] };
+				end
+				else if( reg_screen_mode == c_mode_g5 ) begin
+					//	周辺色期間
+					if( screen_pos_x[3] == 1'b0 ) begin
+						ff_display_color_delay0 <= { 1'b1, 6'd0, reg_backdrop_color[3:2] };
+					end
+					else begin
+						ff_display_color_delay0 <= { 1'b1, 6'd0, reg_backdrop_color[1:0] };
+					end
 				end
 				else begin
 					//	周辺色期間
