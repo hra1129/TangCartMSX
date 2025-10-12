@@ -77,7 +77,8 @@ module msx_slot(
 	input			bus_ready,
 	output	[7:0]	bus_wdata,
 	input	[7:0]	bus_rdata,
-	input			bus_rdata_en
+	input			bus_rdata_en,
+	input			dipsw
 );
 	reg				ff_pre_slot_ioreq_n	= 1'b1;
 	reg				ff_pre_slot_wr_n	= 1'b1;
@@ -100,6 +101,9 @@ module msx_slot(
 	reg				ff_ioreq			= 1'b0;
 	reg		[7:0]	ff_rdata			= 8'd0;
 	reg				ff_rdata_en			= 1'b0;
+	wire	[7:0]	w_io_address;
+
+	assign w_io_address	= (dipsw == 1'b0) ? 8'h88: 8'h98;
 
 	// --------------------------------------------------------------------
 	//	Initial busy latch
@@ -186,7 +190,7 @@ module msx_slot(
 			end
 		end
 		else if( !ff_active && w_active ) begin
-			if( { ff_slot_address[7:3], 3'd0 } == 8'h88 ) begin
+			if( { ff_slot_address[7:3], 3'd0 } == w_io_address ) begin
 				ff_bus_address	<= ff_slot_address[2:0];
 				ff_ioreq		<= ff_iorq_wr | ff_iorq_rd;
 				ff_valid		<= 1'b1;

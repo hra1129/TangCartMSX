@@ -173,7 +173,8 @@ module tangnano20k_vdp_cartridge (
 		.bus_ready			( w_bus_ready				),
 		.bus_wdata			( w_bus_wdata				),
 		.bus_rdata			( w_bus_rdata				),
-		.bus_rdata_en		( w_bus_rdata_en			)
+		.bus_rdata_en		( w_bus_rdata_en			),
+		.dipsw				( dipsw						)
 	);
 
 	assign w_bus_rdata		= ( w_bus_vdp_rdata_en		) ? w_bus_vdp_rdata: 8'hFF;
