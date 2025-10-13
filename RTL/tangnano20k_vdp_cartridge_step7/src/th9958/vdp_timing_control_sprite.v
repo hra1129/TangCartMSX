@@ -190,7 +190,7 @@ module vdp_timing_control_sprite (
 		.reset_n									( reset_n									),
 		.clk										( clk										),
 		.screen_pos_x								( screen_pos_x								),
-		.screen_pos_y								( screen_pos_y[7:0]							),
+		.screen_pos_y								( screen_pos_y[8:0]							),
 		.pixel_pos_y								( pixel_pos_y								),
 		.screen_v_active							( ff_screen_v_active						),
 		.screen_h_active							( ff_screen_h_active						),

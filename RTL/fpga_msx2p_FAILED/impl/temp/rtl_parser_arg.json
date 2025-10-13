@@ -2,259 +2,259 @@
  "Device" : "GW2AR-18C",
  "Files" : [
   {
-   "Path" : "D:/github/HRA_product/TangCartMSX/RTL/fpga_msx2p/modules/cz80/cz80.v",
+   "Path" : "D:/github/HRA_product/TangCartMSX/RTL/fpga_msx2p_FAILED/modules/cz80/cz80.v",
    "Type" : "verilog"
   },
   {
-   "Path" : "D:/github/HRA_product/TangCartMSX/RTL/fpga_msx2p/modules/cz80/cz80_alu.v",
+   "Path" : "D:/github/HRA_product/TangCartMSX/RTL/fpga_msx2p_FAILED/modules/cz80/cz80_alu.v",
    "Type" : "verilog"
   },
   {
-   "Path" : "D:/github/HRA_product/TangCartMSX/RTL/fpga_msx2p/modules/cz80/cz80_inst.v",
+   "Path" : "D:/github/HRA_product/TangCartMSX/RTL/fpga_msx2p_FAILED/modules/cz80/cz80_inst.v",
    "Type" : "verilog"
   },
   {
-   "Path" : "D:/github/HRA_product/TangCartMSX/RTL/fpga_msx2p/modules/cz80/cz80_mcode.v",
+   "Path" : "D:/github/HRA_product/TangCartMSX/RTL/fpga_msx2p_FAILED/modules/cz80/cz80_mcode.v",
    "Type" : "verilog"
   },
   {
-   "Path" : "D:/github/HRA_product/TangCartMSX/RTL/fpga_msx2p/modules/cz80/cz80_reg.v",
+   "Path" : "D:/github/HRA_product/TangCartMSX/RTL/fpga_msx2p_FAILED/modules/cz80/cz80_reg.v",
    "Type" : "verilog"
   },
   {
-   "Path" : "D:/github/HRA_product/TangCartMSX/RTL/fpga_msx2p/modules/i2s_audio/i2s_audio.v",
+   "Path" : "D:/github/HRA_product/TangCartMSX/RTL/fpga_msx2p_FAILED/modules/i2s_audio/i2s_audio.v",
    "Type" : "verilog"
   },
   {
-   "Path" : "D:/github/HRA_product/TangCartMSX/RTL/fpga_msx2p/modules/kanji_rom/kanji_rom.v",
+   "Path" : "D:/github/HRA_product/TangCartMSX/RTL/fpga_msx2p_FAILED/modules/kanji_rom/kanji_rom.v",
    "Type" : "verilog"
   },
   {
-   "Path" : "D:/github/HRA_product/TangCartMSX/RTL/fpga_msx2p/modules/megarom/megarom.v",
+   "Path" : "D:/github/HRA_product/TangCartMSX/RTL/fpga_msx2p_FAILED/modules/megarom/megarom.v",
    "Type" : "verilog"
   },
   {
-   "Path" : "D:/github/HRA_product/TangCartMSX/RTL/fpga_msx2p/modules/megarom/megarom_wo_scc.v",
+   "Path" : "D:/github/HRA_product/TangCartMSX/RTL/fpga_msx2p_FAILED/modules/megarom/megarom_wo_scc.v",
    "Type" : "verilog"
   },
   {
-   "Path" : "D:/github/HRA_product/TangCartMSX/RTL/fpga_msx2p/modules/megarom/scc/scc_channel_mixer.v",
+   "Path" : "D:/github/HRA_product/TangCartMSX/RTL/fpga_msx2p_FAILED/modules/megarom/scc/scc_channel_mixer.v",
    "Type" : "verilog"
   },
   {
-   "Path" : "D:/github/HRA_product/TangCartMSX/RTL/fpga_msx2p/modules/megarom/scc/scc_channel_volume.v",
+   "Path" : "D:/github/HRA_product/TangCartMSX/RTL/fpga_msx2p_FAILED/modules/megarom/scc/scc_channel_volume.v",
    "Type" : "verilog"
   },
   {
-   "Path" : "D:/github/HRA_product/TangCartMSX/RTL/fpga_msx2p/modules/megarom/scc/scc_core.v",
+   "Path" : "D:/github/HRA_product/TangCartMSX/RTL/fpga_msx2p_FAILED/modules/megarom/scc/scc_core.v",
    "Type" : "verilog"
   },
   {
-   "Path" : "D:/github/HRA_product/TangCartMSX/RTL/fpga_msx2p/modules/megarom/scc/scc_inst.v",
+   "Path" : "D:/github/HRA_product/TangCartMSX/RTL/fpga_msx2p_FAILED/modules/megarom/scc/scc_inst.v",
    "Type" : "verilog"
   },
   {
-   "Path" : "D:/github/HRA_product/TangCartMSX/RTL/fpga_msx2p/modules/megarom/scc/scc_ram.v",
+   "Path" : "D:/github/HRA_product/TangCartMSX/RTL/fpga_msx2p_FAILED/modules/megarom/scc/scc_ram.v",
    "Type" : "verilog"
   },
   {
-   "Path" : "D:/github/HRA_product/TangCartMSX/RTL/fpga_msx2p/modules/megarom/scc/scc_register.v",
+   "Path" : "D:/github/HRA_product/TangCartMSX/RTL/fpga_msx2p_FAILED/modules/megarom/scc/scc_register.v",
    "Type" : "verilog"
   },
   {
-   "Path" : "D:/github/HRA_product/TangCartMSX/RTL/fpga_msx2p/modules/megarom/scc/scc_selector.v",
+   "Path" : "D:/github/HRA_product/TangCartMSX/RTL/fpga_msx2p_FAILED/modules/megarom/scc/scc_selector.v",
    "Type" : "verilog"
   },
   {
-   "Path" : "D:/github/HRA_product/TangCartMSX/RTL/fpga_msx2p/modules/megarom/scc/scc_tone_generator_5ch.v",
+   "Path" : "D:/github/HRA_product/TangCartMSX/RTL/fpga_msx2p_FAILED/modules/megarom/scc/scc_tone_generator_5ch.v",
    "Type" : "verilog"
   },
   {
-   "Path" : "D:/github/HRA_product/TangCartMSX/RTL/fpga_msx2p/modules/memory_mapper/memory_mapper.v",
+   "Path" : "D:/github/HRA_product/TangCartMSX/RTL/fpga_msx2p_FAILED/modules/memory_mapper/memory_mapper.v",
    "Type" : "verilog"
   },
   {
-   "Path" : "D:/github/HRA_product/TangCartMSX/RTL/fpga_msx2p/modules/memory_mapper/memory_mapper_inst.v",
+   "Path" : "D:/github/HRA_product/TangCartMSX/RTL/fpga_msx2p_FAILED/modules/memory_mapper/memory_mapper_inst.v",
    "Type" : "verilog"
   },
   {
-   "Path" : "D:/github/HRA_product/TangCartMSX/RTL/fpga_msx2p/modules/micom_connect/micom_connect.v",
+   "Path" : "D:/github/HRA_product/TangCartMSX/RTL/fpga_msx2p_FAILED/modules/micom_connect/micom_connect.v",
    "Type" : "verilog"
   },
   {
-   "Path" : "D:/github/HRA_product/TangCartMSX/RTL/fpga_msx2p/modules/rtc/rtc.v",
+   "Path" : "D:/github/HRA_product/TangCartMSX/RTL/fpga_msx2p_FAILED/modules/rtc/rtc.v",
    "Type" : "verilog"
   },
   {
-   "Path" : "D:/github/HRA_product/TangCartMSX/RTL/fpga_msx2p/modules/opll/ikaopll/IKAOPLL.v",
+   "Path" : "D:/github/HRA_product/TangCartMSX/RTL/fpga_msx2p_FAILED/modules/opll/ikaopll/IKAOPLL.v",
    "Type" : "verilog"
   },
   {
-   "Path" : "D:/github/HRA_product/TangCartMSX/RTL/fpga_msx2p/modules/opll/ikaopll/IKAOPLL_modules/IKAOPLL_dac.v",
+   "Path" : "D:/github/HRA_product/TangCartMSX/RTL/fpga_msx2p_FAILED/modules/opll/ikaopll/IKAOPLL_modules/IKAOPLL_dac.v",
    "Type" : "verilog"
   },
   {
-   "Path" : "D:/github/HRA_product/TangCartMSX/RTL/fpga_msx2p/modules/opll/ikaopll/IKAOPLL_modules/IKAOPLL_eg.v",
+   "Path" : "D:/github/HRA_product/TangCartMSX/RTL/fpga_msx2p_FAILED/modules/opll/ikaopll/IKAOPLL_modules/IKAOPLL_eg.v",
    "Type" : "verilog"
   },
   {
-   "Path" : "D:/github/HRA_product/TangCartMSX/RTL/fpga_msx2p/modules/opll/ikaopll/IKAOPLL_modules/IKAOPLL_lfo.v",
+   "Path" : "D:/github/HRA_product/TangCartMSX/RTL/fpga_msx2p_FAILED/modules/opll/ikaopll/IKAOPLL_modules/IKAOPLL_lfo.v",
    "Type" : "verilog"
   },
   {
-   "Path" : "D:/github/HRA_product/TangCartMSX/RTL/fpga_msx2p/modules/opll/ikaopll/IKAOPLL_modules/IKAOPLL_op.v",
+   "Path" : "D:/github/HRA_product/TangCartMSX/RTL/fpga_msx2p_FAILED/modules/opll/ikaopll/IKAOPLL_modules/IKAOPLL_op.v",
    "Type" : "verilog"
   },
   {
-   "Path" : "D:/github/HRA_product/TangCartMSX/RTL/fpga_msx2p/modules/opll/ikaopll/IKAOPLL_modules/IKAOPLL_pg.v",
+   "Path" : "D:/github/HRA_product/TangCartMSX/RTL/fpga_msx2p_FAILED/modules/opll/ikaopll/IKAOPLL_modules/IKAOPLL_pg.v",
    "Type" : "verilog"
   },
   {
-   "Path" : "D:/github/HRA_product/TangCartMSX/RTL/fpga_msx2p/modules/opll/ikaopll/IKAOPLL_modules/IKAOPLL_primitives.v",
+   "Path" : "D:/github/HRA_product/TangCartMSX/RTL/fpga_msx2p_FAILED/modules/opll/ikaopll/IKAOPLL_modules/IKAOPLL_primitives.v",
    "Type" : "verilog"
   },
   {
-   "Path" : "D:/github/HRA_product/TangCartMSX/RTL/fpga_msx2p/modules/opll/ikaopll/IKAOPLL_modules/IKAOPLL_reg.v",
+   "Path" : "D:/github/HRA_product/TangCartMSX/RTL/fpga_msx2p_FAILED/modules/opll/ikaopll/IKAOPLL_modules/IKAOPLL_reg.v",
    "Type" : "verilog"
   },
   {
-   "Path" : "D:/github/HRA_product/TangCartMSX/RTL/fpga_msx2p/modules/opll/ikaopll/IKAOPLL_modules/IKAOPLL_timinggen.v",
+   "Path" : "D:/github/HRA_product/TangCartMSX/RTL/fpga_msx2p_FAILED/modules/opll/ikaopll/IKAOPLL_modules/IKAOPLL_timinggen.v",
    "Type" : "verilog"
   },
   {
-   "Path" : "D:/github/HRA_product/TangCartMSX/RTL/fpga_msx2p/modules/opll/opll.v",
+   "Path" : "D:/github/HRA_product/TangCartMSX/RTL/fpga_msx2p_FAILED/modules/opll/opll.v",
    "Type" : "verilog"
   },
   {
-   "Path" : "D:/github/HRA_product/TangCartMSX/RTL/fpga_msx2p/modules/ppi/ppi.v",
+   "Path" : "D:/github/HRA_product/TangCartMSX/RTL/fpga_msx2p_FAILED/modules/ppi/ppi.v",
    "Type" : "verilog"
   },
   {
-   "Path" : "D:/github/HRA_product/TangCartMSX/RTL/fpga_msx2p/modules/ppi/ppi_inst.v",
+   "Path" : "D:/github/HRA_product/TangCartMSX/RTL/fpga_msx2p_FAILED/modules/ppi/ppi_inst.v",
    "Type" : "verilog"
   },
   {
-   "Path" : "D:/github/HRA_product/TangCartMSX/RTL/fpga_msx2p/modules/sdram/ip_sdram_tangnano20k_cv.v",
+   "Path" : "D:/github/HRA_product/TangCartMSX/RTL/fpga_msx2p_FAILED/modules/sdram/ip_sdram_tangnano20k_cv.v",
    "Type" : "verilog"
   },
   {
-   "Path" : "D:/github/HRA_product/TangCartMSX/RTL/fpga_msx2p/modules/secondary_slot/secondary_slot_inst.v",
+   "Path" : "D:/github/HRA_product/TangCartMSX/RTL/fpga_msx2p_FAILED/modules/secondary_slot/secondary_slot_inst.v",
    "Type" : "verilog"
   },
   {
-   "Path" : "D:/github/HRA_product/TangCartMSX/RTL/fpga_msx2p/modules/ssg/ssg.v",
+   "Path" : "D:/github/HRA_product/TangCartMSX/RTL/fpga_msx2p_FAILED/modules/ssg/ssg.v",
    "Type" : "verilog"
   },
   {
-   "Path" : "D:/github/HRA_product/TangCartMSX/RTL/fpga_msx2p/modules/v9958/vdp.v",
+   "Path" : "D:/github/HRA_product/TangCartMSX/RTL/fpga_msx2p_FAILED/modules/v9958/vdp.v",
    "Type" : "verilog"
   },
   {
-   "Path" : "D:/github/HRA_product/TangCartMSX/RTL/fpga_msx2p/modules/v9958/vdp_color_bus.v",
+   "Path" : "D:/github/HRA_product/TangCartMSX/RTL/fpga_msx2p_FAILED/modules/v9958/vdp_color_bus.v",
    "Type" : "verilog"
   },
   {
-   "Path" : "D:/github/HRA_product/TangCartMSX/RTL/fpga_msx2p/modules/v9958/vdp_color_decoder.v",
+   "Path" : "D:/github/HRA_product/TangCartMSX/RTL/fpga_msx2p_FAILED/modules/v9958/vdp_color_decoder.v",
    "Type" : "verilog"
   },
   {
-   "Path" : "D:/github/HRA_product/TangCartMSX/RTL/fpga_msx2p/modules/v9958/vdp_command.v",
+   "Path" : "D:/github/HRA_product/TangCartMSX/RTL/fpga_msx2p_FAILED/modules/v9958/vdp_command.v",
    "Type" : "verilog"
   },
   {
-   "Path" : "D:/github/HRA_product/TangCartMSX/RTL/fpga_msx2p/modules/v9958/vdp_graphic123m.v",
+   "Path" : "D:/github/HRA_product/TangCartMSX/RTL/fpga_msx2p_FAILED/modules/v9958/vdp_graphic123m.v",
    "Type" : "verilog"
   },
   {
-   "Path" : "D:/github/HRA_product/TangCartMSX/RTL/fpga_msx2p/modules/v9958/vdp_graphic4567.v",
+   "Path" : "D:/github/HRA_product/TangCartMSX/RTL/fpga_msx2p_FAILED/modules/v9958/vdp_graphic4567.v",
    "Type" : "verilog"
   },
   {
-   "Path" : "D:/github/HRA_product/TangCartMSX/RTL/fpga_msx2p/modules/v9958/vdp_inst.v",
+   "Path" : "D:/github/HRA_product/TangCartMSX/RTL/fpga_msx2p_FAILED/modules/v9958/vdp_inst.v",
    "Type" : "verilog"
   },
   {
-   "Path" : "D:/github/HRA_product/TangCartMSX/RTL/fpga_msx2p/modules/v9958/vdp_interrupt.v",
+   "Path" : "D:/github/HRA_product/TangCartMSX/RTL/fpga_msx2p_FAILED/modules/v9958/vdp_interrupt.v",
    "Type" : "verilog"
   },
   {
-   "Path" : "D:/github/HRA_product/TangCartMSX/RTL/fpga_msx2p/modules/v9958/vdp_ram_256byte.v",
+   "Path" : "D:/github/HRA_product/TangCartMSX/RTL/fpga_msx2p_FAILED/modules/v9958/vdp_ram_256byte.v",
    "Type" : "verilog"
   },
   {
-   "Path" : "D:/github/HRA_product/TangCartMSX/RTL/fpga_msx2p/modules/v9958/vdp_ram_palette.v",
+   "Path" : "D:/github/HRA_product/TangCartMSX/RTL/fpga_msx2p_FAILED/modules/v9958/vdp_ram_palette.v",
    "Type" : "verilog"
   },
   {
-   "Path" : "D:/github/HRA_product/TangCartMSX/RTL/fpga_msx2p/modules/v9958/vdp_register.v",
+   "Path" : "D:/github/HRA_product/TangCartMSX/RTL/fpga_msx2p_FAILED/modules/v9958/vdp_register.v",
    "Type" : "verilog"
   },
   {
-   "Path" : "D:/github/HRA_product/TangCartMSX/RTL/fpga_msx2p/modules/v9958/vdp_spinforam.v",
+   "Path" : "D:/github/HRA_product/TangCartMSX/RTL/fpga_msx2p_FAILED/modules/v9958/vdp_spinforam.v",
    "Type" : "verilog"
   },
   {
-   "Path" : "D:/github/HRA_product/TangCartMSX/RTL/fpga_msx2p/modules/v9958/vdp_sprite.v",
+   "Path" : "D:/github/HRA_product/TangCartMSX/RTL/fpga_msx2p_FAILED/modules/v9958/vdp_sprite.v",
    "Type" : "verilog"
   },
   {
-   "Path" : "D:/github/HRA_product/TangCartMSX/RTL/fpga_msx2p/modules/v9958/vdp_ssg.v",
+   "Path" : "D:/github/HRA_product/TangCartMSX/RTL/fpga_msx2p_FAILED/modules/v9958/vdp_ssg.v",
    "Type" : "verilog"
   },
   {
-   "Path" : "D:/github/HRA_product/TangCartMSX/RTL/fpga_msx2p/modules/v9958/vdp_text12.v",
+   "Path" : "D:/github/HRA_product/TangCartMSX/RTL/fpga_msx2p_FAILED/modules/v9958/vdp_text12.v",
    "Type" : "verilog"
   },
   {
-   "Path" : "D:/github/HRA_product/TangCartMSX/RTL/fpga_msx2p/modules/v9958/vdp_wait_control.v",
+   "Path" : "D:/github/HRA_product/TangCartMSX/RTL/fpga_msx2p_FAILED/modules/v9958/vdp_wait_control.v",
    "Type" : "verilog"
   },
   {
-   "Path" : "D:/github/HRA_product/TangCartMSX/RTL/fpga_msx2p/modules/video_out/video_double_buffer.v",
+   "Path" : "D:/github/HRA_product/TangCartMSX/RTL/fpga_msx2p_FAILED/modules/video_out/video_double_buffer.v",
    "Type" : "verilog"
   },
   {
-   "Path" : "D:/github/HRA_product/TangCartMSX/RTL/fpga_msx2p/modules/video_out/video_out.v",
+   "Path" : "D:/github/HRA_product/TangCartMSX/RTL/fpga_msx2p_FAILED/modules/video_out/video_out.v",
    "Type" : "verilog"
   },
   {
-   "Path" : "D:/github/HRA_product/TangCartMSX/RTL/fpga_msx2p/modules/video_out/video_out_bilinear.v",
+   "Path" : "D:/github/HRA_product/TangCartMSX/RTL/fpga_msx2p_FAILED/modules/video_out/video_out_bilinear.v",
    "Type" : "verilog"
   },
   {
-   "Path" : "D:/github/HRA_product/TangCartMSX/RTL/fpga_msx2p/modules/video_out/video_out_hmag.v",
+   "Path" : "D:/github/HRA_product/TangCartMSX/RTL/fpga_msx2p_FAILED/modules/video_out/video_out_hmag.v",
    "Type" : "verilog"
   },
   {
-   "Path" : "D:/github/HRA_product/TangCartMSX/RTL/fpga_msx2p/modules/video_out/video_ram_line_buffer.v",
+   "Path" : "D:/github/HRA_product/TangCartMSX/RTL/fpga_msx2p_FAILED/modules/video_out/video_ram_line_buffer.v",
    "Type" : "verilog"
   },
   {
-   "Path" : "D:/github/HRA_product/TangCartMSX/RTL/fpga_msx2p/modules/system_control/system_control.v",
+   "Path" : "D:/github/HRA_product/TangCartMSX/RTL/fpga_msx2p_FAILED/modules/system_control/system_control.v",
    "Type" : "verilog"
   },
   {
-   "Path" : "D:/github/HRA_product/TangCartMSX/RTL/fpga_msx2p/src/gowin_pll/gowin_pll.v",
+   "Path" : "D:/github/HRA_product/TangCartMSX/RTL/fpga_msx2p_FAILED/src/gowin_pll/gowin_pll.v",
    "Type" : "verilog"
   },
   {
-   "Path" : "D:/github/HRA_product/TangCartMSX/RTL/fpga_msx2p/src/ram/ip_ram.v",
+   "Path" : "D:/github/HRA_product/TangCartMSX/RTL/fpga_msx2p_FAILED/src/ram/ip_ram.v",
    "Type" : "verilog"
   },
   {
-   "Path" : "D:/github/HRA_product/TangCartMSX/RTL/fpga_msx2p/src/rom/ip_hello_world_rom.v",
+   "Path" : "D:/github/HRA_product/TangCartMSX/RTL/fpga_msx2p_FAILED/src/rom/ip_hello_world_rom.v",
    "Type" : "verilog"
   },
   {
-   "Path" : "D:/github/HRA_product/TangCartMSX/RTL/fpga_msx2p/src/tangnano20k_step9.v",
+   "Path" : "D:/github/HRA_product/TangCartMSX/RTL/fpga_msx2p_FAILED/src/tangnano20k_step9.v",
    "Type" : "verilog"
   },
   {
-   "Path" : "D:/github/HRA_product/TangCartMSX/RTL/fpga_msx2p/src/uart/ip_uart.v",
+   "Path" : "D:/github/HRA_product/TangCartMSX/RTL/fpga_msx2p_FAILED/src/uart/ip_uart.v",
    "Type" : "verilog"
   },
   {
-   "Path" : "D:/github/HRA_product/TangCartMSX/RTL/fpga_msx2p/src/uart/ip_uart_inst.v",
+   "Path" : "D:/github/HRA_product/TangCartMSX/RTL/fpga_msx2p_FAILED/src/uart/ip_uart_inst.v",
    "Type" : "verilog"
   }
  ],
@@ -262,7 +262,7 @@
 
  ],
  "LoopLimit" : 8000,
- "ResultFile" : "D:/github/HRA_product/TangCartMSX/RTL/fpga_msx2p/impl/temp/rtl_parser.result",
+ "ResultFile" : "D:/github/HRA_product/TangCartMSX/RTL/fpga_msx2p_FAILED/impl/temp/rtl_parser.result",
  "Top" : "tangnano20k_step9",
  "VerilogStd" : "verilog_2001",
  "VhdlStd" : "vhdl_93"
