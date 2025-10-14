@@ -177,7 +177,10 @@ _lmmc_end::
 				ld			a, [wait_flag]
 				or			a, a
 				jr			nz, wait_loop1
+
+				; ==============================================================
 				; メインループ
+				; ==============================================================
 	main_loop:
 				; 1V待ちフラグを立てる
 				ld			a, 1
@@ -196,9 +199,9 @@ _lmmc_end::
 				inc			e
 				jr			z, exit_sprite_loop
 				dec			e
-				inc			hl
+				inc			hl				; +1
 				ld			d, [hl]			; Yh
-				dec			hl
+				dec			hl				; +0
 				push		hl
 				ld			hl, -128
 				or			a, a
@@ -209,57 +212,66 @@ _lmmc_end::
 				inc			de
 				pop			hl
 				ld			[hl], e			; Yl
-				inc			hl
+				inc			hl				; +1
 				ld			[hl], d			; Yh
-				inc			hl
-				inc			hl
-				jr			set_mgy
+				inc			hl				; +2
+				inc			hl				; +3
+				ld			a, -128
+				out			[c], a
+				ld			a, 0xC3
+				out			[c], a
+				ld			a, 128
+				out			[c], a
+				jr			set_mode
 	over_m128:
 				; -- -128 を超えているので、テーブルから引く
-				inc			hl
-				inc			hl
+				pop			hl
+				inc			hl				; +1
+				inc			hl				; +2
 				ld			a, [hl]
 				ld			e, a
-				cp			a, 50 * 2
+				cp			a, 50 * 3		; index = 50 * 3 超えたか？
 				jr			c, skip1
 				ld			a, [complete_count]
 				inc			a
 				ld			[complete_count], a
 				jr			skip2
 	skip1:
-				add			a, 2
+				add			a, 3			; 50 * 3 超えてないので 2 足す
 				ld			[hl], a
 	skip2:
-				ld			d, 0
+				inc			hl				; +3
+				ld			d, 0			; DE = index
 				push		hl
 				ld			hl, animation_pos_y
-				add			hl, de
-				ld			a, [hl]
+				add			hl, de			; HL = &animation_pos_y[index]
+				ld			a, [hl]			; Yl
 				out			[c], a
 				inc			hl
-				ld			a, [hl]
-				or			a, 0xC0				; size = 3 (16x128)
+				ld			a, [hl]			; Yh
+				or			a, 0xC0			; size = 3 (16x128)
 				out			[c], a
-	set_mgy:
-				ld			a, 128
+				inc			hl
+				ld			a, [hl]			; MGY
 				out			[c], a
+				pop			hl
 	set_mode:
 				xor			a, a
 				out			[c], a
 	set_x:
-				ld			a, [hl]
+				ld			a, [hl]			; Xl
 				out			[c], a
-				inc			hl
-				ld			a, [hl]
+				inc			hl				; +4
+				ld			a, [hl]			; Xh
 				out			[c], a
-				inc			hl
+				inc			hl				; +5
 	set_mgx:
 				ld			a, 16
 				out			[c], a
 	set_pattern:
 				ld			a, [hl]
 				out			[c], a
-				inc			hl
+				inc			hl				; +6
 				jr			sprite_loop
 	exit_sprite_loop:
 				; 終了チェック
@@ -271,7 +283,7 @@ _lmmc_end::
 				ld			a, [wait_flag]
 				or			a, a
 				jr			nz, wait_vsync
-				jr			main_loop
+				jp			main_loop
 
 	exit_main_loop:
 				di
@@ -428,98 +440,98 @@ color_data2::
 ; -----------------------------------------------------------------------------
 sprite_attrib::
 				; Plane#0
-				dw			(-0 & 0x3FF) | (3 << 14)	; Y
+				dw			(-128 & 0x3FF) | (3 << 14)	; Y
 				db			128							; MGY
 				db			0							; Mode
 				dw			0x0010						; X
 				db			16							; MGX
 				db			0							; Pattern
 				; Plane#1
-				dw			(-0 & 0x3FF) | (3 << 14)	; Y
+				dw			(-128 & 0x3FF) | (3 << 14)	; Y
 				db			128							; MGY
 				db			0							; Mode
 				dw			0x0020						; X
 				db			16							; MGX
 				db			1							; Pattern
 				; Plane#2
-				dw			(-0 & 0x3FF) | (3 << 14)	; Y
+				dw			(-128 & 0x3FF) | (3 << 14)	; Y
 				db			128							; MGY
 				db			0							; Mode
 				dw			0x0030						; X
 				db			16							; MGX
 				db			2							; Pattern
 				; Plane#3
-				dw			(-0 & 0x3FF) | (3 << 14)	; Y
+				dw			(-128 & 0x3FF) | (3 << 14)	; Y
 				db			128							; MGY
 				db			0							; Mode
 				dw			0x0040						; X
 				db			16							; MGX
 				db			3							; Pattern
 				; Plane#4
-				dw			(-0 & 0x3FF) | (3 << 14)	; Y
+				dw			(-128 & 0x3FF) | (3 << 14)	; Y
 				db			128							; MGY
 				db			0							; Mode
 				dw			0x0050						; X
 				db			16							; MGX
 				db			4							; Pattern
 				; Plane#5
-				dw			(-0 & 0x3FF) | (3 << 14)	; Y
+				dw			(-128 & 0x3FF) | (3 << 14)	; Y
 				db			128							; MGY
 				db			0							; Mode
 				dw			0x0060						; X
 				db			16							; MGX
 				db			5							; Pattern
 				; Plane#6
-				dw			(-0 & 0x3FF) | (3 << 14)	; Y
+				dw			(-128 & 0x3FF) | (3 << 14)	; Y
 				db			128							; MGY
 				db			0							; Mode
 				dw			0x0070						; X
 				db			16							; MGX
 				db			6							; Pattern
 				; Plane#7
-				dw			(-0 & 0x3FF) | (3 << 14)	; Y
+				dw			(-128 & 0x3FF) | (3 << 14)	; Y
 				db			128							; MGY
 				db			0							; Mode
 				dw			0x0080						; X
 				db			16							; MGX
 				db			7							; Pattern
 				; Plane#8
-				dw			(-0 & 0x3FF) | (3 << 14)	; Y
+				dw			(-128 & 0x3FF) | (3 << 14)	; Y
 				db			128							; MGY
 				db			0							; Mode
 				dw			0x0090						; X
 				db			16							; MGX
 				db			8							; Pattern
 				; Plane#9
-				dw			(-0 & 0x3FF) | (3 << 14)	; Y
+				dw			(-128 & 0x3FF) | (3 << 14)	; Y
 				db			128							; MGY
 				db			0							; Mode
 				dw			0x00A0						; X
 				db			16							; MGX
 				db			9							; Pattern
 				; Plane#10
-				dw			(-0 & 0x3FF) | (3 << 14)	; Y
+				dw			(-128 & 0x3FF) | (3 << 14)	; Y
 				db			128							; MGY
 				db			0							; Mode
 				dw			0x00B0						; X
 				db			16							; MGX
 				db			10							; Pattern
 				; Plane#11
-				dw			(-0 & 0x3FF) | (3 << 14)	; Y
+				dw			(-128 & 0x3FF) | (3 << 14)	; Y
 				db			128							; MGY
 				db			0							; Mode
 				dw			0x00C0						; X
 				db			16							; MGX
 				db			11							; Pattern
 				; Plane#12
-				dw			(-0 & 0x3FF) | (3 << 14)	; Y
+				dw			(-128 & 0x3FF) | (3 << 14)	; Y
 				db			128							; MGY
 				db			0							; Mode
 				dw			0x00D0						; X
 				db			16							; MGX
 				db			12							; Pattern
 				; Plane#13
-				dw			(-0 & 0x3FF) | (3 << 14)	; Y
+				dw			(-128 & 0x3FF) | (3 << 14)	; Y
 				db			128							; MGY
 				db			0							; Mode
 				dw			0x00E0						; X
@@ -562,130 +574,181 @@ logo_data::
 ; -----------------------------------------------------------------------------
 animation_state::
 				; Plane#0
-				dw			-129						; Y
-				db			0							; animation_pos_y index
-				dw			16 * 1						; X
-				db			0							; Pattern
+				dw			-129						; +0, +1: Y
+				db			0							; +2: animation_pos_y index
+				dw			16 * 1						; +3, +4: X
+				db			0							; +5: Pattern
 				; Plane#1
-				dw			-135						; Y
-				db			0							; animation_pos_y index
-				dw			16 * 2						; X
-				db			1							; Pattern
+				dw			-135						; +0, +1: Y
+				db			0							; +2: animation_pos_y index
+				dw			16 * 2						; +3, +4: X
+				db			1							; +5: Pattern
 				; Plane#2
-				dw			-140						; Y
-				db			0							; animation_pos_y index
-				dw			16 * 3						; X
-				db			2							; Pattern
+				dw			-140						; +0, +1: Y
+				db			0							; +2: animation_pos_y index
+				dw			16 * 3						; +3, +4: X
+				db			2							; +5: Pattern
 				; Plane#3
-				dw			-141						; Y
-				db			0							; animation_pos_y index
-				dw			16 * 4						; X
-				db			3							; Pattern
+				dw			-141						; +0, +1: Y
+				db			0							; +2: animation_pos_y index
+				dw			16 * 4						; +3, +4: X
+				db			3							; +5: Pattern
 				; Plane#4
-				dw			-144						; Y
-				db			0							; animation_pos_y index
-				dw			16 * 5						; X
-				db			4							; Pattern
+				dw			-144						; +0, +1: Y
+				db			0							; +2: animation_pos_y index
+				dw			16 * 5						; +3, +4: X
+				db			4							; +5: Pattern
 				; Plane#5
-				dw			-150						; Y
-				db			0							; animation_pos_y index
-				dw			16 * 6						; X
-				db			5							; Pattern
+				dw			-150						; +0, +1: Y
+				db			0							; +2: animation_pos_y index
+				dw			16 * 6						; +3, +4: X
+				db			5							; +5: Pattern
 				; Plane#6
-				dw			-165						; Y
-				db			0							; animation_pos_y index
-				dw			16 * 7						; X
-				db			6							; Pattern
+				dw			-165						; +0, +1: Y
+				db			0							; +2: animation_pos_y index
+				dw			16 * 7						; +3, +4: X
+				db			6							; +5: Pattern
 				; Plane#7
-				dw			-155						; Y
-				db			0							; animation_pos_y index
-				dw			16 * 8						; X
-				db			7							; Pattern
+				dw			-155						; +0, +1: Y
+				db			0							; +2: animation_pos_y index
+				dw			16 * 8						; +3, +4: X
+				db			7							; +5: Pattern
 				; Plane#8
-				dw			-143						; Y
-				db			0							; animation_pos_y index
-				dw			16 * 9						; X
-				db			8							; Pattern
+				dw			-143						; +0, +1: Y
+				db			0							; +2: animation_pos_y index
+				dw			16 * 9						; +3, +4: X
+				db			8							; +5: Pattern
 				; Plane#9
-				dw			-139						; Y
-				db			0							; animation_pos_y index
-				dw			16 * 10						; X
-				db			9							; Pattern
+				dw			-139						; +0, +1: Y
+				db			0							; +2: animation_pos_y index
+				dw			16 * 10						; +3, +4: X
+				db			9							; +5: Pattern
 				; Plane#10
-				dw			-170						; Y
-				db			0							; animation_pos_y index
-				dw			16 * 11						; X
-				db			10							; Pattern
+				dw			-170						; +0, +1: Y
+				db			0							; +2: animation_pos_y index
+				dw			16 * 11						; +3, +4: X
+				db			10							; +5: Pattern
 				; Plane#11
-				dw			-165						; Y
-				db			0							; animation_pos_y index
-				dw			16 * 12						; X
-				db			11							; Pattern
+				dw			-165						; +0, +1: Y
+				db			0							; +2: animation_pos_y index
+				dw			16 * 12						; +3, +4: X
+				db			11							; +5: Pattern
 				; Plane#12
-				dw			-169						; Y
-				db			0							; animation_pos_y index
-				dw			16 * 13						; X
-				db			12							; Pattern
+				dw			-169						; +0, +1: Y
+				db			0							; +2: animation_pos_y index
+				dw			16 * 13						; +3, +4: X
+				db			12							; +5: Pattern
 				; Plane#13
-				dw			-172						; Y
-				db			0							; animation_pos_y index
-				dw			16 * 14						; X
-				db			13							; Pattern
+				dw			-172						; +0, +1: Y
+				db			0							; +2: animation_pos_y index
+				dw			16 * 14						; +3, +4: X
+				db			13							; +5: Pattern
 
 				dw			255							; Endmark
 
 animation_pos_y::
+				dw			-248
+				db			0
+				dw			-246
+				db			255
+				dw			-244
+				db			254
+				dw			-241
+				db			252
+				dw			-238
+				db			250
+				dw			-233
+				db			247
+				dw			-229
+				db			244
+				dw			-223
+				db			240
+				dw			-216
+				db			235
+				dw			-209
+				db			230
+				dw			-200
+				db			224
+				dw			-191
+				db			218
+				dw			-183
+				db			212
+				dw			-174
+				db			206
+				dw			-163
+				db			199
+				dw			-153
+				db			192
+				dw			-142
+				db			185
+				dw			-131
+				db			178
 				dw			-120
-				dw			-119
-				dw			-118
-				dw			-117
-				dw			-116
-				dw			-114
-				dw			-113
-				dw			-111
-				dw			-109
-				dw			-107
-				dw			-104
-				dw			-101
-				dw			-99
-				dw			-96
-				dw			-92
-				dw			-89
-				dw			-85
-				dw			-81
-				dw			-77
-				dw			-72
-				dw			-68
-				dw			-63
-				dw			-58
+				db			171
+				dw			-108
+				db			164
+				dw			-97
+				db			157
+				dw			-86
+				db			151
+				dw			-75
+				db			145
+				dw			-64
+				db			139
 				dw			-53
-				dw			-48
+				db			133
 				dw			-42
-				dw			-37
+				db			128
 				dw			-32
-				dw			-27
+				db			123
 				dw			-22
-				dw			-17
+				db			118
 				dw			-13
-				dw			-8
-				dw			-4
-				dw			0
-				dw			4
-				dw			7
-				dw			11
-				dw			14
-				dw			16
-				dw			19
-				dw			22
-				dw			24
-				dw			26
+				db			114
+				dw			-5
+				db			111
+				dw			3
+				db			108
+				dw			10
+				db			105
+				dw			17
+				db			103
+				dw			23
+				db			101
 				dw			28
-				dw			29
-				dw			31
+				db			100
 				dw			32
-				dw			33
-				dw			34
+				db			100
 				dw			35
+				db			100
+				dw			39
+				db			100
+				dw			41
+				db			101
+				dw			42
+				db			102
+				dw			44
+				db			103
+				dw			45
+				db			105
+				dw			45
+				db			107
+				dw			45
+				db			109
+				dw			44
+				db			112
+				dw			43
+				db			114
+				dw			42
+				db			117
+				dw			40
+				db			120
+				dw			39
+				db			122
+				dw			37
+				db			125
+				dw			35
+				db			128
 
 complete_count:
 				db			0
