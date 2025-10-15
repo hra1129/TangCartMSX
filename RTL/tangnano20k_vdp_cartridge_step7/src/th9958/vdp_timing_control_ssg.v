@@ -65,7 +65,7 @@ module vdp_timing_control_ssg (
 	output		[13:0]	screen_pos_x,			//	signed   (Coordinates not affected by scroll register)
 	output		[ 9:0]	screen_pos_y,			//	signed   (Coordinates not affected by scroll register)
 	output		[ 8:0]	pixel_pos_x,			//	unsigned (Coordinates affected by scroll register)
-	output		[ 8:0]	pixel_pos_y,			//	unsigned (Coordinates affected by scroll register)
+	output		[ 7:0]	pixel_pos_y,			//	unsigned (Coordinates affected by scroll register)
 	output				screen_v_active,
 
 	output				intr_line,				//	pulse

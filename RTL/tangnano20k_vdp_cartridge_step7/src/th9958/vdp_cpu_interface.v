@@ -133,6 +133,7 @@ module vdp_cpu_interface (
 	output				reg_yjk_mode,
 	output				reg_yae_mode,
 	output				reg_command_enable,
+	output				reg_sprite_priority_shuffle,
 	output	[2:0]		reg_horizontal_offset_l,
 	output	[8:3]		reg_horizontal_offset_h,
 	output				reg_command_high_speed_mode,
@@ -210,6 +211,7 @@ module vdp_cpu_interface (
 	reg					ff_yjk_mode;
 	reg					ff_yae_mode;
 	reg					ff_command_enable;
+	reg					ff_sprite_priority_shuffle;
 	reg		[2:0]		ff_horizontal_offset_l;
 	reg		[8:3]		ff_horizontal_offset_h;
 	reg					ff_command_high_speed_mode;
@@ -465,6 +467,7 @@ module vdp_cpu_interface (
 			ff_yjk_mode <= 1'b0;
 			ff_yae_mode <= 1'b0;
 			ff_command_enable <= 1'b0;
+			ff_sprite_priority_shuffle <= 1'b0;
 			ff_horizontal_offset_l <= 3'd0;
 			ff_horizontal_offset_h <= 6'd0;
 			ff_command_high_speed_mode <= 1'b0;
@@ -593,6 +596,7 @@ module vdp_cpu_interface (
 					ff_yjk_mode <= ff_1st_byte[3];
 					ff_yae_mode <= ff_1st_byte[4];
 					ff_command_enable <= ff_1st_byte[6];
+					ff_sprite_priority_shuffle <= ff_1st_byte[7];
 				end
 			8'd26:	//	R#26 = [N/A][N/A][HO8][HO7][HO6][HO5][HO4][HO3]
 				begin
@@ -850,6 +854,7 @@ module vdp_cpu_interface (
 	assign reg_yjk_mode								= ff_yjk_mode;
 	assign reg_yae_mode								= ff_yae_mode;
 	assign reg_command_enable						= ff_command_enable;
+	assign reg_sprite_priority_shuffle				= ff_sprite_priority_shuffle;
 	assign reg_horizontal_offset_l					= ff_horizontal_offset_l;
 	assign reg_horizontal_offset_h					= ff_horizontal_offset_h;
 	assign reg_command_high_speed_mode				= ff_command_high_speed_mode;

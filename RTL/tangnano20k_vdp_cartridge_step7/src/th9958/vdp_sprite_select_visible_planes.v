@@ -89,7 +89,8 @@ module vdp_sprite_select_visible_planes (
 	input		[17:7]	reg_sprite_attribute_table_base,
 	input				reg_sprite_nonR23_mode,
 	input				reg_sprite_mode3,
-	input				reg_sprite16_mode
+	input				reg_sprite16_mode,
+	input				reg_sprite_priority_shuffle
 );
 	//	Phase
 	wire		[9:0]	w_screen_pos_x;
@@ -97,6 +98,7 @@ module vdp_sprite_select_visible_planes (
 	wire		[3:0]	w_sub_phase;
 	wire		[8:0]	w_pixel_pos_y;
 	reg			[5:0]	ff_current_plane_num;		//	Plane#0...#63
+	reg			[5:0]	ff_current_plane_num_start;	//	Plane#0...#63
 	reg					ff_vram_valid;
 	reg			[4:0]	ff_selected_count;			//	表示するスプライトのカウント 0～16
 	reg					ff_select_finish;
@@ -141,6 +143,24 @@ module vdp_sprite_select_visible_planes (
 	// --------------------------------------------------------------------
 	always @( posedge clk or negedge reset_n ) begin
 		if( !reset_n ) begin
+			ff_current_plane_num_start <= 6'd0;
+		end
+		else if( !reg_sprite_priority_shuffle ) begin
+			//	シャッフルしないモード
+			ff_current_plane_num_start <= 6'd0;
+		end
+		else begin
+			//	シャッフルするモード
+			if( screen_pos_y == 9'h1FF ) begin
+				if( screen_pos_x == 14'h3FFF ) begin
+					ff_current_plane_num_start <= ff_current_plane_num_start + 6'd37;
+				end
+			end
+		end
+	end
+
+	always @( posedge clk or negedge reset_n ) begin
+		if( !reset_n ) begin
 			ff_current_plane_num	<= 6'd0;
 			ff_vram_valid			<= 1'b0;
 		end
@@ -149,16 +169,16 @@ module vdp_sprite_select_visible_planes (
 		end
 		else if( w_phase == 3'd2 && w_sub_phase == 4'd0 ) begin
 			if( screen_pos_x[13:7] == 7'd0 ) begin
-				ff_current_plane_num	<= 6'd0;
+				ff_current_plane_num	<= reg_sprite_priority_shuffle ? ff_current_plane_num_start: 6'd0;
 				ff_vram_valid			<= 1'b1;
 			end
 			else begin
-				ff_current_plane_num	<= ff_current_plane_num + 5'd1;
+				ff_current_plane_num	<= ff_current_plane_num + ( reg_sprite_priority_shuffle ? 6'd19: 6'd1 );
 				ff_vram_valid			<= ~w_selected_full;
 			end
 		end
 		else if( w_phase == 3'd4 && w_sub_phase == 4'd0 ) begin
-			ff_current_plane_num	<= ff_current_plane_num + 5'd1;
+			ff_current_plane_num	<= ff_current_plane_num + ( reg_sprite_priority_shuffle ? 6'd19: 6'd1 );
 			ff_vram_valid			<= ~w_selected_full;
 		end
 		else begin
@@ -213,7 +233,7 @@ module vdp_sprite_select_visible_planes (
 		end
 		else if( w_phase == 3'd3 || w_phase == 3'd5 ) begin
 			if( w_sub_phase == 4'd3 ) begin
-				if( w_y == w_finish_line ) begin
+				if( w_y == w_finish_line && !reg_sprite_priority_shuffle ) begin
 					ff_select_finish	<= 1'b1;
 					ff_selected_en		<= 1'b0;
 				end
@@ -256,7 +276,7 @@ module vdp_sprite_select_visible_planes (
 	end
 
 	assign selected_en				= ff_selected_en;
-	assign selected_plane_num		= ff_current_plane_num;
+	assign selected_plane_num		= reg_sprite_mode3 ? ff_current_plane_num : { 1'b0, ff_current_plane_num[4:0] };
 	assign selected_attribute[7:0]	= reg_sprite_mode3 ? w_offset_y[7:0]: ( reg_sprite_magify ? { 3'd0, w_offset_y[4:1] }: { 3'd0, w_offset_y[3:0] } );
 	assign selected_attribute[31:8]	= ff_attribute[31:8];
 	assign selected_count			= ff_selected_count;

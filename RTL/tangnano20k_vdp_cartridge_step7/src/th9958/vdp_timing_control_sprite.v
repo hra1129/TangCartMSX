@@ -94,7 +94,8 @@ module vdp_timing_control_sprite (
 	input				reg_left_mask,
 	input				reg_sprite_nonR23_mode,
 	input				reg_sprite_mode3,
-	input				reg_sprite16_mode
+	input				reg_sprite16_mode,
+	input				reg_sprite_priority_shuffle
 );
 	localparam			c_mode_g3	= 5'b010_00;	//	Graphic3 (SCREEN4)
 	localparam			c_mode_g4	= 5'b011_00;	//	Graphic4 (SCREEN5)
@@ -104,6 +105,7 @@ module vdp_timing_control_sprite (
 	wire				w_sprite_disable;
 	reg					ff_screen_v_active;
 	reg					ff_screen_h_active;
+	reg					ff_sprite_priority_shuffle;
 
 	assign w_sprite_disable	= reg_sprite_disable | sprite_off;
 
@@ -183,6 +185,15 @@ module vdp_timing_control_sprite (
 		end
 	end
 
+	always @( posedge clk or negedge reset_n ) begin
+		if( !reset_n ) begin
+			ff_sprite_priority_shuffle <= 1'b0;
+		end
+		else if( screen_pos_x[13:0] == 14'h3FFF ) begin
+			ff_sprite_priority_shuffle <= reg_sprite_priority_shuffle;
+		end
+	end
+
 	// --------------------------------------------------------------------
 	//	Select visible planes
 	// --------------------------------------------------------------------
@@ -214,7 +225,8 @@ module vdp_timing_control_sprite (
 		.reg_sprite_attribute_table_base			( reg_sprite_attribute_table_base			),
 		.reg_sprite_nonR23_mode						( reg_sprite_nonR23_mode					),
 		.reg_sprite_mode3							( reg_sprite_mode3							),
-		.reg_sprite16_mode							( reg_sprite16_mode							)
+		.reg_sprite16_mode							( reg_sprite16_mode							),
+		.reg_sprite_priority_shuffle				( ff_sprite_priority_shuffle				)
 	);
 
 	// --------------------------------------------------------------------

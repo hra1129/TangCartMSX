@@ -18,6 +18,7 @@ start:
 			call	sp3_move_test3
 			call	sp3_move_test4
 			call	sp3_move_test5
+			call	sp3_move_test6
 
 			; 後始末
 			; R#15 = 0x00
@@ -813,6 +814,64 @@ sp3_move_test5::
 			ld		a, [address + 1]
 			cp		a, 0x76
 			jr		nc, loop2
+			ret
+	address:
+			dw		0x7600
+	attribute:
+	attribute0_y:
+			dw		0					; Y
+	attribute0_mgy:
+			db		16					; MGY
+	attribute0_color:
+			db		0					; Transparent(2), ReverseY(1), ReverseX(1), Palette Set(4)
+	attribute0_x:
+			dw		0					; X
+	attribute0_mgx:
+			db		16					; MGX
+	attribute0_pattern:
+			db		0					; PatternY(4), PatternX(4)
+			endscope
+
+; =============================================================================
+;	[SCREEN5] プライオリティシャッフルテスト
+;	input:
+;		none
+;	output:
+;		none
+;	break:
+;		AF
+;	comment:
+;		none
+; =============================================================================
+			scope	sp3_move_test6
+sp3_move_test6::
+			; R#25 = 0x80  Sprite priority shuffle
+			ld		a, 0x80
+			ld		e, 25
+			call	write_control_register
+	loop:
+			; put sprite
+			ld		hl, attribute
+			ld		de, [address]
+			ld		bc, 8 * 1
+			call	block_copy
+			; アドレス移動
+			ld		hl, [address]
+			ld		de, 8
+			add		hl, de
+			ld		[address], hl
+			; X移動
+			ld		a, [attribute0_x]
+			add		a, 8
+			ld		[attribute0_x], a
+			jr		nz, skip_y
+			or		a, a
+			jr		z, exit_loop
+	skip_y:
+			jp		loop
+	exit_loop:
+			; キー待ち
+			call	wait_push_space_key
 			ret
 	address:
 			dw		0x7600

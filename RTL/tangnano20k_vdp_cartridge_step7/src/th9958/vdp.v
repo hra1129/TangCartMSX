@@ -201,6 +201,7 @@ module vdp (
 	wire				reg_yjk_mode;
 	wire				reg_yae_mode;
 	wire				reg_command_enable;
+	wire				reg_sprite_priority_shuffle;
 	wire		[2:0]	reg_horizontal_offset_l;
 	wire		[8:3]	reg_horizontal_offset_h;
 	wire				reg_command_high_speed_mode;
@@ -286,6 +287,7 @@ module vdp (
 		.reg_yjk_mode								( reg_yjk_mode								),
 		.reg_yae_mode								( reg_yae_mode								),
 		.reg_command_enable							( reg_command_enable						),
+		.reg_sprite_priority_shuffle				( reg_sprite_priority_shuffle				),
 		.reg_horizontal_offset_l					( reg_horizontal_offset_l					),
 		.reg_horizontal_offset_h					( reg_horizontal_offset_h					),
 		.reg_command_high_speed_mode				( reg_command_high_speed_mode				),
@@ -372,7 +374,8 @@ module vdp (
 		.reg_interrupt_line_nonR23_mode				( reg_interrupt_line_nonR23_mode			),
 		.reg_sprite_mode3							( reg_sprite_mode3							),
 		.reg_sprite16_mode							( reg_sprite16_mode							),
-		.reg_flat_interlace_mode					( reg_flat_interlace_mode					)
+		.reg_flat_interlace_mode					( reg_flat_interlace_mode					),
+		.reg_sprite_priority_shuffle				( reg_sprite_priority_shuffle				)
 	);
 
 	// --------------------------------------------------------------------

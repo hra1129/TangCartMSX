@@ -123,7 +123,8 @@ module vdp_timing_control (
 	input				reg_interrupt_line_nonR23_mode,
 	input				reg_sprite_mode3,
 	input				reg_sprite16_mode,
-	input				reg_flat_interlace_mode
+	input				reg_flat_interlace_mode,
+	input				reg_sprite_priority_shuffle
 );
 	wire		[13:0]	w_screen_pos_x;			//	signed   (Coordinates not affected by scroll register)
 	wire		[ 9:0]	w_screen_pos_y;			//	signed   (Coordinates not affected by scroll register)
@@ -253,6 +254,7 @@ module vdp_timing_control (
 		.reg_left_mask								( reg_left_mask								),
 		.reg_sprite_nonR23_mode						( reg_sprite_nonR23_mode					),
 		.reg_sprite_mode3							( reg_sprite_mode3							),
-		.reg_sprite16_mode							( reg_sprite16_mode							)
+		.reg_sprite16_mode							( reg_sprite16_mode							),
+		.reg_sprite_priority_shuffle				( reg_sprite_priority_shuffle				)
 	);
 endmodule
