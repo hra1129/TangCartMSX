@@ -231,6 +231,7 @@ module vdp_cpu_interface (
 	reg					ff_2nd_access;
 	reg		[7:0]		ff_1st_byte;
 	reg					ff_register_write;
+	reg					ff_port3_write;
 	reg		[5:0]		ff_register_num;
 	reg		[17:0]		ff_vram_address;
 	wire	[17:0]		w_next_vram_address;
@@ -301,6 +302,7 @@ module vdp_cpu_interface (
 			ff_1st_byte				<= 8'd0;
 			ff_vram_address_write	<= 1'b0;
 			ff_register_write		<= 1'b0;
+			ff_port3_write			<= 1'b0;
 			ff_register_num			<= 6'd0;
 		end
 		else if( ff_busy ) begin
@@ -318,20 +320,24 @@ module vdp_cpu_interface (
 				if( !ff_bus_wdata[7] ) begin
 					//	Set VRAM Address
 					ff_register_write		<= 1'b0;
+					ff_port3_write			<= 1'b0;
 					ff_vram_address_write	<= ff_bus_wdata[6];
 				end
 				else begin
 					ff_register_write		<= 1'b1;
+					ff_port3_write			<= 1'b0;
 				end
 			end
 		end
 		else if( w_write && ff_port3 ) begin
 			ff_register_write	<= 1'b1;
+			ff_port3_write		<= 1'b1;
 			ff_register_num		<= ff_register_pointer;
 			ff_1st_byte			<= ff_bus_wdata;
 		end
 		else begin
-			ff_register_write <= 1'b0;
+			ff_register_write	<= 1'b0;
+			ff_port3_write		<= 1'b0;
 		end
 	end
 
@@ -346,7 +352,7 @@ module vdp_cpu_interface (
 			end
 		end
 		else if( ff_register_write ) begin
-			if( ff_register_num == 8'd17 ) begin
+			if( ff_register_num == 8'd17 && !ff_port3_write ) begin
 				//	R#17 = [AII][N/A][R5][R4][R3][R2][R1][R0]
 				ff_register_pointer	<= ff_1st_byte[5:0];
 				ff_not_increment	<= ff_1st_byte[7];

@@ -88,7 +88,7 @@ LOP_TEOR	:= 3 + 8
 LOP_TNOT	:= 4 + 8
 
 ; =============================================================================
-;	VDP の I/O アドレスを選択する
+;	起動時の初期化処理
 ;	input:
 ;		none
 ;	output:
@@ -98,8 +98,10 @@ LOP_TNOT	:= 4 + 8
 ;	comment:
 ;		VDPアクセス関連のサブルーチンを 88h, 98h のどちらかに設定する
 ; =============================================================================
-			scope	vdp_io_select
-vdp_io_select::
+			scope	initial_process
+initial_process::
+			call	copy_rom_font
+			di
 			; check command line option
 			ld		hl, command_line
 			ld		b, 16
@@ -636,7 +638,7 @@ fill_vram::
 			endscope
 
 ; =============================================================================
-;	Space Key が押されるのを待つ
+;	スペースキー か Aボタン が押されるのを待つ
 ;	input:
 ;		none
 ;	output:
@@ -654,21 +656,60 @@ wait_push_space_key::
 			ld		ix, gttrig
 			xor		a, a
 			call	calslt
-			or		a, a
+			push	af
+
+			ld		iy, [main_rom_slot - 1]
+			ld		ix, gttrig
+			ld		a, 1
+			call	calslt
+			pop		bc
+			or		a, b
 			jr		nz, wait_free_loop
+
 			; スペースキーが押されるのを待つ
 	wait_press_loop:
 			ld		iy, [main_rom_slot - 1]
 			ld		ix, gttrig
 			xor		a, a
 			call	calslt
-			or		a, a
+			push	af
+
+			ld		iy, [main_rom_slot - 1]
+			ld		ix, gttrig
+			ld		a, 1
+			call	calslt
+			pop		bc
+			or		a, b
 			jr		z, wait_press_loop
+
+			; VSync待ち
+			call	wait_vsync
+			call	wait_vsync
 			ret
 			endscope
 
 ; =============================================================================
-;	キーバッファをクリアする
+;	VSync を待機する ( VSync の立ち上がりエッジを待つ )
+; =============================================================================
+			scope	wait_vsync
+wait_vsync::
+			ld		e, 2
+			call	read_status_register
+			ld		a, e
+			and		a, 0x40					; bit6: VR
+			jr		nz, wait_vsync
+
+	wait_vsync2:
+			ld		e, 2
+			call	read_status_register
+			ld		a, e
+			and		a, 0x40					; bit6: VR
+			jr		z, wait_vsync2
+			ret
+			endscope
+
+; =============================================================================
+;	終了処理
 ;	input:
 ;		none
 ;	output:
@@ -678,9 +719,54 @@ wait_push_space_key::
 ;	comment:
 ;		none
 ; =============================================================================
-			scope	clear_key_buffer
-clear_key_buffer::
+			scope	finish_process
+finish_process::
 			di
+			; R#0 = 0
+			xor		a, a
+			ld		e, a
+			call	write_control_register
+			; R#1 = 0x40
+			ld		a, 0x40
+			ld		e, 1
+			call	write_control_register
+			; R#7 = 0x07
+			ld		a, 0x07					; 周辺色 7
+			ld		e, 7
+			call	write_control_register
+			; R#8 = 0x02
+			ld		a, 0x02					; スプライト非表示
+			ld		e, 8
+			call	write_control_register
+			; R#9 = 0
+			ld		a, 0					; 192lines
+			ld		e, 9
+			call	write_control_register
+			; R#14 = 0
+			ld		a, 0
+			ld		e, 14
+			call	write_control_register
+			; R#20 = 0
+			ld		a, 0
+			ld		e, 20
+			call	write_control_register
+			; R#21 = 0
+			ld		a, 0
+			ld		e, 21
+			call	write_control_register
+			; R#23 = 0
+			ld		a, 0
+			ld		e, 23
+			call	write_control_register
+			; R#26 = 0
+			ld		a, 0
+			ld		e, 26
+			call	write_control_register
+			; R#27 = 0
+			ld		a, 0
+			ld		e, 27
+			call	write_control_register
+
 			ld		iy, [main_rom_slot - 1]
 			ld		ix, kilbuf
 			call	calslt
@@ -689,7 +775,9 @@ clear_key_buffer::
 			ld		a, 0
 			call	calslt
 			ei
-			ret
+
+			ld		c, 0
+			call	bdos
 			endscope
 
 ; =============================================================================
