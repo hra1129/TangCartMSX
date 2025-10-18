@@ -681,6 +681,51 @@ wait_push_space_key::
 			scope	clear_key_buffer
 clear_key_buffer::
 			di
+			; R#0 = 0
+			xor		a, a
+			ld		e, a
+			call	write_control_register
+			; R#1 = 0x40
+			ld		a, 0x40
+			ld		e, 1
+			call	write_control_register
+			; R#7 = 0x07
+			ld		a, 0x07					; 周辺色 7
+			ld		e, 7
+			call	write_control_register
+			; R#8 = 0x02
+			ld		a, 0x02					; スプライト非表示
+			ld		e, 8
+			call	write_control_register
+			; R#9 = 0
+			ld		a, 0					; 192lines
+			ld		e, 9
+			call	write_control_register
+			; R#14 = 0
+			ld		a, 0
+			ld		e, 14
+			call	write_control_register
+			; R#20 = 0
+			ld		a, 0
+			ld		e, 20
+			call	write_control_register
+			; R#21 = 0
+			ld		a, 0
+			ld		e, 21
+			call	write_control_register
+			; R#23 = 0
+			ld		a, 0
+			ld		e, 23
+			call	write_control_register
+			; R#26 = 0
+			ld		a, 0
+			ld		e, 26
+			call	write_control_register
+			; R#27 = 0
+			ld		a, 0
+			ld		e, 27
+			call	write_control_register
+
 			ld		iy, [main_rom_slot - 1]
 			ld		ix, kilbuf
 			call	calslt

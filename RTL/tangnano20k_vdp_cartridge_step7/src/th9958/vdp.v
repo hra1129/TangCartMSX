@@ -168,11 +168,13 @@ module vdp (
 	wire				w_read_color;
 
 	wire				w_status_command_execute;
+	wire				w_status_field;
 	wire				w_status_border_detect;
+	wire				w_status_hsync;
+	wire				w_status_vsync;
 	wire				w_status_transfer_ready;
 	wire		[7:0]	w_status_color;
 	wire		[8:0]	w_status_border_position;
-	wire				w_field;
 
 	wire		[4:0]	reg_screen_mode;
 	wire				reg_sprite_magify;
@@ -257,7 +259,10 @@ module vdp (
 		.register_num								( w_register_num							),
 		.register_data								( w_register_data							),
 		.status_command_execute						( w_status_command_execute					),
+		.status_field								( w_status_field							),
 		.status_border_detect						( w_status_border_detect					),
+		.status_hsync								( w_status_hsync							),
+		.status_vsync								( w_status_vsync							),
 		.status_transfer_ready						( w_status_transfer_ready					),
 		.status_color								( w_status_color							),
 		.status_border_position						( w_status_border_position					),
@@ -324,7 +329,9 @@ module vdp (
 		.intr_frame									( w_intr_frame								),
 		.pre_vram_refresh							( w_pre_vram_refresh						),
 		.vram_interleave							( w_vram_interleave							),
-		.field										( w_field									),
+		.status_field								( w_status_field							),
+		.status_hsync								( w_status_hsync							),
+		.status_vsync								( w_status_vsync							),
 		.screen_mode_vram_address					( w_screen_mode_vram_address				),
 		.screen_mode_vram_valid						( w_screen_mode_vram_valid					),
 		.screen_mode_vram_rdata						( w_screen_mode_vram_rdata					),
@@ -502,7 +509,7 @@ module vdp (
 		.upscan_r									( w_upscan_r								),
 		.upscan_g									( w_upscan_g								),
 		.upscan_b									( w_upscan_b								),
-		.field										( w_field									)
+		.field										( w_status_field							)
 	);
 
 	// --------------------------------------------------------------------
@@ -514,7 +521,7 @@ module vdp (
 		.h_count									( w_h_count									),
 		.v_count									( w_v_count									),
 		.has_scanline								( 1'b1										),
-		.field										( w_field									),
+		.field										( w_status_field							),
 		.vdp_r										( w_upscan_r								),
 		.vdp_g										( w_upscan_g								),
 		.vdp_b										( w_upscan_b								),

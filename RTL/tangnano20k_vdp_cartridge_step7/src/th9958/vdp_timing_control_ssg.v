@@ -88,7 +88,9 @@ module vdp_timing_control_ssg (
 	output		[8:3]	horizontal_offset_h,
 	output				interleaving_page,
 	output				blink,
-	output				field
+	output				status_field,
+	output				status_hsync,
+	output				status_vsync
 );
 	localparam			c_left_pos			= 14'd640;		//	16の倍数
 	localparam			c_top_pos192		= 10'd35;		//	画面上の垂直位置(192 lines mode)。小さくすると上へ、大きくすると下へ寄る。
@@ -129,8 +131,10 @@ module vdp_timing_control_ssg (
 	wire		[3:0]	w_next_blink_counter;
 	reg			[9:0]	ff_top_line;
 	wire				w_half_line_shift;
+	reg					ff_hsync;
+	reg					ff_vsync;
 
-	assign w_half_line_shift	= field & (reg_interlace_mode | reg_flat_interlace_mode);
+	assign w_half_line_shift	= ff_field & (reg_interlace_mode | reg_flat_interlace_mode);
 
 	// --------------------------------------------------------------------
 	//	Latch horizontal scroll register
@@ -177,6 +181,42 @@ module vdp_timing_control_ssg (
 	end
 
 	assign w_h_count_end	= ( ff_h_count == c_h_count_max );
+
+	always @( posedge clk or negedge reset_n ) begin
+		if( !reset_n ) begin
+			ff_hsync <= 1'b1;
+		end
+		else if( ff_half_count == 13'd5080 ) begin
+			ff_hsync <= 1'b0;
+		end
+		else if( ff_half_count == 13'd8 ) begin
+			ff_hsync <= 1'b1;
+		end
+	end
+
+	always @( posedge clk or negedge reset_n ) begin
+		if( !reset_n ) begin
+			ff_vsync <= 1'b1;
+		end
+		else if( ff_half_count == 13'd640 ) begin
+			if( reg_50hz_mode ) begin
+				if( ff_v_count[9:1] == 9'd309 ) begin
+					ff_vsync <= 1'b0;
+				end
+				else if( ff_v_count[9:1] == 9'd312 ) begin
+					ff_vsync <= 1'b1;
+				end
+			end
+			else begin
+				if( ff_v_count[9:1] == 9'd258 ) begin
+					ff_vsync <= 1'b0;
+				end
+				else if( ff_v_count[9:1] == 9'd261 ) begin
+					ff_vsync <= 1'b1;
+				end
+			end
+		end
+	end
 
 	always @( posedge clk or negedge reset_n ) begin
 		if( !reset_n ) begin
@@ -381,5 +421,7 @@ module vdp_timing_control_ssg (
 	assign dot_phase			= ff_half_count[0];
 	assign interleaving_page	= reg_interleaving_mode ? (ff_interleaving_page & ff_field): 1'b1;
 	assign blink				= ~ff_interleaving_page;
-	assign field				= ff_field;
+	assign status_field			= ff_field;
+	assign status_hsync			= ff_hsync;
+	assign status_vsync			= ff_vsync;
 endmodule

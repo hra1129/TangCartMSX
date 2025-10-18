@@ -102,7 +102,10 @@ module vdp_cpu_interface (
 	output		[7:0]	register_data,
 
 	input				status_command_execute,		//	S#2 bit0
+	input				status_field,				//	S#2 bit1
 	input				status_border_detect,		//	S#2 bit4
+	input				status_hsync,				//	S#2 bit5
+	input				status_vsync,				//	S#2 bit6
 	input				status_transfer_ready,		//	S#2 bit7
 	input		[7:0]	status_color,				//	S#7
 	input		[8:0]	status_border_position,		//	S#8, S#9
@@ -692,7 +695,7 @@ module vdp_cpu_interface (
 		case( ff_status_register_pointer )
 		4'd0:		ff_status_register <= { ff_frame_interrupt, sprite_overmap, sprite_collision, sprite_overmap_id };
 		4'd1:		ff_status_register <= { 2'd0, c_vdp_id, ff_line_interrupt };
-		4'd2:		ff_status_register <= { status_transfer_ready, 1'b0, 1'b0, status_border_detect, 2'b11, 1'b0, status_command_execute };
+		4'd2:		ff_status_register <= { status_transfer_ready, status_vsync, status_hsync, status_border_detect, 2'b11, status_field, status_command_execute };
 		4'd3:		ff_status_register <= sprite_collision_x[7:0];
 		4'd4:		ff_status_register <= { 7'b1111111, sprite_collision_x[8] };
 		4'd5:		ff_status_register <= sprite_collision_y[7:0];

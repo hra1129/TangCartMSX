@@ -69,7 +69,9 @@ module vdp_timing_control (
 	output				intr_frame,				//	pulse
 	output				pre_vram_refresh,
 	output				vram_interleave,
-	output				field,
+	output				status_field,
+	output				status_hsync,
+	output				status_vsync,
 
 	output		[17:0]	screen_mode_vram_address,
 	output				screen_mode_vram_valid,
@@ -136,14 +138,18 @@ module vdp_timing_control (
 	wire				w_sprite_off;
 	wire				w_interleaving_page;
 	wire				w_blink;
-	wire				w_field;
+	wire				w_status_field;
+	wire				w_status_hsync;
+	wire				w_status_vsync;
 
 	// --------------------------------------------------------------------
 	//	Output assignment
 	// --------------------------------------------------------------------
 	assign screen_pos_x		= w_screen_pos_x;
 	assign screen_pos_y		= w_screen_pos_y;
-	assign field			= w_field;
+	assign status_field		= w_status_field;
+	assign status_hsync		= w_status_hsync;
+	assign status_vsync		= w_status_vsync;
 
 	// --------------------------------------------------------------------
 	//	Synchronous Signal Generator
@@ -177,7 +183,9 @@ module vdp_timing_control (
 		.horizontal_offset_h						( w_horizontal_offset_h						),
 		.interleaving_page							( w_interleaving_page						),
 		.blink										( w_blink									),
-		.field										( w_field									)
+		.status_field								( w_status_field							),
+		.status_hsync								( w_status_hsync							),
+		.status_vsync								( w_status_vsync							)
 	);
 
 	// --------------------------------------------------------------------
@@ -201,7 +209,7 @@ module vdp_timing_control (
 		.sprite_off									( w_sprite_off								),
 		.interleaving_page							( w_interleaving_page						),
 		.blink										( w_blink									),
-		.field										( w_field									),
+		.field										( w_status_field							),
 		.screen_mode								( screen_mode								),
 		.horizontal_offset_l						( w_horizontal_offset_l						),
 		.reg_screen_mode							( reg_screen_mode							),
