@@ -134,7 +134,7 @@ module vdp (
 	wire		[31:0]	w_screen_mode_vram_rdata;
 	wire		[7:0]	w_screen_mode_display_color;
 	wire				w_screen_mode_display_color_en;
-	wire		[3:0]	w_screen_mode;
+	wire		[9:0]	w_screen_mode;
 
 	wire		[17:0]	w_sprite_vram_address;
 	wire				w_sprite_vram_valid;

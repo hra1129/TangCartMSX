@@ -5,4 +5,11 @@
 )
 move zma.log line001.log
 
+..\zma line002.asm line002.COM
+@if errorlevel 1 (
+	pause "エラーが発生しました。停止します。"
+	exit
+)
+move zma.log line002.log
+
 pause

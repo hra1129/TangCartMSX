@@ -78,7 +78,7 @@ module vdp_command (
 	output		[7:0]	status_color,					//	S#7
 	output		[8:0]	status_border_position,			//	S#8, S#9
 	//	Screen mode
-	input		[3:0]	screen_mode,
+	input		[9:0]	screen_mode,
 	input				vram_interleave,
 	input		[7:0]	reg_text_back_color,
 	input				reg_command_enable,
@@ -156,12 +156,14 @@ module vdp_command (
 	reg			[7:0]	ff_source;
 	wire		[7:0]	w_destination;
 	wire		[7:0]	w_lop_pixel;
+	reg			[9:0]	ff_screen_mode;
 
 	reg			[1:0]	ff_xsel;
 	reg			[11:0]	reg_sx;
 	reg			[8:0]	reg_dx;
 	reg			[10:0]	reg_nx;
 	wire		[10:0]	w_reg_nx;
+	wire		[10:0]	w_nx_max;
 	reg			[10:0]	reg_ny;
 	reg			[19:0]	ff_sx;
 	reg			[20:0]	ff_sy;
@@ -208,6 +210,7 @@ module vdp_command (
 	wire				w_effective_mode;
 	wire		[1:0]	w_bpp;					//	c_bpp_Xbit
 	wire				w_512pixel;
+	reg					ff_512pixel;
 	wire		[17:0]	w_address_s_pre;
 	wire		[17:0]	w_address_d_pre;
 	wire		[17:0]	w_address_s;
@@ -222,6 +225,10 @@ module vdp_command (
 	reg					ff_border_detect_request;
 	reg					ff_border_detect;
 	reg					ff_read_color;
+	wire				w_sx_active;
+	wire				w_dx_active;
+	reg					ff_sx_active;
+	reg					ff_dx_active;
 	wire				w_sx_overflow;
 	wire				w_dx_overflow;
 	reg			[2:0]	ff_bit_count;
@@ -249,33 +256,29 @@ module vdp_command (
 	localparam			c_state_pset_make			= 6'd17;
 	localparam			c_state_line_make			= 6'd18;
 	localparam			c_state_lmmv_make			= 6'd19;
-	localparam			c_state_lmmm_wait_source	= 6'd21;
-	localparam			c_state_lmmm_make			= 6'd22;
-	localparam			c_state_lmmm_next			= 6'd23;
-	localparam			c_state_hmmm_make			= 6'd25;
-	localparam			c_state_hmmm_next			= 6'd26;
-	localparam			c_state_ymmm_make			= 6'd27;
-	localparam			c_state_srch_compare		= 6'd29;
-	localparam			c_state_srch_next			= 6'd30;
-	localparam			c_state_hmmc_next			= 6'd31;
-	localparam			c_state_lmmc_make			= 6'd32;
-	localparam			c_state_lmmc_next			= 6'd33;
-	localparam			c_state_lmcm_make			= 6'd34;
-	localparam			c_state_lmcm_next			= 6'd35;
-	localparam			c_state_lrmm_wait_source	= 6'd36;
-	localparam			c_state_lrmm_make			= 6'd37;
-	localparam			c_state_lrmm_next			= 6'd38;
-	localparam			c_state_lfmc_read			= 6'd39;
-	localparam			c_state_lfmc_make			= 6'd40;
-	localparam			c_state_lfmc_next			= 6'd41;
-	localparam			c_state_lfmm_load_source	= 6'd42;
-	localparam			c_state_lfmm_read			= 6'd43;
-	localparam			c_state_lfmm_make			= 6'd44;
-	localparam			c_state_lfmm_next			= 6'd45;
-	localparam			c_state_wait_rdata_en		= 6'd46;
-	localparam			c_state_wait_counter		= 6'd47;
-	localparam			c_state_pre_finish			= 6'd48;
-	localparam			c_state_finish				= 6'd49;
+	localparam			c_state_lmmm_wait_source	= 6'd20;
+	localparam			c_state_lmmm_make			= 6'd21;
+	localparam			c_state_hmmm_make			= 6'd22;
+	localparam			c_state_ymmm_make			= 6'd23;
+	localparam			c_state_srch_compare		= 6'd24;
+	localparam			c_state_srch_next			= 6'd25;
+	localparam			c_state_hmmc_next			= 6'd26;
+	localparam			c_state_lmmc_make			= 6'd27;
+	localparam			c_state_lmmc_next			= 6'd28;
+	localparam			c_state_lmcm_make			= 6'd29;
+	localparam			c_state_lmcm_next			= 6'd30;
+	localparam			c_state_lrmm_wait_source	= 6'd31;
+	localparam			c_state_lrmm_make			= 6'd32;
+	localparam			c_state_lfmc_read			= 6'd33;
+	localparam			c_state_lfmc_make			= 6'd34;
+	localparam			c_state_lfmc_next			= 6'd35;
+	localparam			c_state_lfmm_load_source	= 6'd36;
+	localparam			c_state_lfmm_read			= 6'd37;
+	localparam			c_state_lfmm_make			= 6'd38;
+	localparam			c_state_wait_rdata_en		= 6'd39;
+	localparam			c_state_wait_counter		= 6'd40;
+	localparam			c_state_pre_finish			= 6'd41;
+	localparam			c_state_finish				= 6'd42;
 	reg			[5:0]	ff_state;
 	reg			[5:0]	ff_next_state;
 	reg					ff_count_valid;
@@ -286,25 +289,29 @@ module vdp_command (
 	// --------------------------------------------------------------------
 	//	Mode select
 	// --------------------------------------------------------------------
-	assign w_effective_mode		= reg_command_enable || ff_fg4 || (screen_mode == c_g4 || screen_mode == c_g5 || screen_mode == c_g6 || screen_mode == c_g7);
-	assign w_bpp				= (screen_mode == c_g7) ? c_bpp_8bit:
-	            				  (screen_mode == c_g5) ? c_bpp_2bit: c_bpp_4bit;
-	assign w_next				= (screen_mode == c_g7 || ff_command[3:2] != 2'b11) ? 10'd1:
-	             				  (screen_mode == c_g5) ? 10'd4: 10'd2;
-	assign w_512pixel			= (screen_mode == c_g5 || screen_mode == c_g6);
+	always @( posedge clk ) begin
+		ff_screen_mode <= screen_mode;
+	end
+
+	assign w_effective_mode		= reg_command_enable || ff_fg4 || (ff_screen_mode[c_g4] || ff_screen_mode[c_g5] || ff_screen_mode[c_g6] || ff_screen_mode[c_g7]);
+	assign w_bpp				= (ff_screen_mode[c_g7]) ? c_bpp_8bit:
+	            				  (ff_screen_mode[c_g5]) ? c_bpp_2bit: c_bpp_4bit;
+	assign w_next				= (ff_screen_mode[c_g7] || ff_command[3:2] != 2'b11) ? 10'd1:
+	             				  (ff_screen_mode[c_g5]) ? 10'd4: 10'd2;
+	assign w_512pixel			= (ff_screen_mode[c_g5] || ff_screen_mode[c_g6]);
 
 	// --------------------------------------------------------------------
 	//	Address
 	// --------------------------------------------------------------------
-	assign w_address_s_pre		= (screen_mode == c_g4 || ff_fg4) ? { ff_sy[18:8], ff_sx[15: 9] }:	// SCREEN5, 128byte/line, 2pixel/byte, 256line * 8page
-	                  			  (screen_mode == c_g5          ) ? { ff_sy[18:8], ff_sx[16:10] }:	// SCREEN6, 128byte/line, 4pixel/byte, 256line * 8page
-	                  			  (screen_mode == c_g6          ) ? { ff_sy[17:8], ff_sx[16: 9] }:	// SCREEN7, 256byte/line, 2pixel/byte, 256line * 4page
-	                  			                                    { ff_sy[17:8], ff_sx[15: 8] };	// SCREEN8, 256byte/line, 1pixel/byte, 256line * 4page
+	assign w_address_s_pre		= (ff_screen_mode[c_g4] || ff_fg4) ? { ff_sy[18:8], ff_sx[15: 9] }:	// SCREEN5, 128byte/line, 2pixel/byte, 256line * 8page
+	                  			  (ff_screen_mode[c_g5]          ) ? { ff_sy[18:8], ff_sx[16:10] }:	// SCREEN6, 128byte/line, 4pixel/byte, 256line * 8page
+	                  			  (ff_screen_mode[c_g6]          ) ? { ff_sy[17:8], ff_sx[16: 9] }:	// SCREEN7, 256byte/line, 2pixel/byte, 256line * 4page
+	                  			                                     { ff_sy[17:8], ff_sx[15: 8] };	// SCREEN8, 256byte/line, 1pixel/byte, 256line * 4page
 
-	assign w_address_d_pre		= (screen_mode == c_g4 || ff_fg4) ? { ff_dy[10:0], ff_dx[ 7: 1] }:	// SCREEN5, 128byte/line, 2pixel/byte, 256line * 8page
-	                  			  (screen_mode == c_g5          ) ? { ff_dy[10:0], ff_dx[ 8: 2] }:	// SCREEN6, 128byte/line, 4pixel/byte, 256line * 8page
-	                  			  (screen_mode == c_g6          ) ? { ff_dy[ 9:0], ff_dx[ 8: 1] }:	// SCREEN7, 256byte/line, 2pixel/byte, 256line * 4page
-	                  			                                    { ff_dy[ 9:0], ff_dx[ 7: 0] };	// SCREEN8, 256byte/line, 1pixel/byte, 256line * 4page
+	assign w_address_d_pre		= (ff_screen_mode[c_g4] || ff_fg4) ? { ff_dy[10:0], ff_dx[ 7: 1] }:	// SCREEN5, 128byte/line, 2pixel/byte, 256line * 8page
+	                  			  (ff_screen_mode[c_g5]          ) ? { ff_dy[10:0], ff_dx[ 8: 2] }:	// SCREEN6, 128byte/line, 4pixel/byte, 256line * 8page
+	                  			  (ff_screen_mode[c_g6]          ) ? { ff_dy[ 9:0], ff_dx[ 8: 1] }:	// SCREEN7, 256byte/line, 2pixel/byte, 256line * 4page
+	                  			                                     { ff_dy[ 9:0], ff_dx[ 7: 0] };	// SCREEN8, 256byte/line, 1pixel/byte, 256line * 4page
 
 	assign w_address_s			= vram_interleave ? { w_address_s_pre[17], w_address_s_pre[0], w_address_s_pre[16:1] }: w_address_s_pre;
 	assign w_address_d			= vram_interleave ? { w_address_d_pre[17], w_address_d_pre[0], w_address_d_pre[16:1] }: w_address_d_pre;
@@ -600,13 +607,26 @@ module vdp_command (
 		end
 	end
 
+	always @( posedge clk or negedge reset_n ) begin
+		if( !reset_n ) begin
+			ff_sx_active <= 1'b0;
+			ff_dx_active <= 1'b0;
+			ff_512pixel <= 1'b0;
+		end
+		else if( ff_start ) begin
+			ff_sx_active <= w_sx_active;
+			ff_dx_active <= w_dx_active;
+			ff_512pixel <= w_512pixel;
+		end
+	end
+
 	assign w_next_dx		= ff_dix ? ( { 1'b0, ff_dx } - w_next ): ( { 1'b0, ff_dx } + w_next );
 	assign w_next_dy		= ff_diy ? ( { 1'b0, ff_dy } - 12'd1  ): ( { 1'b0, ff_dy } + 12'd1  );
 	assign w_sx_active		= (ff_command == c_lmmm || ff_command == c_hmmm || ff_command == c_ymmm || ff_command == c_lmcm || ff_command == c_srch);
 	assign w_dx_active		= (ff_command == c_lmmm || ff_command == c_hmmm || ff_command == c_ymmm || ff_command == c_lmmc || ff_command == c_hmmc || 
 							   ff_command == c_lmmv || ff_command == c_hmmv || ff_command == c_lrmm || ff_command == c_lfmc || ff_command == c_lfmm);
-	assign w_sx_overflow	= w_sx_active && (w_next_sx[9] || (!w_512pixel && w_next_sx[8]));
-	assign w_dx_overflow	= w_dx_active && (w_next_dx[9] || (!w_512pixel && w_next_dx[8]));
+	assign w_sx_overflow	= ff_sx_active && (w_next_sx[9] || (!ff_512pixel && w_next_sx[8]));
+	assign w_dx_overflow	= ff_dx_active && (w_next_dx[9] || (!ff_512pixel && w_next_dx[8]));
 
 	// --------------------------------------------------------------------
 	//	Count N registers
@@ -695,8 +715,8 @@ module vdp_command (
 			ff_ny	<= 11'd1;
 		end
 		else if( ff_start ) begin
-			if( ff_command == c_line ) begin
-				//	hold
+			if( ff_command[3:2] == 2'b01  ) begin
+				ff_ny <= reg_ny;
 			end
 			else begin
 				ff_ny <= 11'd1;
@@ -705,7 +725,7 @@ module vdp_command (
 		else if( !ff_command_execute || ff_cache_vram_valid ) begin
 			//	hold
 		end
-		else if( ff_command == c_line ) begin
+		else if( ff_command[3:2] == 2'b01 ) begin
 			//	hold
 		end
 		else if( ff_count_valid ) begin
@@ -725,7 +745,10 @@ module vdp_command (
 		end
 	end
 
-	assign w_nx_end		= (ff_nx == reg_nx && ff_command != c_ymmm);
+	assign w_ny			= ff_ny + 11'd1;
+	assign w_nx_max		= (ff_screen_mode[c_g7] || ff_command[3:2] != 2'b11) ? reg_nx:
+	             		  (ff_screen_mode[c_g5]) ? { reg_nx[10:2], 2'd0 }: { reg_nx[10:1], 1'd0 };
+	assign w_nx_end		= (ff_nx == w_nx_max && ff_command != c_ymmm);
 	assign w_ny_end		= (ff_ny == reg_ny);
 
 	//	LINEコマンドの分子を示すカウンタ
@@ -753,7 +776,6 @@ module vdp_command (
 	end
 
 	assign w_nx			= ff_nx + { 1'd0, w_next };
-	assign w_ny			= ff_ny + 11'd1;
 	assign w_next_nyb	= { 1'b0, ff_nyb } - { 2'd0, reg_ny };
 
 	always @( posedge clk or negedge reset_n ) begin
@@ -1069,7 +1091,7 @@ module vdp_command (
 			end
 			//	POINT command -------------------------------------------------
 			c_state_point: begin
-				if( ff_sx[8] && !w_512pixel ) begin
+				if( ff_sx[8] && !ff_512pixel ) begin
 					//	Go to finish state when start position is outside of screen.
 					ff_cache_flush_start	<= 1'b1;
 					ff_state				<= c_state_finish;
@@ -1087,7 +1109,7 @@ module vdp_command (
 			end
 			//	PSET command --------------------------------------------------
 			c_state_pset: begin
-				if( ff_dx[8] && !w_512pixel ) begin
+				if( ff_dx[8] && !ff_512pixel ) begin
 					//	Go to finish state when start position is outside of screen.
 					ff_cache_flush_start	<= 1'b1;
 					ff_state				<= c_state_finish;
@@ -1121,7 +1143,7 @@ module vdp_command (
 
 			//	SRCH command --------------------------------------------------
 			c_state_srch: begin
-				if( ff_sx[9] || (ff_sx[8] && !w_512pixel) ) begin
+				if( ff_sx[9] || (ff_sx[8] && !ff_512pixel) ) begin
 					//	Go to finish state when start position is outside of screen.
 					if( ff_sx == reg_sx ) begin
 						//	Start point is out of screen.
@@ -1168,7 +1190,7 @@ module vdp_command (
 
 			//	LINE command --------------------------------------------------
 			c_state_line: begin
-				if( ff_dx[8] && !w_512pixel ) begin
+				if( ff_dx[8] && !ff_512pixel ) begin
 					//	Go to finish state when start position is outside of screen.
 					ff_cache_flush_start	<= 1'b1;
 					ff_state				<= c_state_finish;
@@ -1247,6 +1269,7 @@ module vdp_command (
 				ff_next_state			<= c_state_lmmm_wait_source;
 				ff_wait_count			<= c_wait_lmmm;
 				ff_xsel					<= ff_sx[9:8];
+				ff_count_valid			<= 1'b0;
 			end
 			c_state_lmmm_wait_source: begin
 				//	Copy source pixel value
@@ -1267,22 +1290,16 @@ module vdp_command (
 				ff_cache_vram_write		<= 1'b1;
 				ff_cache_vram_wdata		<= w_destination;
 				ff_count_valid			<= 1'b1;
-				if( reg_command_high_speed_mode ) begin
-					ff_state				<= c_state_lmmm_next;
-				end
-				else begin
-					ff_wait_counter			<= { c_wait_lmmm, 2'b11 };
-					ff_next_state			<= c_state_lmmm_next;
-					ff_state				<= c_state_wait_counter;
-				end
-			end
-			c_state_lmmm_next: begin
-				ff_count_valid			<= 1'b0;
 				if( (w_nx_end || w_sx_overflow || w_dx_overflow) && w_ny_end ) begin
 					ff_state				<= c_state_pre_finish;
 				end
-				else begin
+				else if( reg_command_high_speed_mode ) begin
 					ff_state				<= c_state_lmmm;
+				end
+				else begin
+					ff_wait_counter			<= { c_wait_lmmm, 2'b11 };
+					ff_next_state			<= c_state_lmmm;
+					ff_state				<= c_state_wait_counter;
 				end
 			end
 
@@ -1395,6 +1412,7 @@ module vdp_command (
 				ff_state				<= c_state_wait_rdata_en;
 				ff_next_state			<= c_state_hmmm_make;
 				ff_wait_count			<= c_wait_hmmm;
+				ff_count_valid			<= 1'b0;
 			end
 			c_state_hmmm_make: begin
 				//	Write the location of (DX, DY)
@@ -1403,22 +1421,16 @@ module vdp_command (
 				ff_cache_vram_write		<= 1'b1;
 				ff_cache_vram_wdata		<= ff_read_byte;
 				ff_count_valid			<= 1'b1;
-				if( reg_command_high_speed_mode ) begin
-					ff_state				<= c_state_hmmm_next;
-				end
-				else begin
-					ff_wait_counter			<= { c_wait_hmmm, 2'b11 };
-					ff_next_state			<= c_state_hmmm_next;
-					ff_state				<= c_state_wait_counter;
-				end
-			end
-			c_state_hmmm_next: begin
-				ff_count_valid			<= 1'b0;
 				if( (w_nx_end || w_sx_overflow || w_dx_overflow) && w_ny_end ) begin
 					ff_state				<= c_state_pre_finish;
 				end
-				else begin
+				else if( reg_command_high_speed_mode ) begin
 					ff_state				<= c_state_hmmm;
+				end
+				else begin
+					ff_wait_counter			<= { c_wait_hmmm, 2'b11 };
+					ff_next_state			<= c_state_hmmm;
+					ff_state				<= c_state_wait_counter;
 				end
 			end
 
@@ -1494,6 +1506,7 @@ module vdp_command (
 				ff_state				<= c_state_wait_rdata_en;
 				ff_next_state			<= c_state_lrmm_wait_source;
 				ff_xsel					<= ff_sx[9:8];
+				ff_count_valid			<= 1'b0;
 			end
 			c_state_lrmm_wait_source: begin
 				//	Copy source pixel value
@@ -1518,11 +1531,7 @@ module vdp_command (
 				ff_cache_vram_valid		<= 1'b1;
 				ff_cache_vram_write		<= 1'b1;
 				ff_cache_vram_wdata		<= w_destination;
-				ff_state				<= c_state_lrmm_next;
 				ff_count_valid			<= 1'b1;
-			end
-			c_state_lrmm_next: begin
-				ff_count_valid			<= 1'b0;
 				if( (w_nx_end || w_dx_overflow) && w_ny_end ) begin
 					ff_state				<= c_state_pre_finish;
 				end
@@ -1587,6 +1596,7 @@ module vdp_command (
 				ff_next_state			<= c_state_lfmm_load_source;
 				ff_xsel					<= ff_font_address[1:0];
 				ff_bit_count			<= 3'd7;
+				ff_count_valid			<= 1'b0;
 			end
 			c_state_lfmm_load_source: begin
 				//	Copy source bit pattern
@@ -1602,6 +1612,7 @@ module vdp_command (
 				ff_state				<= c_state_wait_rdata_en;
 				ff_next_state			<= c_state_lfmm_make;
 				ff_xsel					<= ff_dx[1:0];
+				ff_count_valid			<= 1'b0;
 			end
 			c_state_lfmm_make: begin
 				//	Write the location of (DX, DY)
@@ -1609,11 +1620,7 @@ module vdp_command (
 				ff_cache_vram_valid		<= 1'b1;
 				ff_cache_vram_write		<= 1'b1;
 				ff_cache_vram_wdata		<= w_destination;
-				ff_state				<= c_state_lfmm_next;
 				ff_count_valid			<= 1'b1;
-			end
-			c_state_lfmm_next: begin
-				ff_count_valid			<= 1'b0;
 				ff_bit_count			<= ff_bit_count - 3'd1;
 				if( (w_nx_end || w_dx_overflow) && w_ny_end ) begin
 					ff_state				<= c_state_pre_finish;

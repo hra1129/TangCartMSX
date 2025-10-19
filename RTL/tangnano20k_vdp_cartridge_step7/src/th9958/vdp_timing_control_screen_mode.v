@@ -77,7 +77,7 @@ module vdp_timing_control_screen_mode (
 	input				interleaving_page,
 	input				blink,
 	input				field,
-	output		[3:0]	screen_mode,
+	output		[9:0]	screen_mode,
 	input		[2:0]	horizontal_offset_l,
 
 	input		[4:0]	reg_screen_mode,
@@ -103,7 +103,8 @@ module vdp_timing_control_screen_mode (
 	localparam			c_mode_t1	= 5'b00x_01;	//	Text1    (SCREEN0:WIDTH40)
 	localparam			c_mode_t2	= 5'b010_01;	//	Text2    (SCREEN0:WIDTH80)
 	localparam			c_mode_gm	= 5'b00x_10;	//	Mosaic   (SCREEN3)
-	wire		[3:0]	w_mode;
+	wire		[9:0]	w_mode;
+	reg			[9:0]	ff_mode;
 	localparam			c_g1		= 0;			//	Graphic1 (SCREEN1) w_mode index
 	localparam			c_g2		= 1;			//	Graphic2 (SCREEN2) w_mode index
 	localparam			c_g3		= 2;			//	Graphic3 (SCREEN4) w_mode index
@@ -179,21 +180,21 @@ module vdp_timing_control_screen_mode (
 	// --------------------------------------------------------------------
 	//	Screen mode decoder
 	// --------------------------------------------------------------------
-	function [3:0] func_screen_mode_decoder(
+	function [9:0] func_screen_mode_decoder(
 		input	[4:0]	reg_screen_mode
 	);
 		casex( reg_screen_mode )
-		c_mode_g1:		func_screen_mode_decoder = c_g1;
-		c_mode_g2:		func_screen_mode_decoder = c_g2;
-		c_mode_g3:		func_screen_mode_decoder = c_g3;
-		c_mode_g4:		func_screen_mode_decoder = c_g4;
-		c_mode_g5:		func_screen_mode_decoder = c_g5;
-		c_mode_g6:		func_screen_mode_decoder = c_g6;
-		c_mode_g7:		func_screen_mode_decoder = c_g7;
-		c_mode_t1:		func_screen_mode_decoder = c_t1;
-		c_mode_t2:		func_screen_mode_decoder = c_t2;
-		c_mode_gm:		func_screen_mode_decoder = c_gm;
-		default:		func_screen_mode_decoder = 4'd0;
+		c_mode_g1:		func_screen_mode_decoder = 10'b0000000001;
+		c_mode_g2:		func_screen_mode_decoder = 10'b0000000010;
+		c_mode_g3:		func_screen_mode_decoder = 10'b0000000100;
+		c_mode_g4:		func_screen_mode_decoder = 10'b0000001000;
+		c_mode_g5:		func_screen_mode_decoder = 10'b0000010000;
+		c_mode_g6:		func_screen_mode_decoder = 10'b0000100000;
+		c_mode_g7:		func_screen_mode_decoder = 10'b0001000000;
+		c_mode_t1:		func_screen_mode_decoder = 10'b0010000000;
+		c_mode_t2:		func_screen_mode_decoder = 10'b0100000000;
+		c_mode_gm:		func_screen_mode_decoder = 10'b1000000000;
+		default:		func_screen_mode_decoder = 10'b0000000000;
 		endcase
 	endfunction
 
@@ -202,13 +203,17 @@ module vdp_timing_control_screen_mode (
 			ff_vram_interleave <= 1'b0;
 		end
 		else begin
-			ff_vram_interleave <= reg_sprite_mode3 ? 1'b0 : (reg_screen_mode == c_mode_g6 || reg_screen_mode == c_mode_g7);
+			ff_vram_interleave <= reg_sprite_mode3 ? 1'b0 : (ff_mode[c_g6] || ff_mode[c_g7]);
 		end
 	end
 
+	always @( posedge clk ) begin
+		ff_mode <= w_mode;
+	end
+
 	assign w_mode				= func_screen_mode_decoder( reg_screen_mode );
-	assign screen_mode			= w_mode;
-	assign sprite_off			= (w_mode == c_t1 || w_mode == c_t2);
+	assign screen_mode			= ff_mode;
+	assign sprite_off			= (ff_mode[c_t1] || ff_mode[c_t2]);
 	assign vram_interleave		= ff_vram_interleave;
 
 	// --------------------------------------------------------------------
@@ -226,7 +231,7 @@ module vdp_timing_control_screen_mode (
 			ff_phase <= 3'd0;
 		end
 		else if( w_sub_phase == 4'd15 ) begin
-			if( w_mode == c_t1 || w_mode == c_t2 ) begin
+			if( ff_mode[c_t1] || ff_mode[c_t2] ) begin
 				if( ff_phase == 3'd5 || w_scroll_pos_x == 10'd7 ) begin
 					ff_phase <= 3'd0;
 				end
@@ -265,7 +270,7 @@ module vdp_timing_control_screen_mode (
 		if( !reset_n ) begin
 			ff_screen_h_in_active <= 1'b0;
 		end
-		else if( w_mode == c_t1 || w_mode == c_t2 ) begin
+		else if( ff_mode[c_t1] || ff_mode[c_t2] ) begin
 			if( screen_pos_x[13:4] == 10'd252 && w_sub_phase == 4'd15 ) begin
 				ff_screen_h_in_active <= 1'b0;
 			end
@@ -318,25 +323,29 @@ module vdp_timing_control_screen_mode (
 	//	VRAM read access request
 	// --------------------------------------------------------------------
 	function [7:0] func_valid_decoder(
-		input	[4:0]	reg_screen_mode
+		input	[9:0]	mode
 	);
-		casex( reg_screen_mode )
-		c_mode_t1:
+		if( mode[c_t1] ) begin
 			func_valid_decoder = 8'b00000011;
-		c_mode_t2:
+		end
+		else if( mode[c_t2] ) begin
 			func_valid_decoder = 8'b00001111;
-		c_mode_g1, c_mode_g2, c_mode_g3, c_mode_gm:
+		end
+		else if( mode[c_g1] || mode[c_g2] || mode[c_g3] ||  mode[c_gm] ) begin
 			func_valid_decoder = 8'b00001011;			//	※bit2, bit4 は 0 でなければならない, Sprite用
-		c_mode_g4, c_mode_g5:
+		end
+		else if( mode[c_g4] || mode[c_g5] ) begin
 			func_valid_decoder = 8'b00000001;			//	※bit2, bit4 は 0 でなければならない, Sprite用
-		c_mode_g6, c_mode_g7:
+		end
+		else if( mode[c_g6] || mode[c_g7] ) begin
 			func_valid_decoder = 8'b00000011;			//	※bit2, bit4 は 0 でなければならない, Sprite用
-		default:
+		end
+		else begin
 			func_valid_decoder = 8'b00000000;
-		endcase
+		end
 	endfunction
 
-	assign w_valid_decode	= func_valid_decoder( reg_screen_mode );
+	assign w_valid_decode	= func_valid_decoder( ff_mode );
 
 	always @( posedge clk or negedge reset_n ) begin
 		if( !reset_n ) begin
@@ -363,32 +372,38 @@ module vdp_timing_control_screen_mode (
 				case( ff_phase )
 				3'd0:
 					//	パターンネームテーブルのアドレスを読む
-					case( w_mode )
-					c_g1, c_g2, c_g3, c_gm:
+					if( ff_mode[c_g1] || ff_mode[c_g2] || ff_mode[c_g3] || ff_mode[c_gm] ) begin
 						ff_vram_address <= w_pattern_name_g123m;		//	PCG#
-					c_g4, c_g5:
+					end
+					else if( ff_mode[c_g4] || ff_mode[c_g5] ) begin
 						ff_vram_address <= reg_flat_interlace_mode ? w_pattern_name_g45_fil: w_pattern_name_g45;			//	Bitmap pixels
-					c_g6, c_g7:
+					end
+					else if( ff_mode[c_g6] || ff_mode[c_g7] ) begin
 						ff_vram_address <= reg_flat_interlace_mode ? w_pattern_name_g67_fil: w_pattern_name_g67;			//	Bitmap pixels
-					c_t1:
+					end
+					else if( ff_mode[c_t1] ) begin
 						ff_vram_address <= w_pattern_name_t1;			//	PCG#
-					c_t2:
+					end
+					else if( ff_mode[c_t2] ) begin
 						ff_vram_address <= w_pattern_name_t2;			//	PCG#
-					default:
+					end
+					else begin
 						ff_vram_address <= 18'd0;
-					endcase
+					end
 				3'd1:
-					case( w_mode )
-					c_t1, c_t2:
+					if( ff_mode[c_t1] || ff_mode[c_t2] ) begin
 						//	PCGのドットパターンを読む
 						ff_vram_address <= w_pattern_generator_t12;
-					c_g1:
+					end
+					else if( ff_mode[c_g1] ) begin
 						//	PCGのドットパターンを読む
 						ff_vram_address <= w_pattern_generator_g1;
-					c_g2, c_g3:
+					end
+					else if( ff_mode[c_g2] || ff_mode[c_g3] ) begin
 						//	PCGのドットパターンを読む
 						ff_vram_address <= w_pattern_generator_g23;
-					c_g6, c_g7:
+					end
+					else if( ff_mode[c_g6] || ff_mode[c_g7] ) begin
 						//	Bitmap Pixels
 						if( ff_vram_interleave ) begin
 							ff_vram_address <= reg_flat_interlace_mode ? { w_pattern_name_g67_fil[17:3], 3'd1 } : { w_pattern_name_g67[17:3], 3'd1 };
@@ -396,11 +411,12 @@ module vdp_timing_control_screen_mode (
 						else begin
 							ff_vram_address <= reg_flat_interlace_mode ? { w_pattern_name_g67_fil[17:3], 3'd4 } : { w_pattern_name_g67[17:3], 3'd4 };
 						end
-					default:
+					end
+					else begin
 						ff_vram_address <= 18'd0;
-					endcase
+					end
 				3'd2:
-					if( w_mode == c_t2 ) begin
+					if( ff_mode[c_t2] ) begin
 						//	PCGのドットパターンを読む(2つ目)
 						ff_vram_address <= w_pattern_generator_t2_2;
 					end
@@ -408,22 +424,25 @@ module vdp_timing_control_screen_mode (
 						ff_vram_address <= 18'd0;
 					end
 				3'd3:
-					case( w_mode )
-					c_t2:
+					if( ff_mode[c_t2] ) begin
 						//	ブリンク情報を読む
 						ff_vram_address <= w_color_t2;
-					c_g1:
+					end
+					else if( ff_mode[c_g1] ) begin
 						//	色情報を読む
 						ff_vram_address <= w_color_g1;
-					c_g2, c_g3:
+					end
+					else if( ff_mode[c_g2] || ff_mode[c_g3] ) begin
 						//	色情報を読む
 						ff_vram_address <= w_color_g23;
-					c_gm:
+					end
+					else if( ff_mode[c_gm] ) begin
 						//	色情報を読む
 						ff_vram_address <= w_color_gm;
-					default:
+					end
+					else begin
 						ff_vram_address <= 18'd0;
-					endcase
+					end
 				default:
 					ff_vram_address <= 18'd0;
 				endcase
@@ -453,8 +472,7 @@ module vdp_timing_control_screen_mode (
 				case( ff_phase )
 				3'd0:
 					//	Pattern Name Table
-					case( w_mode )
-					c_g1, c_g2, c_g3, c_gm, c_t1:
+					if( ff_mode[c_g1] || ff_mode[c_g2] || ff_mode[c_g3] || ff_mode[c_gm] || ff_mode[c_t1] ) begin
 						//	SCREEN1, 2, 3, 4, 0(W40) では、PCG の番号を保持する
 						case( ff_vram_address[1:0] )
 						2'd0:	ff_next_vram0 <= vram_rdata[ 7: 0];
@@ -462,7 +480,8 @@ module vdp_timing_control_screen_mode (
 						2'd2:	ff_next_vram0 <= vram_rdata[23:16];
 						2'd3:	ff_next_vram0 <= vram_rdata[31:24];
 						endcase
-					c_t2:
+					end
+					else if( ff_mode[c_t2] ) begin
 						//	SCREEN0, 0(W80) では、PCG の番号を 2つ保持する
 						case( ff_vram_address[1] )
 						1'd0:
@@ -476,19 +495,19 @@ module vdp_timing_control_screen_mode (
 								ff_next_vram4 <= vram_rdata[31:24];
 							end
 						endcase
-					c_g4, c_g5:
+					end
+					else if( ff_mode[c_g4] || ff_mode[c_g5] ) begin
 						//	SCREEN5, 6 では、この1回の読み出しで 8ドット分の画素値を一気に読める
-						begin
-							ff_next_vram0 <= { 4'd0, vram_rdata[ 7: 4] };
-							ff_next_vram1 <= { 4'd0, vram_rdata[ 3: 0] };
-							ff_next_vram2 <= { 4'd0, vram_rdata[15:12] };
-							ff_next_vram3 <= { 4'd0, vram_rdata[11: 8] };
-							ff_next_vram4 <= { 4'd0, vram_rdata[23:20] };
-							ff_next_vram5 <= { 4'd0, vram_rdata[19:16] };
-							ff_next_vram6 <= { 4'd0, vram_rdata[31:28] };
-							ff_next_vram7 <= { 4'd0, vram_rdata[27:24] };
-						end
-					c_g6, c_g7:
+						ff_next_vram0 <= { 4'd0, vram_rdata[ 7: 4] };
+						ff_next_vram1 <= { 4'd0, vram_rdata[ 3: 0] };
+						ff_next_vram2 <= { 4'd0, vram_rdata[15:12] };
+						ff_next_vram3 <= { 4'd0, vram_rdata[11: 8] };
+						ff_next_vram4 <= { 4'd0, vram_rdata[23:20] };
+						ff_next_vram5 <= { 4'd0, vram_rdata[19:16] };
+						ff_next_vram6 <= { 4'd0, vram_rdata[31:28] };
+						ff_next_vram7 <= { 4'd0, vram_rdata[27:24] };
+					end
+					else if( ff_mode[c_g6] || ff_mode[c_g7] ) begin
 						//	SCREEN7, 8 では、この1回の読み出しで 前半4ドット分の画素値を一気に読める
 						if( ff_vram_interleave ) begin
 							ff_next_vram0 <= vram_rdata[ 7: 0];
@@ -502,10 +521,9 @@ module vdp_timing_control_screen_mode (
 							ff_next_vram2 <= vram_rdata[23:16];
 							ff_next_vram3 <= vram_rdata[31:24];
 						end
-					endcase
+					end
 				3'd1:
-					case( w_mode )
-					c_g1, c_g2, c_g3, c_t1, c_t2:
+					if( ff_mode[c_g1] || ff_mode[c_g2] || ff_mode[c_g3] || ff_mode[c_t1] || ff_mode[c_t2] ) begin
 						//	SCREEN1, 2, 4, 0(W40), 0(W80) では、ドットパターンを保持する。
 						case( ff_vram_address[1:0] )
 						2'd0:	ff_next_vram1 <= vram_rdata[ 7: 0];
@@ -513,7 +531,8 @@ module vdp_timing_control_screen_mode (
 						2'd2:	ff_next_vram1 <= vram_rdata[23:16];
 						2'd3:	ff_next_vram1 <= vram_rdata[31:24];
 						endcase
-					c_g6, c_g7: begin
+					end
+					else if( ff_mode[c_g6] || ff_mode[c_g7] ) begin
 						//	SCREEN7, 8 では、この1回の読み出しで 後半4ドット分の画素値を一気に読める
 						if( ff_vram_interleave ) begin
 							ff_next_vram1 <= vram_rdata[ 7: 0];
@@ -528,14 +547,11 @@ module vdp_timing_control_screen_mode (
 							ff_next_vram7 <= vram_rdata[31:24];
 						end
 					end
-					default:
-						begin
-							//	none
-						end
-					endcase
+					else begin
+						//	none
+					end
 				3'd2:
-					case( w_mode )
-					c_t2: begin
+					if( ff_mode[c_t2] ) begin
 						//	SCREEN0(W80) の、２つ目のドットパターンを保持する。
 						case( ff_vram_address[1:0] )
 						2'd0:	ff_next_vram5 <= vram_rdata[ 7: 0];
@@ -544,13 +560,11 @@ module vdp_timing_control_screen_mode (
 						2'd3:	ff_next_vram5 <= vram_rdata[31:24];
 						endcase
 					end
-					default: begin
+					else begin
 						//	none
 					end
-					endcase
 				3'd3:
-					case( w_mode )
-					c_g1, c_g2, c_g3, c_gm, c_t2:
+					if( ff_mode[c_g1] || ff_mode[c_g2] || ff_mode[c_g3] || ff_mode[c_gm] || ff_mode[c_t2] ) begin
 						//	SCREEN1, 2, 4 では、色を保持する。
 						case( ff_vram_address[1:0] )
 						2'd0:	ff_next_vram2 <= vram_rdata[ 7: 0];
@@ -558,15 +572,13 @@ module vdp_timing_control_screen_mode (
 						2'd2:	ff_next_vram2 <= vram_rdata[23:16];
 						2'd3:	ff_next_vram2 <= vram_rdata[31:24];
 						endcase
-					c_t1:
+					end
+					else if( ff_mode[c_t1] ) begin
 						//	SCREEN0(W40) では、色はレジスタから引っ張ってくる。
 						ff_next_vram2 <= reg_backdrop_color;
-					default: begin
-						//	none
 					end
-					endcase
 				3'd4:
-					if( w_mode == c_t2 ) begin
+					if( ff_mode[c_t2] ) begin
 						ff_next_vram2 <= w_blink[1] ? reg_text_back_color: reg_backdrop_color;
 						ff_next_vram3 <= w_blink[0] ? reg_text_back_color: reg_backdrop_color;
 					end
@@ -586,7 +598,7 @@ module vdp_timing_control_screen_mode (
 	// --------------------------------------------------------------------
 	//	Display color generate
 	// --------------------------------------------------------------------
-	assign w_backdrop_color	= (w_mode == c_g7) ? reg_backdrop_color: { reg_backdrop_color[3:0], reg_backdrop_color[3:0] };
+	assign w_backdrop_color	= ( ff_mode[c_g7] ) ? reg_backdrop_color: { reg_backdrop_color[3:0], reg_backdrop_color[3:0] };
 
 	always @( posedge clk or negedge reset_n ) begin
 		if( !reset_n ) begin
@@ -611,58 +623,48 @@ module vdp_timing_control_screen_mode (
 				ff_pattern7 <= w_backdrop_color;
 			end
 			else if( ff_phase == 3'd5 ) begin
-				case( w_mode )
-				c_g1, c_g2, c_g3, c_t1:
+				if( ff_mode[c_g1] || ff_mode[c_g2] || ff_mode[c_g3] || ff_mode[c_t1] ) begin
 					//	SCREEN 1, 2, 4, 0(W40) bit pattern --> color code
-					begin
-						ff_pattern0 <= ff_next_vram1[7] ? { 4'd0, ff_next_vram2[ 7: 4] }: { 4'd0, ff_next_vram2[ 3: 0] };
-						ff_pattern1 <= ff_next_vram1[6] ? { 4'd0, ff_next_vram2[ 7: 4] }: { 4'd0, ff_next_vram2[ 3: 0] };
-						ff_pattern2 <= ff_next_vram1[5] ? { 4'd0, ff_next_vram2[ 7: 4] }: { 4'd0, ff_next_vram2[ 3: 0] };
-						ff_pattern3 <= ff_next_vram1[4] ? { 4'd0, ff_next_vram2[ 7: 4] }: { 4'd0, ff_next_vram2[ 3: 0] };
-						ff_pattern4 <= ff_next_vram1[3] ? { 4'd0, ff_next_vram2[ 7: 4] }: { 4'd0, ff_next_vram2[ 3: 0] };
-						ff_pattern5 <= ff_next_vram1[2] ? { 4'd0, ff_next_vram2[ 7: 4] }: { 4'd0, ff_next_vram2[ 3: 0] };
-						ff_pattern6 <= ff_next_vram1[1] ? { 4'd0, ff_next_vram2[ 7: 4] }: { 4'd0, ff_next_vram2[ 3: 0] };
-						ff_pattern7 <= ff_next_vram1[0] ? { 4'd0, ff_next_vram2[ 7: 4] }: { 4'd0, ff_next_vram2[ 3: 0] };
-					end
-				c_t2:
+					ff_pattern0 <= ff_next_vram1[7] ? { 4'd0, ff_next_vram2[ 7: 4] }: { 4'd0, ff_next_vram2[ 3: 0] };
+					ff_pattern1 <= ff_next_vram1[6] ? { 4'd0, ff_next_vram2[ 7: 4] }: { 4'd0, ff_next_vram2[ 3: 0] };
+					ff_pattern2 <= ff_next_vram1[5] ? { 4'd0, ff_next_vram2[ 7: 4] }: { 4'd0, ff_next_vram2[ 3: 0] };
+					ff_pattern3 <= ff_next_vram1[4] ? { 4'd0, ff_next_vram2[ 7: 4] }: { 4'd0, ff_next_vram2[ 3: 0] };
+					ff_pattern4 <= ff_next_vram1[3] ? { 4'd0, ff_next_vram2[ 7: 4] }: { 4'd0, ff_next_vram2[ 3: 0] };
+					ff_pattern5 <= ff_next_vram1[2] ? { 4'd0, ff_next_vram2[ 7: 4] }: { 4'd0, ff_next_vram2[ 3: 0] };
+					ff_pattern6 <= ff_next_vram1[1] ? { 4'd0, ff_next_vram2[ 7: 4] }: { 4'd0, ff_next_vram2[ 3: 0] };
+					ff_pattern7 <= ff_next_vram1[0] ? { 4'd0, ff_next_vram2[ 7: 4] }: { 4'd0, ff_next_vram2[ 3: 0] };
+				end
+				else if( ff_mode[c_t2] ) begin
 					//	SCREEN 0(W80) bit pattern --> color code
-					begin
-						ff_pattern0 <= { ff_next_vram1[7] ? { ff_next_vram2[ 7: 4] }: { ff_next_vram2[ 3: 0] }, ff_next_vram1[6] ? { ff_next_vram2[ 7: 4] }: { ff_next_vram2[ 3: 0] } };
-						ff_pattern1 <= { ff_next_vram1[5] ? { ff_next_vram2[ 7: 4] }: { ff_next_vram2[ 3: 0] }, ff_next_vram1[4] ? { ff_next_vram2[ 7: 4] }: { ff_next_vram2[ 3: 0] } };
-						ff_pattern2 <= { ff_next_vram1[3] ? { ff_next_vram2[ 7: 4] }: { ff_next_vram2[ 3: 0] }, ff_next_vram1[2] ? { ff_next_vram2[ 7: 4] }: { ff_next_vram2[ 3: 0] } };
-						ff_pattern3 <= { ff_next_vram5[7] ? { ff_next_vram3[ 7: 4] }: { ff_next_vram3[ 3: 0] }, ff_next_vram5[6] ? { ff_next_vram3[ 7: 4] }: { ff_next_vram3[ 3: 0] } };
-						ff_pattern4 <= { ff_next_vram5[5] ? { ff_next_vram3[ 7: 4] }: { ff_next_vram3[ 3: 0] }, ff_next_vram5[4] ? { ff_next_vram3[ 7: 4] }: { ff_next_vram3[ 3: 0] } };
-						ff_pattern5 <= { ff_next_vram5[3] ? { ff_next_vram3[ 7: 4] }: { ff_next_vram3[ 3: 0] }, ff_next_vram5[2] ? { ff_next_vram3[ 7: 4] }: { ff_next_vram3[ 3: 0] } };
-						ff_pattern6 <= w_backdrop_color;
-						ff_pattern7 <= w_backdrop_color;
-					end
-				c_gm:
-					begin
-						ff_pattern0 <= { 4'd0, ff_next_vram2[ 7: 4] };
-						ff_pattern1 <= { 4'd0, ff_next_vram2[ 7: 4] };
-						ff_pattern2 <= { 4'd0, ff_next_vram2[ 7: 4] };
-						ff_pattern3 <= { 4'd0, ff_next_vram2[ 7: 4] };
-						ff_pattern4 <= { 4'd0, ff_next_vram2[ 3: 0] };
-						ff_pattern5 <= { 4'd0, ff_next_vram2[ 3: 0] };
-						ff_pattern6 <= { 4'd0, ff_next_vram2[ 3: 0] };
-						ff_pattern7 <= { 4'd0, ff_next_vram2[ 3: 0] };
-					end
-				c_g4, c_g5, c_g6, c_g7:
-					begin
-						ff_pattern0 <= ff_next_vram0;
-						ff_pattern1 <= ff_next_vram1;
-						ff_pattern2 <= ff_next_vram2;
-						ff_pattern3 <= ff_next_vram3;
-						ff_pattern4 <= ff_next_vram4;
-						ff_pattern5 <= ff_next_vram5;
-						ff_pattern6 <= ff_next_vram6;
-						ff_pattern7 <= ff_next_vram7;
-					end
-				default:
-					begin
-						//	hold
-					end
-				endcase
+					ff_pattern0 <= { ff_next_vram1[7] ? { ff_next_vram2[ 7: 4] }: { ff_next_vram2[ 3: 0] }, ff_next_vram1[6] ? { ff_next_vram2[ 7: 4] }: { ff_next_vram2[ 3: 0] } };
+					ff_pattern1 <= { ff_next_vram1[5] ? { ff_next_vram2[ 7: 4] }: { ff_next_vram2[ 3: 0] }, ff_next_vram1[4] ? { ff_next_vram2[ 7: 4] }: { ff_next_vram2[ 3: 0] } };
+					ff_pattern2 <= { ff_next_vram1[3] ? { ff_next_vram2[ 7: 4] }: { ff_next_vram2[ 3: 0] }, ff_next_vram1[2] ? { ff_next_vram2[ 7: 4] }: { ff_next_vram2[ 3: 0] } };
+					ff_pattern3 <= { ff_next_vram5[7] ? { ff_next_vram3[ 7: 4] }: { ff_next_vram3[ 3: 0] }, ff_next_vram5[6] ? { ff_next_vram3[ 7: 4] }: { ff_next_vram3[ 3: 0] } };
+					ff_pattern4 <= { ff_next_vram5[5] ? { ff_next_vram3[ 7: 4] }: { ff_next_vram3[ 3: 0] }, ff_next_vram5[4] ? { ff_next_vram3[ 7: 4] }: { ff_next_vram3[ 3: 0] } };
+					ff_pattern5 <= { ff_next_vram5[3] ? { ff_next_vram3[ 7: 4] }: { ff_next_vram3[ 3: 0] }, ff_next_vram5[2] ? { ff_next_vram3[ 7: 4] }: { ff_next_vram3[ 3: 0] } };
+					ff_pattern6 <= w_backdrop_color;
+					ff_pattern7 <= w_backdrop_color;
+				end
+				else if( ff_mode[c_gm] ) begin
+					ff_pattern0 <= { 4'd0, ff_next_vram2[ 7: 4] };
+					ff_pattern1 <= { 4'd0, ff_next_vram2[ 7: 4] };
+					ff_pattern2 <= { 4'd0, ff_next_vram2[ 7: 4] };
+					ff_pattern3 <= { 4'd0, ff_next_vram2[ 7: 4] };
+					ff_pattern4 <= { 4'd0, ff_next_vram2[ 3: 0] };
+					ff_pattern5 <= { 4'd0, ff_next_vram2[ 3: 0] };
+					ff_pattern6 <= { 4'd0, ff_next_vram2[ 3: 0] };
+					ff_pattern7 <= { 4'd0, ff_next_vram2[ 3: 0] };
+				end
+				else if( ff_mode[c_g4] || ff_mode[c_g5] || ff_mode[c_g6] || ff_mode[c_g7] ) begin
+					ff_pattern0 <= ff_next_vram0;
+					ff_pattern1 <= ff_next_vram1;
+					ff_pattern2 <= ff_next_vram2;
+					ff_pattern3 <= ff_next_vram3;
+					ff_pattern4 <= ff_next_vram4;
+					ff_pattern5 <= ff_next_vram5;
+					ff_pattern6 <= ff_next_vram6;
+					ff_pattern7 <= ff_next_vram7;
+				end
 			end
 			else begin
 				ff_pattern0 <= ff_pattern1;
@@ -682,11 +684,11 @@ module vdp_timing_control_screen_mode (
 	// --------------------------------------------------------------------
 	always @( posedge clk ) begin
 		if( w_sub_phase == 4'd7 ) begin
-			if( w_mode == c_t2 || w_mode == c_g6 ) begin
+			if( ff_mode[c_t2] || ff_mode[c_g6] ) begin
 				ff_display_color <= { 4'd0, ff_pattern0[3:0] };
 				ff_display_color_en	= reg_display_on && (!reg_left_mask || (screen_pos_x[13:4] >= 10'd15));
 			end
-			else if( w_mode == c_g5 ) begin
+			else if( ff_mode[c_g5] ) begin
 				ff_display_color <= { 4'd0, ff_pattern0[1:0] };
 				ff_display_color_en	= reg_display_on && (!reg_left_mask || (screen_pos_x[13:4] >= 10'd15));
 			end
@@ -695,10 +697,10 @@ module vdp_timing_control_screen_mode (
 			end
 		end
 		else if( w_sub_phase == 4'd15 ) begin
-			if( w_mode == c_t2 || w_mode == c_g6 ) begin
+			if( ff_mode[c_t2] || ff_mode[c_g6] ) begin
 				ff_display_color <= { 4'd0, ff_pattern0[7:4] };
 			end
-			else if( w_mode == c_g5 ) begin
+			else if( ff_mode[c_g5] ) begin
 				ff_display_color <= { 4'd0, ff_pattern0[3:2] };
 			end
 			else begin

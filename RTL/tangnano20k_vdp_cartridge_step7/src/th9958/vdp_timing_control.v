@@ -78,7 +78,7 @@ module vdp_timing_control (
 	input		[31:0]	screen_mode_vram_rdata,
 	output		[7:0]	screen_mode_display_color,
 	output				screen_mode_display_color_en,
-	output		[3:0]	screen_mode,
+	output		[9:0]	screen_mode,
 
 	output		[17:0]	sprite_vram_address,
 	output				sprite_vram_valid,
