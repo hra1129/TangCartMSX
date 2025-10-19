@@ -249,15 +249,12 @@ module vdp_command (
 	localparam			c_state_pset_make			= 6'd17;
 	localparam			c_state_line_make			= 6'd18;
 	localparam			c_state_lmmv_make			= 6'd19;
-	localparam			c_state_lmmv_next			= 6'd20;
 	localparam			c_state_lmmm_wait_source	= 6'd21;
 	localparam			c_state_lmmm_make			= 6'd22;
 	localparam			c_state_lmmm_next			= 6'd23;
-	localparam			c_state_hmmv_next			= 6'd24;
 	localparam			c_state_hmmm_make			= 6'd25;
 	localparam			c_state_hmmm_next			= 6'd26;
 	localparam			c_state_ymmm_make			= 6'd27;
-	localparam			c_state_ymmm_next			= 6'd28;
 	localparam			c_state_srch_compare		= 6'd29;
 	localparam			c_state_srch_next			= 6'd30;
 	localparam			c_state_hmmc_next			= 6'd31;
@@ -1218,6 +1215,7 @@ module vdp_command (
 				ff_next_state			<= c_state_lmmv_make;
 				ff_wait_count			<= c_wait_lmmv;
 				ff_xsel					<= ff_dx[1:0];
+				ff_count_valid			<= 1'b0;
 			end
 			c_state_lmmv_make: begin
 				//	Write the location of (DX, DY)
@@ -1226,22 +1224,16 @@ module vdp_command (
 				ff_cache_vram_write		<= 1'b1;
 				ff_cache_vram_wdata		<= w_destination;
 				ff_count_valid			<= 1'b1;
-				if( reg_command_high_speed_mode ) begin
-					ff_state				<= c_state_lmmv_next;
-				end
-				else begin
-					ff_wait_counter			<= { c_wait_lmmv, 2'b11 };
-					ff_next_state			<= c_state_lmmv_next;
-					ff_state				<= c_state_wait_counter;
-				end
-			end
-			c_state_lmmv_next: begin
-				ff_count_valid			<= 1'b0;
 				if( (w_nx_end || w_sx_overflow || w_dx_overflow) && w_ny_end ) begin
 					ff_state				<= c_state_pre_finish;
 				end
-				else begin
+				else if( reg_command_high_speed_mode ) begin
 					ff_state				<= c_state_lmmv;
+				end
+				else begin
+					ff_wait_counter			<= { c_wait_lmmv, 2'b11 };
+					ff_next_state			<= c_state_lmmv;
+					ff_state				<= c_state_wait_counter;
 				end
 			end
 
@@ -1380,24 +1372,18 @@ module vdp_command (
 				ff_cache_vram_valid		<= 1'b1;
 				ff_cache_vram_write		<= 1'b1;
 				ff_cache_vram_wdata		<= ff_color;
-				if( reg_command_high_speed_mode ) begin
-					ff_state				<= c_state_hmmv_next;
-				end
-				else begin
-					ff_wait_counter			<= { c_wait_hmmv, 2'b11 };
-					ff_next_state			<= c_state_hmmv_next;
-					ff_state				<= c_state_wait_counter;
-				end
-				ff_count_valid			<= 1'b1;
-			end
-			c_state_hmmv_next: begin
-				ff_count_valid			<= 1'b0;
 				if( (w_nx_end || w_sx_overflow || w_dx_overflow) && w_ny_end ) begin
 					ff_state				<= c_state_pre_finish;
 				end
-				else begin
+				else if( reg_command_high_speed_mode ) begin
 					ff_state				<= c_state_hmmv;
 				end
+				else begin
+					ff_wait_counter			<= { c_wait_hmmv, 2'b11 };
+					ff_next_state			<= c_state_hmmv;
+					ff_state				<= c_state_wait_counter;
+				end
+				ff_count_valid			<= 1'b1;
 			end
 
 			//	HMMM command --------------------------------------------------
@@ -1445,6 +1431,7 @@ module vdp_command (
 				ff_state				<= c_state_wait_rdata_en;
 				ff_next_state			<= c_state_ymmm_make;
 				ff_wait_count			<= c_wait_ymmm;
+				ff_count_valid			<= 1'b0;
 			end
 			c_state_ymmm_make: begin
 				//	Write the location of (DX, DY)
@@ -1453,22 +1440,16 @@ module vdp_command (
 				ff_cache_vram_write		<= 1'b1;
 				ff_cache_vram_wdata		<= ff_read_byte;
 				ff_count_valid			<= 1'b1;
-				if( reg_command_high_speed_mode ) begin
-					ff_state				<= c_state_ymmm_next;
-				end
-				else begin
-					ff_wait_counter			<= { c_wait_ymmm, 2'b11 };
-					ff_next_state			<= c_state_ymmm_next;
-					ff_state				<= c_state_wait_counter;
-				end
-			end
-			c_state_ymmm_next: begin
-				ff_count_valid			<= 1'b0;
 				if( (w_nx_end || w_sx_overflow || w_dx_overflow) && w_ny_end ) begin
 					ff_state				<= c_state_pre_finish;
 				end
-				else begin
+				else if( reg_command_high_speed_mode ) begin
 					ff_state				<= c_state_ymmm;
+				end
+				else begin
+					ff_wait_counter			<= { c_wait_ymmm, 2'b11 };
+					ff_next_state			<= c_state_ymmm;
+					ff_state				<= c_state_wait_counter;
 				end
 			end
 
