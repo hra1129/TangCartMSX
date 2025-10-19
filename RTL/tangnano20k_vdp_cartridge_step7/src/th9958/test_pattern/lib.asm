@@ -666,6 +666,12 @@ wait_push_space_key::
 			or		a, b
 			jr		nz, wait_free_loop
 
+			; VSync待ち
+			call	wait_vsync
+			call	wait_vsync
+			call	wait_vsync
+			call	wait_vsync
+
 			; スペースキーが押されるのを待つ
 	wait_press_loop:
 			ld		iy, [main_rom_slot - 1]
@@ -683,6 +689,8 @@ wait_push_space_key::
 			jr		z, wait_press_loop
 
 			; VSync待ち
+			call	wait_vsync
+			call	wait_vsync
 			call	wait_vsync
 			call	wait_vsync
 			ret

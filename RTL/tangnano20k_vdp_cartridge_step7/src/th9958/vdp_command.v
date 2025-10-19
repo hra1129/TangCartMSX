@@ -161,6 +161,7 @@ module vdp_command (
 	reg			[11:0]	reg_sx;
 	reg			[8:0]	reg_dx;
 	reg			[10:0]	reg_nx;
+	wire		[10:0]	w_reg_nx;
 	reg			[10:0]	reg_ny;
 	reg			[19:0]	ff_sx;
 	reg			[20:0]	ff_sy;
@@ -247,38 +248,37 @@ module vdp_command (
 	localparam			c_state_lfmm				= 6'd16;
 	localparam			c_state_pset_make			= 6'd17;
 	localparam			c_state_line_make			= 6'd18;
-	localparam			c_state_line_next			= 6'd19;
-	localparam			c_state_lmmv_make			= 6'd20;
-	localparam			c_state_lmmv_next			= 6'd21;
-	localparam			c_state_lmmm_wait_source	= 6'd22;
-	localparam			c_state_lmmm_make			= 6'd23;
-	localparam			c_state_lmmm_next			= 6'd24;
-	localparam			c_state_hmmv_next			= 6'd25;
-	localparam			c_state_hmmm_make			= 6'd26;
-	localparam			c_state_hmmm_next			= 6'd27;
-	localparam			c_state_ymmm_make			= 6'd28;
-	localparam			c_state_ymmm_next			= 6'd29;
-	localparam			c_state_srch_compare		= 6'd30;
-	localparam			c_state_srch_next			= 6'd31;
-	localparam			c_state_hmmc_next			= 6'd32;
-	localparam			c_state_lmmc_make			= 6'd33;
-	localparam			c_state_lmmc_next			= 6'd34;
-	localparam			c_state_lmcm_make			= 6'd35;
-	localparam			c_state_lmcm_next			= 6'd36;
-	localparam			c_state_lrmm_wait_source	= 6'd37;
-	localparam			c_state_lrmm_make			= 6'd38;
-	localparam			c_state_lrmm_next			= 6'd39;
-	localparam			c_state_lfmc_read			= 6'd40;
-	localparam			c_state_lfmc_make			= 6'd41;
-	localparam			c_state_lfmc_next			= 6'd42;
-	localparam			c_state_lfmm_load_source	= 6'd43;
-	localparam			c_state_lfmm_read			= 6'd44;
-	localparam			c_state_lfmm_make			= 6'd45;
-	localparam			c_state_lfmm_next			= 6'd46;
-	localparam			c_state_wait_rdata_en		= 6'd60;
-	localparam			c_state_wait_counter		= 6'd61;
-	localparam			c_state_pre_finish			= 6'd62;
-	localparam			c_state_finish				= 6'd63;
+	localparam			c_state_lmmv_make			= 6'd19;
+	localparam			c_state_lmmv_next			= 6'd20;
+	localparam			c_state_lmmm_wait_source	= 6'd21;
+	localparam			c_state_lmmm_make			= 6'd22;
+	localparam			c_state_lmmm_next			= 6'd23;
+	localparam			c_state_hmmv_next			= 6'd24;
+	localparam			c_state_hmmm_make			= 6'd25;
+	localparam			c_state_hmmm_next			= 6'd26;
+	localparam			c_state_ymmm_make			= 6'd27;
+	localparam			c_state_ymmm_next			= 6'd28;
+	localparam			c_state_srch_compare		= 6'd29;
+	localparam			c_state_srch_next			= 6'd30;
+	localparam			c_state_hmmc_next			= 6'd31;
+	localparam			c_state_lmmc_make			= 6'd32;
+	localparam			c_state_lmmc_next			= 6'd33;
+	localparam			c_state_lmcm_make			= 6'd34;
+	localparam			c_state_lmcm_next			= 6'd35;
+	localparam			c_state_lrmm_wait_source	= 6'd36;
+	localparam			c_state_lrmm_make			= 6'd37;
+	localparam			c_state_lrmm_next			= 6'd38;
+	localparam			c_state_lfmc_read			= 6'd39;
+	localparam			c_state_lfmc_make			= 6'd40;
+	localparam			c_state_lfmc_next			= 6'd41;
+	localparam			c_state_lfmm_load_source	= 6'd42;
+	localparam			c_state_lfmm_read			= 6'd43;
+	localparam			c_state_lfmm_make			= 6'd44;
+	localparam			c_state_lfmm_next			= 6'd45;
+	localparam			c_state_wait_rdata_en		= 6'd46;
+	localparam			c_state_wait_counter		= 6'd47;
+	localparam			c_state_pre_finish			= 6'd48;
+	localparam			c_state_finish				= 6'd49;
 	reg			[5:0]	ff_state;
 	reg			[5:0]	ff_next_state;
 	reg					ff_count_valid;
@@ -534,7 +534,7 @@ module vdp_command (
 		end
 	end
 
-	assign w_line_shift	= (ff_nyb >= reg_nx);
+	assign w_line_shift	= w_next_nyb[11];
 
 	always @( posedge clk or negedge reset_n ) begin
 		if( !reset_n ) begin
@@ -732,20 +732,22 @@ module vdp_command (
 	assign w_ny_end		= (ff_ny == reg_ny);
 
 	//	LINEコマンドの分子を示すカウンタ
+	assign w_reg_nx		= reg_nx - 11'd1;
+
 	always @( posedge clk or negedge reset_n ) begin
 		if( !reset_n ) begin
 			ff_nyb	<= 12'd0;
 		end
 		else if( ff_start ) begin
 			//	線分を構成する水平又は垂直の直線の最初と最後を均等サイズにするために分母の半分の値を事前に足しておく
-			ff_nyb	<= { 1'd0, reg_nx[10:1] };
+			ff_nyb	<= { 1'd0, w_reg_nx[10:1] };
 		end
 		else if( !ff_command_execute || ff_cache_vram_valid ) begin
 			//	hold
 		end
 		else if( ff_count_valid ) begin
 			if( w_line_shift ) begin
-				ff_nyb	<= w_next_nyb[11:0] - { 1'b0, reg_nx };
+				ff_nyb	<= w_next_nyb[11:0] + { 1'b0, reg_nx };
 			end
 			else begin
 				ff_nyb	<= w_next_nyb[11:0];
@@ -753,9 +755,9 @@ module vdp_command (
 		end
 	end
 
-	assign w_nx			= ff_nx + { 2'd0, w_next };
+	assign w_nx			= ff_nx + { 1'd0, w_next };
 	assign w_ny			= ff_ny + 11'd1;
-	assign w_next_nyb	= { 1'b0, ff_nyb } + { 2'd0, reg_ny };
+	assign w_next_nyb	= { 1'b0, ff_nyb } - { 2'd0, reg_ny };
 
 	always @( posedge clk or negedge reset_n ) begin
 		if( !reset_n ) begin
@@ -1173,6 +1175,7 @@ module vdp_command (
 					//	Go to finish state when start position is outside of screen.
 					ff_cache_flush_start	<= 1'b1;
 					ff_state				<= c_state_finish;
+					ff_count_valid			<= 1'b0;
 				end
 				else begin
 					//	Read the location of (DX, DY)
@@ -1183,6 +1186,7 @@ module vdp_command (
 					ff_next_state			<= c_state_line_make;
 					ff_wait_count			<= c_wait_line;
 					ff_xsel					<= ff_dx[1:0];
+					ff_count_valid			<= 1'b0;
 				end
 			end
 			c_state_line_make: begin
@@ -1192,22 +1196,16 @@ module vdp_command (
 				ff_cache_vram_write		<= 1'b1;
 				ff_cache_vram_wdata		<= w_destination;
 				ff_count_valid			<= 1'b1;
-				if( reg_command_high_speed_mode ) begin
-					ff_state				<= c_state_line_next;
-				end
-				else begin
-					ff_wait_counter			<= { c_wait_line, 2'b11 };
-					ff_next_state			<= c_state_line_next;
-					ff_state				<= c_state_wait_counter;
-				end
-			end
-			c_state_line_next: begin
-				ff_count_valid			<= 1'b0;
 				if( w_nx_end || w_dx_overflow || (ff_diy == 1'b1 && ff_dy == 11'd0 && w_next_dy[11] == 1'b1) ) begin
 					ff_state				<= c_state_pre_finish;
 				end
-				else begin
+				else if( reg_command_high_speed_mode ) begin
 					ff_state				<= c_state_line;
+				end
+				else begin
+					ff_wait_counter			<= { c_wait_line, 2'b11 };
+					ff_next_state			<= c_state_line;
+					ff_state				<= c_state_wait_counter;
 				end
 			end
 			//	LMMV command --------------------------------------------------
