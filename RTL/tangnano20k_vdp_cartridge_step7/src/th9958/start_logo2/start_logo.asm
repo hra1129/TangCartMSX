@@ -9,11 +9,11 @@
 
 bdos			:=			0x0005
 
-vdp_port0		:=			0x88
-vdp_port1		:=			0x89
-vdp_port2		:=			0x8A
-vdp_port3		:=			0x8B
-vdp_port4		:=			0x8C
+vdp_port0		:=			0x98
+vdp_port1		:=			0x99
+vdp_port2		:=			0x9A
+vdp_port3		:=			0x9B
+vdp_port4		:=			0x9C
 
 rtc_address		:=			0xB4
 rtc_data		:=			0xB5

@@ -9,11 +9,11 @@
 
 bdos			:=			0x0005
 
-vdp_port0		:=			0x88
-vdp_port1		:=			0x89
-vdp_port2		:=			0x8A
-vdp_port3		:=			0x8B
-vdp_port4		:=			0x8C
+vdp_port0		:=			0x98
+vdp_port1		:=			0x99
+vdp_port2		:=			0x9A
+vdp_port3		:=			0x9B
+vdp_port4		:=			0x9C
 
 rtc_address		:=			0xB4
 rtc_data		:=			0xB5
@@ -184,11 +184,15 @@ _lmmc_end::
 				ld			a, 1
 				ld			[wait_flag], a
 
+				
+
+
 				; V-Sync完了待ち
 	wait_vsync:
 				ld			a, [wait_flag]
 				or			a, a
 				jr			nz, wait_vsync
+				jp			main_loop
 
 	exit_main_loop:
 				; 割り込み禁止にする
@@ -198,8 +202,9 @@ _lmmc_end::
 				ld			a, 0x81
 				out			[vdp_port1], a
 				; 割り込みフックを戻す
-				ld			a, 0xC9
-				ld			[0xFD9A], a
+				ld			hl, 0xC9C9
+				ld			[0xFD9A + 0], hl
+				ld			[0xFD9A + 2], hl
 				ei
 				; 後始末
 				call	clear_key_buffer
@@ -395,4 +400,16 @@ logo_data::
 ; -----------------------------------------------------------------------------
 ; アニメーションデータ
 ; -----------------------------------------------------------------------------
-animation_state::
+	rotate_vector::
+				dw		0			; VX
+				dw		0			; VY
+	lrmm_command::
+				dw		0			; SX
+				dw		192			; SY
+				dw		0			; DX
+				dw		0			; DY
+				dw		422			; NX (dummy)
+				dw		80			; NY
+				db		0			; CLR (dummy)
+				db		0b0000000	; ARG [-][-][-][-][DIY][DIX][-][-]
+				db		0x30		; CMD (LRMM)
