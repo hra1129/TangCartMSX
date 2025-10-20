@@ -109,6 +109,7 @@ module vdp_cpu_interface (
 	input				status_transfer_ready,		//	S#2 bit7
 	input		[7:0]	status_color,				//	S#7
 	input		[8:0]	status_border_position,		//	S#8, S#9
+	input				vram_access_mask,			//	MXC
 
 	output	[4:0]		reg_screen_mode,
 	output				reg_sprite_magify,
@@ -176,9 +177,9 @@ module vdp_cpu_interface (
 	reg		[7:0]		ff_bus_rdata;
 	reg					ff_bus_rdata_en;
 	reg		[4:0]		ff_screen_mode;
-	reg					ff_line_interrupt_enable;
-	reg					ff_frame_interrupt_enable;
-	reg					ff_command_end_interrupt;
+	reg					ff_line_interrupt_enable = 1'b0;
+	reg					ff_frame_interrupt_enable = 1'b0;
+	reg					ff_command_end_interrupt_enable = 1'b0;
 	reg					ff_sprite_magify;
 	reg					ff_sprite_16x16;
 	reg					ff_display_on;
@@ -225,7 +226,6 @@ module vdp_cpu_interface (
 	reg					ff_ext_command_mode;
 	reg					ff_vram256k_mode;
 	reg					ff_sprite16_mode;
-	reg					ff_command_end_interrupt_enable;
 	reg					ff_flat_interlace_mode;
 
 	reg					ff_2nd_access;
@@ -242,8 +242,9 @@ module vdp_cpu_interface (
 	reg					ff_vram_valid;
 	reg					ff_busy;
 
-	reg					ff_line_interrupt;
-	reg					ff_frame_interrupt;
+	reg					ff_line_interrupt = 1'b0;
+	reg					ff_frame_interrupt = 1'b0;
+	reg					ff_command_end_interrupt = 1'b0;
 
 	assign pulse0		= 1'b0;										// red
 	assign pulse1		= ff_vram_valid;							// green
@@ -382,16 +383,24 @@ module vdp_cpu_interface (
 			end
 		end
 		else if( w_write && ff_port0 ) begin
-			ff_vram_valid	<= 1'b1;
-			ff_vram_write	<= 1'b1;
-			ff_vram_wdata	<= ff_bus_wdata;
-			ff_busy			<= 1'b1;
+			if( vram_access_mask ) begin
+				ff_vram_valid		<= 1'b0;
+				ff_busy				<= 1'b1;
+				ff_vram_address_inc <= 1'b1;
+			end
+			else begin
+				ff_vram_valid		<= 1'b1;
+				ff_busy				<= 1'b1;
+				ff_vram_address_inc <= 1'b0;
+			end
+			ff_vram_write		<= 1'b1;
+			ff_vram_wdata		<= ff_bus_wdata;
 		end
 		else if( w_read && ff_port0 ) begin
-			ff_vram_valid	<= 1'b1;
-			ff_vram_write	<= 1'b0;
-			ff_vram_wdata	<= 8'd0;
-			ff_busy			<= 1'b1;
+			ff_vram_valid		<= 1'b1;
+			ff_vram_write		<= 1'b0;
+			ff_vram_wdata		<= 8'd0;
+			ff_busy				<= 1'b1;
 		end
 	end
 
@@ -487,6 +496,7 @@ module vdp_cpu_interface (
 			ff_ext_command_mode <= 1'b0;
 			ff_vram256k_mode <= 1'b0;
 			ff_sprite16_mode <= 1'b0;
+			ff_command_end_interrupt_enable <= 1'b0;
 			ff_flat_interlace_mode <= 1'b0;
 		end
 		else if( ff_register_write ) begin
@@ -718,7 +728,12 @@ module vdp_cpu_interface (
 			ff_bus_rdata_en		<= 1'b0;
 		end
 		else if( vram_rdata_en ) begin
-			ff_bus_rdata		<= vram_rdata;
+			if( vram_access_mask ) begin
+				ff_bus_rdata		<= 8'b11111111;
+			end
+			else begin
+				ff_bus_rdata		<= vram_rdata;
+			end
 			ff_bus_rdata_en		<= 1'b1;
 		end
 		else if( w_read ) begin

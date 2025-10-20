@@ -166,6 +166,7 @@ module vdp (
 	wire		[7:0]	w_register_data;
 	wire				w_clear_border_detect;
 	wire				w_read_color;
+	wire				w_vram_access_mask;
 
 	wire				w_status_command_execute;
 	wire				w_status_field;
@@ -266,6 +267,7 @@ module vdp (
 		.status_transfer_ready						( w_status_transfer_ready					),
 		.status_color								( w_status_color							),
 		.status_border_position						( w_status_border_position					),
+		.vram_access_mask							( w_vram_access_mask						),
 		.reg_screen_mode							( reg_screen_mode							),
 		.reg_sprite_magify							( reg_sprite_magify							),
 		.reg_sprite_16x16							( reg_sprite_16x16							),
@@ -416,6 +418,7 @@ module vdp (
 		.reg_command_high_speed_mode				( reg_command_high_speed_mode				),
 		.reg_ext_command_mode						( reg_ext_command_mode						),
 		.reg_vram256k_mode							( reg_vram256k_mode							),
+		.vram_access_mask							( w_vram_access_mask						),
 		.intr_command_end							( w_intr_command_end						)
 	);
 

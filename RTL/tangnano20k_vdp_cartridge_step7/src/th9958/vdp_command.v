@@ -85,6 +85,7 @@ module vdp_command (
 	input				reg_command_high_speed_mode,
 	input				reg_ext_command_mode,
 	input				reg_vram256k_mode,
+	output				vram_access_mask,
 	output				intr_command_end
 );
 	localparam	c_hmmc		= 4'b1111;
@@ -192,6 +193,7 @@ module vdp_command (
 	reg					ff_diy;
 	reg					ff_mxs;
 	reg					ff_mxd;
+	reg					ff_mxc = 1'b0;
 	reg					ff_xhr;
 	reg					ff_fg4;
 	reg			[3:0]	ff_logical_opration;
@@ -299,6 +301,8 @@ module vdp_command (
 	assign w_next				= (ff_screen_mode[c_g7] || ff_command[3:2] != 2'b11) ? 10'd1:
 	             				  (ff_screen_mode[c_g5]) ? 10'd4: 10'd2;
 	assign w_512pixel			= (ff_screen_mode[c_g5] || ff_screen_mode[c_g6]);
+
+	assign vram_access_mask		= ff_mxc;
 
 	// --------------------------------------------------------------------
 	//	Address
@@ -851,6 +855,7 @@ module vdp_command (
 			ff_diy	<= 1'b0;
 			ff_mxs	<= 1'b0;
 			ff_mxd	<= 1'b0;
+			ff_mxc	<= 1'b0;
 			ff_xhr	<= 1'b0;
 			ff_fg4	<= 1'b0;
 		end
@@ -862,6 +867,7 @@ module vdp_command (
 				ff_diy	<= register_data[3];
 				ff_mxs	<= register_data[4];
 				ff_mxd	<= register_data[5];
+				ff_mxc	<= register_data[6] & !reg_ext_command_mode;
 				ff_xhr	<= register_data[6] & reg_ext_command_mode;
 				ff_fg4	<= register_data[7] & reg_ext_command_mode;
 			end
