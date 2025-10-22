@@ -80,7 +80,7 @@
  "TclPre" : "",
  "TopModule" : "tangnano20k_vdp_cartridge",
  "USERCODE" : "default",
- "Unused_Pin" : "As_input_tri_stated_with_pull_up",
+ "Unused_Pin" : "As_open_drain_driving_ground",
  "VCC" : "1.0",
  "VCCAUX" : 3.3,
  "VCCX" : "3.3",
