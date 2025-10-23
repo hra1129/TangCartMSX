@@ -63,7 +63,7 @@ void v9968_write_vdp( unsigned char reg, unsigned char value ) {
 void v9968_set_write_vram_address( unsigned short address_l, unsigned char address_h ) {
 
 	v9968_nested_di();
-	write_vdp( 14, (address_l >> 14) | (address_h << 3) );
+	v9968_write_vdp( 14, (address_l >> 14) | (address_h << 3) );
 	outp( vdp_port1, address_l & 0xFF );
 	outp( vdp_port1, ((address_l >> 8) & 0x3F) | 0x40 );
 	v9968_nested_ei();
@@ -101,7 +101,7 @@ void v9968_write_vram( unsigned char value ) {
 // --------------------------------------------------------------------
 unsigned char v9968_read_vram( void ) {
 
-	return inp( vdp_port0, value );
+	return inp( vdp_port0 );
 }
 
 // --------------------------------------------------------------------
@@ -116,7 +116,7 @@ unsigned char v9968_read_vdp_status( unsigned char reg ) {
 
 	v9968_nested_di();
 	v9968_write_vdp( 15, reg );
-	r = inp( vdp_port1, value );
+	r = inp( vdp_port1 );
 	v9968_write_vdp( 15, 0 );
 	v9968_nested_ei();
 }
@@ -134,5 +134,52 @@ void v9968_fill_vram( unsigned short address, unsigned char value, unsigned shor
 	v9968_set_write_vram_address( address, 0 );
 	for( i = 0; i < size; i++ ) {
 		outp( vdp_port0, value );
+	}
+}
+
+// --------------------------------------------------------------------
+//	v9968_copy_to_vram()
+//	input:
+//		destination ... target address (VRAM)
+//		p_source ...... source data address (CPU-Memory)
+//		size .......... size
+// --------------------------------------------------------------------
+void v9968_copy_to_vram( unsigned short destination, const void *p_source, unsigned short size ) {
+	unsigned short i;
+
+	v9968_set_write_vram_address( destination, 0 );
+	for( i = 0; i < size; i++ ) {
+		outp( vdp_port0, *p_source );
+		p_source++;
+	}
+}
+
+// --------------------------------------------------------------------
+//	v9968_copy_from_vram()
+//	input:
+//		destination ... target address (VRAM)
+//		p_source ...... source data address (CPU-Memory)
+//		size .......... size
+// --------------------------------------------------------------------
+void v9968_copy_from_vram( const void *p_destination, unsigned short source, unsigned short size ) {
+	unsigned short i;
+
+	v9968_set_read_vram_address( source, 0 );
+	for( i = 0; i < size; i++ ) {
+		p_destination = inp( vdp_port0 );
+		p_destination++;
+	}
+}
+
+// --------------------------------------------------------------------
+//	v9968_puts()
+//	input:
+//		p ........ string
+// --------------------------------------------------------------------
+void v9968_puts( const char *p ) {
+
+	while( *p ) {
+		outp( vdp_port0, *p );
+		p++;
 	}
 }
