@@ -91,7 +91,7 @@ void v9968_set_read_vram_address( unsigned short address_l, unsigned char addres
 // --------------------------------------------------------------------
 void v9968_write_vram( unsigned char value ) {
 
-	outp( vdp_port1, value );
+	outp( vdp_port0, value );
 }
 
 // --------------------------------------------------------------------
@@ -182,4 +182,98 @@ void v9968_puts( const char *p ) {
 		outp( vdp_port0, *p );
 		p++;
 	}
+}
+
+// --------------------------------------------------------------------
+//	v9968_exit()
+//	input:
+//		none
+// --------------------------------------------------------------------
+void v9968_exit( void ) {
+
+	v9968_write_vdp(  0, 0x00 );
+	v9968_write_vdp(  1, 0x40 );
+	v9968_write_vdp(  7, 0xF7 );
+	v9968_write_vdp(  8, 0x02 );
+	v9968_write_vdp(  9, 0x00 );
+	v9968_write_vdp( 20, 0x00 );
+	v9968_write_vdp( 21, 0x00 );
+	v9968_write_vdp( 23, 0x00 );
+	v9968_write_vdp( 25, 0x00 );
+	v9968_write_vdp( 26, 0x00 );
+	v9968_write_vdp( 27, 0x00 );
+	v9968_write_vdp( 45, 0x00 );
+	#asm
+		ld		iy, [0xFCC1 - 1]
+		ld		ix, 0x0156				//	kilbuf
+		call	0x001c					//	calslt
+
+		xor		a
+		ld		iy, [0xFCC1 - 1]
+		ld		ix, 0x005F				//	chgmod
+		call	0x001c					//	calslt
+	#endasm
+}
+
+// --------------------------------------------------------------------
+//	v9968_wait_vsync()
+//	input:
+//		none
+// --------------------------------------------------------------------
+void v9968_wait_vsync( void ) {
+
+	v9968_nested_di();
+	v9968_write_vdp( 15, 2 );
+	while( !(inp( vdp_port1 ) & 0x40) );
+	while( inp( vdp_port1 ) & 0x40 );
+	v9968_write_vdp( 15, 0 );
+	v9968_nested_ei();
+}
+
+// --------------------------------------------------------------------
+//	v9968_get_key()
+//	input:
+//		none
+//	result:
+//		0x00 .... release
+//		0xFF .... pressed
+// --------------------------------------------------------------------
+int v9968_get_key( void ) {
+	#asm
+		xor		a
+		ld		iy, [0xFCC1 - 1]
+		ld		ix, 0x00D8				//	kilbuf
+		call	0x001c					//	calslt
+		push	af
+
+		ld		a, 1
+		ld		iy, [0xFCC1 - 1]
+		ld		ix, 0x00D8				//	kilbuf
+		call	0x001c					//	calslt
+		pop		bc
+		or		a, b
+		ld		h, 0
+		ld		l, a
+		ret
+	#endasm
+}
+
+// --------------------------------------------------------------------
+//	v9968_wait_key()
+//	input:
+//		none
+//	result:
+//		none
+// --------------------------------------------------------------------
+void v9968_wait_key( void ) {
+
+	v9968_wait_vsync();
+	v9968_wait_vsync();
+	v9968_wait_vsync();
+	while( v9968_get_key() );
+
+	v9968_wait_vsync();
+	v9968_wait_vsync();
+	v9968_wait_vsync();
+	while( !v9968_get_key() );
 }

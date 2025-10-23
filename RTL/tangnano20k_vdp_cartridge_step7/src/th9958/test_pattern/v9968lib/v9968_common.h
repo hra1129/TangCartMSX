@@ -19,5 +19,9 @@ void v9968_fill_vram( unsigned short address, unsigned char value, unsigned shor
 void v9968_copy_to_vram( unsigned short destination, const void *p_source, unsigned short size );
 void v9968_copy_from_vram( const void *p_destination, unsigned short source, unsigned short size );
 void v9968_puts( const char *p );
+void v9968_exit( void );
+void v9968_wait_vsync( void );
+int v9968_get_key( void );
+void v9968_wait_key( void );
 
 #endif

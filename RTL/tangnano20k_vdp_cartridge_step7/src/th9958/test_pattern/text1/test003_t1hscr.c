@@ -1,0 +1,53 @@
+// --------------------------------------------------------------------
+//	SCREEN0(W40) Horizontal Scroll Test
+// ====================================================================
+//	Programmed by t.hara
+// --------------------------------------------------------------------
+
+#include <stdio.h>
+#include <stdlib.h>
+#include "v9968.h"
+
+// --------------------------------------------------------------------
+int main( int argc, char *argv[] ) {
+	int i;
+
+	v9968_set_screen0_w40();
+
+	v9968_set_write_vram_address( 0, 0 );
+	for( i = 0; i < 40 * 24; i++ ) {
+		v9968_write_vram( i );
+	}
+
+	v9968_set_write_vram_address( 0, 0 );
+	v9968_puts( "[R#26,R#27]" );
+	for( i = 0; i < 256; i++ ) {
+		v9968_write_vdp( 26, i >> 3 );
+		v9968_write_vdp( 27, (i & 3) ^ 7 );
+		v9968_wait_vsync();
+	}
+	v9968_wait_key();
+
+	v9968_set_write_vram_address( 0, 0 );
+	v9968_puts( "[R#27 only]" );
+	for( i = 0; i < 32; i++ ) {
+		v9968_write_vdp( 27, (i & 3) ^ 7 );
+		v9968_wait_vsync();
+		v9968_wait_vsync();
+		v9968_wait_vsync();
+	}
+	v9968_wait_key();
+
+	v9968_set_write_vram_address( 0, 0 );
+	v9968_puts( "[R#26 only]" );
+	for( i = 0; i < 32; i++ ) {
+		v9968_write_vdp( 26, i << 3 );
+		v9968_wait_vsync();
+		v9968_wait_vsync();
+		v9968_wait_vsync();
+	}
+	v9968_wait_key();
+
+	v9968_exit();
+	return 0;
+}
