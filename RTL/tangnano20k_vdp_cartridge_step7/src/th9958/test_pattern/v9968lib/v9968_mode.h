@@ -8,5 +8,6 @@
 #define __V9968_MODE_H__
 
 void v9968_set_screen0_w40( void );
+void v9968_set_screen1( void );
 
 #endif
