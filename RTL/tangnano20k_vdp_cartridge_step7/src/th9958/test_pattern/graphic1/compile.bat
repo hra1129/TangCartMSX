@@ -26,4 +26,7 @@ zcc +msx -subtype=msxdos2 -I../v9968lib/ test003_g1hscr.c v9968_common.o v9968_m
 echo G1ADJ
 zcc +msx -subtype=msxdos2 -I../v9968lib/ test004_g1adj.c v9968_common.o v9968_mode.o v9968_font.o -o G1ADJ.COM
 
+echo G1SP1
+zcc +msx -subtype=msxdos2 -I../v9968lib/ test005_g1sp1.c v9968_common.o v9968_mode.o v9968_font.o -o G1SP1.COM
+
 pause

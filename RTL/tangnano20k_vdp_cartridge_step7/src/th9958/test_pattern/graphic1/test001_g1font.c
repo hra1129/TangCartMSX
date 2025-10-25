@@ -19,8 +19,6 @@ int main( int argc, char *argv[] ) {
 		v9968_write_vram( i );
 	}
 
-	v9968_write_vdp( 5, 0x36 );
-
 	v9968_wait_key();
 	v9968_exit();
 	return 0;
