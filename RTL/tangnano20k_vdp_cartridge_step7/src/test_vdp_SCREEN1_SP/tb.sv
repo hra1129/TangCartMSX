@@ -360,6 +360,12 @@ module tb ();
 		//	VDP R#7 = 0xF4 Background colore
 		write_io( vdp_io1, 8'hF4 );
 		write_io( vdp_io1, 8'h87 );
+		//	VDP R#25 = 0x02 Mode4
+		write_io( vdp_io1, 8'h02 );
+		write_io( vdp_io1, 8'h80 + 8'd25 );
+		//	VDP R#27 = 0x07 Horizontal Offset
+		write_io( vdp_io1, 8'h07 );
+		write_io( vdp_io1, 8'h80 + 8'd27 );
 
 		//	VRAM 0x00000 ... 0x07FFF = 0x00
 		write_io( vdp_io1, 8'h00 );

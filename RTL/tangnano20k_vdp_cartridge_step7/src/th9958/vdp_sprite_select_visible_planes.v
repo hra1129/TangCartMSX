@@ -64,7 +64,6 @@ module vdp_sprite_select_visible_planes (
 	input		[7:0]	pixel_pos_y,
 	input				screen_v_active,
 	input				screen_h_active,
-	input		[2:0]	horizontal_offset_l,
 
 	output		[17:0]	vram_address,
 	output				vram_valid,
@@ -97,6 +96,7 @@ module vdp_sprite_select_visible_planes (
 	wire		[2:0]	w_phase;
 	wire		[3:0]	w_sub_phase;
 	wire		[8:0]	w_pixel_pos_y;
+	reg			[5:0]	ff_plane_count;
 	reg			[5:0]	ff_current_plane_num;		//	Plane#0...#63
 	reg			[5:0]	ff_current_plane_num_start;	//	Plane#0...#63
 	reg					ff_vram_valid;
@@ -134,8 +134,8 @@ module vdp_sprite_select_visible_planes (
 										(    sprite_mode2 ? w_sprite_mode2_attribute : w_sprite_mode1_attribute)) :18'd0;
 	assign w_selected_full			= ff_select_finish | (
 										(reg_sprite_mode3 || reg_sprite16_mode) ? ff_selected_count[4]:
-										     sprite_mode2                       ? (ff_selected_count[4] | ff_selected_count[3]): 
-										                                          (ff_selected_count[4] | ff_selected_count[3] | ff_selected_count[2]) );
+										     sprite_mode2                       ? (ff_selected_count[4] | ff_selected_count[3] | ff_plane_count[5]): 
+										                                          (ff_selected_count[4] | ff_selected_count[3] | ff_selected_count[2] | ff_plane_count[5]) );
 	assign w_finish_line			= (reg_sprite_mode3 || sprite_mode2) ? 10'd216: 10'd208;
 
 	// --------------------------------------------------------------------
@@ -161,6 +161,7 @@ module vdp_sprite_select_visible_planes (
 
 	always @( posedge clk or negedge reset_n ) begin
 		if( !reset_n ) begin
+			ff_plane_count			<= 6'd0;
 			ff_current_plane_num	<= 6'd0;
 			ff_vram_valid			<= 1'b0;
 		end
@@ -169,15 +170,18 @@ module vdp_sprite_select_visible_planes (
 		end
 		else if( w_phase == 3'd2 && w_sub_phase == 4'd0 ) begin
 			if( screen_pos_x[13:7] == 7'd0 ) begin
+				ff_plane_count			<= 6'd0;
 				ff_current_plane_num	<= reg_sprite_priority_shuffle ? ff_current_plane_num_start: 6'd0;
 				ff_vram_valid			<= 1'b1;
 			end
 			else begin
+				ff_plane_count			<= ff_plane_count + 6'd1;
 				ff_current_plane_num	<= ff_current_plane_num + ( reg_sprite_priority_shuffle ? 6'd19: 6'd1 );
 				ff_vram_valid			<= ~w_selected_full;
 			end
 		end
 		else if( w_phase == 3'd4 && w_sub_phase == 4'd0 ) begin
+			ff_plane_count			<= ff_plane_count + 6'd1;
 			ff_current_plane_num	<= ff_current_plane_num + ( reg_sprite_priority_shuffle ? 6'd19: 6'd1 );
 			ff_vram_valid			<= ~w_selected_full;
 		end

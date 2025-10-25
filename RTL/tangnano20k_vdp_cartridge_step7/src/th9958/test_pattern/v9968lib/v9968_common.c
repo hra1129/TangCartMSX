@@ -65,7 +65,7 @@ void v9968_set_write_vram_address( unsigned short address_l, unsigned char addre
 	v9968_nested_di();
 	v9968_write_vdp( 14, (address_l >> 14) | (address_h << 3) );
 	outp( vdp_port1, address_l & 0xFF );
-	outp( vdp_port1, ((address_l >> 8) & 0x3F) | 0x40 );
+	outp( vdp_port1, ((unsigned char)(address_l >> 8) & 0x3F) | 0x40 );
 	v9968_nested_ei();
 }
 
@@ -193,8 +193,8 @@ void v9968_exit( void ) {
 
 	v9968_write_vdp(  0, 0x00 );
 	v9968_write_vdp(  1, 0x40 );
-	v9968_write_vdp(  7, 0xF7 );
-	v9968_write_vdp(  8, 0x02 );
+	v9968_write_vdp(  7, 0x07 );
+	v9968_write_vdp(  8, 0x08 );
 	v9968_write_vdp(  9, 0x00 );
 	v9968_write_vdp( 20, 0x00 );
 	v9968_write_vdp( 21, 0x00 );

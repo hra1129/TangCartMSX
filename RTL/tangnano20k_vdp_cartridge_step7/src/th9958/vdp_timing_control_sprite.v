@@ -139,18 +139,21 @@ module vdp_timing_control_sprite (
 	wire		[7:0]	w_divider_mgx;
 	wire		[1:0]	w_bit_shift;
 	wire		[6:0]	w_sample_x;
+	wire		[13:0]	w_screen_pos_x;
 
 	// --------------------------------------------------------------------
 	//	Horizontal active
 	// --------------------------------------------------------------------
-	assign vram_address		= w_vp_vram_address | w_ic_vram_address;
-	assign vram_valid		= w_vp_vram_valid   | w_ic_vram_valid;
-	assign w_sprite_mode2	= (
+	assign vram_address			= w_vp_vram_address | w_ic_vram_address;
+	assign vram_valid			= w_vp_vram_valid   | w_ic_vram_valid;
+	assign w_sprite_mode2		= (
 			reg_screen_mode == c_mode_g3 ||
 			reg_screen_mode == c_mode_g4 ||
 			reg_screen_mode == c_mode_g5 ||
 			reg_screen_mode == c_mode_g6 ||
 			reg_screen_mode == c_mode_g7 );
+	assign w_screen_pos_x[13:4]	= screen_pos_x[13:4] - { 7'd0, horizontal_offset_l };
+	assign w_screen_pos_x[ 3:0]	= screen_pos_x[ 3:0];
 
 	// --------------------------------------------------------------------
 	//	Active period
@@ -175,11 +178,11 @@ module vdp_timing_control_sprite (
 		if( !reset_n ) begin
 			ff_screen_h_active <= 1'b0;
 		end
-		else if( screen_pos_x[3:0] == 4'hF ) begin
-			if( screen_pos_x[13:4] == 10'h3FF ) begin
+		else if( w_screen_pos_x[3:0] == 4'hF ) begin
+			if( w_screen_pos_x[13:4] == 10'h3FF ) begin
 				ff_screen_h_active <= 1'b1;
 			end
-			else if( screen_pos_x[13:4] == 10'd255 ) begin
+			else if( w_screen_pos_x[13:4] == 10'd255 ) begin
 				ff_screen_h_active <= 1'b0;
 			end
 		end
@@ -200,12 +203,11 @@ module vdp_timing_control_sprite (
 	vdp_sprite_select_visible_planes u_select_visible_planes (
 		.reset_n									( reset_n									),
 		.clk										( clk										),
-		.screen_pos_x								( screen_pos_x								),
+		.screen_pos_x								( w_screen_pos_x							),
 		.screen_pos_y								( screen_pos_y[8:0]							),
 		.pixel_pos_y								( pixel_pos_y								),
 		.screen_v_active							( ff_screen_v_active						),
 		.screen_h_active							( ff_screen_h_active						),
-		.horizontal_offset_l						( horizontal_offset_l						),
 		.vram_address								( w_vp_vram_address							),
 		.vram_valid									( w_vp_vram_valid							),
 		.vram_rdata									( vram_rdata								),
@@ -236,7 +238,7 @@ module vdp_timing_control_sprite (
 		.reset_n									( reset_n									),
 		.clk										( clk										),
 		.start_info_collect							( w_start_info_collect						),
-		.screen_pos_x								( screen_pos_x								),
+		.screen_pos_x								( w_screen_pos_x							),
 		.screen_v_active							( ff_screen_v_active						),
 		.screen_h_active							( ff_screen_h_active						),
 		.vram_address								( w_ic_vram_address							),

@@ -176,6 +176,7 @@ module vdp_timing_control_screen_mode (
 	reg			[5:0]	ff_j;
 	reg			[5:0]	ff_k;
 	reg					ff_vram_interleave;
+	wire				w_left_mask;
 
 	// --------------------------------------------------------------------
 	//	Screen mode decoder
@@ -682,15 +683,17 @@ module vdp_timing_control_screen_mode (
 	// --------------------------------------------------------------------
 	//	Output pixel
 	// --------------------------------------------------------------------
+	assign w_left_mask		= (!reg_left_mask || (screen_pos_x[13:4] >= 10'd13));
+
 	always @( posedge clk ) begin
 		if( w_sub_phase == 4'd7 ) begin
 			if( ff_mode[c_t2] || ff_mode[c_g6] ) begin
 				ff_display_color <= { 4'd0, ff_pattern0[3:0] };
-				ff_display_color_en	= reg_display_on && (!reg_left_mask || (screen_pos_x[13:4] >= 10'd15));
+				ff_display_color_en	= reg_display_on & w_left_mask;
 			end
 			else if( ff_mode[c_g5] ) begin
 				ff_display_color <= { 4'd0, ff_pattern0[1:0] };
-				ff_display_color_en	= reg_display_on && (!reg_left_mask || (screen_pos_x[13:4] >= 10'd15));
+				ff_display_color_en	= reg_display_on & w_left_mask;
 			end
 			else begin
 				//	hold
@@ -706,7 +709,7 @@ module vdp_timing_control_screen_mode (
 			else begin
 				ff_display_color <= ff_pattern0;
 			end
-			ff_display_color_en	= reg_display_on && (!reg_left_mask || (screen_pos_x[13:4] >= 10'd15));
+			ff_display_color_en	= reg_display_on & w_left_mask;
 		end
 		else begin
 			//	hold

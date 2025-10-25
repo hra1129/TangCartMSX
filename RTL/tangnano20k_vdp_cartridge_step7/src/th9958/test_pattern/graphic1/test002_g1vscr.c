@@ -15,7 +15,7 @@ int main( int argc, char *argv[] ) {
 	v9968_set_screen1();
 
 	v9968_set_write_vram_address( 0x1800, 0 );
-	for( i = 0; i < 40 * 24; i++ ) {
+	for( i = 0; i < 32 * 24; i++ ) {
 		v9968_write_vram( i );
 	}
 

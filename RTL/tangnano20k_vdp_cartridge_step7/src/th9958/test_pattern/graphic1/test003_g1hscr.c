@@ -15,7 +15,7 @@ int main( int argc, char *argv[] ) {
 	v9968_set_screen1();
 
 	v9968_set_write_vram_address( 0x1800, 0 );
-	for( i = 0; i < 40 * 24; i++ ) {
+	for( i = 0; i < 32 * 24; i++ ) {
 		v9968_write_vram( i );
 	}
 
@@ -29,6 +29,8 @@ int main( int argc, char *argv[] ) {
 		v9968_write_vdp( 27, h27 );
 	}
 	v9968_wait_key();
+	v9968_write_vdp( 26, 0 );
+	v9968_write_vdp( 27, 0 );
 
 	v9968_set_write_vram_address( 0x1800, 0 );
 	v9968_puts( "[R#27 only]" );
@@ -39,6 +41,7 @@ int main( int argc, char *argv[] ) {
 		v9968_write_vdp( 27, (i & 7) ^ 7 );
 	}
 	v9968_wait_key();
+	v9968_write_vdp( 27, 0 );
 
 	v9968_set_write_vram_address( 0x1800, 0 );
 	v9968_puts( "[R#26 only]" );
@@ -46,9 +49,10 @@ int main( int argc, char *argv[] ) {
 		v9968_wait_vsync();
 		v9968_wait_vsync();
 		v9968_wait_vsync();
-		v9968_write_vdp( 26, i << 3 );
+		v9968_write_vdp( 26, i );
 	}
 	v9968_wait_key();
+	v9968_write_vdp( 26, 0 );
 
 	v9968_set_write_vram_address( 0x1800, 0 );
 	v9968_puts( "[R#27 MASK]" );
@@ -60,6 +64,7 @@ int main( int argc, char *argv[] ) {
 		v9968_write_vdp( 27, (i & 7) ^ 7 );
 	}
 	v9968_wait_key();
+	v9968_write_vdp( 27, 0 );
 
 	v9968_exit();
 	return 0;
