@@ -177,6 +177,7 @@ module vdp_timing_control_screen_mode (
 	reg			[5:0]	ff_k;
 	reg					ff_vram_interleave;
 	wire				w_left_mask;
+	reg			[9:0]	ff_left_mask_pos;
 
 	// --------------------------------------------------------------------
 	//	Screen mode decoder
@@ -209,7 +210,8 @@ module vdp_timing_control_screen_mode (
 	end
 
 	always @( posedge clk ) begin
-		ff_mode <= w_mode;
+		ff_mode				<= w_mode;
+		ff_left_mask_pos	<= (w_mode[c_t1] || w_mode[c_t2]) ? 10'd21: 10'd13;
 	end
 
 	assign w_mode				= func_screen_mode_decoder( reg_screen_mode );
@@ -683,7 +685,7 @@ module vdp_timing_control_screen_mode (
 	// --------------------------------------------------------------------
 	//	Output pixel
 	// --------------------------------------------------------------------
-	assign w_left_mask		= (!reg_left_mask || (screen_pos_x[13:4] >= 10'd13));
+	assign w_left_mask		= (!reg_left_mask || (screen_pos_x[13:4] >= ff_left_mask_pos));
 
 	always @( posedge clk ) begin
 		if( w_sub_phase == 4'd7 ) begin
