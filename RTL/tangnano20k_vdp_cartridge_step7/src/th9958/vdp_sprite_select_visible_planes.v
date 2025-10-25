@@ -124,7 +124,7 @@ module vdp_sprite_select_visible_planes (
 	// --------------------------------------------------------------------
 	assign w_sprite_mode1_attribute	= { reg_sprite_attribute_table_base[17:7],        ff_current_plane_num[4:0], 2'd0 };
 	assign w_sprite_mode2_attribute	= { reg_sprite_attribute_table_base[17:9], 2'b00, ff_current_plane_num[4:0], 2'd0 };
-	assign w_sprite_mode3_attribute	= { reg_sprite_attribute_table_base[17:9],        ff_current_plane_num,      3'd0 };
+	assign w_sprite_mode3_attribute	= { reg_sprite_attribute_table_base[17:9], (reg_sprite_attribute_table_base[8:7] & ff_current_plane_num[5:4]), ff_current_plane_num[3:0], 3'd0 };
 
 	assign w_screen_pos_x			= screen_pos_x[13:4];
 	assign w_phase					= w_screen_pos_x[2:0];

@@ -4,6 +4,7 @@
 //	Copyright 2025 t.hara (HRA!)
 // --------------------------------------------------------------------
 
+#include <stdio.h>
 #include <stdlib.h>
 
 static const unsigned char vdp_port0 = 0x98;	//	TMS9918/V9938/V9958/V9968/V9978
@@ -13,6 +14,16 @@ static const unsigned char vdp_port3 = 0x9B;	//	V9938/V9958/V9968/V9978
 static const unsigned char vdp_port4 = 0x9C;	//	V9968/V9978
 
 static int di_count = 0;
+
+#pragma pack(1)
+typedef struct {
+	unsigned char	signature;
+	unsigned short	start;
+	unsigned short	end;
+	unsigned short	execute;
+} BSAVE_HEADER_T;
+
+static unsigned char s_buffer[ 1024 ];
 
 // --------------------------------------------------------------------
 //	v9968_nested_di()
@@ -119,6 +130,7 @@ unsigned char v9968_read_vdp_status( unsigned char reg ) {
 	r = inp( vdp_port1 );
 	v9968_write_vdp( 15, 0 );
 	v9968_nested_ei();
+	return r;
 }
 
 // --------------------------------------------------------------------
@@ -276,4 +288,49 @@ void v9968_wait_key( void ) {
 	v9968_wait_vsync();
 	v9968_wait_vsync();
 	while( !v9968_get_key() );
+}
+
+// --------------------------------------------------------------------
+//	v9968_bload()
+//	input:
+//		s_file_name ... target file name
+//	result:
+//		1 .... success
+//		0 .... error
+// --------------------------------------------------------------------
+char v9968_bload( const char *s_file_name ) {
+	FILE *p_file;
+	BSAVE_HEADER_T *p_header;
+	unsigned short size, block, i, ptr;
+
+	p_header = (BSAVE_HEADER_T*) s_buffer;
+
+	p_file = fopen( s_file_name, "rb" );
+	if( p_file == NULL ) {
+		return 0;
+	}
+	p_header->signature = 0;
+	fread( p_header, 7, 1, p_file );
+	if( p_header->signature != 0xFE ) {
+		fclose( p_file );
+		return 0;
+	}
+
+	v9968_set_write_vram_address( p_header->start, 0 );
+	size = p_header->end - p_header->start + 1;
+	ptr = p_header->start;
+	while( size ) {
+		if( size > 1024 ) {
+			block = 1024;
+		}
+		else {
+			block = size;
+		}
+		fread( s_buffer, block, 1, p_file );
+		size -= block;
+		v9968_copy_to_vram( ptr, s_buffer, block );
+		ptr += block;
+	}
+	fclose( p_file );
+	return 1;
 }

@@ -274,7 +274,7 @@ module vdp_sprite_info_collect (
 				if( w_sub_phase == 4'd0 ) begin
 					if( reg_sprite_mode3 ) begin
 						//	Request 2nd attribute
-						ff_vram_address		<= { reg_sprite_attribute_table_base[17:9], w_selected_plane_num, 3'd4 };
+						ff_vram_address		<= { reg_sprite_attribute_table_base[17:9], (reg_sprite_attribute_table_base[8:7] & w_selected_plane_num[5:4]), w_selected_plane_num[3:0], 3'd4 };
 						ff_vram_valid		<= 1'b1;
 					end
 					else if( ff_sprite_mode2 ) begin

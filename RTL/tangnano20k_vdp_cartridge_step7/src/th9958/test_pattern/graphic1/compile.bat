@@ -29,4 +29,7 @@ zcc +msx -subtype=msxdos2 -I../v9968lib/ test004_g1adj.c v9968_common.o v9968_mo
 echo G1SP1
 zcc +msx -subtype=msxdos2 -I../v9968lib/ test005_g1sp1.c v9968_common.o v9968_mode.o v9968_font.o -o G1SP1.COM
 
+echo G1SP2
+zcc +msx -subtype=msxdos2 -I../v9968lib/ test006_g1sp2.c v9968_common.o v9968_mode.o v9968_font.o -o G1SP2.COM
+
 pause
