@@ -22,4 +22,16 @@ zcc +msx -subtype=msxdos2 -I../v9968lib/ test003_g2hscr.c v9968_common.o v9968_m
 echo G2ADJ
 zcc +msx -subtype=msxdos2 -I../v9968lib/ test004_g2adj.c v9968_common.o v9968_mode.o v9968_font.o -o G2ADJ.COM
 
+echo G2SP1
+zcc +msx -subtype=msxdos2 -I../v9968lib/ test005_g2sp1.c v9968_common.o v9968_mode.o v9968_font.o -o G2SP1.COM
+
+echo G2SP2
+zcc +msx -subtype=msxdos2 -I../v9968lib/ test006_g2sp2.c v9968_common.o v9968_mode.o v9968_font.o -o G2SP2.COM
+
+echo G2SP3
+zcc +msx -subtype=msxdos2 -I../v9968lib/ test007_g2sp3.c v9968_common.o v9968_mode.o v9968_font.o -o G2SP3.COM
+
+echo G2SP4
+zcc +msx -subtype=msxdos2 -I../v9968lib/ test008_g2sp4.c v9968_common.o v9968_mode.o v9968_font.o -o G2SP4.COM
+
 pause
