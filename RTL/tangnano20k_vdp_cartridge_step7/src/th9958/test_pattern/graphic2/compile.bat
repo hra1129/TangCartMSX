@@ -34,4 +34,7 @@ zcc +msx -subtype=msxdos2 -I../v9968lib/ test007_g2sp3.c v9968_common.o v9968_mo
 echo G2SP4
 zcc +msx -subtype=msxdos2 -I../v9968lib/ test008_g2sp4.c v9968_common.o v9968_mode.o v9968_font.o -o G2SP4.COM
 
+echo G2IMG
+zcc +msx -subtype=msxdos2 -I../v9968lib/ test009_g2img.c v9968_common.o v9968_mode.o v9968_font.o -o G2IMG.COM
+
 pause

@@ -27,7 +27,7 @@ int main( int argc, char *argv[] ) {
 	v9968_set_screen2();
 
 	v9968_fill_vram( 0x1800, ' ', 32 * 24 );
-	v9968_fill_vram( 0x2000, 0xF1, 8 * 32 );
+	v9968_fill_vram( 0x2000, 0xF1, 8 * 256 );
 
 	//	‰Šú‰»
 	for( i = 0; i < 32; i++ ) {

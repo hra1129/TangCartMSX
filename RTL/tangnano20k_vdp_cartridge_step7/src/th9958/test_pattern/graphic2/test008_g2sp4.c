@@ -31,6 +31,7 @@ int main( int argc, char *argv[] ) {
 	v9968_bload( "image1.SC5" );
 
 	v9968_fill_vram( 0x1800, ' ', 32 * 24 );
+	v9968_fill_vram( 0x2000, 0xF1, 8 * 256 );
 	v9968_write_vdp( 5, 0x3F );						//	Sprite Attribute Table (L) = 0x1E00	
 	v9968_set_write_vram_address( 0x1E00, 0 );
 	for( i = 0; i < 64; i++ ) {

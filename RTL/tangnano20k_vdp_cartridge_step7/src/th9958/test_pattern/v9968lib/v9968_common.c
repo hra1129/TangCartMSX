@@ -334,3 +334,20 @@ char v9968_bload( const char *s_file_name ) {
 	fclose( p_file );
 	return 1;
 }
+
+// --------------------------------------------------------------------
+//	v9968_color_restore()
+//	input:
+//		palette_address ... address of palette data on VRAM
+//	result:
+//		none
+// --------------------------------------------------------------------
+void v9968_color_restore( unsigned short palette_address ) {
+	int i;
+
+	v9968_write_vdp( 16, 0 );
+	v9968_set_read_vram_address( palette_address, 0 );
+	for( i = 0; i < 32; i++ ) {
+		outp( vdp_port2, inp( vdp_port0 ) );
+	}
+}

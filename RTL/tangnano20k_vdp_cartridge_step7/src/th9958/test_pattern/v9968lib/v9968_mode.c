@@ -131,8 +131,8 @@ void v9968_set_screen2( void ) {
 	v9968_write_vdp( 0, 0x02 );						//	Mode0
 	v9968_write_vdp( 1, 0x40 );						//	Mode1
 	v9968_write_vdp( 2, 0x06 );						//	Pattern Name Table = 0x01800
-	v9968_write_vdp( 3, 0x80 );						//	Color Table (L) = 0x02000
-	v9968_write_vdp( 4, 0x00 );						//	Pattern Generator Table = 0x0000
+	v9968_write_vdp( 3, 0xFF );						//	Color Table (L) = 0x02000
+	v9968_write_vdp( 4, 0x03 );						//	Pattern Generator Table = 0x0000
 	v9968_write_vdp( 5, 0x36 );						//	Sprite Attribute Table (L) = 0x1B00
 	v9968_write_vdp( 6, 0x07 );						//	Sprite Pattern Generator Table = 0x3800
 	v9968_write_vdp( 7, 0x07 );						//	Background Color = 0x07
@@ -218,8 +218,8 @@ void v9968_set_screen4( void ) {
 	v9968_write_vdp( 0, 0x04 );						//	Mode0
 	v9968_write_vdp( 1, 0x40 );						//	Mode1
 	v9968_write_vdp( 2, 0x06 );						//	Pattern Name Table = 0x01800
-	v9968_write_vdp( 3, 0x80 );						//	Color Table (L) = 0x02000
-	v9968_write_vdp( 4, 0x00 );						//	Pattern Generator Table = 0x0000
+	v9968_write_vdp( 3, 0xFF );						//	Color Table (L) = 0x02000
+	v9968_write_vdp( 4, 0x03 );						//	Pattern Generator Table = 0x0000
 	v9968_write_vdp( 5, 0x3F );						//	Sprite Attribute Table (L) = 0x1E00
 	v9968_write_vdp( 6, 0x07 );						//	Sprite Pattern Generator Table = 0x3800
 	v9968_write_vdp( 7, 0x07 );						//	Background Color = 0x07
