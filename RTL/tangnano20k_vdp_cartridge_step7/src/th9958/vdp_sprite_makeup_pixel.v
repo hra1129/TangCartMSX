@@ -731,47 +731,33 @@ module vdp_sprite_makeup_pixel (
 	// --------------------------------------------------------------------
 	always @( posedge clk or negedge reset_n ) begin
 		if( !reset_n ) begin
-			ff_sprite_en1	<= 1'b0;
-			ff_sprite_en2	<= 1'b0;
-			ff_sprite_en3	<= 1'b0;
-
 			ff_active1			<= 1'b0;
 			ff_active2			<= 1'b0;
 			ff_active3			<= 1'b0;
-
-			ff_bit_sel12_1		<= 4'b0;
-			ff_bit_sel12_2		<= 4'b0;
-			ff_bit_sel12_3		<= 4'b0;
-
-			ff_color_1			<= 8'd0;
-			ff_color_2			<= 8'd0;
-			ff_color_3			<= 8'd0;
-
-			ff_current_plane1	<= 5'd0;
-			ff_current_plane2	<= 5'd0;
-			ff_current_plane3	<= 5'd0;
 		end
 		else begin
-			ff_sprite_en1		<= w_sprite_en;
-			ff_sprite_en2		<= ff_sprite_en1;
-			ff_sprite_en3		<= ff_sprite_en2;
-
 			ff_active1			<= w_active;
 			ff_active2			<= ff_active1;
 			ff_active3			<= ff_active2;
-
-			ff_bit_sel12_1		<= w_bit_sel12;
-			ff_bit_sel12_2		<= ff_bit_sel12_1;
-			ff_bit_sel12_3		<= ff_bit_sel12_2;
-
-			ff_color_1			<= w_color;
-			ff_color_2			<= ff_color_1;
-			ff_color_3			<= ff_color_2;
-
-			ff_current_plane1	<= ff_current_plane;
-			ff_current_plane2	<= ff_current_plane1;
-			ff_current_plane3	<= ff_current_plane2;
 		end
+	end
+
+	always @( posedge clk ) begin
+		ff_sprite_en1		<= w_sprite_en;
+		ff_sprite_en2		<= ff_sprite_en1;
+		ff_sprite_en3		<= ff_sprite_en2;
+
+		ff_bit_sel12_1		<= w_bit_sel12;
+		ff_bit_sel12_2		<= ff_bit_sel12_1;
+		ff_bit_sel12_3		<= ff_bit_sel12_2;
+
+		ff_color_1			<= w_color;
+		ff_color_2			<= ff_color_1;
+		ff_color_3			<= ff_color_2;
+
+		ff_current_plane1	<= ff_current_plane;
+		ff_current_plane2	<= ff_current_plane1;
+		ff_current_plane3	<= ff_current_plane2;
 	end
 
 	assign w_pattern	= func_word_selector( 

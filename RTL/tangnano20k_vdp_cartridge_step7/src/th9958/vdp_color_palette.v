@@ -157,6 +157,7 @@ module vdp_color_palette (
 	reg			[7:0]	ff_display_color_sprite;
 	reg			[1:0]	ff_display_color_sprite_transparent;
 	reg					ff_display_color_sprite_en;
+	reg					ff_display_color_screen_mode_en;
 
 	// --------------------------------------------------------------------
 	//	Palette initializer
@@ -280,9 +281,10 @@ module vdp_color_palette (
 
 	always @( posedge clk ) begin
 		if( screen_pos_x[3:0] == 4'd0 ) begin
+			ff_display_color_screen_mode_en			<= display_color_screen_mode_en;
 			ff_display_color_sprite					<= display_color_sprite;
 			ff_display_color_sprite_transparent		<= display_color_sprite_transparent;
-			ff_display_color_sprite_en				<= display_color_sprite_en;
+			ff_display_color_sprite_en				<= display_color_sprite_en & ff_display_color_screen_mode_en;
 		end
 		else begin
 			//	hold

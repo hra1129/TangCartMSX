@@ -39,7 +39,7 @@
     <OptionList>
         <Option type="disable_insert_pad" value="0"/>
         <Option type="global_freq" value="100.000"/>
-        <Option type="looplimit" value="100000"/>
+        <Option type="looplimit" value="200000"/>
         <Option type="output_file" value="D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_vdp_cartridge_step7\impl\gwsynthesis\tangnano20k_vdp_cartridge.vg"/>
         <Option type="print_all_synthesis_warning" value="1"/>
         <Option type="ram_rw_check" value="1"/>
