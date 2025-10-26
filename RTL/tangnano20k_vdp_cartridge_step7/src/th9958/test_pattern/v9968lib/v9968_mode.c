@@ -158,7 +158,7 @@ void v9968_set_screen2( void ) {
 
 	v9968_fill_vram( 0x1800, 0, 32 * 24 );
 	v9968_fill_vram( 0x1B00, 208, 4 * 32 );
-	v9968_fill_vram( 0x2000, 0xF4, 256 >> 3 );
+	v9968_fill_vram( 0x2000, 0xF4, 8 * 256 );
 	v9968_fill_vram( 0x3800, 0xFF, 8 * 256 );
 	v9968_set_font( 0x0000 );
 	v9968_set_font( 0x0800 );
@@ -203,7 +203,6 @@ void v9968_set_screen3( void ) {
 
 	v9968_fill_vram( 0x0800, 0, 32 * 24 );
 	v9968_fill_vram( 0x1B00, 208, 4 * 32 );
-	v9968_fill_vram( 0x2000, 0xF4, 256 >> 3 );
 	v9968_fill_vram( 0x3800, 0xFF, 8 * 256 );
 	v9968_set_font( 0x0000 );
 }
@@ -246,7 +245,7 @@ void v9968_set_screen4( void ) {
 
 	v9968_fill_vram( 0x1800, 0, 32 * 24 );
 	v9968_fill_vram( 0x1B00, 208, 4 * 32 );
-	v9968_fill_vram( 0x2000, 0xF4, 256 >> 3 );
+	v9968_fill_vram( 0x2000, 0xF4, 8 * 256 );
 	v9968_fill_vram( 0x3800, 0xFF, 8 * 256 );
 	v9968_set_font( 0x0000 );
 	v9968_set_font( 0x0800 );
