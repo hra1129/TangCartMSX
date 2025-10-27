@@ -348,10 +348,10 @@ module vdp_video_out (
 	// --------------------------------------------------------------------
 	//	Scanline
 	// --------------------------------------------------------------------
-	assign w_scanline_gain	= { 2'd0, w_bilinear_r } + { 2'd0, w_bilinear_g } + { 2'd0, w_bilinear_b };
+	assign w_scanline_gain	= { 2'd0, w_bilinear_r } + { 2'd0, w_bilinear_g } + { 2'd0, w_bilinear_b } + { 10'd64 };
 	assign w_gain			= (has_scanline == 1'b0  ) ? 8'd128:
 							  (w_interlace           ) ? ( (v_count[0] == ~field) ? 8'd128: 8'd0 ):
-							  (v_count[0]   == 1'b0  ) ? 8'd128: { 1'b0, w_scanline_gain[9:3] };
+							  (v_count[0]   == 1'b1  ) ? 8'd128: { 1'b0, w_scanline_gain[9:3] };
 
 	assign w_display_r	= ff_bilinear_r * ff_gain;
 	assign w_display_g	= ff_bilinear_g * ff_gain;

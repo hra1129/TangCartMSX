@@ -18,6 +18,11 @@ vdp_port4		:=			0x9C
 rtc_address		:=			0xB4
 rtc_data		:=			0xB5
 
+main_rom_slot	:=			0xFCC1
+calslt			:=			0x001C
+chgmod			:=			0x005F
+kilbuf			:=			0x0156
+
 ; -----------------------------------------------------------------------------
 ; Initialize VDP
 ; -----------------------------------------------------------------------------
@@ -286,8 +291,19 @@ _lmmc_end::
 				jp			main_loop
 
 	exit_main_loop:
-				di
+				; 2秒待つ
+				ld			b, 120
+	wait_1sec_loop:
+				; 1V待ちフラグを立てる
+				ld			a, 1
+				ld			[wait_flag], a
+	wait_vsync2:
+				ld			a, [wait_flag]
+				or			a, a
+				jr			nz, wait_vsync2
+				djnz		wait_1sec_loop
 				; 割り込み禁止にする
+				di
 				ld			a, 0x43
 				out			[vdp_port1], a
 				ld			a, 0x81
@@ -296,6 +312,30 @@ _lmmc_end::
 				ld			a, 0xC9
 				ld			[0xFD9A], a
 				ei
+				; 画面モードを戻す
+				ld			iy, [main_rom_slot - 1]
+				ld			ix, kilbuf
+				call		calslt
+
+				di
+				xor			a, a
+				out			[vdp_port1], a
+				ld			a, 0x80 + 20
+				out			[vdp_port1], a
+				xor			a, a
+				out			[vdp_port1], a
+				ld			a, 0x80 + 21
+				out			[vdp_port1], a
+				ei
+
+				ld			iy, [main_rom_slot - 1]
+				ld			ix, chgmod
+				ld			a,1
+				call		calslt
+				ld			iy, [main_rom_slot - 1]
+				ld			ix, chgmod
+				xor			a, a
+				call		calslt
 				; 終了
 				ld			c, 0
 				call		5

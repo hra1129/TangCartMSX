@@ -244,7 +244,7 @@ void v9968_set_screen4( void ) {
 	v9968_nested_ei();
 
 	v9968_fill_vram( 0x1800, 0, 32 * 24 );
-	v9968_fill_vram( 0x1B00, 208, 4 * 32 );
+	v9968_fill_vram( 0x1E00, 216, 4 * 32 );
 	v9968_fill_vram( 0x2000, 0xF4, 8 * 256 );
 	v9968_fill_vram( 0x3800, 0xFF, 8 * 256 );
 	v9968_set_font( 0x0000 );
@@ -262,7 +262,7 @@ void v9968_set_screen5( void ) {
 	v9968_nested_di();
 	v9968_write_vdp( 0, 0x06 );						//	Mode0
 	v9968_write_vdp( 1, 0x40 );						//	Mode1
-	v9968_write_vdp( 2, 0x3F );						//	Pattern Name Table = 0x00000
+	v9968_write_vdp( 2, 0x1F );						//	Pattern Name Table = 0x00000
 	v9968_write_vdp( 5, 0xEF );						//	Sprite Attribute Table (L) = 0x7600
 	v9968_write_vdp( 6, 0x0F );						//	Sprite Pattern Generator Table = 0x7800
 	v9968_write_vdp( 7, 0x07 );						//	Background Color = 0x07
@@ -286,11 +286,7 @@ void v9968_set_screen5( void ) {
 	v9968_write_vdp( 27, 0 );						//	Horizontal Offset by dot
 	v9968_nested_ei();
 
-	v9968_fill_vram( 0x1800, 0, 32 * 24 );
-	v9968_fill_vram( 0x1B00, 208, 4 * 32 );
-	v9968_fill_vram( 0x2000, 0xF4, 256 >> 3 );
-	v9968_fill_vram( 0x3800, 0xFF, 8 * 256 );
-	v9968_set_font( 0x0000 );
+	v9968_fill_vram( 0x7600, 216, 4 * 32 );
 }
 
 // --------------------------------------------------------------------
@@ -303,7 +299,7 @@ void v9968_set_screen6( void ) {
 	v9968_nested_di();
 	v9968_write_vdp( 0, 0x08 );						//	Mode0
 	v9968_write_vdp( 1, 0x40 );						//	Mode1
-	v9968_write_vdp( 2, 0x3F );						//	Pattern Name Table = 0x00000
+	v9968_write_vdp( 2, 0x1F );						//	Pattern Name Table = 0x00000
 	v9968_write_vdp( 3, 0x80 );						//	Color Table (L) = 0x02000
 	v9968_write_vdp( 4, 0x00 );						//	Pattern Generator Table = 0x0000
 	v9968_write_vdp( 5, 0xEF );						//	Sprite Attribute Table (L) = 0x7600
@@ -329,11 +325,7 @@ void v9968_set_screen6( void ) {
 	v9968_write_vdp( 27, 0 );						//	Horizontal Offset by dot
 	v9968_nested_ei();
 
-	v9968_fill_vram( 0x1800, 0, 32 * 24 );
-	v9968_fill_vram( 0x1B00, 208, 4 * 32 );
-	v9968_fill_vram( 0x2000, 0xF4, 256 >> 3 );
-	v9968_fill_vram( 0x3800, 0xFF, 8 * 256 );
-	v9968_set_font( 0x0000 );
+	v9968_fill_vram( 0x7600, 216, 4 * 32 );
 }
 
 // --------------------------------------------------------------------
@@ -372,11 +364,7 @@ void v9968_set_screen7( void ) {
 	v9968_write_vdp( 27, 0 );						//	Horizontal Offset by dot
 	v9968_nested_ei();
 
-	v9968_fill_vram( 0x1800, 0, 32 * 24 );
-	v9968_fill_vram( 0x1B00, 208, 4 * 32 );
-	v9968_fill_vram( 0x2000, 0xF4, 256 >> 3 );
-	v9968_fill_vram( 0x3800, 0xFF, 8 * 256 );
-	v9968_set_font( 0x0000 );
+	v9968_fill_vram( 0xFA00, 216, 4 * 32 );
 }
 
 // --------------------------------------------------------------------
@@ -389,7 +377,7 @@ void v9968_set_screen8( void ) {
 	v9968_nested_di();
 	v9968_write_vdp( 0, 0x0E );						//	Mode0
 	v9968_write_vdp( 1, 0x40 );						//	Mode1
-	v9968_write_vdp( 2, 0x3F );						//	Pattern Name Table = 0x00000
+	v9968_write_vdp( 2, 0x1F );						//	Pattern Name Table = 0x00000
 	v9968_write_vdp( 3, 0x80 );						//	Color Table (L) = 0x02000
 	v9968_write_vdp( 4, 0x00 );						//	Pattern Generator Table = 0x0000
 	v9968_write_vdp( 5, 0xF7 );						//	Sprite Attribute Table (L) = 0x1B00
@@ -415,10 +403,6 @@ void v9968_set_screen8( void ) {
 	v9968_write_vdp( 27, 0 );						//	Horizontal Offset by dot
 	v9968_nested_ei();
 
-	v9968_fill_vram( 0x1800, 0, 32 * 24 );
-	v9968_fill_vram( 0x1B00, 208, 4 * 32 );
-	v9968_fill_vram( 0x2000, 0xF4, 256 >> 3 );
-	v9968_fill_vram( 0x3800, 0xFF, 8 * 256 );
-	v9968_set_font( 0x0000 );
+	v9968_fill_vram( 0xFA00, 216, 4 * 32 );
 }
 

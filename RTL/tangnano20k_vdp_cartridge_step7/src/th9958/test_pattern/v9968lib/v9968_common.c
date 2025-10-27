@@ -205,6 +205,7 @@ void v9968_exit( void ) {
 
 	v9968_write_vdp(  0, 0x00 );
 	v9968_write_vdp(  1, 0x40 );
+	v9968_write_vdp(  2, 0x36 );
 	v9968_write_vdp(  7, 0x07 );
 	v9968_write_vdp(  8, 0x08 );
 	v9968_write_vdp(  9, 0x00 );
@@ -218,6 +219,11 @@ void v9968_exit( void ) {
 	#asm
 		ld		iy, [0xFCC1 - 1]
 		ld		ix, 0x0156				//	kilbuf
+		call	0x001c					//	calslt
+
+		ld		a, 1
+		ld		iy, [0xFCC1 - 1]
+		ld		ix, 0x005F				//	chgmod
 		call	0x001c					//	calslt
 
 		xor		a
