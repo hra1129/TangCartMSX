@@ -88,6 +88,9 @@ module vdp (
 	output		[7:0]	display_g,
 	output		[7:0]	display_b,
 
+	// Force Highspeed Mode
+	input				force_highspeed,
+
 	// debug pulse
 	output				pulse0,
 	output				pulse1,
@@ -270,6 +273,7 @@ module vdp (
 		.status_color								( w_status_color							),
 		.status_border_position						( w_status_border_position					),
 		.vram_access_mask							( w_vram_access_mask						),
+		.force_highspeed							( force_highspeed							),
 		.reg_screen_mode							( reg_screen_mode							),
 		.reg_sprite_magify							( reg_sprite_magify							),
 		.reg_sprite_16x16							( reg_sprite_16x16							),

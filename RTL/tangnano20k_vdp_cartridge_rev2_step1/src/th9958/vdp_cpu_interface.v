@@ -110,6 +110,7 @@ module vdp_cpu_interface (
 	input		[7:0]	status_color,				//	S#7
 	input		[8:0]	status_border_position,		//	S#8, S#9
 	input				vram_access_mask,			//	MXC
+	input				force_highspeed,
 
 	output	[4:0]		reg_screen_mode,
 	output				reg_sprite_magify,
@@ -227,6 +228,7 @@ module vdp_cpu_interface (
 	reg					ff_vram256k_mode;
 	reg					ff_sprite16_mode;
 	reg					ff_flat_interlace_mode;
+	reg					ff_force_highspeed;
 
 	reg					ff_2nd_access;
 	reg		[7:0]		ff_1st_byte;
@@ -831,6 +833,10 @@ module vdp_cpu_interface (
 
 	assign int_n = ~(ff_line_interrupt | ff_frame_interrupt | ff_command_end_interrupt);
 
+	always @( posedge clk ) begin
+		ff_force_highspeed <= force_highspeed;
+	end
+
 	// --------------------------------------------------------------------
 	//	Output assignment
 	// --------------------------------------------------------------------
@@ -881,7 +887,7 @@ module vdp_cpu_interface (
 	assign reg_sprite_priority_shuffle				= ff_sprite_priority_shuffle;
 	assign reg_horizontal_offset_l					= ff_horizontal_offset_l;
 	assign reg_horizontal_offset_h					= ff_horizontal_offset_h;
-	assign reg_command_high_speed_mode				= ff_command_high_speed_mode;
+	assign reg_command_high_speed_mode				= ff_command_high_speed_mode | ff_force_highspeed;
 	assign reg_sprite_nonR23_mode					= ff_sprite_nonR23_mode;
 	assign reg_interrupt_line_nonR23_mode			= ff_interrupt_line_nonR23_mode;
 	assign reg_sprite_mode3							= ff_sprite_mode3;

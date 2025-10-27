@@ -12,27 +12,27 @@
   <Part Number>: GW2AR-LV18QN88C8/I7
   <Device>: GW2AR-18
   <Device Version>: C
-  <Created Time>:Tue Oct 28 06:12:18 2025
+  <Created Time>:Tue Oct 28 07:02:40 2025
 
 
 2. PnR Details
 
   Running placement:
-    Placement Phase 0: CPU time = 0h 0m 2s, Elapsed time = 0h 0m 2s
-    Placement Phase 1: CPU time = 0h 0m 0.555s, Elapsed time = 0h 0m 0.556s
-    Placement Phase 2: CPU time = 0h 0m 6s, Elapsed time = 0h 0m 6s
-    Placement Phase 3: CPU time = 0h 0m 9s, Elapsed time = 0h 0m 9s
-    Total Placement: CPU time = 0h 0m 18s, Elapsed time = 0h 0m 18s
+    Placement Phase 0: CPU time = 0h 0m 3s, Elapsed time = 0h 0m 3s
+    Placement Phase 1: CPU time = 0h 0m 0.764s, Elapsed time = 0h 0m 0.763s
+    Placement Phase 2: CPU time = 0h 0m 9s, Elapsed time = 0h 0m 9s
+    Placement Phase 3: CPU time = 0h 0m 13s, Elapsed time = 0h 0m 13s
+    Total Placement: CPU time = 0h 0m 25s, Elapsed time = 0h 0m 25s
  Running routing:
-    Routing Phase 0: CPU time = 0h 0m 0.005s, Elapsed time = 0h 0m 0.005s
-    Routing Phase 1: CPU time = 0h 0m 0.526s, Elapsed time = 0h 0m 0.525s
+    Routing Phase 0: CPU time = 0h 0m 0.01s, Elapsed time = 0h 0m 0.01s
+    Routing Phase 1: CPU time = 0h 0m 0.69s, Elapsed time = 0h 0m 0.69s
     Routing Phase 2: CPU time = 0h 0m 12s, Elapsed time = 0h 0m 12s
     Routing Phase 3: CPU time = 0h 0m 0s, Elapsed time = 0h 0m 0s
-    Total Routing: CPU time = 0h 0m 13s, Elapsed time = 0h 0m 13s
+    Total Routing: CPU time = 0h 0m 12s, Elapsed time = 0h 0m 12s
  Generate output files:
-    CPU time = 0h 0m 4s, Elapsed time = 0h 0m 4s
+    CPU time = 0h 0m 5s, Elapsed time = 0h 0m 5s
 
- Total Time and Memory Usage: CPU time = 0h 0m 34s, Elapsed time = 0h 0m 34s, Peak memory usage = 506MB
+ Total Time and Memory Usage: CPU time = 0h 0m 42s, Elapsed time = 0h 0m 42s, Peak memory usage = 535MB
 
 
 3. Resource Usage Summary
@@ -40,18 +40,18 @@
   --------------------------------------------------------------------------------
   Resources                   | Usage                               | Utilization
   --------------------------------------------------------------------------------
-  Logic                       | 6882/20736                          |  34%
-    --LUT,ALU,ROM16           | 6750(5913 LUT, 837 ALU, 0 ROM16)    | -
+  Logic                       | 6838/20736                          |  33%
+    --LUT,ALU,ROM16           | 6706(5869 LUT, 837 ALU, 0 ROM16)    | -
     --SSRAM(RAM16)            | 22                                  | -
-  Register                    | 3947/15915                          |  25%
+  Register                    | 3948/15915                          |  25%
     --Logic Register as Latch | 0/15552                             |  0%
     --Logic Register as FF    | 3878/15552                          |  25%
     --I/O Register as Latch   | 0/363                               |  0%
-    --I/O Register as FF      | 69/363                              |  19%
-  CLS                         | 5442/10368                          |  53%
+    --I/O Register as FF      | 70/363                              |  20%
+  CLS                         | 5374/10368                          |  52%
   I/O Port                    | 39/66                               |  60%
-  I/O Buf                     | 31                                  | -
-    --Input Buf               | 14                                  | -
+  I/O Buf                     | 32                                  | -
+    --Input Buf               | 15                                  | -
     --Output Buf              | 9                                   | -
     --Inout Buf               | 8                                   | -
   IOLOGIC                     | 8/121                               | 7%
@@ -103,7 +103,7 @@
   Signal         | Global Clock   | Location
   -------------------------------------------
   clk14m_d       | PRIMARY        |  BR BL
-  O_sdram_clk_d  | PRIMARY        |  TR TL
+  O_sdram_clk_d  | PRIMARY        |  TR TL BR BL
   clk42m         | PRIMARY        |  BR BL
   n36_6          | LW             |  -
   u_v9958/reg_sprite_mode3| LW             |  -

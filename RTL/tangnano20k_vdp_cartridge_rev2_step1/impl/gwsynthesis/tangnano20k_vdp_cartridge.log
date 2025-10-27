@@ -10,10 +10,10 @@ Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_vdp_ca
 Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_vdp_cartridge_rev2_step1\src\sdram\ip_sdram_tangnano20k_c.v'
 Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_vdp_cartridge_rev2_step1\src\tangnano20k_vdp_cartridge.v'
 Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_vdp_cartridge_rev2_step1\src\th9958\vdp.v'
-WARN  (EX2830) : Data object 'w_pre_vram_refresh' is already declared("D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_vdp_cartridge_rev2_step1\src\th9958\vdp.v":171)
-Previous declaration of 'w_pre_vram_refresh' is from here("D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_vdp_cartridge_rev2_step1\src\th9958\vdp.v":117)
-WARN  (EX3671) : Second declaration of 'w_pre_vram_refresh' is ignored("D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_vdp_cartridge_rev2_step1\src\th9958\vdp.v":171)
-Undeclared symbol 'w_vram_interleave', assumed default net type 'wire'("D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_vdp_cartridge_rev2_step1\src\th9958\vdp.v":335)
+WARN  (EX2830) : Data object 'w_pre_vram_refresh' is already declared("D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_vdp_cartridge_rev2_step1\src\th9958\vdp.v":174)
+Previous declaration of 'w_pre_vram_refresh' is from here("D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_vdp_cartridge_rev2_step1\src\th9958\vdp.v":120)
+WARN  (EX3671) : Second declaration of 'w_pre_vram_refresh' is ignored("D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_vdp_cartridge_rev2_step1\src\th9958\vdp.v":174)
+Undeclared symbol 'w_vram_interleave', assumed default net type 'wire'("D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_vdp_cartridge_rev2_step1\src\th9958\vdp.v":339)
 Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_vdp_cartridge_rev2_step1\src\th9958\vdp_color_palette.v'
 Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_vdp_cartridge_rev2_step1\src\th9958\vdp_color_palette_ram.v'
 Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_vdp_cartridge_rev2_step1\src\th9958\vdp_command.v'
@@ -37,7 +37,6 @@ Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_vdp_ca
 Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_vdp_cartridge_rev2_step1\src\th9958\vdp_video_ram_line_buffer.v'
 Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_vdp_cartridge_rev2_step1\src\th9958\vdp_vram_interface.v'
 Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_vdp_cartridge_rev2_step1\src\ws2812_led\ip_ws2812_led.v'
-WARN  (EX3073) : Port 'busdir' remains unconnected for this instance("D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_vdp_cartridge_rev2_step1\src\tangnano20k_vdp_cartridge.v":176)
 Compiling module 'tangnano20k_vdp_cartridge'("D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_vdp_cartridge_rev2_step1\src\tangnano20k_vdp_cartridge.v":24)
 Compiling module 'Gowin_rPLL'("D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_vdp_cartridge_rev2_step1\src\gowin_rpll\gowin_rpll.v":10)
 Compiling module 'Gowin_rPLL2'("D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_vdp_cartridge_rev2_step1\src\gowin_rpll2\gowin_rpll2.v":10)
@@ -78,7 +77,6 @@ Compiling module 'ip_debugger'("D:\github\HRA_product\TangCartMSX\RTL\tangnano20
 NOTE  (EX0101) : Current top module is "tangnano20k_vdp_cartridge"
 [5%] Running netlist conversion ...
 WARN  (CV0016) : Input clk is unused("D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_vdp_cartridge_rev2_step1\src\tangnano20k_vdp_cartridge.v":25)
-WARN  (CV0018) : Input dipsw[1] is unused("D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_vdp_cartridge_rev2_step1\src\tangnano20k_vdp_cartridge.v":37)
 WARN  (CV0016) : Input button is unused("D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_vdp_cartridge_rev2_step1\src\tangnano20k_vdp_cartridge.v":39)
 Running device independent optimization ...
 [10%] Optimizing Phase 0 completed
