@@ -296,8 +296,8 @@ module vdp_command (
 	end
 
 	assign w_effective_mode		= reg_command_enable || ff_fg4 || (ff_screen_mode[c_g4] || ff_screen_mode[c_g5] || ff_screen_mode[c_g6] || ff_screen_mode[c_g7]);
-	assign w_bpp				= (ff_screen_mode[c_g7]) ? c_bpp_8bit:
-	            				  (ff_screen_mode[c_g5]) ? c_bpp_2bit: c_bpp_4bit;
+	assign w_bpp				= (ff_screen_mode[c_g6] || ff_screen_mode[c_g4]) ? c_bpp_4bit:
+	            				  (ff_screen_mode[c_g5]) ? c_bpp_2bit: c_bpp_8bit;
 	assign w_next				= (ff_screen_mode[c_g7] || ff_command[3:2] != 2'b11) ? 10'd1:
 	             				  (ff_screen_mode[c_g5]) ? 10'd4: 10'd2;
 	assign w_512pixel			= (ff_screen_mode[c_g5] || ff_screen_mode[c_g6]);
@@ -407,7 +407,7 @@ module vdp_command (
 					ff_sx <= { 3'd0, reg_dx, 8'd0 };
 				end
 				else begin
-					ff_sx <= { reg_sx, 8'd0 };
+					ff_sx	<= { reg_sx, 8'd0 };
 				end
 			end
 			else begin
@@ -505,7 +505,7 @@ module vdp_command (
 			ff_dx <= 9'd0;
 		end
 		else if( ff_start ) begin
-			ff_dx <= reg_dx;
+			ff_dx	<= reg_dx;
 		end
 		else if( !ff_command_execute || ff_cache_vram_valid ) begin
 			//	hold
@@ -533,7 +533,7 @@ module vdp_command (
 			end
 			else begin
 				if( w_nx_end || w_sx_overflow || w_dx_overflow ) begin
-					ff_dx <= reg_dx;
+					ff_dx	<= reg_dx;
 				end
 				else begin
 					ff_dx <= w_next_dx[8:0];
@@ -1225,7 +1225,10 @@ module vdp_command (
 					ff_state				<= c_state_pre_finish;
 				end
 				else if( reg_command_high_speed_mode ) begin
-					ff_state				<= c_state_line;
+					//	SX, DX のカウントアップが終わるまでの 1clk を待機する
+					ff_wait_counter			<= 8'd1;
+					ff_next_state			<= c_state_line;
+					ff_state				<= c_state_wait_counter;
 				end
 				else begin
 					ff_wait_counter			<= { c_wait_line, 2'b11 };
@@ -1256,7 +1259,10 @@ module vdp_command (
 					ff_state				<= c_state_pre_finish;
 				end
 				else if( reg_command_high_speed_mode ) begin
-					ff_state				<= c_state_lmmv;
+					//	SX, DX のカウントアップが終わるまでの 1clk を待機する
+					ff_wait_counter			<= 8'd1;
+					ff_next_state			<= c_state_lmmv;
+					ff_state				<= c_state_wait_counter;
 				end
 				else begin
 					ff_wait_counter			<= { c_wait_lmmv, 2'b11 };
@@ -1300,7 +1306,10 @@ module vdp_command (
 					ff_state				<= c_state_pre_finish;
 				end
 				else if( reg_command_high_speed_mode ) begin
-					ff_state				<= c_state_lmmm;
+					//	SX, DX のカウントアップが終わるまでの 1clk を待機する
+					ff_wait_counter			<= 8'd1;
+					ff_next_state			<= c_state_lmmm;
+					ff_state				<= c_state_wait_counter;
 				end
 				else begin
 					ff_wait_counter			<= { c_wait_lmmm, 2'b11 };
@@ -1395,18 +1404,21 @@ module vdp_command (
 				ff_cache_vram_valid		<= 1'b1;
 				ff_cache_vram_write		<= 1'b1;
 				ff_cache_vram_wdata		<= ff_color;
+				ff_count_valid			<= 1'b1;
 				if( (w_nx_end || w_sx_overflow || w_dx_overflow) && w_ny_end ) begin
 					ff_state				<= c_state_pre_finish;
 				end
 				else if( reg_command_high_speed_mode ) begin
-					ff_state				<= c_state_hmmv;
+					//	SX, DX のカウントアップが終わるまでの 1clk を待機する
+					ff_wait_counter			<= 8'd1;
+					ff_next_state			<= c_state_hmmv;
+					ff_state				<= c_state_wait_counter;
 				end
 				else begin
 					ff_wait_counter			<= { c_wait_hmmv, 2'b11 };
 					ff_next_state			<= c_state_hmmv;
 					ff_state				<= c_state_wait_counter;
 				end
-				ff_count_valid			<= 1'b1;
 			end
 
 			//	HMMM command --------------------------------------------------
@@ -1418,7 +1430,6 @@ module vdp_command (
 				ff_state				<= c_state_wait_rdata_en;
 				ff_next_state			<= c_state_hmmm_make;
 				ff_wait_count			<= c_wait_hmmm;
-				ff_count_valid			<= 1'b0;
 			end
 			c_state_hmmm_make: begin
 				//	Write the location of (DX, DY)
@@ -1431,7 +1442,10 @@ module vdp_command (
 					ff_state				<= c_state_pre_finish;
 				end
 				else if( reg_command_high_speed_mode ) begin
-					ff_state				<= c_state_hmmm;
+					//	SX, DX のカウントアップが終わるまでの 1clk を待機する
+					ff_wait_counter			<= 8'd1;
+					ff_next_state			<= c_state_hmmm;
+					ff_state				<= c_state_wait_counter;
 				end
 				else begin
 					ff_wait_counter			<= { c_wait_hmmm, 2'b11 };
@@ -1462,7 +1476,10 @@ module vdp_command (
 					ff_state				<= c_state_pre_finish;
 				end
 				else if( reg_command_high_speed_mode ) begin
-					ff_state				<= c_state_ymmm;
+					//	SX, DX のカウントアップが終わるまでの 1clk を待機する
+					ff_wait_counter			<= 8'd1;
+					ff_next_state			<= c_state_ymmm;
+					ff_state				<= c_state_wait_counter;
 				end
 				else begin
 					ff_wait_counter			<= { c_wait_ymmm, 2'b11 };

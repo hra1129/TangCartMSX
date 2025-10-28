@@ -10,10 +10,7 @@ Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_vdp_ca
 Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_vdp_cartridge_rev2_step1\src\sdram\ip_sdram_tangnano20k_c.v'
 Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_vdp_cartridge_rev2_step1\src\tangnano20k_vdp_cartridge.v'
 Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_vdp_cartridge_rev2_step1\src\th9958\vdp.v'
-WARN  (EX2830) : Data object 'w_pre_vram_refresh' is already declared("D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_vdp_cartridge_rev2_step1\src\th9958\vdp.v":174)
-Previous declaration of 'w_pre_vram_refresh' is from here("D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_vdp_cartridge_rev2_step1\src\th9958\vdp.v":120)
-WARN  (EX3671) : Second declaration of 'w_pre_vram_refresh' is ignored("D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_vdp_cartridge_rev2_step1\src\th9958\vdp.v":174)
-Undeclared symbol 'w_vram_interleave', assumed default net type 'wire'("D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_vdp_cartridge_rev2_step1\src\th9958\vdp.v":339)
+Undeclared symbol 'w_vram_interleave', assumed default net type 'wire'("D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_vdp_cartridge_rev2_step1\src\th9958\vdp.v":338)
 Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_vdp_cartridge_rev2_step1\src\th9958\vdp_color_palette.v'
 Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_vdp_cartridge_rev2_step1\src\th9958\vdp_color_palette_ram.v'
 Analyzing Verilog file 'D:\github\HRA_product\TangCartMSX\RTL\tangnano20k_vdp_cartridge_rev2_step1\src\th9958\vdp_command.v'

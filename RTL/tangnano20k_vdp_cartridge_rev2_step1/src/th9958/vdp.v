@@ -171,7 +171,6 @@ module vdp (
 	wire				w_clear_border_detect;
 	wire				w_read_color;
 	wire				w_vram_access_mask;
-    wire                w_pre_vram_refresh;
 
 	wire				w_status_command_execute;
 	wire				w_status_field;

@@ -6,6 +6,7 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include "v9968_common.h"
 
 static const unsigned char vdp_port0 = 0x98;	//	TMS9918/V9938/V9958/V9968/V9978
 static const unsigned char vdp_port1 = 0x99;	//	TMS9918/V9938/V9958/V9968/V9978
@@ -209,6 +210,7 @@ void v9968_exit( void ) {
 	v9968_write_vdp(  7, 0x07 );
 	v9968_write_vdp(  8, 0x08 );
 	v9968_write_vdp(  9, 0x00 );
+	v9968_write_vdp( 14, 0x00 );
 	v9968_write_vdp( 20, 0x00 );
 	v9968_write_vdp( 21, 0x00 );
 	v9968_write_vdp( 23, 0x00 );
@@ -216,6 +218,8 @@ void v9968_exit( void ) {
 	v9968_write_vdp( 26, 0x00 );
 	v9968_write_vdp( 27, 0x00 );
 	v9968_write_vdp( 45, 0x00 );
+	v9968_color_new();
+
 	#asm
 		ld		iy, [0xFCC1 - 1]
 		ld		ix, 0x0156				//	kilbuf
@@ -355,5 +359,38 @@ void v9968_color_restore( unsigned short palette_address ) {
 	v9968_set_read_vram_address( palette_address, 0 );
 	for( i = 0; i < 32; i++ ) {
 		outp( vdp_port2, inp( vdp_port0 ) );
+	}
+}
+
+// --------------------------------------------------------------------
+//	v9968_color_new()
+//	input:
+//		none
+//	result:
+//		none
+// --------------------------------------------------------------------
+void v9968_color_new( void ) {
+	int i;
+	static const unsigned char init_palette[] = {
+		0x00, 0x00,
+		0x00, 0x00,
+		0x11, 0x06,
+		0x33, 0x07,
+		0x17, 0x01,
+		0x27, 0x03,
+		0x51, 0x01,
+		0x27, 0x06,
+		0x71, 0x01,
+		0x73, 0x03,
+		0x61, 0x06,
+		0x64, 0x06,
+		0x11, 0x04,
+		0x65, 0x02, 
+		0x55, 0x05,
+		0x77, 0x07,
+	};
+	v9968_write_vdp( 16, 0 );
+	for( i = 0; i < sizeof(init_palette); i++ ) {
+		outp( vdp_port2, init_palette[i] );
 	}
 }
