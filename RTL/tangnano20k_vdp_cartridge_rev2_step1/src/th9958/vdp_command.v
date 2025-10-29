@@ -1378,7 +1378,10 @@ module vdp_command (
 				ff_cache_vram_write		<= 1'b1;
 				ff_cache_vram_wdata		<= w_destination;
 				ff_count_valid			<= 1'b1;
-				if( reg_command_high_speed_mode ) begin
+				if( (w_nx_end || w_dx_overflow) && w_ny_end ) begin
+					ff_state				<= c_state_pre_finish;
+				end
+				else if( reg_command_high_speed_mode ) begin
 					ff_state				<= c_state_lmmc_next;
 				end
 				else begin
@@ -1389,12 +1392,7 @@ module vdp_command (
 			end
 			c_state_lmmc_next: begin
 				ff_count_valid			<= 1'b0;
-				if( (w_nx_end || w_dx_overflow) && w_ny_end ) begin
-					ff_state				<= c_state_pre_finish;
-				end
-				else begin
-					ff_state				<= c_state_lmmc;
-				end
+				ff_state				<= c_state_lmmc;
 			end
 
 			//	HMMV command --------------------------------------------------
@@ -1500,7 +1498,10 @@ module vdp_command (
 					ff_cache_vram_write		<= 1'b1;
 					ff_cache_vram_wdata		<= ff_color;
 					ff_count_valid			<= 1'b1;
-					if( reg_command_high_speed_mode ) begin
+					if( (w_nx_end || w_dx_overflow) && w_ny_end ) begin
+						ff_state				<= c_state_pre_finish;
+					end
+					else if( reg_command_high_speed_mode ) begin
 						ff_state				<= c_state_hmmc_next;
 					end
 					else begin
@@ -1512,12 +1513,7 @@ module vdp_command (
 			end
 			c_state_hmmc_next: begin
 				ff_count_valid			<= 1'b0;
-				if( (w_nx_end || w_dx_overflow) && w_ny_end ) begin
-					ff_state				<= c_state_pre_finish;
-				end
-				else begin
-					ff_state				<= c_state_hmmc;
-				end
+				ff_state				<= c_state_hmmc;
 			end
 
 			//	LRMM command --------------------------------------------------
