@@ -109,6 +109,7 @@ module vdp (
 	wire				w_intr_line;
 	wire				w_intr_frame;
 	wire				w_intr_command_end;
+	wire				w_clear_line_interrupt;
 
 	wire		[7:0]	w_upscan_r;
 	wire		[7:0]	w_upscan_g;
@@ -246,6 +247,7 @@ module vdp (
 		.intr_line									( w_intr_line								),
 		.intr_frame									( w_intr_frame								),
 		.intr_command_end							( w_intr_command_end						),
+		.clear_line_interrupt						( w_clear_line_interrupt					),
 		.palette_valid								( w_palette_valid							),
 		.palette_num								( w_palette_num								),
 		.palette_r									( w_palette_r								),
@@ -334,6 +336,7 @@ module vdp (
 		.pixel_phase_x								( w_pixel_phase_x							),
 		.intr_line									( w_intr_line								),
 		.intr_frame									( w_intr_frame								),
+		.clear_line_interrupt						( w_clear_line_interrupt					),
 		.pre_vram_refresh							( w_pre_vram_refresh						),
 		.vram_interleave							( w_vram_interleave							),
 		.status_field								( w_status_field							),

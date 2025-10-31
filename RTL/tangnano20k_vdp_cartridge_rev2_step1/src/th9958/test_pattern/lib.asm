@@ -542,7 +542,7 @@ set_pattern_generator_table::
 ;	break:
 ;		all
 ;	comment:
-;		MAIN-ROM にある ROMフォントを C000h にコピーする
+;		MAIN-ROM にある ROMフォントを font_data にコピーする
 ; =============================================================================
 			scope	copy_rom_font
 copy_rom_font::

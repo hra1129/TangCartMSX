@@ -1078,7 +1078,7 @@ module tb ();
 		end
 
 		wait_vdp_command();
-		repeat( 100 ) @( posedge clk14m );
+		repeat( 1368 * 4 * 300 ) @( posedge clk14m );
 
 		$display( "[test---] All tests completed" );
 		repeat( 100 ) @( posedge clk14m );

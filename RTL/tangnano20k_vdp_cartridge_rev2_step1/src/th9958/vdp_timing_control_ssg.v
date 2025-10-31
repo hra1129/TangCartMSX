@@ -70,6 +70,7 @@ module vdp_timing_control_ssg (
 
 	output				intr_line,				//	pulse
 	output				intr_frame,				//	pulse
+	output				clear_line_interrupt,	//	pulse
 	output				pre_vram_refresh,
 
 	input				reg_50hz_mode,
@@ -92,13 +93,15 @@ module vdp_timing_control_ssg (
 	output				status_hsync,
 	output				status_vsync
 );
-	localparam			c_left_pos			= 14'd640;		//	16の倍数
+	localparam			c_left_pos			= 13'd640;		//	16の倍数
+	localparam			c_hsync_start		= 13'd4864;
+	localparam			c_hsync_end			= 13'd540;
 	localparam			c_top_pos192		= 10'd35;		//	画面上の垂直位置(192 lines mode)。小さくすると上へ、大きくすると下へ寄る。
 	localparam			c_top_pos212		= 10'd25;		//	画面上の垂直位置(212 lines mode)。小さくすると上へ、大きくすると下へ寄る。
 	localparam			c_h_count_max		= 12'd2735;
 	localparam			c_v_count_max_60	= 10'd523;
 	localparam			c_v_count_max_50	= 10'd625;
-	localparam			c_intr_line_timing	= 12'd200;
+	localparam			c_intr_line_timing	= 13'd4864;
 	localparam			c_intr_frame_timing	= 10'd212;
 	reg			[11:0]	ff_h_count;
 	reg			[12:0]	ff_half_count;
@@ -116,7 +119,6 @@ module vdp_timing_control_ssg (
 	reg			[ 8:0]	ff_pixel_pos_x;
 	reg			[ 7:0]	ff_pixel_pos_y;
 	wire		[ 7:0]	w_intr_line_y;
-	reg					ff_h_active;
 	reg					ff_v_active;
 	wire				w_intr_line_timing;
 	wire				w_intr_frame_timing;
@@ -133,6 +135,7 @@ module vdp_timing_control_ssg (
 	wire				w_half_line_shift;
 	reg					ff_hsync;
 	reg					ff_vsync;
+	reg					ff_clear_line_interrupt;
 
 	assign w_half_line_shift	= ff_field & (reg_interlace_mode | reg_flat_interlace_mode);
 
@@ -186,35 +189,11 @@ module vdp_timing_control_ssg (
 		if( !reset_n ) begin
 			ff_hsync <= 1'b1;
 		end
-		else if( ff_half_count == 13'd5080 ) begin
+		else if( ff_half_count == (c_hsync_end - 13'd1) ) begin
 			ff_hsync <= 1'b0;
 		end
-		else if( ff_half_count == 13'd8 ) begin
+		else if( ff_half_count == (c_hsync_start - 13'd1) ) begin
 			ff_hsync <= 1'b1;
-		end
-	end
-
-	always @( posedge clk or negedge reset_n ) begin
-		if( !reset_n ) begin
-			ff_vsync <= 1'b1;
-		end
-		else if( ff_half_count == 13'd640 ) begin
-			if( reg_50hz_mode ) begin
-				if( ff_v_count[9:1] == 9'd309 ) begin
-					ff_vsync <= 1'b0;
-				end
-				else if( ff_v_count[9:1] == 9'd312 ) begin
-					ff_vsync <= 1'b1;
-				end
-			end
-			else begin
-				if( ff_v_count[9:1] == 9'd258 ) begin
-					ff_vsync <= 1'b0;
-				end
-				else if( ff_v_count[9:1] == 9'd261 ) begin
-					ff_vsync <= 1'b1;
-				end
-			end
 		end
 	end
 
@@ -252,6 +231,12 @@ module vdp_timing_control_ssg (
 	assign w_v_count_end	= ( !reg_50hz_mode && ff_v_count == c_v_count_max_60 ) ||
 							  (  reg_50hz_mode && ff_v_count == c_v_count_max_50 );
 
+	always @( posedge clk ) begin
+		ff_clear_line_interrupt <= w_v_count_end & w_h_count_end;
+	end
+
+	assign clear_line_interrupt	= ff_clear_line_interrupt;
+
 	// --------------------------------------------------------------------
 	//	Field selector
 	// --------------------------------------------------------------------
@@ -269,31 +254,21 @@ module vdp_timing_control_ssg (
 	// --------------------------------------------------------------------
 	always @( posedge clk or negedge reset_n ) begin
 		if( !reset_n ) begin
-			ff_h_active <= 1'b0;
-		end
-		else begin
-			if( ff_half_count == (c_left_pos - 14'd1) ) begin
-				ff_h_active <= 1'b1;
-			end
-			else if( ff_half_count == (c_left_pos + 14'd2047) ) begin
-				ff_h_active <= 1'b0;
-			end
-		end
-	end
-
-	always @( posedge clk or negedge reset_n ) begin
-		if( !reset_n ) begin
 			ff_v_active <= 1'b0;
+			ff_vsync <= 1'b1;
 		end
 		else if( w_h_count_end ) begin
 			if( ff_v_count[0] == 1'b1 && w_screen_pos_y == 10'h3FF ) begin
 				ff_v_active <= 1'b1;
+				ff_vsync <= 1'b0;
 			end
 			else if( ff_v_count[0] == 1'b1 && (w_screen_pos_y == w_v_count_end_line) ) begin
 				ff_v_active <= 1'b0;
+				ff_vsync <= 1'b1;
 			end
 			else if( w_v_count_end ) begin
 				ff_v_active <= 1'b0;
+				ff_vsync <= 1'b1;
 			end
 		end
 	end

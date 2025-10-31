@@ -86,6 +86,7 @@ module vdp_cpu_interface (
 	input				intr_line,					//	pulse
 	input				intr_frame,					//	pulse
 	input				intr_command_end,			//	pulse
+	input				clear_line_interrupt,		//	pulse
 
 	output				clear_sprite_collision,		//	pulse
 	input				sprite_collision,
@@ -805,15 +806,12 @@ module vdp_cpu_interface (
 			end
 		end
 		else begin
-			if( ff_frame_interrupt_enable == 1'b0 ) begin
-				ff_frame_interrupt <= 1'b0;
-			end
-			else if( intr_frame ) begin
+			if( intr_frame ) begin
 				//	Happend line interrupt
 				ff_frame_interrupt <= 1'b1;
 			end
 
-			if( ff_line_interrupt_enable == 1'b0 ) begin
+			if( clear_line_interrupt ) begin
 				ff_line_interrupt <= 1'b0;
 			end
 			else if( intr_line ) begin
@@ -821,17 +819,17 @@ module vdp_cpu_interface (
 				ff_line_interrupt <= 1'b1;
 			end
 
-			if( ff_command_end_interrupt_enable == 1'b0 ) begin
-				ff_command_end_interrupt <= 1'b0;
-			end
-			else if( intr_command_end ) begin
+			if( intr_command_end ) begin
 				//	Happend line interrupt
 				ff_command_end_interrupt <= 1'b1;
 			end
 		end
 	end
 
-	assign int_n = ~(ff_line_interrupt | ff_frame_interrupt | ff_command_end_interrupt);
+	assign int_n = ~(
+			(ff_line_interrupt        & ff_line_interrupt_enable       ) | 
+			(ff_frame_interrupt       & ff_frame_interrupt_enable      ) |
+			(ff_command_end_interrupt & ff_command_end_interrupt_enable) );
 
 	always @( posedge clk ) begin
 		ff_force_highspeed <= force_highspeed;
