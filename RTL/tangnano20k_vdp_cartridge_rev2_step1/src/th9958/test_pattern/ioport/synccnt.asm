@@ -534,15 +534,6 @@ interrupt_timing5::
 
 			out		[c], e
 			out		[c], d					; R#7 = 7 (êÖêFÇ…Ç∑ÇÈ)
-
-			ld		iy, [0xFCC1 - 1]
-			ld		ix, 0x00D8				; GTTRIG
-			xor		a, a
-			call	0x001C					; CALSLT
-			or		a, a
-			jp		nz, exit
-
-			di
 			jp		main_loop
 
 	exit:
