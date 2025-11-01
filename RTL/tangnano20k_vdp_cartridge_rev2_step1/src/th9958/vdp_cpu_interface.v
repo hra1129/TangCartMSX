@@ -814,6 +814,9 @@ module vdp_cpu_interface (
 			if( clear_line_interrupt ) begin
 				ff_line_interrupt <= 1'b0;
 			end
+			else if( ff_register_write && (ff_register_num == 6'd0 || ff_register_num == 6'd19) ) begin
+				ff_line_interrupt <= 1'b0;
+			end
 			else if( intr_line ) begin
 				//	Happend line interrupt
 				ff_line_interrupt <= 1'b1;

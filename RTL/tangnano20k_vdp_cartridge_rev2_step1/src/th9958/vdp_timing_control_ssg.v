@@ -93,16 +93,17 @@ module vdp_timing_control_ssg (
 	output				status_hsync,
 	output				status_vsync
 );
-	localparam			c_left_pos			= 13'd640;		//	16の倍数
-	localparam			c_hsync_start		= 13'd4864;
-	localparam			c_hsync_end			= 13'd540;
-	localparam			c_top_pos192		= 10'd35;		//	画面上の垂直位置(192 lines mode)。小さくすると上へ、大きくすると下へ寄る。
-	localparam			c_top_pos212		= 10'd25;		//	画面上の垂直位置(212 lines mode)。小さくすると上へ、大きくすると下へ寄る。
-	localparam			c_h_count_max		= 12'd2735;
-	localparam			c_v_count_max_60	= 10'd523;
-	localparam			c_v_count_max_50	= 10'd625;
-	localparam			c_intr_line_timing	= 13'd4864;
-	localparam			c_intr_frame_timing	= 10'd212;
+	localparam			c_left_pos				= 13'd640;		//	16の倍数
+	localparam			c_hsync_start			= 13'd4864;
+	localparam			c_hsync_end				= 13'd540;
+	localparam			c_top_pos192			= 10'd35;		//	画面上の垂直位置(192 lines mode)。小さくすると上へ、大きくすると下へ寄る。
+	localparam			c_top_pos212			= 10'd25;		//	画面上の垂直位置(212 lines mode)。小さくすると上へ、大きくすると下へ寄る。
+	localparam			c_h_count_max			= 12'd2735;
+	localparam			c_v_count_max_60		= 10'd523;
+	localparam			c_v_count_max_50		= 10'd625;
+	localparam			c_intr_line_timing		= 13'd4864;
+	localparam			c_intr_frame_timing192	= 10'd191;
+	localparam			c_intr_frame_timing212	= 10'd211;
 	reg			[11:0]	ff_h_count;
 	reg			[12:0]	ff_half_count;
 	reg			[ 9:0]	ff_v_count;
@@ -255,25 +256,38 @@ module vdp_timing_control_ssg (
 	always @( posedge clk or negedge reset_n ) begin
 		if( !reset_n ) begin
 			ff_v_active <= 1'b0;
-			ff_vsync <= 1'b1;
 		end
 		else if( w_h_count_end ) begin
 			if( ff_v_count[0] == 1'b1 && w_screen_pos_y == 10'h3FF ) begin
 				ff_v_active <= 1'b1;
-				ff_vsync <= 1'b0;
 			end
 			else if( ff_v_count[0] == 1'b1 && (w_screen_pos_y == w_v_count_end_line) ) begin
 				ff_v_active <= 1'b0;
-				ff_vsync <= 1'b1;
 			end
 			else if( w_v_count_end ) begin
 				ff_v_active <= 1'b0;
-				ff_vsync <= 1'b1;
 			end
 		end
 	end
 
 	assign w_v_count_end_line	= reg_212lines_mode ? 10'd211: 10'd191;
+
+	always @( posedge clk or negedge reset_n ) begin
+		if( !reset_n ) begin
+			ff_vsync <= 1'b1;
+		end
+		else if( w_h_count_end ) begin
+			if( ff_v_count[0] == 1'b1 && w_screen_pos_y == 10'h3FE ) begin
+				ff_vsync <= 1'b0;
+			end
+			else if( ff_v_count[0] == 1'b1 && ((reg_212lines_mode && (w_screen_pos_y == 10'd211)) || (!reg_212lines_mode && (w_screen_pos_y == 10'd191))) ) begin
+				ff_vsync <= 1'b1;
+			end
+			else if( w_v_count_end ) begin
+				ff_vsync <= 1'b1;
+			end
+		end
+	end
 
 	always @( posedge clk or negedge reset_n ) begin
 		if( !reset_n ) begin
@@ -372,7 +386,7 @@ module vdp_timing_control_ssg (
 	//	Interrupt
 	// --------------------------------------------------------------------
 	assign w_intr_line_timing	= (ff_half_count  == c_intr_line_timing ) ? 1'b1: 1'b0;
-	assign w_intr_frame_timing	= (w_screen_pos_y == c_intr_frame_timing) ? 1'b1: 1'b0;
+	assign w_intr_frame_timing	= (reg_212lines_mode && w_screen_pos_y == c_intr_frame_timing212) || (!reg_212lines_mode && w_screen_pos_y == c_intr_frame_timing192) ? 1'b1: 1'b0;
 
 	// --------------------------------------------------------------------
 	//	Output assignment

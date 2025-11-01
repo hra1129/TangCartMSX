@@ -19,4 +19,11 @@ move zma.log palette.log
 	exit
 )
 
+..\zma synccnt.asm SYNCCNT.COM
+move zma.log synccnt.log
+@if errorlevel 1 (
+	pause "エラーが発生しました。停止します。"
+	exit
+)
+
 pause
