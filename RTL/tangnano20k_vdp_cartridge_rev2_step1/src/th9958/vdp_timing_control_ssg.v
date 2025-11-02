@@ -386,7 +386,8 @@ module vdp_timing_control_ssg (
 	//	Interrupt
 	// --------------------------------------------------------------------
 	assign w_intr_line_timing	= (ff_half_count  == c_intr_line_timing ) ? 1'b1: 1'b0;
-	assign w_intr_frame_timing	= (reg_212lines_mode && w_screen_pos_y == c_intr_frame_timing212) || (!reg_212lines_mode && w_screen_pos_y == c_intr_frame_timing192) ? 1'b1: 1'b0;
+	assign w_intr_frame_timing	= ((ff_half_count  == c_left_pos) && 
+			((reg_212lines_mode && w_screen_pos_y == c_intr_frame_timing212) || (!reg_212lines_mode && w_screen_pos_y == c_intr_frame_timing192))) ? 1'b1: 1'b0;
 
 	// --------------------------------------------------------------------
 	//	Output assignment
@@ -405,7 +406,7 @@ module vdp_timing_control_ssg (
 	assign pixel_pos_x			= ff_pixel_pos_x[8:0];
 	assign pixel_pos_y			= ff_pixel_pos_y;
 	assign intr_line			= ( (w_intr_line_y == { 2'd0, reg_interrupt_line }) && ff_line_interrupt_mask ) ? w_intr_line_timing: 1'b0;
-	assign intr_frame			= w_intr_frame_timing & w_intr_line_timing;
+	assign intr_frame			= w_intr_frame_timing;
 	assign screen_v_active		= ff_v_active;
 	assign dot_phase			= ff_half_count[0];
 	assign interleaving_page	= reg_interleaving_mode ? (ff_interleaving_page & ff_field): 1'b1;

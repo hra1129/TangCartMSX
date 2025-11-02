@@ -248,6 +248,9 @@ module vdp_cpu_interface (
 	reg					ff_line_interrupt = 1'b0;
 	reg					ff_frame_interrupt = 1'b0;
 	reg					ff_command_end_interrupt = 1'b0;
+	wire				w_line_interrupt;
+	wire				w_frame_interrupt;
+	wire				w_command_end_interrupt;
 
 	assign pulse0		= 1'b0;										// red
 	assign pulse1		= ff_vram_valid;							// green
@@ -811,7 +814,7 @@ module vdp_cpu_interface (
 				ff_frame_interrupt <= 1'b1;
 			end
 
-			if( clear_line_interrupt ) begin
+			if( clear_line_interrupt || intr_frame ) begin
 				ff_line_interrupt <= 1'b0;
 			end
 			else if( ff_register_write && (ff_register_num == 6'd0 || ff_register_num == 6'd19) ) begin
@@ -829,10 +832,10 @@ module vdp_cpu_interface (
 		end
 	end
 
-	assign int_n = ~(
-			(ff_line_interrupt        & ff_line_interrupt_enable       ) | 
-			(ff_frame_interrupt       & ff_frame_interrupt_enable      ) |
-			(ff_command_end_interrupt & ff_command_end_interrupt_enable) );
+	assign w_line_interrupt			= ff_line_interrupt			& ff_line_interrupt_enable;
+	assign w_frame_interrupt		= ff_frame_interrupt		& ff_frame_interrupt_enable;
+	assign w_command_end_interrupt	= ff_command_end_interrupt	& ff_command_end_interrupt_enable;
+	assign int_n = ~(w_line_interrupt | w_frame_interrupt | w_command_end_interrupt);
 
 	always @( posedge clk ) begin
 		ff_force_highspeed <= force_highspeed;
