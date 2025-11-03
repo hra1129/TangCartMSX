@@ -10,9 +10,9 @@ echo ***************************************************************************
 echo  test pattern
 echo ***************************************************************************
 
-rem echo G6FONT
-rem zcc +msx -subtype=msxdos2 -I../v9968lib/ test001_g6font.c v9968_common.o v9968_mode.o v9968_font.o -o G6FONT.COM
-rem 
+echo G6SP1
+zcc +msx -subtype=msxdos2 -I../v9968lib/ test001_sp1.c v9968_common.o v9968_mode.o v9968_font.o -o G6SP1.COM
+
 rem echo G6VSCR
 rem zcc +msx -subtype=msxdos2 -I../v9968lib/ test002_g6vscr.c v9968_common.o v9968_mode.o v9968_font.o -o G6VSCR.COM
 rem 

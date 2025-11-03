@@ -68,6 +68,7 @@ module vdp_timing_control_sprite (
 	output				vram_valid,
 	input		[31:0]	vram_rdata,
 	input		[7:0]	vram_rdata8,
+	input				vram_interleave,
 
 	output		[7:0]	display_color,
 	output		[1:0]	display_color_transparent,
@@ -211,6 +212,7 @@ module vdp_timing_control_sprite (
 		.vram_address								( w_vp_vram_address							),
 		.vram_valid									( w_vp_vram_valid							),
 		.vram_rdata									( vram_rdata								),
+		.vram_interleave							( vram_interleave							),
 		.selected_en								( w_selected_en								),
 		.selected_plane_num							( w_selected_plane_num						),
 		.selected_attribute							( w_selected_attribute						),

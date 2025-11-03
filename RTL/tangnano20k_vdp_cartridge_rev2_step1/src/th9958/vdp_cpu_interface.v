@@ -161,7 +161,8 @@ module vdp_cpu_interface (
 	output				pulse6,
 	output				pulse7
 );
-	localparam	[4:0]	c_vdp_id			= 5'b00011;
+	localparam	[4:0]	c_v9958id			= 5'b00010;
+	localparam	[4:0]	c_v9968id			= 5'b00011;
 	reg					ff_bus_ioreq;
 	reg					ff_bus_write;
 	reg					ff_bus_valid;
@@ -230,6 +231,7 @@ module vdp_cpu_interface (
 	reg					ff_sprite16_mode;
 	reg					ff_flat_interlace_mode;
 	reg					ff_force_highspeed;
+	reg					ff_fakeID;
 
 	reg					ff_2nd_access;
 	reg		[7:0]		ff_1st_byte;
@@ -504,6 +506,7 @@ module vdp_cpu_interface (
 			ff_sprite16_mode <= 1'b0;
 			ff_command_end_interrupt_enable <= 1'b0;
 			ff_flat_interlace_mode <= 1'b0;
+			ff_fakeID <= 1'b1;
 		end
 		else if( ff_register_write ) begin
 			case( ff_register_num )
@@ -607,6 +610,7 @@ module vdp_cpu_interface (
 				end
 			8'd21:	//	R#21 = [CEIE][N/A][N/A][N/A][N/A][N/A][N/A][N/A]
 				begin
+					ff_fakeID <= ff_1st_byte[0];
 					ff_flat_interlace_mode <= ff_1st_byte[6];
 					ff_command_end_interrupt_enable <= ff_1st_byte[7];
 				end
@@ -716,7 +720,7 @@ module vdp_cpu_interface (
 	always @( posedge clk ) begin
 		case( ff_status_register_pointer )
 		4'd0:		ff_status_register <= { ff_frame_interrupt, sprite_overmap, sprite_collision, sprite_overmap_id };
-		4'd1:		ff_status_register <= { 2'd0, c_vdp_id, ff_line_interrupt };
+		4'd1:		ff_status_register <= { 2'd0, ff_fakeID ? c_v9958id: c_v9968id, ff_line_interrupt };
 		4'd2:		ff_status_register <= { status_transfer_ready, status_vsync, status_hsync, status_border_detect, 2'b11, status_field, status_command_execute };
 		4'd3:		ff_status_register <= sprite_collision_x[7:0];
 		4'd4:		ff_status_register <= { 7'b1111111, sprite_collision_x[8] };

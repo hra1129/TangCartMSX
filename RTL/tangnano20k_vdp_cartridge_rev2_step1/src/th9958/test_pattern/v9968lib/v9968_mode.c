@@ -347,7 +347,7 @@ void v9968_set_screen7( void ) {
 	v9968_write_vdp( 8, 0x08 );						//	Mode2
 	v9968_write_vdp( 9, 0x80 );						//	Mode3
 	v9968_write_vdp( 10, 0 );						//	Color Table (H) = 0x02000
-	v9968_write_vdp( 11, 0 );						//	Sprite Attribute Table (H) = 0x1B00
+	v9968_write_vdp( 11, 0x01 );					//	Sprite Attribute Table (H) = 0xFA00
 	v9968_write_vdp( 12, 0 );						//	Text Color/Back Color
 	v9968_write_vdp( 13, 0 );						//	Blink Period
 	v9968_write_vdp( 14, 0 );						//	VRAM Address

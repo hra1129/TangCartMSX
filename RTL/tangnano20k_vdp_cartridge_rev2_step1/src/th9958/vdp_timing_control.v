@@ -241,6 +241,7 @@ module vdp_timing_control (
 		.vram_valid									( sprite_vram_valid							),
 		.vram_rdata									( sprite_vram_rdata							),
 		.vram_rdata8								( sprite_vram_rdata8						),
+		.vram_interleave							( vram_interleave							),
 		.display_color								( sprite_display_color						),
 		.display_color_transparent					( sprite_display_color_transparent			),
 		.display_color_en							( sprite_display_color_en					),
