@@ -163,7 +163,8 @@ module vdp_sprite_select_visible_planes (
 			if( screen_pos_y == 9'h1FF ) begin
 				if( screen_pos_x == 14'h3FFF ) begin
 					if( vram_interleave ) begin
-						ff_current_plane_num_start <= ff_current_plane_num_start + 6'd18;
+						ff_current_plane_num_start[5:1]	<= ff_current_plane_num_start[5:1] + 5'd9;
+						ff_current_plane_num_start[0]	<= 1'b0;
 					end
 					else begin
 						ff_current_plane_num_start <= ff_current_plane_num_start + 6'd17;
@@ -194,7 +195,7 @@ module vdp_sprite_select_visible_planes (
 			else begin
 				ff_plane_count			<= ff_plane_count + 6'd1;
 				if( vram_interleave ) begin
-					ff_current_plane_num	<= ff_current_plane_num + 6'd1;
+					ff_current_plane_num	<= ff_current_plane_num + (reg_sprite_priority_shuffle ? 6'd37: 6'd1 );
 				end
 				else begin
 					ff_current_plane_num	<= ff_current_plane_num + (reg_sprite_priority_shuffle ? 6'd19: 6'd1 );
@@ -205,7 +206,7 @@ module vdp_sprite_select_visible_planes (
 		else if( w_phase == 3'd4 && w_sub_phase == 4'd0 ) begin
 			ff_plane_count			<= ff_plane_count + 6'd1;
 			if( vram_interleave ) begin
-				ff_current_plane_num	<= ff_current_plane_num + (reg_sprite_priority_shuffle ? 6'd37: 6'd1 );
+				ff_current_plane_num	<= ff_current_plane_num + 6'd1;
 			end
 			else begin
 				ff_current_plane_num	<= ff_current_plane_num + (reg_sprite_priority_shuffle ? 6'd19: 6'd1 );

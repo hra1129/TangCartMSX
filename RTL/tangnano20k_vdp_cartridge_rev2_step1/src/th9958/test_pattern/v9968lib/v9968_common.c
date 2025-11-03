@@ -308,10 +308,36 @@ void v9968_wait_key( void ) {
 //		1 .... success
 //		0 .... error
 // --------------------------------------------------------------------
+static void _v9968_bload( FILE *p_file, unsigned short start, unsigned short size ) {
+	unsigned short block, i, ptr;
+
+	ptr = start;
+	while( size ) {
+		if( size > 1024 ) {
+			block = 1024;
+		}
+		else {
+			block = size;
+		}
+		fread( s_buffer, block, 1, p_file );
+		size -= block;
+		v9968_copy_to_vram( ptr, s_buffer, block );
+		ptr += block;
+	}
+}
+
+// --------------------------------------------------------------------
+//	v9968_bload()
+//	input:
+//		s_file_name ... target file name
+//	result:
+//		1 .... success
+//		0 .... error
+// --------------------------------------------------------------------
 char v9968_bload( const char *s_file_name ) {
 	FILE *p_file;
 	BSAVE_HEADER_T *p_header;
-	unsigned short size, block, i, ptr;
+	unsigned short size;
 
 	p_header = (BSAVE_HEADER_T*) s_buffer;
 
@@ -325,22 +351,39 @@ char v9968_bload( const char *s_file_name ) {
 		fclose( p_file );
 		return 0;
 	}
-
-	v9968_set_write_vram_address( p_header->start, 0 );
 	size = p_header->end - p_header->start + 1;
-	ptr = p_header->start;
-	while( size ) {
-		if( size > 1024 ) {
-			block = 1024;
-		}
-		else {
-			block = size;
-		}
-		fread( s_buffer, block, 1, p_file );
-		size -= block;
-		v9968_copy_to_vram( ptr, s_buffer, block );
-		ptr += block;
+	_v9968_bload( p_file, p_header->start, size );
+	fclose( p_file );
+	return 1;
+}
+
+// --------------------------------------------------------------------
+//	v9968_bload()
+//	input:
+//		s_file_name ... target file name
+//	result:
+//		1 .... success
+//		0 .... error
+// --------------------------------------------------------------------
+char v9968_bload_to( const char *s_file_name, unsigned short start ) {
+	FILE *p_file;
+	BSAVE_HEADER_T *p_header;
+	unsigned short size;
+
+	p_header = (BSAVE_HEADER_T*) s_buffer;
+
+	p_file = fopen( s_file_name, "rb" );
+	if( p_file == NULL ) {
+		return 0;
 	}
+	p_header->signature = 0;
+	fread( p_header, 7, 1, p_file );
+	if( p_header->signature != 0xFE ) {
+		fclose( p_file );
+		return 0;
+	}
+	size = p_header->end - p_header->start + 1;
+	_v9968_bload( p_file, start, size );
 	fclose( p_file );
 	return 1;
 }

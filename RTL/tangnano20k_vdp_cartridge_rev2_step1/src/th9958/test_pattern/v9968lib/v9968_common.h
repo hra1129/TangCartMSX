@@ -24,6 +24,7 @@ void v9968_wait_vsync( void );
 int v9968_get_key( void );
 void v9968_wait_key( void );
 char v9968_bload( const char *s_file_name );
+char v9968_bload_to( const char *s_file_name, unsigned short start );
 void v9968_color_restore( unsigned short palette_address );
 void v9968_color_new( void );
 
