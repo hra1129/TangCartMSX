@@ -688,14 +688,14 @@ module vdp_cpu_interface (
 			else begin
 				if( ff_color_palette_phase == 2'd0 ) begin
 					//	P#2 = [0][R][R][R][0][B][B][B]
-					ff_palette_r				<= { ff_bus_wdata[6:4], 2'd0 };
-					ff_palette_b				<= { ff_bus_wdata[2:0], 2'd0 };
+					ff_palette_r				<= { ff_bus_wdata[6:4], ff_bus_wdata[6:5] };
+					ff_palette_b				<= { ff_bus_wdata[2:0], ff_bus_wdata[2:1] };
 					ff_color_palette_phase		<= 2'd1;
 					ff_color_palette_valid		<= 1'b0;
 				end
 				else begin
 					//	P#2 = [0][0][0][0][0][G][G][G]
-					ff_palette_g				<= { ff_bus_wdata[2:0], 2'd0 };
+					ff_palette_g				<= { ff_bus_wdata[2:0], ff_bus_wdata[2:1] };
 					ff_color_palette_phase		<= 2'd0;
 					ff_color_palette_valid		<= 1'b1;
 				end

@@ -103,7 +103,8 @@ module vdp_sprite_select_visible_planes (
 	reg					ff_vram_valid;
 	reg			[4:0]	ff_selected_count;			//	表示するスプライトのカウント 0～16
 	reg					ff_select_finish;
-	reg			[5:0]	ff_selected_plane_num;		//	Plane#0...#63
+	reg			[5:0]	ff_selected_plane_num1;		//	Plane#0...#63
+	reg			[5:0]	ff_selected_plane_num2;		//	Plane#0...#63
 	wire		[5:0]	w_selected_plane_num;
 	reg					ff_selected_en1;
 	reg					ff_selected_en2;
@@ -269,8 +270,8 @@ module vdp_sprite_select_visible_planes (
 
 	// --------------------------------------------------------------------
 	//	Check visible plane ( phase #3, #5 )
-	//		Phase#3: ff_attribute1
-	//		Phase#5: ff_attribute2
+	//		Phase#3 ( w_phase[1]): ff_attribute1
+	//		Phase#5 (!w_phase[1]): ff_attribute2
 	// --------------------------------------------------------------------
 	assign w_attribute		= w_phase[1] ? ff_attribute1: ff_attribute2;
 	assign w_y				= reg_sprite_mode3 ? w_attribute[9:0] : { 2'd0, w_attribute[7:0] };
@@ -309,7 +310,7 @@ module vdp_sprite_select_visible_planes (
 				end
 				else if( !w_invisible && !w_selected_full ) begin
 					ff_selected_en1			<= 1'b1;
-					ff_selected_plane_num	<= ff_current_plane_num;
+					ff_selected_plane_num1	<= ff_current_plane_num;
 				end
 			end
 			else if( w_sub_phase == 4'd15 ) begin
@@ -321,11 +322,12 @@ module vdp_sprite_select_visible_planes (
 		else if( w_phase == 3'd5 ) begin
 			if( w_sub_phase == 4'd7 ) begin
 				if( w_y == w_finish_line && !reg_sprite_priority_shuffle ) begin
-					ff_select_finish	<= 1'b1;
-					ff_selected_en2		<= 1'b0;
+					ff_select_finish		<= 1'b1;
+					ff_selected_en2			<= 1'b0;
 				end
 				else if( !w_invisible && !w_selected_full ) begin
-					ff_selected_en2		<= 1'b1;
+					ff_selected_en2			<= 1'b1;
+					ff_selected_plane_num2	<= ff_current_plane_num;
 				end
 			end
 			else if( w_sub_phase == 4'd15 ) begin
@@ -372,7 +374,7 @@ module vdp_sprite_select_visible_planes (
 	assign selected_en				= (w_phase == 3'd6 && w_sub_phase == 4'd15) ? ff_selected_en1: 
 									  (w_phase == 3'd7 && w_sub_phase == 4'd15) ? ff_selected_en2: 1'b0;
 
-	assign w_selected_plane_num		= (w_phase[0] == 1'b0) ? ff_selected_plane_num: ff_current_plane_num;
+	assign w_selected_plane_num		= (w_phase[0] == 1'b0) ? ff_selected_plane_num1: ff_selected_plane_num2;
 	assign selected_plane_num		= reg_sprite_mode3 ? w_selected_plane_num : { 1'b0, w_selected_plane_num[4:0] };
 	assign selected_attribute		= (w_phase[0] == 1'b0) ? ff_attribute1: ff_attribute2;
 	assign selected_count			= ff_selected_count;

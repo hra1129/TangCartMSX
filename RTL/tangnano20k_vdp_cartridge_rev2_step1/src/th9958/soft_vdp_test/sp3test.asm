@@ -98,7 +98,7 @@ screen5::
 			ld		e, 6
 			call	write_control_register
 			; R#5 = 0   Sprite attribute table (LOW)
-			ld		a, 0x7600 >> 7
+			ld		a, (0x7600 >> 7) | 3
 			ld		e, 5
 			call	write_control_register
 			; R#11 = 1  Sprite attribute table (HIGH)

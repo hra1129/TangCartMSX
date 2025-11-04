@@ -21,15 +21,7 @@ typedef struct {
 // --------------------------------------------------------------------
 void put_sprite( unsigned char plane, ATTRIBUTE_T *p ) {
 
-	v9968_set_write_vram_address( 0x7600 + (plane << 3), 0 );
-	v9968_write_vram( *(p++) );
-	v9968_write_vram( *(p++) );
-	v9968_write_vram( *(p++) );
-	v9968_write_vram( *(p++) );
-	v9968_write_vram( *(p++) );
-	v9968_write_vram( *(p++) );
-	v9968_write_vram( *(p++) );
-	v9968_write_vram( *(p++) );
+	v9968_copy_to_vram( 0x7600 + (plane << 3), (void*)p, 8 );
 }
 
 // --------------------------------------------------------------------
@@ -52,6 +44,7 @@ int main( int argc, char *argv[] ) {
 	v9968_write_vdp( 20, 0x00 );		//	従来パレットを読み込むので、拡張パレットOFF
 	v9968_color_restore( 0x7680 );
 	v9968_write_vdp( 20, 0xFF );		//	従来パレットを読み込むので、拡張パレットON
+	v9968_fill_vram( 0x7600, 216, 8 * 64 );
 	v9968_wait_key();
 
 	for( i = 0; i < 64; i++ ) {
@@ -62,6 +55,7 @@ int main( int argc, char *argv[] ) {
 		attribute[i].mode = 0;
 		attribute[i].pattern = 0;
 		put_sprite( i, &attribute[i] );
+		v9968_wait_key();
 	}
 	v9968_wait_key();
 	v9968_exit();
