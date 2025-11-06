@@ -7,6 +7,12 @@
 #ifndef __V9968_COMMON_H__
 #define __V9968_COMMON_H__
 
+#define vdp_port0 0x98		//	TMS9918/V9938/V9958/V9968/V9978
+#define vdp_port1 0x99		//	TMS9918/V9938/V9958/V9968/V9978
+#define vdp_port2 0x9A		//	V9938/V9958/V9968/V9978
+#define vdp_port3 0x9B		//	V9938/V9958/V9968/V9978
+#define vdp_port4 0x9C		//	V9968/V9978
+
 void v9968_nested_di( void );
 void v9968_nested_ei( void );
 void v9968_write_vdp( unsigned char reg, unsigned char value );

@@ -264,9 +264,6 @@ module vdp_timing_control_ssg (
 			else if( ff_v_count[0] == 1'b1 && (w_screen_pos_y == w_v_count_end_line) ) begin
 				ff_v_active <= 1'b0;
 			end
-			else if( w_v_count_end ) begin
-				ff_v_active <= 1'b0;
-			end
 		end
 	end
 

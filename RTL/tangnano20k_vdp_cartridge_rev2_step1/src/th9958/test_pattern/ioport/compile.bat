@@ -26,4 +26,11 @@ move zma.log synccnt.log
 	exit
 )
 
+..\zma lineintr.asm LINEINTR.COM
+move zma.log lineintr.log
+@if errorlevel 1 (
+	pause "エラーが発生しました。停止します。"
+	exit
+)
+
 pause

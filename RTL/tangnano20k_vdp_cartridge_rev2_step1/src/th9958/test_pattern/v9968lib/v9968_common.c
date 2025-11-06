@@ -8,12 +8,6 @@
 #include <stdlib.h>
 #include "v9968_common.h"
 
-static const unsigned char vdp_port0 = 0x98;	//	TMS9918/V9938/V9958/V9968/V9978
-static const unsigned char vdp_port1 = 0x99;	//	TMS9918/V9938/V9958/V9968/V9978
-static const unsigned char vdp_port2 = 0x9A;	//	V9938/V9958/V9968/V9978
-static const unsigned char vdp_port3 = 0x9B;	//	V9938/V9958/V9968/V9978
-static const unsigned char vdp_port4 = 0x9C;	//	V9968/V9978
-
 static int di_count = 0;
 
 #pragma pack(1)
@@ -272,6 +266,7 @@ int v9968_get_key( void ) {
 		ld		iy, [0xFCC1 - 1]
 		ld		ix, 0x00D8				//	kilbuf
 		call	0x001c					//	calslt
+		ei
 		pop		bc
 		or		a, b
 		ld		h, 0
