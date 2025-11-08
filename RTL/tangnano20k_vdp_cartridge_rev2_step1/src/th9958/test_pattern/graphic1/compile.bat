@@ -38,4 +38,7 @@ zcc +msx -subtype=msxdos2 -I../v9968lib/ test007_g1sp3.c v9968_common.o v9968_mo
 echo G1SP4
 zcc +msx -subtype=msxdos2 -I../v9968lib/ test008_g1sp4.c v9968_common.o v9968_mode.o v9968_font.o -o G1SP4.COM
 
+echo G1VRAM
+zcc +msx -subtype=msxdos2 -I../v9968lib/ test009_g1vram.c v9968_common.o v9968_mode.o v9968_font.o -o G1VRAM.COM
+
 pause

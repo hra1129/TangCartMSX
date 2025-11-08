@@ -239,6 +239,7 @@ module vdp_cpu_interface (
 	reg					ff_port3_write;
 	reg		[5:0]		ff_register_num;
 	reg		[17:0]		ff_vram_address;
+	reg					ff_vram_address_noinc;
 	wire	[17:0]		w_next_vram_address;
 	reg					ff_vram_address_write;		//	アドレス設定が書き込み用に設定されたかどうか
 	reg					ff_vram_write;				//	実際のアクセスが書き込みアクセスかどうか
@@ -369,6 +370,11 @@ module vdp_cpu_interface (
 		end
 	end
 
+	// ------------------------------------------------------------------------
+	//	write
+	//		ff_address_inc=1 --> ff_vram_valid=1 --> ff_busy=0
+	//	read
+	//		ff_vram_valid=1 --> vram_rdata_en=1 --> ff_address_inc=1 --> ff_busy=0
 	always @( posedge clk or negedge reset_n ) begin
 		if( !reset_n ) begin
 			ff_vram_valid		<= 1'b0;
@@ -378,36 +384,41 @@ module vdp_cpu_interface (
 			ff_busy				<= 1'b0;
 		end
 		else if( vram_rdata_en ) begin
-			ff_vram_address_inc <= 1'b1;
-		end
-		else if( ff_vram_address_inc ) begin
-			ff_vram_address_inc	<= 1'b0;
-			ff_busy				<= 1'b0;
+			ff_vram_address_inc	<= 1'b1;
 		end
 		else if( ff_vram_valid ) begin
 			if( vram_ready ) begin
 				ff_vram_valid		<= 1'b0;
-				ff_vram_address_inc <= ff_bus_write;
+				if( ff_vram_write ) begin
+					ff_busy			<= 1'b0;
+				end
+			end
+		end
+		else if( ff_vram_address_inc ) begin
+			ff_vram_address_inc	<= 1'b0;
+			if( ff_vram_write && !vram_access_mask ) begin
+				//	Write Access
+				ff_vram_valid	<= 1'b1;
+			end
+			else begin
+				//	Read access or vram_access_mask
+				ff_busy			<= 1'b0;
 			end
 		end
 		else if( w_write && ff_port0 ) begin
-			if( vram_access_mask ) begin
-				ff_vram_valid		<= 1'b0;
-				ff_busy				<= 1'b1;
-				ff_vram_address_inc <= 1'b1;
-			end
-			else begin
-				ff_vram_valid		<= 1'b1;
-				ff_busy				<= 1'b1;
-				ff_vram_address_inc <= 1'b0;
-			end
+			//	VRAM write access
+			ff_vram_valid		<= 1'b0;
 			ff_vram_write		<= 1'b1;
 			ff_vram_wdata		<= ff_bus_wdata;
+			ff_vram_address_inc <= 1'b1;
+			ff_busy				<= 1'b1;
 		end
 		else if( w_read && ff_port0 ) begin
+			//	VRAM read access
 			ff_vram_valid		<= 1'b1;
 			ff_vram_write		<= 1'b0;
 			ff_vram_wdata		<= 8'd0;
+			ff_vram_address_inc <= 1'b0;
 			ff_busy				<= 1'b1;
 		end
 	end
@@ -416,10 +427,14 @@ module vdp_cpu_interface (
 
 	always @( posedge clk or negedge reset_n ) begin
 		if( !reset_n ) begin
-			ff_vram_address	<= 18'd0;
+			ff_vram_address			<= 18'd0;
+			ff_vram_address_noinc	<= 1'b0;
 		end
 		else if( ff_vram_address_inc ) begin		//	1clock pulse
-			if( (ff_screen_mode[4:3] == 2'b00) || !ff_vram_type ) begin
+			if( ff_vram_address_noinc ) begin
+				ff_vram_address_noinc	<= 1'b0;
+			end
+			else if( (ff_screen_mode[4:3] == 2'b00) || !ff_vram_type ) begin
 				ff_vram_address[13:0]	<= w_next_vram_address[13:0];
 			end
 			else begin
@@ -443,11 +458,13 @@ module vdp_cpu_interface (
 					begin
 						ff_vram_address[7:0]	<= ff_1st_byte;
 						ff_vram_address[13:8]	<= ff_bus_wdata[5:0];
+						ff_vram_address_noinc	<= 1'b0;
 					end
 				2'd1:			//	Set VRAM Write Address
 					begin
 						ff_vram_address[7:0]	<= ff_1st_byte;
 						ff_vram_address[13:8]	<= ff_bus_wdata[5:0];
+						ff_vram_address_noinc	<= 1'b1;
 					end
 				default:
 					begin
