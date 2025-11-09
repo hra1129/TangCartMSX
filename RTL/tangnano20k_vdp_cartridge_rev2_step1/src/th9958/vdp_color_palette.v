@@ -106,8 +106,12 @@ module vdp_color_palette (
 	reg			[7:0]	ff_display_color256;
 	reg			[7:0]	ff_display_color;
 	reg					ff_display_color_oe;
+	wire		[4:0]	w_display_r_pre;
+	wire		[4:0]	w_display_g_pre;
+	wire		[4:0]	w_display_b_pre;
 	wire		[4:0]	w_display_r;
 	wire		[4:0]	w_display_g;
+	wire		[4:0]	w_display_b;
 	wire		[4:0]	w_display_r16;
 	wire		[4:0]	w_display_g16;
 	wire		[4:0]	w_display_b16;
@@ -581,88 +585,68 @@ module vdp_color_palette (
 	// --------------------------------------------------------------------
 	//	RGB Color Conversion ( screen_pos_x = 4 )
 	// --------------------------------------------------------------------
-	assign w_display_g = (!reg_ext_palette_mode && w_256colors_mode) ? { ff_display_color256[7:5], 2'd0 } : ff_display_g16;
-	assign w_display_r = (!reg_ext_palette_mode && w_256colors_mode) ? { ff_display_color256[4:2], 2'd0 } : ff_display_r16;
+	assign w_display_r_pre = (!reg_ext_palette_mode && w_256colors_mode) ? { ff_display_color256[4:2], ff_display_color256[4:3] } : ff_display_r16;
+	assign w_display_g_pre = (!reg_ext_palette_mode && w_256colors_mode) ? { ff_display_color256[7:5], ff_display_color256[7:6] } : ff_display_g16;
+	assign w_display_b_pre = (!reg_ext_palette_mode && w_256colors_mode) ? { ff_display_color256[1:0], ff_display_color256[1] & ff_display_color256[0], ff_display_color256[1:0] } : ff_display_b16;
+
+	assign w_display_r = (reg_yjk_mode && (!reg_yae_mode || !ff_yjk_rgb_en)) ? ff_yjk_r : w_display_r_pre;
+	assign w_display_g = (reg_yjk_mode && (!reg_yae_mode || !ff_yjk_rgb_en)) ? ff_yjk_g : w_display_g_pre;
+	assign w_display_b = (reg_yjk_mode && (!reg_yae_mode || !ff_yjk_rgb_en)) ? ff_yjk_b : w_display_b_pre;
 
 	always @( posedge clk ) begin
 		ff_rgb_load	<= (screen_pos_x[3:0] == 4'd3) || (w_high_resolution && screen_pos_x[3:0] == 4'd11);
 	end
 
+	function [7:0] gamma(
+		input	[4:0]	linear
+	);
+		case( linear )
+		5'd0:		gamma = 8'd0;
+		5'd1:		gamma = 8'd53;
+		5'd2:		gamma = 8'd73;
+		5'd3:		gamma = 8'd88;
+		5'd4:		gamma = 8'd100;
+		5'd5:		gamma = 8'd111;
+		5'd6:		gamma = 8'd120;
+		5'd7:		gamma = 8'd129;
+		5'd8:		gamma = 8'd137;
+		5'd9:		gamma = 8'd145;
+		5'd10:		gamma = 8'd152;
+		5'd11:		gamma = 8'd159;
+		5'd12:		gamma = 8'd165;
+		5'd13:		gamma = 8'd171;
+		5'd14:		gamma = 8'd177;
+		5'd15:		gamma = 8'd183;
+		5'd16:		gamma = 8'd188;
+		5'd17:		gamma = 8'd194;
+		5'd18:		gamma = 8'd199;
+		5'd19:		gamma = 8'd204;
+		5'd20:		gamma = 8'd208;
+		5'd21:		gamma = 8'd213;
+		5'd22:		gamma = 8'd218;
+		5'd23:		gamma = 8'd222;
+		5'd24:		gamma = 8'd226;
+		5'd25:		gamma = 8'd231;
+		5'd26:		gamma = 8'd235;
+		5'd27:		gamma = 8'd239;
+		5'd28:		gamma = 8'd243;
+		5'd29:		gamma = 8'd247;
+		5'd30:		gamma = 8'd251;
+		5'd31:		gamma = 8'd255;
+		default:	gamma = 8'd0;
+        endcase
+	endfunction
+
 	always @( posedge clk or negedge reset_n ) begin
 		if( !reset_n ) begin
 			ff_vdp_r <= 8'd0;
 			ff_vdp_g <= 8'd0;
-		end
-		else if( ff_rgb_load ) begin
-			if( reg_ext_palette_mode || reg_sprite_mode3 ) begin
-				ff_vdp_r <= { ff_display_r16, ff_display_r16[4:2] };
-				ff_vdp_g <= { ff_display_g16, ff_display_g16[4:2] };
-			end
-			else if( reg_yjk_mode && (!reg_yae_mode || !ff_yjk_rgb_en) ) begin
-				ff_vdp_r <= { ff_yjk_r, ff_yjk_r[4:2] };
-				ff_vdp_g <= { ff_yjk_g, ff_yjk_g[4:2] };
-			end
-			else begin
-				case( w_display_r[4:2] )
-				3'd0:		ff_vdp_r <= 8'd0;
-				3'd1:		ff_vdp_r <= 8'd37;
-				3'd2:		ff_vdp_r <= 8'd73;
-				3'd3:		ff_vdp_r <= 8'd110;
-				3'd4:		ff_vdp_r <= 8'd146;
-				3'd5:		ff_vdp_r <= 8'd183;
-				3'd6:		ff_vdp_r <= 8'd219;
-				3'd7:		ff_vdp_r <= 8'd255;
-				default:	ff_vdp_r <= 8'd0;
-				endcase
-
-				case( w_display_g[4:2] )
-				3'd0:		ff_vdp_g <= 8'd0;
-				3'd1:		ff_vdp_g <= 8'd37;
-				3'd2:		ff_vdp_g <= 8'd73;
-				3'd3:		ff_vdp_g <= 8'd110;
-				3'd4:		ff_vdp_g <= 8'd146;
-				3'd5:		ff_vdp_g <= 8'd183;
-				3'd6:		ff_vdp_g <= 8'd219;
-				3'd7:		ff_vdp_g <= 8'd255;
-				default:	ff_vdp_g <= 8'd0;
-				endcase
-			end
-		end
-	end
-
-	always @( posedge clk or negedge reset_n ) begin
-		if( !reset_n ) begin
 			ff_vdp_b <= 8'd0;
 		end
 		else if( ff_rgb_load ) begin
-			if( reg_ext_palette_mode || reg_sprite_mode3 ) begin
-				ff_vdp_b <= { ff_display_b16, ff_display_b16[4:2] };
-			end
-			else if( reg_yjk_mode && (!reg_yae_mode || !ff_yjk_rgb_en) ) begin
-				ff_vdp_b <= { ff_yjk_b, ff_yjk_b[4:2] };
-			end
-			else if( w_256colors_mode ) begin
-				case( ff_display_color256[1:0] )
-				2'd0:		ff_vdp_b <= 8'd0;
-				2'd1:		ff_vdp_b <= 8'd73;
-				2'd2:		ff_vdp_b <= 8'd146;
-				2'd3:		ff_vdp_b <= 8'd255;
-				default:	ff_vdp_b <= 8'd0;
-				endcase
-			end
-			else begin
-				case( ff_display_b16[4:2] )
-				3'd0:		ff_vdp_b <= 8'd0;
-				3'd1:		ff_vdp_b <= 8'd37;
-				3'd2:		ff_vdp_b <= 8'd73;
-				3'd3:		ff_vdp_b <= 8'd110;
-				3'd4:		ff_vdp_b <= 8'd146;
-				3'd5:		ff_vdp_b <= 8'd183;
-				3'd6:		ff_vdp_b <= 8'd219;
-				3'd7:		ff_vdp_b <= 8'd255;
-				default:	ff_vdp_b <= 8'd0;
-				endcase
-			end
+			ff_vdp_r <= gamma( w_display_r );
+			ff_vdp_g <= gamma( w_display_g );
+			ff_vdp_b <= gamma( w_display_b );
 		end
 	end
 
