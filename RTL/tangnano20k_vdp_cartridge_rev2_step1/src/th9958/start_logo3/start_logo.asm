@@ -37,7 +37,7 @@ vdp_init_data::
 				db			0x80 |  2, 0x1F | (0 << 5)	; R#2  : パターンネームテーブル (表示ページ 0)
 				db			0x80 |  5, 0x7600 >> 7		; R#5  : スプライトアトリビュートテーブルの下位
 				db			0x80 |  6, 0x8000 >> 11		; R#6  : スプライトパターンジェネレータテーブルのアドレス
-				db			0x80 |  7, 0x05				; R#7  : 背景色 
+				db			0x80 |  7, 0x00				; R#7  : 背景色 
 				db			0x80 |  8, 0x2A				; R#8  = モードレジスタ palette0は不透明, スプライト非表示
 				db			0x80 |  9, 0x00				; R#9  : モードレジスタ
 				db			0x80 | 11, 0x00				; R#11 : スプライトアトリビュートテーブルの上位
@@ -179,20 +179,61 @@ _lmmc_end::
 ; -----------------------------------------------------------------------------
 ; Main loop
 ; -----------------------------------------------------------------------------
+	start_main:
+				; アニメーションの初期化
+				ld			hl, animation_data
 	main_loop:
 				; 1V待ちフラグを立てる
 				ld			a, 1
 				ld			[wait_flag], a
 
-				
-
-
+				; VX, VY をセット
+				ld			bc, vdp_port1 | (4 << 8)
+				ld			a, 47
+				out			[c], a
+				ld			a, 0x80 + 17
+				out			[c], a
+				inc			c
+				inc			c
+				otir
+				dec			c
+				dec			c
+				; SX, SY をセット
+				ld			b, 4
+				ld			a, 32
+				out			[c], a
+				ld			a, 0x80 + 17
+				out			[c], a
+				inc			c
+				inc			c
+				otir
+				; DX, DY, NX, NY, CLR, ARG, CMD
+				push		hl
+				ld			b, 11
+				ld			hl, lrmm_command
+				otir
+				pop			hl
 				; V-Sync完了待ち
 	wait_vsync:
 				ld			a, [wait_flag]
 				or			a, a
 				jr			nz, wait_vsync
-				jp			main_loop
+
+				ld			a, [frame_count]
+				dec			a
+				ld			[frame_count], a
+				jp			nz, main_loop
+
+				; 2秒待ち
+				ld			b, 120
+	wait_time1:
+				ld			a, 1
+				ld			[wait_flag], a
+	wait_time2:
+				ld			a, [wait_flag]
+				or			a, a
+				jr			nz, wait_time2
+				djnz		wait_time1
 
 	exit_main_loop:
 				; 割り込み禁止にする
@@ -207,7 +248,7 @@ _lmmc_end::
 				ld			[0xFD9A + 2], hl
 				ei
 				; 後始末
-				call	clear_key_buffer
+				call		clear_key_buffer
 				; 終了
 				ld			c, 0
 				call		5
@@ -339,8 +380,22 @@ set_write_vram_address::
 			scope	clear_key_buffer
 clear_key_buffer::
 			di
+			xor		a, a
+			out		[vdp_port1], a
+			ld		a, 0x80 | 20
+			out		[vdp_port1], a
+
+			xor		a, a
+			out		[vdp_port1], a
+			ld		a, 0x80 | 14
+			out		[vdp_port1], a
+
 			ld		iy, [main_rom_slot - 1]
 			ld		ix, kilbuf
+			call	calslt
+			ld		iy, [main_rom_slot - 1]
+			ld		ix, chgmod
+			ld		a, 1
 			call	calslt
 			ld		iy, [main_rom_slot - 1]
 			ld		ix, chgmod
@@ -400,18 +455,15 @@ logo_data::
 ; -----------------------------------------------------------------------------
 ; アニメーションデータ
 ; -----------------------------------------------------------------------------
-	rotate_vector::
-				dw		0			; VX
-				dw		0			; VY
+	frame_count:
+				db		61
 	lrmm_command::
-				dw		0			; SX
-				dw		192			; SY
-				dw		0			; DX
-				dw		0			; DY
+				dw		45			; DX
+				dw		32			; DY
 				dw		422			; NX (dummy)
 				dw		80			; NY
 				db		0			; CLR (dummy)
-				db		0b0000000	; ARG [-][-][-][-][DIY][DIX][-][-]
+				db		0b0100000	; ARG [-][XHR][-][-][DIY][DIX][-][-]
 				db		0x30		; CMD (LRMM)
 
 				;		VX, VY, SX, SY
