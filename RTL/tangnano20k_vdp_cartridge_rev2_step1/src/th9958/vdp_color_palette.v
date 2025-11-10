@@ -597,43 +597,123 @@ module vdp_color_palette (
 		ff_rgb_load	<= (screen_pos_x[3:0] == 4'd3) || (w_high_resolution && screen_pos_x[3:0] == 4'd11);
 	end
 
-	function [7:0] gamma(
+	function [7:0] gamma_r(
 		input	[4:0]	linear
 	);
 		case( linear )
-		5'd0:		gamma = 8'd0;
-		5'd1:		gamma = 8'd53;
-		5'd2:		gamma = 8'd73;
-		5'd3:		gamma = 8'd88;
-		5'd4:		gamma = 8'd100;
-		5'd5:		gamma = 8'd111;
-		5'd6:		gamma = 8'd120;
-		5'd7:		gamma = 8'd129;
-		5'd8:		gamma = 8'd137;
-		5'd9:		gamma = 8'd145;
-		5'd10:		gamma = 8'd152;
-		5'd11:		gamma = 8'd159;
-		5'd12:		gamma = 8'd165;
-		5'd13:		gamma = 8'd171;
-		5'd14:		gamma = 8'd177;
-		5'd15:		gamma = 8'd183;
-		5'd16:		gamma = 8'd188;
-		5'd17:		gamma = 8'd194;
-		5'd18:		gamma = 8'd199;
-		5'd19:		gamma = 8'd204;
-		5'd20:		gamma = 8'd208;
-		5'd21:		gamma = 8'd213;
-		5'd22:		gamma = 8'd218;
-		5'd23:		gamma = 8'd222;
-		5'd24:		gamma = 8'd226;
-		5'd25:		gamma = 8'd231;
-		5'd26:		gamma = 8'd235;
-		5'd27:		gamma = 8'd239;
-		5'd28:		gamma = 8'd243;
-		5'd29:		gamma = 8'd247;
-		5'd30:		gamma = 8'd251;
-		5'd31:		gamma = 8'd255;
-		default:	gamma = 8'd0;
+		5'd0:		gamma_r = 8'd0;
+		5'd1:		gamma_r = 8'd29;
+		5'd2:		gamma_r = 8'd45;
+		5'd3:		gamma_r = 8'd59;
+		5'd4:		gamma_r = 8'd70;
+		5'd5:		gamma_r = 8'd81;
+		5'd6:		gamma_r = 8'd91;
+		5'd7:		gamma_r = 8'd100;
+		5'd8:		gamma_r = 8'd109;
+		5'd9:		gamma_r = 8'd117;
+		5'd10:		gamma_r = 8'd125;
+		5'd11:		gamma_r = 8'd133;
+		5'd12:		gamma_r = 8'd140;
+		5'd13:		gamma_r = 8'd148;
+		5'd14:		gamma_r = 8'd155;
+		5'd15:		gamma_r = 8'd161;
+		5'd16:		gamma_r = 8'd168;
+		5'd17:		gamma_r = 8'd175;
+		5'd18:		gamma_r = 8'd181;
+		5'd19:		gamma_r = 8'd187;
+		5'd20:		gamma_r = 8'd193;
+		5'd21:		gamma_r = 8'd199;
+		5'd22:		gamma_r = 8'd205;
+		5'd23:		gamma_r = 8'd211;
+		5'd24:		gamma_r = 8'd217;
+		5'd25:		gamma_r = 8'd222;
+		5'd26:		gamma_r = 8'd228;
+		5'd27:		gamma_r = 8'd233;
+		5'd28:		gamma_r = 8'd239;
+		5'd29:		gamma_r = 8'd244;
+		5'd30:		gamma_r = 8'd249;
+		5'd31:		gamma_r = 8'd255;
+		default:	gamma_r = 8'd0;
+        endcase
+	endfunction
+
+	function [7:0] gamma_g(
+		input	[4:0]	linear
+	);
+		case( linear )
+		5'd0:		gamma_g = 8'd0;
+		5'd1:		gamma_g = 8'd37;
+		5'd2:		gamma_g = 8'd55;
+		5'd3:		gamma_g = 8'd69;
+		5'd4:		gamma_g = 8'd81;
+		5'd5:		gamma_g = 8'd92;
+		5'd6:		gamma_g = 8'd102;
+		5'd7:		gamma_g = 8'd111;
+		5'd8:		gamma_g = 8'd120;
+		5'd9:		gamma_g = 8'd128;
+		5'd10:		gamma_g = 8'd136;
+		5'd11:		gamma_g = 8'd143;
+		5'd12:		gamma_g = 8'd150;
+		5'd13:		gamma_g = 8'd157;
+		5'd14:		gamma_g = 8'd163;
+		5'd15:		gamma_g = 8'd170;
+		5'd16:		gamma_g = 8'd176;
+		5'd17:		gamma_g = 8'd182;
+		5'd18:		gamma_g = 8'd188;
+		5'd19:		gamma_g = 8'd194;
+		5'd20:		gamma_g = 8'd199;
+		5'd21:		gamma_g = 8'd205;
+		5'd22:		gamma_g = 8'd210;
+		5'd23:		gamma_g = 8'd216;
+		5'd24:		gamma_g = 8'd221;
+		5'd25:		gamma_g = 8'd226;
+		5'd26:		gamma_g = 8'd231;
+		5'd27:		gamma_g = 8'd236;
+		5'd28:		gamma_g = 8'd240;
+		5'd29:		gamma_g = 8'd245;
+		5'd30:		gamma_g = 8'd250;
+		5'd31:		gamma_g = 8'd255;
+		default:	gamma_g = 8'd0;
+        endcase
+	endfunction
+
+	function [7:0] gamma_b(
+		input	[4:0]	linear
+	);
+		case( linear )
+		5'd0:		gamma_b = 8'd0;
+		5'd1:		gamma_b = 8'd45;
+		5'd2:		gamma_b = 8'd64;
+		5'd3:		gamma_b = 8'd79;
+		5'd4:		gamma_b = 8'd91;
+		5'd5:		gamma_b = 8'd102;
+		5'd6:		gamma_b = 8'd112;
+		5'd7:		gamma_b = 8'd121;
+		5'd8:		gamma_b = 8'd129;
+		5'd9:		gamma_b = 8'd137;
+		5'd10:		gamma_b = 8'd144;
+		5'd11:		gamma_b = 8'd151;
+		5'd12:		gamma_b = 8'd158;
+		5'd13:		gamma_b = 8'd165;
+		5'd14:		gamma_b = 8'd171;
+		5'd15:		gamma_b = 8'd177;
+		5'd16:		gamma_b = 8'd183;
+		5'd17:		gamma_b = 8'd188;
+		5'd18:		gamma_b = 8'd194;
+		5'd19:		gamma_b = 8'd199;
+		5'd20:		gamma_b = 8'd204;
+		5'd21:		gamma_b = 8'd209;
+		5'd22:		gamma_b = 8'd214;
+		5'd23:		gamma_b = 8'd219;
+		5'd24:		gamma_b = 8'd224;
+		5'd25:		gamma_b = 8'd228;
+		5'd26:		gamma_b = 8'd233;
+		5'd27:		gamma_b = 8'd237;
+		5'd28:		gamma_b = 8'd242;
+		5'd29:		gamma_b = 8'd246;
+		5'd30:		gamma_b = 8'd250;
+		5'd31:		gamma_b = 8'd255;
+		default:	gamma_b = 8'd0;
         endcase
 	endfunction
 
@@ -644,9 +724,9 @@ module vdp_color_palette (
 			ff_vdp_b <= 8'd0;
 		end
 		else if( ff_rgb_load ) begin
-			ff_vdp_r <= gamma( w_display_r );
-			ff_vdp_g <= gamma( w_display_g );
-			ff_vdp_b <= gamma( w_display_b );
+			ff_vdp_r <= gamma_r( w_display_r );
+			ff_vdp_g <= gamma_g( w_display_g );
+			ff_vdp_b <= gamma_b( w_display_b );
 		end
 	end
 

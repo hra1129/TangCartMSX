@@ -92,6 +92,7 @@ module vdp (
 	input				force_highspeed,
 
 	// debug pulse
+	input		[ 1:0]	button,
 	output				pulse0,
 	output				pulse1,
 	output				pulse2,
@@ -313,6 +314,7 @@ module vdp (
 		.reg_vram256k_mode							( reg_vram256k_mode							),
 		.reg_sprite16_mode							( reg_sprite16_mode							),
 		.reg_flat_interlace_mode					( reg_flat_interlace_mode					),
+		.button										( button									),
 		.pulse0										( pulse0									),
 		.pulse1										( pulse1									),
 		.pulse2										( pulse2									),

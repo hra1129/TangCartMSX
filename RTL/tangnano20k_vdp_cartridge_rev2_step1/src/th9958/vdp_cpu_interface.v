@@ -152,6 +152,7 @@ module vdp_cpu_interface (
 	output				reg_sprite16_mode,
 	output				reg_flat_interlace_mode,
 
+	input	[1:0]		button,
 	output				pulse0,
 	output				pulse1,
 	output				pulse2,
@@ -254,6 +255,21 @@ module vdp_cpu_interface (
 	wire				w_line_interrupt;
 	wire				w_frame_interrupt;
 	wire				w_command_end_interrupt;
+
+	reg		[1:0]		ff_button1 = 2'd0;
+	reg		[1:0]		ff_button2 = 2'd0;
+	reg					ff_force_page2 = 1'b0;
+
+	always @( posedge clk ) begin
+		ff_button1 <= button;
+		ff_button2 <= ff_button1;
+	end
+
+	always @( posedge clk ) begin
+		if( ff_button1[0] && !ff_button2[0] ) begin
+			ff_force_page2 <= !ff_force_page2;
+		end
+	end
 
 	assign pulse0		= 1'b0;										// red
 	assign pulse1		= ff_vram_valid;							// green
@@ -887,7 +903,7 @@ module vdp_cpu_interface (
 	assign reg_sprite_magify						= ff_sprite_magify;
 	assign reg_sprite_16x16							= ff_sprite_16x16;
 	assign reg_display_on							= ff_display_on;
-	assign reg_pattern_name_table_base				= ff_pattern_name_table_base;
+	assign reg_pattern_name_table_base				= ff_force_page2 ? 8'h5F : ff_pattern_name_table_base;
 	assign reg_color_table_base						= ff_color_table_base;
 	assign reg_pattern_generator_table_base			= ff_pattern_generator_table_base;
 	assign reg_sprite_attribute_table_base			= ff_sprite_attribute_table_base;

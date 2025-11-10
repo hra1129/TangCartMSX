@@ -237,6 +237,7 @@ module vdp_command (
 	reg			[7:0]	ff_fore_color;
 	reg			[17:0]	ff_font_address;
     reg         [7:0]   ff_bit_pattern;
+    reg					ff_finish_flag;
 
 	localparam			c_state_idle				= 6'd0;
 	localparam			c_state_stop				= 6'd1;
@@ -1053,6 +1054,7 @@ module vdp_command (
 			ff_border_detect_request	<= 1'b0;
 			ff_wait_count				<= 6'd0;
 			ff_xsel						<= 2'd0;
+			ff_finish_flag				<= 1'b0;
 		end
 		else if( ff_start ) begin
 			ff_source					<= ff_color;
@@ -1062,6 +1064,7 @@ module vdp_command (
 			ff_cache_vram_valid			<= 1'b0;
 			ff_wait_count				<= 6'd0;
 			ff_xsel						<= 2'd0;
+			ff_finish_flag				<= 1'b0;
 			case( ff_command )
 			c_stop:		ff_state <= c_state_stop;
 			c_point:	ff_state <= c_state_point;
@@ -1379,7 +1382,8 @@ module vdp_command (
 				ff_cache_vram_wdata		<= w_destination;
 				ff_count_valid			<= 1'b1;
 				if( (w_nx_end || w_dx_overflow) && w_ny_end ) begin
-					ff_state				<= c_state_pre_finish;
+					ff_finish_flag			<= 1'b1;
+					ff_state				<= c_state_lmmc_next;
 				end
 				else if( reg_command_high_speed_mode ) begin
 					ff_state				<= c_state_lmmc_next;
@@ -1392,7 +1396,12 @@ module vdp_command (
 			end
 			c_state_lmmc_next: begin
 				ff_count_valid			<= 1'b0;
-				ff_state				<= c_state_lmmc;
+				if( ff_finish_flag ) begin
+					ff_state				<= c_state_pre_finish;
+				end
+				else begin
+					ff_state				<= c_state_lmmc;
+				end
 			end
 
 			//	HMMV command --------------------------------------------------
@@ -1499,7 +1508,8 @@ module vdp_command (
 					ff_cache_vram_wdata		<= ff_color;
 					ff_count_valid			<= 1'b1;
 					if( (w_nx_end || w_dx_overflow) && w_ny_end ) begin
-						ff_state				<= c_state_pre_finish;
+						ff_finish_flag			<= 1'b1;
+						ff_state				<= c_state_hmmc_next;
 					end
 					else if( reg_command_high_speed_mode ) begin
 						ff_state				<= c_state_hmmc_next;
@@ -1513,7 +1523,13 @@ module vdp_command (
 			end
 			c_state_hmmc_next: begin
 				ff_count_valid			<= 1'b0;
-				ff_state				<= c_state_hmmc;
+				if( ff_finish_flag ) begin
+					ff_finish_flag			<= 1'b0;
+					ff_state				<= c_state_pre_finish;
+				end
+				else begin
+					ff_state				<= c_state_hmmc;
+				end
 			end
 
 			//	LRMM command --------------------------------------------------

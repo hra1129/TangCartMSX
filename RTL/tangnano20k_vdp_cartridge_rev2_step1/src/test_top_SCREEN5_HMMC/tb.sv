@@ -1071,14 +1071,18 @@ module tb ();
 		write_io( vdp_io1, 8'hF0 );
 		write_io( vdp_io1, 8'h80 + 8'd46 );		//	R#46 HMMC
 
+		i = 0;
 		repeat( 8 * 16 ) begin
-			write_io( vdp_io1, 8'h88 );
+			write_io( vdp_io1, i );
 			write_io( vdp_io1, 8'h80 + 8'd44 );		//	R#44 COLOR
 			repeat( 10 ) @( posedge clk14m );
+			i = i + 1;
 		end
 
 		wait_vdp_command();
-		repeat( 1368 * 4 * 300 ) @( posedge clk14m );
+
+		write_io( vdp_io1, 8'h88 );
+		write_io( vdp_io1, 8'h80 + 8'd44 );		//	R#44 COLOR
 
 		$display( "[test---] All tests completed" );
 		repeat( 100 ) @( posedge clk14m );
