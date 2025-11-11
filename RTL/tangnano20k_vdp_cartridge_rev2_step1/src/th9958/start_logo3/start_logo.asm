@@ -463,7 +463,7 @@ logo_data::
 				dw		422			; NX (dummy)
 				dw		80			; NY
 				db		0			; CLR (dummy)
-				db		0b0100000	; ARG [-][XHR][-][-][DIY][DIX][-][-]
+				db		0b01000000	; ARG [-][XHR][-][-][DIY][DIX][-][-]
 				db		0x30		; CMD (LRMM)
 
 				;		VX, VY, SX, SY

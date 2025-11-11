@@ -168,6 +168,7 @@ module vdp_command (
 	reg			[10:0]	reg_ny;
 	reg			[19:0]	ff_sx;
 	reg			[20:0]	ff_sy;
+	wire		[20:0]	w_sy;
 	reg			[19:0]	ff_sx2;
 	reg			[20:0]	ff_sy2;
 	reg			[8:0]	ff_dx;
@@ -308,10 +309,11 @@ module vdp_command (
 	// --------------------------------------------------------------------
 	//	Address
 	// --------------------------------------------------------------------
-	assign w_address_s_pre		= (ff_screen_mode[c_g4] || ff_fg4) ? { ff_sy[18:8], ff_sx[15: 9] }:	// SCREEN5, 128byte/line, 2pixel/byte, 256line * 8page
-	                  			  (ff_screen_mode[c_g5]          ) ? { ff_sy[18:8], ff_sx[16:10] }:	// SCREEN6, 128byte/line, 4pixel/byte, 256line * 8page
-	                  			  (ff_screen_mode[c_g6]          ) ? { ff_sy[17:8], ff_sx[16: 9] }:	// SCREEN7, 256byte/line, 2pixel/byte, 256line * 4page
-	                  			                                     { ff_sy[17:8], ff_sx[15: 8] };	// SCREEN8, 256byte/line, 1pixel/byte, 256line * 4page
+	assign w_sy					= (ff_command == c_lrmm && ff_xhr) ? { ff_sy[20], ff_sy[20:1] }: ff_sy;
+	assign w_address_s_pre		= (ff_screen_mode[c_g4] || ff_fg4) ? { w_sy[18:8], ff_sx[15: 9] }:	// SCREEN5, 128byte/line, 2pixel/byte, 256line * 8page
+	                  			  (ff_screen_mode[c_g5]          ) ? { w_sy[18:8], ff_sx[16:10] }:	// SCREEN6, 128byte/line, 4pixel/byte, 256line * 8page
+	                  			  (ff_screen_mode[c_g6]          ) ? { w_sy[17:8], ff_sx[16: 9] }:	// SCREEN7, 256byte/line, 2pixel/byte, 256line * 4page
+	                  			                                     { w_sy[17:8], ff_sx[15: 8] };	// SCREEN8, 256byte/line, 1pixel/byte, 256line * 4page
 
 	assign w_address_d_pre		= (ff_screen_mode[c_g4] || ff_fg4) ? { ff_dy[10:0], ff_dx[ 7: 1] }:	// SCREEN5, 128byte/line, 2pixel/byte, 256line * 8page
 	                  			  (ff_screen_mode[c_g5]          ) ? { ff_dy[10:0], ff_dx[ 8: 2] }:	// SCREEN6, 128byte/line, 4pixel/byte, 256line * 8page
@@ -430,10 +432,15 @@ module vdp_command (
 		else if( !ff_command_execute || ff_cache_vram_valid ) begin
 			//	hold
 		end
+		else if( ff_start ) begin
+			if( ff_command == c_lrmm && ff_xhr ) begin
+				ff_sy <= { ff_sy[19:0], 1'b0 };
+			end
+		end
 		else if( ff_count_valid ) begin
 			if( ff_command == c_lrmm ) begin
 				if( w_nx_end ) begin
-					ff_sy <= ff_sy2 + ( ff_xhr ? { { 4 {reg_vx[15]} }, reg_vx, 1'b0 } : { { 5 {reg_vx[15]} }, reg_vx } );
+					ff_sy <= ff_sy2 + { { 5 {reg_vx[15]} }, reg_vx };
 				end
 				else begin
 					ff_sy <= ff_sy  + { { 5 {reg_vy[15]} }, reg_vy };
@@ -460,6 +467,9 @@ module vdp_command (
 			if( ff_command == c_lfmm ) begin
 				ff_sy2	<= { 2'd0, ff_dy, 8'd0 };
 			end
+			else if( ff_command == c_lrmm && ff_xhr ) begin
+				ff_sy2	<= { ff_sy[19:0], 1'b0 };
+			end
 			else begin
 				ff_sy2	<= ff_sy;
 			end
@@ -469,7 +479,7 @@ module vdp_command (
 		end
 		else if( ff_count_valid ) begin
 			if( w_nx_end ) begin
-				ff_sx2 <= ff_sx2 - ( ff_xhr ? { { 3 {reg_vy[15]} }, reg_vy, 1'b0 } : { { 4 {reg_vy[15]} }, reg_vy } );
+				ff_sx2 <= ff_sx2 - { { 4 {reg_vy[15]} }, reg_vy };
 				ff_sy2 <= ff_sy2 + { { 5 {reg_vx[15]} }, reg_vx };
 			end
 		end
@@ -1545,7 +1555,7 @@ module vdp_command (
 			end
 			c_state_lrmm_wait_source: begin
 				//	Copy source pixel value
-				if( ff_sx[17:8] < { 1'b0, reg_wsx } || ff_sy[18:8] < reg_wsy || ff_sx[17:8] > { 1'b0, reg_wex } || ff_sy[18:8] > reg_wey ) begin
+				if( ff_sx[17:8] < { 1'b0, reg_wsx } || w_sy[18:8] < reg_wsy || ff_sx[17:8] > { 1'b0, reg_wex } || w_sy[18:8] > reg_wey ) begin
 					//	Replace color in outside of window
 					ff_source				<= ff_color;
 				end
