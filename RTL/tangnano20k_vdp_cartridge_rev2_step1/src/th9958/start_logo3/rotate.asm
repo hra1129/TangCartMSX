@@ -182,7 +182,7 @@ _lmmc_end::
 	start_main:
 				; アニメーションの初期化
 				ld			hl, animation_data
-				ld			a, 61
+				ld			a, 1	;61
 				ld			[frame_count], a
 	main_loop:
 				; 1V待ちフラグを立てる

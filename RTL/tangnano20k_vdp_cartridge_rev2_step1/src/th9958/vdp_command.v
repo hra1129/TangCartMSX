@@ -399,7 +399,12 @@ module vdp_command (
 			end
 			else if( ff_command == c_lrmm ) begin
 				if( w_nx_end ) begin
-					ff_sx <= ff_sx2 - { { 4 {reg_vy[15]} }, reg_vy };
+					if( ff_xhr ) begin
+						ff_sx <= ff_sx2 - { { 3 {reg_vy[15]} }, reg_vy, 1'b0 };
+					end
+					else begin
+						ff_sx <= ff_sx2 - { { 4 {reg_vy[15]} }, reg_vy };
+					end
 				end
 				else begin
 					ff_sx <= ff_sx + { { 4 {reg_vx[15]} }, reg_vx };
@@ -429,18 +434,23 @@ module vdp_command (
 		else if( register_write && register_num == 6'd35 ) begin
 			ff_sy[20:16]	<= register_data[4:0];
 		end
-		else if( !ff_command_execute || ff_cache_vram_valid ) begin
-			//	hold
-		end
 		else if( ff_start ) begin
 			if( ff_command == c_lrmm && ff_xhr ) begin
 				ff_sy <= { ff_sy[19:0], 1'b0 };
 			end
 		end
+		else if( !ff_command_execute || ff_cache_vram_valid ) begin
+			//	hold
+		end
 		else if( ff_count_valid ) begin
 			if( ff_command == c_lrmm ) begin
 				if( w_nx_end ) begin
-					ff_sy <= ff_sy2 + { { 5 {reg_vx[15]} }, reg_vx };
+					if( ff_xhr ) begin
+						ff_sy <= ff_sy2 + { { 4 {reg_vx[15]} }, reg_vx, 1'b0 };
+					end
+					else begin
+						ff_sy <= ff_sy2 + { { 5 {reg_vx[15]} }, reg_vx };
+					end
 				end
 				else begin
 					ff_sy <= ff_sy  + { { 5 {reg_vy[15]} }, reg_vy };
@@ -1563,7 +1573,7 @@ module vdp_command (
 				//	Copy source pixel value
 				if( ff_sx[17:8] < { 1'b0, reg_wsx } || w_sy[18:8] < reg_wsy || ff_sx[17:8] > { 1'b0, reg_wex } || w_sy[18:8] > reg_wey ) begin
 					//	Replace color in outside of window
-					ff_source				<= ff_color;
+					ff_source				<= 8'h03;	//ff_color;
 				end
 				else begin
 					ff_source				<= ff_read_pixel;
