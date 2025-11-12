@@ -479,8 +479,14 @@ module vdp_command (
 		end
 		else if( ff_count_valid ) begin
 			if( w_nx_end ) begin
-				ff_sx2 <= ff_sx2 - { { 4 {reg_vy[15]} }, reg_vy };
-				ff_sy2 <= ff_sy2 + { { 5 {reg_vx[15]} }, reg_vx };
+				if( ff_xhr ) begin
+					ff_sx2 <= ff_sx2 - { { 3 {reg_vy[15]} }, reg_vy, 1'b0 };
+					ff_sy2 <= ff_sy2 + { { 4 {reg_vx[15]} }, reg_vx, 1'b0 };
+				end
+				else begin
+					ff_sx2 <= ff_sx2 - { { 4 {reg_vy[15]} }, reg_vy };
+					ff_sy2 <= ff_sy2 + { { 5 {reg_vx[15]} }, reg_vx };
+				end
 			end
 		end
 	end
