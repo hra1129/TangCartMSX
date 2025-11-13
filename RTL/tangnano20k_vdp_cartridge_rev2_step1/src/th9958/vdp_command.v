@@ -1573,7 +1573,7 @@ module vdp_command (
 				//	Copy source pixel value
 				if( ff_sx[17:8] < { 1'b0, reg_wsx } || w_sy[18:8] < reg_wsy || ff_sx[17:8] > { 1'b0, reg_wex } || w_sy[18:8] > reg_wey ) begin
 					//	Replace color in outside of window
-					ff_source				<= 8'h03;	//ff_color;
+					ff_source				<= ff_color;
 				end
 				else begin
 					ff_source				<= ff_read_pixel;
@@ -1597,7 +1597,9 @@ module vdp_command (
 					ff_state				<= c_state_pre_finish;
 				end
 				else begin
-					ff_state				<= c_state_lrmm;
+					ff_wait_counter			<= 8'd1;
+					ff_next_state			<= c_state_lrmm;
+					ff_state				<= c_state_wait_counter;
 				end
 			end
 
