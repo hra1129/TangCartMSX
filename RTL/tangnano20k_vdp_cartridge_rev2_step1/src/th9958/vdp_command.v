@@ -1126,7 +1126,7 @@ module vdp_command (
 			end
 			//	POINT command -------------------------------------------------
 			c_state_point: begin
-				if( ff_sx[8] && !ff_512pixel ) begin
+				if( ff_sx[16] && !ff_512pixel ) begin
 					//	Go to finish state when start position is outside of screen.
 					ff_cache_flush_start	<= 1'b1;
 					ff_state				<= c_state_finish;
@@ -1178,7 +1178,7 @@ module vdp_command (
 
 			//	SRCH command --------------------------------------------------
 			c_state_srch: begin
-				if( ff_sx[9] || (ff_sx[8] && !ff_512pixel) ) begin
+				if( ff_sx[17] || (ff_sx[16] && !ff_512pixel) ) begin
 					//	Go to finish state when start position is outside of screen.
 					if( ff_sx == reg_sx ) begin
 						//	Start point is out of screen.
@@ -1844,5 +1844,5 @@ module vdp_command (
 	assign status_border_detect		= ff_border_detect;
 	assign status_transfer_ready	= ff_transfer_ready;
 	assign status_color				= ff_read_pixel;
-	assign status_border_position	= ff_sx[8:0];
+	assign status_border_position	= ff_sx[16:8];
 endmodule
