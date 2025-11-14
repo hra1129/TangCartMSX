@@ -13,4 +13,7 @@ echo ***************************************************************************
 echo HMMM001
 zcc +msx -subtype=msxdos2 -I../v9968lib/ test001_hmmm.c v9968_common.o v9968_mode.o v9968_font.o -o HMMM001.COM
 
+echo HMMM002
+zcc +msx -subtype=msxdos2 -I../v9968lib/ test002_g6.c v9968_common.o v9968_mode.o v9968_font.o -o HMMM002.COM
+
 pause

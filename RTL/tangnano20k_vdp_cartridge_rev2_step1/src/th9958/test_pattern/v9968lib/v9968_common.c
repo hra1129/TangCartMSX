@@ -129,6 +129,23 @@ unsigned char v9968_read_vdp_status( unsigned char reg ) {
 }
 
 // --------------------------------------------------------------------
+//	v9968_wait_vdp_command()
+//	input:
+//		none
+//	result:
+//		read data
+// --------------------------------------------------------------------
+void v9968_wait_vdp_command( void ) {
+
+	v9968_nested_di();
+	v9968_write_vdp( 15, 2 );
+	while( (inp( vdp_port1 )) & 1 ) {
+	}
+	v9968_write_vdp( 15, 0 );
+	v9968_nested_ei();
+}
+
+// --------------------------------------------------------------------
 //	v9968_fill_vram()
 //	input:
 //		address ... target address

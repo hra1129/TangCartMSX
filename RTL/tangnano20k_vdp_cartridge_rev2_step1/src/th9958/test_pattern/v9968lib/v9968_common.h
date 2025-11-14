@@ -21,6 +21,7 @@ void v9968_set_read_vram_address( unsigned short address_l, unsigned char addres
 void v9968_write_vram( unsigned char value );
 unsigned char v9968_read_vram( void );
 unsigned char v9968_read_vdp_status( unsigned char reg );
+void v9968_wait_vdp_command( void );
 void v9968_fill_vram( unsigned short address, unsigned char value, unsigned short size );
 void v9968_copy_to_vram( unsigned short destination, const void *p_source, unsigned short size );
 void v9968_copy_from_vram( const void *p_destination, unsigned short source, unsigned short size );
