@@ -1571,7 +1571,8 @@ module vdp_command (
 			end
 			c_state_lrmm_wait_source: begin
 				//	Copy source pixel value
-				if( ff_sx[17:8] < { 1'b0, reg_wsx } || w_sy[18:8] < reg_wsy || ff_sx[17:8] > { 1'b0, reg_wex } || w_sy[18:8] > reg_wey ) begin
+				if( $signed(ff_sx[19:8]) < $signed({ 3'd0, reg_wsx }) || $signed(w_sy[20:8]) < $signed({ 2'd0, reg_wsy }) || 
+					$signed(ff_sx[19:8]) > $signed({ 3'd0, reg_wex }) || $signed(w_sy[20:8]) > $signed({ 2'd0, reg_wey }) ) begin
 					//	Replace color in outside of window
 					ff_source				<= ff_color;
 				end
