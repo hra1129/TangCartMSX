@@ -96,8 +96,11 @@ module vdp_timing_control_ssg (
 	localparam			c_left_pos				= 13'd640;		//	16の倍数
 	localparam			c_hsync_start			= 13'd4864;
 	localparam			c_hsync_end				= 13'd540;
-	localparam			c_top_pos192			= 10'd35;		//	画面上の垂直位置(192 lines mode)。小さくすると上へ、大きくすると下へ寄る。
-	localparam			c_top_pos212			= 10'd25;		//	画面上の垂直位置(212 lines mode)。小さくすると上へ、大きくすると下へ寄る。
+						//						  Sync  top erase NTSC/PAL 192/212
+	localparam			c_top_60hz_pos192		= 10'd3 + 10'd13 + 10'd9  + 10'd10;	//	画面上の垂直位置(192 lines mode)。小さくすると上へ、大きくすると下へ寄る。
+	localparam			c_top_60hz_pos212		= 10'd3 + 10'd13 + 10'd9  + 10'd0;	//	画面上の垂直位置(212 lines mode)。小さくすると上へ、大きくすると下へ寄る。
+	localparam			c_top_50hz_pos192		= 10'd3 + 10'd13 + 10'd36 + 10'd10;	//	画面上の垂直位置(192 lines mode)。小さくすると上へ、大きくすると下へ寄る。
+	localparam			c_top_50hz_pos212		= 10'd3 + 10'd13 + 10'd36 + 10'd0;	//	画面上の垂直位置(212 lines mode)。小さくすると上へ、大きくすると下へ寄る。
 	localparam			c_h_count_max			= 12'd2735;
 	localparam			c_v_count_max_60		= 10'd523;
 	localparam			c_v_count_max_50		= 10'd625;
@@ -233,7 +236,7 @@ module vdp_timing_control_ssg (
 							  (  reg_50hz_mode && ff_v_count == c_v_count_max_50 );
 
 	always @( posedge clk ) begin
-		ff_clear_line_interrupt <= w_v_count_end & w_h_count_end;
+		ff_clear_line_interrupt <= w_intr_frame_timing;
 	end
 
 	assign clear_line_interrupt	= ff_clear_line_interrupt;
@@ -288,13 +291,23 @@ module vdp_timing_control_ssg (
 
 	always @( posedge clk or negedge reset_n ) begin
 		if( !reset_n ) begin
-			ff_top_line <= c_top_pos192;
+			ff_top_line <= c_top_60hz_pos192;
 		end
 		else if( reg_212lines_mode ) begin
-			ff_top_line <= c_top_pos212;
+			if( reg_50hz_mode ) begin
+				ff_top_line <= c_top_50hz_pos212;
+			end
+			else begin
+				ff_top_line <= c_top_60hz_pos212;
+			end
 		end
 		else begin
-			ff_top_line <= c_top_pos192;
+			if( reg_50hz_mode ) begin
+				ff_top_line <= c_top_50hz_pos192;
+			end
+			else begin
+				ff_top_line <= c_top_60hz_pos192;
+			end
 		end
 	end
 

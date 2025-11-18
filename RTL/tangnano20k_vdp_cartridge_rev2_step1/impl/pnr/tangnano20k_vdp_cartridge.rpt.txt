@@ -12,27 +12,27 @@
   <Part Number>: GW2AR-LV18QN88C8/I7
   <Device>: GW2AR-18
   <Device Version>: C
-  <Created Time>:Sun Nov 16 09:53:40 2025
+  <Created Time>:Tue Nov 18 18:56:31 2025
 
 
 2. PnR Details
 
   Running placement:
     Placement Phase 0: CPU time = 0h 0m 3s, Elapsed time = 0h 0m 3s
-    Placement Phase 1: CPU time = 0h 0m 0.712s, Elapsed time = 0h 0m 0.712s
-    Placement Phase 2: CPU time = 0h 0m 9s, Elapsed time = 0h 0m 9s
-    Placement Phase 3: CPU time = 0h 0m 19s, Elapsed time = 0h 0m 19s
-    Total Placement: CPU time = 0h 0m 31s, Elapsed time = 0h 0m 31s
+    Placement Phase 1: CPU time = 0h 0m 0.686s, Elapsed time = 0h 0m 0.686s
+    Placement Phase 2: CPU time = 0h 0m 7s, Elapsed time = 0h 0m 7s
+    Placement Phase 3: CPU time = 0h 0m 12s, Elapsed time = 0h 0m 12s
+    Total Placement: CPU time = 0h 0m 22s, Elapsed time = 0h 0m 22s
  Running routing:
-    Routing Phase 0: CPU time = 0h 0m 0.013s, Elapsed time = 0h 0m 0.013s
-    Routing Phase 1: CPU time = 0h 0m 0.95s, Elapsed time = 0h 0m 0.95s
-    Routing Phase 2: CPU time = 0h 0m 21s, Elapsed time = 0h 0m 21s
+    Routing Phase 0: CPU time = 0h 0m 0.007s, Elapsed time = 0h 0m 0.007s
+    Routing Phase 1: CPU time = 0h 0m 0.761s, Elapsed time = 0h 0m 0.761s
+    Routing Phase 2: CPU time = 0h 0m 19s, Elapsed time = 0h 0m 19s
     Routing Phase 3: CPU time = 0h 0m 0s, Elapsed time = 0h 0m 0s
-    Total Routing: CPU time = 0h 0m 22s, Elapsed time = 0h 0m 22s
+    Total Routing: CPU time = 0h 0m 19s, Elapsed time = 0h 0m 19s
  Generate output files:
     CPU time = 0h 0m 4s, Elapsed time = 0h 0m 4s
 
- Total Time and Memory Usage: CPU time = 0h 0m 58s, Elapsed time = 0h 0m 58s, Peak memory usage = 530MB
+ Total Time and Memory Usage: CPU time = 0h 0m 46s, Elapsed time = 0h 0m 46s, Peak memory usage = 531MB
 
 
 3. Resource Usage Summary
@@ -40,15 +40,15 @@
   --------------------------------------------------------------------------------
   Resources                   | Usage                               | Utilization
   --------------------------------------------------------------------------------
-  Logic                       | 7203/20736                          |  35%
-    --LUT,ALU,ROM16           | 7071(6259 LUT, 812 ALU, 0 ROM16)    | -
+  Logic                       | 7085/20736                          |  35%
+    --LUT,ALU,ROM16           | 6953(6140 LUT, 813 ALU, 0 ROM16)    | -
     --SSRAM(RAM16)            | 22                                  | -
-  Register                    | 4004/15915                          |  26%
+  Register                    | 4008/15915                          |  26%
     --Logic Register as Latch | 0/15552                             |  0%
-    --Logic Register as FF    | 3933/15552                          |  26%
+    --Logic Register as FF    | 3936/15552                          |  26%
     --I/O Register as Latch   | 0/363                               |  0%
-    --I/O Register as FF      | 71/363                              |  20%
-  CLS                         | 5551/10368                          |  54%
+    --I/O Register as FF      | 72/363                              |  20%
+  CLS                         | 5431/10368                          |  53%
   I/O Port                    | 39/66                               |  60%
   I/O Buf                     | 33                                  | -
     --Input Buf               | 16                                  | -
@@ -90,7 +90,7 @@
   Clock Resource| Usage         | Utilization 
   ------------------------------------------
   PRIMARY       | 3/8           | 38%
-  LW            | 6/8           | 75%
+  LW            | 5/8           | 63%
   GCLK_PIN      | 3/5           | 60%
   CLKDIV        | 1/8           | 13%
   rPLL          | 2/2           | 100%
@@ -103,13 +103,12 @@
   Signal         | Global Clock   | Location
   -------------------------------------------
   clk14m_d       | PRIMARY        |  BR BL
-  O_sdram_clk_d  | PRIMARY        |  TR TL BR
+  O_sdram_clk_d  | PRIMARY        |  TR TL BL
   clk42m         | PRIMARY        |  BR BL
   n36_6          | LW             |  -
   u_v9958/reg_sprite_mode3| LW             |  -
   u_v9958/n208_4 | LW             |  -
   u_v9958/w_h_count[0]| LW             |  -
-  u_v9958/u_timing_control/u_screen_mode/ff_pattern7_7_5| LW             |  -
   u_v9958/u_command/ff_start| LW             |  -
   clk215m        | HCLK           | BANK4_BANK5_HCLK1
   clk85m         | HCLK           | BANK2_BANK3_HCLK0
