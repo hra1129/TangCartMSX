@@ -33,4 +33,11 @@ move zma.log lineintr.log
 	exit
 )
 
+..\zma vramio.asm VRAMIO.COM
+move zma.log vramio.log
+@if errorlevel 1 (
+	pause "エラーが発生しました。停止します。"
+	exit
+)
+
 pause
