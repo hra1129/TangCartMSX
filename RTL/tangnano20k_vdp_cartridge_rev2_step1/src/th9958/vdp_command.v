@@ -1541,7 +1541,7 @@ module vdp_command (
 						ff_state				<= c_state_hmmc_next;
 					end
 					else begin
-						ff_wait_counter			<= { c_wait_ymmm, 2'b11 };
+						ff_wait_counter			<= { c_wait_hmmc, 2'b11 };
 						ff_next_state			<= c_state_hmmc_next;
 						ff_state				<= c_state_wait_counter;
 					end
