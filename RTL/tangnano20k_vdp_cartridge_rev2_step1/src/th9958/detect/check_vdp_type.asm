@@ -7,98 +7,108 @@
 
 vdp_read_port		:= 0x0006
 vdp_write_port		:= 0x0007
+rdslt				:= 0x000C
+msx_version			:= 0x002D
 rg7sav				:= 0xF3E6
+main_rom_slot		:= 0xFCC1
 
 ; =============================================================================
 ;	check_vdp_type
 ;	input:
 ;		none
 ;	output:
-;		A ...... 0: TMS9918, 1: V9938, 2: V9958, 3: V9968, 4: V9978
+;		A ...... 0: TMS9918, 1: V9938, 2: V9958, 3: V9968, 4: V9978, 255: unknown
+;		C ...... VDP I/O Port#1 (unknown の場合は無意味な値)
 ;	break:
 ;		A, B, C, D, E, F
 ;	comment:
 ;		本体の VDP が V9968/V9978 であるかを調べる
-;		page0 が MAIN-ROM である前提
 ;		R#21 は V9938/V9958 では 0b00111010, V9968/V9978 では 0b00111011 になる
 ; =============================================================================
 			scope		check_vdp_type
 check_vdp_type::
-			; 本体側が TMS9918 か V99x8 か区別する
-			ld			de, [vdp_read_port]
-			inc			d							; VDP Port#1 for write
-			inc			e							; VDP Port#1 for read
-			ld			c, d
+			; MAIN-ROM の VDP Port (0x0006, 0x0007) を調べる
+			ld			hl, vdp_read_port
+			ld			a, [main_rom_slot]
+			call		rdslt
+			push		af
+			ld			hl, vdp_write_port
+			ld			a, [main_rom_slot]
+			call		rdslt
+			ld			c, a
+			pop			af
+			cp			a, c
+			jr			nz, is_unknown				; 0x0006 と 0x0007 の値が異なっている場合は未知。
+			inc			c							; VDP Port#1
+			push		bc
+			; MSX Version をチェック ( 1以上なら TMS9918 は有り得ない )
+			ld			hl, msx_version
+			ld			a, [main_rom_slot]
+			call		rdslt
+			pop			bc
+			or			a, a
+			jr			nz, check_v99x8
+	check_tms9918:
 			ld			b, 0x80 + 15
 			di
-
-	loop:
-			in			a, [c]						; S#0 bit7 が 1 になるまで待機。下記の[★]の直前で bit7 が 1 になるのを避けるため。
-			jp			p, loop
-
 			ld			a, 4						; R#15 = S#4
 			out			[c], a
 			out			[c], b						; もし TMS9918 なら R#15 が存在しないため、R#7 が書き換わる
-			ld			c, e						; VDP Port#1 for read
 			in			a, [c]						; TMS9918なら S#0 を読む (bit7 が 1 になっているかもしれない)。V99x8 なら S#4 を読む。
+			jp			p, is_tms9918
 			in			a, [c]						; TMS9918なら S#0 を読む (bit7 が確実に 0)。V99x8 なら S#4 を読む(bit7 が確実に 1)。
-			ex			af, af'
-			ld			c, d						; VDP Port#1 for write
+			jp			p, is_tms9918
 			xor			a, a						; R#15 = S#0
 			out			[c], a
 			out			[c], b
+			; V99x8 の判別
+	check_v99x8::
+			di
+			ld			b, 0x80 + 15
+			ld			hl, ((0x80 + 21) << 8) | 0b00111011
+			out			[c], l						; V9938 ではこれ以外を設定厳禁。V9938 初期値。V9968/V9978 では FID=1
+			out			[c], h
+			; S#1 を読む
+			ld			a, 1						; R#15 = S#1
+			out			[c], a
+			out			[c], b
+			in			a, [c]						; S#1 を読む
+			; VDP-ID を調べる
+			rrca
+			and			a, 0x1F
+			jr			z, is_v9938					; 0 なら V9938確定。
+			; FID=0 にして、V9958, V9968, V9978 を区別する
+			dec			l							; V9938 では設定禁止の値(ごく一部のコンポジットビデオ出力を使ってる機種で乱れる)。
+			out			[c], l						; V9958 では無効。V9968/V9978 では FID=0
+			out			[c], h
+			; S#1 を読む
+			in			a, [c]						; S#1 を読む
+			; VDP-ID を取得
+			rrca
+			and			a, 0x1F						; 2: V9958, 3: V9968, 4: V9978
+			dec			a
+	is_v9938:
+			inc			a
+			ld			e, a
+			; R#15 = S#0
+			xor			a, a						; R#15 = S#0
+			out			[c], a
+			ei
+			out			[c], b
+			ld			a, e
+			ret
+	is_unknown:
+			; 0x0006, 0x0007 が異なっているので未知
+			ld			a, 255
+			ret
+	is_tms9918:
 			; TMS9918 だった場合の R#7復元処理
 			ld			a, [rg7sav]
 			out			[c], a
 			ld			a, 0x80 + 7
 			ei
 			out			[c], a
-			ex			af, af'
-			; S#4 の読みだし結果を調べる
-			and			a, 0x80						; bit7 を調べる。TMS9918 なら S#0 の bit7 なので 0
-			ret			z							; TMS9918 なら A=0 で戻る
-			di
-			; V99x8 の判別
-			ld			a, 0b00111011				; V9938 初期値。V9968/V9978 では FID=1
-			out			[c], a
-			ld			a, 0x80 + 21
-			out			[c], a
-			; S#1 を読む
-			ld			a, 1						; R#15 = S#1
-			out			[c], a
-			out			[c], b
-			ld			c, e						; VDP Port#1 for read
-			in			a, [c]						; S#1 を読む
-			; VDP-ID を調べる
-			ld			c, d						; VDP Port#1 for write
-			rrca
-			and			a, 0x1F
-			jr			z, skip
-			; FID=0 にして、V9958, V9968, V9978 を区別する
-			ld			a, 0b00111010				; V9958 では無効。V9968/V9978 では FID=0
-			out			[c], a
-			ld			a, 0x80 + 21
-			out			[c], a
-			; S#1 を読む
-			ld			a, 1						; R#15 = S#1
-			out			[c], a
-			out			[c], b
-			ld			c, e						; VDP Port#1 for read
-			in			a, [c]						; S#1 を読む
-			; VDP-ID を取得
-			rrca
-			and			a, 0x1F
-			dec			a
-		skip:
-			inc			a
-			ld			e, a
-			; R#15 = S#0
-			ld			c, d						; VDP Port#1 for write
-			xor			a, a						; R#15 = S#0
-			out			[c], a
-			ei
-			out			[c], b
-			ld			a, e
+			xor			a, a
 			ret
 			endscope
 
@@ -108,6 +118,7 @@ check_vdp_type::
 ;		none
 ;	output:
 ;		A ...... 0: none, 1: V9938, 2: V9958, 3: V9968, 4: V9978
+;		C ...... 0x89 (VDP I/O Port#1)
 ;	break:
 ;		A, B, C, D, E, F
 ;	comment:
@@ -119,57 +130,14 @@ check_vdp_type::
 ; =============================================================================
 			scope		check_2nd_vdp_type
 check_2nd_vdp_type::
-			ld			de, 0x8989
-			ld			c, e
-			ld			b, 0x80 + 15
+			ld			c, 0x89
 			di
 			in			a, [c]						; 未接続なら 0xFF を読む。V99x8 なら S#0 を読む(bit7 は状況に応じて 0 か 1)。
+			jp			p, check_v99x8
 			in			a, [c]						; 未接続なら 0xFF を読む。V99x8 なら S#0 を読む(bit7 が確実に 0)。[★]
-			ld			c, d						; VDP Port#1 for write
-			; S#4 の読みだし結果を調べる
-			and			a, 0x80						; bit7 を調べる。TMS9918 なら S#0 の bit7 なので 0
-			ret			z							; TMS9918 なら A=0 で戻る
-			di
-			; V99x8 の判別
-			ld			a, 0b00111011				; V9938 初期値。V9968/V9978 では FID=1
-			out			[c], a
-			ld			a, 0x80 + 21
-			out			[c], a
-			; S#1 を読む
-			ld			a, 1						; R#15 = S#1
-			out			[c], a
-			out			[c], b
-			ld			c, e						; VDP Port#1 for read
-			in			a, [c]						; S#1 を読む
-			; VDP-ID を調べる
-			ld			c, d						; VDP Port#1 for write
-			rrca
-			and			a, 0x1F
-			jr			z, skip
-			; FID=0 にして、V9958, V9968, V9978 を区別する
-			ld			a, 0b00111010				; V9958 では無効。V9968/V9978 では FID=0
-			out			[c], a
-			ld			a, 0x80 + 21
-			out			[c], a
-			; S#1 を読む
-			ld			a, 1						; R#15 = S#1
-			out			[c], a
-			out			[c], b
-			ld			c, e						; VDP Port#1 for read
-			in			a, [c]						; S#1 を読む
-			; VDP-ID を取得
-			rrca
-			and			a, 0x1F
-			dec			a
-		skip:
-			inc			a
-			ld			e, a
-			; R#15 = S#0
-			ld			c, d						; VDP Port#1 for write
-			xor			a, a						; R#15 = S#0
-			out			[c], a
+			jp			p, check_v99x8
+			; 未接続
 			ei
-			out			[c], b
-			ld			a, e
+			xor			a, a
 			ret
 			endscope

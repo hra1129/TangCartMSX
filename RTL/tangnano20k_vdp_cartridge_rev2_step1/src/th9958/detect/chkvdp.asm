@@ -5,9 +5,6 @@
 ; =============================================================================
 
 bdos			:=		0x0005
-rdslt			:=		0x000C
-
-mainrom			:=		0xFCC1
 
 				org		0x0100
 start:
@@ -15,31 +12,14 @@ start:
 				ld		c, 9
 				ld		de, s_title
 				call	bdos
-				; MAIN-ROM の 0x0006, 0x0007 のフリをさせるために元の値を一時退避
-				ld		hl, [ 0x0006 ]
-				ld		[ backup ], hl
-				; MAIN-ROM の 0x0006, 0x0007 を読む
-				ld		a, [mainrom]
-				ld		hl, 0x0006
-				call	rdslt
-				ld		[hl], a
-				ld		[vdp1st + 0], a
-
-				ld		a, [mainrom]
-				ld		hl, 0x0007
-				call	rdslt
-				ld		[hl], a
-				ld		[vdp1st + 1], a
 				; 1st VDP
 				call	check_vdp_type
-				; 0x0006, 0x0007 の元の値を復元
-				ld		hl, [ backup ]
-				ld		[ 0x0006 ], hl
 				; 得られた番号を VDP名文字列に変換
 				cp		a, 5
 				jr		c, valid_vdp
 				ld		a, 5
 	valid_vdp:
+				; VDP番号から文字列アドレスに変換
 				ld		l, a
 				ld		h, 0
 				add		hl, hl
@@ -48,6 +28,9 @@ start:
 				ld		e, [hl]
 				inc		hl
 				ld		d, [hl]
+				; VDP I/O Port を保存
+				ld		a, c
+				ld		[vdp1st], a
 				; VDP名表示
 				ld		c, 9
 				call	bdos
@@ -85,8 +68,6 @@ start:
 				ld		c, 0
 				jp		bdos
 	vdp1st:
-				dw		0
-	backup:
 				dw		0
 	a_table:
 				dw		s_tms9918
