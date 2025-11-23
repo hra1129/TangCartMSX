@@ -10,6 +10,7 @@ vdp_write_port		:= 0x0007
 rdslt				:= 0x000C
 msx_version			:= 0x002D
 rg7sav				:= 0xF3E6
+rg21sav				:= 0xFFF4
 main_rom_slot		:= 0xFCC1
 
 ; =============================================================================
@@ -23,7 +24,7 @@ main_rom_slot		:= 0xFCC1
 ;		A, B, C, D, E, F
 ;	comment:
 ;		本体の VDP が V9968/V9978 であるかを調べる
-;		R#21 は V9938/V9958 では 0b00111010, V9968/V9978 では 0b00111011 になる
+;		R#21 は V9958/V9968/V9978 では bit0 (FID) を 0 に落とす。
 ; =============================================================================
 			scope		check_vdp_type
 check_vdp_type::
@@ -65,9 +66,6 @@ check_vdp_type::
 	check_v99x8::
 			di
 			ld			b, 0x80 + 15
-			ld			hl, ((0x80 + 21) << 8) | 0b00111011
-			out			[c], l						; V9938 ではこれ以外を設定厳禁。V9938 初期値。V9968/V9978 では FID=1
-			out			[c], h
 			; S#1 を読む
 			ld			a, 1						; R#15 = S#1
 			out			[c], a
@@ -78,9 +76,12 @@ check_vdp_type::
 			and			a, 0x1F
 			jr			z, is_v9938					; 0 なら V9938確定。
 			; FID=0 にして、V9958, V9968, V9978 を区別する
-			dec			l							; V9938 では設定禁止の値(ごく一部のコンポジットビデオ出力を使ってる機種で乱れる)。
-			out			[c], l						; V9958 では無効。V9968/V9978 では FID=0
-			out			[c], h
+			ld			a, [rg21sav]
+			and			a, 0xFE						; FID=0
+			ld			[rg21sav], a
+			out			[c], a						; V9958 では無効。V9968/V9978 では FID=0
+			ld			a, 0x80 + 21
+			out			[c], a
 			; S#1 を読む
 			in			a, [c]						; S#1 を読む
 			; VDP-ID を取得
@@ -132,12 +133,21 @@ check_vdp_type::
 check_2nd_vdp_type::
 			ld			c, 0x89
 			di
+			ld			a, [rg21sav]
+			push		af
 			in			a, [c]						; 未接続なら 0xFF を読む。V99x8 なら S#0 を読む(bit7 は状況に応じて 0 か 1)。
-			jp			p, check_v99x8
+			jp			p, go_check_v99x8
 			in			a, [c]						; 未接続なら 0xFF を読む。V99x8 なら S#0 を読む(bit7 が確実に 0)。[★]
-			jp			p, check_v99x8
+			jp			p, go_check_v99x8
 			; 未接続
 			ei
 			xor			a, a
+			ret
+	go_check_v99x8:
+			call		check_v99x8
+			ld			b, a
+			pop			af
+			ld			[rg21sav], a
+			ld			a, b
 			ret
 			endscope
