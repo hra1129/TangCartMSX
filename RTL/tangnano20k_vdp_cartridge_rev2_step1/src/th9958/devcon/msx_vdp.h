@@ -22,7 +22,7 @@ void _ei( void );
 
 int init_vdp( void );
 void set_screen5( void );
-void bload( const char *p_name, int address );
+void bload( const char *p_name );
 void set_display_visible( int visible );
 void wait_vsync( int n );
 void set_vram_write_address( int bank, int address );

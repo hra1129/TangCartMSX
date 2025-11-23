@@ -9,7 +9,7 @@
 
 unsigned char vdp_port1 = 0x99;
 
-static unsigned char s_buffer[ 1024 ];
+static unsigned char s_buffer[ 2048 ];
 
 // --------------------------------------------------------------------
 void _di( void ) {
@@ -38,7 +38,7 @@ int init_vdp( void ) {
 	vdp_write_reg( 15, 0 );
 	vdp_write_reg( 21, 0x3B );
 	_ei();
-	if( id >= 2 ) {
+	if( id >= 3 ) {
 		return 1;
 	}
 	//	Šg’£ƒXƒƒbƒg‚ð’²‚×‚é
@@ -50,7 +50,7 @@ int init_vdp( void ) {
 	vdp_write_reg( 15, 0 );
 	vdp_write_reg( 21, 0x3B );
 	_ei();
-	if( id >= 2 ) {
+	if( id >= 3 ) {
 		return 1;
 	}
 	vdp_port1 = 0x99;
@@ -89,7 +89,7 @@ void set_screen5( void ) {
 }
 
 // --------------------------------------------------------------------
-void bload( const char *p_name, int address ) {
+void bload( const char *p_name ) {
 	FILE *p_file;
 	unsigned int start, end, size, block_size;
 	int i, port;
@@ -104,15 +104,10 @@ void bload( const char *p_name, int address ) {
 	start	= (int)s_buffer[1] | ((int)s_buffer[2] << 8);
 	end		= (int)s_buffer[3] | ((int)s_buffer[4] << 8);
 	size	= end - start + 1;
-	_di();
-	vdp_write_reg( 14, address >> 14 );
-	outp( vdp_port1, address & 0xFF );
-	outp( vdp_port1, (address >> 8) | 0x40 );
-	_ei();
 	port = vdp_port1 - 1;
 	while( size ) {
-		if( size > 1024 ) {
-			block_size = 1024;
+		if( size > sizeof(s_buffer) ) {
+			block_size = sizeof(s_buffer);
 		}
 		else {
 			block_size = size;
@@ -159,7 +154,7 @@ void wait_vsync( int n ) {
 void set_vram_write_address( int bank, int address ) {
 
 	_di();
-	vdp_write_reg( 14, ((bank & 3) << 2) | ((address & 0xC000) >> 14) );
+	vdp_write_reg( 14, ((bank & 3) << 2) | ((address >> 14) & 0x03) );
 	outp( vdp_port1, address & 0xFF );
 	outp( vdp_port1, ((address >> 8) & 0x3F) | 0x40 );
 	_ei();
