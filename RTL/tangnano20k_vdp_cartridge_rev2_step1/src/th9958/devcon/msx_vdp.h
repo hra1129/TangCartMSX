@@ -26,5 +26,6 @@ void bload( const char *p_name );
 void set_display_visible( int visible );
 void wait_vsync( int n );
 void set_vram_write_address( int bank, int address );
+unsigned char get_space_key( void );
 
 #endif

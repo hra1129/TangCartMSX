@@ -17,6 +17,99 @@ typedef struct {
 	unsigned char	pattern;
 } ATTRIBUTE_T;
 
+typedef void (*CALLBACK_T)( void );
+
+static CALLBACK_T p_state;
+
+static ATTRIBUTE_T rabbit1[] = {
+	{	//	左端
+		31 | 0xC000,	//	Y (signed, 2bytes)
+		128,			//	MGY
+		1,				//	Palette Set#1
+		16,				//	X (signed, 2bytes)
+		16,				//	MGX
+		0,				//	Pattern#0
+	},
+	{	//	中左
+		31 | 0xC000,	//	Y (signed, 2bytes)
+		128,			//	MGY
+		1,				//	Palette Set#1
+		32,				//	X (signed, 2bytes)
+		16,				//	MGX
+		1,				//	Pattern#1
+	},
+	{	//	中右
+		31 | 0xC000,	//	Y (signed, 2bytes)
+		128,			//	MGY
+		1,				//	Palette Set#1
+		48,				//	X (signed, 2bytes)
+		16,				//	MGX
+		2,				//	Pattern#2
+	},
+	{	//	右端
+		31 | 0xC000,	//	Y (signed, 2bytes)
+		128,			//	MGY
+		1,				//	Palette Set#1
+		64,				//	X (signed, 2bytes)
+		16,				//	MGX
+		3,				//	Pattern#3
+	},
+};
+
+static ATTRIBUTE_T rabbit2[] = {
+	{	//	左端
+		31 | 0xC000,	//	Y (signed, 2bytes)
+		128,			//	MGY
+		2 | 16,			//	Palette Set#2
+		128,			//	X (signed, 2bytes)
+		16,				//	MGX
+		3,				//	Pattern#0
+	},
+	{	//	中左
+		31 | 0xC000,	//	Y (signed, 2bytes)
+		128,			//	MGY
+		2 | 16,			//	Palette Set#2
+		144,			//	X (signed, 2bytes)
+		16,				//	MGX
+		2,				//	Pattern#1
+	},
+	{	//	中右
+		31 | 0xC000,	//	Y (signed, 2bytes)
+		128,			//	MGY
+		2 | 16,			//	Palette Set#2
+		160,			//	X (signed, 2bytes)
+		16,				//	MGX
+		1,				//	Pattern#2
+	},
+	{	//	右端
+		31 | 0xC000,	//	Y (signed, 2bytes)
+		128,			//	MGY
+		2 | 16,			//	Palette Set#2
+		176,			//	X (signed, 2bytes)
+		16,				//	MGX
+		0,				//	Pattern#3
+	},
+};
+
+static ATTRIBUTE_T shadow[] = {
+	{	//	オレンジうさぎの陰
+		153,				//	Y (signed, 2bytes)
+		12,				//	MGY
+		(2 << 6) | 1,	//	Palette Set#1, TP=50%
+		16,				//	X (signed, 2bytes)
+		64,				//	MGX
+		129,			//	Pattern#0
+	},
+	{	//	ブルーうさぎの陰
+		153,			//	Y (signed, 2bytes)
+		12,				//	MGY
+		(2 << 6) | 1,	//	Palette Set#1, TP=50%
+		32,				//	X (signed, 2bytes)
+		64,				//	MGX
+		129,			//	Pattern#1
+	},
+};
+
 // --------------------------------------------------------------------
 void set_initial_palette( void ) {
 	static unsigned char rgb[] = {
@@ -161,49 +254,99 @@ void initializer( void ) {
 }
 
 // --------------------------------------------------------------------
-void put_usagi1( int x, int y, int dir ) {
-	static ATTRIBUTE_T attribute[] = {
-		{	//	左端
-			31 | 0xC000,	//	Y (signed, 2bytes)
-			128,			//	MGY
-			1,				//	Palette Set#1
-			16,				//	X (signed, 2bytes)
-			16,				//	MGX
-			0,				//	Pattern#0
-		},
-		{	//	中左
-			31 | 0xC000,	//	Y (signed, 2bytes)
-			128,			//	MGY
-			1,				//	Palette Set#1
-			32,				//	X (signed, 2bytes)
-			16,				//	MGX
-			1,				//	Pattern#1
-		},
-		{	//	中右
-			31 | 0xC000,	//	Y (signed, 2bytes)
-			128,			//	MGY
-			1,				//	Palette Set#1
-			48,				//	X (signed, 2bytes)
-			16,				//	MGX
-			2,				//	Pattern#2
-		},
-		{	//	右端
-			31 | 0xC000,	//	Y (signed, 2bytes)
-			128,			//	MGY
-			1,				//	Palette Set#1
-			64,				//	X (signed, 2bytes)
-			16,				//	MGX
-			3,				//	Pattern#3
-		},
-	};
-	unsigned char *p = (unsigned char*) attribute;
+void put_usagi( ATTRIBUTE_T *p_attribute, ATTRIBUTE_T *p_shadow, int x, int dir ) {
+	unsigned char *p = (unsigned char*) p_attribute;
 	int i, port;
-	set_vram_write_address( 1, 0x0000 );
 	port = vdp_port1 - 1;
-	for( i = 0; i < sizeof(attribute); i++ ) {
+	x = x & 0x3FF;
+	p_shadow->x = x;
+	if( dir ) {
+		//	右向き
+		p_attribute->mode		= p_attribute->mode | 0x10;
+		p_attribute->x			= x;
+		p_attribute->pattern	= 3;
+		p_attribute++;
+		p_attribute->mode		= p_attribute->mode | 0x10;
+		p_attribute->x			= x + 16;
+		p_attribute->pattern	= 2;
+		p_attribute++;
+		p_attribute->mode		= p_attribute->mode | 0x10;
+		p_attribute->x			= x + 32;
+		p_attribute->pattern	= 1;
+		p_attribute++;
+		p_attribute->mode		= p_attribute->mode | 0x10;
+		p_attribute->x			= x + 48;
+		p_attribute->pattern	= 0;
+	}
+	else {
+		//	左向き
+		p_attribute->mode		= p_attribute->mode & 0x0F;
+		p_attribute->x			= x;
+		p_attribute->pattern	= 0;
+		p_attribute++;
+		p_attribute->mode		= p_attribute->mode & 0x0F;
+		p_attribute->x			= x + 16;
+		p_attribute->pattern	= 1;
+		p_attribute++;
+		p_attribute->mode		= p_attribute->mode & 0x0F;
+		p_attribute->x			= x + 32;
+		p_attribute->pattern	= 2;
+		p_attribute++;
+		p_attribute->mode		= p_attribute->mode & 0x0F;
+		p_attribute->x			= x + 48;
+		p_attribute->pattern	= 3;
+	}
+	for( i = 0; i < 8 * 4; i++ ) {
 		outp( port, *p );
 		p++;
 	}
+}
+
+// --------------------------------------------------------------------
+void put_shadow( void ) {
+	unsigned char *p = (unsigned char*) shadow;
+	int i, port;
+	port = vdp_port1 - 1;
+	for( i = 0; i < 8 * 2; i++ ) {
+		outp( port, *p );
+		p++;
+	}
+}
+
+// --------------------------------------------------------------------
+void background_scroll( void ) {
+	static int x = 0, y = 0;
+
+	//	背景スクロール
+	vdp_write_reg( 23, y );
+	vdp_write_reg( 26, x >> 3 );
+	vdp_write_reg( 27, (x & 7) ^ 7 );
+	x = (x + 2) & 255;
+	y = (y + 1) & 255;
+}
+
+// --------------------------------------------------------------------
+void state_window_animation( void ) {
+	static int x1 = 16, x2 = 128;
+
+	wait_vsync( 1 );
+	//	スプライト（うさぎファイター）
+	set_vram_write_address( 1, 0x0000 + 0 * 8 );
+	put_usagi( rabbit1, &shadow[0], x1, 0 );
+	set_vram_write_address( 1, 0x0000 + 4 * 8 );
+	put_usagi( rabbit2, &shadow[1], x2, 1 );
+	set_vram_write_address( 1, 0x0000 + 8 * 8 );
+	put_shadow();
+
+	x1++;
+	if( x1 == 256 ) {
+		x1 = -64;
+	}
+	x2--;
+	if( x2 == -64 ) {
+		x2 = 255;
+	}
+	background_scroll();
 }
 
 // --------------------------------------------------------------------
@@ -211,19 +354,10 @@ int main() {
 	int x, y;
 
 	initializer();
+	p_state = state_window_animation;
 
-	x = 0;
-	y = 0;
 	while( 1 ) {
-		wait_vsync( 1 );
-		//	背景スクロール
-		vdp_write_reg( 23, y );
-		vdp_write_reg( 26, x >> 3 );
-		vdp_write_reg( 27, (x & 7) ^ 7 );
-		x = (x + 2) & 255;
-		y = (y + 1) & 255;
-		//	スプライト（うさぎファイター）
-		put_usagi1( 0, 0, 0 );
+		p_state();
 	}
 	return 0;
 }

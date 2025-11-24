@@ -143,10 +143,13 @@ void set_display_visible( int visible ) {
 void wait_vsync( int n ) {
 
 	_di();
+	vdp_write_reg( 15, 2 );
 	while( n ) {
-		while( (inp( vdp_port1 ) & 0x80) == 0 );
+		while( (inp( vdp_port1 ) & 0x40) == 0 );
+		while( (inp( vdp_port1 ) & 0x40) != 0 );
 		n--;
 	}
+	vdp_write_reg( 15, 0 );
 	_ei();
 }
 
@@ -158,4 +161,16 @@ void set_vram_write_address( int bank, int address ) {
 	outp( vdp_port1, address & 0xFF );
 	outp( vdp_port1, ((address >> 8) & 0x3F) | 0x40 );
 	_ei();
+}
+
+// --------------------------------------------------------------------
+unsigned char get_space_key( void ) {
+	unsigned char a;
+
+	_di();
+	a = ((unsigned char)inp( 0xAA ) & 0xF0) | 0x08;
+	outp( 0xAA, a );
+	a = ~(unsigned char)inp( 0xA9 ) & 0x01;
+	_ei();
+	return a;
 }
