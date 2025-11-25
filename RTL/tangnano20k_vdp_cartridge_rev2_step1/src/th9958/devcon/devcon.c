@@ -5,7 +5,6 @@
 // ====================================================================
 
 #include <msx_vdp.h>
-#include <msx.h>
 #include <stdio.h>
 
 typedef struct {
@@ -22,7 +21,7 @@ typedef void (*CALLBACK_T)( void );
 static CALLBACK_T p_state;
 
 static ATTRIBUTE_T rabbit1[] = {
-	{	//	¶’[
+	{	//	å·¦ç«¯
 		31 | 0xC000,	//	Y (signed, 2bytes)
 		128,			//	MGY
 		1,				//	Palette Set#1
@@ -30,7 +29,7 @@ static ATTRIBUTE_T rabbit1[] = {
 		16,				//	MGX
 		0,				//	Pattern#0
 	},
-	{	//	’†¶
+	{	//	ä¸­å·¦
 		31 | 0xC000,	//	Y (signed, 2bytes)
 		128,			//	MGY
 		1,				//	Palette Set#1
@@ -38,7 +37,7 @@ static ATTRIBUTE_T rabbit1[] = {
 		16,				//	MGX
 		1,				//	Pattern#1
 	},
-	{	//	’†‰E
+	{	//	ä¸­å³
 		31 | 0xC000,	//	Y (signed, 2bytes)
 		128,			//	MGY
 		1,				//	Palette Set#1
@@ -46,7 +45,7 @@ static ATTRIBUTE_T rabbit1[] = {
 		16,				//	MGX
 		2,				//	Pattern#2
 	},
-	{	//	‰E’[
+	{	//	å³ç«¯
 		31 | 0xC000,	//	Y (signed, 2bytes)
 		128,			//	MGY
 		1,				//	Palette Set#1
@@ -57,7 +56,7 @@ static ATTRIBUTE_T rabbit1[] = {
 };
 
 static ATTRIBUTE_T rabbit2[] = {
-	{	//	¶’[
+	{	//	å·¦ç«¯
 		31 | 0xC000,	//	Y (signed, 2bytes)
 		128,			//	MGY
 		2 | 16,			//	Palette Set#2
@@ -65,7 +64,7 @@ static ATTRIBUTE_T rabbit2[] = {
 		16,				//	MGX
 		3,				//	Pattern#0
 	},
-	{	//	’†¶
+	{	//	ä¸­å·¦
 		31 | 0xC000,	//	Y (signed, 2bytes)
 		128,			//	MGY
 		2 | 16,			//	Palette Set#2
@@ -73,7 +72,7 @@ static ATTRIBUTE_T rabbit2[] = {
 		16,				//	MGX
 		2,				//	Pattern#1
 	},
-	{	//	’†‰E
+	{	//	ä¸­å³
 		31 | 0xC000,	//	Y (signed, 2bytes)
 		128,			//	MGY
 		2 | 16,			//	Palette Set#2
@@ -81,7 +80,7 @@ static ATTRIBUTE_T rabbit2[] = {
 		16,				//	MGX
 		1,				//	Pattern#2
 	},
-	{	//	‰E’[
+	{	//	å³ç«¯
 		31 | 0xC000,	//	Y (signed, 2bytes)
 		128,			//	MGY
 		2 | 16,			//	Palette Set#2
@@ -92,7 +91,7 @@ static ATTRIBUTE_T rabbit2[] = {
 };
 
 static ATTRIBUTE_T shadow[] = {
-	{	//	ƒIƒŒƒ“ƒW‚¤‚³‚¬‚Ì‰A
+	{	//	ã‚ªãƒ¬ãƒ³ã‚¸ã†ã•ãã®é™°
 		153,				//	Y (signed, 2bytes)
 		12,				//	MGY
 		(2 << 6) | 1,	//	Palette Set#1, TP=50%
@@ -100,7 +99,7 @@ static ATTRIBUTE_T shadow[] = {
 		64,				//	MGX
 		129,			//	Pattern#0
 	},
-	{	//	ƒuƒ‹[‚¤‚³‚¬‚Ì‰A
+	{	//	ãƒ–ãƒ«ãƒ¼ã†ã•ãã®é™°
 		153,			//	Y (signed, 2bytes)
 		12,				//	MGY
 		(2 << 6) | 1,	//	Palette Set#1, TP=50%
@@ -164,39 +163,39 @@ void set_initial_palette( void ) {
 void set_sprite_palette( void ) {
 	static unsigned char rgb[] = {
 		//	Palette set #1
-		 0,  0,  0,			//	 0 “§–¾
-		 0,  0,  0,			//	 1 •
-		18,  8,  0,			//	 2 ƒIƒŒƒ“ƒW(ˆÃ)
-		28, 12,  0,			//	 3 ƒIƒŒƒ“ƒW(–¾)
-		22, 22, 22,			//	 4 ŠD(–¾)
-		18, 18, 18,			//	 5 ŠD(ˆÃ)
-		31, 20,  0,			//	 6 ƒIƒŒƒ“ƒW(–¾–¾)
-		 0,  0, 24,			//	 7 Â(–¾)
-		26, 26, 26,			//	 8 ŠD(–¾–¾)
-		10, 10, 10,			//	 9 ŠD(ˆÃˆÃ)
-		 0,  0, 12,			//	10 Â(ˆÃ)
-		 6,  6,  6,			//	11 ŠD(ˆÃˆÃˆÃ)
+		 0,  0,  0,			//	 0 é€æ˜
+		 0,  0,  0,			//	 1 é»’
+		18,  8,  0,			//	 2 ã‚ªãƒ¬ãƒ³ã‚¸(æš—)
+		28, 12,  0,			//	 3 ã‚ªãƒ¬ãƒ³ã‚¸(æ˜)
+		22, 22, 22,			//	 4 ç°(æ˜)
+		18, 18, 18,			//	 5 ç°(æš—)
+		31, 20,  0,			//	 6 ã‚ªãƒ¬ãƒ³ã‚¸(æ˜æ˜)
+		 0,  0, 24,			//	 7 é’(æ˜)
+		26, 26, 26,			//	 8 ç°(æ˜æ˜)
+		10, 10, 10,			//	 9 ç°(æš—æš—)
+		 0,  0, 12,			//	10 é’(æš—)
+		 6,  6,  6,			//	11 ç°(æš—æš—æš—)
 		 0,  0, 10,			//	12 
 		20,  0, 20,			//	13 
 		30, 30, 30,			//	14 
-		31, 31, 31,			//	15 ”’
+		31, 31, 31,			//	15 ç™½
 		//	Palette set #2
-		 0,  0,  0,			//	 0 “§–¾
-		 0,  0,  0,			//	 1 •
-		 0,  4,  8,			//	 2 ƒ_[ƒNƒuƒ‹[(ˆÃ)
-		 0,  6, 18,			//	 3 ƒ_[ƒNƒuƒ‹[(–¾)
-		22, 22, 22,			//	 4 ŠD(–¾)
-		18, 18, 18,			//	 5 ŠD(ˆÃ)
-		 0, 10, 28,			//	 6 ƒ_[ƒNƒuƒ‹[(–¾–¾)
-		 0,  0, 24,			//	 7 Â(–¾)
-		26, 26, 26,			//	 8 ŠD(–¾–¾)
-		10, 10, 10,			//	 9 ŠD(ˆÃˆÃ)
-		 0,  0, 12,			//	10 Â(ˆÃ)
-		 6,  6,  6,			//	11 ŠD(ˆÃˆÃˆÃ)
+		 0,  0,  0,			//	 0 é€æ˜
+		 0,  0,  0,			//	 1 é»’
+		 0,  4,  8,			//	 2 ãƒ€ãƒ¼ã‚¯ãƒ–ãƒ«ãƒ¼(æš—)
+		 0,  6, 18,			//	 3 ãƒ€ãƒ¼ã‚¯ãƒ–ãƒ«ãƒ¼(æ˜)
+		22, 22, 22,			//	 4 ç°(æ˜)
+		18, 18, 18,			//	 5 ç°(æš—)
+		 0, 10, 28,			//	 6 ãƒ€ãƒ¼ã‚¯ãƒ–ãƒ«ãƒ¼(æ˜æ˜)
+		 0,  0, 24,			//	 7 é’(æ˜)
+		26, 26, 26,			//	 8 ç°(æ˜æ˜)
+		10, 10, 10,			//	 9 ç°(æš—æš—)
+		 0,  0, 12,			//	10 é’(æš—)
+		 6,  6,  6,			//	11 ç°(æš—æš—æš—)
 		 0,  0, 10,			//	12 
 		20,  0, 20,			//	13 
 		30, 30, 30,			//	14 
-		31, 31, 31,			//	15 ”’
+		31, 31, 31,			//	15 ç™½
 	};
 	unsigned char *p_rgb;
 	int i, p;
@@ -222,33 +221,33 @@ void initializer( void ) {
 //	}
 
 	set_screen5();
-	//	ü•ÓF•
+	//	å‘¨è¾ºè‰²é»’
 	vdp_write_reg( 7, 0x00 );
-	//	¶’[ƒ}ƒXƒN
+	//	å·¦ç«¯ãƒã‚¹ã‚¯
 	vdp_write_reg( 25, 0x02 );
-	//	‰¡ƒXƒNƒ[ƒ‹‰Šú’l
+	//	æ¨ªã‚¹ã‚¯ãƒ­ãƒ¼ãƒ«åˆæœŸå€¤
 	vdp_write_reg( 27, 7 );
-	//	”wŒi“Ç‚İ‚İ
+	//	èƒŒæ™¯èª­ã¿è¾¼ã¿
 	set_vram_write_address( 0, 0x0000 );
 	bload( "bg.SC5" );
 	set_initial_palette();
-	//	ƒXƒvƒ‰ƒCƒg‰æ‘œ“Ç‚İ‚İ
+	//	ã‚¹ãƒ—ãƒ©ã‚¤ãƒˆç”»åƒèª­ã¿è¾¼ã¿
 	set_sprite_palette();
 	set_vram_write_address( 0, 0x8000 );
 	bload( "usa.SC5" );
 	_di();
-	//	ƒXƒvƒ‰ƒCƒgƒAƒgƒŠƒrƒ…[ƒgƒe[ƒuƒ‹ 0x10000
+	//	ã‚¹ãƒ—ãƒ©ã‚¤ãƒˆã‚¢ãƒˆãƒªãƒ“ãƒ¥ãƒ¼ãƒˆãƒ†ãƒ¼ãƒ–ãƒ« 0x10000
 	vdp_write_reg(  5, 0x03 );
 	vdp_write_reg( 11, 0x02 );
-	//	ƒXƒvƒ‰ƒCƒgƒpƒ^[ƒ“ƒWƒFƒlƒŒ[ƒ^[ƒe[ƒuƒ‹ 0x08000
+	//	ã‚¹ãƒ—ãƒ©ã‚¤ãƒˆãƒ‘ã‚¿ãƒ¼ãƒ³ã‚¸ã‚§ãƒãƒ¬ãƒ¼ã‚¿ãƒ¼ãƒ†ãƒ¼ãƒ–ãƒ« 0x08000
 	vdp_write_reg(  6, 0x10 );
-	//	ƒXƒvƒ‰ƒCƒgƒAƒgƒŠƒrƒ…[ƒgƒe[ƒuƒ‹‚ğƒNƒŠƒA‚·‚é
+	//	ã‚¹ãƒ—ãƒ©ã‚¤ãƒˆã‚¢ãƒˆãƒªãƒ“ãƒ¥ãƒ¼ãƒˆãƒ†ãƒ¼ãƒ–ãƒ«ã‚’ã‚¯ãƒªã‚¢ã™ã‚‹
 	set_vram_write_address( 1, 0x0000 );
 	p = vdp_port1 - 1;
 	for( i = 0; i < 64 * 8; i++ ) {
 		outp( p, 216 );
 	}
-	//	ƒXƒvƒ‰ƒCƒg•\¦
+	//	ã‚¹ãƒ—ãƒ©ã‚¤ãƒˆè¡¨ç¤º
 	vdp_write_reg(  8, 0x08 );
 	_ei();
 }
@@ -261,7 +260,7 @@ void put_usagi( ATTRIBUTE_T *p_attribute, ATTRIBUTE_T *p_shadow, int x, int dir 
 	x = x & 0x3FF;
 	p_shadow->x = x;
 	if( dir ) {
-		//	‰EŒü‚«
+		//	å³å‘ã
 		p_attribute->mode		= p_attribute->mode | 0x10;
 		p_attribute->x			= x;
 		p_attribute->pattern	= 3;
@@ -279,7 +278,7 @@ void put_usagi( ATTRIBUTE_T *p_attribute, ATTRIBUTE_T *p_shadow, int x, int dir 
 		p_attribute->pattern	= 0;
 	}
 	else {
-		//	¶Œü‚«
+		//	å·¦å‘ã
 		p_attribute->mode		= p_attribute->mode & 0x0F;
 		p_attribute->x			= x;
 		p_attribute->pattern	= 0;
@@ -317,7 +316,7 @@ void put_shadow( void ) {
 void background_scroll( void ) {
 	static int x = 0, y = 0;
 
-	//	”wŒiƒXƒNƒ[ƒ‹
+	//	èƒŒæ™¯ã‚¹ã‚¯ãƒ­ãƒ¼ãƒ«
 	vdp_write_reg( 23, y );
 	vdp_write_reg( 26, x >> 3 );
 	vdp_write_reg( 27, (x & 7) ^ 7 );
@@ -330,7 +329,7 @@ void state_window_animation( void ) {
 	static int x1 = 16, x2 = 128;
 
 	wait_vsync( 1 );
-	//	ƒXƒvƒ‰ƒCƒgi‚¤‚³‚¬ƒtƒ@ƒCƒ^[j
+	//	ã‚¹ãƒ—ãƒ©ã‚¤ãƒˆï¼ˆã†ã•ããƒ•ã‚¡ã‚¤ã‚¿ãƒ¼ï¼‰
 	set_vram_write_address( 1, 0x0000 + 0 * 8 );
 	put_usagi( rabbit1, &shadow[0], x1, 0 );
 	set_vram_write_address( 1, 0x0000 + 4 * 8 );
@@ -361,3 +360,4 @@ int main() {
 	}
 	return 0;
 }
+
