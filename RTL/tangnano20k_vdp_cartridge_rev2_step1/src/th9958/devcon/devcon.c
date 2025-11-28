@@ -109,24 +109,52 @@ static ATTRIBUTE_T shadow[] = {
 	},
 };
 
+static int x1 = 16;
+static int pattern1 = 0;
+
+static int x2 = 128;
+static int pattern2 = 0;
+
+void state_fighter( void );
+
+// --------------------------------------------------------------------
+void fill_rectangle( int x, int y, int nx, int ny, unsigned char color ) {
+	int port = vdp_port1 + 2;
+
+	wait_vdp_command();
+	vdp_write_reg( 17, 36 );
+	outp( port, x & 255 );
+	outp( port, x >> 8 );
+	outp( port, y & 255 );
+	outp( port, y >> 8 );
+	outp( port, nx & 255 );
+	outp( port, nx >> 8 );
+	outp( port, ny & 255 );
+	outp( port, ny >> 8 );
+	outp( port, color );
+	outp( port, 0 );
+	outp( port, 0x80 );
+}
+
 // --------------------------------------------------------------------
 void set_initial_palette( void ) {
 	static unsigned char rgb[] = {
-		 0,  0,  0,
-		31, 30,  0,
-		 0,  0, 28,
-		10,  0,  0,
-		 0, 10,  0,
-		 0,  0, 10,
-		10, 10,  0,
-		 0, 10, 10,
-		10,  0, 10,
-		20,  0,  0,
-		 0, 20,  0,
-		 0,  0, 20,
-		30,  0,  0,
-		 0, 30,  0,
-		31, 31, 31,
+		 0,  0,  0,		//	0
+		31, 22,  8,		//	1
+		31, 26,  0,		//	2
+		26,  0,  0,		//	3
+		 4, 13, 17,		//	4
+		13, 17, 22,		//	5
+		 0,  8, 17,		//	6
+		13, 13, 13,		//	7
+		 0,  4, 13,		//	8
+		 4,  4,  4,		//	9
+		22, 22, 13,		//	10
+		 0,  4,  4,		//	11
+		 0,  0, 13,		//	12
+		 0,  0,  4,		//	13
+		 4,  4, 26,		//	14
+		31, 31, 31,		//	15
 	};
 	unsigned char *p_rgb;
 	int i, p, j, d;
@@ -196,6 +224,23 @@ void set_sprite_palette( void ) {
 		20,  0, 20,			//	13 
 		30, 30, 30,			//	14 
 		31, 31, 31,			//	15 白
+		//	Palette set #3
+		 0,  0,  0,			//	 0 
+		 0,  0,  0,			//	 1 
+		 1,  1,  3,			//	 2 
+		 2,  2,  6,			//	 3 
+		 3,  3,  9,			//	 4 
+		 4,  4, 12,			//	 5 
+		 5,  5, 15,			//	 6 
+		 6,  6, 18,			//	 7 
+		 7,  7, 21,			//	 8 
+		 8,  8, 24,			//	 9 
+		 9,  9, 27,			//	10 
+		10, 10, 30,			//	11 
+		11, 11, 31,			//	12 
+		12, 12, 31,			//	13 
+		13, 13, 31,			//	14 
+		14, 14, 31,			//	15 
 	};
 	unsigned char *p_rgb;
 	int i, p;
@@ -214,11 +259,12 @@ void set_sprite_palette( void ) {
 // --------------------------------------------------------------------
 void initializer( void ) {
 	int i, p;
+	unsigned char c[] = { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 14 };
 
-//	if( !init_vdp() ) {
-//		printf( "Cannot find V9968.\n" );
-//		exit(0);
-//	}
+	if( !init_vdp() ) {
+		printf( "Cannot find V9968.\n" );
+		exit(0);
+	}
 
 	set_screen5();
 	//	周辺色黒
@@ -244,8 +290,13 @@ void initializer( void ) {
 	//	スプライトアトリビュートテーブルをクリアする
 	set_vram_write_address( 1, 0x0000 );
 	p = vdp_port1 - 1;
-	for( i = 0; i < 64 * 8; i++ ) {
-		outp( p, 216 );
+	for( i = 0; i < 64 * 8; i+=2 ) {
+		outp( p, 0 );
+		outp( p, 1 );
+	}
+	//	スプライトパターン更新
+	for( i = 0; i < 16; i++ ) {
+		fill_rectangle( 0, 256 + 128 + i, 16, 1, c[i] );
 	}
 	//	スプライト表示
 	vdp_write_reg(  8, 0x08 );
@@ -253,7 +304,7 @@ void initializer( void ) {
 }
 
 // --------------------------------------------------------------------
-void put_usagi( ATTRIBUTE_T *p_attribute, ATTRIBUTE_T *p_shadow, int x, int dir ) {
+void put_usagi( ATTRIBUTE_T *p_attribute, ATTRIBUTE_T *p_shadow, int x, int dir, int pattern ) {
 	unsigned char *p = (unsigned char*) p_attribute;
 	int i, port;
 	port = vdp_port1 - 1;
@@ -261,39 +312,40 @@ void put_usagi( ATTRIBUTE_T *p_attribute, ATTRIBUTE_T *p_shadow, int x, int dir 
 	p_shadow->x = x;
 	if( dir ) {
 		//	右向き
+		pattern					+= 3;
 		p_attribute->mode		= p_attribute->mode | 0x10;
 		p_attribute->x			= x;
-		p_attribute->pattern	= 3;
+		p_attribute->pattern	= pattern--;
 		p_attribute++;
 		p_attribute->mode		= p_attribute->mode | 0x10;
 		p_attribute->x			= x + 16;
-		p_attribute->pattern	= 2;
+		p_attribute->pattern	= pattern--;
 		p_attribute++;
 		p_attribute->mode		= p_attribute->mode | 0x10;
 		p_attribute->x			= x + 32;
-		p_attribute->pattern	= 1;
+		p_attribute->pattern	= pattern--;
 		p_attribute++;
 		p_attribute->mode		= p_attribute->mode | 0x10;
 		p_attribute->x			= x + 48;
-		p_attribute->pattern	= 0;
+		p_attribute->pattern	= pattern;
 	}
 	else {
 		//	左向き
 		p_attribute->mode		= p_attribute->mode & 0x0F;
 		p_attribute->x			= x;
-		p_attribute->pattern	= 0;
+		p_attribute->pattern	= pattern++;
 		p_attribute++;
 		p_attribute->mode		= p_attribute->mode & 0x0F;
 		p_attribute->x			= x + 16;
-		p_attribute->pattern	= 1;
+		p_attribute->pattern	= pattern++;
 		p_attribute++;
 		p_attribute->mode		= p_attribute->mode & 0x0F;
 		p_attribute->x			= x + 32;
-		p_attribute->pattern	= 2;
+		p_attribute->pattern	= pattern++;
 		p_attribute++;
 		p_attribute->mode		= p_attribute->mode & 0x0F;
 		p_attribute->x			= x + 48;
-		p_attribute->pattern	= 3;
+		p_attribute->pattern	= pattern;
 	}
 	for( i = 0; i < 8 * 4; i++ ) {
 		outp( port, *p );
@@ -326,14 +378,51 @@ void background_scroll( void ) {
 
 // --------------------------------------------------------------------
 void state_window_animation( void ) {
-	static int x1 = 16, x2 = 128;
+	static ATTRIBUTE_T window = {
+		-40 & 0x03FF,	//	Y (signed, 2bytes)
+		40,				//	MGY
+		3 | (1 << 6),	//	Palette Set#3
+		16,				//	X (signed, 2bytes)
+		16,				//	MGX
+		128,			//	Pattern#0
+	};
+	static int y = -40;
+	int i;
+	unsigned char *p = (unsigned char *) window;
+	int port = vdp_port1 - 1;
+
+	wait_vsync( 1 );
+	//	ウィンドウ
+	if( y != 166 ) {
+		y++;
+		window.y = y & 0x03FF;
+	}
+	else if( window.mgx != 224 ) {
+		window.mgx += 2;
+	}
+	else {
+		//	次のステートへ
+		p_state = state_fighter;
+	}
+	set_vram_write_address( 1, 0x0000 + 10 * 8 );
+	for( i = 0; i < 8; i++ ) {
+		outp( port, *p );
+		p++;
+	}
+	background_scroll();
+}
+
+// --------------------------------------------------------------------
+void state_fighter( void ) {
+	static int count1 = 8;
+	static int count2 = 12;
 
 	wait_vsync( 1 );
 	//	スプライト（うさぎファイター）
 	set_vram_write_address( 1, 0x0000 + 0 * 8 );
-	put_usagi( rabbit1, &shadow[0], x1, 0 );
+	put_usagi( rabbit1, &shadow[0], x1, 0, pattern1 );
 	set_vram_write_address( 1, 0x0000 + 4 * 8 );
-	put_usagi( rabbit2, &shadow[1], x2, 1 );
+	put_usagi( rabbit2, &shadow[1], x2, 1, pattern2 );
 	set_vram_write_address( 1, 0x0000 + 8 * 8 );
 	put_shadow();
 
@@ -344,6 +433,14 @@ void state_window_animation( void ) {
 	x2--;
 	if( x2 == -64 ) {
 		x2 = 255;
+	}
+	if( (--count1) == 0 ) {
+		pattern1 = 4 - pattern1;
+		count1 = 8;
+	}
+	if( (--count2) == 0 ) {
+		pattern2 = 4 - pattern2;
+		count2 = 12;
 	}
 	background_scroll();
 }

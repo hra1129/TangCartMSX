@@ -174,3 +174,28 @@ unsigned char get_space_key( void ) {
 	_ei();
 	return a;
 }
+
+// --------------------------------------------------------------------
+void wait_vdp_command( void ) {
+
+	#asm
+		ld		a, [_vdp_port1]
+		ld		c, a
+		di
+		//	R#15 = 2
+		ld		a, 2
+		out		(c), a
+		ld		a, 0x80 + 15
+		out		(c), a
+	_loop:
+		in		a, (c)
+		and		a, 1
+		jr		nz, _loop
+		//	R#15 = 0
+		xor		a
+		out		(c), a
+		ld		a, 0x80 + 15
+		ei
+		out		(c), a
+	#endasm
+}
