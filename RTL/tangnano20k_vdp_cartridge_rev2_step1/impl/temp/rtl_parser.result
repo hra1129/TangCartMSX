@@ -81,7 +81,7 @@
        },
        {
         "InstFile" : "D:/github/HRA_product/TangCartMSX/RTL/tangnano20k_vdp_cartridge_rev2_step1/src/th9958/vdp_timing_control.v",
-        "InstLine" : 196,
+        "InstLine" : 197,
         "InstName" : "u_screen_mode",
         "ModuleFile" : "D:/github/HRA_product/TangCartMSX/RTL/tangnano20k_vdp_cartridge_rev2_step1/src/th9958/vdp_timing_control_screen_mode.v",
         "ModuleLine" : 58,
@@ -89,7 +89,7 @@
        },
        {
         "InstFile" : "D:/github/HRA_product/TangCartMSX/RTL/tangnano20k_vdp_cartridge_rev2_step1/src/th9958/vdp_timing_control.v",
-        "InstLine" : 233,
+        "InstLine" : 234,
         "InstName" : "u_sprite",
         "ModuleFile" : "D:/github/HRA_product/TangCartMSX/RTL/tangnano20k_vdp_cartridge_rev2_step1/src/th9958/vdp_timing_control_sprite.v",
         "ModuleLine" : 58,

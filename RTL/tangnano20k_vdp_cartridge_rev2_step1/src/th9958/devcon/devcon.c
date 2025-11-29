@@ -137,6 +137,25 @@ void fill_rectangle( int x, int y, int nx, int ny, unsigned char color ) {
 }
 
 // --------------------------------------------------------------------
+void draw_line( int x, int y, int nx, int ny, unsigned char color ) {
+	int port = vdp_port1 + 2;
+
+	wait_vdp_command();
+	vdp_write_reg( 17, 36 );
+	outp( port, x & 255 );
+	outp( port, x >> 8 );
+	outp( port, y & 255 );
+	outp( port, y >> 8 );
+	outp( port, nx & 255 );
+	outp( port, nx >> 8 );
+	outp( port, ny & 255 );
+	outp( port, ny >> 8 );
+	outp( port, color );
+	outp( port, 0 );
+	outp( port, 0x70 );
+}
+
+// --------------------------------------------------------------------
 void set_initial_palette( void ) {
 	static unsigned char rgb[] = {
 		 0,  0,  0,		//	0
@@ -258,7 +277,7 @@ void set_sprite_palette( void ) {
 
 // --------------------------------------------------------------------
 void initializer( void ) {
-	int i, p;
+	int i, p, x, pattern;
 	unsigned char c[] = { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 14 };
 
 	if( !init_vdp() ) {
@@ -281,6 +300,8 @@ void initializer( void ) {
 	set_sprite_palette();
 	set_vram_write_address( 0, 0x8000 );
 	bload( "usa.SC5" );
+	set_vram_write_address( 1, 0x8000 );
+	bload( "font.bin" );
 	_di();
 	//	スプライトアトリビュートテーブル 0x10000
 	vdp_write_reg(  5, 0x03 );
@@ -290,14 +311,35 @@ void initializer( void ) {
 	//	スプライトアトリビュートテーブルをクリアする
 	set_vram_write_address( 1, 0x0000 );
 	p = vdp_port1 - 1;
-	for( i = 0; i < 64 * 8; i+=2 ) {
+	for( i = 0; i < 10 * 8; i+=2 ) {	//	うさぎ2体の分 Plane#0～#9
 		outp( p, 0 );
 		outp( p, 1 );
 	}
+	x = 16;
+	pattern = 128 + 16;
+	for( i = 0; i < 14 * 8; i+=8 ) {	//	メッセージ表示エリア #10～#23
+		outp( p, 170 );			//	Y
+		outp( p, 1 << 6 );		//	SZ = 16x32
+		outp( p, 32 );			//	MGY
+		outp( p, 0 );			//	PaletteSet#0, TP = 0% (不透明)
+		outp( p, x );			//	X
+		outp( p, 0 );
+		outp( p, 16 );			//	MGX
+		outp( p, pattern );
+		x += 16;
+		pattern++;
+	}
+	for( i = 0; i < 1 * 8; i+=2 ) {		//	ウィンドウ枠の分 Plane#24
+		outp( p, 0 );
+		outp( p, 1 );
+	}
+	outp( p, 216 );						//	Plane#25 以降非表示
+	outp( p, 0 );
 	//	スプライトパターン更新
 	for( i = 0; i < 16; i++ ) {
 		fill_rectangle( 0, 256 + 128 + i, 16, 1, c[i] );
 	}
+	fill_rectangle( 0, 256 + 128 + 16, 224, 32, 0 );
 	//	スプライト表示
 	vdp_write_reg(  8, 0x08 );
 	_ei();
@@ -404,7 +446,7 @@ void state_window_animation( void ) {
 		//	次のステートへ
 		p_state = state_fighter;
 	}
-	set_vram_write_address( 1, 0x0000 + 10 * 8 );
+	set_vram_write_address( 1, 0x0000 + 24 * 8 );
 	for( i = 0; i < 8; i++ ) {
 		outp( port, *p );
 		p++;

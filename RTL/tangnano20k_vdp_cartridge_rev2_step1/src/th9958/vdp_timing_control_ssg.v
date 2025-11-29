@@ -73,6 +73,7 @@ module vdp_timing_control_ssg (
 	output				clear_line_interrupt,	//	pulse
 	output				pre_vram_refresh,
 
+	input				reg_display_on,
 	input				reg_50hz_mode,
 	input				reg_212lines_mode,
 	input				reg_interlace_mode,
@@ -213,7 +214,7 @@ module vdp_timing_control_ssg (
 		end
 	end
 
-	assign pre_vram_refresh		= ff_vram_refresh;
+	assign pre_vram_refresh		= ~reg_display_on & ff_vram_refresh;
 
 	// --------------------------------------------------------------------
 	//	Vertical Counter

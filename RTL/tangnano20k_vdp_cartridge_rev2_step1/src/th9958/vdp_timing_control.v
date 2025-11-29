@@ -169,6 +169,7 @@ module vdp_timing_control (
 		.intr_frame									( intr_frame								),
 		.clear_line_interrupt						( clear_line_interrupt						),
 		.pre_vram_refresh							( pre_vram_refresh							),
+		.reg_display_on								( reg_display_on							),
 		.reg_50hz_mode								( reg_50hz_mode								),
 		.reg_212lines_mode							( reg_212lines_mode							),
 		.reg_interlace_mode							( reg_interlace_mode						),

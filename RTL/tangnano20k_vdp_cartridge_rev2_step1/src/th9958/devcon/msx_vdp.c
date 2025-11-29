@@ -164,15 +164,37 @@ void set_vram_write_address( int bank, int address ) {
 }
 
 // --------------------------------------------------------------------
-unsigned char get_space_key( void ) {
-	unsigned char a;
+int get_space_key( void ) {
 
-	_di();
-	a = ((unsigned char)inp( 0xAA ) & 0xF0) | 0x08;
-	outp( 0xAA, a );
-	a = ~(unsigned char)inp( 0xA9 ) & 0x01;
-	_ei();
-	return a;
+#asm
+	di
+	in		a, ( 0xAA )
+	and		0xF0
+	or		0x08
+	out		( 0xAA ), a
+	in		a, ( 0xA9 )
+	and		1
+	ld		l, a
+	ld		h, 0
+	ei
+#endasm
+}
+
+// --------------------------------------------------------------------
+int get_cursor_key( void ) {
+
+#asm
+	di
+	in		a, ( 0xAA )
+	and		0xF0
+	or		0x08
+	out		( 0xAA ), a
+	in		a, ( 0xA9 )
+	and		0xF0
+	ld		l, a
+	ld		h, 0
+	ei
+#endasm
 }
 
 // --------------------------------------------------------------------
