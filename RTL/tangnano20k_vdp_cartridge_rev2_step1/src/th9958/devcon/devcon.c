@@ -20,6 +20,25 @@ typedef void (*CALLBACK_T)( void );
 
 static CALLBACK_T p_state;
 
+static unsigned char rgb[] = {
+	 0,  0,  0,		//	0
+	31, 22,  8,		//	1
+	31, 26,  0,		//	2
+	 0,  0, 26,		//	3
+	 4, 13, 17,		//	4
+	13, 17, 22,		//	5
+	 0,  8, 17,		//	6
+	13, 13, 13,		//	7
+	 0,  4, 13,		//	8
+	 4,  4,  4,		//	9
+	22, 22, 13,		//	10
+	 0,  4,  4,		//	11
+	 0,  0, 13,		//	12
+	 0,  0,  4,		//	13
+	 4,  4, 26,		//	14
+	31, 31, 31,		//	15
+};
+
 static ATTRIBUTE_T rabbit1[] = {
 	{	//	左端
 		31 | 0xC000,	//	Y (signed, 2bytes)
@@ -115,8 +134,23 @@ static int pattern1 = 0;
 static int x2 = 128;
 static int pattern2 = 0;
 
-static int message_state = 0;
+static int run_demo = 0;
+static int message_state = 32;
 
+void state_window_animation( void );
+void state_dot_by_dot( void );
+void state_size_select( void );
+void state_transparent( void );
+void state_magnify( void );
+void state_maximum_puts( void );
+void state_all_screen( void );
+void state_color( void );
+void state_reverse( void );
+void state_patterns( void );
+void state_easy( void );
+void state_highspeed_command( void );
+void state_font_command( void );
+void state_end( void );
 void state_fighter( void );
 
 // --------------------------------------------------------------------
@@ -159,24 +193,6 @@ void draw_line( int x, int y, int nx, int ny, unsigned char color ) {
 
 // --------------------------------------------------------------------
 void set_initial_palette( void ) {
-	static unsigned char rgb[] = {
-		 0,  0,  0,		//	0
-		31, 22,  8,		//	1
-		31, 26,  0,		//	2
-		 0,  0, 26,		//	3
-		 4, 13, 17,		//	4
-		13, 17, 22,		//	5
-		 0,  8, 17,		//	6
-		13, 13, 13,		//	7
-		 0,  4, 13,		//	8
-		 4,  4,  4,		//	9
-		22, 22, 13,		//	10
-		 0,  4,  4,		//	11
-		 0,  0, 13,		//	12
-		 0,  0,  4,		//	13
-		 4,  4, 26,		//	14
-		31, 31, 31,		//	15
-	};
 	unsigned char *p_rgb;
 	int i, p, j, d;
 
@@ -205,6 +221,60 @@ void set_initial_palette( void ) {
 			p_rgb++;
 		}
 		wait_vsync( 2 );
+	}
+}
+
+// --------------------------------------------------------------------
+void fadeout_palette( void ) {
+	unsigned char *p_rgb;
+	int i, p, j, d;
+
+	p = vdp_port1 + 1;
+	p_rgb = rgb;
+	for( j = 0; j <= 32; j++ ) {
+		_di();
+		vdp_write_reg( 16, (0 << 4) | 0 );		//	palette set#0, palette#0
+		_ei();
+		p = vdp_port1 + 1;
+		p_rgb = rgb;
+		for( i = 0; i < sizeof(rgb); i++ ) {
+			d = (int)*p_rgb - j;
+			if( d < 0 ) {
+				d = 0;
+			}
+			outp( p, d );
+			p_rgb++;
+		}
+		wait_vsync( 2 );
+	}
+	fill_rectangle( 0, 0, 256, 256, 0 );
+}
+
+// --------------------------------------------------------------------
+void set_default_palette( void ) {
+	static const unsigned char init_palette[] = {
+		0x00, 0x0,
+		0x00, 0x0,
+		0x11, 0x6,
+		0x33, 0x7,
+		0x17, 0x1,
+		0x27, 0x3,
+		0x51, 0x1,
+		0x27, 0x6,
+		0x71, 0x1,
+		0x73, 0x3,
+		0x61, 0x6,
+		0x64, 0x6,
+		0x11, 0x4,
+		0x65, 0x2,
+		0x55, 0x5,
+		0x77, 0x7,
+	};
+	int i, p;
+	p = vdp_port1 + 1;
+	vdp_write_reg( 16, 0 );
+	for( i = 0; i < sizeof(init_palette); i++ ) {
+		outp( p, init_palette[i] );
 	}
 }
 
@@ -344,6 +414,29 @@ void initializer( void ) {
 	fill_rectangle( 0, 256 + 128 + 16, 224, 32, 0 );
 	//	スプライト表示
 	vdp_write_reg(  8, 0x08 );
+	_ei();
+}
+
+// --------------------------------------------------------------------
+void terminator( void ) {
+	int i;
+
+	//	パレットをフェードアウトして画面を消す
+	fadeout_palette();
+
+	//	V9958互換モードに戻す
+	_di();
+	vdp_write_reg( 20, 0x00 );
+	vdp_write_reg( 21, 0x00 );
+
+	//	初期状態のパレットに戻す
+	set_default_palette();
+
+	//	レジスタを初期状態に戻す
+	vdp_write_reg( 14, 0 );
+	for( i = 0; i < 8; i++ ) {
+		vdp_write_reg( i, bpeek( 0xF3DF + i ) );
+	}
 	_ei();
 }
 
@@ -541,11 +634,50 @@ void background_scroll( void ) {
 }
 
 // --------------------------------------------------------------------
-void message_animation( void ) {
+int message_animation( void ) {
+	static int result = 0;
 
 	if( message_state < 32 ) {
 		scroll_message();
 		message_state++;
+		result = 0;
+	}
+	else if( message_state == 32 ) {
+		if( get_cursor_key() == 0 ) {
+			result = 1;
+		}
+	}
+	return result;
+}
+
+// --------------------------------------------------------------------
+void puts_fighter( void ) {
+	static int count1 = 8;
+	static int count2 = 12;
+
+	//	スプライト（うさぎファイター）
+	set_vram_write_address( 1, 0x0000 + 0 * 8 );
+	put_usagi( rabbit1, &shadow[0], x1, 0, pattern1 );
+	set_vram_write_address( 1, 0x0000 + 4 * 8 );
+	put_usagi( rabbit2, &shadow[1], x2, 1, pattern2 );
+	set_vram_write_address( 1, 0x0000 + 8 * 8 );
+	put_shadow();
+
+	x1++;
+	if( x1 == 256 ) {
+		x1 = -64;
+	}
+	x2--;
+	if( x2 == -64 ) {
+		x2 = 255;
+	}
+	if( (--count1) == 0 ) {
+		pattern1 = 4 - pattern1;
+		count1 = 8;
+	}
+	if( (--count2) == 0 ) {
+		pattern2 = 4 - pattern2;
+		count2 = 12;
 	}
 }
 
@@ -575,8 +707,8 @@ void state_window_animation( void ) {
 	}
 	else {
 		//	次のステートへ
-		p_state = state_fighter;
-		put_message( 1 );
+		p_state = state_dot_by_dot;
+		put_message( 0 );
 	}
 	set_vram_write_address( 1, 0x0000 + 24 * 8 );
 	for( i = 0; i < 8; i++ ) {
@@ -588,37 +720,273 @@ void state_window_animation( void ) {
 }
 
 // --------------------------------------------------------------------
-void state_fighter( void ) {
-	static int count1 = 8;
-	static int count2 = 12;
+void state_dot_by_dot( void ) {
+	int key;
 
 	wait_vsync( 1 );
-	//	スプライト（うさぎファイター）
-	set_vram_write_address( 1, 0x0000 + 0 * 8 );
-	put_usagi( rabbit1, &shadow[0], x1, 0, pattern1 );
-	set_vram_write_address( 1, 0x0000 + 4 * 8 );
-	put_usagi( rabbit2, &shadow[1], x2, 1, pattern2 );
-	set_vram_write_address( 1, 0x0000 + 8 * 8 );
-	put_shadow();
-
-	x1++;
-	if( x1 == 256 ) {
-		x1 = -64;
-	}
-	x2--;
-	if( x2 == -64 ) {
-		x2 = 255;
-	}
-	if( (--count1) == 0 ) {
-		pattern1 = 4 - pattern1;
-		count1 = 8;
-	}
-	if( (--count2) == 0 ) {
-		pattern2 = 4 - pattern2;
-		count2 = 12;
-	}
 	background_scroll();
-	message_animation();
+	puts_fighter();
+
+	if( !message_animation() ) {
+		return;
+	}
+	
+	key = get_cursor_key();
+	if( key & KEY_DOWN ) {
+		//	次のステートへ
+		p_state = state_size_select;
+		put_message( 1 );
+	}
+}
+
+// --------------------------------------------------------------------
+void state_size_select( void ) {
+	int key;
+	static int count = 10;
+	static int size = 0;
+	static int mgy = 16;
+
+	wait_vsync( 1 );
+	background_scroll();
+	puts_fighter();
+
+	count--;
+	if( count == 0 ) {
+		count = 10;
+		rabbit1[0].y = 31 | size;
+		rabbit1[0].mgy = mgy;
+		size = size + 0x4000;
+		mgy = (mgy == 128) ? 16: (mgy << 1);
+		rabbit1[1].y = 31 | size;
+		rabbit1[1].mgy = mgy;
+		size = size + 0x4000;
+		mgy = (mgy == 128) ? 16: (mgy << 1);
+		rabbit1[2].y = 31 | size;
+		rabbit1[2].mgy = mgy;
+		size = size + 0x4000;
+		mgy = (mgy == 128) ? 16: (mgy << 1);
+		rabbit1[3].y = 31 | size;
+		rabbit1[3].mgy = mgy;
+	}
+
+	if( !message_animation() ) {
+		return;
+	}
+	
+	key = get_cursor_key();
+	if( key & KEY_DOWN ) {
+		rabbit1[0].y = 31 | 0xC000;
+		rabbit1[0].mgy = 128;
+		rabbit1[1].y = 31 | 0xC000;
+		rabbit1[1].mgy = 128;
+		rabbit1[2].y = 31 | 0xC000;
+		rabbit1[2].mgy = 128;
+		rabbit1[3].y = 31 | 0xC000;
+		rabbit1[3].mgy = 128;
+		//	次のステートへ
+		p_state = state_transparent;
+		put_message( 2 );
+	}
+}
+
+// --------------------------------------------------------------------
+void state_transparent( void ) {
+	int key;
+
+	wait_vsync( 1 );
+	background_scroll();
+	puts_fighter();
+
+	if( !message_animation() ) {
+		return;
+	}
+	
+	key = get_cursor_key();
+	if( key & KEY_DOWN ) {
+		//	次のステートへ
+		p_state = state_magnify;
+		put_message( 3 );
+	}
+}
+
+// --------------------------------------------------------------------
+void state_magnify( void ) {
+	int key;
+
+	wait_vsync( 1 );
+	background_scroll();
+	if( !message_animation() ) {
+		return;
+	}
+	
+	key = get_cursor_key();
+	if( key & KEY_DOWN ) {
+		//	次のステートへ
+		p_state = state_maximum_puts;
+		put_message( 4 );
+	}
+}
+
+// --------------------------------------------------------------------
+void state_maximum_puts( void ) {
+	int key;
+
+	wait_vsync( 1 );
+	background_scroll();
+	if( !message_animation() ) {
+		return;
+	}
+	
+	key = get_cursor_key();
+	if( key & KEY_DOWN ) {
+		//	次のステートへ
+		p_state = state_all_screen;
+		put_message( 5 );
+	}
+}
+
+// --------------------------------------------------------------------
+void state_all_screen( void ) {
+	int key;
+
+	wait_vsync( 1 );
+	background_scroll();
+	if( !message_animation() ) {
+		return;
+	}
+	
+	key = get_cursor_key();
+	if( key & KEY_DOWN ) {
+		//	次のステートへ
+		p_state = state_color;
+		put_message( 6 );
+	}
+}
+
+// --------------------------------------------------------------------
+void state_color( void ) {
+	int key;
+
+	wait_vsync( 1 );
+	background_scroll();
+	if( !message_animation() ) {
+		return;
+	}
+	
+	key = get_cursor_key();
+	if( key & KEY_DOWN ) {
+		//	次のステートへ
+		p_state = state_reverse;
+		put_message( 7 );
+	}
+}
+
+// --------------------------------------------------------------------
+void state_reverse( void ) {
+	int key;
+
+	wait_vsync( 1 );
+	background_scroll();
+	if( !message_animation() ) {
+		return;
+	}
+	
+	key = get_cursor_key();
+	if( key & KEY_DOWN ) {
+		//	次のステートへ
+		p_state = state_patterns;
+		put_message( 8 );
+	}
+}
+
+// --------------------------------------------------------------------
+void state_patterns( void ) {
+	int key;
+
+	wait_vsync( 1 );
+	background_scroll();
+	if( !message_animation() ) {
+		return;
+	}
+	
+	key = get_cursor_key();
+	if( key & KEY_DOWN ) {
+		//	次のステートへ
+		p_state = state_easy;
+		put_message( 9 );
+	}
+}
+
+// --------------------------------------------------------------------
+void state_easy( void ) {
+	int key;
+
+	wait_vsync( 1 );
+	background_scroll();
+	if( !message_animation() ) {
+		return;
+	}
+	
+	key = get_cursor_key();
+	if( key & KEY_DOWN ) {
+		//	次のステートへ
+		p_state = state_highspeed_command;
+		put_message( 10 );
+	}
+}
+
+// --------------------------------------------------------------------
+void state_highspeed_command( void ) {
+	int key;
+
+	wait_vsync( 1 );
+	background_scroll();
+	if( !message_animation() ) {
+		return;
+	}
+	
+	key = get_cursor_key();
+	if( key & KEY_DOWN ) {
+		//	次のステートへ
+		p_state = state_font_command;
+		put_message( 11 );
+	}
+}
+
+// --------------------------------------------------------------------
+void state_font_command( void ) {
+	int key;
+
+	wait_vsync( 1 );
+	background_scroll();
+	if( !message_animation() ) {
+		return;
+	}
+	
+	key = get_cursor_key();
+	if( key & KEY_DOWN ) {
+		//	次のステートへ
+		p_state = state_end;
+		fill_rectangle( 0, 256 + 128 + 16 + 32, 224, 32, 0 );
+		message_state = 0;
+	}
+}
+
+// --------------------------------------------------------------------
+void state_end( void ) {
+	int key;
+
+	wait_vsync( 1 );
+	background_scroll();
+	if( !message_animation() ) {
+		return;
+	}
+	
+	key = get_cursor_key();
+	if( key & KEY_DOWN ) {
+		//	終わる
+		run_demo = 0;
+	}
 }
 
 // --------------------------------------------------------------------
@@ -627,11 +995,12 @@ int main() {
 
 	initializer();
 	p_state = state_window_animation;
-	put_message( 0 );
+	run_demo = 1;
 
-	while( 1 ) {
+	while( run_demo ) {
 		p_state();
 	}
+
+	terminator();
 	return 0;
 }
-

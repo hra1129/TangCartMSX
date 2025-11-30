@@ -164,23 +164,6 @@ void set_vram_write_address( int bank, int address ) {
 }
 
 // --------------------------------------------------------------------
-int get_space_key( void ) {
-
-#asm
-	di
-	in		a, ( 0xAA )
-	and		0xF0
-	or		0x08
-	out		( 0xAA ), a
-	in		a, ( 0xA9 )
-	and		1
-	ld		l, a
-	ld		h, 0
-	ei
-#endasm
-}
-
-// --------------------------------------------------------------------
 int get_cursor_key( void ) {
 
 #asm
@@ -190,7 +173,8 @@ int get_cursor_key( void ) {
 	or		0x08
 	out		( 0xAA ), a
 	in		a, ( 0xA9 )
-	and		0xF0
+	cpl
+	and		0xF1
 	ld		l, a
 	ld		h, 0
 	ei

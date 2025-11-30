@@ -206,7 +206,7 @@ module vdp_timing_control_ssg (
 		if( !reset_n ) begin
 			ff_vram_refresh <= 1'b0;
 		end
-		else if( ff_half_count == { 10'd16, 3'd0 } ) begin
+		else if( ff_half_count == { 10'd48, 3'd0 } ) begin
 			ff_vram_refresh <= 1'b1;
 		end
 		else begin
@@ -214,7 +214,7 @@ module vdp_timing_control_ssg (
 		end
 	end
 
-	assign pre_vram_refresh		= ~reg_display_on & ff_vram_refresh;
+	assign pre_vram_refresh		= ff_vram_refresh;
 
 	// --------------------------------------------------------------------
 	//	Vertical Counter

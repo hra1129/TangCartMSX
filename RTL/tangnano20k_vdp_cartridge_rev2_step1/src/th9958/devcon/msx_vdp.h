@@ -26,8 +26,13 @@ void bload( const char *p_name );
 void set_display_visible( int visible );
 void wait_vsync( int n );
 void set_vram_write_address( int bank, int address );
-int get_space_key( void );
 int get_cursor_key( void );
 void wait_vdp_command( void );
+
+#define KEY_SPACE	0x01
+#define KEY_UP		0x20
+#define KEY_DOWN	0x40
+#define KEY_LEFT	0x10
+#define KEY_RIGHT	0x80
 
 #endif
