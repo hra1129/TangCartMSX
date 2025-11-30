@@ -128,14 +128,34 @@ static ATTRIBUTE_T shadow[] = {
 	},
 };
 
-static int x1 = 16;
+static ATTRIBUTE_T shadow_mag[] = {
+	{	//	オレンジうさぎの陰
+		147,				//	Y (signed, 2bytes)
+		20,				//	MGY
+		(2 << 6) | 1,	//	Palette Set#1, TP=50%
+		16,				//	X (signed, 2bytes)
+		128,			//	MGX
+		129,			//	Pattern#0
+	},
+	{	//	ブルーうさぎの陰
+		147,			//	Y (signed, 2bytes)
+		20,				//	MGY
+		(2 << 6) | 1,	//	Palette Set#1, TP=50%
+		32,				//	X (signed, 2bytes)
+		128,			//	MGX
+		129,			//	Pattern#1
+	},
+};
+
+static int x1 = -64;
 static int pattern1 = 0;
 
-static int x2 = 128;
+static int x2 = 256;
 static int pattern2 = 0;
 
 static int run_demo = 0;
 static int message_state = 32;
+static int mag = 0;
 
 void state_window_animation( void );
 void state_dot_by_dot( void );
@@ -448,7 +468,7 @@ void put_usagi( ATTRIBUTE_T *p_attribute, ATTRIBUTE_T *p_shadow, int x, int dir,
 	x = x & 0x3FF;
 	p_shadow->x = x;
 	if( dir ) {
-		//	右向き
+		//	左向き
 		pattern					+= 3;
 		p_attribute->mode		= p_attribute->mode | 0x10;
 		p_attribute->x			= x;
@@ -467,21 +487,95 @@ void put_usagi( ATTRIBUTE_T *p_attribute, ATTRIBUTE_T *p_shadow, int x, int dir,
 		p_attribute->pattern	= pattern;
 	}
 	else {
-		//	左向き
-		p_attribute->mode		= p_attribute->mode & 0x0F;
+		//	右向き
+		p_attribute->mode		= p_attribute->mode & 0xCF;
 		p_attribute->x			= x;
 		p_attribute->pattern	= pattern++;
 		p_attribute++;
-		p_attribute->mode		= p_attribute->mode & 0x0F;
+		p_attribute->mode		= p_attribute->mode & 0xCF;
 		p_attribute->x			= x + 16;
 		p_attribute->pattern	= pattern++;
 		p_attribute++;
-		p_attribute->mode		= p_attribute->mode & 0x0F;
+		p_attribute->mode		= p_attribute->mode & 0xCF;
 		p_attribute->x			= x + 32;
 		p_attribute->pattern	= pattern++;
 		p_attribute++;
-		p_attribute->mode		= p_attribute->mode & 0x0F;
+		p_attribute->mode		= p_attribute->mode & 0xCF;
 		p_attribute->x			= x + 48;
+		p_attribute->pattern	= pattern;
+	}
+	for( i = 0; i < 8 * 4; i++ ) {
+		outp( port, *p );
+		p++;
+	}
+}
+
+// --------------------------------------------------------------------
+void put_usagi_mag( ATTRIBUTE_T *p_attribute, ATTRIBUTE_T *p_shadow, int x, int dir, int pattern ) {
+	unsigned char *p = (unsigned char*) p_attribute;
+	int i, port;
+	port = vdp_port1 - 1;
+	x = x & 0x3FF;
+	p_shadow->x = x;
+	if( dir ) {
+		//	左向き
+		pattern					+= 3;
+		p_attribute->y			= 0xFF9F;
+		p_attribute->mgy		= 0;
+		p_attribute->mode		= p_attribute->mode | 0x10;
+		p_attribute->x			= x;
+		p_attribute->mgx		= 32;
+		p_attribute->pattern	= pattern--;
+		p_attribute++;
+		p_attribute->y			= 0xFF9F;
+		p_attribute->mgy		= 0;
+		p_attribute->mode		= p_attribute->mode | 0x10;
+		p_attribute->x			= x + 32;
+		p_attribute->mgx		= 32;
+		p_attribute->pattern	= pattern--;
+		p_attribute++;
+		p_attribute->y			= 0xFF9F;
+		p_attribute->mgy		= 0;
+		p_attribute->mode		= p_attribute->mode | 0x10;
+		p_attribute->x			= x + 64;
+		p_attribute->mgx		= 32;
+		p_attribute->pattern	= pattern--;
+		p_attribute++;
+		p_attribute->y			= 0xFF9F;
+		p_attribute->mgy		= 0;
+		p_attribute->mode		= p_attribute->mode | 0x10;
+		p_attribute->x			= x + 96;
+		p_attribute->mgx		= 32;
+		p_attribute->pattern	= pattern;
+	}
+	else {
+		//	右向き
+		p_attribute->y			= 0xFF9F;
+		p_attribute->mgy		= 0;
+		p_attribute->mode		= p_attribute->mode & 0xCF;
+		p_attribute->x			= x;
+		p_attribute->mgx		= 32;
+		p_attribute->pattern	= pattern++;
+		p_attribute++;
+		p_attribute->y			= 0xFF9F;
+		p_attribute->mgy		= 0;
+		p_attribute->mode		= p_attribute->mode & 0xCF;
+		p_attribute->x			= x + 32;
+		p_attribute->mgx		= 32;
+		p_attribute->pattern	= pattern++;
+		p_attribute++;
+		p_attribute->y			= 0xFF9F;
+		p_attribute->mgy		= 0;
+		p_attribute->mode		= p_attribute->mode & 0xCF;
+		p_attribute->x			= x + 64;
+		p_attribute->mgx		= 32;
+		p_attribute->pattern	= pattern++;
+		p_attribute++;
+		p_attribute->y			= 0xFF9F;
+		p_attribute->mgy		= 0;
+		p_attribute->mode		= p_attribute->mode & 0xCF;
+		p_attribute->x			= x + 96;
+		p_attribute->mgx		= 32;
 		p_attribute->pattern	= pattern;
 	}
 	for( i = 0; i < 8 * 4; i++ ) {
@@ -493,6 +587,17 @@ void put_usagi( ATTRIBUTE_T *p_attribute, ATTRIBUTE_T *p_shadow, int x, int dir,
 // --------------------------------------------------------------------
 void put_shadow( void ) {
 	unsigned char *p = (unsigned char*) shadow;
+	int i, port;
+	port = vdp_port1 - 1;
+	for( i = 0; i < 8 * 2; i++ ) {
+		outp( port, *p );
+		p++;
+	}
+}
+
+// --------------------------------------------------------------------
+void put_shadow_mag( void ) {
+	unsigned char *p = (unsigned char*) shadow_mag;
 	int i, port;
 	port = vdp_port1 - 1;
 	for( i = 0; i < 8 * 2; i++ ) {
@@ -656,12 +761,22 @@ void puts_fighter( void ) {
 	static int count2 = 12;
 
 	//	スプライト（うさぎファイター）
-	set_vram_write_address( 1, 0x0000 + 0 * 8 );
-	put_usagi( rabbit1, &shadow[0], x1, 0, pattern1 );
-	set_vram_write_address( 1, 0x0000 + 4 * 8 );
-	put_usagi( rabbit2, &shadow[1], x2, 1, pattern2 );
-	set_vram_write_address( 1, 0x0000 + 8 * 8 );
-	put_shadow();
+	if( mag ) {
+		set_vram_write_address( 1, 0x0000 + 0 * 8 );
+		put_usagi_mag( rabbit1, &shadow_mag[0], x1, 0, pattern1 );
+		set_vram_write_address( 1, 0x0000 + 4 * 8 );
+		put_usagi_mag( rabbit2, &shadow_mag[1], x2, 1, pattern2 );
+		set_vram_write_address( 1, 0x0000 + 8 * 8 );
+		put_shadow_mag();
+	}
+	else {
+		set_vram_write_address( 1, 0x0000 + 0 * 8 );
+		put_usagi( rabbit1, &shadow[0], x1, 0, pattern1 );
+		set_vram_write_address( 1, 0x0000 + 4 * 8 );
+		put_usagi( rabbit2, &shadow[1], x2, 1, pattern2 );
+		set_vram_write_address( 1, 0x0000 + 8 * 8 );
+		put_shadow();
+	}
 
 	x1++;
 	if( x1 == 256 ) {
@@ -792,10 +907,22 @@ void state_size_select( void ) {
 // --------------------------------------------------------------------
 void state_transparent( void ) {
 	int key;
+	static int count = 10;
+	static int mode = 1;
 
 	wait_vsync( 1 );
 	background_scroll();
 	puts_fighter();
+
+	count--;
+	if( count == 0 ) {
+		count = 10;
+		rabbit1[0].mode = mode;
+		rabbit1[1].mode = mode;
+		rabbit1[2].mode = mode;
+		rabbit1[3].mode = mode;
+		mode = mode + 0x40;
+	}
 
 	if( !message_animation() ) {
 		return;
@@ -803,6 +930,10 @@ void state_transparent( void ) {
 	
 	key = get_cursor_key();
 	if( key & KEY_DOWN ) {
+		rabbit1[0].mode = 1;
+		rabbit1[1].mode = 1;
+		rabbit1[2].mode = 1;
+		rabbit1[3].mode = 1;
 		//	次のステートへ
 		p_state = state_magnify;
 		put_message( 3 );
@@ -812,15 +943,28 @@ void state_transparent( void ) {
 // --------------------------------------------------------------------
 void state_magnify( void ) {
 	int key;
+	int i;
 
 	wait_vsync( 1 );
 	background_scroll();
+	mag = 1;
+	puts_fighter();
+
 	if( !message_animation() ) {
 		return;
 	}
 	
 	key = get_cursor_key();
 	if( key & KEY_DOWN ) {
+		mag = 0;
+		for( i = 0; i < 4; i++ ) {
+			rabbit1[i].y		= 31 | 0xC000;
+			rabbit1[i].mgy		= 128;
+			rabbit1[i].mgx		= 16;
+			rabbit2[i].y		= 31 | 0xC000;
+			rabbit2[i].mgy		= 128;
+			rabbit2[i].mgx		= 16;
+		}
 		//	次のステートへ
 		p_state = state_maximum_puts;
 		put_message( 4 );
