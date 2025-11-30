@@ -39,6 +39,60 @@ static unsigned char rgb[] = {
 	31, 31, 31,		//	15
 };
 
+static unsigned char sprite_rgb[] = {
+	//	Palette set #1
+	 0,  0,  0,			//	 0 透明
+	 0,  0,  0,			//	 1 黒
+	18,  8,  0,			//	 2 オレンジ(暗)
+	28, 12,  0,			//	 3 オレンジ(明)
+	22, 22, 22,			//	 4 灰(明)
+	18, 18, 18,			//	 5 灰(暗)
+	31, 20,  0,			//	 6 オレンジ(明明)
+	 0,  0, 24,			//	 7 青(明)
+	26, 26, 26,			//	 8 灰(明明)
+	10, 10, 10,			//	 9 灰(暗暗)
+	 0,  0, 12,			//	10 青(暗)
+	 6,  6,  6,			//	11 灰(暗暗暗)
+	 0,  0, 10,			//	12 
+	20,  0, 20,			//	13 
+	30, 30, 30,			//	14 
+	31, 31, 31,			//	15 白
+	//	Palette set #2
+	 0,  0,  0,			//	 0 透明
+	 0,  0,  0,			//	 1 黒
+	 0,  4,  8,			//	 2 ダークブルー(暗)
+	 0,  6, 18,			//	 3 ダークブルー(明)
+	22, 22, 22,			//	 4 灰(明)
+	18, 18, 18,			//	 5 灰(暗)
+	 0, 10, 28,			//	 6 ダークブルー(明明)
+	 0,  0, 24,			//	 7 青(明)
+	26, 26, 26,			//	 8 灰(明明)
+	10, 10, 10,			//	 9 灰(暗暗)
+	 0,  0, 12,			//	10 青(暗)
+	 6,  6,  6,			//	11 灰(暗暗暗)
+	 0,  0, 10,			//	12 
+	20,  0, 20,			//	13 
+	30, 30, 30,			//	14 
+	31, 31, 31,			//	15 白
+	//	Palette set #3
+	 0,  0,  0,			//	 0 
+	 0,  0,  0,			//	 1 
+	 1,  1,  3,			//	 2 
+	 2,  2,  6,			//	 3 
+	 3,  3,  9,			//	 4 
+	 4,  4, 12,			//	 5 
+	 5,  5, 15,			//	 6 
+	 6,  6, 18,			//	 7 
+	 7,  7, 21,			//	 8 
+	 8,  8, 24,			//	 9 
+	 9,  9, 27,			//	10 
+	10, 10, 30,			//	11 
+	11, 11, 31,			//	12 
+	12, 12, 31,			//	13 
+	13, 13, 31,			//	14 
+	14, 14, 31,			//	15 
+};
+
 static ATTRIBUTE_T rabbit1[] = {
 	{	//	左端
 		31 | 0xC000,	//	Y (signed, 2bytes)
@@ -212,6 +266,29 @@ void draw_line( int x, int y, int nx, int ny, unsigned char color ) {
 }
 
 // --------------------------------------------------------------------
+void block_copy( int sx, int sy, int nx, int ny, int dx, int dy ) {
+	int port = vdp_port1 + 2;
+
+	wait_vdp_command();
+	vdp_write_reg( 17, 32 );
+	outp( port, sx & 255 );
+	outp( port, sx >> 8 );
+	outp( port, sy & 255 );
+	outp( port, sy >> 8 );
+	outp( port, dx & 255 );
+	outp( port, dx >> 8 );
+	outp( port, dy & 255 );
+	outp( port, dy >> 8 );
+	outp( port, nx & 255 );
+	outp( port, nx >> 8 );
+	outp( port, ny & 255 );
+	outp( port, ny >> 8 );
+	outp( port, 0 );
+	outp( port, 0 );
+	outp( port, 0x90 );
+}
+
+// --------------------------------------------------------------------
 void set_initial_palette( void ) {
 	unsigned char *p_rgb;
 	int i, p, j, d;
@@ -300,59 +377,6 @@ void set_default_palette( void ) {
 
 // --------------------------------------------------------------------
 void set_sprite_palette( void ) {
-	static unsigned char rgb[] = {
-		//	Palette set #1
-		 0,  0,  0,			//	 0 透明
-		 0,  0,  0,			//	 1 黒
-		18,  8,  0,			//	 2 オレンジ(暗)
-		28, 12,  0,			//	 3 オレンジ(明)
-		22, 22, 22,			//	 4 灰(明)
-		18, 18, 18,			//	 5 灰(暗)
-		31, 20,  0,			//	 6 オレンジ(明明)
-		 0,  0, 24,			//	 7 青(明)
-		26, 26, 26,			//	 8 灰(明明)
-		10, 10, 10,			//	 9 灰(暗暗)
-		 0,  0, 12,			//	10 青(暗)
-		 6,  6,  6,			//	11 灰(暗暗暗)
-		 0,  0, 10,			//	12 
-		20,  0, 20,			//	13 
-		30, 30, 30,			//	14 
-		31, 31, 31,			//	15 白
-		//	Palette set #2
-		 0,  0,  0,			//	 0 透明
-		 0,  0,  0,			//	 1 黒
-		 0,  4,  8,			//	 2 ダークブルー(暗)
-		 0,  6, 18,			//	 3 ダークブルー(明)
-		22, 22, 22,			//	 4 灰(明)
-		18, 18, 18,			//	 5 灰(暗)
-		 0, 10, 28,			//	 6 ダークブルー(明明)
-		 0,  0, 24,			//	 7 青(明)
-		26, 26, 26,			//	 8 灰(明明)
-		10, 10, 10,			//	 9 灰(暗暗)
-		 0,  0, 12,			//	10 青(暗)
-		 6,  6,  6,			//	11 灰(暗暗暗)
-		 0,  0, 10,			//	12 
-		20,  0, 20,			//	13 
-		30, 30, 30,			//	14 
-		31, 31, 31,			//	15 白
-		//	Palette set #3
-		 0,  0,  0,			//	 0 
-		 0,  0,  0,			//	 1 
-		 1,  1,  3,			//	 2 
-		 2,  2,  6,			//	 3 
-		 3,  3,  9,			//	 4 
-		 4,  4, 12,			//	 5 
-		 5,  5, 15,			//	 6 
-		 6,  6, 18,			//	 7 
-		 7,  7, 21,			//	 8 
-		 8,  8, 24,			//	 9 
-		 9,  9, 27,			//	10 
-		10, 10, 30,			//	11 
-		11, 11, 31,			//	12 
-		12, 12, 31,			//	13 
-		13, 13, 31,			//	14 
-		14, 14, 31,			//	15 
-	};
 	unsigned char *p_rgb;
 	int i, p;
 
@@ -360,10 +384,40 @@ void set_sprite_palette( void ) {
 	vdp_write_reg( 16, (1 << 4) | 0 );		//	palette set#1, palette#0
 	_ei();
 	p = vdp_port1 + 1;
-	p_rgb = rgb;
-	for( i = 0; i < sizeof(rgb); i++ ) {
+	p_rgb = sprite_rgb;
+	for( i = 0; i < sizeof(sprite_rgb); i++ ) {
 		outp( p, *p_rgb );
 		p_rgb++;
+	}
+}
+
+// --------------------------------------------------------------------
+void set_sprite_fade_palette( void ) {
+	unsigned char *p_rgb;
+	int i, p, d;
+	static int count1 = 0;
+	static int count2 = 0;
+
+	_di();
+	vdp_write_reg( 16, (1 << 4) | 0 );		//	palette set#1, palette#0
+	_ei();
+	p = vdp_port1 + 1;
+	p_rgb = sprite_rgb;
+	for( i = 0; i < 16 * 3; i++ ) {
+		d = *p_rgb - count1;
+		d = d < 0 ? 0 : d;
+		outp( p, d );
+		p_rgb++;
+	}
+	for( i = 0; i < 16 * 3; i++ ) {
+		d = *p_rgb - count2;
+		d = d < 0 ? 0 : d;
+		outp( p, d );
+		p_rgb++;
+	}
+	count1 = (count1 + 1) & 31;
+	if( count1 & 1 ) {
+		count2 = (count2 + 1) & 31;
 	}
 }
 
@@ -432,6 +486,18 @@ void initializer( void ) {
 		fill_rectangle( 0, 256 + 128 + i, 16, 1, c[i] );
 	}
 	fill_rectangle( 0, 256 + 128 + 16, 224, 32, 0 );
+	//	page0背景を page4へコピー
+	block_copy( 0, 0, 256, 256, 0, 1024 );
+	//	LRMM時のソースウィンドウを設定
+	vdp_write_reg( 17, 51 );
+	outp( vdp_port1, 0 );			//	Wsx = 0
+	outp( vdp_port1, 0 );
+	outp( vdp_port1, 0 );			//	Wsy = 0, page4
+	outp( vdp_port1, 4 );
+	outp( vdp_port1, 255 );			//	Wex = 255
+	outp( vdp_port1, 0 );
+	outp( vdp_port1, 255 );			//	Wey = 255, page4
+	outp( vdp_port1, 4 );
 	//	スプライト表示
 	vdp_write_reg(  8, 0x08 );
 	_ei();
@@ -446,8 +512,16 @@ void terminator( void ) {
 
 	//	V9958互換モードに戻す
 	_di();
+	vdp_write_reg(  9, 0x00 );
+	vdp_write_reg( 10, 0x00 );
+	vdp_write_reg( 11, 0x00 );
 	vdp_write_reg( 20, 0x00 );
 	vdp_write_reg( 21, 0x00 );
+	vdp_write_reg( 23, 0x00 );
+	vdp_write_reg( 25, 0x00 );
+	vdp_write_reg( 26, 0x00 );
+	vdp_write_reg( 27, 0x00 );
+	bpoke( 0xFCAF, 3 );				//	SCRMOD: SCREEN3 だったことにする
 
 	//	初期状態のパレットに戻す
 	set_default_palette();
@@ -488,19 +562,19 @@ void put_usagi( ATTRIBUTE_T *p_attribute, ATTRIBUTE_T *p_shadow, int x, int dir,
 	}
 	else {
 		//	右向き
-		p_attribute->mode		= p_attribute->mode & 0xCF;
+		p_attribute->mode		= p_attribute->mode & 0xEF;
 		p_attribute->x			= x;
 		p_attribute->pattern	= pattern++;
 		p_attribute++;
-		p_attribute->mode		= p_attribute->mode & 0xCF;
+		p_attribute->mode		= p_attribute->mode & 0xEF;
 		p_attribute->x			= x + 16;
 		p_attribute->pattern	= pattern++;
 		p_attribute++;
-		p_attribute->mode		= p_attribute->mode & 0xCF;
+		p_attribute->mode		= p_attribute->mode & 0xEF;
 		p_attribute->x			= x + 32;
 		p_attribute->pattern	= pattern++;
 		p_attribute++;
-		p_attribute->mode		= p_attribute->mode & 0xCF;
+		p_attribute->mode		= p_attribute->mode & 0xEF;
 		p_attribute->x			= x + 48;
 		p_attribute->pattern	= pattern;
 	}
@@ -552,28 +626,28 @@ void put_usagi_mag( ATTRIBUTE_T *p_attribute, ATTRIBUTE_T *p_shadow, int x, int 
 		//	右向き
 		p_attribute->y			= 0xFF9F;
 		p_attribute->mgy		= 0;
-		p_attribute->mode		= p_attribute->mode & 0xCF;
+		p_attribute->mode		= p_attribute->mode & 0xEF;
 		p_attribute->x			= x;
 		p_attribute->mgx		= 32;
 		p_attribute->pattern	= pattern++;
 		p_attribute++;
 		p_attribute->y			= 0xFF9F;
 		p_attribute->mgy		= 0;
-		p_attribute->mode		= p_attribute->mode & 0xCF;
+		p_attribute->mode		= p_attribute->mode & 0xEF;
 		p_attribute->x			= x + 32;
 		p_attribute->mgx		= 32;
 		p_attribute->pattern	= pattern++;
 		p_attribute++;
 		p_attribute->y			= 0xFF9F;
 		p_attribute->mgy		= 0;
-		p_attribute->mode		= p_attribute->mode & 0xCF;
+		p_attribute->mode		= p_attribute->mode & 0xEF;
 		p_attribute->x			= x + 64;
 		p_attribute->mgx		= 32;
 		p_attribute->pattern	= pattern++;
 		p_attribute++;
 		p_attribute->y			= 0xFF9F;
 		p_attribute->mgy		= 0;
-		p_attribute->mode		= p_attribute->mode & 0xCF;
+		p_attribute->mode		= p_attribute->mode & 0xEF;
 		p_attribute->x			= x + 96;
 		p_attribute->mgx		= 32;
 		p_attribute->pattern	= pattern;
@@ -977,6 +1051,8 @@ void state_maximum_puts( void ) {
 
 	wait_vsync( 1 );
 	background_scroll();
+	puts_fighter();
+
 	if( !message_animation() ) {
 		return;
 	}
@@ -995,6 +1071,8 @@ void state_all_screen( void ) {
 
 	wait_vsync( 1 );
 	background_scroll();
+	puts_fighter();
+
 	if( !message_animation() ) {
 		return;
 	}
@@ -1013,12 +1091,16 @@ void state_color( void ) {
 
 	wait_vsync( 1 );
 	background_scroll();
+	puts_fighter();
+	set_sprite_fade_palette();
+
 	if( !message_animation() ) {
 		return;
 	}
 	
 	key = get_cursor_key();
 	if( key & KEY_DOWN ) {
+		set_sprite_palette();
 		//	次のステートへ
 		p_state = state_reverse;
 		put_message( 7 );
@@ -1027,16 +1109,42 @@ void state_color( void ) {
 
 // --------------------------------------------------------------------
 void state_reverse( void ) {
+	static int count = 10;
+	static int reverse = 1;
 	int key;
 
 	wait_vsync( 1 );
 	background_scroll();
+	puts_fighter();
+
+	count--;
+	if( count == 0 ) {
+		count = 10;
+		if( reverse ) {
+			rabbit1[0].mode |= 0x20;
+			rabbit1[1].mode |= 0x20;
+			rabbit1[2].mode |= 0x20;
+			rabbit1[3].mode |= 0x20;
+		}
+		else {
+			rabbit1[0].mode &= 0xDF;
+			rabbit1[1].mode &= 0xDF;
+			rabbit1[2].mode &= 0xDF;
+			rabbit1[3].mode &= 0xDF;
+		}
+		reverse ^= 1;
+	}
+
 	if( !message_animation() ) {
 		return;
 	}
 	
 	key = get_cursor_key();
 	if( key & KEY_DOWN ) {
+		rabbit1[0].mode &= 0xDF;
+		rabbit1[1].mode &= 0xDF;
+		rabbit1[2].mode &= 0xDF;
+		rabbit1[3].mode &= 0xDF;
 		//	次のステートへ
 		p_state = state_patterns;
 		put_message( 8 );
@@ -1049,6 +1157,8 @@ void state_patterns( void ) {
 
 	wait_vsync( 1 );
 	background_scroll();
+	puts_fighter();
+
 	if( !message_animation() ) {
 		return;
 	}
@@ -1067,6 +1177,8 @@ void state_easy( void ) {
 
 	wait_vsync( 1 );
 	background_scroll();
+	puts_fighter();
+
 	if( !message_animation() ) {
 		return;
 	}
