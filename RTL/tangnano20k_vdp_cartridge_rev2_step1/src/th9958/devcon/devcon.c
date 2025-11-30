@@ -115,6 +115,8 @@ static int pattern1 = 0;
 static int x2 = 128;
 static int pattern2 = 0;
 
+static int message_state = 0;
+
 void state_fighter( void );
 
 // --------------------------------------------------------------------
@@ -408,10 +410,122 @@ void put_shadow( void ) {
 
 // --------------------------------------------------------------------
 void put_message( int n ) {
-	int port;
 
-	port = vdp_port1;
-	outp( port, 
+	message_state = 0;
+	wait_vdp_command();
+
+	#asm
+	ld		ix, 2
+	add		ix, sp
+	//	HL = n * 896 + 0x8000 (フォントデータは 0x18000 + n * 896 にある)
+	//	896 = 0x380 → n * 896 = ((n * 256) >> 1) + (n * 256) + ((n * 256) << 1)
+	ld		h, (ix + 0)		//	HL = n * 256
+	ld		l, 0
+	ld		e, l			//	DE = n * 256
+	ld		d, h
+	rrc		h				//	HL >>= 1
+	rr		l
+	add		hl, de			//	HL = HL + DE = ((n * 256) >> 1) + (n * 256)
+	ex		de, hl			//	HL = (n * 256); DE = ((n * 256) >> 1) + (n * 256)
+	add		hl, hl			//	HL = ((n * 256) << 1)
+	add		hl, de			//	HL = n * 896
+	ld		a, 0x80
+	or		a, h
+	ld		h, a			//	HL = n * 896 + 0x8000
+	//	R#12 = 0
+	ld		a, [ _vdp_port1 ]
+	ld		c, a
+	ld		de, 0 | ((0x80 + 12) << 8)
+	di
+	out		(c), e
+	out		(c), d
+	//	R#17 = 32
+	ld		de, 32 | ((0x80 + 17) << 8)
+	out		(c), e
+	out		(c), d
+	inc		c
+	inc		c
+	//	ADDRESS (R#32, R#33, R#34, R#35) = n * 896 + 0x18000
+	out		(c), l
+	out		(c), h
+	ld		a, 1
+	out		(c), a
+	dec		a
+	out		(c), a
+	//	DX (R#36, R#37) = 0
+	out		(c), a
+	out		(c), a
+	//	DY (R#38, R#39) = 256 + 128 + 16 + 32
+	ld		de, 256 + 128 + 16 + 32
+	out		(c), e
+	out		(c), d
+	//	NX (R#40, R#41) = 224 >> 3
+	ld		e, 224 >> 3
+	out		(c), e								//	ここに書き込むと暗転する、なぜ！？
+	out		(c), a
+	//	NY (R#42, R#43) = 32
+	ld		e, 32
+	out		(c), e
+	out		(c), a
+	//	CLR (R#44) = 15
+	ld		e, 15
+	out		(c), e
+	//	ARG (R#45) = 0
+	out		(c), a
+	//	CMD (R#46) = 0x10
+	ld		e, 0x10				//	run LFMM
+	ei
+	out		(c), e
+	#endasm
+}
+
+// --------------------------------------------------------------------
+void scroll_message( void ) {
+
+	wait_vdp_command();
+
+	#asm
+	//	R#17 = 32
+	ld		a, [ _vdp_port1 ]
+	ld		c, a
+	ld		de, 32 | ((0x80 + 17) << 8)
+	di
+	out		(c), e
+	out		(c), d
+	inc		c
+	inc		c
+	//	SX (R#32, R#33) = 0
+	xor		a
+	out		(c), a
+	out		(c), a
+	//	SY (R#34, R#35) = 256 + 128 + 16 + 1
+	ld		de, 256 + 128 + 16 + 1
+	out		(c), e
+	out		(c), d
+	//	DX (R#36, R#37) = 0
+	out		(c), a
+	out		(c), a
+	//	DY (R#38, R#39) = 256 + 16
+	dec		de
+	out		(c), e
+	out		(c), d
+	//	NX (R#40, R#41) = 224
+	ld		e, 224
+	out		(c), e
+	out		(c), a
+	//	NY (R#42, R#43) = 63
+	ld		e, 63
+	out		(c), e
+	out		(c), a
+	//	CLR (R#44) = 0
+	out		(c), a
+	//	ARG (R#45) = 0
+	out		(c), a
+	//	CMD (R#46) = 0xD0
+	ld		e, 0xD0				//	run HMMM
+	ei
+	out		(c), e
+	#endasm
 }
 
 // --------------------------------------------------------------------
@@ -424,6 +538,15 @@ void background_scroll( void ) {
 	vdp_write_reg( 27, (x & 7) ^ 7 );
 	x = (x + 2) & 255;
 	y = (y + 1) & 255;
+}
+
+// --------------------------------------------------------------------
+void message_animation( void ) {
+
+	if( message_state < 32 ) {
+		scroll_message();
+		message_state++;
+	}
 }
 
 // --------------------------------------------------------------------
@@ -453,6 +576,7 @@ void state_window_animation( void ) {
 	else {
 		//	次のステートへ
 		p_state = state_fighter;
+		put_message( 1 );
 	}
 	set_vram_write_address( 1, 0x0000 + 24 * 8 );
 	for( i = 0; i < 8; i++ ) {
@@ -460,6 +584,7 @@ void state_window_animation( void ) {
 		p++;
 	}
 	background_scroll();
+	message_animation();
 }
 
 // --------------------------------------------------------------------
@@ -493,6 +618,7 @@ void state_fighter( void ) {
 		count2 = 12;
 	}
 	background_scroll();
+	message_animation();
 }
 
 // --------------------------------------------------------------------
@@ -501,6 +627,7 @@ int main() {
 
 	initializer();
 	p_state = state_window_animation;
+	put_message( 0 );
 
 	while( 1 ) {
 		p_state();

@@ -530,9 +530,11 @@ module vdp_command (
 	always @( posedge clk or negedge reset_n ) begin
 		if( !reset_n ) begin
 			ff_dx <= 9'd0;
+			ff_bit_count <= 3'd0;
 		end
 		else if( ff_start ) begin
 			ff_dx	<= reg_dx;
+			ff_bit_count <= 3'd7;
 		end
 		else if( !ff_command_execute || ff_cache_vram_valid ) begin
 			//	hold
@@ -553,17 +555,21 @@ module vdp_command (
 			else if( ff_command == c_lfmm ) begin
 				if( (ff_bit_count == 3'd0 && !w_ny_end) || w_dx_overflow ) begin
 					ff_dx <= reg_dx;
+					ff_bit_count <= 3'd7;
 				end
 				else begin
 					ff_dx <= w_next_dx[8:0];
+					ff_bit_count <= ff_bit_count - 3'd1;
 				end
 			end
 			else begin
 				if( w_nx_end || w_sx_overflow || w_dx_overflow ) begin
 					ff_dx	<= reg_dx;
+					ff_bit_count <= 3'd7;
 				end
 				else begin
 					ff_dx <= w_next_dx[8:0];
+					ff_bit_count <= ff_bit_count - 3'd1;
 				end
 			end
 		end
@@ -704,7 +710,7 @@ module vdp_command (
 			end
 			else if( ff_command == c_lfmm ) begin
 				if( w_ny_end ) begin
-					ff_nx <= 11'd1;
+					ff_nx <= ff_nx + 11'd1;
 				end
 			end
 			else if( w_nx_end || w_sx_overflow || w_dx_overflow ) begin
@@ -1610,7 +1616,6 @@ module vdp_command (
 					//	書き込まれる（ff_transfer_ready = 0）まで待機
 				end
 				else begin
-					ff_bit_count			<= 3'd7;
 					ff_state				<= c_state_lfmc_read;
 				end
 			end
@@ -1636,7 +1641,6 @@ module vdp_command (
 			end
 			c_state_lfmc_next: begin
 				ff_count_valid			<= 1'b0;
-				ff_bit_count			<= ff_bit_count - 3'd1;
 				if( (w_nx_end || w_sx_overflow || w_dx_overflow) ) begin
 					if( w_ny_end ) begin
 						ff_state				<= c_state_pre_finish;
@@ -1659,7 +1663,6 @@ module vdp_command (
 				ff_state				<= c_state_wait_rdata_en;
 				ff_next_state			<= c_state_lfmm_load_source;
 				ff_xsel					<= ff_font_address[1:0];
-				ff_bit_count			<= 3'd7;
 				ff_count_valid			<= 1'b0;
 			end
 			c_state_lfmm_load_source: begin
@@ -1685,15 +1688,18 @@ module vdp_command (
 				ff_cache_vram_write		<= 1'b1;
 				ff_cache_vram_wdata		<= w_destination;
 				ff_count_valid			<= 1'b1;
-				ff_bit_count			<= ff_bit_count - 3'd1;
 				if( (w_nx_end || w_dx_overflow) && w_ny_end ) begin
 					ff_state				<= c_state_pre_finish;
 				end
 				else if( ff_bit_count != 3'd0 ) begin
-					ff_state				<= c_state_lfmm_read;
+					ff_wait_counter			<= 8'd1;
+					ff_next_state			<= c_state_lfmm_read;
+					ff_state				<= c_state_wait_counter;
 				end
 				else begin
-					ff_state				<= c_state_lfmm;
+					ff_wait_counter			<= 8'd1;
+					ff_next_state			<= c_state_lfmm;
+					ff_state				<= c_state_wait_counter;
 				end
 			end
 
