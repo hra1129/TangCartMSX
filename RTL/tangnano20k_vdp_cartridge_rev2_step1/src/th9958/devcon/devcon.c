@@ -210,6 +210,7 @@ static int pattern2 = 0;
 static int run_demo = 0;
 static int message_state = 32;
 static int mag = 0;
+static int scroll_x = 0, scroll_y = 0;
 
 void state_window_animation( void );
 void state_dot_by_dot( void );
@@ -228,22 +229,62 @@ void state_end( void );
 void state_fighter( void );
 
 // --------------------------------------------------------------------
-void fill_rectangle( int x, int y, int nx, int ny, unsigned char color ) {
+void fill_rectangle( int sx, int sy, int nx, int ny, unsigned char color ) {
 	int port = vdp_port1 + 2;
 
 	wait_vdp_command();
-	vdp_write_reg( 17, 36 );
-	outp( port, x & 255 );
-	outp( port, x >> 8 );
-	outp( port, y & 255 );
-	outp( port, y >> 8 );
-	outp( port, nx & 255 );
-	outp( port, nx >> 8 );
-	outp( port, ny & 255 );
-	outp( port, ny >> 8 );
-	outp( port, color );
-	outp( port, 0 );
-	outp( port, 0x80 );
+
+	#asm
+	ld		hl, 2 + 2 + 9
+	add		hl, sp
+
+	ld		a, ( _vdp_port1 )
+	ld		c, a
+	ld		a, 36
+	di
+	out		(c), a
+	ld		a, 0x80 + 17
+	out		(c), a
+	inc		c
+	inc		c
+
+	ld		d, (hl)		//	sx
+	dec		hl
+	ld		e, (hl)		//	sx
+	dec		hl
+	out		(c), e
+	out		(c), d
+
+	ld		d, (hl)		//	sy
+	dec		hl
+	ld		e, (hl)		//	sy
+	dec		hl
+	out		(c), e
+	out		(c), d
+
+	ld		d, (hl)		//	nx
+	dec		hl
+	ld		e, (hl)		//	nx
+	dec		hl
+	out		(c), e
+	out		(c), d
+
+	ld		d, (hl)		//	ny
+	dec		hl
+	ld		e, (hl)		//	ny
+	dec		hl
+	out		(c), e
+	out		(c), d
+
+	dec		hl
+	ld		a, (hl)		//	color
+	out		(c), a
+	xor		a
+	out		(c), a
+	ld		a, 0x80
+	out		(c), a
+	ei
+	#endasm
 }
 
 // --------------------------------------------------------------------
@@ -392,33 +433,64 @@ void set_sprite_palette( void ) {
 }
 
 // --------------------------------------------------------------------
-void set_sprite_fade_palette( void ) {
-	unsigned char *p_rgb;
-	int i, p, d;
-	static int count1 = 0;
-	static int count2 = 0;
+static unsigned char sprite_fade_count1 = 0;
+static unsigned char sprite_fade_count2 = 0;
 
-	_di();
-	vdp_write_reg( 16, (1 << 4) | 0 );		//	palette set#1, palette#0
-	_ei();
-	p = vdp_port1 + 1;
-	p_rgb = sprite_rgb;
-	for( i = 0; i < 16 * 3; i++ ) {
-		d = *p_rgb - count1;
-		d = d < 0 ? 0 : d;
-		outp( p, d );
-		p_rgb++;
-	}
-	for( i = 0; i < 16 * 3; i++ ) {
-		d = *p_rgb - count2;
-		d = d < 0 ? 0 : d;
-		outp( p, d );
-		p_rgb++;
-	}
-	count1 = (count1 + 1) & 31;
-	if( count1 & 1 ) {
-		count2 = (count2 + 1) & 31;
-	}
+void set_sprite_fade_palette( void ) {
+
+	#asm
+	ld		a, (_sprite_fade_count1)
+	ld		e, a
+	ld		a, (_sprite_fade_count2)
+	ld		d, a
+
+	ld		hl, _sprite_rgb
+	//	R#16 = (1 << 4) | 0
+	ld		a, (_vdp_port1)
+	ld		c, a
+	ld		a, (1 << 4) | 0
+	di
+	out		(c), a
+	ld		a, 0x80 | 16
+	ei
+	out		(c), a
+
+	inc		c
+	ld		b, 16 * 3
+loop1:
+	ld		a, (hl)
+	sub		a, e
+	jr		nc, skip1
+	xor		a
+skip1:
+	out		(c), a
+	inc		hl
+	djnz	loop1
+
+	ld		b, 16 * 3
+loop2:
+	ld		a, (hl)
+	sub		a, d
+	jr		nc, skip2
+	xor		a
+skip2:
+	out		(c), a
+	inc		hl
+	djnz	loop2
+
+	ld		a, e
+	inc		a
+	and		31
+	ld		(_sprite_fade_count1), a
+	and		1
+	jr		z, skip3
+
+	ld		a, d
+	inc		a
+	and		31
+	ld		(_sprite_fade_count2), a
+skip3:
+	#endasm
 }
 
 // --------------------------------------------------------------------
@@ -521,7 +593,6 @@ void terminator( void ) {
 	vdp_write_reg( 25, 0x00 );
 	vdp_write_reg( 26, 0x00 );
 	vdp_write_reg( 27, 0x00 );
-	bpoke( 0xFCAF, 3 );				//	SCRMOD: SCREEN3 だったことにする
 
 	//	初期状態のパレットに戻す
 	set_default_palette();
@@ -532,13 +603,20 @@ void terminator( void ) {
 		vdp_write_reg( i, bpeek( 0xF3DF + i ) );
 	}
 	_ei();
+
+	//	いったん SCREEN 3 に変える
+	#asm
+	ld		a, 3
+	ld		ix, 0x005f		//	CHGMOD
+	ld		iy, ( 0xFCC1 - 1 )
+	call	0x001C			//	CALSLT
+	#endasm
 }
 
 // --------------------------------------------------------------------
 void put_usagi( ATTRIBUTE_T *p_attribute, ATTRIBUTE_T *p_shadow, int x, int dir, int pattern ) {
 	unsigned char *p = (unsigned char*) p_attribute;
-	int i, port;
-	port = vdp_port1 - 1;
+
 	x = x & 0x3FF;
 	p_shadow->x = x;
 	if( dir ) {
@@ -578,17 +656,25 @@ void put_usagi( ATTRIBUTE_T *p_attribute, ATTRIBUTE_T *p_shadow, int x, int dir,
 		p_attribute->x			= x + 48;
 		p_attribute->pattern	= pattern;
 	}
-	for( i = 0; i < 8 * 4; i++ ) {
-		outp( port, *p );
-		p++;
-	}
+	#asm
+	ld		hl, 0
+	add		hl, sp
+	ld		e, (hl)
+	inc		hl
+	ld		d, (hl)
+	ex		de, hl
+	ld		b, 8 * 4
+	ld		a, (_vdp_port1)
+	dec		a
+	ld		c, a
+	otir
+	#endasm
 }
 
 // --------------------------------------------------------------------
 void put_usagi_mag( ATTRIBUTE_T *p_attribute, ATTRIBUTE_T *p_shadow, int x, int dir, int pattern ) {
 	unsigned char *p = (unsigned char*) p_attribute;
-	int i, port;
-	port = vdp_port1 - 1;
+
 	x = x & 0x3FF;
 	p_shadow->x = x;
 	if( dir ) {
@@ -652,32 +738,45 @@ void put_usagi_mag( ATTRIBUTE_T *p_attribute, ATTRIBUTE_T *p_shadow, int x, int 
 		p_attribute->mgx		= 32;
 		p_attribute->pattern	= pattern;
 	}
-	for( i = 0; i < 8 * 4; i++ ) {
-		outp( port, *p );
-		p++;
-	}
+	#asm
+	ld		hl, 0
+	add		hl, sp
+	ld		e, (hl)
+	inc		hl
+	ld		d, (hl)
+	ex		de, hl
+	ld		b, 8 * 4
+	ld		a, (_vdp_port1)
+	dec		a
+	ld		c, a
+	otir
+	#endasm
 }
 
 // --------------------------------------------------------------------
 void put_shadow( void ) {
-	unsigned char *p = (unsigned char*) shadow;
-	int i, port;
-	port = vdp_port1 - 1;
-	for( i = 0; i < 8 * 2; i++ ) {
-		outp( port, *p );
-		p++;
-	}
+
+	#asm
+	ld		hl, _shadow
+	ld		a, (_vdp_port1)
+	dec		a
+	ld		c, a
+	ld		b, 8 * 2
+	otir
+	#endasm
 }
 
 // --------------------------------------------------------------------
 void put_shadow_mag( void ) {
-	unsigned char *p = (unsigned char*) shadow_mag;
-	int i, port;
-	port = vdp_port1 - 1;
-	for( i = 0; i < 8 * 2; i++ ) {
-		outp( port, *p );
-		p++;
-	}
+
+	#asm
+	ld		hl, _shadow_mag
+	ld		a, (_vdp_port1)
+	dec		a
+	ld		c, a
+	ld		b, 8 * 2
+	otir
+	#endasm
 }
 
 // --------------------------------------------------------------------
@@ -802,14 +901,61 @@ void scroll_message( void ) {
 
 // --------------------------------------------------------------------
 void background_scroll( void ) {
-	static int x = 0, y = 0;
+
+	scroll_x = (scroll_x + 2) & 255;
+	scroll_y = (scroll_y + 1) & 255;
 
 	//	背景スクロール
-	vdp_write_reg( 23, y );
-	vdp_write_reg( 26, x >> 3 );
-	vdp_write_reg( 27, (x & 7) ^ 7 );
-	x = (x + 2) & 255;
-	y = (y + 1) & 255;
+	vdp_write_reg( 23, scroll_y );
+	vdp_write_reg( 26, scroll_x >> 3 );
+	vdp_write_reg( 27, (scroll_x & 7) ^ 7 );
+}
+
+// --------------------------------------------------------------------
+void background_scroll_finish( void ) {
+
+	if( scroll_x ) scroll_x--;
+	if( scroll_y ) scroll_y--;
+
+	//	背景スクロール
+	vdp_write_reg( 23, scroll_y );
+	vdp_write_reg( 26, scroll_x >> 3 );
+	vdp_write_reg( 27, (scroll_x & 7) ^ 7 );
+}
+
+// --------------------------------------------------------------------
+void background_rotate( void ) {
+
+}
+
+// --------------------------------------------------------------------
+int random( void ) {
+	static unsigned int seed = 19739;
+
+	seed = (seed ^ 0x8412) + 1917;
+	return (int) seed;
+}
+
+// --------------------------------------------------------------------
+void fill_rectangle_sub() {
+	int sx, sy, nx, ny;
+
+	sx = random() & 255;
+	sy = random() & 255;
+	nx = (random() & 255) | 1;
+	ny = (random() & 255) | 1;
+	if( (sy + ny) >= 256 ) {
+		ny = 256 - sy;
+	}
+	fill_rectangle( sx, sy, nx, ny, random() & 15 );
+}
+
+// --------------------------------------------------------------------
+void background_fill( void ) {
+
+	fill_rectangle_sub();
+	fill_rectangle_sub();
+	fill_rectangle_sub();
 }
 
 // --------------------------------------------------------------------
@@ -1156,7 +1302,7 @@ void state_patterns( void ) {
 	int key;
 
 	wait_vsync( 1 );
-	background_scroll();
+	background_scroll_finish();
 	puts_fighter();
 
 	if( !message_animation() ) {
@@ -1176,7 +1322,7 @@ void state_easy( void ) {
 	int key;
 
 	wait_vsync( 1 );
-	background_scroll();
+	background_rotate();
 	puts_fighter();
 
 	if( !message_animation() ) {
@@ -1196,7 +1342,9 @@ void state_highspeed_command( void ) {
 	int key;
 
 	wait_vsync( 1 );
-	background_scroll();
+	background_fill();
+	puts_fighter();
+
 	if( !message_animation() ) {
 		return;
 	}
@@ -1214,7 +1362,9 @@ void state_font_command( void ) {
 	int key;
 
 	wait_vsync( 1 );
-	background_scroll();
+	background_rotate();
+	puts_fighter();
+
 	if( !message_animation() ) {
 		return;
 	}
@@ -1233,7 +1383,7 @@ void state_end( void ) {
 	int key;
 
 	wait_vsync( 1 );
-	background_scroll();
+	background_rotate();
 	if( !message_animation() ) {
 		return;
 	}
