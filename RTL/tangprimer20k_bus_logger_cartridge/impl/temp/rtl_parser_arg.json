@@ -1,0 +1,45 @@
+{
+ "Device" : "GW2A-18C",
+ "Files" : [
+  {
+   "Path" : "D:/github/HRA_product/TangCartMSX/RTL/tangprimer20k_bus_logger_cartridge/src/ddr3_memory_interface/ddr3_memory_interface.v",
+   "Type" : "verilog"
+  },
+  {
+   "Path" : "D:/github/HRA_product/TangCartMSX/RTL/tangprimer20k_bus_logger_cartridge/src/gowin_clkdiv/gowin_clkdiv.v",
+   "Type" : "verilog"
+  },
+  {
+   "Path" : "D:/github/HRA_product/TangCartMSX/RTL/tangprimer20k_bus_logger_cartridge/src/gowin_rpll/gowin_rpll.v",
+   "Type" : "verilog"
+  },
+  {
+   "Path" : "D:/github/HRA_product/TangCartMSX/RTL/tangprimer20k_bus_logger_cartridge/src/gowin_rpll50/gowin_rpll50.v",
+   "Type" : "verilog"
+  },
+  {
+   "Path" : "D:/github/HRA_product/TangCartMSX/RTL/tangprimer20k_bus_logger_cartridge/src/msx_slot/msx_slot.v",
+   "Type" : "verilog"
+  },
+  {
+   "Path" : "D:/github/HRA_product/TangCartMSX/RTL/tangprimer20k_bus_logger_cartridge/src/ram/ip_ram.v",
+   "Type" : "verilog"
+  },
+  {
+   "Path" : "D:/github/HRA_product/TangCartMSX/RTL/tangprimer20k_bus_logger_cartridge/src/sdram/ip_sdram_tangprimer20k.v",
+   "Type" : "verilog"
+  },
+  {
+   "Path" : "D:/github/HRA_product/TangCartMSX/RTL/tangprimer20k_bus_logger_cartridge/src/tangprimer20k_bus_logger_cartridge_test.v",
+   "Type" : "verilog"
+  }
+ ],
+ "IncludePath" : [
+
+ ],
+ "LoopLimit" : 2000,
+ "ResultFile" : "D:/github/HRA_product/TangCartMSX/RTL/tangprimer20k_bus_logger_cartridge/impl/temp/rtl_parser.result",
+ "Top" : "tangprimer20k_bus_logger_cartridge_test",
+ "VerilogStd" : "verilog_2001",
+ "VhdlStd" : "vhdl_93"
+}

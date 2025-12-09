@@ -1,0 +1,80 @@
+[
+ {
+  "InstFile" : "D:/github/HRA_product/TangCartMSX/RTL/tangprimer20k_bus_logger_cartridge/src/ram/ip_ram.v",
+  "InstLine" : 5,
+  "InstName" : "ip_ram",
+  "ModuleFile" : "D:/github/HRA_product/TangCartMSX/RTL/tangprimer20k_bus_logger_cartridge/src/ram/ip_ram.v",
+  "ModuleLine" : 5,
+  "ModuleName" : "ip_ram"
+ },
+ {
+  "InstFile" : "D:/github/HRA_product/TangCartMSX/RTL/tangprimer20k_bus_logger_cartridge/src/tangprimer20k_bus_logger_cartridge_test.v",
+  "InstLine" : 24,
+  "InstName" : "tangprimer20k_bus_logger_cartridge_test",
+  "ModuleFile" : "D:/github/HRA_product/TangCartMSX/RTL/tangprimer20k_bus_logger_cartridge/src/tangprimer20k_bus_logger_cartridge_test.v",
+  "ModuleLine" : 24,
+  "ModuleName" : "tangprimer20k_bus_logger_cartridge_test",
+  "SubInsts" : [
+   {
+    "InstFile" : "D:/github/HRA_product/TangCartMSX/RTL/tangprimer20k_bus_logger_cartridge/src/tangprimer20k_bus_logger_cartridge_test.v",
+    "InstLine" : 109,
+    "InstName" : "u_pll",
+    "ModuleFile" : "D:/github/HRA_product/TangCartMSX/RTL/tangprimer20k_bus_logger_cartridge/src/gowin_rpll/gowin_rpll.v",
+    "ModuleLine" : 10,
+    "ModuleName" : "Gowin_rPLL"
+   },
+   {
+    "InstFile" : "D:/github/HRA_product/TangCartMSX/RTL/tangprimer20k_bus_logger_cartridge/src/tangprimer20k_bus_logger_cartridge_test.v",
+    "InstLine" : 115,
+    "InstName" : "u_pll50",
+    "ModuleFile" : "D:/github/HRA_product/TangCartMSX/RTL/tangprimer20k_bus_logger_cartridge/src/gowin_rpll50/gowin_rpll50.v",
+    "ModuleLine" : 10,
+    "ModuleName" : "Gowin_rPLL50"
+   },
+   {
+    "InstFile" : "D:/github/HRA_product/TangCartMSX/RTL/tangprimer20k_bus_logger_cartridge/src/tangprimer20k_bus_logger_cartridge_test.v",
+    "InstLine" : 123,
+    "InstName" : "u_msx_slot",
+    "ModuleFile" : "D:/github/HRA_product/TangCartMSX/RTL/tangprimer20k_bus_logger_cartridge/src/msx_slot/msx_slot.v",
+    "ModuleLine" : 58,
+    "ModuleName" : "msx_slot"
+   },
+   {
+    "InstFile" : "D:/github/HRA_product/TangCartMSX/RTL/tangprimer20k_bus_logger_cartridge/src/tangprimer20k_bus_logger_cartridge_test.v",
+    "InstLine" : 172,
+    "InstName" : "u_sdram",
+    "ModuleFile" : "D:/github/HRA_product/TangCartMSX/RTL/tangprimer20k_bus_logger_cartridge/src/sdram/ip_sdram_tangprimer20k.v",
+    "ModuleLine" : 57,
+    "ModuleName" : "ip_sdram",
+    "SubInsts" : [
+     {
+      "InstFile" : "D:/github/HRA_product/TangCartMSX/RTL/tangprimer20k_bus_logger_cartridge/src/sdram/ip_sdram_tangprimer20k.v",
+      "InstLine" : 142,
+      "InstName" : "u_div2",
+      "ModuleFile" : "D:/github/HRA_product/TangCartMSX/RTL/tangprimer20k_bus_logger_cartridge/src/gowin_clkdiv/gowin_clkdiv.v",
+      "ModuleLine" : 10,
+      "ModuleName" : "Gowin_CLKDIV"
+     },
+     {
+      "InstFile" : "D:/github/HRA_product/TangCartMSX/RTL/tangprimer20k_bus_logger_cartridge/src/sdram/ip_sdram_tangprimer20k.v",
+      "InstLine" : 148,
+      "InstName" : "u_ddr3_controller",
+      "ModuleFile" : "D:/github/HRA_product/TangCartMSX/RTL/tangprimer20k_bus_logger_cartridge/src/ddr3_memory_interface/ddr3_memory_interface.v",
+      "ModuleLine" : 16841,
+      "ModuleName" : "DDR3_Memory_Interface_Top",
+      "SubInsts" : [
+       {
+        "InstFile" : "D:/github/HRA_product/TangCartMSX/RTL/tangprimer20k_bus_logger_cartridge/src/ddr3_memory_interface/ddr3_memory_interface.v",
+        "InstLine" : 16924,
+        "InstName" : "gw3_top",
+        "ModuleFile" : "D:/github/HRA_product/TangCartMSX/RTL/tangprimer20k_bus_logger_cartridge/src/ddr3_memory_interface/ddr3_memory_interface.v",
+        "ModuleLine" : 10,
+        "ModuleName" : "~GW_DDR3_PHY_MC.DDR3_Memory_Interface_Top"
+       }
+      ]
+     }
+    ]
+   }
+  ]
+ }
+]
