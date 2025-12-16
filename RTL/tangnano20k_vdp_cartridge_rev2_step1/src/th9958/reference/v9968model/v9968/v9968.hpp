@@ -1,0 +1,119 @@
+// --------------------------------------------------------------------
+//	v9968 model
+//	Copyright 2025, t.hara
+//
+//	本ソフトウェアおよび本ソフトウェアに基づいて作成された派生物は、以下の条件を
+//	満たす場合に限り、再頒布および使用が許可されます。
+//
+//	1.ソースコード形式で再頒布する場合、上記の著作権表示、本条件一覧、および下記
+//	  免責条項をそのままの形で保持すること。
+//	2.バイナリ形式で再頒布する場合、頒布物に付属のドキュメント等の資料に、上記の
+//	  著作権表示、本条件一覧、および下記免責条項を含めること。
+//	3.書面による事前の許可なしに、本ソフトウェアを販売、および商業的な製品や活動
+//	  に使用しないこと。
+//
+//	本ソフトウェアは、著作権者によって「現状のまま」提供されています。著作権者は、
+//	特定目的への適合性の保証、商品性の保証、またそれに限定されない、いかなる明示
+//	的もしくは暗黙な保証責任も負いません。著作権者は、事由のいかんを問わず、損害
+//	発生の原因いかんを問わず、かつ責任の根拠が契約であるか厳格責任であるか（過失
+//	その他の）不法行為であるかを問わず、仮にそのような損害が発生する可能性を知ら
+//	されていたとしても、本ソフトウェアの使用によって発生した（代替品または代用サ
+//	ービスの調達、使用の喪失、データの喪失、利益の喪失、業務の中断も含め、またそ
+//	れに限定されない）直接損害、間接損害、偶発的な損害、特別損害、懲罰的損害、ま
+//	たは結果損害について、一切責任を負わないものとします。
+//
+//	Note that above Japanese version license is the formal document.
+//	The following translation is only for reference.
+//
+//	Redistribution and use of this software or any derivative works,
+//	are permitted provided that the following conditions are met:
+//
+//	1. Redistributions of source code must retain the above copyright
+//	   notice, this list of conditions and the following disclaimer.
+//	2. Redistributions in binary form must reproduce the above
+//	   copyright notice, this list of conditions and the following
+//	   disclaimer in the documentation and/or other materials
+//	   provided with the distribution.
+//	3. Redistributions may not be sold, nor may they be used in a
+//	   commercial product or activity without specific prior written
+//	   permission.
+//
+//	THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+//	"AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+//	LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS
+//	FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE
+//	COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT,
+//	INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING,
+//	BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+//	LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
+//	CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT
+//	LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN
+//	ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+//	POSSIBILITY OF SUCH DAMAGE.
+//
+//-----------------------------------------------------------------------------
+
+#ifndef __V9968_HPP__
+#define __V9968_HPP__
+
+// --------------------------------------------------------------------
+//	Pixel RGB
+// --------------------------------------------------------------------
+union V9968_RGB {
+	unsigned int rgb;
+	struct {
+		unsigned char blue;
+		unsigned char green;
+		unsigned char red;
+		unsigned char padding;
+	};
+};
+
+// --------------------------------------------------------------------
+//	V9968 model body
+// --------------------------------------------------------------------
+class V9968 {
+private:
+	// VRAM 256KB
+	unsigned char vram[ 256 * 1024 ];
+
+	// View Image
+	V9968_RGB view_image[ 684 * 626 ];
+
+	// Registers
+	unsigned char regs[ 64 ];
+
+	// Color palette
+	V9968_RGB palette[ 256 ];
+public:
+	// --------------------------------------------------------------------
+	//	Constructor
+	// --------------------------------------------------------------------
+	V9968( void );
+
+	// --------------------------------------------------------------------
+	//	Get pointer of View Image
+	// --------------------------------------------------------------------
+	const V9968_RGB* get_view_image( void ) {
+		return view_image;
+	}
+
+	// --------------------------------------------------------------------
+	//	Write port
+	// --------------------------------------------------------------------
+	void write_port( int port, unsigned char data );
+
+	// --------------------------------------------------------------------
+	//	Read port
+	// --------------------------------------------------------------------
+	unsigned char read_port( int port );
+
+	// --------------------------------------------------------------------
+	//	Consume cycles
+	//	V9968モデルの中の時間を、指定サイクル数経過させる。
+	//	単位は、85.90908MHz の 1クロック。
+	// --------------------------------------------------------------------
+	void consume_cycles( unsigned int cycles );
+};
+
+#endif
