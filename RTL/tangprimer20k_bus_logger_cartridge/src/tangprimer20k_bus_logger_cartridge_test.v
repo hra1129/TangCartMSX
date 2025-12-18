@@ -75,7 +75,6 @@ module tangprimer20k_bus_logger_cartridge_test (
 	wire	[7:0]	w_bus_rdata;		//	device --> MSX Slot
 	wire			w_bus_rdata_en;		//	device --> MSX Slot
 	wire			w_slot_int_n;		//	VDP --> MSX Slot
-	wire			w_slot_data_dir;
 	wire	[7:0]	w_latch_data;
 
 	wire	[7:0]	w_bus_vdp_rdata;
@@ -132,36 +131,18 @@ module tangprimer20k_bus_logger_cartridge_test (
 		.p_slot_rd_n			( p_slot_rd_n			),
 		.p_slot_address			( p_slot_address		),
 		.p_slot_data			( p_slot_data			),
-		.p_slot_data_dir		( w_slot_data_dir		),
+		.p_slot_data_dir		( p_slot_data_dir		),
 		.p_slot_int				( p_slot_int			),
 		.p_slot_wait			( p_slot_wait			),
-		.int_n					( w_slot_int_n			),
-		.bus_address			( w_bus_address			),
-		.bus_memreq				( w_bus_memreq			),
-		.bus_ioreq				( w_bus_ioreq			),
-		.bus_valid				( w_bus_valid			),
-		.bus_ready				( w_bus_ready			),
-		.bus_write				( w_bus_write			),
-		.bus_wdata				( w_bus_wdata			),
-		.bus_rdata				( w_bus_rdata			),
-		.bus_rdata_en			( w_bus_rdata_en		)
+		.bus_data				( bus_data				),
+		.bus_valid				( bus_valid				)
 	);
 
-	assign p_slot_data_dir	= w_slot_data_dir;
-	assign w_bus_rdata		= w_bus_vdp_rdata;
-	assign w_bus_rdata_en	= w_bus_vdp_rdata_en;
-	assign w_bus_ready		= 1'b1;
-
 	// --------------------------------------------------------------------
-	//	p_slot_busdir
-	//		0 ... Write from CPU
-	//		1 ... Read by CPU
+	//	Data buffer
 	// --------------------------------------------------------------------
-	assign p_slot_busdir	= 
-			//(!p_slot_ioreq_n && !p_slot_rd_n && { p_slot_address[7:2], 2'd0 } == 8'h98 ) ? 1'b1: 
-			1'b0;
-
-	assign w_slot_int_n			= 1'b1;
+	data_buffer u_data_buffer (
+	);
 
 	// --------------------------------------------------------------------
 	//	DDR3-SDRAM Controller

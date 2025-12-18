@@ -72,145 +72,108 @@ module msx_slot(
 	output			p_slot_int,				//	0 or HiZ: Normal, 1: Interrupt
 	output			p_slot_wait,			//	0: Normal, 1 or HiZ: Wait
 	//	Local BUS
-	input			int_n,
-	output	[15:0]	bus_address,
-	output			bus_memreq,
-	output			bus_ioreq,
-	output			bus_write,
-	output			bus_valid,
-	input			bus_ready,
-	output	[7:0]	bus_wdata,
-	input	[7:0]	bus_rdata,
-	input			bus_rdata_en
+	output	[27:0]	bus_data,
+	output			bus_valid
 );
-	wire			w_iorq_wr;
-	wire			w_iorq_rd;
-	wire			w_merq_wr;
-	wire			w_merq_rd;
-	wire			w_active;
-	reg				ff_iorq_wr;
-	reg				ff_iorq_rd;
-	reg				ff_merq_wr;
-	reg				ff_merq_rd;
-	reg				ff_iorq_wr_pre;
-	reg				ff_iorq_rd_pre;
-	reg				ff_merq_wr_pre;
-	reg				ff_merq_rd_pre;
+	localparam		c_read_wait		= 5'd24;	//	read delay
+
+	reg				ff_iorq;
+	reg				ff_merq;
+	reg				ff_read;
+	reg				ff_write;
+	reg				ff_iorq_pre;
+	reg				ff_merq_pre;
+	reg				ff_read_pre;
+	reg				ff_write_pre;
 	reg				ff_active;
 	reg		[15:0]	ff_address;
 	reg				ff_write;
 	reg				ff_valid;
 	reg				ff_ioreq;
 	reg				ff_memreq;
-	reg		[7:0]	ff_wdata;
-	reg		[7:0]	ff_rdata;
+	reg		[7:0]	ff_data;
+	reg		[4:0]	ff_delay;
+	wire			w_read_trigger;
+	wire			w_write_trigger;
 
-	assign w_iorq_wr	= ~p_slot_ioreq_n & ~p_slot_wr_n;
-	assign w_iorq_rd	= 1'b0;	//~p_slot_ioreq_n & ~p_slot_rd_n;
-	assign w_merq_wr	= ~p_slot_mreq_n  & ~p_slot_wr_n & ~p_slot_sltsl_n;
-	assign w_merq_rd	= 1'b0;	//~p_slot_mreq_n  & ~p_slot_rd_n & ~p_slot_sltsl_n;
-	assign w_active		= ff_iorq_wr | ff_iorq_rd | ff_merq_wr | ff_merq_rd;
-
+	// --------------------------------------------------------------------
+	//	Get trigger for read and write
+	// --------------------------------------------------------------------
 	always @( posedge clk42m or negedge p_slot_reset_n ) begin
 		if( !p_slot_reset_n ) begin
-			ff_iorq_wr		<= 1'b0;
-			ff_iorq_rd		<= 1'b0;
-			ff_merq_wr		<= 1'b0;
-			ff_merq_rd		<= 1'b0;
-			ff_iorq_wr_pre	<= 1'b0;
-			ff_iorq_rd_pre	<= 1'b0;
-			ff_merq_wr_pre	<= 1'b0;
-			ff_merq_rd_pre	<= 1'b0;
+			ff_iorq			<= 1'b0;
+			ff_merq			<= 1'b0;
+			ff_read			<= 1'b0;
+			ff_write		<= 1'b0;
+			ff_iorq_pre		<= 1'b0;
+			ff_merq_pre		<= 1'b0;
+			ff_read_pre		<= 1'b0;
+			ff_write_pre	<= 1'b0;
 		end
 		else begin
-			ff_iorq_wr		<= ff_iorq_wr_pre;
-			ff_iorq_rd		<= ff_iorq_rd_pre;
-			ff_merq_wr		<= ff_merq_wr_pre;
-			ff_merq_rd		<= ff_merq_rd_pre;
-			ff_iorq_wr_pre	<= w_iorq_wr;
-			ff_iorq_rd_pre	<= w_iorq_rd;
-			ff_merq_wr_pre	<= w_merq_wr;
-			ff_merq_rd_pre	<= w_merq_rd;
+			ff_iorq			<= ff_iorq_pre;
+			ff_merq			<= ff_merq_pre;
+			ff_read			<= ff_read_pre;
+			ff_write		<= ff_write_pre;
+			ff_iorq_pre		<= ~p_slot_ioreq_n;
+			ff_merq_pre		<= ~p_slot_mreq_n;
+			ff_read_pre		<= ~p_slot_rd_n;
+			ff_write_pre	<= ~p_slot_wr_n;
 		end
 	end
 
-	// --------------------------------------------------------------------
-	//	Transaction active signal
-	// --------------------------------------------------------------------
-	always @( posedge clk42m or negedge p_slot_reset_n ) begin
-		if( !p_slot_reset_n ) begin
-			ff_active <= 1'b0;
-		end
-		else begin
-			ff_active <= w_active;
-		end
-	end
+	assign w_read_trigger	= ff_read_pre  && !ff_read;
+	assign w_write_trigger	= ff_write_pre && !ff_write;
 
 	// --------------------------------------------------------------------
-	//	Valid signal
+	//	Make read timming
 	// --------------------------------------------------------------------
 	always @( posedge clk42m or negedge p_slot_reset_n ) begin
-		if( !p_slot_reset_n ) begin
-			ff_valid <= 1'b0;
+		if( !ff_read ) begin
+			ff_delay		<= 5'd0;
 		end
-		else if( !ff_active ) begin
-			ff_valid <= w_active;
+		else if( w_read_trigger ) begin
+			ff_delay		<= c_read_wait;
 		end
-		else begin
-			if( bus_ready ) begin
-				ff_valid <= 1'b0;
+		else if( ff_read ) begin
+			if( ff_delay != 5'd0 ) begin
+				ff_delay	<= ff_delay - 5'd1;
 			end
 		end
 	end
 
 	// --------------------------------------------------------------------
-	//	Address latch
+	//	Data latch
 	// --------------------------------------------------------------------
 	always @( posedge clk42m or negedge p_slot_reset_n ) begin
-		if( !p_slot_reset_n ) begin
-			ff_address	<= 16'd0;
-			ff_write	<= 1'b1;
-			ff_wdata	<= 8'd0;
-			ff_ioreq	<= 1'b0;
-			ff_memreq	<= 1'b0;
+		if( ff_read ) begin
+			if( ff_delay == 5'd1 ) begin
+				ff_ioreq	<= ~p_slot_ioreq_n;
+				ff_memreq	<= ~p_slot_mreq_n;
+				ff_address	<= p_slot_address;
+				ff_data		<= p_slot_data;
+				ff_valid	<= 1'b1;
+			end
 		end
-		else if( !ff_active && w_active ) begin
+		else if( w_write_trigger ) begin
+			ff_ioreq	<= ~p_slot_ioreq_n;
+			ff_memreq	<= ~p_slot_mreq_n;
 			ff_address	<= p_slot_address;
-			ff_write	<= ff_iorq_wr | ff_merq_wr;
-			ff_ioreq	<= ff_iorq_wr | ff_iorq_rd;
-			ff_memreq	<= ff_merq_wr | ff_merq_rd;
-			if( ff_iorq_wr | ff_merq_wr ) begin
-				ff_wdata <= p_slot_data;
-			end
+			ff_data		<= p_slot_data;
+			ff_valid	<= 1'b1;
 		end
-		else if( !ff_active ) begin
-			ff_write	<= 1'b1;
-		end
-	end
-
-	// --------------------------------------------------------------------
-	//	Read data
-	// --------------------------------------------------------------------
-	always @( posedge clk42m or negedge p_slot_reset_n ) begin
-		if( !p_slot_reset_n ) begin
-			ff_rdata <= 8'd0;
-		end
-		else if( bus_rdata_en ) begin
-			ff_rdata <= bus_rdata;
+		else begin
+			ff_valid	<= 1'b0;
 		end
 	end
 
 	assign reset_n			= p_slot_reset_n;
-	assign bus_memreq		= ff_memreq;
-	assign bus_ioreq		= ff_ioreq;
-	assign bus_address		= ff_address;
-	assign bus_write		= ff_write;
+	assign bus_data			= { ff_ioreq, ff_memreq, ff_read, ff_write, ff_data, ff_address };
 	assign bus_valid		= ff_valid;
-	assign bus_wdata		= ff_wdata;
-	assign p_slot_data		= ff_write ? 8'hZZ: ff_rdata;
-	assign p_slot_int		= ~int_n;
+	assign p_slot_data		= 8'hZZ;					//	MSX->Cartridge only
+	assign p_slot_int		= 1'b0;						//	No interrupt
 	assign p_slot_wait		= 1'b0;
 
 	//	0: Cartridge <- CPU, 1: Cartridge -> CPU
-	assign p_slot_data_dir	= ~ff_write;
+	assign p_slot_data_dir	= 1'b0;						//	MSX->Cartridge only
 endmodule
