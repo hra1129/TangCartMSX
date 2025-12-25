@@ -36,5 +36,7 @@ rem zcc +msx -subtype=msxdos2 -I../v9968lib/ test008_g6sp4.c v9968_common.o v996
 
 echo G6IMG
 zcc +msx -subtype=msxdos2 -I../v9968lib/ test009_g6img.c v9968_common.o v9968_mode.o v9968_font.o -o G6IMG.COM
+echo G6A1
+zcc +msx -subtype=msxdos2 -I../v9968lib/ test010_a1.c v9968_common.o v9968_mode.o v9968_font.o -o G6A1.COM
 
 pause

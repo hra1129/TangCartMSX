@@ -7,7 +7,6 @@ module ip_ram (
 	input			clk			,
 	input	[11:0]	bus_address	,
 	input			bus_valid	,
-	output			bus_ready	,
 	input			bus_write	,
 	input	[31:0]	bus_wdata	,
 	output	[31:0]	bus_rdata	,
@@ -16,8 +15,6 @@ module ip_ram (
 	reg		[31:0]	ff_ram [0:4095];
 	reg		[31:0]	ff_rdata;
 	reg				ff_rdata_en;
-
-	assign	bus_ready	= 1'b1;
 
 	always @( posedge clk ) begin
 		if( !reset_n ) begin
