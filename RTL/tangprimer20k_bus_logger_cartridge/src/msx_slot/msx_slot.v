@@ -77,6 +77,7 @@ module msx_slot(
 );
 	localparam		c_read_wait		= 5'd24;	//	read delay
 
+	reg				ff_reset_n		= 1'b0;
 	reg				ff_iorq;
 	reg				ff_merq;
 	reg				ff_read;
@@ -97,10 +98,17 @@ module msx_slot(
 	wire			w_write_trigger;
 
 	// --------------------------------------------------------------------
+	//	Reset signal
+	// --------------------------------------------------------------------
+	always( posedge clk ) begin
+		ff_reset_n <= p_slot_reset_n;
+	end
+
+	// --------------------------------------------------------------------
 	//	Get trigger for read and write
 	// --------------------------------------------------------------------
-	always @( posedge clk42m or negedge p_slot_reset_n ) begin
-		if( !p_slot_reset_n ) begin
+	always @( posedge clk42m ) begin
+		if( !ff_reset_n ) begin
 			ff_iorq			<= 1'b0;
 			ff_merq			<= 1'b0;
 			ff_read			<= 1'b0;
@@ -128,8 +136,11 @@ module msx_slot(
 	// --------------------------------------------------------------------
 	//	Make read timming
 	// --------------------------------------------------------------------
-	always @( posedge clk42m or negedge p_slot_reset_n ) begin
-		if( !ff_read ) begin
+	always @( posedge clk42m ) begin
+		if( !ff_reset_n ) begin
+			ff_delay		<= 5'd0;
+		end
+		else if( !ff_read ) begin
 			ff_delay		<= 5'd0;
 		end
 		else if( w_read_trigger ) begin
@@ -145,8 +156,15 @@ module msx_slot(
 	// --------------------------------------------------------------------
 	//	Data latch
 	// --------------------------------------------------------------------
-	always @( posedge clk42m or negedge p_slot_reset_n ) begin
-		if( ff_read ) begin
+	always @( posedge clk42m ) begin
+		if( !ff_reset_n ) begin
+			ff_ioreq	<= 1'b0;
+			ff_memreq	<= 1'b0;
+			ff_address	<= 16'd0;
+			ff_data		<= 8'd0;
+			ff_valid	<= 1'b0;
+		end
+		else if( ff_read ) begin
 			if( ff_delay == 5'd1 ) begin
 				ff_ioreq	<= ~p_slot_ioreq_n;
 				ff_memreq	<= ~p_slot_mreq_n;
@@ -167,7 +185,7 @@ module msx_slot(
 		end
 	end
 
-	assign reset_n			= p_slot_reset_n;
+	assign reset_n			= ff_reset_n;
 	assign bus_data			= { ff_ioreq, ff_memreq, ff_read, ff_write, ff_data, ff_address };
 	assign bus_valid		= ff_valid;
 	assign p_slot_data		= 8'hZZ;					//	MSX->Cartridge only

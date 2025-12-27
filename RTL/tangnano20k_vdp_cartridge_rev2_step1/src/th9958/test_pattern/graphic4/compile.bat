@@ -19,4 +19,7 @@ zcc +msx -subtype=msxdos2 -I../v9968lib/ test002_sp2.c v9968_common.o v9968_mode
 echo G4IMG
 zcc +msx -subtype=msxdos2 -I../v9968lib/ test009_g4img.c v9968_common.o v9968_mode.o v9968_font.o -o G4IMG.COM
 
+echo G4CACHE
+zcc +msx -subtype=msxdos2 -I../v9968lib/ test010_hmmv.c v9968_common.o v9968_mode.o v9968_font.o -o G4CACHE.COM
+
 pause

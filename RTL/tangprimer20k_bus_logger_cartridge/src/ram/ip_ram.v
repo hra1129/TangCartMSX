@@ -8,17 +8,17 @@ module ip_ram (
 	input	[11:0]	bus_address	,
 	input			bus_valid	,
 	input			bus_write	,
-	input	[31:0]	bus_wdata	,
-	output	[31:0]	bus_rdata	,
+	input	[27:0]	bus_wdata	,
+	output	[27:0]	bus_rdata	,
 	output			bus_rdata_en
 );
-	reg		[31:0]	ff_ram [0:4095];
-	reg		[31:0]	ff_rdata;
+	reg		[27:0]	ff_ram [0:4095];
+	reg		[27:0]	ff_rdata;
 	reg				ff_rdata_en;
 
 	always @( posedge clk ) begin
 		if( !reset_n ) begin
-			ff_rdata	<= 32'd0;
+			ff_rdata	<= 28'd0;
 			ff_rdata_en	<= 1'b0;
 		end
 		else if( bus_valid && !bus_write ) begin
@@ -26,7 +26,7 @@ module ip_ram (
 			ff_rdata_en	<= 1'b1;
 		end
 		else begin
-			ff_rdata	<= 32'd0;
+			ff_rdata	<= 28'd0;
 			ff_rdata_en	<= 1'b0;
 		end
 	end

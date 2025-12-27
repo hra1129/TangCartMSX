@@ -449,3 +449,44 @@ void v9968_color_new( void ) {
 		outp( vdp_port2, init_palette[i] );
 	}
 }
+
+// --------------------------------------------------------------------
+//	v9968_hmmv( dx, dy, nx, ny, col )
+// --------------------------------------------------------------------
+void v9968_hmmv( int dx, int dy, int nx, int ny, int col ) {
+
+	v9968_wait_vdp_command();
+	v9968_write_vdp( 36, dx & 255 );
+	v9968_write_vdp( 37, dx >> 8 );
+	v9968_write_vdp( 38, dy & 255 );
+	v9968_write_vdp( 39, dy >> 8 );
+	v9968_write_vdp( 40, nx & 255 );
+	v9968_write_vdp( 41, nx >> 8 );
+	v9968_write_vdp( 42, ny & 255 );
+	v9968_write_vdp( 43, ny >> 8 );
+	v9968_write_vdp( 44, col & 255 );
+	v9968_write_vdp( 45, 0 );
+	v9968_write_vdp( 46, 0xC0 );
+}
+
+// --------------------------------------------------------------------
+//	v9968_hmmm( sx, sy, dx, dy, nx, ny )
+// --------------------------------------------------------------------
+void v9968_hmmm( int sx, int sy, int dx, int dy, int nx, int ny ) {
+
+	v9968_wait_vdp_command();
+	v9968_write_vdp( 32, sx & 255 );
+	v9968_write_vdp( 33, sx >> 8 );
+	v9968_write_vdp( 34, sy & 255 );
+	v9968_write_vdp( 35, sy >> 8 );
+	v9968_write_vdp( 36, dx & 255 );
+	v9968_write_vdp( 37, dx >> 8 );
+	v9968_write_vdp( 38, dy & 255 );
+	v9968_write_vdp( 39, dy >> 8 );
+	v9968_write_vdp( 40, nx & 255 );
+	v9968_write_vdp( 41, nx >> 8 );
+	v9968_write_vdp( 42, ny & 255 );
+	v9968_write_vdp( 43, ny >> 8 );
+	v9968_write_vdp( 45, 0 );
+	v9968_write_vdp( 46, 0xD0 );
+}

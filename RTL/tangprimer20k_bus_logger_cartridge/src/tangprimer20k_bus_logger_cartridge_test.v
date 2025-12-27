@@ -139,9 +139,22 @@ module tangprimer20k_bus_logger_cartridge_test (
 	);
 
 	// --------------------------------------------------------------------
-	//	Data buffer
+	//	FIFO
 	// --------------------------------------------------------------------
-	data_buffer u_data_buffer (
+	fifo u_fifo (
+		.reset_n				( reset_n				),
+		.clk42m					( clk42m				),
+		.bus_data				( bus_data				),
+		.bus_valid				( bus_valid				),
+		.bus_dram_address		( w_dram_address		),
+	);
+
+	// --------------------------------------------------------------------
+	//	Serial port
+	// --------------------------------------------------------------------
+	uart u_uart (
+		.reset_n				( reset_n				),
+		.clk42m					( clk42m				),
 	);
 
 	// --------------------------------------------------------------------

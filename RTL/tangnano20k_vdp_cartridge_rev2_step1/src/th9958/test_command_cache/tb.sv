@@ -66,7 +66,7 @@ module tb ();
 	wire				cache_flush_end;
 	
 	// VDP command interface
-	logic	[16:0]		cache_vram_address;
+	logic	[17:0]		cache_vram_address;
 	logic				cache_vram_valid;
 	wire				cache_vram_ready;
 	logic				cache_vram_write;
@@ -75,7 +75,7 @@ module tb ();
 	wire				cache_vram_rdata_en;
 	
 	// VRAM interface
-	wire	[16:0]		command_vram_address;
+	wire	[17:0]		command_vram_address;
 	wire				command_vram_valid;
 	logic				command_vram_ready;
 	wire				command_vram_write;
@@ -88,6 +88,7 @@ module tb ();
 	logic	[31:0]		last_vram_rdata;
 	integer				last_vram_write_count = 0;
 	integer				last_vram_read_count = 0;
+	integer				test_num = 0;
 
 	// --------------------------------------------------------------------
 	//	Internal signals
@@ -259,7 +260,7 @@ module tb ();
 			reset_n = 1'b0;
 			start = 1'b0;
 			cache_flush_start = 1'b0;
-			cache_vram_address	= 17'd0;
+			cache_vram_address	= 18'd0;
 			cache_vram_valid	= 1'b0;
 			cache_vram_write	= 1'b0;
 			cache_vram_wdata	= 8'd0;
@@ -1101,30 +1102,39 @@ module tb ();
 		reset_sequence();
 		wait_clocks( 100 );
 
+		test_num = 1;
 		test_basic_operations();
 		wait_clocks( 100 );
 
+		test_num = 2;
 		test_cache_hit();
 		wait_clocks( 100 );
 
+		test_num = 3;
 		test_cache_replacement();
 		wait_clocks( 100 );
 
+		test_num = 4;
 		test_vram_read();
 		wait_clocks( 100 );
 
+		test_num = 5;
 		test_4way_full();
 		wait_clocks( 100 );
 
+		test_num = 6;
 		test_vram_write_and_read();
 		wait_clocks( 100 );
 
+		test_num = 7;
 		test_cache_flush();
 		wait_clocks( 100 );
 
+		test_num = 8;
 		test_start_control();
 		wait_clocks( 100 );
 		
+		test_num = 9;
 		$display( "\n=== All Tests PASSED ===" );
 		$display( "Test completed successfully at time %t", $time );
 		$finish;

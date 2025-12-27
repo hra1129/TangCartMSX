@@ -35,4 +35,7 @@ char v9968_bload_to( const char *s_file_name, unsigned short start );
 void v9968_color_restore( unsigned short palette_address );
 void v9968_color_new( void );
 
+void v9968_hmmv( int dx, int dy, int nx, int ny, int col );
+void v9968_hmmm( int sx, int sy, int dx, int dy, int nx, int ny );
+
 #endif
