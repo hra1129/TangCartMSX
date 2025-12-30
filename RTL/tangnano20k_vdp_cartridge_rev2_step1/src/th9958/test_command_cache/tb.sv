@@ -372,32 +372,32 @@ module tb ();
 			$display( "\n=== Test Case: Basic Operations ===" );
 			
 			// Test single byte write/read at different positions
-			cache_write( 17'h00000, 8'hAA );
-			cache_read( 17'h00000, read_data );
+			cache_write( 18'h00000, 8'hAA );
+			cache_read( 18'h00000, read_data );
 			if( read_data != 8'hAA ) begin
 				$error( "Basic write/read failed. Expected: 0xAA, Got: 0x%02X", read_data );
 				assert( 0 );
 				$finish;
 			end
 			
-			cache_write( 17'h00001, 8'hBB );
-			cache_read( 17'h00001, read_data );
+			cache_write( 18'h00001, 8'hBB );
+			cache_read( 18'h00001, read_data );
 			if( read_data != 8'hBB ) begin
 				$error( "Basic write/read failed. Expected: 0xBB, Got: 0x%02X", read_data );
 				assert( 0 );
 				$finish;
 			end
 			
-			cache_write( 17'h00002, 8'hCC );
-			cache_read( 17'h00002, read_data );
+			cache_write( 18'h00002, 8'hCC );
+			cache_read( 18'h00002, read_data );
 			if( read_data != 8'hCC ) begin
 				$error( "Basic write/read failed. Expected: 0xCC, Got: 0x%02X", read_data );
 				assert( 0 );
 				$finish;
 			end
 			
-			cache_write( 17'h00003, 8'hDD );
-			cache_read( 17'h00003, read_data );
+			cache_write( 18'h00003, 8'hDD );
+			cache_read( 18'h00003, read_data );
 			if( read_data != 8'hDD ) begin
 				$error( "Basic write/read failed. Expected: 0xDD, Got: 0x%02X", read_data );
 				assert( 0 );
@@ -420,34 +420,34 @@ module tb ();
 			prepare_new_test();
 			
 			// Write to same 32-bit boundary multiple times (should hit cache)
-			cache_write( 17'h01000, 8'h11 );
-			cache_write( 17'h01001, 8'h22 );
-			cache_write( 17'h01002, 8'h33 );
-			cache_write( 17'h01003, 8'h44 );
+			cache_write( 18'h01000, 8'h11 );
+			cache_write( 18'h01001, 8'h22 );
+			cache_write( 18'h01002, 8'h33 );
+			cache_write( 18'h01003, 8'h44 );
 			
 			// Read back from cache
-			cache_read( 17'h01000, read_data );
+			cache_read( 18'h01000, read_data );
 			if( read_data != 8'h11 ) begin
 				$error( "Cache hit test failed. Expected: 0x11, Got: 0x%02X", read_data );
 				assert( 0 );
 				$finish;
 			end
 			
-			cache_read( 17'h01001, read_data );
+			cache_read( 18'h01001, read_data );
 			if( read_data != 8'h22 ) begin
 				$error( "Cache hit test failed. Expected: 0x22, Got: 0x%02X", read_data );
 				assert( 0 );
 				$finish;
 			end
 			
-			cache_read( 17'h01002, read_data );
+			cache_read( 18'h01002, read_data );
 			if( read_data != 8'h33 ) begin
 				$error( "Cache hit test failed. Expected: 0x33, Got: 0x%02X", read_data );
 				assert( 0 );
 				$finish;
 			end
 			
-			cache_read( 17'h01003, read_data );
+			cache_read( 18'h01003, read_data );
 			if( read_data != 8'h44 ) begin
 				$error( "Cache hit test failed. Expected: 0x44, Got: 0x%02X", read_data );
 				assert( 0 );
@@ -470,24 +470,24 @@ module tb ();
 			prepare_new_test();
 			
 			// Fill up cache entries with different addresses
-			cache_write( 17'h02000, 8'hA1 );  // Cache entry 0
-			cache_write( 17'h03000, 8'hA2 );  // Cache entry 1
-			cache_write( 17'h04000, 8'hA3 );  // Cache entry 2
-			cache_write( 17'h05000, 8'hA4 );  // Cache entry 3
+			cache_write( 18'h02000, 8'hA1 );  // Cache entry 0
+			cache_write( 18'h03000, 8'hA2 );  // Cache entry 1
+			cache_write( 18'h04000, 8'hA3 );  // Cache entry 2
+			cache_write( 18'h05000, 8'hA4 );  // Cache entry 3
 			
 			// Access that should cause cache replacement
-			cache_write( 17'h06000, 8'hA5 );  // Should replace entry 0
-			cache_write( 17'h07000, 8'hA6 );  // Should replace entry 1
+			cache_write( 18'h06000, 8'hA5 );  // Should replace entry 0
+			cache_write( 18'h07000, 8'hA6 );  // Should replace entry 1
 			
 			// Read back to verify replacement worked
-			cache_read( 17'h06000, read_data );
+			cache_read( 18'h06000, read_data );
 			if( read_data != 8'hA5 ) begin
 				$error( "Cache replacement test failed. Expected: 0xA5, Got: 0x%02X", read_data );
 				assert( 0 );
 				$finish;
 			end
 			
-			cache_read( 17'h07000, read_data );
+			cache_read( 18'h07000, read_data );
 			if( read_data != 8'hA6 ) begin
 				$error( "Cache replacement test failed. Expected: 0xA6, Got: 0x%02X", read_data );
 				assert( 0 );
@@ -511,7 +511,7 @@ module tb ();
 			prepare_new_test();
 			
 			// Read from VRAM locations with known pattern
-			cache_read( 17'h08000, read_data );
+			cache_read( 18'h08000, read_data );
 			expected_data = 8'h10;	// From init_vram pattern
 			if( read_data != expected_data ) begin
 				$error( "VRAM read test failed. Expected: 0x%02X, Got: 0x%02X", expected_data, read_data );
@@ -519,7 +519,7 @@ module tb ();
 				$finish;
 			end
 			
-			cache_read( 17'h08001, read_data );
+			cache_read( 18'h08001, read_data );
 			expected_data = 8'h20;	// From init_vram pattern
 			if( read_data != expected_data ) begin
 				$error( "VRAM read test failed. Expected: 0x%02X, Got: 0x%02X", expected_data, read_data );
@@ -527,7 +527,7 @@ module tb ();
 				$finish;
 			end
 			
-			cache_read( 17'h08002, read_data );
+			cache_read( 18'h08002, read_data );
 			expected_data = 8'h40;	// From init_vram pattern
 			if( read_data != expected_data ) begin
 				$error( "VRAM read test failed. Expected: 0x%02X, Got: 0x%02X", expected_data, read_data );
@@ -535,7 +535,7 @@ module tb ();
 				$finish;
 			end
 			
-			cache_read( 17'h08003, read_data );
+			cache_read( 18'h08003, read_data );
 			expected_data = 8'h80;	// From init_vram pattern
 			if( read_data != expected_data ) begin
 				$error( "VRAM read test failed. Expected: 0x%02X, Got: 0x%02X", expected_data, read_data );
@@ -563,7 +563,7 @@ module tb ();
 			last_vram_write_count	= 0;
 			last_vram_read_count	= 0;
 
-			cache_read( 17'h08000, read_data );
+			cache_read( 18'h08000, read_data );
 			expected_data = 8'h10;	// From init_vram pattern
 			if( read_data != expected_data ) begin
 				$error( "VRAM read test failed. Expected: 0x%02X, Got: 0x%02X", expected_data, read_data );
@@ -572,7 +572,7 @@ module tb ();
 			assert( last_vram_write_count == 0 );
 			assert( last_vram_read_count == 1 );
 
-			cache_read( 17'h08004, read_data );
+			cache_read( 18'h08004, read_data );
 			expected_data = 8'h11;	// From init_vram pattern
 			if( read_data != expected_data ) begin
 				$error( "VRAM read test failed. Expected: 0x%02X, Got: 0x%02X", expected_data, read_data );
@@ -581,7 +581,7 @@ module tb ();
 			assert( last_vram_write_count == 0 );
 			assert( last_vram_read_count == 2 );
 
-			cache_read( 17'h08008, read_data );
+			cache_read( 18'h08008, read_data );
 			expected_data = 8'h12;	// From init_vram pattern
 			if( read_data != expected_data ) begin
 				$error( "VRAM read test failed. Expected: 0x%02X, Got: 0x%02X", expected_data, read_data );
@@ -590,7 +590,7 @@ module tb ();
 			assert( last_vram_write_count == 0 );
 			assert( last_vram_read_count == 3 );
 
-			cache_read( 17'h0800C, read_data );
+			cache_read( 18'h0800C, read_data );
 			expected_data = 8'h13;	// From init_vram pattern
 			if( read_data != expected_data ) begin
 				$error( "VRAM read test failed. Expected: 0x%02X, Got: 0x%02X", expected_data, read_data );
@@ -599,7 +599,7 @@ module tb ();
 			assert( last_vram_write_count == 0 );
 			assert( last_vram_read_count == 4 );
 
-			cache_read( 17'h08000, read_data );
+			cache_read( 18'h08000, read_data );
 			expected_data = 8'h10;	// From init_vram pattern
 			if( read_data != expected_data ) begin
 				$error( "VRAM read test failed. Expected: 0x%02X, Got: 0x%02X", expected_data, read_data );
@@ -608,7 +608,7 @@ module tb ();
 			assert( last_vram_write_count == 0 );
 			assert( last_vram_read_count == 4 );
 
-			cache_read( 17'h08004, read_data );
+			cache_read( 18'h08004, read_data );
 			expected_data = 8'h11;	// From init_vram pattern
 			if( read_data != expected_data ) begin
 				$error( "VRAM read test failed. Expected: 0x%02X, Got: 0x%02X", expected_data, read_data );
@@ -617,7 +617,7 @@ module tb ();
 			assert( last_vram_write_count == 0 );
 			assert( last_vram_read_count == 4 );
 
-			cache_read( 17'h08008, read_data );
+			cache_read( 18'h08008, read_data );
 			expected_data = 8'h12;	// From init_vram pattern
 			if( read_data != expected_data ) begin
 				$error( "VRAM read test failed. Expected: 0x%02X, Got: 0x%02X", expected_data, read_data );
@@ -626,7 +626,7 @@ module tb ();
 			assert( last_vram_write_count == 0 );
 			assert( last_vram_read_count == 4 );
 
-			cache_read( 17'h0800C, read_data );
+			cache_read( 18'h0800C, read_data );
 			expected_data = 8'h13;	// From init_vram pattern
 			if( read_data != expected_data ) begin
 				$error( "VRAM read test failed. Expected: 0x%02X, Got: 0x%02X", expected_data, read_data );
@@ -635,7 +635,7 @@ module tb ();
 			assert( last_vram_write_count == 0 );
 			assert( last_vram_read_count == 4 );
 
-			cache_read( 17'h08001, read_data );
+			cache_read( 18'h08001, read_data );
 			expected_data = 8'h20;	// From init_vram pattern
 			if( read_data != expected_data ) begin
 				$error( "VRAM read test failed. Expected: 0x%02X, Got: 0x%02X", expected_data, read_data );
@@ -644,7 +644,7 @@ module tb ();
 			assert( last_vram_write_count == 0 );
 			assert( last_vram_read_count == 4 );
 
-			cache_read( 17'h08005, read_data );
+			cache_read( 18'h08005, read_data );
 			expected_data = 8'h21;	// From init_vram pattern
 			if( read_data != expected_data ) begin
 				$error( "VRAM read test failed. Expected: 0x%02X, Got: 0x%02X", expected_data, read_data );
@@ -653,7 +653,7 @@ module tb ();
 			assert( last_vram_write_count == 0 );
 			assert( last_vram_read_count == 4 );
 
-			cache_read( 17'h08009, read_data );
+			cache_read( 18'h08009, read_data );
 			expected_data = 8'h22;	// From init_vram pattern
 			if( read_data != expected_data ) begin
 				$error( "VRAM read test failed. Expected: 0x%02X, Got: 0x%02X", expected_data, read_data );
@@ -662,7 +662,7 @@ module tb ();
 			assert( last_vram_write_count == 0 );
 			assert( last_vram_read_count == 4 );
 
-			cache_read( 17'h0800D, read_data );
+			cache_read( 18'h0800D, read_data );
 			expected_data = 8'h23;	// From init_vram pattern
 			if( read_data != expected_data ) begin
 				$error( "VRAM read test failed. Expected: 0x%02X, Got: 0x%02X", expected_data, read_data );
@@ -671,7 +671,7 @@ module tb ();
 			assert( last_vram_write_count == 0 );
 			assert( last_vram_read_count == 4 );
 
-			cache_read( 17'h08002, read_data );
+			cache_read( 18'h08002, read_data );
 			expected_data = 8'h40;	// From init_vram pattern
 			if( read_data != expected_data ) begin
 				$error( "VRAM read test failed. Expected: 0x%02X, Got: 0x%02X", expected_data, read_data );
@@ -680,7 +680,7 @@ module tb ();
 			assert( last_vram_write_count == 0 );
 			assert( last_vram_read_count == 4 );
 
-			cache_read( 17'h08006, read_data );
+			cache_read( 18'h08006, read_data );
 			expected_data = 8'h41;	// From init_vram pattern
 			if( read_data != expected_data ) begin
 				$error( "VRAM read test failed. Expected: 0x%02X, Got: 0x%02X", expected_data, read_data );
@@ -689,7 +689,7 @@ module tb ();
 			assert( last_vram_write_count == 0 );
 			assert( last_vram_read_count == 4 );
 
-			cache_read( 17'h0800A, read_data );
+			cache_read( 18'h0800A, read_data );
 			expected_data = 8'h42;	// From init_vram pattern
 			if( read_data != expected_data ) begin
 				$error( "VRAM read test failed. Expected: 0x%02X, Got: 0x%02X", expected_data, read_data );
@@ -698,7 +698,7 @@ module tb ();
 			assert( last_vram_write_count == 0 );
 			assert( last_vram_read_count == 4 );
 
-			cache_read( 17'h0800E, read_data );
+			cache_read( 18'h0800E, read_data );
 			expected_data = 8'h43;	// From init_vram pattern
 			if( read_data != expected_data ) begin
 				$error( "VRAM read test failed. Expected: 0x%02X, Got: 0x%02X", expected_data, read_data );
@@ -707,7 +707,7 @@ module tb ();
 			assert( last_vram_write_count == 0 );
 			assert( last_vram_read_count == 4 );
 
-			cache_read( 17'h08003, read_data );
+			cache_read( 18'h08003, read_data );
 			expected_data = 8'h80;	// From init_vram pattern
 			if( read_data != expected_data ) begin
 				$error( "VRAM read test failed. Expected: 0x%02X, Got: 0x%02X", expected_data, read_data );
@@ -716,7 +716,7 @@ module tb ();
 			assert( last_vram_write_count == 0 );
 			assert( last_vram_read_count == 4 );
 
-			cache_read( 17'h08007, read_data );
+			cache_read( 18'h08007, read_data );
 			expected_data = 8'h81;	// From init_vram pattern
 			if( read_data != expected_data ) begin
 				$error( "VRAM read test failed. Expected: 0x%02X, Got: 0x%02X", expected_data, read_data );
@@ -725,7 +725,7 @@ module tb ();
 			assert( last_vram_write_count == 0 );
 			assert( last_vram_read_count == 4 );
 
-			cache_read( 17'h0800B, read_data );
+			cache_read( 18'h0800B, read_data );
 			expected_data = 8'h82;	// From init_vram pattern
 			if( read_data != expected_data ) begin
 				$error( "VRAM read test failed. Expected: 0x%02X, Got: 0x%02X", expected_data, read_data );
@@ -734,7 +734,7 @@ module tb ();
 			assert( last_vram_write_count == 0 );
 			assert( last_vram_read_count == 4 );
 
-			cache_read( 17'h0800F, read_data );
+			cache_read( 18'h0800F, read_data );
 			expected_data = 8'h83;	// From init_vram pattern
 			if( read_data != expected_data ) begin
 				$error( "VRAM read test failed. Expected: 0x%02X, Got: 0x%02X", expected_data, read_data );
@@ -746,7 +746,7 @@ module tb ();
 			//	------------------------------------------------------------
 			//	キャッシュが溢れて、新しいワードを読みだす。
 			//	溢れた部分は、まだ何も書き替えていないので、書き出しは発生しない
-			cache_read( 17'h08010, read_data );
+			cache_read( 18'h08010, read_data );
 			expected_data = 8'h14;	// From init_vram pattern
 			if( read_data != expected_data ) begin
 				$error( "VRAM read test failed. Expected: 0x%02X, Got: 0x%02X", expected_data, read_data );
@@ -755,7 +755,7 @@ module tb ();
 			assert( last_vram_write_count == 0 );
 			assert( last_vram_read_count == 5 );
 
-			cache_read( 17'h08014, read_data );
+			cache_read( 18'h08014, read_data );
 			expected_data = 8'h15;	// From init_vram pattern
 			if( read_data != expected_data ) begin
 				$error( "VRAM read test failed. Expected: 0x%02X, Got: 0x%02X", expected_data, read_data );
@@ -764,7 +764,7 @@ module tb ();
 			assert( last_vram_write_count == 0 );
 			assert( last_vram_read_count == 6 );
 
-			cache_read( 17'h08018, read_data );
+			cache_read( 18'h08018, read_data );
 			expected_data = 8'h16;	// From init_vram pattern
 			if( read_data != expected_data ) begin
 				$error( "VRAM read test failed. Expected: 0x%02X, Got: 0x%02X", expected_data, read_data );
@@ -773,7 +773,7 @@ module tb ();
 			assert( last_vram_write_count == 0 );
 			assert( last_vram_read_count == 7 );
 
-			cache_read( 17'h0801C, read_data );
+			cache_read( 18'h0801C, read_data );
 			expected_data = 8'h17;	// From init_vram pattern
 			if( read_data != expected_data ) begin
 				$error( "VRAM read test failed. Expected: 0x%02X, Got: 0x%02X", expected_data, read_data );
@@ -784,23 +784,23 @@ module tb ();
 
 			//	------------------------------------------------------------
 			//	キャッシュに書き込みをしてから、溢れると DRAM への書き出しが発生する。
-			cache_write( 17'h08010, 8'hAA );
+			cache_write( 18'h08010, 8'hAA );
 			assert( last_vram_write_count == 0 );
 			assert( last_vram_read_count == 8 );
 
-			cache_write( 17'h08014, 8'hBB );
+			cache_write( 18'h08014, 8'hBB );
 			assert( last_vram_write_count == 0 );
 			assert( last_vram_read_count == 8 );
 
-			cache_write( 17'h08018, 8'hCC );
+			cache_write( 18'h08018, 8'hCC );
 			assert( last_vram_write_count == 0 );
 			assert( last_vram_read_count == 8 );
 
-			cache_write( 17'h0801C, 8'hDD );
+			cache_write( 18'h0801C, 8'hDD );
 			assert( last_vram_write_count == 0 );
 			assert( last_vram_read_count == 8 );
 
-			cache_read( 17'h08020, read_data );
+			cache_read( 18'h08020, read_data );
 			expected_data = 8'h18;	// From init_vram pattern
 			if( read_data != expected_data ) begin
 				$error( "VRAM read test failed. Expected: 0x%02X, Got: 0x%02X", expected_data, read_data );
@@ -809,7 +809,7 @@ module tb ();
 			assert( last_vram_write_count == 1 );
 			assert( last_vram_read_count == 9 );
 
-			cache_read( 17'h08024, read_data );
+			cache_read( 18'h08024, read_data );
 			expected_data = 8'h19;	// From init_vram pattern
 			if( read_data != expected_data ) begin
 				$error( "VRAM read test failed. Expected: 0x%02X, Got: 0x%02X", expected_data, read_data );
@@ -818,7 +818,7 @@ module tb ();
 			assert( last_vram_write_count == 2 );
 			assert( last_vram_read_count == 10 );
 
-			cache_read( 17'h08028, read_data );
+			cache_read( 18'h08028, read_data );
 			expected_data = 8'h1A;	// From init_vram pattern
 			if( read_data != expected_data ) begin
 				$error( "VRAM read test failed. Expected: 0x%02X, Got: 0x%02X", expected_data, read_data );
@@ -827,7 +827,7 @@ module tb ();
 			assert( last_vram_write_count == 3 );
 			assert( last_vram_read_count == 11 );
 
-			cache_read( 17'h0802C, read_data );
+			cache_read( 18'h0802C, read_data );
 			expected_data = 8'h1B;	// From init_vram pattern
 			if( read_data != expected_data ) begin
 				$error( "VRAM read test failed. Expected: 0x%02X, Got: 0x%02X", expected_data, read_data );
@@ -847,45 +847,45 @@ module tb ();
 		begin
 			$display( "\n=== Test Case: Read and Write Test ===" );
 
-			cache_write( 17'h08500, 8'h12 );
-			cache_write( 17'h08501, 8'h23 );
-			cache_write( 17'h08502, 8'h34 );
-			cache_write( 17'h08503, 8'h45 );
+			cache_write( 18'h08500, 8'h12 );
+			cache_write( 18'h08501, 8'h23 );
+			cache_write( 18'h08502, 8'h34 );
+			cache_write( 18'h08503, 8'h45 );
 
-			cache_write( 17'h08600, 8'h56 );
-			cache_write( 17'h08601, 8'h67 );
-			cache_write( 17'h08602, 8'h78 );
-			cache_write( 17'h08603, 8'h89 );
+			cache_write( 18'h08600, 8'h56 );
+			cache_write( 18'h08601, 8'h67 );
+			cache_write( 18'h08602, 8'h78 );
+			cache_write( 18'h08603, 8'h89 );
 
-			cache_write( 17'h08700, 8'h9a );
-			cache_write( 17'h08701, 8'hab );
-			cache_write( 17'h08702, 8'hcd );
-			cache_write( 17'h08703, 8'hde );
+			cache_write( 18'h08700, 8'h9a );
+			cache_write( 18'h08701, 8'hab );
+			cache_write( 18'h08702, 8'hcd );
+			cache_write( 18'h08703, 8'hde );
 
-			cache_write( 17'h08800, 8'hef );
-			cache_write( 17'h08801, 8'hf0 );
-			cache_write( 17'h08802, 8'h01 );
-			cache_write( 17'h08803, 8'h12 );
+			cache_write( 18'h08800, 8'hef );
+			cache_write( 18'h08801, 8'hf0 );
+			cache_write( 18'h08802, 8'h01 );
+			cache_write( 18'h08803, 8'h12 );
 
-			cache_write( 17'h08900, 8'hAA );
-			cache_write( 17'h08901, 8'hAA );
-			cache_write( 17'h08902, 8'hAA );
-			cache_write( 17'h08903, 8'hAA );
+			cache_write( 18'h08900, 8'hAA );
+			cache_write( 18'h08901, 8'hAA );
+			cache_write( 18'h08902, 8'hAA );
+			cache_write( 18'h08903, 8'hAA );
 
-			cache_write( 17'h08A00, 8'h55 );
-			cache_write( 17'h08A01, 8'h55 );
-			cache_write( 17'h08A02, 8'h55 );
-			cache_write( 17'h08A03, 8'h55 );
+			cache_write( 18'h08A00, 8'h55 );
+			cache_write( 18'h08A01, 8'h55 );
+			cache_write( 18'h08A02, 8'h55 );
+			cache_write( 18'h08A03, 8'h55 );
 
-			cache_write( 17'h08B00, 8'hA5 );
-			cache_write( 17'h08B01, 8'hA5 );
-			cache_write( 17'h08B02, 8'hA5 );
-			cache_write( 17'h08B03, 8'hA5 );
+			cache_write( 18'h08B00, 8'hA5 );
+			cache_write( 18'h08B01, 8'hA5 );
+			cache_write( 18'h08B02, 8'hA5 );
+			cache_write( 18'h08B03, 8'hA5 );
 
-			cache_write( 17'h08C00, 8'h5A );
-			cache_write( 17'h08C01, 8'h5A );
-			cache_write( 17'h08C02, 8'h5A );
-			cache_write( 17'h08C03, 8'h5A );
+			cache_write( 18'h08C00, 8'h5A );
+			cache_write( 18'h08C01, 8'h5A );
+			cache_write( 18'h08C02, 8'h5A );
+			cache_write( 18'h08C03, 8'h5A );
 
 			flush_cache();
 			wait_clocks( 10 );
@@ -894,29 +894,29 @@ module tb ();
 
 			// --------------------------------------------------------------------
 			//	Write byte --> Read nearest byte
-			cache_write( 17'h08500, 8'hAB );
-			cache_read(  17'h08501, read_data );
+			cache_write( 18'h08500, 8'hAB );
+			cache_read(  18'h08501, read_data );
 			expected_data = 8'h23;	// From init_vram pattern
 			if( read_data != expected_data ) begin
 				$error( "VRAM read test failed. Expected: 0x%02X, Got: 0x%02X", expected_data, read_data );
 				$finish;
 			end
 
-			cache_read(  17'h08502, read_data );
+			cache_read(  18'h08502, read_data );
 			expected_data = 8'h34;	// From init_vram pattern
 			if( read_data != expected_data ) begin
 				$error( "VRAM read test failed. Expected: 0x%02X, Got: 0x%02X", expected_data, read_data );
 				$finish;
 			end
 
-			cache_read(  17'h08503, read_data );
+			cache_read(  18'h08503, read_data );
 			expected_data = 8'h45;	// From init_vram pattern
 			if( read_data != expected_data ) begin
 				$error( "VRAM read test failed. Expected: 0x%02X, Got: 0x%02X", expected_data, read_data );
 				$finish;
 			end
 
-			cache_read(  17'h08500, read_data );
+			cache_read(  18'h08500, read_data );
 			expected_data = 8'hAB;	// From init_vram pattern
 			if( read_data != expected_data ) begin
 				$error( "VRAM read test failed. Expected: 0x%02X, Got: 0x%02X", expected_data, read_data );
@@ -925,29 +925,29 @@ module tb ();
 
 			// --------------------------------------------------------------------
 			//	Write byte --> Read nearest byte
-			cache_write( 17'h08601, 8'hCB );
-			cache_read(  17'h08600, read_data );
+			cache_write( 18'h08601, 8'hCB );
+			cache_read(  18'h08600, read_data );
 			expected_data = 8'h56;	// From init_vram pattern
 			if( read_data != expected_data ) begin
 				$error( "VRAM read test failed. Expected: 0x%02X, Got: 0x%02X", expected_data, read_data );
 				$finish;
 			end
 
-			cache_read(  17'h08602, read_data );
+			cache_read(  18'h08602, read_data );
 			expected_data = 8'h78;	// From init_vram pattern
 			if( read_data != expected_data ) begin
 				$error( "VRAM read test failed. Expected: 0x%02X, Got: 0x%02X", expected_data, read_data );
 				$finish;
 			end
 
-			cache_read(  17'h08603, read_data );
+			cache_read(  18'h08603, read_data );
 			expected_data = 8'h89;	// From init_vram pattern
 			if( read_data != expected_data ) begin
 				$error( "VRAM read test failed. Expected: 0x%02X, Got: 0x%02X", expected_data, read_data );
 				$finish;
 			end
 
-			cache_read(  17'h08601, read_data );
+			cache_read(  18'h08601, read_data );
 			expected_data = 8'hCB;	// From init_vram pattern
 			if( read_data != expected_data ) begin
 				$error( "VRAM read test failed. Expected: 0x%02X, Got: 0x%02X", expected_data, read_data );
@@ -956,29 +956,29 @@ module tb ();
 
 			// --------------------------------------------------------------------
 			//	Write byte --> Read nearest byte
-			cache_write( 17'h08702, 8'hFC );
-			cache_read(  17'h08700, read_data );
+			cache_write( 18'h08702, 8'hFC );
+			cache_read(  18'h08700, read_data );
 			expected_data = 8'h9a;	// From init_vram pattern
 			if( read_data != expected_data ) begin
 				$error( "VRAM read test failed. Expected: 0x%02X, Got: 0x%02X", expected_data, read_data );
 				$finish;
 			end
 
-			cache_read(  17'h08701, read_data );
+			cache_read(  18'h08701, read_data );
 			expected_data = 8'hab;	// From init_vram pattern
 			if( read_data != expected_data ) begin
 				$error( "VRAM read test failed. Expected: 0x%02X, Got: 0x%02X", expected_data, read_data );
 				$finish;
 			end
 
-			cache_read(  17'h08703, read_data );
+			cache_read(  18'h08703, read_data );
 			expected_data = 8'hde;	// From init_vram pattern
 			if( read_data != expected_data ) begin
 				$error( "VRAM read test failed. Expected: 0x%02X, Got: 0x%02X", expected_data, read_data );
 				$finish;
 			end
 
-			cache_read(  17'h08702, read_data );
+			cache_read(  18'h08702, read_data );
 			expected_data = 8'hFC;	// From init_vram pattern
 			if( read_data != expected_data ) begin
 				$error( "VRAM read test failed. Expected: 0x%02X, Got: 0x%02X", expected_data, read_data );
@@ -987,29 +987,29 @@ module tb ();
 
 			// --------------------------------------------------------------------
 			//	Write byte --> Read nearest byte
-			cache_write( 17'h08803, 8'h9D );
-			cache_read(  17'h08800, read_data );
+			cache_write( 18'h08803, 8'h9D );
+			cache_read(  18'h08800, read_data );
 			expected_data = 8'hef;	// From init_vram pattern
 			if( read_data != expected_data ) begin
 				$error( "VRAM read test failed. Expected: 0x%02X, Got: 0x%02X", expected_data, read_data );
 				$finish;
 			end
 
-			cache_read(  17'h08801, read_data );
+			cache_read(  18'h08801, read_data );
 			expected_data = 8'hf0;	// From init_vram pattern
 			if( read_data != expected_data ) begin
 				$error( "VRAM read test failed. Expected: 0x%02X, Got: 0x%02X", expected_data, read_data );
 				$finish;
 			end
 
-			cache_read(  17'h08802, read_data );
+			cache_read(  18'h08802, read_data );
 			expected_data = 8'h01;	// From init_vram pattern
 			if( read_data != expected_data ) begin
 				$error( "VRAM read test failed. Expected: 0x%02X, Got: 0x%02X", expected_data, read_data );
 				$finish;
 			end
 
-			cache_read(  17'h08803, read_data );
+			cache_read(  18'h08803, read_data );
 			expected_data = 8'h9D;	// From init_vram pattern
 			if( read_data != expected_data ) begin
 				$error( "VRAM read test failed. Expected: 0x%02X, Got: 0x%02X", expected_data, read_data );
@@ -1027,13 +1027,13 @@ module tb ();
 			$display( "\n=== Test Case: Cache Flush Test ===" );
 			
 			// Write some data to cache
-			cache_write( 17'h0A000, 8'hAA );
-			cache_write( 17'h0A001, 8'hBB );
-			cache_write( 17'h0A002, 8'hCC );
-			cache_write( 17'h0A003, 8'hDD );
+			cache_write( 18'h0A000, 8'hAA );
+			cache_write( 18'h0A001, 8'hBB );
+			cache_write( 18'h0A002, 8'hCC );
+			cache_write( 18'h0A003, 8'hDD );
 			
 			// Verify data is in cache
-			cache_read( 17'h0A000, read_data );
+			cache_read( 18'h0A000, read_data );
 			if( read_data != 8'hAA ) begin
 				$display( "Cache flush test setup failed. Expected: 0xAA, Got: 0x%02X", read_data );
 				$finish;
@@ -1047,7 +1047,7 @@ module tb ();
 			wait_clocks( 2 );
 			
 			// Try to read the data (should come from VRAM, not cache)
-			cache_read( 17'h0A000, read_data );
+			cache_read( 18'h0A000, read_data );
 			if( read_data != 8'hAA ) begin
 				$display( "Cache flush test failed. Expected: 0xAA, Got: 0x%02X", read_data );
 				$finish;
@@ -1070,7 +1070,7 @@ module tb ();
 			wait_clocks( 2 );
 			
 			// Try normal operation (start should be pulsed when needed)
-			cache_write( 17'h09000, 8'h55 );
+			cache_write( 18'h09000, 8'h55 );
 			
 			// Before second start, must flush cache
 			flush_cache();
@@ -1080,13 +1080,71 @@ module tb ();
 			wait_clocks( 1 );
 
 			// Try read operation
-			cache_read( 17'h09000, read_data );
+			cache_read( 18'h09000, read_data );
 			if( read_data != 8'h55 ) begin
 				$display( "Start control test failed. Expected: 0x55, Got: 0x%02X", read_data );
 				$finish;
 			end
 			
 			$display( "Start signal control test PASSED" );
+		end
+	endtask
+
+	// --------------------------------------------------------------------
+	//	Test case: Random Access Test
+	// --------------------------------------------------------------------
+	task test_random_access;
+		int			i, address;
+		logic [7:0]	read_data;
+		logic [7:0]	expected_data;
+		begin
+			$display( "\n=== Test Case: Random Access Test ===" );
+			cache_write( 18'h00001, 8'h11 );
+			cache_write( 18'h00015, 8'h22 );
+			cache_write( 18'h00029, 8'h33 );
+			cache_write( 18'h00135, 8'h44 );
+			cache_write( 18'h00294, 8'h55 );
+			cache_write( 18'h00543, 8'h66 );
+			cache_write( 18'h00999, 8'h77 );
+			cache_read( 18'h00001, read_data );
+			assert( read_data == 8'h11 );
+			cache_read( 18'h00029, read_data );
+			assert( read_data == 8'h33 );
+			cache_read( 18'h00543, read_data );
+			assert( read_data == 8'h66 );
+			cache_read( 18'h00015, read_data );
+			assert( read_data == 8'h22 );
+			cache_read( 18'h00029, read_data );
+			assert( read_data == 8'h33 );
+			cache_read( 18'h00029, read_data );
+			assert( read_data == 8'h33 );
+			cache_read( 18'h00029, read_data );
+			assert( read_data == 8'h33 );
+			cache_read( 18'h00029, read_data );
+			assert( read_data == 8'h33 );
+			cache_read( 18'h00999, read_data );
+			assert( read_data == 8'h77 );
+
+			for( i = 0; i < 'h40000; i++ ) begin
+				cache_write( i, i & 255 );
+			end
+			for( i = 0; i < 'h40000; i++ ) begin
+				expected_data = i & 255;
+				cache_read( i, read_data );
+				if( read_data != expected_data ) begin
+					$display( "Random access test failed. Expected: 0x%02X, Got: 0x%02X", expected_data, read_data );
+					$finish;
+				end
+			end
+			for( i = 0; i < 'h40000; i++ ) begin
+				address = $urandom() & 'h3FFFF;
+				expected_data = address & 255;
+				cache_read( address, read_data );
+				if( read_data != expected_data ) begin
+					$display( "Random access test failed. Expected: 0x%02X, Got: 0x%02X", expected_data, read_data );
+					$finish;
+				end
+			end
 		end
 	endtask
 
@@ -1135,6 +1193,10 @@ module tb ();
 		wait_clocks( 100 );
 		
 		test_num = 9;
+		test_random_access();
+		wait_clocks( 100 );
+
+		test_num = 10;
 		$display( "\n=== All Tests PASSED ===" );
 		$display( "Test completed successfully at time %t", $time );
 		$finish;
@@ -1144,7 +1206,7 @@ module tb ();
 	//	Timeout watchdog
 	// --------------------------------------------------------------------
 	initial begin
-		#(clk_base * 50000);   // 50000 clock timeout
+		#(clk_base * 5000000);   // 5000000 clock timeout
 		$error( "Test timeout!" );
 		assert( 0 );
 		$finish;
