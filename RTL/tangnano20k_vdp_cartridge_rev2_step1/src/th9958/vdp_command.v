@@ -182,7 +182,7 @@ module vdp_command (
 	reg			[8:0]	reg_wex;
 	reg			[10:0]	reg_wey;
 	wire		[10:0]	w_nx;
-	wire		[10:0]	w_ny;
+	wire		[11:0]	w_ny;
 	wire				w_nx_end;
 	wire				w_ny_end;
 	reg			[11:0]	ff_nyb;
@@ -223,7 +223,7 @@ module vdp_command (
 	wire		[11:0]	w_next_sx;
 	wire		[13:0]	w_next_sy;
 	wire		[9:0]	w_next_dx;
-	wire		[11:0]	w_next_dy;
+	wire		[12:0]	w_next_dy;
 	wire				w_line_shift;
 	reg					ff_border_detect_request;
 	reg					ff_border_detect;
@@ -234,6 +234,7 @@ module vdp_command (
 	reg					ff_dx_active;
 	wire				w_sx_overflow;
 	wire				w_dx_overflow;
+	wire				w_dy_overflow;
 	reg			[2:0]	ff_bit_count;
 	reg			[7:0]	ff_fore_color;
 	reg			[17:0]	ff_font_address;
@@ -326,7 +327,7 @@ module vdp_command (
 	// --------------------------------------------------------------------
 	//	Command complete interrupt
 	// --------------------------------------------------------------------
-	always @( posedge clk or negedge reset_n ) begin
+	always @( posedge clk ) begin
 		if( !reset_n ) begin
 			ff_command_end <= 1'b0;
 		end
@@ -343,7 +344,7 @@ module vdp_command (
 	// --------------------------------------------------------------------
 	//	Source position registers
 	// --------------------------------------------------------------------
-	always @( posedge clk or negedge reset_n ) begin
+	always @( posedge clk ) begin
 		if( !reset_n ) begin
 			reg_sx	<= 12'd0;
 		end
@@ -357,7 +358,7 @@ module vdp_command (
 		end
 	end
 
-	always @( posedge clk or negedge reset_n ) begin
+	always @( posedge clk ) begin
 		if( !reset_n ) begin
 			ff_font_address	<= 18'd0;
 		end
@@ -378,7 +379,7 @@ module vdp_command (
 		end
 	end
 
-	always @( posedge clk or negedge reset_n ) begin
+	always @( posedge clk ) begin
 		if( !reset_n ) begin
 			ff_sx <= 20'd0;
 		end
@@ -424,7 +425,7 @@ module vdp_command (
 		end
 	end
 
-	always @( posedge clk or negedge reset_n ) begin
+	always @( posedge clk ) begin
 		if( !reset_n ) begin
 			ff_sy	<= 21'd0;
 		end
@@ -467,7 +468,7 @@ module vdp_command (
 		end
 	end
 
-	always @( posedge clk or negedge reset_n ) begin
+	always @( posedge clk ) begin
 		if( !reset_n ) begin
 			ff_sx2 <= 20'd0;
 			ff_sy2 <= 21'd0;
@@ -507,7 +508,7 @@ module vdp_command (
 	// --------------------------------------------------------------------
 	//	Destination position registers
 	// --------------------------------------------------------------------
-	always @( posedge clk or negedge reset_n ) begin
+	always @( posedge clk ) begin
 		if( !reset_n ) begin
 			reg_dx	<= 9'd0;
 		end
@@ -527,7 +528,7 @@ module vdp_command (
 		end
 	end
 
-	always @( posedge clk or negedge reset_n ) begin
+	always @( posedge clk ) begin
 		if( !reset_n ) begin
 			ff_dx <= 9'd0;
 			ff_bit_count <= 3'd0;
@@ -577,7 +578,7 @@ module vdp_command (
 
 	assign w_line_shift	= w_next_nyb[11];
 
-	always @( posedge clk or negedge reset_n ) begin
+	always @( posedge clk ) begin
 		if( !reset_n ) begin
 			ff_dy	<= 11'd0;
 		end
@@ -644,7 +645,7 @@ module vdp_command (
 		end
 	end
 
-	always @( posedge clk or negedge reset_n ) begin
+	always @( posedge clk ) begin
 		if( !reset_n ) begin
 			ff_sx_active <= 1'b0;
 			ff_dx_active <= 1'b0;
@@ -658,17 +659,18 @@ module vdp_command (
 	end
 
 	assign w_next_dx		= ff_dix ? ( { 1'b0, ff_dx } - w_next ): ( { 1'b0, ff_dx } + w_next );
-	assign w_next_dy		= ff_diy ? ( { 1'b0, ff_dy } - 12'd1  ): ( { 1'b0, ff_dy } + 12'd1  );
+	assign w_next_dy		= ff_diy ? ( { 2'd0, ff_dy } - 13'd1  ): ( { 2'd0, ff_dy } + 13'd1  );
 	assign w_sx_active		= (ff_command == c_lmmm || ff_command == c_hmmm || ff_command == c_ymmm || ff_command == c_lmcm || ff_command == c_srch);
 	assign w_dx_active		= (ff_command == c_lmmm || ff_command == c_hmmm || ff_command == c_ymmm || ff_command == c_lmmc || ff_command == c_hmmc || 
 							   ff_command == c_lmmv || ff_command == c_hmmv || ff_command == c_lrmm || ff_command == c_lfmc || ff_command == c_lfmm);
 	assign w_sx_overflow	= ff_sx_active && (w_next_sx[9] || (!ff_512pixel && w_next_sx[8]));
 	assign w_dx_overflow	= ff_dx_active && (w_next_dx[9] || (!ff_512pixel && w_next_dx[8]));
+	assign w_dy_overflow	= w_next_dy[12];
 
 	// --------------------------------------------------------------------
 	//	Count N registers
 	// --------------------------------------------------------------------
-	always @( posedge clk or negedge reset_n ) begin
+	always @( posedge clk ) begin
 		if( !reset_n ) begin
 			reg_nx	<= 11'd0;
 		end
@@ -687,7 +689,7 @@ module vdp_command (
 		end
 	end
 
-	always @( posedge clk or negedge reset_n ) begin
+	always @( posedge clk ) begin
 		if( !reset_n ) begin
 			ff_nx <= 11'd0;
 		end
@@ -727,7 +729,7 @@ module vdp_command (
 		end
 	end
 
-	always @( posedge clk or negedge reset_n ) begin
+	always @( posedge clk ) begin
 		if( !reset_n ) begin
 			reg_ny	<= 11'd0;
 		end
@@ -747,7 +749,7 @@ module vdp_command (
 		end
 	end
 
-	always @( posedge clk or negedge reset_n ) begin
+	always @( posedge clk ) begin
 		if( !reset_n ) begin
 			ff_ny	<= 11'd1;
 		end
@@ -772,26 +774,26 @@ module vdp_command (
 						ff_ny <= 11'd1;
 					end
 					else begin
-						ff_ny <= w_ny;
+						ff_ny <= w_ny[10:0];
 					end
 				end
 			end
 			else if( (w_nx_end || w_sx_overflow || w_dx_overflow) && !w_ny_end ) begin
-				ff_ny <= w_ny;
+				ff_ny <= w_ny[10:0];
 			end
 		end
 	end
 
-	assign w_ny			= ff_ny + 11'd1;
+	assign w_ny			= { 1'b0, ff_ny } + 12'd1;
 	assign w_nx_max		= (ff_screen_mode[c_g7] || ff_command[3:2] != 2'b11) ? reg_nx:
 	             		  (ff_screen_mode[c_g5]) ? { reg_nx[10:2], 2'd0 }: { reg_nx[10:1], 1'd0 };
 	assign w_nx_end		= (ff_nx == w_nx_max && ff_command != c_ymmm);
-	assign w_ny_end		= (ff_ny == reg_ny);
+	assign w_ny_end		= (ff_ny == reg_ny) | w_ny[11] | (w_ny[10] & ~reg_vram256k_mode);
 
 	//	LINEコマンドの分子を示すカウンタ
 	assign w_reg_nx		= reg_nx - 11'd1;
 
-	always @( posedge clk or negedge reset_n ) begin
+	always @( posedge clk ) begin
 		if( !reset_n ) begin
 			ff_nyb	<= 12'd0;
 		end
@@ -815,7 +817,7 @@ module vdp_command (
 	assign w_nx			= ff_nx + { 1'd0, w_next };
 	assign w_next_nyb	= { 1'b0, ff_nyb } - { 2'd0, reg_ny };
 
-	always @( posedge clk or negedge reset_n ) begin
+	always @( posedge clk ) begin
 		if( !reset_n ) begin
 			ff_color	<= 8'd0;
 		end
@@ -827,7 +829,7 @@ module vdp_command (
 		end
 	end
 
-	always @( posedge clk or negedge reset_n ) begin
+	always @( posedge clk ) begin
 		if( !reset_n ) begin
 			ff_read_color	<= 1'b0;
 		end
@@ -842,7 +844,7 @@ module vdp_command (
 		end
 	end
 
-	always @( posedge clk or negedge reset_n ) begin
+	always @( posedge clk ) begin
 		if( !reset_n ) begin
 			ff_transfer_ready		<= 1'b0;
 			ff_fore_color			<= 8'd0;
@@ -880,7 +882,7 @@ module vdp_command (
 		end
 	end
 
-	always @( posedge clk or negedge reset_n ) begin
+	always @( posedge clk ) begin
 		if( !reset_n ) begin
 			ff_maj	<= 1'b0;
 			ff_eq	<= 1'b0;
@@ -907,7 +909,7 @@ module vdp_command (
 		end
 	end
 
-	always @( posedge clk or negedge reset_n ) begin
+	always @( posedge clk ) begin
 		if( !reset_n ) begin
 			ff_logical_opration	<= 4'd0;
 			ff_command			<= 4'd0;
@@ -926,7 +928,7 @@ module vdp_command (
 	// --------------------------------------------------------------------
 	//	Rotate vector registers
 	// --------------------------------------------------------------------
-	always @( posedge clk or negedge reset_n ) begin
+	always @( posedge clk ) begin
 		if( !reset_n ) begin
 			reg_vx	<= 16'd0;
 		end
@@ -940,7 +942,7 @@ module vdp_command (
 		end
 	end
 
-	always @( posedge clk or negedge reset_n ) begin
+	always @( posedge clk ) begin
 		if( !reset_n ) begin
 			reg_vy	<= 16'd0;
 		end
@@ -957,7 +959,7 @@ module vdp_command (
 	// --------------------------------------------------------------------
 	//	Input window registers
 	// --------------------------------------------------------------------
-	always @( posedge clk or negedge reset_n ) begin
+	always @( posedge clk ) begin
 		if( !reset_n ) begin
 			reg_wsx	<= 9'd0;
 		end
@@ -971,7 +973,7 @@ module vdp_command (
 		end
 	end
 
-	always @( posedge clk or negedge reset_n ) begin
+	always @( posedge clk ) begin
 		if( !reset_n ) begin
 			reg_wsy	<= 11'd0;
 		end
@@ -985,7 +987,7 @@ module vdp_command (
 		end
 	end
 
-	always @( posedge clk or negedge reset_n ) begin
+	always @( posedge clk ) begin
 		if( !reset_n ) begin
 			reg_wex	<= 9'h1FF;
 		end
@@ -999,7 +1001,7 @@ module vdp_command (
 		end
 	end
 
-	always @( posedge clk or negedge reset_n ) begin
+	always @( posedge clk ) begin
 		if( !reset_n ) begin
 			reg_wey	<= 11'h7FF;
 		end
@@ -1016,7 +1018,7 @@ module vdp_command (
 	// --------------------------------------------------------------------
 	//	State machine
 	// --------------------------------------------------------------------
-	always @( posedge clk or negedge reset_n ) begin
+	always @( posedge clk ) begin
 		if( !reset_n ) begin
 			ff_command_execute <= 1'b0;
 		end
@@ -1028,7 +1030,7 @@ module vdp_command (
 		end
 	end
 
-	always @( posedge clk or negedge reset_n ) begin
+	always @( posedge clk ) begin
 		if( !reset_n ) begin
 			ff_border_detect <= 1'b0;
 		end
@@ -1040,7 +1042,7 @@ module vdp_command (
 		end
 	end
 
-	always @( posedge clk or negedge reset_n ) begin
+	always @( posedge clk ) begin
 		if( !reset_n ) begin
 			ff_read_pixel <= 8'd0;
 			ff_read_byte <= 8'd0;
@@ -1074,7 +1076,7 @@ module vdp_command (
 		end
 	end
 
-	always @( posedge clk or negedge reset_n ) begin
+	always @( posedge clk ) begin
 		if( !reset_n ) begin
 			ff_state					<= c_state_idle;
 			ff_cache_vram_address		<= 17'd0;
@@ -1256,7 +1258,7 @@ module vdp_command (
 				ff_cache_vram_write		<= 1'b1;
 				ff_cache_vram_wdata		<= w_destination;
 				ff_count_valid			<= 1'b1;
-				if( w_nx_end || w_dx_overflow || (ff_diy == 1'b1 && ff_dy == 11'd0 && w_next_dy[11] == 1'b1) ) begin
+				if( w_nx_end || w_dx_overflow || (ff_diy == 1'b1 && ff_dy == 11'd0 && w_dy_overflow == 1'b1) ) begin
 					ff_state				<= c_state_pre_finish;
 				end
 				else if( reg_command_high_speed_mode ) begin
@@ -1290,7 +1292,7 @@ module vdp_command (
 				ff_cache_vram_write		<= 1'b1;
 				ff_cache_vram_wdata		<= w_destination;
 				ff_count_valid			<= 1'b1;
-				if( (w_nx_end || w_sx_overflow || w_dx_overflow) && w_ny_end ) begin
+				if( (w_nx_end || w_sx_overflow || w_dx_overflow) && (w_ny_end || w_dy_overflow) ) begin
 					ff_state				<= c_state_pre_finish;
 				end
 				else if( reg_command_high_speed_mode ) begin
@@ -1337,7 +1339,7 @@ module vdp_command (
 				ff_cache_vram_write		<= 1'b1;
 				ff_cache_vram_wdata		<= w_destination;
 				ff_count_valid			<= 1'b1;
-				if( (w_nx_end || w_sx_overflow || w_dx_overflow) && w_ny_end ) begin
+				if( (w_nx_end || w_sx_overflow || w_dx_overflow) && (w_ny_end || w_dy_overflow) ) begin
 					ff_state				<= c_state_pre_finish;
 				end
 				else if( reg_command_high_speed_mode ) begin
@@ -1375,7 +1377,7 @@ module vdp_command (
 			end
 			c_state_lmcm_next: begin
 				if( ff_read_color ) begin
-					if( (w_nx_end || w_sx_overflow || w_dx_overflow) && w_ny_end ) begin
+					if( (w_nx_end || w_sx_overflow || w_dx_overflow) && (w_ny_end || w_dy_overflow) ) begin
 						ff_state				<= c_state_pre_finish;
 					end
 					else begin
@@ -1413,7 +1415,7 @@ module vdp_command (
 				ff_cache_vram_write		<= 1'b1;
 				ff_cache_vram_wdata		<= w_destination;
 				ff_count_valid			<= 1'b1;
-				if( (w_nx_end || w_dx_overflow) && w_ny_end ) begin
+				if( (w_nx_end || w_dx_overflow) && (w_ny_end || w_dy_overflow) ) begin
 					ff_finish_flag			<= 1'b1;
 					ff_state				<= c_state_lmmc_next;
 				end
@@ -1444,7 +1446,7 @@ module vdp_command (
 				ff_cache_vram_write		<= 1'b1;
 				ff_cache_vram_wdata		<= ff_color;
 				ff_count_valid			<= 1'b1;
-				if( (w_nx_end || w_sx_overflow || w_dx_overflow) && w_ny_end ) begin
+				if( (w_nx_end || w_sx_overflow || w_dx_overflow) && (w_ny_end || w_dy_overflow) ) begin
 					ff_state				<= c_state_pre_finish;
 				end
 				else if( reg_command_high_speed_mode ) begin
@@ -1477,7 +1479,7 @@ module vdp_command (
 				ff_cache_vram_write		<= 1'b1;
 				ff_cache_vram_wdata		<= ff_read_byte;
 				ff_count_valid			<= 1'b1;
-				if( (w_nx_end || w_sx_overflow || w_dx_overflow) && w_ny_end ) begin
+				if( (w_nx_end || w_sx_overflow || w_dx_overflow) && (w_ny_end || w_dy_overflow) ) begin
 					ff_state				<= c_state_pre_finish;
 				end
 				else if( reg_command_high_speed_mode ) begin
@@ -1511,7 +1513,7 @@ module vdp_command (
 				ff_cache_vram_write		<= 1'b1;
 				ff_cache_vram_wdata		<= ff_read_byte;
 				ff_count_valid			<= 1'b1;
-				if( (w_nx_end || w_sx_overflow || w_dx_overflow) && w_ny_end ) begin
+				if( (w_nx_end || w_sx_overflow || w_dx_overflow) && (w_ny_end || w_dy_overflow) ) begin
 					ff_state				<= c_state_pre_finish;
 				end
 				else if( reg_command_high_speed_mode ) begin
@@ -1539,7 +1541,7 @@ module vdp_command (
 					ff_cache_vram_write		<= 1'b1;
 					ff_cache_vram_wdata		<= ff_color;
 					ff_count_valid			<= 1'b1;
-					if( (w_nx_end || w_dx_overflow) && w_ny_end ) begin
+					if( (w_nx_end || w_dx_overflow) && (w_ny_end || w_dy_overflow) ) begin
 						ff_finish_flag			<= 1'b1;
 						ff_state				<= c_state_hmmc_next;
 					end
@@ -1600,7 +1602,7 @@ module vdp_command (
 				ff_cache_vram_write		<= 1'b1;
 				ff_cache_vram_wdata		<= w_destination;
 				ff_count_valid			<= 1'b1;
-				if( (w_nx_end || w_dx_overflow) && w_ny_end ) begin
+				if( (w_nx_end || w_dx_overflow) && (w_ny_end || w_dy_overflow) ) begin
 					ff_state				<= c_state_pre_finish;
 				end
 				else begin
@@ -1642,7 +1644,7 @@ module vdp_command (
 			c_state_lfmc_next: begin
 				ff_count_valid			<= 1'b0;
 				if( (w_nx_end || w_sx_overflow || w_dx_overflow) ) begin
-					if( w_ny_end ) begin
+					if( w_ny_end || w_dy_overflow ) begin
 						ff_state				<= c_state_pre_finish;
 					end
 					else begin
@@ -1688,7 +1690,7 @@ module vdp_command (
 				ff_cache_vram_write		<= 1'b1;
 				ff_cache_vram_wdata		<= w_destination;
 				ff_count_valid			<= 1'b1;
-				if( (w_nx_end || w_dx_overflow) && w_ny_end ) begin
+				if( (w_nx_end || w_dx_overflow) && (w_ny_end || w_dy_overflow) ) begin
 					ff_state				<= c_state_pre_finish;
 				end
 				else if( ff_bit_count != 3'd0 ) begin
