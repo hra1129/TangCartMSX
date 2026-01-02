@@ -1188,7 +1188,7 @@ module vdp_command (
 			c_state_srch: begin
 				if( ff_sx[17] || (ff_sx[16] && !ff_512pixel) ) begin
 					//	Go to finish state when start position is outside of screen.
-					if( ff_sx == reg_sx ) begin
+					if( ff_sx == { reg_sx, 8'd0 } ) begin
 						//	Start point is out of screen.
 						ff_count_valid				<= ~ff_eq;
 						ff_border_detect_request	<= ff_eq;
