@@ -153,6 +153,7 @@ module vdp_command (
 
 	reg					ff_command_execute;
 	reg			[7:0]	ff_read_pixel;
+	reg			[7:0]	ff_status_color;
 	reg			[7:0]	ff_read_byte;
 	reg			[7:0]	ff_source;
 	wire		[7:0]	w_destination;
@@ -230,8 +231,12 @@ module vdp_command (
 	reg					ff_read_color;
 	wire				w_sx_active;
 	wire				w_dx_active;
+	wire				w_sy_active;
+	wire				w_dy_active;
 	reg					ff_sx_active;
 	reg					ff_dx_active;
+	reg					ff_sy_active;
+	reg					ff_dy_active;
 	wire				w_sx_overflow;
 	wire				w_dx_overflow;
 	wire				w_dy_overflow;
@@ -443,6 +448,9 @@ module vdp_command (
 		else if( !ff_command_execute || ff_cache_vram_valid ) begin
 			//	hold
 		end
+		else if( !ff_sy_active ) begin
+			//	hold
+		end
 		else if( ff_count_valid ) begin
 			if( ff_command == c_lrmm ) begin
 				if( w_nx_end ) begin
@@ -596,6 +604,9 @@ module vdp_command (
 		else if( !ff_command_execute || ff_cache_vram_valid ) begin
 			//	hold
 		end
+		else if( !ff_dy_active ) begin
+			//	hold
+		end
 		else if( ff_count_valid ) begin
 			if( ff_command == c_line ) begin
 				if( ff_maj == 1'b0 ) begin
@@ -649,11 +660,15 @@ module vdp_command (
 		if( !reset_n ) begin
 			ff_sx_active <= 1'b0;
 			ff_dx_active <= 1'b0;
+			ff_sy_active <= 1'b0;
+			ff_dy_active <= 1'b0;
 			ff_512pixel <= 1'b0;
 		end
 		else if( ff_start ) begin
 			ff_sx_active <= w_sx_active;
 			ff_dx_active <= w_dx_active;
+			ff_sy_active <= w_sy_active;
+			ff_dy_active <= w_dy_active;
 			ff_512pixel <= w_512pixel;
 		end
 	end
@@ -662,6 +677,9 @@ module vdp_command (
 	assign w_next_dy		= ff_diy ? ( { 2'd0, ff_dy } - 13'd1  ): ( { 2'd0, ff_dy } + 13'd1  );
 	assign w_sx_active		= (ff_command == c_lmmm || ff_command == c_hmmm || ff_command == c_ymmm || ff_command == c_lmcm || ff_command == c_srch);
 	assign w_dx_active		= (ff_command == c_lmmm || ff_command == c_hmmm || ff_command == c_ymmm || ff_command == c_lmmc || ff_command == c_hmmc || 
+							   ff_command == c_lmmv || ff_command == c_hmmv || ff_command == c_lrmm || ff_command == c_lfmc || ff_command == c_lfmm);
+	assign w_sy_active		= (ff_command == c_lmmm || ff_command == c_hmmm || ff_command == c_ymmm || ff_command == c_lmcm);
+	assign w_dy_active		= (ff_command == c_lmmm || ff_command == c_hmmm || ff_command == c_ymmm || ff_command == c_lmmc || ff_command == c_hmmc || 
 							   ff_command == c_lmmv || ff_command == c_hmmv || ff_command == c_lrmm || ff_command == c_lfmc || ff_command == c_lfmm);
 	assign w_sx_overflow	= ff_sx_active && (w_next_sx[9] || (!ff_512pixel && w_next_sx[8]));
 	assign w_dx_overflow	= ff_dx_active && (w_next_dx[9] || (!ff_512pixel && w_next_dx[8]));
@@ -826,6 +844,18 @@ module vdp_command (
 		end
 		else if( ff_state == c_state_lmcm_make ) begin
 			ff_color	<= ff_read_pixel;
+		end
+	end
+
+	always @( posedge clk ) begin
+		if( !reset_n ) begin
+			ff_status_color	<= 8'd0;
+		end
+		else if( ff_state == c_state_lmcm_make ) begin
+			ff_status_color	<= ff_read_pixel;
+		end
+		else if( ff_state == c_state_pre_finish && ff_command == c_point ) begin
+			ff_status_color	<= ff_read_pixel;
 		end
 	end
 
@@ -1852,6 +1882,6 @@ module vdp_command (
 	assign status_command_execute	= ff_command_execute;
 	assign status_border_detect		= ff_border_detect;
 	assign status_transfer_ready	= ff_transfer_ready;
-	assign status_color				= ff_read_pixel;
+	assign status_color				= ff_status_color;
 	assign status_border_position	= ff_sx[16:8];
 endmodule
