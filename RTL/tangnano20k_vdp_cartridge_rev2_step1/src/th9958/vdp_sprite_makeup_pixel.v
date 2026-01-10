@@ -830,6 +830,8 @@ module vdp_sprite_makeup_pixel (
 				ff_palette_set		<= 4'd0;
 				ff_transparent		<= 2'd0;
 			end
+			ff_color_cc			<= 1'b0;
+			ff_color_ic			<= 1'b0;
 		end
 		else begin
 			//	Sprite mode1 or mode2

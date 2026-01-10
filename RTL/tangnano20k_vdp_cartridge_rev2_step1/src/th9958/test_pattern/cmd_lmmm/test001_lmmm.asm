@@ -29,9 +29,41 @@ start::
 			jp		bdos
 
 ; -----------------------------------------------------------------------------
+;	test001
+;	input:
+;		none
+;	output:
+;		none
+;	break:
+;		none
 ; -----------------------------------------------------------------------------
 			scope	test001
 test001::
+			ld		hl, 0
+			ld		de, 16
+	loop:
+			ld		bc, (16 << 8) | 16
+			push	hl
+			push	de
+			exx
+			ld		hl, 0
+			ld		de, 0
+			exx
+			call	lmmm
+			call	wait_vdp_command
+			pop		de
+			ld		hl, 16
+			add		hl, de
+			pop		de
+			ex		de, hl
+			inc		hl
+			ld		a, e
+			cp		a, 196
+			jr		c, skip
+			ld		e, 0
+	skip:
+			bit		1, h
+			jr		z, loop
 			ret
 			endscope
 
@@ -235,6 +267,56 @@ lmmv::
 			out		[c], a				; CLR
 			out		[c], b				; ARG
 			ld		a, 0x80				; LMMV
+			ei
+			out		[c], a				; CMD
+			ret
+			endscope
+
+; -----------------------------------------------------------------------------
+;	lmmm
+;	input:
+;		HL' .... XÀ•W(“]‘—Œ³)
+;		DE' .... YÀ•W(“]‘—Œ³)
+;		HL ..... XÀ•W(“]‘—æ)
+;		DE ..... YÀ•W(“]‘—æ)
+;		B ...... •
+;		C ...... ‚‚³
+;	output:
+;		none
+;	break:
+;		all
+;	note:
+;		‹éŒ`“h‚è‚Â‚Ô‚µ
+; -----------------------------------------------------------------------------
+			scope	lmmm
+lmmm::
+			push	bc
+			ld		c, vdp_port1
+			ld		b, 32
+			di
+			out		[c], b
+			ld		b, 0x80 + 17
+			out		[c], b
+			ld		bc, vdp_port3
+			exx
+			ld		c, vdp_port3
+			out		[c], l				; SX
+			out		[c], h
+			out		[c], e				; SY
+			out		[c], d
+			exx
+			out		[c], l				; DX
+			out		[c], h
+			out		[c], e				; DY
+			out		[c], d
+			pop		de
+			out		[c], d				; NX
+			out		[c], b
+			out		[c], e				; NY
+			out		[c], b
+			out		[c], b				; CLR
+			out		[c], b				; ARG
+			ld		a, 0x90				; LMMM
 			ei
 			out		[c], a				; CMD
 			ret
