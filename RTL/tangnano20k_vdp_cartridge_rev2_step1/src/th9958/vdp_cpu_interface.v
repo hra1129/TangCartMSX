@@ -283,7 +283,7 @@ module vdp_cpu_interface (
 	// --------------------------------------------------------------------
 	//	Latch
 	// --------------------------------------------------------------------
-	always @( posedge clk or negedge reset_n ) begin
+	always @( posedge clk ) begin
 		if( !reset_n ) begin
 			ff_bus_ioreq	<= 1'b0;
 			ff_bus_write	<= 1'b0;
@@ -322,7 +322,7 @@ module vdp_cpu_interface (
 	// --------------------------------------------------------------------
 	//	VRAM Read/Write access
 	// --------------------------------------------------------------------
-	always @( posedge clk or negedge reset_n ) begin
+	always @( posedge clk ) begin
 		if( !reset_n ) begin
 			ff_2nd_access			<= 1'b0;
 			ff_1st_byte				<= 8'd0;
@@ -367,7 +367,7 @@ module vdp_cpu_interface (
 		end
 	end
 
-	always @( posedge clk or negedge reset_n ) begin
+	always @( posedge clk ) begin
 		if( !reset_n ) begin
 			ff_register_pointer	<= 5'd0;
 			ff_not_increment	<= 1'b0;
@@ -391,7 +391,7 @@ module vdp_cpu_interface (
 	//		ff_address_inc=1 --> ff_vram_valid=1 --> ff_busy=0
 	//	read
 	//		ff_vram_valid=1 --> vram_rdata_en=1 --> ff_address_inc=1 --> ff_busy=0
-	always @( posedge clk or negedge reset_n ) begin
+	always @( posedge clk ) begin
 		if( !reset_n ) begin
 			ff_vram_valid		<= 1'b0;
 			ff_vram_write		<= 1'b0;
@@ -441,7 +441,7 @@ module vdp_cpu_interface (
 
 	assign w_next_vram_address	= ff_vram_address + 18'd1;
 
-	always @( posedge clk or negedge reset_n ) begin
+	always @( posedge clk ) begin
 		if( !reset_n ) begin
 			ff_vram_address			<= 18'd0;
 			ff_vram_address_noinc	<= 1'b0;
@@ -453,8 +453,11 @@ module vdp_cpu_interface (
 			else if( (ff_screen_mode[4:3] == 2'b00) || !ff_vram_type ) begin
 				ff_vram_address[13:0]	<= w_next_vram_address[13:0];
 			end
-			else begin
+			else if( ff_vram256k_mode ) begin
 				ff_vram_address			<= w_next_vram_address;
+			end
+			else begin
+				ff_vram_address			<= { 1'b0, w_next_vram_address[16:0] };
 			end
 		end
 		else if( ff_register_write && ff_register_num == 6'd14 ) begin
@@ -462,8 +465,11 @@ module vdp_cpu_interface (
 			if( !ff_vram_type ) begin
 				ff_vram_address[17:14]	<= 4'd0;
 			end
-			else begin
+			else if( ff_vram256k_mode ) begin
 				ff_vram_address[17:14]	<= ff_1st_byte[3:0];
+			end
+			else begin
+				ff_vram_address[17:14]	<= { 1'b0, ff_1st_byte[2:0] };
 			end
 		end
 		else if( w_write && ff_port1 ) begin
@@ -494,7 +500,7 @@ module vdp_cpu_interface (
 	// --------------------------------------------------------------------
 	//	Control registers
 	// --------------------------------------------------------------------
-	always @( posedge clk or negedge reset_n ) begin
+	always @( posedge clk ) begin
 		if( !reset_n ) begin
 			ff_screen_mode <= 5'd0;
 			ff_line_interrupt_enable <= 1'b0;
@@ -679,7 +685,7 @@ module vdp_cpu_interface (
 	// --------------------------------------------------------------------
 	//	Color palette interface
 	// --------------------------------------------------------------------
-	always @( posedge clk or negedge reset_n ) begin
+	always @( posedge clk ) begin
 		if( !reset_n ) begin
 			ff_color_palette_address	<= 8'd0;
 			ff_color_palette_valid		<= 1'b0;
@@ -766,7 +772,7 @@ module vdp_cpu_interface (
 		endcase
 	end
 
-	always @( posedge clk or negedge reset_n ) begin
+	always @( posedge clk ) begin
 		if( !reset_n ) begin
 			ff_bus_rdata_en		<= 1'b0;
 		end
@@ -811,7 +817,7 @@ module vdp_cpu_interface (
 	// --------------------------------------------------------------------
 	//	Interrupt
 	// --------------------------------------------------------------------
-	always @( posedge clk or negedge reset_n ) begin
+	always @( posedge clk ) begin
 		if( !reset_n ) begin
 			ff_frame_interrupt			<= 1'b0;
 			ff_line_interrupt			<= 1'b0;

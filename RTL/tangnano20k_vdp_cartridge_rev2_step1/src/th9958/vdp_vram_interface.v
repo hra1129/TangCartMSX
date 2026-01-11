@@ -140,7 +140,7 @@ module vdp_vram_interface (
 	// --------------------------------------------------------------------
 	//	Priority selector
 	// --------------------------------------------------------------------
-	always @( posedge clk or negedge reset_n ) begin
+	always @( posedge clk ) begin
 		if( !reset_n ) begin
 			ff_vram_rdata_sel	<= 3'd0;
 		end
@@ -171,7 +171,7 @@ module vdp_vram_interface (
 		end
 	end
 
-	always @( posedge clk or negedge reset_n ) begin
+	always @( posedge clk ) begin
 		if( !reset_n ) begin
 			ff_vram_refresh			<= 1'b0;
 		end
@@ -184,7 +184,7 @@ module vdp_vram_interface (
 		end
 	end
 
-	always @( posedge clk or negedge reset_n ) begin
+	always @( posedge clk ) begin
 		if( !reset_n ) begin
 			ff_vram_refresh_pulse	<= 1'b0;
 		end
@@ -202,7 +202,7 @@ module vdp_vram_interface (
 	assign w_screen_mode_vram_address		= vram_interleave ? { screen_mode_vram_address[17], screen_mode_vram_address[0], screen_mode_vram_address[16:1] }: screen_mode_vram_address;
 	assign w_command_vram_address			= command_vram_address;		//	※VDP Command は、VDP Command 内部でインターリーブ処理してるのでここではやらない 
 
-	always @( posedge clk or negedge reset_n ) begin
+	always @( posedge clk ) begin
 		if( !reset_n ) begin
 			ff_vram_address		<= 18'd0;
 			ff_vram_valid		<= 1'b0;
@@ -272,7 +272,7 @@ module vdp_vram_interface (
 
 	assign w_rdata8 = func_rdata_sel( ff_vram_byte_sel, vram_rdata );
 
-	always @( posedge clk or negedge reset_n ) begin
+	always @( posedge clk ) begin
 		if( !reset_n ) begin
 			ff_vram_rdata_sel_d1	<= 2'd0;
 			ff_vram_byte_sel		<= 2'd0;
@@ -283,7 +283,7 @@ module vdp_vram_interface (
 		end
 	end
 
-	always @( posedge clk or negedge reset_n ) begin
+	always @( posedge clk ) begin
 		if( !reset_n ) begin
 			ff_screen_mode_vram_rdata	<= 32'd0;
 			ff_sprite_vram_rdata		<= 32'd0;

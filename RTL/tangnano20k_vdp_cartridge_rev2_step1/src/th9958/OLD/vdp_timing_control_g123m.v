@@ -170,7 +170,7 @@ module vdp_timing_control_g123m (
 	// --------------------------------------------------------------------
 	//	Active period
 	// --------------------------------------------------------------------
-	always @( posedge clk or negedge reset_n ) begin
+	always @( posedge clk ) begin
 		if( !reset_n ) begin
 			ff_h_active <= 1'b0;
 		end
@@ -189,7 +189,7 @@ module vdp_timing_control_g123m (
 	// --------------------------------------------------------------------
 	assign w_vram_valid		= w_screen_active & (w_mode != 4'b0000) & reg_display_on;
 
-	always @( posedge clk or negedge reset_n ) begin
+	always @( posedge clk ) begin
 		if( !reset_n ) begin
 			ff_vram_address <= 17'd0;
 			ff_vram_valid <= 1'b0;
@@ -232,7 +232,7 @@ module vdp_timing_control_g123m (
 	// --------------------------------------------------------------------
 	//	VRAM read data latch
 	// --------------------------------------------------------------------
-	always @( posedge clk or negedge reset_n ) begin
+	always @( posedge clk ) begin
 		if( !reset_n ) begin
 			ff_pattern_num <= 8'd0;
 			ff_next_pattern <= 8'd0;
@@ -265,7 +265,7 @@ module vdp_timing_control_g123m (
 	// --------------------------------------------------------------------
 	//	Display color generate
 	// --------------------------------------------------------------------
-	always @( posedge clk or negedge reset_n ) begin
+	always @( posedge clk ) begin
 		if( !reset_n ) begin
 			ff_pattern <= 8'd0;
 		end
@@ -288,7 +288,7 @@ module vdp_timing_control_g123m (
 		end
 	end
 
-	always @( posedge clk or negedge reset_n ) begin
+	always @( posedge clk ) begin
 		if( !reset_n ) begin
 			ff_color <= 8'd0;
 		end
@@ -302,7 +302,7 @@ module vdp_timing_control_g123m (
 		end
 	end
 
-	always @( posedge clk or negedge reset_n ) begin
+	always @( posedge clk ) begin
 		if( !reset_n ) begin
 			ff_display_color <= 4'd0;
 		end

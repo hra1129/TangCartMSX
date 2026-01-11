@@ -200,7 +200,7 @@ module vdp_timing_control_screen_mode (
 		endcase
 	endfunction
 
-	always @( posedge clk or negedge reset_n ) begin
+	always @( posedge clk ) begin
 		if( !reset_n ) begin
 			ff_vram_interleave <= 1'b0;
 		end
@@ -229,7 +229,7 @@ module vdp_timing_control_screen_mode (
 	assign w_blink_page			= w_scroll_page & interleaving_page;
 	assign pixel_phase_x		= w_scroll_pos_x[1:0];
 
-	always @( posedge clk or negedge reset_n ) begin
+	always @( posedge clk ) begin
 		if( !reset_n ) begin
 			ff_phase <= 3'd0;
 		end
@@ -254,7 +254,7 @@ module vdp_timing_control_screen_mode (
 	end
 
 	//	SCREEN0 character position
-	always @( posedge clk or negedge reset_n ) begin
+	always @( posedge clk ) begin
 		if( !reset_n ) begin
 			ff_pos_x <= 6'd0;
 		end
@@ -269,7 +269,7 @@ module vdp_timing_control_screen_mode (
 	// --------------------------------------------------------------------
 	//	Active period
 	// --------------------------------------------------------------------
-	always @( posedge clk or negedge reset_n ) begin
+	always @( posedge clk ) begin
 		if( !reset_n ) begin
 			ff_screen_h_in_active <= 1'b0;
 		end
@@ -350,7 +350,7 @@ module vdp_timing_control_screen_mode (
 
 	assign w_valid_decode	= func_valid_decoder( ff_mode );
 
-	always @( posedge clk or negedge reset_n ) begin
+	always @( posedge clk ) begin
 		if( !reset_n ) begin
 			ff_vram_valid <= 1'b0;
 		end
@@ -365,7 +365,7 @@ module vdp_timing_control_screen_mode (
 		end
 	end
 
-	always @( posedge clk or negedge reset_n ) begin
+	always @( posedge clk ) begin
 		if( !reset_n ) begin
 			ff_vram_address <= 18'd0;
 		end
@@ -459,7 +459,7 @@ module vdp_timing_control_screen_mode (
 	// --------------------------------------------------------------------
 	//	VRAM read data latch
 	// --------------------------------------------------------------------
-	always @( posedge clk or negedge reset_n ) begin
+	always @( posedge clk ) begin
 		if( !reset_n ) begin
 			ff_next_vram0 <= 8'd0;
 			ff_next_vram1 <= 8'd0;
@@ -603,7 +603,7 @@ module vdp_timing_control_screen_mode (
 	// --------------------------------------------------------------------
 	assign w_backdrop_color	= ( ff_mode[c_g7] ) ? reg_backdrop_color: { reg_backdrop_color[3:0], reg_backdrop_color[3:0] };
 
-	always @( posedge clk or negedge reset_n ) begin
+	always @( posedge clk ) begin
 		if( !reset_n ) begin
 			ff_pattern0 <= 8'd0;
 			ff_pattern1 <= 8'd0;

@@ -140,7 +140,7 @@ module vdp_sprite_info_collect (
 	// --------------------------------------------------------------------
 	assign w_selected_d	= { selected_plane_num, selected_attribute };
 
-	always @( posedge clk or negedge reset_n ) begin
+	always @( posedge clk ) begin
 		if( !reset_n ) begin
 			ff_selected_ram[0]	<= 38'd0;
 			ff_selected_ram[1]	<= 38'd0;
@@ -184,7 +184,7 @@ module vdp_sprite_info_collect (
 	// --------------------------------------------------------------------
 	//	Hold sprite mode 2
 	// --------------------------------------------------------------------
-	always @( posedge clk or negedge reset_n ) begin
+	always @( posedge clk ) begin
 		if( !reset_n ) begin
 			ff_sprite_mode2 <= 1'b0;
 		end
@@ -196,7 +196,7 @@ module vdp_sprite_info_collect (
 	// --------------------------------------------------------------------
 	//	Latch 2nd attribute for sprite mode3
 	// --------------------------------------------------------------------
-	always @( posedge clk or negedge reset_n ) begin
+	always @( posedge clk ) begin
 		if( !reset_n ) begin
 			ff_attribute2 <= 32'd0;
 		end
@@ -220,7 +220,7 @@ module vdp_sprite_info_collect (
 	// --------------------------------------------------------------------
 	assign w_sub_phase	= screen_pos_x[3:0];
 
-	always @( posedge clk or negedge reset_n ) begin
+	always @( posedge clk ) begin
 		if( !reset_n ) begin
 			ff_state <= 2'd0;
 		end
@@ -242,7 +242,7 @@ module vdp_sprite_info_collect (
 
 	assign w_next_plane	= ff_current_plane + 5'd1;
 
-	always @( posedge clk or negedge reset_n ) begin
+	always @( posedge clk ) begin
 		if( !reset_n ) begin
 			ff_current_plane	<= 5'd8;
 			ff_vram_address		<= 17'd0;

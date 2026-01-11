@@ -122,7 +122,7 @@ module vdp_command_cache (
 	assign w_cache3_hit		= ff_cache3_data_en && (ff_cache3_address == cache_vram_address[17:2]);
 	assign cache_flush_end	= (ff_flush_state == 3'd1) ? ~ff_vram_valid: 1'b0;
 
-	always @( posedge clk or negedge reset_n ) begin
+	always @( posedge clk ) begin
 		if( !reset_n ) begin
 			ff_cache0_address		<= 16'd0;
 			ff_cache0_data			<= 32'd0;

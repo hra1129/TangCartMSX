@@ -147,7 +147,7 @@ module vdp_video_out (
 	// --------------------------------------------------------------------
 	//	Active period
 	// --------------------------------------------------------------------
-	always @( posedge clk or negedge reset_n ) begin
+	always @( posedge clk ) begin
 		if( !reset_n ) begin
 			ff_active <= 1'b0;
 		end
@@ -165,7 +165,7 @@ module vdp_video_out (
 	// --------------------------------------------------------------------
 	//	Synchronous signals
 	// --------------------------------------------------------------------
-	always @( posedge clk or negedge reset_n ) begin
+	always @( posedge clk ) begin
 		if( !reset_n ) begin
 			ff_h_en <= 1'b0;
 		end
@@ -177,7 +177,7 @@ module vdp_video_out (
 		end
 	end
 
-	always @( posedge clk or negedge reset_n ) begin
+	always @( posedge clk ) begin
 		if( !reset_n ) begin
 			ff_v_en <= 1'b0;
 		end
@@ -191,7 +191,7 @@ module vdp_video_out (
 		end
 	end
 
-	always @( posedge clk or negedge reset_n ) begin
+	always @( posedge clk ) begin
 		if( !reset_n ) begin
 			ff_hs <= 1'b1;
 		end
@@ -203,7 +203,7 @@ module vdp_video_out (
 		end
 	end
 
-	always @( posedge clk or negedge reset_n ) begin
+	always @( posedge clk ) begin
 		if( !reset_n ) begin
 			ff_vs <= 1'b1;
 		end
@@ -233,7 +233,7 @@ module vdp_video_out (
 	// --------------------------------------------------------------------
 	//	Buffer address
 	// --------------------------------------------------------------------
-	always @( posedge clk or negedge reset_n ) begin
+	always @( posedge clk ) begin
 		if( !reset_n ) begin
 			ff_x_position_r <= 10'd0;
 		end
@@ -256,7 +256,7 @@ module vdp_video_out (
 		end
 	end
 
-	always @( posedge clk or negedge reset_n ) begin
+	always @( posedge clk ) begin
 		if( !reset_n ) begin
 			ff_numerator <= 8'b0;
 		end
@@ -306,7 +306,7 @@ module vdp_video_out (
 	// --------------------------------------------------------------------
 	assign w_normalized_numerator	= ff_numerator * reg_normalize;		//	8bit * 10bit = 16bit
 
-	always @( posedge clk or negedge reset_n ) begin
+	always @( posedge clk ) begin
 		if( !reset_n ) begin
 			ff_coeff	<= 8'd0;
 		end

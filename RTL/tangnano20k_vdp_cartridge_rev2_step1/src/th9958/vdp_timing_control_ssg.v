@@ -147,7 +147,7 @@ module vdp_timing_control_ssg (
 	// --------------------------------------------------------------------
 	//	Latch horizontal scroll register
 	// --------------------------------------------------------------------
-	always @( posedge clk or negedge reset_n ) begin
+	always @( posedge clk ) begin
 		if( !reset_n ) begin
 			ff_horizontal_offset_l <= 3'd0;
 			ff_horizontal_offset_h <= 6'd0;
@@ -164,7 +164,7 @@ module vdp_timing_control_ssg (
 	// --------------------------------------------------------------------
 	//	Horizontal Counter
 	// --------------------------------------------------------------------
-	always @( posedge clk or negedge reset_n ) begin
+	always @( posedge clk ) begin
 		if( !reset_n ) begin
 			ff_h_count <= 12'd0;
 		end
@@ -176,7 +176,7 @@ module vdp_timing_control_ssg (
 		end
 	end
 
-	always @( posedge clk or negedge reset_n ) begin
+	always @( posedge clk ) begin
 		if( !reset_n ) begin
 			ff_half_count <= 13'd0;
 		end
@@ -190,7 +190,7 @@ module vdp_timing_control_ssg (
 
 	assign w_h_count_end	= ( ff_h_count == c_h_count_max );
 
-	always @( posedge clk or negedge reset_n ) begin
+	always @( posedge clk ) begin
 		if( !reset_n ) begin
 			ff_hsync <= 1'b1;
 		end
@@ -202,7 +202,7 @@ module vdp_timing_control_ssg (
 		end
 	end
 
-	always @( posedge clk or negedge reset_n ) begin
+	always @( posedge clk ) begin
 		if( !reset_n ) begin
 			ff_vram_refresh <= 1'b0;
 		end
@@ -219,7 +219,7 @@ module vdp_timing_control_ssg (
 	// --------------------------------------------------------------------
 	//	Vertical Counter
 	// --------------------------------------------------------------------
-	always @( posedge clk or negedge reset_n ) begin
+	always @( posedge clk ) begin
 		if( !reset_n ) begin
 			ff_v_count <= 10'd0;
 		end
@@ -245,7 +245,7 @@ module vdp_timing_control_ssg (
 	// --------------------------------------------------------------------
 	//	Field selector
 	// --------------------------------------------------------------------
-	always @( posedge clk or negedge reset_n ) begin
+	always @( posedge clk ) begin
 		if( !reset_n ) begin
 			ff_field <= 1'b0;
 		end
@@ -257,7 +257,7 @@ module vdp_timing_control_ssg (
 	// --------------------------------------------------------------------
 	//	Active area
 	// --------------------------------------------------------------------
-	always @( posedge clk or negedge reset_n ) begin
+	always @( posedge clk ) begin
 		if( !reset_n ) begin
 			ff_v_active <= 1'b0;
 		end
@@ -273,7 +273,7 @@ module vdp_timing_control_ssg (
 
 	assign w_v_count_end_line	= reg_212lines_mode ? 10'd211: 10'd191;
 
-	always @( posedge clk or negedge reset_n ) begin
+	always @( posedge clk ) begin
 		if( !reset_n ) begin
 			ff_vsync <= 1'b1;
 		end
@@ -290,7 +290,7 @@ module vdp_timing_control_ssg (
 		end
 	end
 
-	always @( posedge clk or negedge reset_n ) begin
+	always @( posedge clk ) begin
 		if( !reset_n ) begin
 			ff_top_line <= c_top_60hz_pos192;
 		end
@@ -323,7 +323,7 @@ module vdp_timing_control_ssg (
 	// --------------------------------------------------------------------
 	assign w_intr_line_y		= reg_interrupt_line_nonR23_mode ? w_screen_pos_y[7:0]: w_pixel_pos_y;
 
-	always @( posedge clk or negedge reset_n ) begin
+	always @( posedge clk ) begin
 		if( !reset_n ) begin
 			ff_line_interrupt_mask <= 1'b0;
 		end
@@ -340,7 +340,7 @@ module vdp_timing_control_ssg (
 	// --------------------------------------------------------------------
 	//	blink counter
 	// --------------------------------------------------------------------
-	always @( posedge clk or negedge reset_n ) begin
+	always @( posedge clk ) begin
 		if( !reset_n ) begin
 			ff_blink_base <= 4'd0;
 		end
@@ -357,7 +357,7 @@ module vdp_timing_control_ssg (
 	assign w_10frame			= (ff_blink_base == 4'd9);
 	assign w_next_blink_counter	= ff_interleaving_page ? reg_blink_period[7:4]: reg_blink_period[3:0];
 
-	always @( posedge clk or negedge reset_n ) begin
+	always @( posedge clk ) begin
 		if( !reset_n ) begin
 			ff_blink_counter <= 4'd0;
 		end
@@ -374,7 +374,7 @@ module vdp_timing_control_ssg (
 		end
 	end
 
-	always @( posedge clk or negedge reset_n ) begin
+	always @( posedge clk ) begin
 		if( !reset_n ) begin
 			ff_interleaving_page <= 1'b1;
 		end

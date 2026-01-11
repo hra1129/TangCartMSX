@@ -137,7 +137,7 @@ module vdp_timing_control_g4567 (
 	assign w_phase		= w_pos_x[2:0];
 	assign w_sub_phase	= screen_pos_x[2:0];
 
-	always @( posedge clk or negedge reset_n ) begin
+	always @( posedge clk ) begin
 		if( !reset_n ) begin
 			ff_screen_h_active <= 1'b0;
 		end
@@ -163,7 +163,7 @@ module vdp_timing_control_g4567 (
 	assign w_g4567_valid	= w_screen_active & (w_mode != 4'b0000) & reg_display_on;
 	assign w_g67_valid		= w_screen_active & (w_mode[ c_g6 ] | w_mode[ c_g7 ]) & reg_display_on;
 
-	always @( posedge clk or negedge reset_n ) begin
+	always @( posedge clk ) begin
 		if( !reset_n ) begin
 			ff_vram_address <= 17'd0;
 			ff_vram_valid <= 1'b0;
@@ -220,7 +220,7 @@ module vdp_timing_control_g4567 (
 	// --------------------------------------------------------------------
 	//	VRAM read data latch
 	// --------------------------------------------------------------------
-	always @( posedge clk or negedge reset_n ) begin
+	always @( posedge clk ) begin
 		if( !reset_n ) begin
 			ff_next_pattern0 <= 32'd0;
 			ff_next_pattern1 <= 32'd0;
@@ -261,7 +261,7 @@ module vdp_timing_control_g4567 (
 	// --------------------------------------------------------------------
 	//	Display color generate
 	// --------------------------------------------------------------------
-	always @( posedge clk or negedge reset_n ) begin
+	always @( posedge clk ) begin
 		if( !reset_n ) begin
 			ff_pattern[0] <= 8'd0;
 			ff_pattern[1] <= 8'd0;
@@ -306,7 +306,7 @@ module vdp_timing_control_g4567 (
 		end
 	end
 
-	always @( posedge clk or negedge reset_n ) begin
+	always @( posedge clk ) begin
 		if( !reset_n ) begin
 			ff_display_color <= 4'd0;
 		end

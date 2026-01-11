@@ -148,7 +148,7 @@ module vdp_timing_control_t12 (
 	assign w_screen_pos_x	= screen_pos_x[12:3] - { 7'd0, horizontal_offset_l };
 	assign w_line_start		= (w_sub_phase == 3'd7 && w_screen_pos_x == 10'd7);
 
-	always @( posedge clk or negedge reset_n ) begin
+	always @( posedge clk ) begin
 		if( !reset_n ) begin
 			ff_pos_x <= 6'd0;
 		end
@@ -160,7 +160,7 @@ module vdp_timing_control_t12 (
 		end
 	end
 
-	always @( posedge clk or negedge reset_n ) begin
+	always @( posedge clk ) begin
 		if( !reset_n ) begin
 			ff_pos_y <= 8'd0;
 		end
@@ -174,7 +174,7 @@ module vdp_timing_control_t12 (
 		end
 	end
 
-	always @( posedge clk or negedge reset_n ) begin
+	always @( posedge clk ) begin
 		if( !reset_n ) begin
 			ff_h_active <= 1'b0;
 		end
@@ -186,7 +186,7 @@ module vdp_timing_control_t12 (
 		end
 	end
 
-	always @( posedge clk or negedge reset_n ) begin
+	always @( posedge clk ) begin
 		if( !reset_n ) begin
 			ff_screen_h_active <= 1'b0;
 		end
@@ -205,7 +205,7 @@ module vdp_timing_control_t12 (
 	// --------------------------------------------------------------------
 	assign w_sub_phase	= screen_pos_x[2:0];
 
-	always @( posedge clk or negedge reset_n ) begin
+	always @( posedge clk ) begin
 		if( !reset_n ) begin
 			ff_phase <= 3'd0;
 		end
@@ -246,7 +246,7 @@ module vdp_timing_control_t12 (
 	assign w_t12_valid		= w_screen_active & reg_display_on & (w_mode != 2'b00);
 	assign w_t2_valid		= w_screen_active & reg_display_on & w_mode[ c_t2 ];
 
-	always @( posedge clk or negedge reset_n ) begin
+	always @( posedge clk ) begin
 		if( !reset_n ) begin
 			ff_vram_address <= 17'd0;
 			ff_vram_valid <= 1'b0;
@@ -304,7 +304,7 @@ module vdp_timing_control_t12 (
 	// --------------------------------------------------------------------
 	//	VRAM read data latch
 	// --------------------------------------------------------------------
-	always @( posedge clk or negedge reset_n ) begin
+	always @( posedge clk ) begin
 		if( !reset_n ) begin
 			ff_pattern_num0 <= 8'd0;
 			ff_pattern_num1 <= 8'd0;
@@ -352,7 +352,7 @@ module vdp_timing_control_t12 (
 	// --------------------------------------------------------------------
 	//	Display color generate
 	// --------------------------------------------------------------------
-	always @( posedge clk or negedge reset_n ) begin
+	always @( posedge clk ) begin
 		if( !reset_n ) begin
 			ff_pattern0 <= 6'd0;
 			ff_pattern1 <= 6'd0;
@@ -378,7 +378,7 @@ module vdp_timing_control_t12 (
 		end
 	end
 
-	always @( posedge clk or negedge reset_n ) begin
+	always @( posedge clk ) begin
 		if( !reset_n ) begin
 			ff_color <= 8'd0;
 		end
@@ -405,7 +405,7 @@ module vdp_timing_control_t12 (
 		end
 	end
 
-	always @( posedge clk or negedge reset_n ) begin
+	always @( posedge clk ) begin
 		if( !reset_n ) begin
 			ff_display_color <= 4'd0;
 		end

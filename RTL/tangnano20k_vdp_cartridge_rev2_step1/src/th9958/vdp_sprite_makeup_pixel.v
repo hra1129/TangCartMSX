@@ -222,7 +222,7 @@ module vdp_sprite_makeup_pixel (
 	// --------------------------------------------------------------------
 	assign w_read_pattern12	= { pattern[0] , pattern[1] , pattern[2] , pattern[3] , pattern[4] , pattern[5] , pattern[6] , pattern[7]  };
 
-	always @( posedge clk or negedge reset_n ) begin
+	always @( posedge clk ) begin
 		if( !reset_n ) begin
 			ff_pattern0 <= 64'd0;
 			ff_pattern1 <= 64'd0;
@@ -331,7 +331,7 @@ module vdp_sprite_makeup_pixel (
 		end
 	end
 
-	always @( posedge clk or negedge reset_n ) begin
+	always @( posedge clk ) begin
 		if( !reset_n ) begin
 			ff_color0  <= 8'd0;
 			ff_color1  <= 8'd0;
@@ -373,7 +373,7 @@ module vdp_sprite_makeup_pixel (
 		end
 	end
 
-	always @( posedge clk or negedge reset_n ) begin
+	always @( posedge clk ) begin
 		if( !reset_n ) begin
 			ff_x0 <= 10'd0;
 			ff_x1 <= 10'd0;
@@ -415,7 +415,7 @@ module vdp_sprite_makeup_pixel (
 		end
 	end
 
-	always @( posedge clk or negedge reset_n ) begin
+	always @( posedge clk ) begin
 		if( !reset_n ) begin
 			ff_mgx0		<= 8'd0;
 			ff_mgx1		<= 8'd0;
@@ -460,7 +460,7 @@ module vdp_sprite_makeup_pixel (
 	// --------------------------------------------------------------------
 	//	Control signals
 	// --------------------------------------------------------------------
-	always @( posedge clk or negedge reset_n ) begin
+	always @( posedge clk ) begin
 		if( !reset_n ) begin
 			ff_active			<= 1'b0;
 			ff_visible_planes	<= 5'd0;
@@ -729,7 +729,7 @@ module vdp_sprite_makeup_pixel (
 	// --------------------------------------------------------------------
 	//	w_sub_phase: 3
 	// --------------------------------------------------------------------
-	always @( posedge clk or negedge reset_n ) begin
+	always @( posedge clk ) begin
 		if( !reset_n ) begin
 			ff_active1			<= 1'b0;
 			ff_active2			<= 1'b0;
@@ -807,7 +807,7 @@ module vdp_sprite_makeup_pixel (
 	assign w_sample_x		= ff_color_3[4] ? ~sample_x[3:0]: sample_x[3:0];
 	assign w_pattern_m3		= func_nibble_sel( w_sample_x, w_pattern );
 
-	always @( posedge clk or negedge reset_n ) begin
+	always @( posedge clk ) begin
 		if( !reset_n ) begin
 			ff_color_en			<= 1'b0;
 			ff_color			<= 4'd0;
@@ -847,7 +847,7 @@ module vdp_sprite_makeup_pixel (
 	// --------------------------------------------------------------------
 	//	[delay 3...15,0,1,2] Mix 16 planes
 	// --------------------------------------------------------------------
-	always @( posedge clk or negedge reset_n ) begin
+	always @( posedge clk ) begin
 		if( !reset_n ) begin
 			ff_pre_pixel_color_en			<= 1'b0;
 			ff_pre_pixel_color_transparent	<= 2'd0;
@@ -963,7 +963,7 @@ module vdp_sprite_makeup_pixel (
 		end
 	end
 
-	always @( posedge clk or negedge reset_n ) begin
+	always @( posedge clk ) begin
 		if( !reset_n ) begin
 			ff_sprite_collision		<= 1'b0;
 			ff_sprite_collision_x	<= 9'd0;
@@ -997,7 +997,7 @@ module vdp_sprite_makeup_pixel (
 	// --------------------------------------------------------------------
 	//	[delay 9] latch pixel color
 	// --------------------------------------------------------------------
-	always @( posedge clk or negedge reset_n ) begin
+	always @( posedge clk ) begin
 		if( !reset_n ) begin
 			ff_pixel_color_en			<= 1'b0;
 			ff_pixel_color_transparent	<= 2'd0;
@@ -1015,7 +1015,7 @@ module vdp_sprite_makeup_pixel (
 		end
 	end
 
-	always @( posedge clk or negedge reset_n ) begin
+	always @( posedge clk ) begin
 		if( !reset_n ) begin
 			ff_pixel_color_d0 <= 11'd0;
 			ff_pixel_color_d1 <= 11'd0;

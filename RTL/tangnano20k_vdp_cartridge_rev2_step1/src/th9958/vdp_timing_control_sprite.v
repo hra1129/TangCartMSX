@@ -161,7 +161,7 @@ module vdp_timing_control_sprite (
 	// --------------------------------------------------------------------
 
 	//	実際にスプライトを処理する映像期間（表示期間は screen_v_active で、これはもう少し広い）
-	always @( posedge clk or negedge reset_n ) begin
+	always @( posedge clk ) begin
 		if( !reset_n ) begin
 			ff_screen_v_active <= 1'b0;
 		end
@@ -175,7 +175,7 @@ module vdp_timing_control_sprite (
 		end
 	end
 
-	always @( posedge clk or negedge reset_n ) begin
+	always @( posedge clk ) begin
 		if( !reset_n ) begin
 			ff_screen_h_active <= 1'b0;
 		end
@@ -189,7 +189,7 @@ module vdp_timing_control_sprite (
 		end
 	end
 
-	always @( posedge clk or negedge reset_n ) begin
+	always @( posedge clk ) begin
 		if( !reset_n ) begin
 			ff_sprite_priority_shuffle <= 1'b0;
 		end

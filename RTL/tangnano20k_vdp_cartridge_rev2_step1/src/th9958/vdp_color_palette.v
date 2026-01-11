@@ -166,7 +166,7 @@ module vdp_color_palette (
 	// --------------------------------------------------------------------
 	//	Palette initializer
 	// --------------------------------------------------------------------
-	always @( posedge clk or negedge reset_n ) begin
+	always @( posedge clk ) begin
 		if( !reset_n ) begin
 			ff_palette_num	= 9'd0;
 			ff_palette_r	= 5'd0;
@@ -365,7 +365,7 @@ module vdp_color_palette (
 	// --------------------------------------------------------------------
 	assign w_display_color		= reg_yjk_mode ? ff_display_color_delay3: ff_display_color_delay0;
 
-	always @( posedge clk or negedge reset_n ) begin
+	always @( posedge clk ) begin
 		if( !reset_n ) begin
 			ff_display_color <= 8'd0;
 			ff_display_color_oe <= 1'b0;
@@ -550,7 +550,7 @@ module vdp_color_palette (
 	// --------------------------------------------------------------------
 	//	RGB table for 256 colors mode ( screen_pos_x = 1 )
 	// --------------------------------------------------------------------
-	always @( posedge clk or negedge reset_n ) begin
+	always @( posedge clk ) begin
 		if( !reset_n ) begin
 			ff_display_color256 <= 8'd0;
 		end
@@ -717,7 +717,7 @@ module vdp_color_palette (
         endcase
 	endfunction
 
-	always @( posedge clk or negedge reset_n ) begin
+	always @( posedge clk ) begin
 		if( !reset_n ) begin
 			ff_vdp_r <= 8'd0;
 			ff_vdp_g <= 8'd0;

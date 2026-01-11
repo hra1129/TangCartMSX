@@ -151,7 +151,7 @@ module vdp_sprite_select_visible_planes (
 	// --------------------------------------------------------------------
 	//	Read VRAM request for sprite attribute table
 	// --------------------------------------------------------------------
-	always @( posedge clk or negedge reset_n ) begin
+	always @( posedge clk ) begin
 		if( !reset_n ) begin
 			ff_current_plane_num_start <= 6'd0;
 		end
@@ -178,7 +178,7 @@ module vdp_sprite_select_visible_planes (
 	// --------------------------------------------------------------------
 	//	VRAM Read Timing Generator
 	// --------------------------------------------------------------------
-	always @( posedge clk or negedge reset_n ) begin
+	always @( posedge clk ) begin
 		if( !reset_n ) begin
 			ff_plane_count			<= 6'd0;
 			ff_current_plane_num	<= 6'd0;
@@ -224,7 +224,7 @@ module vdp_sprite_select_visible_planes (
 	// --------------------------------------------------------------------
 	//	Receive value of attribute table
 	// --------------------------------------------------------------------
-	always @( posedge clk or negedge reset_n ) begin
+	always @( posedge clk ) begin
 		if( !reset_n ) begin
 			ff_attribute1	<= 32'd0;
 			ff_attribute2	<= 32'd0;
@@ -286,7 +286,7 @@ module vdp_sprite_select_visible_planes (
 	assign w_invisible3		= (w_mgy == 8'd0) ? (w_offset_y[9:8] != 2'd0): ( { 2'd0, w_mgy } <= w_offset_y );
 	assign w_invisible		= reg_sprite_mode3 ? w_invisible3: (w_invisible12 != 5'd0);
 
-	always @( posedge clk or negedge reset_n ) begin
+	always @( posedge clk ) begin
 		if( !reset_n ) begin
 			ff_selected_count	<= 5'd0;
 			ff_select_finish	<= 1'b0;
@@ -344,7 +344,7 @@ module vdp_sprite_select_visible_planes (
 		end
 	end
 
-	always @( posedge clk or negedge reset_n ) begin
+	always @( posedge clk ) begin
 		if( !reset_n ) begin
 			ff_sprite_overmap		<= 1'b0;
 			ff_sprite_overmap_id	<= 5'd0;
