@@ -361,6 +361,14 @@ module vdp_command (
 				reg_sx[11:8]	<= register_data[3:0];
 			end
 		end
+		else if( ff_start ) begin
+			if( ff_command == c_lrmm ) begin
+				//	hold
+			end
+			else begin
+				reg_sx[11:9] <= 3'd0;
+			end
+		end
 	end
 
 	always @( posedge clk ) begin
@@ -392,8 +400,11 @@ module vdp_command (
 			if( ff_command == c_ymmm ) begin
 				ff_sx	<= { 3'd0, reg_dx, 8'd0 };
 			end
-			else begin
+			else if( ff_command == c_lrmm ) begin
 				ff_sx	<= { reg_sx, 8'd0 };
+			end
+			else begin
+				ff_sx	<= { 3'd0, reg_sx[8:0], 8'd0 };
 			end
 		end
 		else if( !ff_command_execute || ff_cache_vram_valid ) begin
@@ -441,8 +452,16 @@ module vdp_command (
 			ff_sy[20:16]	<= register_data[4:0];
 		end
 		else if( ff_start ) begin
-			if( ff_command == c_lrmm && ff_xhr ) begin
-				ff_sy <= { ff_sy[19:0], 1'b0 };
+			if( ff_command == c_lrmm ) begin
+				if( ff_xhr ) begin
+					ff_sy <= { ff_sy[19:0], 1'b0 };
+				end
+				else begin
+					//	hold
+				end
+			end
+			else begin
+				ff_sy[20:18] <= 3'd0;
 			end
 		end
 		else if( !ff_command_execute || ff_cache_vram_valid ) begin
@@ -700,6 +719,14 @@ module vdp_command (
 		else if( register_write && register_num == 6'd41 ) begin
 			reg_nx[10:8]	<= register_data[2:0];
 		end
+		else if( ff_start ) begin
+			if( ff_command == c_lrmm ) begin
+				// hold
+			end
+			else begin
+				reg_nx[10:9]	<= 2'd0;
+			end
+		end
 		else if( ff_count_valid ) begin
 			if( ff_command == c_lfmm ) begin
 				if( ff_bit_count == 3'd0 && w_ny_end ) begin
@@ -762,6 +789,14 @@ module vdp_command (
 			end
 			else begin
 				reg_ny[10:8]	<= { 1'b0, register_data[1:0] };
+			end
+		end
+		else if( ff_start ) begin
+			if( ff_command == c_lrmm ) begin
+				// hold
+			end
+			else begin
+				reg_ny[10]	<= 1'b0;
 			end
 		end
 		else if( w_cache_flush_end ) begin
