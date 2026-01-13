@@ -460,6 +460,9 @@ module vdp_command (
 					//	hold
 				end
 			end
+			else if( reg_vram256k_mode ) begin
+				ff_sy[20:19] <= 2'd0;
+			end
 			else begin
 				ff_sy[20:18] <= 3'd0;
 			end
@@ -795,7 +798,7 @@ module vdp_command (
 			if( ff_command == c_lrmm ) begin
 				// hold
 			end
-			else begin
+			else if( !reg_vram256k_mode ) begin
 				reg_ny[10]	<= 1'b0;
 			end
 		end
