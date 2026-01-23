@@ -1,10 +1,10 @@
 R4, R5 ....... 3.3Kohm
 R2 ........... 10Kohm
-Q1, Q2, Q3 ... TO236AB (FET)
+Q1, Q2, Q3 ... TO236AB (MOSFET Nch)
 U1 ........... CLOCK 14.318180MHz
 C3 ........... 15pF
 C1 ........... N/A
 C2-C9 ........ 0.1uF
-U4-U6 ........ SN74LVC8T245
+U4-U6 ........ SN74LVC8T245 SSOP
 U2 ........... TangNano20K
 U3 ........... Card Edge Connector (N/A)
